@@ -495,9 +495,9 @@ AddFacility.getInitialProps = async (ctx) => {
 							let _obj = {}
 
 							if (option === 'counties') fields = 'id,name&page_size=47'
-							if (option === 'sub_counties') fields = 'id,name,county'
-							if (option === 'wards') fields = 'id,name,sub_county,constituency'
-							if (option === 'constituencies') fields = 'id,name,county'
+							if (option === 'sub_counties') fields = 'id,name,county&page_size=312'
+							if (option === 'wards') fields = 'id,name,sub_county,constituency&page_size=1453'
+							if (option === 'constituencies') fields = 'id,name,county&page_size=290'
 
 
 							url = `${process.env.NEXT_PUBLIC_API_URL}/common/${option}/?fields=${fields}`;

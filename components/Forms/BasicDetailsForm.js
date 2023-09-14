@@ -15,6 +15,7 @@ import { useAlert } from 'react-alert';
 import { defer } from "underscore";
 import { handleBasicDetailsSubmit, handleBasicDetailsUpdates } from '../../controllers/facility/facilityHandlers';
 import { FacilityUpdatesContext } from '../../pages/facilities/edit/[id]';
+import { sortOptions } from '../../utils/sort';
 
 
 
@@ -23,7 +24,6 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
   const options = useContext(FormOptionsContext);
 
   const alert = useAlert();
-
 
   // Constants
   const formFields = {
@@ -87,9 +87,6 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
   const { updatedSavedChanges, updateFacilityUpdateData } = options['19']?.data ? useContext(FacilityUpdatesContext) : {updatedSavedChanges: null, updateFacilityUpdateData: null }
 
   // Facility update data
-
-  
-
 
   const [initialValues, handleFormUpdate] = useLocalStorageState({
     key: options['19']?.data ? 'basic_details_edit_form' : 'basic_details_form',
@@ -351,7 +348,7 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
   const facilityTypeDetailsRef = useRef(null);
   const checkListFileRef = useRef(null);
 
-  // console.log({formValues})
+
   return (
     <Formik
       initialValues={formValues}
@@ -424,16 +421,21 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
 
           // Form Validations
 
-          if(!formikState.values.facility_type.includes("")){
-          formikState.values.facility_type_details =  options['1']?.facility_type_details?.find(
-            ({ value }) => value === formikState.values.facility_type
-          )?.value ?? " ";
+          if(formikState.values.facility_type !== ""){
+            console.log({facilityTypeDetailOptions: filteredOptions.facilityTypeDetailOptions})
+
+              const facilityTypeDetails =  options['1']?.facility_type_details?.find(
+                ({ value }) => value.includes(formikState.values.facility_type)
+              )?.value ?? " ";
+
+              if(options['19']?.data){
+                formikState.values.facility_type_details = facilityTypeDetails
+              }
+    
+              // console.log({facilityTypeDetails})
           }
 
-          // console.log({type_details})
-
-          // if(formikState.values.number_of_inpatient_beds == null) 
-
+      
           // Hours/Days duration form rules
           if (formikState.values.open_whole_day) {
             formikState.values.open_late_night = true;
@@ -461,7 +463,7 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
 
           if (formikState.values.facility_type !== "") setFacilityTypeValue(formikState.values.facility_type)
 
-          // console.log(options['3']?.owner_types)
+        
           if (formikState.values.owner_type !== "" && options['3']?.owner_types ) setOwnerTypeLabel(() => {
             return options['3']?.owner_types?.filter(({ value }) => value === formikState.values.owner_type)[0]?.label
           })
@@ -598,10 +600,8 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
                   required
                   name='facility_type'
                   disabled={options['19']?.data ? true: false}
-
-
                 />
-                {/* {errors.facility_type && <span className='font-normal text-sm text-red-500 text-start'>{errors.facility_type}</span>} */}
+                {errors.facility_type && <span className='font-normal text-sm text-red-500 text-start'>{errors.facility_type}</span>}
 
               </div>
               {/* Facility Type Details */}
@@ -625,7 +625,7 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
 
 
                 />
-                {/* {errors.facility_type_details && <span className='font-normal text-sm text-red-500 text-start'>{errors.facility_type_details}</span>} */}
+                {errors.facility_type_details && <span className='font-normal text-sm text-red-500 text-start'>{errors.facility_type_details}</span>}
 
 
               </div>
@@ -1209,6 +1209,9 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
                   {/* County  */}
                   <div className='col-start-1 col-span-1'>
                     <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                        
+                        {console.log({counties: sortOptions(options['6']?.counties), options:options['6']?.counties})}
+
                       <label
                         htmlFor='county_id'
                         className='text-gray-600 capitalize text-sm'>
@@ -1219,7 +1222,7 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
                         </span>
                       </label>
                       <Select
-                        options={options['6']?.counties}
+                        options={sortOptions(options['6']?.counties)} //
                         required
                         placeholder="Select County ..."
                         name='county_id'
