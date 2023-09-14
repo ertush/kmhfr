@@ -15,7 +15,7 @@ import { useAlert } from 'react-alert';
 import { defer } from "underscore";
 import { handleBasicDetailsSubmit, handleBasicDetailsUpdates } from '../../controllers/facility/facilityHandlers';
 import { FacilityUpdatesContext } from '../../pages/facilities/edit/[id]';
-import { sortOptions } from '../../utils/sort';
+// import { sortOptions } from '../../utils/sort';
 
 
 
@@ -605,6 +605,8 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
 
               </div>
               {/* Facility Type Details */}
+              {
+                !options['19']?.data &&
               <div className={`${options['19']?.data ? "cursor-not-allowed" : "cursor-default"} w-full flex flex-col items-start justify-start gap-1 mb-3`}>
                 <label
                   htmlFor='facility_type_details'
@@ -629,6 +631,7 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
 
 
               </div>
+        }
 
               {/* Operation Status*/}
               <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
