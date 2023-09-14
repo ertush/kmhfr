@@ -1213,7 +1213,7 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
                   <div className='col-start-1 col-span-1'>
                     <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
                         
-                        {console.log({counties: sortOptions(options['6']?.counties), options:options['6']?.counties})}
+                        {/* {console.log({counties: sortOptions(options['6']?.counties), options:options['6']?.counties})} */}
 
                       <label
                         htmlFor='county_id'
@@ -1225,7 +1225,7 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
                         </span>
                       </label>
                       <Select
-                        options={sortOptions(options['6']?.counties)} //
+                        options={options['6']?.counties} //
                         required
                         placeholder="Select County ..."
                         name='county_id'
