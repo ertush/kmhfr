@@ -13,6 +13,7 @@ import {
 import { FormOptionsContext } from '../../pages/facilities/add';
 import { FacilityUpdatesContext } from '../../pages/facilities/edit/[id]';
 import { defer } from "underscore";
+import { useAlert } from 'react-alert';
 
 
 const WardMap = dynamic(
@@ -78,6 +79,8 @@ export function GeolocationForm({useGeoJSON, useGeoData}) {
     const [geoJSON, __] = useGeoJSON();
     const [wardName, ___] = useGeoData('ward_data');
     const [geoCenter, _____] = useGeoData('geo_data');
+
+    const alert = useAlert();
 
 
     // console.log({facilityGeolocationData})
@@ -185,7 +188,15 @@ export function GeolocationForm({useGeoJSON, useGeoData}) {
 
             })(values, coordinates_id, facilityId) 
                :
-                handleGeolocationSubmit(values, [formId, setFormId, facilityId])}}
+                handleGeolocationSubmit(options['18']?.token, values, [formId, setFormId, facilityId])
+                .then(resp => {
+                  if(resp.status == 201){
+                    alert.success('Geolocation details saved successfull')
+                  } else {
+                    alert.error('Unable to save geolocation details')
+                  }
+                })
+              }}
             // validationSchema={toFormikValidationSchema(formSchema)}
             enableReinitialize
         >

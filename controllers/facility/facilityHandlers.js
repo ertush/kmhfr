@@ -2,9 +2,7 @@
 import router from "next/router";
 
 // handleBasicDetailsSubmit
-const handleBasicDetailsSubmit = async (values, method, formId, setFormId, fileRef, setGeoJSON, setWardName, setGeoCenter, setFacilityId) => {
-
-  
+const handleBasicDetailsSubmit = async (token, values, formId, setFormId, fileRef, alert, setGeoJSON, setWardName, setGeoCenter, setFacilityId) => {
 
     const _payload = {};
 
@@ -43,7 +41,6 @@ const handleBasicDetailsSubmit = async (values, method, formId, setFormId, fileR
       
     }
 
-
     // Add officer in charge to payload
     _payload['officer_in_charge'] = {
         name:'',
@@ -57,104 +54,113 @@ const handleBasicDetailsSubmit = async (values, method, formId, setFormId, fileR
     }
 
 
-
-    if(method === 'PATCH'){
-        _payload['sub_county'] = values.sub_county_id
-    }
-
-
-
-
-    // console.log({_payload})
-
     // Post Facility Basic Details
-    try{
-        fetch('/api/common/submit_form_data/?path=facilities', {
-            headers:{
-                'Accept': 'application/json, text/plain, */*',
-                'Content-Type': 'application/json;charset=utf-8'
-                
-            },
-            method,
-            body: JSON.stringify(_payload)
-        })
-
-        // Post Checklist document
-        .then(async resp => {
-
-            const {id, ward} = (await resp.json());
-
-            _ward = ward;
-
-            setFacilityId(`${id}`);
-
-            // Store facility Id to localstorage
-
-            const formData = new FormData()
-
-            if(fileRef !== null){
-
-                formData.append('name', `${_payload['official_name']} Facility Checklist File`)
-                formData.append('description', 'Facilities checklist file')
-                formData.append('document_type', 'Facility_ChecKList')
-                formData.append('facility_name', _payload['official_name'])
-                formData.append('fyl', fileRef.files[0] ?? undefined)
-    
-            }
-            
-            if(resp){
-
-                try {
-                    const resp = await fetch('/api/common/submit_form_data/?path=documents', {
-
-                        headers:{
-                            'Accept': 'application/json, text/plain, */*',
-                        },
-                        method:'POST',
-                        body: formData
-                    })
-
-                    return resp
-                }
-                catch(e){
-                    console.error('Unable to Post document')
-                }
-            }
-        })
-        //  fetch data for Geolocation form
-        .then(async (resp) => {
-            if(resp){
-    
-                                                                  
-                    try{
-                        const response = await fetch(`/api/facility/get_facility/?path=wards&id=${_ward}`)
-
-                        const _data = await response.json();
-                        const ward_boundary = _data?.ward_boundary;
-                        setGeoJSON(ward_boundary)
-                        const [lng, lat] = ward_boundary.properties.center.coordinates 
-                        setGeoCenter([lat, lng])
-                        setWardName(_data?.name)
-
+    if(token){
+        try{
+            fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/`, {
+                headers:{
+                    'Authorization': 'Bearer ' + token,
+                    'Accept': 'application/json, text/plain, */*',
+                    'Content-Type': 'application/json;charset=utf-8'
                     
-                    }catch(e){
-                        console.error(e.message)
-                        return {
-                            error:e.message,
-                            id:null
-                        }
-                    }
+                },
+                method: 'POST',
+                body: JSON.stringify(_payload)
+            })
+
+            // Post Checklist document
+            .then(async resp => {
+
+                const {id, ward} = (await resp.json());
+
+                _ward = ward;
+
+                setFacilityId(`${id}`);
+
+                // Store facility Id to localstorage
+
+                const formData = new FormData()
+
+                if(fileRef !== null){
+
+                    formData.append('name', `${_payload['official_name']} Facility Checklist File`)
+                    formData.append('description', 'Facilities checklist file')
+                    formData.append('document_type', 'Facility_ChecKList')
+                    formData.append('facility_name', _payload['official_name'])
+                    formData.append('fyl', fileRef.files[0] ?? undefined)
+        
+                }
                 
+                if(resp.status == 201 && formData.get('fyl')){
+
+                    alert.success('Basic details saved successful');
+
+                    try {
+                        const resp = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/common/documents/`, {
+
+                            headers:{
+                                'Authorization': 'Bearer ' + token,
+                                'Accept': 'application/json, text/plain, */*',
+                            },
+                            method:'POST',
+                            body: formData
+                        })
+
+                        return resp
+                    }
+                    catch(e){
+                        console.error('Unable to Post document')
+                    }
+                }
+                else {
+                    alert.error('Unable to save basic details successfully!')
+                }
+            })
+            //  fetch data for Geolocation form
+            .then(async (resp) => {
+                if(resp){
+        
+                                                                    
+                        try{
+                            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/common/wards/${_ward}/`,
+                            {
+                                headers:{
+                                    'Authorization': 'Bearer ' + token,
+                                    'Accept': 'application/json, text/plain, */*',
+                                },
+                            }
+                            )
+
+                            const _data = await response.json();
+                            const ward_boundary = _data?.ward_boundary;
+                            setGeoJSON(ward_boundary)
+                            const [lng, lat] = ward_boundary.properties.center.coordinates 
+                            setGeoCenter([lat, lng])
+                            setWardName(_data?.name)
+
+                        
+                        }catch(e){
+                            console.error(e.message)
+                            return {
+                                error:e.message,
+                                id:null
+                            }
+                        }
+                    
+                }
+            }
+                
+        )
+        }catch(e){
+            console.error(e.message)
+            return {
+                error:e.message,
+                id:null
             }
         }
-            
-    )
-    }catch(e){
-        console.error(e.message)
-        return {
-            error:e.message,
-            id:null
-        }
+    }
+    else{
+        alert.error('Access Token not supplied !')
     }
 
     
@@ -163,11 +169,10 @@ const handleBasicDetailsSubmit = async (values, method, formId, setFormId, fileR
 };
 
 // handleGeolocationSubmit
-const handleGeolocationSubmit = (values, stateSetters) => {
+const handleGeolocationSubmit = (token, values, stateSetters) => {
 
     const [formId, setFormId, facilityId] = stateSetters
    
-
     const geolocationData = {};
 
 
@@ -211,15 +216,16 @@ const handleGeolocationSubmit = (values, stateSetters) => {
     
     // Post Geolocation Details
 
-    console.log({geo_payload: JSON.stringify(geolocationData).replace(',"":""','')})
+    // console.log({geo_payload: JSON.stringify(geolocationData).replace(',"":""','')})
 
 
     try{
-        fetch('/api/common/submit_form_data/?path=gis', {
+        fetch(`${process.env.NEXT_PUBLIC_API_URL}/gis/facility_coordinates/`, {
             headers:{
+                'Authorization': 'Bearer ' + token,
                 'Accept': 'application/json, text/plain, */*',
                 'Content-Type': 'application/json;charset=utf-8'
-                
+            
             },
             method: 'POST',
             body: JSON.stringify(geolocationData).replace(',"":""','')
@@ -233,7 +239,7 @@ const handleGeolocationSubmit = (values, stateSetters) => {
 };
 
 // handleFacilityContactsSubmit
-const handleFacilityContactsSubmit = (values, stateSetters) => {
+const handleFacilityContactsSubmit = (token, values, stateSetters) => {
 
     
     const [formId, setFormId, facilityId] = stateSetters;
@@ -284,14 +290,15 @@ const handleFacilityContactsSubmit = (values, stateSetters) => {
    
     try{     
 
-        fetch(`/api/common/submit_form_data/?path=basic_details_update&id=${facilityId}`, {
+        fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${facilityId}/`, {
 
             headers:{
+                'Authorization': 'Bearer ' + token,
                 'Accept': 'application/json, text/plain, */*',
                 'Content-Type': 'application/json;charset=utf-8'
                 
             },
-            method: 'POST',
+            method: 'PATCH',
             body: JSON.stringify(payload)
         })
     }
@@ -303,7 +310,7 @@ const handleFacilityContactsSubmit = (values, stateSetters) => {
 };
 
 // handleRegulationSubmit
-const handleRegulationSubmit = (values, stateSetters, licenseFileRef) => {
+const handleRegulationSubmit = async  (token, values, stateSetters, licenseFileRef, alert) => {
 
     let facility_name = ''
 
@@ -349,59 +356,76 @@ const handleRegulationSubmit = (values, stateSetters, licenseFileRef) => {
     // console.log({payload, facility_name}) // debug
 
 
-    payload.forEach(data => {
+    payload.forEach(async (data) => {
         try {
-            fetch(`/api/common/submit_form_data/?path=basic_details_update&id=${facilityId}`, {
-                headers: {
+            const resp = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${facilityId}/`, {
+
+                headers:{
+                    'Authorization': 'Bearer ' + token,
                     'Accept': 'application/json, text/plain, */*',
                     'Content-Type': 'application/json;charset=utf-8'
-
+                    
                 },
-                method: 'POST',
+                method: 'PATCH',
                 body: JSON.stringify(data)
             })
 
-                // Post the license document
-                .then(async resp => {
-
-                    const formData = new FormData()
-
-                    if(licenseFileRef !== null) {
-                        formData.append('name', `${facility_name} Facility license File`)
-                        formData.append('description', 'Facilities license file')
-                        formData.append('document_type', 'FACILITY_LICENSE')
-                        formData.append('facility_name', facility_name)
-                        formData.append('fyl', licenseFileRef.files[0] ?? undefined)
-                    }
-
-
-
-                    if (resp) {
-
-                        try {
-                            const resp = await fetch('/api/common/submit_form_data/?path=documents', {
-
-                                headers: {
-                                    'Accept': 'application/json, text/plain, */*',
-                                },
-                                method: 'POST',
-                                body: formData
-                            })
-
-                            return resp
-                        }
-                        catch (e) {
-                            console.error('Unable to Post License Document')
-                        }
-                    }
-                })
-
-        }
-        catch (e) {
+            if(resp.ok && data?.units) {
+                alert.success('Facilty Regulation details saved successfully')
+            } else {
+                alert.error('unable to save Regulation details ')
+            }
+        }   catch (e) {
             console.error('Unable to patch facility contacts details', e.message)
         }
     })
 
+    
+     // Post the license document
+            
+     if (licenseFileRef.files[0]) {
+        alert.success('Facility regulation details saved successfully')
+
+        const formData = new FormData()
+
+        if(licenseFileRef !== null) {
+            formData.append('name', `${facility_name} Facility license File`)
+            formData.append('description', 'Facilities license file')
+            formData.append('document_type', 'FACILITY_LICENSE')
+            formData.append('facility_name', facility_name)
+            formData.append('fyl', licenseFileRef.files[0] ?? undefined)
+        }
+
+
+        try {
+
+            const resp = await fetch(`${API_URL}/common/documents/`, {
+
+                headers: {
+                    'Authorization': 'Bearer '+ token,
+                    'Accept': 'application/json, text/plain, */*',
+                },
+                method: 'POST',
+                body: formData
+            })
+
+            if(resp.ok){
+            alert.success('License Document saved successfully')
+
+            }
+
+            return resp
+        }
+        catch (e) {
+            console.error('Unable to Post License Document')
+        }
+    } else {
+        alert.error('Unable to save facility regulation ')
+
+    }
+
+               
+            
 
     setFormId(`${parseInt(formId) + 1}`);
 
@@ -410,21 +434,23 @@ const handleRegulationSubmit = (values, stateSetters, licenseFileRef) => {
 
 
 // handleServiceSubmit
-const handleServiceSubmit = async (stateSetters, facilityId) => {
+const handleServiceSubmit = async (token, stateSetters, facilityId) => {
 
     const [services, formId, setFormId] = stateSetters
     const _payload = JSON.parse(services).map(({ id }) => ({ service: id }))
 
    
     try {
-        fetch(`/api/common/submit_form_data/?path=basic_details_update&id=${facilityId}`, {
-            headers: {
+        fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${facilityId}/`, {
+
+            headers:{
+                'Authorization': 'Bearer ' + token,
                 'Accept': 'application/json, text/plain, */*',
                 'Content-Type': 'application/json;charset=utf-8'
-
+                
             },
-            method: 'POST',
-            body: JSON.stringify({ services: _payload })
+            method: 'PATCH',
+            body: JSON.stringify({services: _payload})
         })
 
     }
@@ -435,11 +461,10 @@ const handleServiceSubmit = async (stateSetters, facilityId) => {
     setFormId(`${parseInt(formId) + 1}`);
     
     // setServices([])
-
 }
 
 // handleInfrastructureSubmit
-const handleInfrastructureSubmit = (stateSetters, facilityId) => {
+const handleInfrastructureSubmit = (token, stateSetters, facilityId) => {
 
     const [formData, vals, formId, setFormId] = stateSetters
 
@@ -477,14 +502,16 @@ const handleInfrastructureSubmit = (stateSetters, facilityId) => {
     if (_payload) {
 
         try {
-            fetch(`/api/common/submit_form_data/?path=basic_details_update&id=${facilityId}`, {
-                headers: {
+            fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${facilityId}/`, {
+
+                headers:{
+                    'Authorization': 'Bearer ' + token,
                     'Accept': 'application/json, text/plain, */*',
                     'Content-Type': 'application/json;charset=utf-8'
-
+                    
                 },
-                method: 'POST',
-                body: JSON.stringify({ infrastructure: _payload })
+                method: 'PATCH',
+                body: JSON.stringify({infrastructure: _payload})
             })
 
         }
@@ -494,15 +521,13 @@ const handleInfrastructureSubmit = (stateSetters, facilityId) => {
 
         setFormId(`${parseInt(formId) + 1}`)
        
-
-
     }
 
 }
 
 
 // handleHrSubmit
-const handleHrSubmit = (stateSetters, facilityId, alert) => {
+const handleHrSubmit = (token, stateSetters, facilityId, alert) => {
 
     const [savedVals, formVals] = stateSetters // removed setFormId
 
@@ -510,22 +535,36 @@ const handleHrSubmit = (stateSetters, facilityId, alert) => {
         ({speciality:id, count: formVals[id]})
     )
 
-    console.log({_payload})
+    // console.log({_payload})
 
 
     try {
-        fetch(`/api/common/submit_form_data/?path=basic_details_update&id=${facilityId}`, {
-            headers: {
+        fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${facilityId}/`, {
+
+            headers:{
+                'Authorization': 'Bearer ' + token,
                 'Accept': 'application/json, text/plain, */*',
                 'Content-Type': 'application/json;charset=utf-8'
-
+                
             },
-            method: 'POST',
-            body: JSON.stringify({ specialities: _payload })
+            method: 'PATCH',
+            body: JSON.stringify({specialities: _payload})
         })
         .then(res => {
+
+            if (res.ok && alert) {
+                alert.success("Facility Created successfully")
+        
+                // Update local storage if successful
+        
+            } else {
+                alert.error("Unable to create facility")
+                
+            }
            
-            if(res && facilityId) router.push(`/facilities/${facilityId}`)
+            if(res.ok && facilityId) router.push(`/facilities/${facilityId}`)
+
+           
         })
 
     }
@@ -534,15 +573,7 @@ const handleHrSubmit = (stateSetters, facilityId, alert) => {
     }
 
      // reset form
-     if (res.ok && alert) {
-        alert.success("Facility Created successfully")
-
-        // Update local storage if successful
-
-    } else {
-        alert.error("Unable to create facility")
-        
-    }
+    
 
 }
 
@@ -1138,9 +1169,6 @@ const handleRegulationSubmitUpdates = (values, facilityId, file, formRef) => {
 };
 
 
-const handleInfra = () => {
-    console.log("handle infra...")
-}
 
 export {
     handleBasicDetailsSubmit,
@@ -1161,7 +1189,6 @@ export {
     handleServiceDelete,
     handleHrDelete,
     handleInfrastructureDelete,
-    handleRegulationSubmitUpdates,
-    handleInfra
+    handleRegulationSubmitUpdates
 
 }

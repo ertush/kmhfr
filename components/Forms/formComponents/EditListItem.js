@@ -16,7 +16,7 @@ import {
 
 function  EditListItem({
   initialSelectedItems,
-  setItems,
+  // setItems,
   categoryItems,
   itemsCategoryName,
   setUpdatedItem,
@@ -30,6 +30,7 @@ function  EditListItem({
   handleItemPrevious,
   nextItemCategory,
   previousItemCategory,
+  token,
   options,
   setIsSavedChanges,
   setItemsUpdateData,
@@ -165,7 +166,16 @@ function  EditListItem({
 
         else {
 
-          handleItemsSubmit([savedItems, nextItemCategoryId, setNextItemCategory], itemId)
+          handleItemsSubmit(token, [savedItems, nextItemCategoryId, setNextItemCategory], itemId)
+             .then((resp) => {
+              if(resp.ok){
+                alert.success('Facility services saved successfully');
+              }
+              else {
+                alert.error('Unable to save facility services');
+
+              }
+             })
             .catch(e => console.error('unable to submit item data. Error:', e.message))
         }
 
@@ -367,7 +377,7 @@ function  EditListItem({
                       <button
                         type="button"
                         name="remove_item_btn"
-                        disable={(items.length - 1) == __id ? false : true }
+                        disabled={(items.length - 1) == __id ? false : true }
                         onClick={async (e) => {
                         
                           if((items.length - 1) == __id) {
@@ -413,20 +423,20 @@ function  EditListItem({
           item === null &&
 
           <div className='flex justify-between items-center w-full mt-4' >
-            									<button onClick={handleItemPrevious} className='flex items-center justify-start space-x-2 p-1 border border-blue-900  px-2'>
-																<ChevronDoubleLeftIcon className='w-4 h-4 text-blue-900' />
-																<span className='text-medium font-semibold text-blue-900 '>
-                                  {previousItemCategory}
-																</span>
-															</button>
-															<button
-																type='submit'
-																className='flex items-center justify-start space-x-2 bg-blue-700  p-1 px-2'>
-																<span className='text-medium font-semibold text-white'>
-                                  {nextItemCategory}
-																</span>
-																<ChevronDoubleRightIcon className='w-4 h-4 text-white' />
-															</button>
+              <button onClick={handleItemPrevious} className='flex items-center justify-start space-x-2 p-1 border border-blue-900  px-2'>
+                <ChevronDoubleLeftIcon className='w-4 h-4 text-blue-900' />
+                <span className='text-medium font-semibold text-blue-900 '>
+                  {previousItemCategory}
+                </span>
+              </button>
+              <button
+                type='submit'
+                className='flex items-center justify-start space-x-2 bg-blue-700  p-1 px-2'>
+                <span className='text-medium font-semibold text-white'>
+                  {nextItemCategory}
+                </span>
+                <ChevronDoubleRightIcon className='w-4 h-4 text-white' />
+              </button>
            
           </div>
         }
