@@ -115,7 +115,6 @@ AddFacility.getInitialProps = async (ctx) => {
 				let token = t.token;
 				let url = '';
 
-
 				for (let i = 0; i < options.length; i++) {
 					const option = options[i]
 					switch (option) {
@@ -532,7 +531,9 @@ AddFacility.getInitialProps = async (ctx) => {
 					}
 				}
 
-
+				allOptions.push({
+					token
+				})
 
 				return allOptions
 

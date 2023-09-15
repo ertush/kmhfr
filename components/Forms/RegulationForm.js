@@ -10,6 +10,7 @@ import { ChevronDoubleLeftIcon, ChevronDoubleRightIcon, PlusIcon } from '@heroic
 import FacilityDepartmentUnits from './formComponents/FacilityDepartmentUnits'
 import { FacilityIdContext } from './Form'
 import { handleRegulationSubmit, handleRegulationSubmitUpdates, handleRegulationUpdates } from '../../controllers/facility/facilityHandlers';
+import { useAlert } from 'react-alert';
 import { FacilityUpdatesContext } from '../../pages/facilities/edit/[id]';
 import { defer } from 'underscore';
 
@@ -40,6 +41,8 @@ export function RegulationForm() {
 
 
     const[facilityId, _] = useContext(FacilityIdContext);
+
+    const alert = useAlert()
 
     const [responseError, setResponseError] = useState(null);
 
@@ -111,8 +114,6 @@ export function RegulationForm() {
             }
 
           
-
-
             return schema
         })()
 
@@ -225,7 +226,7 @@ export function RegulationForm() {
                     )
                   )
                 :
-                handleRegulationSubmit(values, [formId, setFormId, facilityId], fileRef.current)
+                handleRegulationSubmit(options['18']?.token, values, [formId, setFormId, facilityId], fileRef.current, alert)
 
             }}
             validationSchema={toFormikValidationSchema(formSchema)}

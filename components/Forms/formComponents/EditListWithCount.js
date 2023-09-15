@@ -15,7 +15,7 @@ import { useLocalStorageState } from '../hooks/formHook';
 function EditListWithCount(
     {
         initialSelectedItems,
-        itemsCategory,
+        // itemsCategory,
         nextItemCategoryId,
         otherItemsCategory,
         itemsCategoryName,
@@ -33,6 +33,7 @@ function EditListWithCount(
         setIsSaveAndFinish,
         categoryItems,
         options,
+        token,
         itemData
     }
 ) {
@@ -242,10 +243,29 @@ function EditListWithCount(
                 else {
                     nextItemCategory === 'finish' ? /* Human Resource */ (() => {
 
-                        handleItemsSubmit([savedItems, values], itemId, alert)
-                        reset()
+                        handleItemsSubmit(token, [savedItems, values], itemId, alert)
+                        .then(resp => {
+                            if(resp.ok){
+                                alert.success('Facility humanresource saved successfully')
+                            }else {
+                                alert.error('Unable to save facility humanresource')
+                            }
+                            //
+                            if(window){
+                                window.localStorage.clear()
+                            }
+
+                        })
                         
-                    })() : console.log({ handleItemsSubmit }); /* Infrastructure */ handleItemsSubmit([savedItems, values, nextItemCategoryId, setNextItemCategory], itemId)
+                    })() :  /* Infrastructure */ handleItemsSubmit(token, [savedItems, values, nextItemCategoryId, setNextItemCategory], itemId)
+                        .then(resp => {
+                            if(resp.ok){
+                                alert.success('Facility Infrastructure saved successfully')
+                            }else {
+                                alert.error('Unable to save facility infrastructure')
+                            }
+                           
+                        })
                         .catch(e => console.error('unable to submit item data. Error:', e.message))
                 }
 
@@ -479,7 +499,7 @@ function EditListWithCount(
 
                                                 <button
                                                     type="button"
-                                                    disable={(items.length - 1) == __id ? false : true}
+                                                    disabled={(items.length - 1) == __id ? false : true}
 
                                                     onClick={async (e) => {
                                                      if((items.length - 1) == __id) {

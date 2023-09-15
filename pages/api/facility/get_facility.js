@@ -15,7 +15,7 @@ export default async function fetchFacilityData(req, res) {
 
         let url = ''
         let params = ''
-        const access_token = token
+        
 
         
         // Set url based on request

@@ -60,6 +60,7 @@ export function InfrastructureForm() {
                         itemsCategoryName={'infrastructure'}
                         categoryItems={infrastructureOption.categories}
                         options={options['16']?.infrastructure}
+                        token={options['18']?.token}
                         itemId={facilityId}
                         item={options['19']?.data ?? null}   
                         handleItemsSubmit={handleInfrastructureSubmit}

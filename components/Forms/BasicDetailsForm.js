@@ -348,13 +348,13 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
   const facilityTypeDetailsRef = useRef(null);
   const checkListFileRef = useRef(null);
 
-
+  console.log({options})
   return (
     <Formik
       initialValues={formValues}
       onSubmit={(values) => options['19']?.data ? 
       // Update existing facility
-      handleBasicDetailsUpdates(values, facilityId, updatedSavedChanges, alert)
+      handleBasicDetailsUpdates(options['18']?.token, values, facilityId, updatedSavedChanges, alert)
       .then(({  statusText }) => {
         defer(() => updatedSavedChanges(true));
  
@@ -402,7 +402,7 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
         
       : 
       // Post new facility
-      handleBasicDetailsSubmit(values, 'PATCH', formId, setFormId, checkListFileRef.current, setGeoJSON, setWardName, setGeoCenter, setFacilityId)}
+      handleBasicDetailsSubmit(options['18']?.token, values, formId, setFormId, checkListFileRef.current, alert, setGeoJSON, setWardName, setGeoCenter, setFacilityId)}
       validationSchema={toFormikValidationSchema(formSchema)}
       enableReinitialize
     >

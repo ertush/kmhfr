@@ -479,7 +479,7 @@ const Facility = (props) => {
                           userCtx?.groups[0].id == 6 ||  // National
                           userCtx?.groups[0].id == 7     // SuperAdmin
                           ) &&
-                          pathMenu.includes('updated_pending_validation') &&
+                          pathMenu?.includes('updated_pending_validation') &&
 
                         // Validate facility updates
                         <button
@@ -499,7 +499,7 @@ const Facility = (props) => {
                             userCtx?.groups[0].id == 6 ||  // National
                             userCtx?.groups[0].id == 7     // SuperAdmin
                             ) &&
-                            pathMenu.includes('to_publish') &&
+                            pathMenu?.includes('to_publish') &&
 
                         // Approve / Reject Facility Button
                         <button
@@ -521,7 +521,7 @@ const Facility = (props) => {
                         userCtx?.groups[0].id == 5 ||  // National
                         userCtx?.groups[0].id == 6 ||  // National
                         userCtx?.groups[0].id == 7 ) &&// SuperAdmin
-                        pathMenu.includes('new_pending_validation') &&
+                        pathMenu?.includes('new_pending_validation') &&
                          
                         //  Validate new facilities
                     
@@ -542,7 +542,7 @@ const Facility = (props) => {
                           userCtx?.groups[0]?.id == 2 || // SCHRIO
                           userCtx?.groups[0]?.id == 7    // SuperAdmin
                             ) &&
-                          !pathMenu.includes('rejected') &&
+                          !pathMenu?.includes('rejected') &&
 
                           // Edit
                               <button
@@ -557,7 +557,7 @@ const Facility = (props) => {
                         
                         (userCtx?.groups[0]?.id == 7 ||  // SuperAdmin
                         userCtx?.groups[0]?.id == 3) && // Regulator
-                        !pathMenu.includes('rejected') &&
+                        !pathMenu?.includes('rejected') &&
 
   
                       <button
@@ -573,7 +573,7 @@ const Facility = (props) => {
                           userCtx?.groups[0]?.id == 2 || //CHRIO
                           userCtx?.groups[0]?.id == 7   // SuperAdmin
                         ) &&
-                        !pathMenu.includes('rejected') &&
+                        !pathMenu?.includes('rejected') &&
 
                       <button
                         onClick={() => router.push(`/facilities/upgrade/${facility?.id}`)}

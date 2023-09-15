@@ -63,6 +63,7 @@ export function HumanResourceForm() {
                         itemsCategory={null}
                         categoryItems={hrOptions.categories}
                         itemsCategoryName={'human resource'}
+                        token={options['18']?.token}
                         options={options['17']?.hr}
                         itemId={facilityId}
                         item={options['19']?.data ?? null}

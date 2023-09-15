@@ -263,7 +263,23 @@ export function FacilityContactsForm() {
                 )
               )
             :
-            handleFacilityContactsSubmit(values, [formId, setFormId, facilityId])
+            handleFacilityContactsSubmit(options['18']?.token, values, [formId, setFormId, facilityId])
+            .then(resp => {
+                if(resp.statusText.include("OK")){
+                    alert.success('Facility Contacts Saved successfully', {
+                        containerStyle: {
+                            backgroundColor: "green",
+                            color:"#fff"
+                        }
+                    })
+                    alert.success('Officer Incharge Contacts Saved successfully')
+
+                }
+                else {
+                    alert.error('Unable to save Facility Contacts')
+                    alert.error('Unable to save Officer Incharge Contacts')
+                }
+            })
 
         }}
 
