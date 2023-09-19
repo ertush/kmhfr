@@ -348,7 +348,8 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
   const facilityTypeDetailsRef = useRef(null);
   const checkListFileRef = useRef(null);
 
-  console.log({options})
+  // console.log({options})
+  
   return (
     <Formik
       initialValues={formValues}

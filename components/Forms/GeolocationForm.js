@@ -110,7 +110,7 @@ export function GeolocationForm({useGeoJSON, useGeoData}) {
        
     }, [])
 
-    console.log({options})
+    // console.log({options})
 
     return (
         <Formik
@@ -127,7 +127,7 @@ export function GeolocationForm({useGeoJSON, useGeoData}) {
                   }
 
     
-                  handleGeolocationUpdates(payload, coordinates_id) 
+                handleGeolocationUpdates(options['18']?.token, payload, coordinates_id) 
                   .then(({ statusText }) => {
                     defer(() => updatedSavedChanges(true));
                   

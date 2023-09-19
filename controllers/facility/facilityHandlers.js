@@ -579,17 +579,18 @@ const handleHrSubmit = (token, stateSetters, facilityId, alert) => {
 
 
 // handleBasicDetailsUpdate
-const handleBasicDetailsUpdates = async (formData, facility_id, updatedSavedChanges, alert) => {
+const handleBasicDetailsUpdates = async (token, formData, facility_id, updatedSavedChanges, alert) => {
 
     updatedSavedChanges(false);
 
     try {
-        const resp = await fetch(`/api/common/submit_form_data/?path=basic_details_update&id=${facility_id}`, {
+        const resp = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${facility_id}/`, {
             headers: {
+                'Authorization': 'Bearer ' + token,
                 'Accept': 'application/json, text/plain, */*',
                 'Content-Type': 'application/json;charset=utf-8'
             },
-            method: 'POST',
+            method: 'PATCH',
             body: JSON.stringify(formData)
         })
 
@@ -604,16 +605,17 @@ const handleBasicDetailsUpdates = async (formData, facility_id, updatedSavedChan
 }
 
 // handleGeolocationDataUpdate
-const handleGeolocationUpdates = async (formData, coordinates_id) => {
+const handleGeolocationUpdates = async (token, formData, coordinates_id) => {
 
 
     try {
-        const resp = await fetch(`/api/common/submit_form_data/?path=update_geolocation&id=${coordinates_id}`, {
+        const resp = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/gis/facility_coordinates/${coordinates_id}`, {
             headers: {
+                'Authorization': 'Bearer ' + token,
                 'Accept': 'application/json, text/plain, */*',
                 'Content-Type': 'application/json;charset=utf-8'
             },
-            method: 'POST',
+            method: 'PATCH',
             body: JSON.stringify(formData)
         })
 
@@ -632,11 +634,11 @@ const handleGeolocationUpdates = async (formData, coordinates_id) => {
 }
 
 // handleFacilityContactUpdates
-const handleFacilityContactsUpdates = async (values, facility_id) => {
+const handleFacilityContactsUpdates = async (token, values, facility_id) => {
 
-    const facilityContacts = []
+    const facilityContacts = [];
     const contactEntries = Object.entries(values).filter(arr => ((/^contact_[0-9]{1}/.test(arr[0])) || (/^contact_type_[0-9]{1}/.test(arr[0]))));
-    const contact_temp = contactEntries.filter(contact => /^contact_\d/.test(contact[0])).map(() => ({}))
+    const contact_temp = contactEntries.filter(contact => /^contact_\d/.test(contact[0])).map(() => ({}));
 
     contactEntries.forEach((contact, i) => {
         
@@ -688,11 +690,12 @@ const handleFacilityContactsUpdates = async (values, facility_id) => {
     // console.log({services_edit_payload});
 
     try {
-        const resp = await fetch(`/api/common/submit_form_data/?path=basic_details_update&id=${facility_id}`, {
+        const resp = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${facility_id}/`, {
             headers: {
+                'Authorization': 'Bearer ' + token,
                 'Content-Type': 'application/json;charset=utf-8;*/*'
             },
-            method: 'POST',
+            method: 'PATCH',
             body: JSON.stringify(payload)
         })
 
@@ -706,7 +709,7 @@ const handleFacilityContactsUpdates = async (values, facility_id) => {
 }
 
 // handleRegulationUpdate
-const handleRegulationUpdates = async (values, facilityId, licenseFileRef) => {
+const handleRegulationUpdates = async (token, values, facilityId, licenseFileRef) => {
 
     let facility_name = ''
 
@@ -754,11 +757,12 @@ const handleRegulationUpdates = async (values, facilityId, licenseFileRef) => {
     }
 
     try {
-        const resp = await fetch(`/api/common/submit_form_data/?path=basic_details_update&id=${facility_id}`, {
+        const resp = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${facilityId}/`, {
             headers: {
+                'Authorization': 'Bearer ' + token,
                 'Content-Type': 'application/json;charset=utf-8;*/*'
             },
-            method: 'POST',
+            method: 'PATCH',
             body: JSON.stringify(payload)
         })
 
@@ -820,12 +824,12 @@ const handleRegulationUpdates = async (values, facilityId, licenseFileRef) => {
 }
 
 // handleServiceUpdates
-const handleServiceUpdates = async (stateSetters, alert) => {
+const handleServiceUpdates = async (token, stateSetters, alert) => {
 
 
     const [services, facilityId] = stateSetters
 
-    console.log({services})
+    // console.log({services})
 
     const _payload = services.length > 0 ? services.map(({ id }) => ({ service: id })) : { services: [{ service: null }] }
 
@@ -837,12 +841,13 @@ const handleServiceUpdates = async (stateSetters, alert) => {
         //     alert.error("Unable to update facility services")
         // }
 
-        const resp = await fetch(`/api/common/submit_form_data/?path=basic_details_update&id=${facilityId}`, {
+        const resp = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${facilityId}/`, {
             headers: {
+                'Authorization': 'Bearer ' + token,
                 'Accept': 'application/json, text/plain, */*',
                 'Content-Type': 'application/json;charset=utf-8'
             },
-            method: 'POST',
+            method: 'PATCH',
             body: JSON.stringify({ services: JSON.parse(_payload) })
         })
 
@@ -857,7 +862,7 @@ const handleServiceUpdates = async (stateSetters, alert) => {
 
 // handleServiceDelete
 
-const handleServiceDelete = async (event, facility_service_id, alert) => {
+const handleServiceDelete = async (token, event, facility_service_id, alert) => {
 
     event.preventDefault();
 
@@ -871,6 +876,7 @@ const handleServiceDelete = async (event, facility_service_id, alert) => {
 
         const resp = await fetch(`/api/common/submit_form_data/?path=delete_facility_service&id=${facility_service_id}`, {
             headers: {
+                'Authorization': 'Bearer ' + token, 
                 'Accept': 'application/json, text/plain, */*',
                 'Content-Type': 'application/json;charset=utf-8'
             }
@@ -925,7 +931,7 @@ const handleInfrastructureUpdates = async (stateSetters, alert) => {
 
 // handleInfrastructureDelete
 
-const handleInfrastructureDelete = async (event, facility_infrastructure_id, alert) => {
+const handleInfrastructureDelete = async (token, event, facility_infrastructure_id, alert) => {
 
     event.preventDefault()
 
@@ -939,6 +945,7 @@ const handleInfrastructureDelete = async (event, facility_infrastructure_id, ale
 
         const resp = await fetch(`/api/common/submit_form_data/?path=delete_facility_infrastructure&id=${facility_infrastructure_id}`, {
             headers: {
+                'Authorization': 'Bearer ' + token,
                 'Accept': 'application/json, text/plain, */*',
                 'Content-Type': 'application/json;charset=utf-8'
             }

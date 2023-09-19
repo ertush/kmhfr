@@ -215,7 +215,7 @@ export function FacilityContactsForm() {
         onSubmit={(values) => {
 
             options['19']?.data ? 
-            handleFacilityContactsUpdates(values, facilityId)
+            handleFacilityContactsUpdates(options['18']?.token, values, facilityId)
             .then(({ statusText }) => {
                 defer(() => updatedSavedChanges(true));
                 if (statusText == "OK") {
