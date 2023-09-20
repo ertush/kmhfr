@@ -742,7 +742,10 @@ EditFacility.getInitialProps = async (ctx) => {
 				}
 
 
-
+				allOptions.push({
+					token
+				})
+				
 				return allOptions
 
 

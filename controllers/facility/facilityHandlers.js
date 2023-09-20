@@ -609,7 +609,7 @@ const handleGeolocationUpdates = async (token, formData, coordinates_id) => {
 
 
     try {
-        const resp = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/gis/facility_coordinates/${coordinates_id}`, {
+        const resp = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/gis/facility_coordinates/${coordinates_id}/`, {
             headers: {
                 'Authorization': 'Bearer ' + token,
                 'Accept': 'application/json, text/plain, */*',
@@ -709,7 +709,7 @@ const handleFacilityContactsUpdates = async (token, values, facility_id) => {
 }
 
 // handleRegulationUpdate
-const handleRegulationUpdates = async (token, values, facilityId, licenseFileRef) => {
+const handleRegulationUpdates = async (token, values, facilityId, licenseFileRef, alert) => {
 
     let facility_name = ''
 
@@ -750,43 +750,48 @@ const handleRegulationUpdates = async (token, values, facilityId, licenseFileRef
     ]
 
     // console.log({values, facilityId, payload})
-    if (formData) {
-        alert.success(alert_message)
-    } else {
-        alert.error("Unable to update facility regulation")
-    }
+  
 
-    try {
-        const resp = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${facilityId}/`, {
-            headers: {
-                'Authorization': 'Bearer ' + token,
-                'Content-Type': 'application/json;charset=utf-8;*/*'
-            },
-            method: 'PATCH',
-            body: JSON.stringify(payload)
-        })
+    // try {
+    //     const resp = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${facilityId}/`, {
+    //         headers: {
+    //             'Authorization': 'Bearer ' + token,
+    //             'Content-Type': 'application/json;charset=utf-8;*/*'
+    //         },
+    //         method: 'PATCH',
+    //         body: JSON.stringify(payload)
+    //     })
 
+    //     if (resp.ok) {
+    //         alert.success('Facility regulation updated successfully')
+    //     } else {
+    //         alert.error("Unable to update facility regulation")
+    //     }
 
+    //     return resp
 
-        return resp
+    // }
+    // catch (e) {
+    //     console.error('Error msg:', e.message)
+    // }
 
-    }
-    catch (e) {
-        console.error('Error msg:', e.message)
-    }
     payload.forEach(data => {
         try {
-            fetch(`/api/common/submit_form_data/?path=basic_details_update&id=${facilityId}`, {
-               
-                method: 'POST',
-                body: JSON.stringify(data)
-            })
+            fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${facilityId}/`, {
+                        headers: {
+                            'Authorization': 'Bearer ' + token,
+                            'Content-Type': 'application/json;charset=utf-8;*/*'
+                        },
+                        method: 'PATCH',
+                        body: JSON.stringify(data)
+                    })
 
                 // Post the license document
                 .then(async resp => {
 
                     const formData = new FormData()
 
+                    if(licenseFileRef){
                     if(licenseFileRef.files.length > 0) {
                         formData.append('name', `${facility_name} Facility license File`)
                         formData.append('description', 'Facilities license file')
@@ -813,7 +818,17 @@ const handleRegulationUpdates = async (token, values, facilityId, licenseFileRef
                             console.error('Unable to Post License Document')
                         }
                     }
+                    }
                 }
+                })
+
+                .then(resp => {
+                    if(resp.ok){
+                        alert.success('Updated facility regulation details successfuly')
+                    }
+                    else {
+                        alert.error('Unable to update facility regulation')
+                    }
                 })
 
         }

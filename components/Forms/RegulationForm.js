@@ -71,8 +71,11 @@ export function RegulationForm() {
         
         vals['regulatory_body'] = "";
         vals['regulation_status'] = "";
-        vals['license_number'] = "";
-        vals['registration_number'] = "";
+        if(hideLicenseNumber) {
+            vals['license_number'] = "";
+            vals['registration_number'] = "";
+        }
+     
         vals['license_document'] = "";
         
 
@@ -92,9 +95,28 @@ export function RegulationForm() {
     delete formValues['license_document'];
 
 
-
     // FormSchema
-    const formSchema = useMemo(() => object({
+    const formSchema = useMemo(() => hideLicenseNumber ? object({
+        regulatory_body: string({required_error:""}),
+        regulation_status:string({required_error:""}),
+        // facility_unit', 'facility_regulating_body_name', 'facility_license_number', 'facility_registration_number
+        ...(() => {
+            const schema = {}
+            if(facilityDepts.length > 1){
+                for(let i = 0; i < facilityDepts.length; i++){
+                    schema[`facility_unit_${i}`] = string({ required_error: "Facility unit is required" }).min(1);
+                    schema[`facility_regulating_body_name_${i}`] = string({ required_error: "Facility unit regulation body is required" }).min(1);
+                    schema[`facility_license_number_${i}`] = string({ required_error: "Facility unit license number required" }).min(1);
+                    schema[`facility_registration_number_${i}`] = string({ required_error: "Facility unit registration number is required" }).min(1);
+
+
+                }
+            }
+            return schema
+        })()
+
+
+    }) : object({
         regulatory_body: string({required_error:""}),
         regulation_status:string({required_error:""}),
         license_number:string({required_error:""}),
@@ -118,7 +140,7 @@ export function RegulationForm() {
         })()
 
 
-    }), [])
+    }))
 
     // Ref
     const _regBodyRef = useRef(null)
@@ -165,8 +187,6 @@ export function RegulationForm() {
     },[])
 
 
-
-
     // Constants
 
 
@@ -175,12 +195,12 @@ export function RegulationForm() {
             initialValues={formValues}
             onSubmit={(values) => {
                 options['19']?.data ? 
-                handleRegulationUpdates(values, facilityId, fileRef.current)
+                handleRegulationUpdates(options['22']?.token, values, facilityId, fileRef.current, alert)
                 .then(resp => {
                     defer(() => updatedSavedChanges(true));
                     if (resp) {
-                        console.log({facilityId, file: fileRef.current})
-                        console.log('Working....')
+                        // console.log({facilityId, file: fileRef.current})
+                        // console.log('Working....')
 
                       fetch(
                         `/api/facility/get_facility/?path=facilities&id=${facilityId}`
@@ -226,7 +246,7 @@ export function RegulationForm() {
                     )
                   )
                 :
-                handleRegulationSubmit(options['18']?.token, values, [formId, setFormId, facilityId], fileRef.current, alert)
+                handleRegulationSubmit(options['22']?.token, values, [formId, setFormId, facilityId], fileRef.current, alert)
 
             }}
             validationSchema={toFormikValidationSchema(formSchema)}
