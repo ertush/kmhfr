@@ -65,7 +65,7 @@ export function ServicesForm() {
                             setItems={setServices}
                             item={options['19']?.data ?? null}
                             options={options['15']?.service}
-                            token={options['18']?.token}
+                            token={options['18']?.token ?? options['22']?.token}
                             removeItemHandler={() => null}
                             handleItemsSubmit={handleServiceSubmit}
                             handleItemsUpdate={handleServiceUpdates}

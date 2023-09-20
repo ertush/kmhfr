@@ -134,11 +134,13 @@ function  EditListItem({
         setIsSaveAndFinish(true)
 
         if (item) {
-          handleItemsUpdate([savedItems, itemId], alert)
+          handleItemsUpdate(token, [savedItems, itemId])
             .then(({ statusText }) => {
               defer(() => setIsSavedChanges(true));
               let update_id
               if (statusText == 'OK') {
+
+                alert.success('Updated Facility services successfully')
 
                 fetch(`/api/facility/get_facility/?path=facilities&id=${itemId}`).then(async resp => {
 
@@ -158,6 +160,10 @@ function  EditListItem({
                   }
                 })
                   .catch(e => console.error('unable to fetch facility update data. Error:', e.message))
+              }
+              else {
+                alert.error('Unable to update facility services');
+
               }
 
             })

@@ -43,9 +43,19 @@ function FacilityUpdatesTable({ facilityUpdatedJson, originalData }) {
                                         <TableCell>
                                             {human_field_name}
                                         </TableCell>
+                                        {
+                                            originalData?.data ?
                                         <TableCell>
                                             {typeof (originalData?.data[field_name]) === 'boolean' ? (Boolean(originalData?.data[field_name]) ? 'Yes' : 'No') : originalData?.data[field_name]}
                                         </TableCell>
+                                        :
+                                        <TableCell className='w-auto'>
+                                            {
+                                                null
+                                            }
+                                        </TableCell>
+
+                                        }
                                         <TableCell>
                                             {display_value}
                                         </TableCell>

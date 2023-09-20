@@ -752,29 +752,6 @@ const handleRegulationUpdates = async (token, values, facilityId, licenseFileRef
     // console.log({values, facilityId, payload})
   
 
-    // try {
-    //     const resp = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${facilityId}/`, {
-    //         headers: {
-    //             'Authorization': 'Bearer ' + token,
-    //             'Content-Type': 'application/json;charset=utf-8;*/*'
-    //         },
-    //         method: 'PATCH',
-    //         body: JSON.stringify(payload)
-    //     })
-
-    //     if (resp.ok) {
-    //         alert.success('Facility regulation updated successfully')
-    //     } else {
-    //         alert.error("Unable to update facility regulation")
-    //     }
-
-    //     return resp
-
-    // }
-    // catch (e) {
-    //     console.error('Error msg:', e.message)
-    // }
-
     payload.forEach(data => {
         try {
             fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${facilityId}/`, {
@@ -788,6 +765,8 @@ const handleRegulationUpdates = async (token, values, facilityId, licenseFileRef
 
                 // Post the license document
                 .then(async resp => {
+
+                    
 
                     const formData = new FormData()
 
@@ -839,22 +818,16 @@ const handleRegulationUpdates = async (token, values, facilityId, licenseFileRef
 }
 
 // handleServiceUpdates
-const handleServiceUpdates = async (token, stateSetters, alert) => {
+const handleServiceUpdates = async (token, stateSetters) => {
 
 
     const [services, facilityId] = stateSetters
 
-    // console.log({services})
+    console.log({services})
 
-    const _payload = services.length > 0 ? services.map(({ id }) => ({ service: id })) : { services: [{ service: null }] }
+    const _payload = JSON.parse(services).length > 0 ? JSON.parse(services).map(({ id }) => ({ service: id })) : { services: [{ service: null }] }
 
     try {
-
-        // if (_payload) {
-        //     alert.success('Successfully updated facility services')
-        // } else {
-        //     alert.error("Unable to update facility services")
-        // }
 
         const resp = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${facilityId}/`, {
             headers: {
