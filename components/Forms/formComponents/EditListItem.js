@@ -32,7 +32,6 @@ function  EditListItem({
   previousItemCategory,
   token,
   options,
-  setIsSavedChanges,
   setItemsUpdateData,
   setIsSaveAndFinish,
   servicesData
@@ -131,14 +130,18 @@ function  EditListItem({
       initialErrors={false}
       onSubmit={(values) => {
 
-        setIsSaveAndFinish(true)
+        // setIsSaveAndFinish(true)
 
         if (item) {
-          handleItemsUpdate([savedItems, itemId], alert)
-            .then(({ statusText }) => {
-              defer(() => setIsSavedChanges(true));
+
+          console.log({savedItems})
+          handleItemsUpdate(token, [savedItems, itemId])
+            .then(resp => {
+              defer(() => setIsSaveAndFinish(true));
               let update_id
-              if (statusText == 'OK') {
+              if (resp.ok) {
+
+                alert.success('Updated Facility services successfully')
 
                 fetch(`/api/facility/get_facility/?path=facilities&id=${itemId}`).then(async resp => {
 
@@ -158,6 +161,10 @@ function  EditListItem({
                   }
                 })
                   .catch(e => console.error('unable to fetch facility update data. Error:', e.message))
+              }
+              else {
+                alert.error('Unable to update facility services');
+
               }
 
             })

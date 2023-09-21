@@ -110,6 +110,7 @@ export function GeolocationForm({useGeoJSON, useGeoData}) {
        
     }, [])
 
+
     console.log({options})
 
     return (
@@ -127,7 +128,7 @@ export function GeolocationForm({useGeoJSON, useGeoData}) {
                   }
 
     
-                  handleGeolocationUpdates(payload, coordinates_id) 
+                handleGeolocationUpdates(options['22']?.token, payload, coordinates_id) 
                   .then(({ statusText }) => {
                     defer(() => updatedSavedChanges(true));
                   

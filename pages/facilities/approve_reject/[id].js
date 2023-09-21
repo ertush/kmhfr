@@ -42,7 +42,7 @@ function ApproveReject(props) {
 
 
   const facility = props["0"]?.data;
-  const {facility_updated_json } = props["2"]?.updates;
+  const {facility_updated_json } = props["2"]?.updates ?? {facility_updated_json: null};
   const filters = []
   // const [reject, setReject] = useState(null)
 
@@ -322,11 +322,11 @@ function ApproveReject(props) {
                           ></Field>
                           :
                           // Facility Updates Table
-                          <FacilityUpdatesTable facilityUpdatedJson={facility_updated_json} originalData={facility}/>
+                          <FacilityUpdatesTable facilityUpdatedJson={facility_updated_json} originalData={facility ?? {data: null}}/>
                           
                           }
 
-                          <div className="flex justify-start items-center gap-4 mt-4">
+                          <div className="flex justify-end items-center gap-4 mt-4">
                           
                           <button
                           type="submit"

@@ -348,13 +348,14 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
   const facilityTypeDetailsRef = useRef(null);
   const checkListFileRef = useRef(null);
 
-  console.log({options})
+  // console.log({options})
+  
   return (
     <Formik
       initialValues={formValues}
       onSubmit={(values) => options['19']?.data ? 
       // Update existing facility
-      handleBasicDetailsUpdates(options['18']?.token, values, facilityId, updatedSavedChanges, alert)
+      handleBasicDetailsUpdates(options['22']?.token, values, facilityId, updatedSavedChanges, alert)
       .then(({  statusText }) => {
         defer(() => updatedSavedChanges(true));
  

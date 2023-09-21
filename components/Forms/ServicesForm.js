@@ -7,6 +7,8 @@ import {
     handleServiceUpdates
 } from '../../controllers/facility/facilityHandlers'
 import { FacilityIdContext } from './Form'
+import { FacilityUpdatesContext } from '../../pages/facilities/edit/[id]';
+
 
 
 
@@ -14,14 +16,13 @@ import { FacilityIdContext } from './Form'
 
 
 export function ServicesForm() {
-    // Constants
+    // ConstantsityUpdatesContext
     const[facilityId, _] = useContext(FacilityIdContext);
     const [formId, setFormId] = useContext(FormContext);
     const options = useContext(FormOptionsContext);
     
+    const { updatedSavedChanges, updateFacilityUpdateData } = options['19']?.data ? useContext(FacilityUpdatesContext) : {updatedSavedChanges: null, updateFacilityUpdateData: null }
 
-
-   
 
     //Options
     const serviceOptions = ((_services) => {
@@ -65,7 +66,7 @@ export function ServicesForm() {
                             setItems={setServices}
                             item={options['19']?.data ?? null}
                             options={options['15']?.service}
-                            token={options['18']?.token}
+                            token={options['18']?.token ?? options['22']?.token}
                             removeItemHandler={() => null}
                             handleItemsSubmit={handleServiceSubmit}
                             handleItemsUpdate={handleServiceUpdates}
@@ -73,8 +74,9 @@ export function ServicesForm() {
                             nextItemCategoryId={formId}
                             nextItemCategory={'infrastructure'}
                             previousItemCategory={'regulation'}
+                            setItemsUpdateData={updateFacilityUpdateData}
                             handleItemPrevious={handleServicePrevious}
-                            setIsSaveAndFinish={() => null}
+                            setIsSaveAndFinish={updatedSavedChanges}
                             servicesData={options['19']?.data ? options['19']?.data?.facility_services: null}
                             
                         /> 
