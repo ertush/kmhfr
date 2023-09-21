@@ -6,7 +6,7 @@ import { FacilityIdContext } from './Form'
 
 
 import {
-    handleInfrastructureSubmit,
+    handleInfrastructureSubmit, handleInfrastructureUpdates,
 } from '../../controllers/facility/facilityHandlers'
 import { FacilityUpdatesContext } from '../../pages/facilities/edit/[id]';
 
@@ -68,7 +68,7 @@ export function InfrastructureForm() {
                         itemId={facilityId}
                         item={options['19']?.data ?? null}   
                         handleItemsSubmit={handleInfrastructureSubmit}
-                        handleItemsUpdate={() => null}
+                        handleItemsUpdate={handleInfrastructureUpdates}
                         removeItemHandler={() => null}
                         setIsSavedChanges={null}
                         handleItemPrevious={handleInfrastructurePrevious}
