@@ -5,8 +5,9 @@ import { FormContext } from './Form';
 import { FacilityIdContext } from './Form'
 
 import {
-    handleHrSubmit
+    handleHrSubmit, handleHrUpdates
 } from '../../controllers/facility/facilityHandlers';
+import { FacilityUpdatesContext } from '../../pages/facilities/edit/[id]';
 
 
 
@@ -20,6 +21,9 @@ export function HumanResourceForm() {
     const options = useContext(FormOptionsContext);
     const [formId, setFormId] = useContext(FormContext);
     const[facilityId, _] = useContext(FacilityIdContext);
+
+    const { updatedSavedChanges, updateFacilityUpdateData } = options['19']?.data ? useContext(FacilityUpdatesContext) : {updatedSavedChanges: null, updateFacilityUpdateData: null }
+
 
 
 
@@ -63,19 +67,19 @@ export function HumanResourceForm() {
                         itemsCategory={null}
                         categoryItems={hrOptions.categories}
                         itemsCategoryName={'human resource'}
-                        token={options['18']?.token}
+                        token={options['18']?.token ?? options['22']?.token}
                         options={options['17']?.hr}
                         itemId={facilityId}
                         item={options['19']?.data ?? null}
                         handleItemsSubmit={handleHrSubmit}
-                        handleItemsUpdate={() => null}
+                        handleItemsUpdate={handleHrUpdates}
                         removeItemHandler={() => null}
-                        setIsSavedChanges={null}
-                        setItemsUpdateData={null}
+                        setIsSavedChanges={updatedSavedChanges}
+                        setItemsUpdateData={updateFacilityUpdateData}
                         handleItemPrevious={handleHrPrevious}
                         nextItemCategory={'finish'}
                         previousItemCategory={'infrastructure'}
-                        setIsSaveAndFinish={() => null}
+                        setIsSaveAndFinish={updatedSavedChanges}
                         itemData={options['19']?.data ? options['19']?.data?.facility_humanresources : null}
 
                     />

@@ -32,7 +32,6 @@ function  EditListItem({
   previousItemCategory,
   token,
   options,
-  setIsSavedChanges,
   setItemsUpdateData,
   setIsSaveAndFinish,
   servicesData

@@ -70,7 +70,7 @@ export function InfrastructureForm() {
                         handleItemsSubmit={handleInfrastructureSubmit}
                         handleItemsUpdate={handleInfrastructureUpdates}
                         removeItemHandler={() => null}
-                        setIsSavedChanges={null}
+                        setIsSavedChanges={updatedSavedChanges}
                         handleItemPrevious={handleInfrastructurePrevious}
                         setNextItemCategory={setFormId}
                         setItemsUpdateData={updateFacilityUpdateData}

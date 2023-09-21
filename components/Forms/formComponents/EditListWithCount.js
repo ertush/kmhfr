@@ -30,7 +30,7 @@ function EditListWithCount(
         setNextItemCategory,
         nextItemCategory,
         previousItemCategory,
-        setIsSaveAndFinish,
+        // setIsSaveAndFinish,
         categoryItems,
         options,
         token,
@@ -98,6 +98,34 @@ function EditListWithCount(
             if(editItem && editItem.length > 1){
                 if(editItem[0]?.id === items[0]?.id) x.push(editItem[0]);
             }
+
+            //Check if infrastructure has count
+
+            x.forEach(obj => {
+                if(
+                    obj.name.includes("Main Grid") ||
+                    obj.name.includes("Gas") ||
+                    obj.name.includes("Bio-Gas") ||
+                    // WATER SOURCE
+                    obj.name.includes("Roof Harvested Water") ||
+                    obj.name.includes("River / Dam / Lake") ||
+                    obj.name.includes("Donkey Cart / Vendor") ||
+                    obj.name.includes("Piped Water") ||
+                    // MEDICAL WASTE MANAGEMENT
+                    obj.name.includes("Sewer systems") ||
+                    obj.name.includes("Dump without burning") ||
+                    obj.name.includes("Open burning") ||
+                    obj.name.includes("Remove offsite") ||
+                    // ACCESS ROADS
+                    obj.name.includes("Tarmac") ||
+                    obj.name.includes("Earthen Road") ||
+                    obj.name.includes("Graded ( Murrum )") ||
+                    obj.name.includes("Gravel")
+                ){
+                    delete obj['count']
+                }
+            })
+
 
           saveSelectedItems(
             JSON.stringify(x)
@@ -188,7 +216,7 @@ function EditListWithCount(
             initialErrors={false}
             onSubmit={(values) => { 
 
-                setIsSaveAndFinish(true)
+                // setIsSaveAndFinish(true)
                 // console.log({values})
 
                 if (item) {
@@ -207,13 +235,14 @@ function EditListWithCount(
                         return v !== Object.values(initialValues)[i]
                     })[0];
 
-                    for (let key in valueKeys) disjointValues[valueKeys[key]] = values[valueKeys[key]];
+                    // for (let key in valueKeys) disjointValues[valueKeys[key]] = values[valueKeys[key]];
 
-                    handleItemsUpdate(token, [disjointValues, itemId], alert)
-                        .then(({ statusText }) => {
+                    handleItemsUpdate(token, [values, savedItems, itemId], alert)
+                        .then(resp => {
                             defer(() => setIsSavedChanges(true))
-                            let update_id
-                            if (statusText == 'OK') {
+                            let update_id;
+
+                            if (resp.ok) {
 
                                 fetch(`/api/facility/get_facility/?path=facilities&id=${itemId}`).then(async resp => {
 
@@ -221,9 +250,7 @@ function EditListWithCount(
 
                                     update_id = results?.latest_update
 
-
                                     if (update_id) {
-
                                         try {
                                             const itemsUpdateData = await (await fetch(`/api/facility/get_facility/?path=facility_updates&id=${update_id}`)).json()
                                             setItemsUpdateData(itemsUpdateData)
@@ -488,7 +515,7 @@ function EditListWithCount(
                                                         type='number'
                                                         min={1}
                                                         name={id}
-                                                        defaultValue={itemData ? count : 0}
+                                                        // defaultValue={itemData ? count : 0}
                                                         validate={validateCount}
                                                         className="flex-none w-24 bg-transparent border border-blue-600 p-2 placeholder-gray-500  focus:shadow-none focus:bg-white focus:border-black outline-none"
                                                     />

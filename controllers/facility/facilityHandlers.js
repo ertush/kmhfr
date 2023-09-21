@@ -883,35 +883,48 @@ const handleServiceDelete = async (token, event, facility_service_id, alert) => 
 }
 
 // handleInfrastructureUpdates
-const handleInfrastructureUpdates = async (stateSetters, alert) => {
+const handleInfrastructureUpdates = async (token, stateSetters, alert) => {
 
 
-    const [infraUpdateData, facilityId] = stateSetters
+    const [values, savedItems, facilityId] = stateSetters
+    const payload = {}
 
-    const payload = {
-        infrastructure: Object.keys(infraUpdateData).map((id, i) => ({ infrastructure: id, count: Object.values(infraUpdateData)[i] }))
-    }
+    const saved = JSON.parse(savedItems)
+  
+     payload['infrastructure'] = saved.map(({id, count}) => {
+        if(count){
+            return {infrastructure: id, count: values[id]}
+        }
+            return {infrastructure: id}
+    })
+    
 
 
+    // console.log({payload})
 
     try {
 
-        if (infraUpdateData && facilityId) {
+
+        const resp = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${facilityId}/`, {
+            headers: {
+                'Authorization': 'Bearer ' + token,
+                'Accept': 'application/json, text/plain, */*',
+                'Content-Type': 'application/json;charset=utf-8'
+            },
+            method: 'PATCH',
+            body: JSON.stringify(payload)
+        })
+
+        if (resp.ok) {
             alert.success('Facility Infrastructure updated successfully')
         } else {
             alert.error("Unable to update facility infrastructure")
         }
 
-        const resp = await fetch(`/api/common/submit_form_data/?path=basic_details_update&id=${facilityId}`, {
-            headers: {
-                'Accept': 'application/json, text/plain, */*',
-                'Content-Type': 'application/json;charset=utf-8'
-            },
-            method: 'POST',
-            body: JSON.stringify(payload)
-        })
 
         return resp
+
+
 
     }
     catch (e) {
@@ -952,33 +965,40 @@ const handleInfrastructureDelete = async (token, event, facility_infrastructure_
 }
 
 // handleHrUpdates
-const handleHrUpdates = async (stateSetters, alert) => {
+const handleHrUpdates = async (token, stateSetters, alert) => {
 
-    const [hrUpdateData, facilityId] = stateSetters
+    const [values, savedItems, facilityId] = stateSetters
+    const payload = {}
 
-    const payload = {
-        specialities: Object.keys(hrUpdateData).map((id, i) => ({ speciality: id, count: Object.values(hrUpdateData)[i] }))
-    }
-
-    
+    const saved = JSON.parse(savedItems)
+  
+     payload['specialities'] = saved.map(({id, count}) => {
+        if(count){
+            return {speciality: id, count: values[id]}
+        }
+            return {speciality: id}
+    })
 
 
     try {
 
-        if (hrUpdateData && facilityId) {
+     
+        const resp = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${facilityId}/`, {
+            headers: {
+                'Authorization': 'Bearer ' + token,
+                'Accept': 'application/json, text/plain, */*',
+                'Content-Type': 'application/json;charset=utf-8'
+            },
+            method: 'PATCH',
+            body: JSON.stringify(payload)
+        })
+
+        if (resp.ok) {
             alert.success('Facility Human Resource successfully updated')
         } else {
             alert.error("Unable to update facility Human Resource")
         }
 
-        const resp = await fetch(`/api/common/submit_form_data/?path=basic_details_update&id=${facilityId}`, {
-            headers: {
-                'Accept': 'application/json, text/plain, */*',
-                'Content-Type': 'application/json;charset=utf-8'
-            },
-            method: 'POST',
-            body: JSON.stringify(payload)
-        })
 
         return resp
 
