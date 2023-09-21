@@ -8,6 +8,7 @@ import { FacilityIdContext } from './Form'
 import {
     handleInfrastructureSubmit,
 } from '../../controllers/facility/facilityHandlers'
+import { FacilityUpdatesContext } from '../../pages/facilities/edit/[id]';
 
 
 export function InfrastructureForm() {
@@ -17,6 +18,9 @@ export function InfrastructureForm() {
     const options = useContext(FormOptionsContext);
     const [formId, setFormId] = useContext(FormContext);
     const[facilityId, _] = useContext(FacilityIdContext);
+
+    
+    const { updatedSavedChanges, updateFacilityUpdateData } = options['19']?.data ? useContext(FacilityUpdatesContext) : {updatedSavedChanges: null, updateFacilityUpdateData: null }
 
     
 
@@ -60,20 +64,20 @@ export function InfrastructureForm() {
                         itemsCategoryName={'infrastructure'}
                         categoryItems={infrastructureOption.categories}
                         options={options['16']?.infrastructure}
-                        token={options['18']?.token}
+                        token={options['18']?.token ?? options['22']?.token}
                         itemId={facilityId}
                         item={options['19']?.data ?? null}   
                         handleItemsSubmit={handleInfrastructureSubmit}
                         handleItemsUpdate={() => null}
                         removeItemHandler={() => null}
                         setIsSavedChanges={null}
-                        setItemsUpdateData={null}
                         handleItemPrevious={handleInfrastructurePrevious}
                         setNextItemCategory={setFormId}
+                        setItemsUpdateData={updateFacilityUpdateData}
                         nextItemCategoryId={formId}
                         nextItemCategory={'human resource'}
                         previousItemCategory={'services'}
-                        setIsSaveAndFinish={() => null}
+                        setIsSaveAndFinish={updatedSavedChanges}
                         itemData={options['19']?.data ? options['19']?.data?.facility_infrastructure : null}
                     />
 

@@ -823,9 +823,11 @@ const handleServiceUpdates = async (token, stateSetters) => {
 
     const [services, facilityId] = stateSetters
 
-    console.log({services})
 
     const _payload = JSON.parse(services).length > 0 ? JSON.parse(services).map(({ id }) => ({ service: id })) : { services: [{ service: null }] }
+
+    console.log({_payload})
+
 
     try {
 
@@ -836,7 +838,7 @@ const handleServiceUpdates = async (token, stateSetters) => {
                 'Content-Type': 'application/json;charset=utf-8'
             },
             method: 'PATCH',
-            body: JSON.stringify({ services: JSON.parse(_payload) })
+            body: JSON.stringify({ services: _payload })
         })
 
         return resp

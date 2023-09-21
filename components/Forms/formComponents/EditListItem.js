@@ -131,14 +131,16 @@ function  EditListItem({
       initialErrors={false}
       onSubmit={(values) => {
 
-        setIsSaveAndFinish(true)
+        // setIsSaveAndFinish(true)
 
         if (item) {
+
+          console.log({savedItems})
           handleItemsUpdate(token, [savedItems, itemId])
-            .then(({ statusText }) => {
-              defer(() => setIsSavedChanges(true));
+            .then(resp => {
+              defer(() => setIsSaveAndFinish(true));
               let update_id
-              if (statusText == 'OK') {
+              if (resp.ok) {
 
                 alert.success('Updated Facility services successfully')
 

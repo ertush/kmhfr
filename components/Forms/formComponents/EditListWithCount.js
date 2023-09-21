@@ -209,7 +209,7 @@ function EditListWithCount(
 
                     for (let key in valueKeys) disjointValues[valueKeys[key]] = values[valueKeys[key]];
 
-                    handleItemsUpdate([disjointValues, itemId], alert)
+                    handleItemsUpdate(token, [disjointValues, itemId], alert)
                         .then(({ statusText }) => {
                             defer(() => setIsSavedChanges(true))
                             let update_id

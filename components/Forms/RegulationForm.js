@@ -29,10 +29,10 @@ export function RegulationForm() {
     facilityRequlationData['registration_number'] = options['19']?.data?.registration_number;
 
     options['19']?.data?.facility_units?.forEach((unit, i) => {
-        facilityRequlationData[`facility_unit_${i}`] = unit.unit
-        facilityRequlationData[`facility_regulating_body_name_${i}`] = unit.regulating_body_name
-        facilityRequlationData[`facility_license_number_${i}`] = unit.license_number
-        facilityRequlationData[`facility_registration_number_${i}`] = unit.registration_number
+    facilityRequlationData[`facility_unit_${i}`] = unit.unit
+    facilityRequlationData[`facility_regulating_body_name_${i}`] = unit.regulating_body_name
+    facilityRequlationData[`facility_license_number_${i}`] = unit.license_number
+    facilityRequlationData[`facility_registration_number_${i}`] = unit.registration_number
 
     })
 
