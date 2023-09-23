@@ -3,6 +3,7 @@ import EditListItem from './formComponents/EditListItem';
 import { FormOptionsContext } from '../../pages/facilities/add';
 import { FormContext } from './Form';
 import {
+    handleServiceDelete,
     handleServiceSubmit,
     handleServiceUpdates
 } from '../../controllers/facility/facilityHandlers'
@@ -61,13 +62,12 @@ export function ServicesForm() {
                             initialSelectedItems={[]}
                             categoryItems={serviceOptions.categories}
                             itemsCategoryName={'Services'}
-                            setUpdatedItem={() => null}
                             itemId={facilityId}
                             setItems={setServices}
                             item={options['19']?.data ?? null}
                             options={options['15']?.service}
                             token={options['18']?.token ?? options['22']?.token}
-                            removeItemHandler={() => null}
+                            removeItemHandler={handleServiceDelete}
                             handleItemsSubmit={handleServiceSubmit}
                             handleItemsUpdate={handleServiceUpdates}
                             setNextItemCategory={setFormId}

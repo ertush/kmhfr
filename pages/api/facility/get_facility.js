@@ -157,11 +157,7 @@ export default async function fetchFacilityData(req, res) {
                     return fetchData(token).then(dt => dt).then(data => {
                      
                     if(typeof(req.query.path) == 'string'){
-                        if(
-                            req.query.path.includes('facility_cover_report') || 
-                            req.query.path.includes('facility_correction_template') ||
-                            req.query.path.includes('facility_detail_report') 
-                         ){
+                        
                             console.log({data}, typeof(data))
                             console.log("errrrror")
                             const file = new FileReader()
@@ -170,8 +166,8 @@ export default async function fetchFacilityData(req, res) {
                         }
                         else{
                              res.status(200).json(data)
-                        }
                     }
+                    
                     }) .catch(console.error)
                 }
                 return
