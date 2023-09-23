@@ -19,7 +19,7 @@ function  EditListItem({
   // setItems,
   categoryItems,
   itemsCategoryName,
-  setUpdatedItem,
+//   setUpdatedItem,
   itemId,
   nextItemCategoryId,
   item,
@@ -70,7 +70,7 @@ function  EditListItem({
 
 
   const [currentItem, setCurrentItem] = useState(null)
-  const [isRemoveItem, setIsRemoveItem] = useState(false)
+//   const [isRemoveItem, setIsRemoveItem] = useState(false)
   const [itemOptions, setItemOptions] = useState([])
   const [deletedItems, setDeletedItems] = useState([])
   const [selectedItems, setSelectedItems] = useState((initialSelectedItems ? (() => {
@@ -85,7 +85,7 @@ function  EditListItem({
 
   })() : []))
 
-  const editService = servicesData?.map(({service_name:name,  service_id:id}) => ({id, name}));
+  const editService = servicesData?.map(({service_name:name,  service_id, id}) => ({id, service_id, name}));
 
   const [savedItems, saveSelectedItems] = useLocalStorageState({
     key: servicesData ? 'services_edit_form' : 'services_form',
@@ -99,27 +99,24 @@ function  EditListItem({
   const itemRef = useRef(null);
   
 
-// Effects
-
-  useEffect(() => {
-    setUpdatedItem(selectedItems)
-  }, [selectedItems, isRemoveItem])
-
-
   useEffect(() => {
     //store service when service is added
     if(selectedItems.length !== 0){
       let x = selectedItems;
 
-      if(editService && editService.length > 1) {
-        if(editService[0]?.id === items[0]?.id) x = [...x,...editService]
-      }
+    //   if(editService && editService.length > 1) {
+    //     if(editService[0]?.id === items[0]?.id) x = [...x,...editService]
+    //   }
 
       // setSelectedItems(x)
 
       saveSelectedItems(
         JSON.stringify(x)
       );
+
+      return () => {
+        localStorage.setItem('services_edit_form', '[]')
+      }
     }
   }, [selectedItems])
 
@@ -134,7 +131,8 @@ function  EditListItem({
 
         if (item) {
 
-          console.log({savedItems})
+          console.log({savedItems, values})
+
           handleItemsUpdate(token, [savedItems, itemId])
             .then(resp => {
               defer(() => setIsSaveAndFinish(true));
@@ -238,9 +236,10 @@ function  EditListItem({
 
                 if (options.length > 0) {
                 	options.forEach(({ category_name: ctg, category }) => {
+
                 		let allOccurences = options.filter(({ category_name }) => category_name === ctg)
 
-                		allOccurences.forEach(({ id, name }) => {
+                		allOccurences.forEach(({ id, name }) => { // id
                 			_subCtgs.push(name)
                 			_values.push(id)
                 		})
@@ -249,7 +248,7 @@ function  EditListItem({
 
                 			_options.push({
                 				category: ctg,
-                        categoryId: category,
+                                categoryId: category,
                 				itemLabels: _subCtgs,
                 				itemIds: _values
                 			})
@@ -361,9 +360,9 @@ function  EditListItem({
               {/* {console.log({items})} */}
               {
                 typeof items === 'object' && 
-                items.map(({ name, id, item_id }, __id) => (
+                items.map(({ name, id }, __id) => (
                   <TableRow
-                    key={id}
+                    key={__id}
                     className='border-t border-blue-600'
                   >
                     {/* {
@@ -390,16 +389,25 @@ function  EditListItem({
                           if((items.length - 1) == __id) {
                           e.preventDefault()
                           let _items = items 
+
+                        
+
                           setDeletedItems([...deletedItems, _items.splice(__id, 1)])
                         
                           setSelectedItems(_items);
-                          saveSelectedItems(_items);
+                        //   saveSelectedItems(_items);
 
 
                           // Delete facility service
-                          removeItemHandler(e, item_id, alert)
+                          removeItemHandler(token, e, id)
+                          .then(resp => {
+                            if(resp.ok){
+                                alert.success('Deleted service successfully ');
+                            } else {
+                                alert.error('Unable to delete service')
+                            }
+                          })
                           }
-
 
                         }}
                         className= {`flex ${(items.length - 1) == __id ? 'cursor-pointer' : 'cursor-not-allowed'}  items-center justify-center space-x-2 bg-red-400  p-1 px-2`}

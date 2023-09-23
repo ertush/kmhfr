@@ -447,41 +447,43 @@ const Home = (props) => {
                                         }
                                             onSubmit={(values) => {
 
+                                                const query = values.q.split(' ').join('+');
+                                                
 
                                                 // console.log({values})
                                                 switch((new URL(window.location.href))?.searchParams.get('qf')){
                                                     case "all":
-                                                        router.push(`/facilities/?q=${values.q.split(' ').join('+')}&qf=all`)
+                                                        router.push(`/facilities/?q=${query}&qf=all`)
                                                         break;
                                                     case "approved":
-                                                        router.push(`/facilities/?q=${values.q.split(' ').join('+')}&qf=approved&approved=true&approved_national_level=true&rejected=false`)
+                                                        router.push(`/facilities/?q=${query}&qf=approved&approved=true&approved_national_level=true&rejected=false`)
                                                         break;
                                                     case "new_pending_validation":
-                                                        router.push(`/facilities/?q=${values.q.split(' ').join('+')}&qf=new_pending_validation&pending_approval=true&has_edits=false&is_complete=true`)
+                                                        router.push(`/facilities/?q=${query}&qf=new_pending_validation&pending_approval=true&has_edits=false&is_complete=true`)
                                                         break;
                                                     case "updated_pending_validation":
-                                                        router.push(`/facilities/?q=${values.q.split(' ').join('+')}&qf=updated_pending_validation&has_edits=true&pending_approval=true`)
+                                                        router.push(`/facilities/?q=${query}&qf=updated_pending_validation&has_edits=true&pending_approval=true`)
                                                         break;
                                                     case "to_publish":
-                                                        router.push(`/facilities/?q=${values.q.split(' ').join('+')}&qf=to_publish&to_publish=true`)
+                                                        router.push(`/facilities/?q=${query}&qf=to_publish&to_publish=true`)
                                                         break;
                                                     case "dhis_synced_facilities":
-                                                        router.push(`/facilities/?q=${values.q.split(' ').join('+')}qf=dhis_synced_facilities&approved=true&approved_national_level=true&rejected=false&reporting_in_dhis=true`)
+                                                        router.push(`/facilities/?q=${query}qf=dhis_synced_facilities&approved=true&approved_national_level=true&rejected=false&reporting_in_dhis=true`)
                                                         break;
                                                     case "failed_validation":
-                                                        router.push(`/facilities/?q=${values.q.split(' ').join('+')}&qf=failed_validation&rejected=true`)
+                                                        router.push(`/facilities/?q=${query}&qf=failed_validation&rejected=true`)
                                                         break;
                                                     case "rejected":
-                                                        router.push(`/facilities/?q=${values.q.split(' ').join('+')}&qf=rejected&rejected_national=true`)
+                                                        router.push(`/facilities/?q=${query}&qf=rejected&rejected_national=true`)
                                                         break;
                                                     case "closed":
-                                                        router.push(`/facilities/?q=${values.q.split(' ').join('+')}&qf=closed&closed=true`)
+                                                        router.push(`/facilities/?q=${query}&qf=closed&closed=true`)
                                                         break;
                                                     case "incomplete":
-                                                        router.push(`/facilities/?q=${values.q.split(' ').join('+')}&qf=incomplete&is_complete=false&in_complete_details=false`)
+                                                        router.push(`/facilities/?q=${query}&qf=incomplete&is_complete=false&in_complete_details=false`)
                                                         break;
                                                     default:
-                                                        router.push(`/facilities/?q=${values.q.split(' ').join('+')}&qf=all`)
+                                                        router.push(`/facilities/?q=${query}&qf=all`)
                                                         break;
 
                                                 

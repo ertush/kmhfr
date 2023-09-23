@@ -782,10 +782,11 @@ const handleRegulationUpdates = async (token, values, facilityId, licenseFileRef
                     if (resp) {
 
                         try {
-                            const resp = await fetch('/api/common/submit_form_data/?path=documents', {
+                            const resp = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/common/documents/`, {
 
                                 headers: {
                                     'Accept': 'application/json, text/plain, */*',
+                                    'ContentType': 'multipart/form-data; boundary=---------------------------22584204591762068164170278481'
                                 },
                                 method: 'POST',
                                 body: formData
@@ -852,24 +853,20 @@ const handleServiceUpdates = async (token, stateSetters) => {
 
 // handleServiceDelete
 
-const handleServiceDelete = async (token, event, facility_service_id, alert) => {
+const handleServiceDelete = async (token, event, facility_service_id) => {
 
     event.preventDefault();
 
     try {
-
-        if (facility_service_id) {
-            alert.success('Facility Service Deleted Successfully')
-        } else {
-            alert.error("Unable to delete facility service")
-        }
-
-        const resp = await fetch(`/api/common/submit_form_data/?path=delete_facility_service&id=${facility_service_id}`, {
+        
+        const resp = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facility_services/${facility_service_id}/`, {
             headers: {
                 'Authorization': 'Bearer ' + token, 
                 'Accept': 'application/json, text/plain, */*',
                 'Content-Type': 'application/json;charset=utf-8'
-            }
+                
+            },
+            method: 'DELETE'
 
         })
 
