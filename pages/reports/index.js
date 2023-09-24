@@ -6,19 +6,19 @@ import MainLayout from '../../components/MainLayout';
 import * as Tabs from "@radix-ui/react-tabs";
 import { darken, styled } from '@mui/material/styles';
 
-// import {
-//     DataGrid,
-//     GridToolbar
-// } from '@mui/x-data-grid';
+import {
+    DataGrid,
+    GridToolbar
+} from '@mui/x-data-grid';
 
-import { DataGridPro, GridToolbar } from '@mui/x-data-grid-pro';
+// import { DataGridPro, GridToolbar } from '@mui/x-data-grid-pro';
 
 // import { Box } from '@material-ui/core';
 
 import { propsToGridData } from '../../components/ReportsData';
 
 
-const StyledDataGrid = styled(DataGridPro)(() => ({
+const StyledDataGrid = styled(DataGrid)(() => ({
     '& .super-app-theme--Row': {
         borderTop: `1px solid ${darken('rgba(5, 150, 105, 1)', 1)}`,
         FontFace: 'IBM Plex Sans'

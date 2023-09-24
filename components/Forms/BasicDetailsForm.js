@@ -69,7 +69,6 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
   };
 
   // handle Edit staff
-
   const facilityBasicDetails = {}
 
   for (let item of Object.keys(formFields)) {
@@ -98,8 +97,8 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
 
   const formValues = options['19']?.data ? facilityBasicDetails : initialValues && initialValues.length > 1 ? JSON.parse(initialValues) : formFields
 
-  // console.log({facility_type: formValues.facility_type, facility_type_details: formValues.facility_type_details})
-
+  
+ 
   delete formValues['facility_checklist_document'];
 
 
@@ -136,6 +135,53 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
     }));
 
   })()
+
+
+  const facilityOptions = (() => {
+		const f_types = [
+			'STAND ALONE',
+			'DISPENSARY',
+			'MEDICAL CLINIC',
+			'NURSING HOME',
+			'HOSPITALS',
+			'HEALTH CENTRE',
+			'MEDICAL CENTRE'
+		]
+
+		const all_ftypes = []
+
+
+		for (let type in f_types) all_ftypes.push(options[0]?.facility_types.find(({ sub_division }) => sub_division === f_types[type]))
+
+		return [{
+			label: all_ftypes[0].sub_division,
+			value: all_ftypes[0].parent
+		},
+		{
+			label: all_ftypes[1].sub_division,
+			value: all_ftypes[1].parent
+		},
+		{
+			label: all_ftypes[2].sub_division,
+			value: all_ftypes[2].parent
+		},
+		{
+			label: all_ftypes[3].sub_division,
+			value: all_ftypes[3].parent
+		},
+		{
+			label: all_ftypes[4].sub_division,
+			value: all_ftypes[4].parent
+		},
+		{
+			label: all_ftypes[5].sub_division,
+			value: all_ftypes[5].parent
+		}
+
+		]
+
+	})()
+
 
   const operationStatusOptions = [
     {
@@ -348,7 +394,15 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
   const facilityTypeDetailsRef = useRef(null);
   const checkListFileRef = useRef(null);
 
-  // console.log({options})
+
+  if(options['19']?.data){
+    console.log({options_parent: facilityTypeOptions, data: options['19']?.data, options })
+
+    formValues['facility_type'] = facilityTypeOptions.find(({label}) => label == options['19']?.data?.facility_type_name)?.parent
+  }
+
+
+  console.log({formValues})
   
   return (
     <Formik
@@ -594,6 +648,10 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
                     *
                   </span>
                 </label>
+                {
+                  
+                  // console.log({facilityTypeOptions})
+                }
 
                 <Select
                   options={facilityTypeOptions}
@@ -618,16 +676,74 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
                     *
                   </span>
                 </label>
+
                 <Select
                   ref={facilityTypeDetailsRef}
-                  options={filteredOptions.facilityTypeDetailOptions}
+                  options={(() => {
+																			
+                    switch(facilityTypeOptions.find(({label}) => label == formikState.facility_type)){
+                      case 'STAND ALONE':
+
+                        return [
+                          facilityTypeOptions.filter(({label}) => label == 'Dermatology')[0] || {},
+                          facilityTypeOptions.filter(({label}) => label == "Rehab. Center - Drug and Substance abuse")[0] || {},
+                          facilityTypeOptions.filter(({label}) => label == 'Nutrition and Dietetics')[0] || {},
+                          facilityTypeOptions.filter(({label}) => label == 'Dialysis Center')[0] || {},
+                          facilityTypeOptions.filter(({label}) => label == "Rehab. Center - Physiotherapy, Orthopaedic & Occupational Therapy")[0] || {},
+                          facilityTypeOptions.filter(({label}) => label == 'VCT')[0] || {},
+                          facilityTypeOptions.filter(({label}) => label == 'Farewell Home')[0] || {},
+                          facilityTypeOptions.filter(({label}) => label == 'Laboratory')[0] || {},
+                          facilityTypeOptions.filter(({label}) => label == 'Radiology Clinic')[0] || {},
+                          facilityTypeOptions.filter(({label}) => label == 'Pharmacy')[0] || {},
+                          facilityTypeOptions.filter(({label}) => label == 'Regional Blood Transfusion Centre')[0] || {},
+                          facilityTypeOptions.filter(({label}) => label == 'Ophthalmology')[0] || {},
+                          facilityTypeOptions.filter(({label}) => label == 'Dental Clinic')[0] || {},
+                          facilityTypeOptions.filter(({label}) => label == 'Blood Bank')[0] || {},
+
+                           ] 
+                        
+                      case 'DISPENSARY':
+                        return  facilityTypeOptions.filter(({label}) => label == 'DISPENSARY') || []
+                        
+
+                      case 'MEDICAL CLINIC':
+                        return facilityTypeOptions.filter(({label}) => label == 'Medical Clinic') || []																				
+                        
+                      case 'NURSING HOME':
+                        
+                        return [
+                            facilityTypeOptions.filter(({label}) => label == 'Nursing and Maternity Home')[0] || {},
+                            facilityTypeOptions.filter(({label}) => label == 'Nursing Homes')[0] || {}
+                            ]
+
+                      case 'HOSPITALS':
+            
+                        return [
+                           facilityTypeOptions.filter(({label}) => label == 'Specialized & Tertiary Referral hospitals')[0] || {},
+                           facilityTypeOptions.filter(({label}) => label == 'Secondary care hospitals')[0] || {},
+                           facilityTypeOptions.filter(({label}) => label == 'Comprehensive Teaching & Tertiary Referral Hospital')[0] || {},
+                           facilityTypeOptions.filter(({label}) => label == 'Primary care hospitals')[0] || {}
+                          ] 
+                    
+                      case 'HEALTH CENTRE':
+                        return [
+                          facilityTypeOptions.filter(({label}) => label == 'Basic Health Centre')[0] || {},
+                          facilityTypeOptions.filter(({label}) => label == 'Comprehensive Health Centre')[0] || {}
+                          ]
+
+                      case 'MEDICAL CENTRE':
+
+                        return facilityTypeOptions.filter(({label}) => label == 'Medical Center') || []
+                      
+                    }
+                  })()} //options['1']?.facility_type_details //filteredOptions.facilityTypeDetailOptions
                   placeholder="Select facility type details..."
                   required
                   name='facility_type_details'
                   disabled={options['19']?.data ? true: false}
 
-
                 />
+
                 {errors.facility_type_details && <span className='font-normal text-sm text-red-500 text-start'>{errors.facility_type_details}</span>}
 
 
