@@ -95,11 +95,15 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
 
   // console.log({ facilityBasicDetails });
 
+
+
   const formValues = options['19']?.data ? facilityBasicDetails : initialValues && initialValues.length > 1 ? JSON.parse(initialValues) : formFields
 
   
  
-  delete formValues['facility_checklist_document'];
+  // Modify form values
+
+  
 
 
   const [filteredOptions, setFilteredOptions] = useState({
@@ -127,7 +131,7 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
 
     const all_ftypes = []
 
-    for (let type in f_types) all_ftypes.push(options['0']?.facility_types.filter(({ sub_division }) => sub_division === f_types[type]))
+    for (let type in f_types) all_ftypes.push(options['0']?.facility_types?.filter(({ sub_division }) => sub_division === f_types[type]))
 
     return all_ftypes.map(arr => ({
       label: arr[0]?.sub_division,
@@ -137,50 +141,50 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
   })()
 
 
-  const facilityOptions = (() => {
-		const f_types = [
-			'STAND ALONE',
-			'DISPENSARY',
-			'MEDICAL CLINIC',
-			'NURSING HOME',
-			'HOSPITALS',
-			'HEALTH CENTRE',
-			'MEDICAL CENTRE'
-		]
+  // const facilityOptions = (() => {
+	// 	const f_types = [
+	// 		'STAND ALONE',
+	// 		'DISPENSARY',
+	// 		'MEDICAL CLINIC',
+	// 		'NURSING HOME',
+	// 		'HOSPITALS',
+	// 		'HEALTH CENTRE',
+	// 		'MEDICAL CENTRE'
+	// 	]
 
-		const all_ftypes = []
+	// 	const all_ftypes = []
 
 
-		for (let type in f_types) all_ftypes.push(options[0]?.facility_types.find(({ sub_division }) => sub_division === f_types[type]))
+	// 	for (let type in f_types) all_ftypes.push(options[0]?.facility_types.find(({ sub_division }) => sub_division === f_types[type]))
 
-		return [{
-			label: all_ftypes[0].sub_division,
-			value: all_ftypes[0].parent
-		},
-		{
-			label: all_ftypes[1].sub_division,
-			value: all_ftypes[1].parent
-		},
-		{
-			label: all_ftypes[2].sub_division,
-			value: all_ftypes[2].parent
-		},
-		{
-			label: all_ftypes[3].sub_division,
-			value: all_ftypes[3].parent
-		},
-		{
-			label: all_ftypes[4].sub_division,
-			value: all_ftypes[4].parent
-		},
-		{
-			label: all_ftypes[5].sub_division,
-			value: all_ftypes[5].parent
-		}
+	// 	return [{
+	// 		label: all_ftypes[0].sub_division,
+	// 		value: all_ftypes[0].parent
+	// 	},
+	// 	{
+	// 		label: all_ftypes[1].sub_division,
+	// 		value: all_ftypes[1].parent
+	// 	},
+	// 	{
+	// 		label: all_ftypes[2].sub_division,
+	// 		value: all_ftypes[2].parent
+	// 	},
+	// 	{
+	// 		label: all_ftypes[3].sub_division,
+	// 		value: all_ftypes[3].parent
+	// 	},
+	// 	{
+	// 		label: all_ftypes[4].sub_division,
+	// 		value: all_ftypes[4].parent
+	// 	},
+	// 	{
+	// 		label: all_ftypes[5].sub_division,
+	// 		value: all_ftypes[5].parent
+	// 	}
 
-		]
+	// 	]
 
-	})()
+	// })()
 
 
   const operationStatusOptions = [
@@ -394,16 +398,18 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
   const facilityTypeDetailsRef = useRef(null);
   const checkListFileRef = useRef(null);
 
-
   if(options['19']?.data){
-    console.log({options_parent: facilityTypeOptions, data: options['19']?.data, options })
 
-    formValues['facility_type'] = facilityTypeOptions.find(({label}) => label == options['19']?.data?.facility_type_name)?.parent
-  }
+    formValues['facility_type'] = facilityTypeOptions.find(({label}) => label == options['19']?.data?.facility_type_parent)?.value
+    formValues['facility_type_details'] = filteredOptions.facilityTypeDetailOptions.find(({label}) => label == options['19']?.data?.facility_type_name)?.value
+    
+    delete formValues['facility_checklist_document']; 
 
-
-  console.log({formValues})
   
+  }
+  
+  console.log({formValues})
+
   return (
     <Formik
       initialValues={formValues}
@@ -466,126 +472,127 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
         (formikState) => {
           const errors = formikState.errors;
 
+
+
           //Effects
 
           useEffect(() => {
 
-            handleFormUpdate(JSON.stringify(formikState.values))
+            if(!options['19']?.data){
+              handleFormUpdate(JSON.stringify(formikState?.values))
+            }
 
-          }, [handleFormUpdate, formikState.values])
+          }, [handleFormUpdate, formikState?.values])
 
           // Form Validations
 
-          if(formikState.values.facility_type !== ""){
-            console.log({facilityTypeDetailOptions: filteredOptions.facilityTypeDetailOptions})
+          // if(formikState?.values?.facility_type !== ""){
+           
 
-              const facilityTypeDetails =  options['1']?.facility_type_details?.find(
-                ({ value }) => value.includes(formikState.values.facility_type)
-              )?.value ?? " ";
+          //     const facilityTypeDetails =  options['1']?.facility_type_details?.find(
+          //       ({ value }) => value.includes(formikState?.values?.facility_type)
+          //     )?.value ?? " ";
 
-              if(options['19']?.data){
-                formikState.values.facility_type_details = facilityTypeDetails
-              }
-    
-              // console.log({facilityTypeDetails})
-          }
+             
+          //     // console.log({facilityTypeDetails})
+          // }
 
       
           // Hours/Days duration form rules
-          if (formikState.values.open_whole_day) {
-            formikState.values.open_late_night = true;
-            formikState.values.open_public_holidays = true;
-            formikState.values.open_weekends = true;
-            formikState.values.open_normal_day = true;
+          if (formikState?.values?.open_whole_day) {
+            formikState?.values?.open_late_night = true;
+            formikState?.values?.open_public_holidays = true;
+            formikState?.values?.open_weekends = true;
+            formikState?.values?.open_normal_day = true;
           }
 
           // Number of beds form rule
           if (
 
-            formikState.values.number_of_inpatient_beds !== "" ||
-            formikState.values.number_of_icu_beds !== "" ||
-            formikState.values.number_of_hdu_beds !== "" ||
-            formikState.values.number_of_emergency_casualty_beds !== ""
+            formikState?.values?.number_of_inpatient_beds !== "" ||
+            formikState?.values?.number_of_icu_beds !== "" ||
+            formikState?.values?.number_of_hdu_beds !== "" ||
+            formikState?.values?.number_of_emergency_casualty_beds !== ""
 
           ) {
 
-            formikState.values.number_of_beds = (Number(formikState.values.number_of_inpatient_beds) ?? 0) +
-              (Number(formikState.values.number_of_icu_beds) ?? 0) +
-              (Number(formikState.values.number_of_hdu_beds) ?? 0) +
-              (Number(formikState.values.number_of_maternity_beds) ?? 0) +
-              (Number(formikState.values.number_of_emergency_casualty_beds) ?? 0)
+            formikState?.values?.number_of_beds = (Number(formikState?.values?.number_of_inpatient_beds) ?? 0) +
+              (Number(formikState?.values?.number_of_icu_beds) ?? 0) +
+              (Number(formikState?.values?.number_of_hdu_beds) ?? 0) +
+              (Number(formikState?.values?.number_of_maternity_beds) ?? 0) +
+              (Number(formikState?.values?.number_of_emergency_casualty_beds) ?? 0)
           }
 
-          if (formikState.values.facility_type !== "") setFacilityTypeValue(formikState.values.facility_type)
+          if (formikState?.values?.facility_type !== "") setFacilityTypeValue(formikState?.values?.facility_type)
 
         
-          if (formikState.values.owner_type !== "" && options['3']?.owner_types ) setOwnerTypeLabel(() => {
-            return options['3']?.owner_types?.filter(({ value }) => value === formikState.values.owner_type)[0]?.label
+          if (formikState?.values?.owner_type !== "" && options['3']?.owner_types ) setOwnerTypeLabel(() => {
+            return options['3']?.owner_types?.filter(({ value }) => value === formikState?.values?.owner_type)[0]?.label
           })
 
           // if owner == 'armed forces' then check the facility classified field
-          if(formikState.values.owner.includes("93c0fe24-3f12-4be2-b5ff-027e0bd02274")){
-              formikState.values.is_classified = true;
+          if(formikState?.values?.owner.includes("93c0fe24-3f12-4be2-b5ff-027e0bd02274")){
+              formikState?.values?.is_classified = true;
           } else {
-            formikState.values.is_classified = false;
+            formikState?.values?.is_classified = false;
           }
 
           // Facility type & Keph level form rule
-          switch (formikState.values.facility_type) {
+          switch (formikState?.values?.facility_type) {
             // STAND ALONE 
             case '85f2099b-a2f8-49f4-9798-0cb48c0875ff':
-              formikState.values.keph_level = options['4']?.keph.find(({ label }) => label === 'Level 2')?.value;
+              formikState?.values?.keph_level = options['4']?.keph.find(({ label }) => label === 'Level 2')?.value;
               break;
             // DISPENSARY
             case '87626d3d-fd19-49d9-98da-daca4afe85bf':
-              formikState.values.keph_level = options['4']?.keph.find(({ label }) => label === 'Level 2')?.value
+              formikState?.values?.keph_level = options['4']?.keph.find(({ label }) => label === 'Level 2')?.value
               break;
 
             // MEDICAL CLINIC
             case '8949eeb0-40b1-43d4-a38d-5d4933dc209f':
-              formikState.values.keph_level = options['4']?.keph.find(({ label }) => label === 'Level 2')?.value
+              formikState?.values?.keph_level = options['4']?.keph.find(({ label }) => label === 'Level 2')?.value
               break;
 
             // NURSING HOME
             case '0b7f9699-6024-4813-8801-38f188c834f5':
-              formikState.values.keph_level = options['4']?.keph.find(({ label }) => label === 'Level 3')?.value
+              formikState?.values?.keph_level = options['4']?.keph.find(({ label }) => label === 'Level 3')?.value
               break;
 
             // HEALTH CENTER
             case '9ad22615-48f2-47b3-8241-4355bb7db835':
-              formikState.values.keph_level = options['4']?.keph.find(({ label }) => label === 'Level 3')?.value
+              formikState?.values?.keph_level = options['4']?.keph.find(({ label }) => label === 'Level 3')?.value
               break;
 
             // MEDICAL CENTER
             case 'df69577d-b90f-4b66-920a-d0f3ecd95191':
-              formikState.values.keph_level = options['4']?.keph.find(({ label }) => label === 'Level 3')?.value
+              formikState?.values?.keph_level = options['4']?.keph.find(({ label }) => label === 'Level 3')?.value
               break;
             // HOSIPTALS
             case '1f1e3389-f13f-44b5-a48e-c1d2b822e5b5':
 
               // Comprehensive Teaching & Tertiary Referral Hospital
-              if (formikState.values.facility_type_details === 'b9a51572-c931-4cc5-8e21-f17b22b0fd20') {
-                formikState.values.keph_level = options['4']?.keph.find(({ label }) => label === 'Level 6')?.value
+              if (formikState?.values?.facility_type_details === 'b9a51572-c931-4cc5-8e21-f17b22b0fd20') {
+                formikState?.values?.keph_level = options['4']?.keph.find(({ label }) => label === 'Level 6')?.value
                 break;
               }
 
               // Specialized & Tertiary Referral hospitals
-              if (formikState.values.facility_type_details === '52ccbc58-2a71-4a66-be40-3cd72e67f798') {
-                formikState.values.keph_level = options['4']?.keph.find(({ label }) => label === 'Level 6')?.value
+              if (formikState?.values?.facility_type_details === '52ccbc58-2a71-4a66-be40-3cd72e67f798') {
+                formikState?.values?.keph_level = options['4']?.keph.find(({ label }) => label === 'Level 6')?.value
                 break;
               }
 
 
               // Secondary care hospitals
-              if (formikState.values.facility_type_details === 'f222bab7-589c-4ba8-bd9a-fe6c96fcd085') {
-                formikState.values.keph_level = options['4']?.keph.find(({ label }) => label === 'Level 5')?.value
+              if (formikState?.values?.facility_type_details === 'f222bab7-589c-4ba8-bd9a-fe6c96fcd085') {
+                formikState?.values?.keph_level = options['4']?.keph.find(({ label }) => label === 'Level 5')?.value
                 break;
               }
 
 
               // Primary care hospitals
-              if (formikState.values.facility_type_details === '0fa47f39-d58e-4a16-845c-82818719188d') {
-                formikState.values.keph_level = options['4']?.keph.find(({ label }) => label === 'Level 4')?.value
+              if (formikState?.values?.facility_type_details === '0fa47f39-d58e-4a16-845c-82818719188d') {
+                formikState?.values?.keph_level = options['4']?.keph.find(({ label }) => label === 'Level 4')?.value
                 break;
 
               }
@@ -664,8 +671,7 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
 
               </div>
               {/* Facility Type Details */}
-              {
-                !options['19']?.data &&
+              
               <div className={`${options['19']?.data ? "cursor-not-allowed" : "cursor-default"} w-full flex flex-col items-start justify-start gap-1 mb-3`}>
                 <label
                   htmlFor='facility_type_details'
@@ -679,64 +685,7 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
 
                 <Select
                   ref={facilityTypeDetailsRef}
-                  options={(() => {
-																			
-                    switch(facilityTypeOptions.find(({label}) => label == formikState.facility_type)){
-                      case 'STAND ALONE':
-
-                        return [
-                          facilityTypeOptions.filter(({label}) => label == 'Dermatology')[0] || {},
-                          facilityTypeOptions.filter(({label}) => label == "Rehab. Center - Drug and Substance abuse")[0] || {},
-                          facilityTypeOptions.filter(({label}) => label == 'Nutrition and Dietetics')[0] || {},
-                          facilityTypeOptions.filter(({label}) => label == 'Dialysis Center')[0] || {},
-                          facilityTypeOptions.filter(({label}) => label == "Rehab. Center - Physiotherapy, Orthopaedic & Occupational Therapy")[0] || {},
-                          facilityTypeOptions.filter(({label}) => label == 'VCT')[0] || {},
-                          facilityTypeOptions.filter(({label}) => label == 'Farewell Home')[0] || {},
-                          facilityTypeOptions.filter(({label}) => label == 'Laboratory')[0] || {},
-                          facilityTypeOptions.filter(({label}) => label == 'Radiology Clinic')[0] || {},
-                          facilityTypeOptions.filter(({label}) => label == 'Pharmacy')[0] || {},
-                          facilityTypeOptions.filter(({label}) => label == 'Regional Blood Transfusion Centre')[0] || {},
-                          facilityTypeOptions.filter(({label}) => label == 'Ophthalmology')[0] || {},
-                          facilityTypeOptions.filter(({label}) => label == 'Dental Clinic')[0] || {},
-                          facilityTypeOptions.filter(({label}) => label == 'Blood Bank')[0] || {},
-
-                           ] 
-                        
-                      case 'DISPENSARY':
-                        return  facilityTypeOptions.filter(({label}) => label == 'DISPENSARY') || []
-                        
-
-                      case 'MEDICAL CLINIC':
-                        return facilityTypeOptions.filter(({label}) => label == 'Medical Clinic') || []																				
-                        
-                      case 'NURSING HOME':
-                        
-                        return [
-                            facilityTypeOptions.filter(({label}) => label == 'Nursing and Maternity Home')[0] || {},
-                            facilityTypeOptions.filter(({label}) => label == 'Nursing Homes')[0] || {}
-                            ]
-
-                      case 'HOSPITALS':
-            
-                        return [
-                           facilityTypeOptions.filter(({label}) => label == 'Specialized & Tertiary Referral hospitals')[0] || {},
-                           facilityTypeOptions.filter(({label}) => label == 'Secondary care hospitals')[0] || {},
-                           facilityTypeOptions.filter(({label}) => label == 'Comprehensive Teaching & Tertiary Referral Hospital')[0] || {},
-                           facilityTypeOptions.filter(({label}) => label == 'Primary care hospitals')[0] || {}
-                          ] 
-                    
-                      case 'HEALTH CENTRE':
-                        return [
-                          facilityTypeOptions.filter(({label}) => label == 'Basic Health Centre')[0] || {},
-                          facilityTypeOptions.filter(({label}) => label == 'Comprehensive Health Centre')[0] || {}
-                          ]
-
-                      case 'MEDICAL CENTRE':
-
-                        return facilityTypeOptions.filter(({label}) => label == 'Medical Center') || []
-                      
-                    }
-                  })()} //options['1']?.facility_type_details //filteredOptions.facilityTypeDetailOptions
+                  options={filteredOptions.facilityTypeDetailOptions} //options['1']?.facility_type_details //
                   placeholder="Select facility type details..."
                   required
                   name='facility_type_details'
@@ -748,7 +697,7 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
 
 
               </div>
-        }
+      
 
               {/* Operation Status*/}
               <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
@@ -1517,10 +1466,7 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
                     htmlFor='facility_checklist_document'
                     className='text-gray-600 capitalize text-sm'>
                     checklist file upload
-                    <span className='text-medium leading-12 font-semibold'>
-                      {' '}
-                      *
-                    </span>
+                   
                   </label>
 
                   <Field
@@ -1530,7 +1476,7 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
                     className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
                   />
 
-                  {errors.facility_checklist_document && <span className='font-normal text-sm text-red-500 text-start'>{errors.facility_checklist_document}</span>}
+                  {/* {errors.facility_checklist_document && <span className='font-normal text-sm text-red-500 text-start'>{errors.facility_checklist_document}</span>} */}
 
                 </div>
               </div>

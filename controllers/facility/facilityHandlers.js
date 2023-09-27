@@ -562,7 +562,10 @@ const handleHrSubmit = (token, stateSetters, facilityId, alert) => {
                 
             }
            
-            if(res.ok && facilityId) router.push(`/facilities/${facilityId}`)
+            if(res.ok && facilityId) {
+                localStorage.clear()
+                router.push(`/facilities/${facilityId}`)
+            }
 
            
         })
@@ -594,6 +597,10 @@ const handleBasicDetailsUpdates = async (token, formData, facility_id, updatedSa
             body: JSON.stringify(formData)
         })
 
+        if(resp.ok){
+            localStorage.clear()
+        }
+
 
 
         return resp
@@ -619,6 +626,13 @@ const handleGeolocationUpdates = async (token, formData, coordinates_id) => {
             body: JSON.stringify(formData)
         })
 
+        if (resp.ok) {
+            alert.success("Facility Geolocation successfully updated")
+            localStorage.clear();
+        } else {
+            alert.error("Unable to update facility geolocation data")
+        }
+
         return resp
         // console.log({formData, coordinates_id})
     }
@@ -626,11 +640,7 @@ const handleGeolocationUpdates = async (token, formData, coordinates_id) => {
         console.error('Error msg:', e.message)
     }
 
-     if (formData) {
-        alert.success("Facility Geolocation successfully updated")
-    } else {
-        alert.error("Unable to update facility geolocation data")
-    }
+  
 }
 
 // handleFacilityContactUpdates
@@ -674,21 +684,7 @@ const handleFacilityContactsUpdates = async (token, values, facility_id) => {
     
     const payload = {contacts: facilityContacts, officer_in_charge:officerDetails};
 
-    // const user = JSON.parse(window.sessionStorage.getItem('user'))
-
-    // payload['user'] = user;
-
-    
-    
-    // const services_edit_payload = JSON.parse(JSON.parse(window.localStorage.getItem('services_edit_form')));
-
-    // console.log({services_edit_payload})
-
-    // payload['facility_service'] = services_edit_payload;
-    // basic_details_payload['officer_in_charge'] = payload.officer_in_charge;
-
-    // console.log({services_edit_payload});
-
+ 
     try {
         const resp = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${facility_id}/`, {
             headers: {
@@ -698,6 +694,10 @@ const handleFacilityContactsUpdates = async (token, values, facility_id) => {
             method: 'PATCH',
             body: JSON.stringify(payload)
         })
+
+        if(resp.ok){
+            localStorage.clear()
+        }
 
 
         return resp
@@ -792,6 +792,10 @@ const handleRegulationUpdates = async (token, values, facilityId, licenseFileRef
                                 body: formData
                             })
 
+                            if(resp.ok){
+                                localStorage.clear()
+                            }
+
                             return resp
                         }
                         catch (e) {
@@ -804,6 +808,7 @@ const handleRegulationUpdates = async (token, values, facilityId, licenseFileRef
 
                 .then(resp => {
                     if(resp.ok){
+                        localStorage.clear()
                         alert.success('Updated facility regulation details successfuly')
                     }
                     else {
@@ -841,6 +846,10 @@ const handleServiceUpdates = async (token, stateSetters) => {
             method: 'PATCH',
             body: JSON.stringify({ services: _payload })
         })
+
+        if(resp.ok){
+            localStorage.clear()
+        }
 
         return resp
 
@@ -913,6 +922,7 @@ const handleInfrastructureUpdates = async (token, stateSetters, alert) => {
         })
 
         if (resp.ok) {
+            localStorage.clear()
             alert.success('Facility Infrastructure updated successfully')
         } else {
             alert.error("Unable to update facility infrastructure")
@@ -951,6 +961,10 @@ const handleInfrastructureDelete = async (token, event, facility_infrastructure_
             }
 
         })
+
+        if(resp.ok){
+            localStorage.clear()
+        }
 
         return resp
 
@@ -991,6 +1005,7 @@ const handleHrUpdates = async (token, stateSetters, alert) => {
         })
 
         if (resp.ok) {
+            localStorage.clear()
             alert.success('Facility Human Resource successfully updated')
         } else {
             alert.error("Unable to update facility Human Resource")
@@ -1055,6 +1070,10 @@ const handleFacilityUpgrades = async (payload, alert) => {
             method: 'POST',
             body: JSON.stringify(payload)
         })
+
+        if(resp.ok){
+            localStorage.clear()
+        }
 
         return resp
 
@@ -1123,7 +1142,7 @@ const handleRegulationSubmitUpdates = (values, facilityId, file, formRef) => {
 
 
 
-    console.log({payload})
+    // console.log({payload})
 
     payload.forEach(data => {
         try {
@@ -1165,6 +1184,10 @@ const handleRegulationSubmitUpdates = (values, facilityId, file, formRef) => {
                             console.log("Here is the response",{resp}) // debug
 
                             alert('Facility Regulation Details Updated Successfully')
+
+                            if(resp.ok){
+                                localStorage.clear()
+                            }
 
                             return resp
                         }
