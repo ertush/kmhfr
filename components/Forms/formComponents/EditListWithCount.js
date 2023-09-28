@@ -40,7 +40,7 @@ function EditListWithCount(
 
     const alert = useAlert()
 
-    const {reset} = useLocalStorageState({key: "reset", value: null}).actions
+    // const {reset} = useLocalStorageState({key: "reset", value: null}).actions;
 
     const [isFormSubmit, setIsFormSubmit] = useState(false)
     const [currentItem, setCurrentItem] = useState(null)
@@ -103,24 +103,24 @@ function EditListWithCount(
 
             x.forEach(obj => {
                 if(
-                    obj.name.includes("Main Grid") ||
-                    obj.name.includes("Gas") ||
-                    obj.name.includes("Bio-Gas") ||
+                    obj?.name?.includes("Main Grid") ||
+                    obj?.name?.includes("Gas") ||
+                    obj?.name?.includes("Bio-Gas") ||
                     // WATER SOURCE
-                    obj.name.includes("Roof Harvested Water") ||
-                    obj.name.includes("River / Dam / Lake") ||
-                    obj.name.includes("Donkey Cart / Vendor") ||
-                    obj.name.includes("Piped Water") ||
+                    obj?.name?.includes("Roof Harvested Water") ||
+                    obj?.name?.includes("River / Dam / Lake") ||
+                    obj?.name?.includes("Donkey Cart / Vendor") ||
+                    obj?.name?.includes("Piped Water") ||
                     // MEDICAL WASTE MANAGEMENT
-                    obj.name.includes("Sewer systems") ||
-                    obj.name.includes("Dump without burning") ||
-                    obj.name.includes("Open burning") ||
-                    obj.name.includes("Remove offsite") ||
+                    obj?.name?.includes("Sewer systems") ||
+                    obj?.name?.includes("Dump without burning") ||
+                    obj?.name?.includes("Open burning") ||
+                    obj?.name?.includes("Remove offsite") ||
                     // ACCESS ROADS
-                    obj.name.includes("Tarmac") ||
-                    obj.name.includes("Earthen Road") ||
-                    obj.name.includes("Graded ( Murrum )") ||
-                    obj.name.includes("Gravel")
+                    obj?.name?.includes("Tarmac") ||
+                    obj?.name?.includes("Earthen Road") ||
+                    obj?.name?.includes("Graded ( Murrum )") ||
+                    obj?.name?.includes("Gravel")
                 ){
                     delete obj['count']
                 }
@@ -258,7 +258,7 @@ function EditListWithCount(
                                     ).then(async resp => {
 
                                     const results = await resp.json()
-
+                                    
                                     update_id = results?.latest_update
 
                                     if (update_id) {

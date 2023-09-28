@@ -260,7 +260,7 @@ export function RegulationForm() {
                     )
                   )
                 :
-                handleRegulationSubmit(options['22']?.token, values, [formId, setFormId, facilityId], fileRef.current, alert)
+                handleRegulationSubmit(options['18']?.token, values, [formId, setFormId, facilityId], fileRef.current, alert)
 
             }}
             validationSchema={toFormikValidationSchema(formSchema)}

@@ -370,7 +370,7 @@ const handleRegulationSubmit = async  (token, values, stateSetters, licenseFileR
                 body: JSON.stringify(data)
             })
 
-            if(resp.ok && data?.units) {
+            if(resp.ok) {
                 alert.success('Facilty Regulation details saved successfully')
             } else {
                 alert.error('unable to save Regulation details ')
