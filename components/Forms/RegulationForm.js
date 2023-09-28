@@ -203,7 +203,14 @@ export function RegulationForm() {
                         // console.log('Working....')
 
                       fetch(
-                        `/api/facility/get_facility/?path=facilities&id=${facilityId}`
+                        `${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${facilityId}/`,
+                        {
+                            headers: {
+                                'Authorization': 'Bearer ' + options['22']?.token,
+                                'Accept': 'application/json, text/plain, */*',
+                                'Content-Type': 'application/json;charset=utf-8'
+                               }
+                         }
                       )
                         .then(async (resp) => {
                         console.log({facilityId, file: fileRef.current})
@@ -214,7 +221,14 @@ export function RegulationForm() {
                             try {
                               const _facilityUpdateData = await (
                                 await fetch(
-                                  `/api/facility/get_facility/?path=facility_updates&id=${results?.latest_update}`
+                                  `${process.env.NEXT_PUBLIC_API_URL}/facilities/facility_updates/${results?.latest_update}/`,
+                                  {
+                                    headers: {
+                                        'Authorization': 'Bearer ' + options['22']?.token,
+                                        'Accept': 'application/json, text/plain, */*',
+                                        'Content-Type': 'application/json;charset=utf-8'
+                                       }
+                                 }
                                 )
                               ).json();
                               updateFacilityUpdateData(_facilityUpdateData);
@@ -246,7 +260,7 @@ export function RegulationForm() {
                     )
                   )
                 :
-                handleRegulationSubmit(options['22']?.token, values, [formId, setFormId, facilityId], fileRef.current, alert)
+                handleRegulationSubmit(options['18']?.token, values, [formId, setFormId, facilityId], fileRef.current, alert)
 
             }}
             validationSchema={toFormikValidationSchema(formSchema)}
