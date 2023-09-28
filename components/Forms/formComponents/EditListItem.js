@@ -141,7 +141,16 @@ function  EditListItem({
 
                 alert.success('Updated Facility services successfully')
 
-                fetch(`/api/facility/get_facility/?path=facilities&id=${itemId}`).then(async resp => {
+                fetch(
+                  `${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${itemId}/`,
+                  {
+                    headers: {
+                        'Authorization': 'Bearer ' + token,
+                        'Accept': 'application/json, text/plain, */*',
+                        'Content-Type': 'application/json;charset=utf-8'
+                       }
+                 }
+                  ).then(async resp => {
 
                   const results = await resp.json()
 
@@ -150,7 +159,16 @@ function  EditListItem({
                   if (update_id) {
 
                     try {
-                      const _facilityUpdateData = await (await fetch(`/api/facility/get_facility/?path=facility_updates&id=${update_id}`)).json()
+                      const _facilityUpdateData = await (await fetch(
+                        `${process.env.NEXT_PUBLIC_API_URL}/facilities/facility_updates/${update_id}/`,
+                        {
+                          headers: {
+                              'Authorization': 'Bearer ' + token,
+                              'Accept': 'application/json, text/plain, */*',
+                              'Content-Type': 'application/json;charset=utf-8'
+                             }
+                       }
+                        )).json()
                       setItemsUpdateData(_facilityUpdateData)
                     }
                     catch (e) {

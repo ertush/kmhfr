@@ -597,13 +597,20 @@ const handleBasicDetailsUpdates = async (token, formData, facility_id, updatedSa
             body: JSON.stringify(formData)
         })
 
+     
         if(resp.ok){
+            alert.success('Facility Basic Details updated successfully')
             localStorage.clear()
+
+        }
+        else{
+            alert.error('Unable to update Facility basic details ')
         }
 
 
-
         return resp
+
+        
 
     }
     catch (e) {
