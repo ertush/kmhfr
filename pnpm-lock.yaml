@@ -92,6 +92,9 @@ dependencies:
   highcharts-react-official:
     specifier: ^3.2.0
     version: 3.2.0(highcharts@9.3.3)(react@18.2.0)
+  leaflet:
+    specifier: ^1.8.0
+    version: 1.8.0
   leaflet-geosearch:
     specifier: ^3.8.0
     version: 3.8.0
@@ -136,7 +139,7 @@ dependencies:
     version: 4.10.1(react@18.2.0)
   react-leaflet:
     specifier: ^4.2.1
-    version: 4.2.1(leaflet@1.9.4)(react-dom@18.2.0)(react@18.2.0)
+    version: 4.2.1(leaflet@1.8.0)(react-dom@18.2.0)(react@18.2.0)
   react-select:
     specifier: ^5.7.4
     version: 5.7.4(react-dom@18.2.0)(react@18.2.0)
@@ -1915,14 +1918,14 @@ packages:
       react-dom: 18.2.0(react@18.2.0)
     dev: false
 
-  /@react-leaflet/core@2.1.0(leaflet@1.9.4)(react-dom@18.2.0)(react@18.2.0):
+  /@react-leaflet/core@2.1.0(leaflet@1.8.0)(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-Qk7Pfu8BSarKGqILj4x7bCSZ1pjuAPZ+qmRwH5S7mDS91VSbVVsJSrW4qA+GPrro8t69gFYVMWb1Zc4yFmPiVg==}
     peerDependencies:
       leaflet: ^1.9.0
       react: ^18.0.0
       react-dom: ^18.0.0
     dependencies:
-      leaflet: 1.9.4
+      leaflet: 1.8.0
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
     dev: false
@@ -4556,9 +4559,15 @@ packages:
       leaflet: 1.9.4
     dev: false
 
+  /leaflet@1.8.0:
+    resolution: {integrity: sha512-gwhMjFCQiYs3x/Sf+d49f10ERXaEFCPr+nVTryhAW8DWbMGqJqt9G4XuIaHmFW08zYvhgdzqXGr8AlW8v8dQkA==}
+    dev: false
+
   /leaflet@1.9.4:
     resolution: {integrity: sha512-nxS1ynzJOmOlHp+iL3FyWqK89GtNL8U8rvlMOsQdTTssxZwCXh8N2NB3GDQOL+YR3XnWyZAxwQixURb+FA74PA==}
+    requiresBuild: true
     dev: false
+    optional: true
 
   /levn@0.4.1:
     resolution: {integrity: sha512-+bT2uH4E5LGE7h/n3evcS/sQlJXCpIp6ym8OWJ5eV6+67Dsql/LaaT7qJBAt2rzfoa/5QBGBhxDix1dMt2kQKQ==}
@@ -5846,15 +5855,15 @@ packages:
     resolution: {integrity: sha512-xWGDIW6x921xtzPkhiULtthJHoJvBbF3q26fzloPCK0hsvxtPVelvftw3zjbHWSkR2km9Z+4uxbDDK/6Zw9B8w==}
     dev: false
 
-  /react-leaflet@4.2.1(leaflet@1.9.4)(react-dom@18.2.0)(react@18.2.0):
+  /react-leaflet@4.2.1(leaflet@1.8.0)(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-p9chkvhcKrWn/H/1FFeVSqLdReGwn2qmiobOQGO3BifX+/vV/39qhY8dGqbdcPh1e6jxh/QHriLXr7a4eLFK4Q==}
     peerDependencies:
       leaflet: ^1.9.0
       react: ^18.0.0
       react-dom: ^18.0.0
     dependencies:
-      '@react-leaflet/core': 2.1.0(leaflet@1.9.4)(react-dom@18.2.0)(react@18.2.0)
-      leaflet: 1.9.4
+      '@react-leaflet/core': 2.1.0(leaflet@1.8.0)(react-dom@18.2.0)(react@18.2.0)
+      leaflet: 1.8.0
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
     dev: false

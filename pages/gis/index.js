@@ -1,9 +1,9 @@
 // React imports
-import React, { useState, useRef, useEffect, useMemo, useContext } from "react";
+import React, { useState, useRef, useEffect, useContext } from "react";
 
 // Next imports
 import Head from "next/head";
-import Link from 'next/link'
+import Link from "next/link";
 import { useRouter } from "next/router";
 import dynamic from "next/dynamic";
 
@@ -22,25 +22,21 @@ import { hasPermission } from "../../utils/checkPermissions";
 import { PermissionContext } from "../../providers/permissions";
 import { XCircleIcon } from "@heroicons/react/solid";
 import { FlagTwoTone } from "@mui/icons-material";
+//import {GISMap} from "../../components/GISMap";
+//import { SevenK } from "@mui/icons-material";
+//import { blue, green, grey, purple, red, yellow } from "@mui/material/colors";
+//import { center } from "@turf/turf";
 
-const Gis = (props) => { 
-
- 
-  const router = useRouter();
-
-  const userPermissions = useContext(PermissionContext)
+const Gis = (props) => {
+  const router = useRouter();   
+  const userPermissions = useContext(PermissionContext);
 
   // Temporary fix faulty Kirinyaga id
-  const filters = (() => {
-    let _filters = props?.filters;
-    // filters.county[0].id = 'ecbf61a6-cd6d-4806-99d8-9340572c0015' // correct Kirinyaga county id
+  const filters = props?.filters;
 
-    return _filters;
-  })();
+  // // console.log({filters: fltrs})
 
   let fltrs = filters;
-
-  // console.log({filters: fltrs})
 
   const formRef = useRef(null);
   // const servicesRef = useRef(null)
@@ -59,38 +55,38 @@ const Gis = (props) => {
   const [isWardOptionsUpdate, setIsWardOptionsUpdate] = useState(false);
   const [wardOptions, setWardOptions] = useState([]);
 
+  const [communitsOption, setCommunitsOption]=useState([]);
+
   const [isAccordionExpanded, setIsAccordionExpanded] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
 
-if(filters){
+  if (filters) {
+    filters["has_edits"] = [{ id: "has_edits", name: "Has edits" }];
+    filters["is_approved"] = [{ id: "is_approved", name: "Is approved" }];
+    filters["is_complete"] = [{ id: "is_complete", name: "Is complete" }];
+    filters["number_of_beds"] = [
+      { id: "number_of_beds", name: "Number of beds" },
+    ];
+    filters["number_of_cots"] = [
+      { id: "number_of_cots", name: "Number of cots" },
+    ];
+    filters["open_whole_day"] = [
+      { id: "open_whole_day", name: "Open whole day" },
+    ];
+    filters["open_weekends"] = [{ id: "open_weekends", name: "Open weekends" }];
+    filters["open_public_holidays"] = [
+      { id: "open_public_holidays", name: "Open public holidays" },
+    ];
 
-  filters["has_edits"] = [{ id: "has_edits", name: "Has edits" }];
-  filters["is_approved"] = [{ id: "is_approved", name: "Is approved" }];
-  filters["is_complete"] = [{ id: "is_complete", name: "Is complete" }];
-  filters["number_of_beds"] = [
-    { id: "number_of_beds", name: "Number of beds" },
-  ];
-  filters["number_of_cots"] = [
-    { id: "number_of_cots", name: "Number of cots" },
-  ];
-  filters["open_whole_day"] = [
-    { id: "open_whole_day", name: "Open whole day" },
-  ];
-  filters["open_weekends"] = [{ id: "open_weekends", name: "Open weekends" }];
-  filters["open_public_holidays"] = [
-    { id: "open_public_holidays", name: "Open public holidays" },
-  ];
-
-  delete fltrs.has_edits;
-  delete fltrs.is_approved;
-  delete fltrs.is_complete;
-  delete fltrs.number_of_beds;
-  delete fltrs.number_of_cots;
-  delete fltrs.open_whole_day;
-  delete fltrs.open_weekends;
-  delete fltrs.open_public_holidays;
-
-}
+    delete fltrs.has_edits;
+    delete fltrs.is_approved;
+    delete fltrs.is_complete;
+    delete fltrs.number_of_beds;
+    delete fltrs.number_of_cots;
+    delete fltrs.open_whole_day;
+    delete fltrs.open_weekends;
+    delete fltrs.open_public_holidays;
+  }
 
   let qf = props?.query?.qf || "all";
   // let [currentQuickFilter, setCurrentQuickFilter] = useState(qf)
@@ -166,7 +162,7 @@ if(filters){
       filter.options = options;
     });
   }
-  // console.log('scoped_filters: ',scoped_filters)
+  // // console.log('scoped_filters: ',scoped_filters)
 
   const [gridApi, setGridApi] = useState(null);
   const [gridColumnApi, setGridColumnApi] = useState(null);
@@ -175,8 +171,15 @@ if(filters){
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
 
+  const [selectedKeph, setSelectedKeph] = useState([]);
+  const kephLevelRef = useRef(null);
+
+  const [clearFrom, setClearForm] = useState(false);
+  const [selectValue, setSelectValue] = useState('');
+  const [labelText, setLabelText] = useState([]);
+  const [checkTab, setCheckTab] = useState('facilities');
+
   const onGridReady = (params) => {
-  
     setGridApi(params.api);
     setGridColumnApi(params.columnApi);
 
@@ -194,10 +197,9 @@ if(filters){
   };
 
   useEffect(() => {
-
-    if(!hasPermission(/^mfl_gis.view_.*$/, userPermissions)){
-      router.push('/unauthorized')
-  }
+    if (!hasPermission(/^mfl_gis.view_.*$/, userPermissions)) {
+      router.push("/unauthorized");
+    }
 
     if (fromDate !== "" && toDate !== "") {
       const results = linelist2
@@ -224,12 +226,50 @@ if(filters){
       setIsAccordionExpanded(true);
     }
   };
+  //let ft='';
+  // const pholder =()=> {
+  //   ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)
+  // };
+
+  const clearFilters = () => {
+
+    if (drillDown !== null) {
+
+      setDrillDown({});
+      setSubCountyOptions([]);
+      setWardOptions([]);
+      //drillDown.reload();
+      localStorage.setItem("dd_owners",JSON.stringify({county: '',sub_county:'',ward: ''}));
+      router.reload();
+      //formRef.current= null;
+    }
+  };
+
+  useEffect(()=>{
+
+      setSelectedKeph([]);
+      setLabelText('');
+      router.push('/gis');
+
+      const label = formRef.current;
+      const child = formRef.current.children;
+
+      //formRef.current.reset();
+      if(drillDown !== null){
+        setSelectValue(label);
+        //pholder();
+      }else{
+        setSelectValue(child);
+      }
+      setClearForm(false);
+
+  },[clearFrom]);
 
   const Mapp = dynamic(
     () => import("../../components/GISMap"), // replace '@components/map' with your component's location
     {
       loading: () => (
-        <div className="text-gray-800 text-lg  bg-white py-2 px-5 shadow w-auto mx-2 my-3">
+        <div className="text-gray-800 text-lg rounded bg-white py-2 px-5 shadow w-auto mx-2 my-3">
           Loading&hellip;
         </div>
       ),
@@ -238,6 +278,13 @@ if(filters){
   );
 
   const Map = React.memo(Mapp);
+
+  //props for setting dynamic zoom level
+  //console.log({props});
+  const facility =props['0']?.data;
+  const center = props['1']?.geoLocation.center;
+  const geoLocationData = props['1']?.geoLocation;
+  //const qf = props['3']?.qf ?? '';
 
   useEffect(() => {
     // setIsAccordionExpanded(true)
@@ -250,8 +297,66 @@ if(filters){
     isLoading,
   ]);
 
+  //onClick handler function for Apply filter button
+  const handleApplyFilters = () => {
+    
+    console.log('filters Applied:', kephLevelRef.current.state.value);
+
+    // const label = kephLevelRef.current.state.value.label;
+    // const value = kephLevelRef.current.state.value.value;
+    const label = kephLevelRef.current.state;
+    setSelectedKeph(label);
+
+      router.push({
+        pathname: '/gis',
+        query:{
+          iconColor: label,
+          units: '0',
+          ...drillDown,
+        }, 
+      });
+
+      const newLabelText =
+          drillDown &&
+          Object.keys(drillDown).length > 0 &&
+          !JSON.stringify(Object.keys(drillDown)).includes(
+            "undefined"
+          ) &&
+          `Matching ${Object.keys(drillDown)
+            .map(
+              (k) =>
+                `${k[0].toLocaleUpperCase()}${k
+                  .split("_")
+                  .join(" ")
+                  .slice(1)
+                  .toLocaleLowerCase()}: (${
+                  filters[k]
+                    ? Array.from(
+                        drillDown[k].split(","),
+                        (j) =>
+                          filters[k]
+                            .find((w) => w.id == j)
+                            ?.name.split("_")
+                            .join(" ") || j.split("_").join(" ")
+                      ).join(", ") || k.split("_").join(" ")
+                    : k.split("_").join(" ")
+                })`
+            )
+            ?.join(" & ")}`;
+
+        setLabelText(newLabelText);
+  };
+  
+  //onClick handler function for clear button
+  const handleClearFilters = () => {
+    setClearForm(true);
+    console.log('clear button is clicked!, variables:',selectValue);
+    console.log("selecetd item(s):", drillDown);
+    clearFilters();
+  };
+  
   return (
-    <>
+    <div className="">
       <Head>
         <title>KMHFR - GIS Explorer</title>
         <link rel="icon" href="/favicon.ico" />
@@ -260,8 +365,8 @@ if(filters){
         <>
           {/* Check for errors and show them */}
           {props?.error ? (
-            <div className="w-full flex flex-col gap-5 px-1 md:px-4 p-4 my-4 mx-auto bg-transparent min-h-screen items-center">
-              <div className="flex flex-col items-center justify-center bg-red-100  border border-red-300 shadow w-full max-w-screen-sm">
+            <div className="w-full flex flex-col gap-5 px-1 md:px-4 p-4 my-4 mx-auto bg-gray-100 min-h-screen items-center">
+              <div className="flex flex-col items-center justify-center bg-red-100 rounded border border-red-300 shadow w-full max-w-screen-sm">
                 <h1 className="text-red-700 text-3xl flex items-center gap-x-2">
                   <XCircleIcon className="text-red-500 h-4 w-4 text-5xl" />
                   <span>Error</span>
@@ -273,10 +378,10 @@ if(filters){
             </div>
           ) : (
             <>
-              <div className="col-span-5 flex flex-wrap gap-3 md:gap-5 px-4 pt-2 justify-between items-center w-full bg-transparent">
+              <div className="col-span-5 flex flex-wrap gap-3 md:gap-5 px-4 pt-2 justify-between items-center w-full bg-gray-100">
                 {/* BREADCRUMB */}
                 <div className="flex flex-row items-center justify-between gap-2 md:ml-6 text-sm md:text-base py-3">
-                  <Link className="text-blue-700" href="/">
+                  <Link className="text-green-700" href="/">
                     Home
                   </Link>
                   {"/"}
@@ -286,9 +391,9 @@ if(filters){
                 {/* TODO: Check the viability of the export button */}
 
                 {/* Aside with filters */}
-                <div className="w-full grid grid-cols-6 gap-5 px-1 md:px-4 p-4 mx-auto bg-transparent min-h-screen">
+                <div className="w-full grid grid-cols-6 gap-5 px-1 md:px-4 p-4 mx-auto bg-gray-100 min-h-screen">
                   {/* Actual Aside */}
-                  <aside className="col-span-6 bg-blue-50 md:col-span-3 lg:col-span-2 xl:col-span-1 p-1 md:p-2 flex flex-col lg:gap-3 items-center justify-start shadow-md">
+                  <aside className="col-span-6 md:col-span-2 lg:col-span-2 xl:col-span-1 p-1 md:p-2 flex flex-col lg:gap-3 items-center justify-start bg-white rounded-lg shadow">
                     {/* Tabs */}
                     <Tabs.Root
                       orientation="horizontal"
@@ -318,12 +423,14 @@ if(filters){
                         <Tabs.Tab
                           value="facilities"
                           className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-400 text-xs sm:text-sm md:text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
+                          onClick={()=> setCheckTab('facilities')}
                         >
                           Facilities
                         </Tabs.Tab>
                         <Tabs.Tab
                           value="cunits"
                           className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-400 text-xs sm:text-sm md:text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
+                          onClick={()=> setCheckTab('cunits')}
                         >
                           Community Units
                         </Tabs.Tab>
@@ -336,31 +443,21 @@ if(filters){
                       >
                         <div className="col-span-4 md:col-span-4 flex flex-col group items-center justify-start text-left">
                           {/* Result count */}
-                          <div className="bg-white w-full p-3 ">
-                            {props?.data && props?.data?.results && (
-                              <h4 className="text-base md:text-xl tracking-tight font-bold leading-tight">
-                                {props?.data?.results?.length}{" "}
-                                {props?.data?.results?.length > 1
-                                  ? `facilities`
-                                  : `facility`}{" "}
-                                found.
-                              </h4>
-                            )}
-                          </div>
-                          <hr className="my-2" />
+                          
+                          {/* <hr className="my-2" /> */}
 
                           {/* Filters */}
                           <details
-                            className=" bg-transparent py-1 flex flex-col w-full md:stickyz"
+                            className="rounded bg-transparent py-1 flex flex-col w-full md:stickyz"
                             open
                           >
-                            <summary className="flex cursor-pointer w-fulp-0">
+                            <summary className="flex cursor-pointer w-full bg-white p-0">
                               <h5 className="text-xl font-semibold">Filters</h5>
                             </summary>
 
                             <div className="flex flex-row items-center justify-start w-full gap-2">
                               {filters && filters?.error ? (
-                                <div className="w-full  bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base">
+                                <div className="w-full rounded bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base">
                                   <p>No filters.</p>
                                 </div>
                               ) : (
@@ -371,7 +468,7 @@ if(filters){
                                     ref={formRef}
                                     onSubmit={async (ev) => {
                                       ev.preventDefault();
-                                      setIsLoading(true);
+                                      setIsLoading(false);
 
                                       const fields =
                                         "code,official_name,operation_status,approved,keph_level,facility_type_name,facility_type_parent,owner,owner_type,regulation_body,number_of_beds,number_of_cots,county,constituency,sub_county,ward,admission_status,facility_services,created,closed";
@@ -462,6 +559,7 @@ if(filters){
                                       }
                                     }}
                                   >
+                                    {/* ('filters:', filters) */}
                                     {filters &&
                                       Object.keys(filters).length > 0 &&
                                       (() => {
@@ -469,7 +567,7 @@ if(filters){
                                           Object.keys(fltrs).sort();
 
                                         const sortOrder = [
-                                          1, 9, 10, 2, 3, 4, 5, 6, 8, 7, 0
+                                          1, 9, 10, 2, 3, 4, 5, 6, 8, 7, 0,
                                         ];
 
                                         return sortOrder.map((v, i) =>
@@ -477,21 +575,21 @@ if(filters){
                                             ? sorted[i]
                                             : sorted[v]
                                         );
-                                      })(fltrs).map((ft) => (
+                                      })(fltrs).map((ft, i) => (
                                         <div
                                           key={ft}
                                           className="w-full flex flex-col items-start justify-start gap-1 mb-3"
                                         >
-                                          {console.log({ft})}
-                                          {
-                                            ft && !ft.includes("constituency") &&
-                                          <label
-                                            htmlFor={ft}
-                                            className="text-gray-600 capitalize text-sm"
-                                          >
-                                            {ft.split("_").join(" ")}
-                                          </label>
-                                          }
+                                        
+                                          {ft &&
+                                            !ft.includes("constituency") && (
+                                              <label
+                                                htmlFor={ft}
+                                                className="text-gray-600 capitalize text-sm"
+                                              >
+                                                {ft.split("_").join(" ")}
+                                              </label>
+                                            )}
 
                                           {(() => {
                                             // let serviceOptions = [];
@@ -557,22 +655,21 @@ if(filters){
                                                   <Select
                                                     id={ft}
                                                     name={ft}
+                                                    className="flex w-full   placeholder-gray-500 border border-blue-600 outline-none"
                                                     styles={{
-                                control: (baseStyles) => ({
-                                  ...baseStyles,
-                                  backgroundColor: 'transparent',
-                                  outLine: 'none',
-                                  border: 'none',
-                                  outLine: 'none',
-                                  textColor: 'transparent',
-                                  padding: 0,
-                                  height: '4px',
-                                  width: '100%'
-                                }),
-                
-                              }}
-                              
-                              className='flex w-full   placeholder-gray-500 border border-blue-600 outline-none'
+                                                      control: (baseStyles) => ({
+                                                        ...baseStyles,
+                                                        backgroundColor: 'transparent',
+                                                        outLine: 'none',
+                                                        border: 'none',
+                                                        outLine: 'none',
+                                                        textColor: 'transparent',
+                                                        padding: 0,
+                                                        height: '4px',
+                                                        width: '100%'
+
+                                                      })
+                                                    }}
                                                     options={Array.from(
                                                       filters[ft] || [],
                                                       (fltopt) => {
@@ -590,8 +687,10 @@ if(filters){
                                                       ft
                                                         .split("_")
                                                         .join(" ")
-                                                        .slice(1)
+                                                        .slice(1) 
                                                     }
+                                                    //value={ ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1) || clearFrom ?'' : selectValue }
+                                                    //value={clearFrom ?'' : selectValue}
                                                     onChange={
                                                       handleServiceCategoryChange
                                                     }
@@ -603,6 +702,7 @@ if(filters){
                                                   <Select
                                                     id={ft}
                                                     name={ft}
+                                                    className="flex w-full   placeholder-gray-500 border border-blue-600 outline-none"
                                                     styles={{
                                                       control: (baseStyles) => ({
                                                         ...baseStyles,
@@ -614,11 +714,10 @@ if(filters){
                                                         padding: 0,
                                                         height: '4px',
                                                         width: '100%'
-                                                      }),
-                                      
+
+                                                      })
                                                     }}
-                                                    
-                                                    className='flex w-full   placeholder-gray-500 border border-blue-600 outline-none'
+
                                                     options={serviceOptions}
                                                     placeholder={
                                                       ft
@@ -630,6 +729,7 @@ if(filters){
                                                         .join(" ")
                                                         .slice(1)
                                                     }
+                                                    //value={ ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1) || clearFrom ?'' : selectValue }
                                                     onChange={(sl) => {
                                                       let nf = {};
                                                       if (Array.isArray(sl)) {
@@ -766,6 +866,7 @@ if(filters){
                                                   <Select
                                                     id={ft}
                                                     name={ft}
+                                                    className="flex w-full   placeholder-gray-500 border border-blue-600 outline-none"
                                                     styles={{
                                                       control: (baseStyles) => ({
                                                         ...baseStyles,
@@ -777,11 +878,9 @@ if(filters){
                                                         padding: 0,
                                                         height: '4px',
                                                         width: '100%'
-                                                      }),
-                                      
+
+                                                      })
                                                     }}
-                                                    
-                                                    className='flex w-full   placeholder-gray-500 border border-blue-600 outline-none'
                                                     options={Array.from(
                                                       filters[ft] || [],
                                                       (fltopt) => {
@@ -801,6 +900,7 @@ if(filters){
                                                         .join(" ")
                                                         .slice(1)
                                                     }
+                                                    //value={clearFrom ?'' : selectValue}
                                                     onChange={
                                                       handleCountyCategoryChange
                                                     }
@@ -877,6 +977,7 @@ if(filters){
                                                   <Select
                                                     id={ft}
                                                     name={ft}
+                                                    className="flex w-full   placeholder-gray-500 border border-blue-600 outline-none"
                                                     styles={{
                                                       control: (baseStyles) => ({
                                                         ...baseStyles,
@@ -888,11 +989,9 @@ if(filters){
                                                         padding: 0,
                                                         height: '4px',
                                                         width: '100%'
-                                                      }),
-                                      
+
+                                                      })
                                                     }}
-                                                    
-                                                    className='flex w-full   placeholder-gray-500 border border-blue-600 outline-none'
                                                     options={subCountyOptions}
                                                     placeholder={
                                                       ft
@@ -904,17 +1003,17 @@ if(filters){
                                                         .join(" ")
                                                         .slice(1)
                                                     }
+                                                    //value={clearFrom ?'' : selectValue}
                                                     onChange={handleConstituencyChange}
                                                   />
                                                 );
-
-                                  
 
                                               case "ward":
                                                 return (
                                                   <Select
                                                     id={ft}
                                                     name={ft}
+                                                    className="flex w-full   placeholder-gray-500 border border-blue-600 outline-none"
                                                     styles={{
                                                       control: (baseStyles) => ({
                                                         ...baseStyles,
@@ -926,11 +1025,9 @@ if(filters){
                                                         padding: 0,
                                                         height: '4px',
                                                         width: '100%'
-                                                      }),
-                                      
+
+                                                      })
                                                     }}
-                                                    
-                                                    className='flex w-full   placeholder-gray-500 border border-blue-600 outline-none'
                                                     options={wardOptions}
                                                     placeholder={
                                                       ft
@@ -942,6 +1039,7 @@ if(filters){
                                                         .join(" ")
                                                         .slice(1)
                                                     }
+                                                    //value={clearFrom ?'' : selectValue}
                                                     onChange={(sl) => {
                                                       let nf = {};
                                                       if (Array.isArray(sl)) {
@@ -976,90 +1074,106 @@ if(filters){
                                               default:
                                                 return (
                                                   <>
-                                                  {
-                                                   ft && !ft.includes("constituency") &&
-                                                  <Select
-                                                    isMulti={multiFilters.includes(
-                                                      ft
-                                                    )}
-                                                    name={ft}
-                                                    defaultValue={
-                                                      drillDown[ft] || ""
-                                                    }
-                                                    id={ft}
-                                                    styles={{
-                                                      control: (baseStyles) => ({
-                                                        ...baseStyles,
-                                                        backgroundColor: 'transparent',
-                                                        outLine: 'none',
-                                                        border: 'none',
-                                                        outLine: 'none',
-                                                        textColor: 'transparent',
-                                                        padding: 0,
-                                                        height: '4px',
-                                                        width: '100%'
-                                                      }),
-                                      
-                                                    }}
-                                                    
-                                                    className='flex w-full   placeholder-gray-500 border border-blue-600 outline-none'
-                                                    options={Array.from(
-                                                      filters[ft] || [],
-                                                      (fltopt) => {
-                                                        return {
-                                                          value: fltopt.id,
-                                                          label: fltopt.name,
-                                                        };
-                                                      }
-                                                    )}
-                                                    placeholder={
-                                                      ft
-                                                        .split("_")
-                                                        .join(" ")[0]
-                                                        .toUpperCase() +
-                                                      ft
-                                                        .split("_")
-                                                        .join(" ")
-                                                        .slice(1)
-                                                    }
-                                                    onChange={(sl) => {
-                                                      let nf = {};
-                                                      if (Array.isArray(sl)) {
-                                                        nf[ft] =
-                                                          (drillDown[ft]
-                                                            ? drillDown[ft] +
-                                                              ","
-                                                            : "") +
-                                                          Array.from(
-                                                            sl,
-                                                            (l_) => l_.value
-                                                          ).join(",");
-                                                      } else if (
-                                                        sl &&
-                                                        sl !== null &&
-                                                        typeof sl ===
-                                                          "object" &&
-                                                        !Array.isArray(sl)
-                                                      ) {
-                                                        nf[ft] = sl.value;
-                                                      } else {
-                                                        delete nf[ft];
-                                                      }
-                                                      setDrillDown({
-                                                        ...drillDown,
-                                                        ...nf,
-                                                      });
-                                                    }}
-                                                  />
-                                                 }
+                                                    {ft &&
+                                                      !ft.includes(
+                                                        "constituency"
+                                                      ) && (
+                                                        <Select
+                                                          isMulti={multiFilters.includes(
+                                                            ft
+                                                          )}
+                                                          ref={
+                                                            i == 4
+                                                              ? kephLevelRef
+                                                              : null
+                                                          }
+                                                          name={ft}
+                                                          defaultValue={
+                                                            drillDown[ft] || ""
+                                                          }
+                                                          id={ft}
+                                                          className="flex w-full   placeholder-gray-500 border border-blue-600 outline-none"
+                                                          styles={{
+                                                            control: (baseStyles) => ({
+                                                              ...baseStyles,
+                                                              backgroundColor: 'transparent',
+                                                              outLine: 'none',
+                                                              border: 'none',
+                                                              outLine: 'none',
+                                                              textColor: 'transparent',
+                                                              padding: 0,
+                                                              height: '4px',
+                                                              width: '100%'
+      
+                                                            })
+                                                          }}
+                                                            options={Array.from(
+                                                            filters[ft] || [],
+                                                            (fltopt) => {
+                                                              return {
+                                                                value:
+                                                                  fltopt.id,
+                                                                label:
+                                                                  fltopt.name,
+                                                              };
+                                                            }
+                                                          )}
+                                                          placeholder={
+                                                            ft
+                                                              .split("_")
+                                                              .join(" ")[0]
+                                                              .toUpperCase() +
+                                                            ft
+                                                              .split("_")
+                                                              .join(" ")
+                                                              .slice(1)
+                                                          }
+                                                          //value={clearFrom ?'' : selectValue}
+                                                          onChange={(sl) => {
+                                                            let nf = {};
+                                                            if (
+                                                              Array.isArray(sl)
+                                                            ) {
+                                                              nf[ft] =
+                                                                (drillDown[ft]
+                                                                  ? drillDown[
+                                                                      ft
+                                                                    ] + ","
+                                                                  : "") +
+                                                                Array.from(
+                                                                  sl,
+                                                                  (l_) =>
+                                                                    l_.value
+                                                                ).join(",");
+                                                            } else if (
+                                                              sl &&
+                                                              sl !== null &&
+                                                              typeof sl ===
+                                                                "object" &&
+                                                              !Array.isArray(sl)
+                                                            ) {
+                                                              nf[ft] = sl.value;
+                                                              setSelectedKeph(sl.label);
+                                                            } else {
+                                                              delete nf[ft];
+                                                              setSelectedKeph("");
+                                                            }
+                                                            setDrillDown({
+                                                              ...drillDown,
+                                                              ...nf,
+                                                            });
+                                                          }}
+                                                        />
+                                                      )}
                                                   </>
                                                 );
                                             }
                                           })(ft)}
                                         </div>
                                       ))}
+                                      
 
-                                    <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
+                                    {/*<div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
                                       <label
                                         htmlFor="has_edits"
                                         className="text-gray-700 capitalize text-sm flex-grow"
@@ -1081,9 +1195,9 @@ if(filters){
                                           });
                                         }}
                                       />
-                                    </div>
+                                      </div>*/}
 
-                                    <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
+                                    {/*<div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
                                       <label
                                         htmlFor="has_edits"
                                         className="text-gray-700 capitalize text-sm flex-grow"
@@ -1105,9 +1219,9 @@ if(filters){
                                           });
                                         }}
                                       />
-                                    </div>
+                                      </div>*/}
 
-                                    <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
+                                    {/*<div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
                                       <label
                                         htmlFor="has_edits"
                                         className="text-gray-700 capitalize text-sm flex-grow"
@@ -1129,9 +1243,9 @@ if(filters){
                                           });
                                         }}
                                       />
-                                    </div>
+                                      </div>*/}
 
-                                    <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
+                                    {/*<div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
                                       <label
                                         htmlFor="has_edits"
                                         className="text-gray-700 capitalize text-sm flex-grow"
@@ -1153,9 +1267,9 @@ if(filters){
                                           });
                                         }}
                                       />
-                                    </div>
+                                      </div>*/}
 
-                                    <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
+                                    {/*<div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
                                       <label
                                         htmlFor="has_edits"
                                         className="text-gray-700 capitalize text-sm flex-grow"
@@ -1177,9 +1291,9 @@ if(filters){
                                           });
                                         }}
                                       />
-                                    </div>
+                                      </div>*/}
 
-                                    <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
+                                    {/*<div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
                                       <label
                                         htmlFor="has_edits"
                                         className="text-gray-700 capitalize text-sm flex-grow"
@@ -1201,9 +1315,9 @@ if(filters){
                                           });
                                         }}
                                       />
-                                    </div>
+                                      </div>*/}
 
-                                    <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
+                                    {/*<div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
                                       <label
                                         htmlFor="has_edits"
                                         className="text-gray-700 capitalize text-sm flex-grow"
@@ -1225,9 +1339,9 @@ if(filters){
                                           });
                                         }}
                                       />
-                                    </div>
+                                      </div>*/}
 
-                                    <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
+                                    {/*<div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
                                       <label
                                         htmlFor="has_edits"
                                         className="text-gray-700 capitalize text-sm flex-grow"
@@ -1249,31 +1363,38 @@ if(filters){
                                           });
                                         }}
                                       />
-                                    </div>
-
+                                      </div>*/}  
+                                      
+                                  <>
                                     <button
-                                      onClick={(ev) => {
-                                        router.push({
-                                          pathname: "/gis",
-                                          query: {
-                                            units: "0",
-                                            // ...props?.query,
-                                            ...drillDown,
-                                          },
-                                        });
+                                      onClick= {() => {
+                                        
+                                        if(kephLevelRef.current === null){
+                                          router.push({
+                                            pathname: '/gis',
+                                            query: {
+                                              units: '0',
+                                              ...drillDown,
+                                            },
+                                          });
+              
+                                        }else{
+                                          handleApplyFilters();
+                                          console.log("Color Parameters are:",selectedKeph);
+                                        }
                                       }}
-                                      className="bg-black border-2 border-black text-white hover:bg-blue-800 focus:bg-blue-800 active:bg-blue-800 font-semibold px-5 py-1 text-lg  w-full whitespace-nowrap text-center uppercase"
-                                    >
-                                      Apply Filters
-                                    </button>
+                                      className="bg-black border-2 border-black text-white hover:bg-green-800 focus:bg-green-800 active:bg-green-800 font-semibold px-5 py-1 text-lg rounded w-full whitespace-nowrap text-center uppercase"
+                                    >Apply Filters</button>
+                                  </>
                                     <div className="w-full flex items-center py-2 justify-center">
+                                    
                                       <button
                                         className="cursor-pointer text-sm bg-transparent text-blue-700 hover:text-black hover:underline focus:text-black focus:underline active:text-black active:underline"
-                                        onClick={(ev) => {
-                                          router.push("/gis");
+                                        onClick={ev =>{
+                                          ev.preventDefault()
+                                            handleClearFilters()
                                         }}
-                                      >
-                                        Clear filters
+                                      >Clear filters
                                       </button>
                                     </div>
                                   </form>
@@ -1291,7 +1412,7 @@ if(filters){
                       >
                         <div className="col-span-4 md:col-span-4 flex flex-col group items-center justify-start text-left">
                           {/* Result count */}
-                          <div className="bg-white w-full p-3 ">
+                          {/* <div className="bg-white w-full p-3 rounded">
                             {props?.data && props?.data?.results && (
                               <h4 className="text-base md:text-xl tracking-tight font-bold leading-tight">
                                 {props?.data?.results?.length}{" "}
@@ -1301,12 +1422,12 @@ if(filters){
                                 found.
                               </h4>
                             )}
-                          </div>
+                          </div> */}
                           <hr className="my-2" />
 
                           {/* Filters */}
                           <details
-                            className=" bg-transparent py-1 flex flex-col w-full md:stickyz"
+                            className="rounded bg-transparent py-1 flex flex-col w-full md:stickyz"
                             open
                           >
                             <summary className="flex cursor-pointer w-full bg-white p-0">
@@ -1315,7 +1436,7 @@ if(filters){
 
                             <div className="flex flex-row items-center justify-start w-full gap-2">
                               {filters && filters?.error ? (
-                                <div className="w-full  bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base">
+                                <div className="w-full rounded bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base">
                                   <p>No filters.</p>
                                 </div>
                               ) : (
@@ -1326,7 +1447,7 @@ if(filters){
                                     ref={formRef}
                                     onSubmit={async (ev) => {
                                       ev.preventDefault();
-                                      setIsLoading(true);
+                                      setIsLoading(false);
 
                                       const fields =
                                         "code,official_name,operation_status,approved,keph_level,facility_type_name,facility_type_parent,owner,owner_type,regulation_body,number_of_beds,number_of_cots,county,constituency,sub_county,ward,admission_status,facility_services,created,closed";
@@ -1432,21 +1553,20 @@ if(filters){
                                             ? sorted[i]
                                             : sorted[v]
                                         );
-                                      })(fltrs).map((ft) => (
+                                      })(fltrs).map((ft, i) => (
                                         <div
                                           key={ft}
                                           className="w-full flex flex-col items-start justify-start gap-1 mb-3"
                                         >
-                                          
-                                          {
-                                            ft && !ft.includes("constituency") &&
-                                          <label
-                                            htmlFor={ft}
-                                            className="text-gray-600 capitalize text-sm"
-                                          >
-                                            {ft.split("_").join(" ")}
-                                          </label>
-                                            }
+                                          {ft &&
+                                            !ft.includes("constituency") && (
+                                              <label
+                                                htmlFor={ft}
+                                                className="text-gray-600 capitalize text-sm"
+                                              >
+                                                {ft.split("_").join(" ")}
+                                              </label>
+                                            )}
 
                                           {(() => {
                                             // let serviceOptions = [];
@@ -1504,7 +1624,7 @@ if(filters){
                                                         ...nf,
                                                       });
                                                     } catch (e) {
-                                                      console.log(e.message);
+                                                      // console.log(e.message);
                                                     }
                                                   };
 
@@ -1512,6 +1632,7 @@ if(filters){
                                                   <Select
                                                     id={ft}
                                                     name={ft}
+                                                    className="flex w-full   placeholder-gray-500 border border-blue-600 outline-none"
                                                     styles={{
                                                       control: (baseStyles) => ({
                                                         ...baseStyles,
@@ -1523,11 +1644,9 @@ if(filters){
                                                         padding: 0,
                                                         height: '4px',
                                                         width: '100%'
-                                                      }),
-                                      
+
+                                                      })
                                                     }}
-                                                    
-                                                    className='flex w-full   placeholder-gray-500 border border-blue-600 outline-none'
                                                     options={Array.from(
                                                       filters[ft] || [],
                                                       (fltopt) => {
@@ -1558,6 +1677,7 @@ if(filters){
                                                   <Select
                                                     id={ft}
                                                     name={ft}
+                                                    className="flex w-full   placeholder-gray-500 border border-blue-600 outline-none"
                                                     styles={{
                                                       control: (baseStyles) => ({
                                                         ...baseStyles,
@@ -1569,11 +1689,9 @@ if(filters){
                                                         padding: 0,
                                                         height: '4px',
                                                         width: '100%'
-                                                      }),
-                                      
+
+                                                      })
                                                     }}
-                                                    
-                                                    className='flex w-full   placeholder-gray-500 border border-blue-600 outline-none'
                                                     options={serviceOptions}
                                                     placeholder={
                                                       ft
@@ -1721,6 +1839,7 @@ if(filters){
                                                   <Select
                                                     id={ft}
                                                     name={ft}
+                                                    className="flex w-full   placeholder-gray-500 border border-blue-600 outline-none"
                                                     styles={{
                                                       control: (baseStyles) => ({
                                                         ...baseStyles,
@@ -1732,11 +1851,9 @@ if(filters){
                                                         padding: 0,
                                                         height: '4px',
                                                         width: '100%'
-                                                      }),
-                                      
+
+                                                      })
                                                     }}
-                                                    
-                                                    className='flex w-full   placeholder-gray-500 border border-blue-600 outline-none'
                                                     options={Array.from(
                                                       filters[ft] || [],
                                                       (fltopt) => {
@@ -1762,72 +1879,106 @@ if(filters){
                                                   />
                                                 );
 
-                                              case "sub_county":
-                                                return (
-                                                  <Select
-                                                    id={ft}
-                                                    name={ft}
-                                                    styles={{
-                                                      control: (baseStyles) => ({
-                                                        ...baseStyles,
-                                                        backgroundColor: 'transparent',
-                                                        outLine: 'none',
-                                                        border: 'none',
-                                                        outLine: 'none',
-                                                        textColor: 'transparent',
-                                                        padding: 0,
-                                                        height: '4px',
-                                                        width: '100%'
-                                                      }),
-                                      
-                                                    }}
-                                                    
-                                                    className='flex w-full   placeholder-gray-500 border border-blue-600 outline-none'
-                                                    options={subCountyOptions}
-                                                    placeholder={
-                                                      ft
-                                                        .split("_")
-                                                        .join(" ")[0]
-                                                        .toUpperCase() +
-                                                      ft
-                                                        .split("_")
-                                                        .join(" ")
-                                                        .slice(1)
-                                                    }
-                                                    onChange={(ev) => {
-                                                      if (
-                                                        subCountyOptions?.length !== 0
-                                                      ) {
-                                                        let nf = {};
-                                                        if (Array.isArray(ev)) {
-                                                          nf[ft] =
-                                                            (drillDown[ft]
-                                                              ? drillDown[ft] +
-                                                                ","
-                                                              : "") +
-                                                            Array.from(
-                                                              ev,
-                                                              (l_) => l_.value
-                                                            ).join(",");
-                                                        } else if (
-                                                          ev &&
-                                                          ev !== null &&
-                                                          typeof ev ===
-                                                            "object" &&
-                                                          !Array.isArray(ev)
-                                                        ) {
-                                                          nf[ft] = ev.value;
-                                                        } else {
-                                                          delete nf[ft];
-                                                        }
-                                                        setDrillDown({
-                                                          ...drillDown,
-                                                          ...nf,
-                                                        });
+                                                case "sub_county":
+                                                  const handleConstituencyChange =
+                                                    async (ev) => {
+                                                      try {
+                                                        const dataConstituencies =
+                                                          await fetch(
+                                                            `/api/filters/ward/?sub_county=${ev.value}`
+                                                          );
+                                                        dataConstituencies
+                                                          .json()
+                                                          .then((r) => {
+                                                            const optionsWard =
+                                                              [];
+  
+                                                            r.results.forEach(
+                                                              ({ id, name }) => {
+                                                                optionsWard.push({
+                                                                  value: id,
+                                                                  label: name,
+                                                                });
+                                                              }
+                                                            );
+  
+                                                            // sub county
+  
+                                                            setWardOptions(
+                                                              optionsWard
+                                                            );
+                                                            setIsWardOptionsUpdate(
+                                                              !isWardOptionsUpdate
+                                                            );
+  
+                                                            let nf = {};
+                                                            if (
+                                                              Array.isArray(ev)
+                                                            ) {
+                                                              nf[ft] =
+                                                                (drillDown[ft]
+                                                                  ? drillDown[
+                                                                      ft
+                                                                    ] + ","
+                                                                  : "") +
+                                                                Array.from(
+                                                                  ev,
+                                                                  (l_) => l_.value
+                                                                ).join(",");
+                                                            } else if (
+                                                              ev &&
+                                                              ev !== null &&
+                                                              typeof ev ===
+                                                                "object" &&
+                                                              !Array.isArray(ev)
+                                                            ) {
+                                                              nf[ft] = ev.value;
+                                                            } else {
+                                                              delete nf[ft];
+                                                            }
+                                                            setDrillDown({
+                                                              ...drillDown,
+                                                              ...nf,
+                                                            });
+                                                          });
+                                                      } catch (e) {
+                                                        console.error(e.message);
                                                       }
-                                                    }}
-                                                  />
-                                                );
+                                                    };
+                                                  return (
+                                                    <Select
+                                                      id={ft}
+                                                      name={ft}
+                                                      className="flex w-full   placeholder-gray-500 border border-blue-600 outline-none"
+                                                      styles={{
+                                                        control: (baseStyles) => ({
+                                                          ...baseStyles,
+                                                          backgroundColor: 'transparent',
+                                                          outLine: 'none',
+                                                          border: 'none',
+                                                          outLine: 'none',
+                                                          textColor: 'transparent',
+                                                          padding: 0,
+                                                          height: '4px',
+                                                          width: '100%'
+  
+                                                        })
+                                                      }}
+                                                      options={subCountyOptions}
+                                                      placeholder={
+                                                        ft
+                                                          .split("_")
+                                                          .join(" ")[0]
+                                                          .toUpperCase() +
+                                                        ft
+                                                          .split("_")
+                                                          .join(" ")
+                                                          .slice(1)
+                                                      }
+                                                      //value={clearFrom ?'' : selectValue}
+                                                      onChange={handleConstituencyChange}
+                                                    />
+                                                  );
                                               /* case "constituency":
                                                 const handleConstituencyChange =
                                                   async (ev) => {
@@ -1899,7 +2050,7 @@ if(filters){
                                                   <Select
                                                     id={ft}
                                                     name={ft}
-                                                    className="w-full p-1  bg-gray-50 col-start-1"
+                                                    className="w-full p-1 rounded bg-gray-50 col-start-1"
                                                     options={
                                                       constituencyOptions
                                                     }
@@ -1924,6 +2075,7 @@ if(filters){
                                                   <Select
                                                     id={ft}
                                                     name={ft}
+                                                    className="flex w-full   placeholder-gray-500 border border-blue-600 outline-none"
                                                     styles={{
                                                       control: (baseStyles) => ({
                                                         ...baseStyles,
@@ -1935,11 +2087,9 @@ if(filters){
                                                         padding: 0,
                                                         height: '4px',
                                                         width: '100%'
-                                                      }),
-                                      
+
+                                                      })
                                                     }}
-                                                    
-                                                    className='flex w-full   placeholder-gray-500 border border-blue-600 outline-none'
                                                     options={wardOptions}
                                                     placeholder={
                                                       ft
@@ -1982,37 +2132,27 @@ if(filters){
                                                   />
                                                 );
 
-                                              default:
-                                                
+                                                case "chu_status":
                                                 return (
-                                                  <>
-                                                  {
-                                                    ft !== "constituency" &&
                                                   <Select
-                                                    isMulti={multiFilters.includes(
-                                                      ft
-                                                    )}
-                                                    name={ft}
-                                                    defaultValue={
-                                                      drillDown[ft] || ""
-                                                    }
                                                     id={ft}
+                                                    name={ft}
+                                                    className="flex w-full   placeholder-gray-500 border border-blue-600 outline-none"
                                                     styles={{
-                                control: (baseStyles) => ({
-                                  ...baseStyles,
-                                  backgroundColor: 'transparent',
-                                  outLine: 'none',
-                                  border: 'none',
-                                  outLine: 'none',
-                                  textColor: 'transparent',
-                                  padding: 0,
-                                  height: '4px',
-                                  width: '100%'
-                                }),
-                
-                              }}
-                              
-                              className='flex w-full   placeholder-gray-500 border border-blue-600 outline-none'
+                                                      control: (baseStyles) => ({
+                                                        ...baseStyles,
+                                                        backgroundColor: 'transparent',
+                                                        outLine: 'none',
+                                                        border: 'none',
+                                                        outLine: 'none',
+                                                        textColor: 'transparent',
+                                                        padding: 0,
+                                                        height: '4px',
+                                                        width: '100%'
+
+                                                      })
+                                                    }}
+                                                    // options={wardOptions}
                                                     options={Array.from(
                                                       filters[ft] || [],
                                                       (fltopt) => {
@@ -2023,18 +2163,18 @@ if(filters){
                                                       }
                                                     )}
                                                     placeholder={
-                                                     ft && ft
+                                                      ft
                                                         .split("_")
                                                         .join(" ")[0]
                                                         .toUpperCase() +
-                                                     ft && ft
+                                                      ft
                                                         .split("_")
                                                         .join(" ")
                                                         .slice(1)
                                                     }
                                                     onChange={(sl) => {
                                                       let nf = {};
-                                                      if (Array.isArray(sl) && ft) {
+                                                      if (Array.isArray(sl)) {
                                                         nf[ft] =
                                                           (drillDown[ft]
                                                             ? drillDown[ft] +
@@ -2061,14 +2201,105 @@ if(filters){
                                                       });
                                                     }}
                                                   />
-                                            }
-                                            </>
+                                                );
+
+                                              default:
+                                                return (
+                                                  <>
+                                                    {/* {ft !== "constituency" &&(
+                                                      <Select
+                                                        /*ref={
+                                                          i == 3
+                                                            ? kephLevelRef
+                                                            : null
+                                                        }
+                                                        isMulti={multiFilters.includes(
+                                                          ft
+                                                        )}
+                                                        name={ft}
+                                                        defaultValue={
+                                                          drillDown[ft] || ""
+                                                        }
+                                                        id={ft}
+                                                        className="flex w-full   placeholder-gray-500 border border-blue-600 outline-none"
+                                                        styles={{
+                                                          control: (baseStyles) => ({
+                                                            ...baseStyles,
+                                                            backgroundColor: 'transparent',
+                                                            outLine: 'none',
+                                                            border: 'none',
+                                                            outLine: 'none',
+                                                            textColor: 'transparent',
+                                                            padding: 0,
+                                                            height: '4px',
+                                                            width: '100%'
+    
+                                                          })
+                                                        }}
+                                                        // options={communitsOption}
+                                                            options={Array.from(
+                                                          filters[ft] || [],
+                                                          (fltopt) => {
+                                                            return {
+                                                              value: fltopt.id,
+                                                              label: fltopt.name,
+                                                            };
+                                                          }
+                                                        )}
+                                                        placeholder={
+                                                          ft &&
+                                                          ft
+                                                            .split("_")
+                                                            .join(" ")[0]
+                                                            .toUpperCase() +
+                                                            ft &&
+                                                          ft
+                                                            .split("_")
+                                                            .join(" ")
+                                                            .slice(1)
+                                                        }
+                                                        onChange={(sl) => {
+                                                          let nf = {};
+                                                          if (
+                                                            Array.isArray(sl) &&
+                                                            ft
+                                                          ) {
+                                                            nf[ft] =
+                                                              (drillDown[ft]
+                                                                ? drillDown[
+                                                                    ft
+                                                                  ] + ","
+                                                                : "") +
+                                                              Array.from(
+                                                                sl,
+                                                                (l_) => l_.value
+                                                              ).join(",");
+                                                          } else if (
+                                                            sl &&
+                                                            sl !== null &&
+                                                            typeof sl ===
+                                                              "object" &&
+                                                            !Array.isArray(sl)
+                                                          ) {
+                                                            nf[ft] = sl.value;
+                                                          } else {
+                                                            delete nf[ft];
+                                                          }
+                                                          setDrillDown({
+                                                            ...drillDown,
+                                                            ...nf,
+                                                          });
+                                                        }}
+                                                      />
+                                                    )} */}
+                                                  </>
                                                 );
                                             }
                                           })(ft)}
                                         </div>
                                       ))}
 
+                                    {/*
                                     <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
                                       <label
                                         htmlFor="has_edits"
@@ -2259,28 +2490,42 @@ if(filters){
                                           });
                                         }}
                                       />
-                                    </div>
+                                      </div>*/}
 
                                     <button
                                       onClick={(ev) => {
                                         router.push({
                                           pathname: "/gis",
                                           query: {
+                                            //parse json error
                                             units: "0",
                                             // ...props?.query,
                                             ...drillDown,
                                           },
                                         });
                                       }}
-                                      className="bg-black border border-black text-white hover:bg-blue-800 focus:bg-blue-800 active:bg-blue-800 font-semibold px-5 py-1 text-lg  w-full whitespace-nowrap text-center uppercase"
+                                      className="bg-black border-2 border-black text-white hover:bg-green-800 focus:bg-green-800 active:bg-green-800 font-semibold px-5 py-1 text-lg rounded w-full whitespace-nowrap text-center uppercase"
                                     >
                                       Apply Filters
                                     </button>
                                     <div className="w-full flex items-center py-2 justify-center">
                                       <button
-                                        className="cursor-pointer text-sm bg-transparent text-black hover:text-black hover:underline focus:text-black focus:underline active:text-black active:underline"
+                                        className="cursor-pointer text-sm bg-transparent text-blue-700 hover:text-black hover:underline focus:text-black focus:underline active:text-black active:underline"
                                         onClick={(ev) => {
-                                          router.push("/gis");
+                                          ev.preventDefault();
+                                          setDrillDown({});
+                                          setSubCountyOptions([]);
+                                          setWardOptions([]);
+                                          localStorage.setItem(
+                                            "dd_owners",
+                                            JSON.stringify({
+                                              county: "",
+                                              sub_county: "",
+                                              ward: "",
+                                            })
+                                          );
+                                          router.reload();
+                                          /*router.push('/gis')*/
                                         }}
                                       >
                                         Clear filters
@@ -2296,39 +2541,68 @@ if(filters){
                     </Tabs.Root>
                   </aside>
 
-                  {/* Map the results */}
+                  {/* Map the results  & summary*/}
                   <div
-                    className="col-span-6 md:col-span-3 lg:col-span-4 xl:col-span-5 flex flex-col gap-4 items-center justify-center bg-blue-100 shadow-lg border border-gray-300"
+                    className="col-span-6 md:col-span-4 lg:col-span-4 xl:col-span-5 flex flex-col gap-4 items-center justify-center bg-green-100 rounded-lg shadow-lg border border-gray-300"
                     style={{ minHeight: "650px" }}
                   >
+                    <div className="flex flex-wrap gap-2 text-sm md:text-base items-center justify-between">
+                      <h5 className="text-lg font-medium text-gray-800">
+                        {labelText}
+                        {/*<div className="bg-white w-full p-3 rounded">*/}
+                            {/* Facilities */}
+                            {checkTab === "facilities" && props?.data?.results ? (
+                              <h4 className="text-base md:text-xl tracking-tight font-bold leading-tight">
+                                {/*{props?.data?.results?.length}{" "}*/}
+                                {props?.data?.results?.length > 1
+                                  ? `${props?.count} facilities`
+                                  : `${props?.count} facility`}{" "} {/*console.log('Tab name:', Tabs.Panel)*/}
+                                found.
+                              </h4>
+                            ) : null }
+                            {checkTab === "cunits" && props?.data?.results ? (
+                              <h4 className="text-base md:text-xl tracking-tight font-bold leading-tight">
+                                {/* {props?.data?.results?.length}{" "} */}
+                                {props?.data?.results?.length > 1
+                                  ? `${props?.count} community units`
+                                  : `${props?.count} community unit`}{" "} {/*console.log('Tab name:', Tabs.Panel)*/}
+                                found.
+                              </h4>
+                            ) : null }
+
+                        {/* </div> */}
+                      </h5>
+                    </div>
                     {/* <pre>{JSON.stringify(props?.data?.results, null, 2)}</pre> */}
-                    <Map data={props?.data?.results || []} />
+                    {facility?.lat_long && facility?.lat_long.length > 0 ? (
+                    <Map data={props?.data?.results || []}
+                        //  iconColor={selectedKeph}
+                        //  kephLevel={selectedKeph}
+                         ref={this.kephLevelRef}
+                         lat={facility?.lat_long[0]}
+                         long={facility?.lat_long[1]}
+                         center={center}
+                         geoJson={geoLocationData}
+                    />
+                    ):(
+                      <Map data={props?.data?.results || []}
+                           iconColor={selectedKeph}
+                           kephLevel={selectedKeph}
+                      />
+                    )}
                   </div>
                 </div>
               </div>
             </>
           )}
-        </>
-
-        {/* Floating div at bottom right of page */}
-        {/* <div className="fixed bottom-4 right-4 z-10 w-96 h-auto bg-blue-50/50 bg-blend-lighten shadow-lg -lg flex flex-col justify-center items-center py-2 px-3">
-          <h5 className="text-sm font-bold">
-            <span className="text-gray-600 uppercase">Limited results</span>
-          </h5>
-          <p className="text-sm text-gray-800">
-            For testing reasons, downloads are limited to the first 1000
-            results.
-          </p>
-        </div> */}
-      
+        </> 
       </MainLayout>
-    </>
+    </div>
   );
 };
 
 Gis.getInitialProps = async (ctx) => {
-  const API_URL =
-    process.env.NEXT_PUBLIC_API_URL
+  const API_URL = process.env.NEXT_PUBLIC_API_URL;
   let host = ctx.req ? ctx.req.headers.host : window.location.hostname;
   let yesItIsUnits =
     (ctx?.query &&
@@ -2336,8 +2610,10 @@ Gis.getInitialProps = async (ctx) => {
     false;
 
   let all_facilities = [];
+  const allOptions =[];
+  //fetch facility ward boundaries
 
-  const fetchFilters = (token) => {
+  const fetchFilters = async (token) => {
     let filters_url =
       API_URL +
       "/common/filtering_summaries/?fields=county%2Cfacility_type%2Cconstituency%2Cward%2Coperation_status%2Cservice_category%2Cowner_type%2Cowner%2Cservice%2Ckeph_level%2Csub_county%2Cward";
@@ -2370,7 +2646,8 @@ Gis.getInitialProps = async (ctx) => {
           isUnits: yesItIsUnits,
         };
       });
-  };
+
+    };
 
   const getMorePagedData = async (next_url, token) => {
     return fetch(next_url, {
@@ -2384,13 +2661,13 @@ Gis.getInitialProps = async (ctx) => {
         if (data.results) {
           all_facilities.push(...data.results);
         } else {
-          console.log("getData: no results from ", next_url);
+          // console.log("getData: no results from ", next_url);
         }
         if (data.next) {
-          console.log(
-            "::::::::::: even more data to be fetched seemingly. ",
-            data.next
-          );
+          // console.log(
+          //   "::::::::::: even more data to be fetched seemingly. ",
+          //   data.next
+          // );
           return getMorePagedData(data.next, token);
         } else {
           return {
@@ -2404,7 +2681,14 @@ Gis.getInitialProps = async (ctx) => {
       });
   };
 
+
   const fetchData = (token) => {
+    const allFilters = [];
+    const urls = [
+      'filter_url',
+      'map_url'
+    ];
+    let dr =''
     let url =
       API_URL +
       "/facilities/facilities/?fields=id,code,official_name,county,sub_county_name,facility_type_name,owner_name,operation_status_name,name,is_complete,approved_national_level,has_edits,approved,rejected,keph_level,lat_long&page_size=600";
@@ -2431,6 +2715,10 @@ Gis.getInitialProps = async (ctx) => {
       "sub_county_name",
       "open_public_holidays",
     ];
+    if(typeof window !== 'undefined') {
+      dr =JSON.parse(localStorage.getItem('dd_owners'))
+    }
+
     if (
       ctx?.query &&
       ctx?.query?.units &&
@@ -2474,7 +2762,10 @@ Gis.getInitialProps = async (ctx) => {
     if (ctx?.query?.page) {
       url = `${url}&page=${ctx.query.page}`;
     }
-    console.log("running fetchData(" + url + ")");
+    // console.log("running fetchData(" + url + ")");
+    //let allFilters;
+    //let urls
+
     return fetch(url, {
       headers: {
         Authorization: "Bearer " + token,
@@ -2485,37 +2776,48 @@ Gis.getInitialProps = async (ctx) => {
       .then((json) => {
         return fetchFilters(token).then((ft) => {
           ///////
-          // console.log('JSON:::: ', Object.keys(json))
+          console.log({ft});
+          // // console.log('JSON:::: ', Object.keys(json))
           all_facilities.push(...json.results);
+
+          
+          //return allFilters
           if (json.next) {
             if (!host.includes("productiondomainname")) {
               // limiting to 600 for now globally. Replace with prod domain name when going live to delimit
               return {
                 data: { results: all_facilities },
+                count: json.count,
                 query,
                 filters: { ...ft },
                 path: ctx.asPath || "/gis",
                 isUnits: yesItIsUnits,
               };
             }
+          
             return getMorePagedData(json.next, token).then((data) => {
               console.log("multi pages, pulling from: ", json.next);
               return data;
+            }).then(() => {
+              return getMapData(token)
             });
           } else {
             return {
               data: { results: all_facilities },
               query,
+              count: json.count,
               filters: { ...ft },
               path: ctx.asPath || "/gis",
               isUnits: yesItIsUnits,
             };
           }
           ///////
-        });
+        })
+        .catch(err => {console.error(err.message)})
+        
       })
       .catch((err) => {
-        console.log("Error fetching facilities: ", err);
+        // console.log("Error fetching facilities: ", err);
         return {
           error: true,
           err: err,
@@ -2527,14 +2829,18 @@ Gis.getInitialProps = async (ctx) => {
       });
   };
 
+
   return checkToken(ctx.req, ctx.res)
     .then((t) => {
       if (t.error) {
         throw new Error("Error checking token");
       } else {
         let token = t.token;
-        return fetchData(token).then((t) => t);
-      }
+        let _data;
+        let url = API_URL + "/facilities/facilities" + ctx.query.id + "/";
+        return fetchData(token).then((t => t));
+        
+    }
     })
     .catch((err) => {
       console.log("Error checking token: ", err);

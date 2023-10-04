@@ -70,10 +70,10 @@
 	touch-action: none;
 }
 .leaflet-container {
-	-webkit-tap-highlight-color: transparent;
+	--webkit-tap-highlight-color: transparent;
 }
 .leaflet-container a {
-	-webkit-tap-highlight-color: rgba(51, 181, 229, 0.4);
+	--webkit-tap-highlight-color: rgba(51, 181, 229, 0.4);
 }
 .leaflet-tile {
 	filter: inherit;
@@ -85,13 +85,13 @@
 .leaflet-zoom-box {
 	width: 0;
 	height: 0;
-	-moz-box-sizing: border-box;
+	--moz-box-sizing: border-box;
 	     box-sizing: border-box;
 	z-index: 800;
 	}
 /* workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=888319 */
 .leaflet-overlay-pane svg {
-	-moz-user-select: none;
+	--moz-user-select: none;
 	}
 
 .leaflet-pane         { z-index: 400; }
