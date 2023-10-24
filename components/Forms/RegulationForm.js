@@ -198,9 +198,9 @@ export function RegulationForm() {
                 handleRegulationUpdates(options['22']?.token, values, facilityId, fileRef.current, alert)
                 .then(resp => {
                     defer(() => updatedSavedChanges(true));
-                    if (resp) {
-                        // console.log({facilityId, file: fileRef.current})
-                        // console.log('Working....')
+                    if (resp.ok) {
+                     
+                        alert.success('Facility Regulation Details updated successfully')
 
                       fetch(
                         `${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${facilityId}/`,
@@ -251,6 +251,10 @@ export function RegulationForm() {
                             e.message
                           )
                         );
+                    }
+                    else
+                    {
+                        alert.error('Unable to update regulation form')
                     }
                   })
                   .catch((e) =>

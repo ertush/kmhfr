@@ -96,22 +96,14 @@ export function GeolocationForm({useGeoJSON, useGeoData}) {
 	
 
     // Form Schema
-    // const formSchema = object({
 
-    //     collection_date: string({ invalid_type_error: "Collection must be a date" }),
-    //     latitude: string({ invalid_type_error: "Latitude must be a float number", }),
-    //     longitude: string({ invalid_type_error: "Longitude must be a float number" }),
-
-    // })
-
- 
     const handleGeolocationPrevious = useCallback(() => {
         setFormId(`${parseInt(formId) - 1}`);
        
     }, [])
 
 
-    console.log({options})
+    // console.log({options})
 
     return (
         <Formik
@@ -129,11 +121,15 @@ export function GeolocationForm({useGeoJSON, useGeoData}) {
 
     
                 handleGeolocationUpdates(options['22']?.token, payload, coordinates_id) 
-                  .then(({ statusText }) => {
+                  .then((resp) => {
                     defer(() => updatedSavedChanges(true));
                   
-                    if (statusText == "OK") {
-                        console.log({statusText})
+                    if (resp.ok) {
+                        
+        
+                      alert.success("Facility Geolocation successfully updated")
+                      localStorage.clear();
+      
 
                       fetch(
                       `${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${facilityId}/`,
@@ -194,6 +190,12 @@ export function GeolocationForm({useGeoJSON, useGeoData}) {
                             e.message
                           )
                         );
+                    }
+                    else
+                    {
+                 
+                      alert.error("Unable to update facility geolocation data")
+                  
                     }
                   })
                   .catch((e) =>
