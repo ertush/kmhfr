@@ -18,6 +18,7 @@ import { FacilityUpdatesContext } from '../../pages/facilities/edit/[id]';
 import { FacilityIdContext } from './Form'
 import { defer } from 'underscore';
 import { Alert } from "@mui/lab";
+import { useAlert } from 'react-alert';
 
 
 
@@ -58,6 +59,8 @@ export function FacilityContactsForm() {
     const [formId, setFormId] = useContext(FormContext);
     const[facilityId, _] = useContext(FacilityIdContext);
     const [responseError, setResponseError] = useState(null);
+
+    const alert = useAlert()
 
 
     const { updatedSavedChanges, updateFacilityUpdateData } = options['19']?.data ? useContext(FacilityUpdatesContext) : {updatedSavedChanges: null, updateFacilityUpdateData: null }
@@ -216,9 +219,12 @@ export function FacilityContactsForm() {
 
             options['19']?.data ? 
             handleFacilityContactsUpdates(options['22']?.token, values, facilityId)
-            .then(({ statusText }) => {
+            .then((resp) => {
                 defer(() => updatedSavedChanges(true));
-                if (statusText == "OK") {
+                if (resp.ok) {
+
+                    alert.success('Facility Contacts Updated successfully')
+                    
                   fetch(
                     `${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${facilityId}/`,
                     {
@@ -271,6 +277,10 @@ export function FacilityContactsForm() {
                         e.message
                       )
                     );
+                }
+                else
+                {
+                    alert.error("Unable to update facility contacts")
                 }
               })
               .catch((e) =>

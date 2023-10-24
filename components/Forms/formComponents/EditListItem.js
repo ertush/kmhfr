@@ -131,7 +131,7 @@ function  EditListItem({
 
         if (item) {
 
-          console.log({savedItems, values})
+          // console.log({savedItems, values})
 
           handleItemsUpdate(token, [savedItems, itemId])
             .then(resp => {

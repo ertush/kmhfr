@@ -15,6 +15,7 @@ import { useAlert } from 'react-alert';
 import { defer } from "underscore";
 import { handleBasicDetailsSubmit, handleBasicDetailsUpdates } from '../../controllers/facility/facilityHandlers';
 import { FacilityUpdatesContext } from '../../pages/facilities/edit/[id]';
+import  useSWR from 'swr';
 // import { sortOptions } from '../../utils/sort';
 
 
@@ -50,7 +51,7 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
     facility_catchment_population: "",
     reporting_in_dhis: "",
     admission_status: "",
-    nhif_accreditation: "",
+    nhi36414cf_accreditation: "",
     is_classified: "",
     open_whole_day: "",
     open_late_night: "",
@@ -82,10 +83,12 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
   const [_, setGeoJSON] = useGeoJSON();
   const [__, setWardName] = useGeoData('ward_data');
   const [___, setGeoCenter] = useGeoData('geo_data');
+  // const [subCountyOptions, setSubCountyOptions] = useState([]);
+  const [isCountyOption, setIsCountyOption] = useState(false);
 
   const { updatedSavedChanges, updateFacilityUpdateData } = options['19']?.data ? useContext(FacilityUpdatesContext) : {updatedSavedChanges: null, updateFacilityUpdateData: null }
 
-  // Facility update data
+  // Facility update data 
 
   const [initialValues, handleFormUpdate] = useLocalStorageState({
     key: options['19']?.data ? 'basic_details_edit_form' : 'basic_details_form',
@@ -93,17 +96,9 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
   }).actions.use();
 
 
-  // console.log({ facilityBasicDetails });
-
-
-
   const formValues = options['19']?.data ? facilityBasicDetails : initialValues && initialValues.length > 1 ? JSON.parse(initialValues) : formFields
 
-  
- 
   // Modify form values
-
-
   const [filteredOptions, setFilteredOptions] = useState({
     facilityTypeDetailOptions: [],
     ownerTypeOptions: []
@@ -139,52 +134,6 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
   })()
 
 
-  // const facilityOptions = (() => {
-	// 	const f_types = [
-	// 		'STAND ALONE',
-	// 		'DISPENSARY',
-	// 		'MEDICAL CLINIC',
-	// 		'NURSING HOME',
-	// 		'HOSPITALS',
-	// 		'HEALTH CENTRE',
-	// 		'MEDICAL CENTRE'
-	// 	]
-
-	// 	const all_ftypes = []
-
-
-	// 	for (let type in f_types) all_ftypes.push(options[0]?.facility_types.find(({ sub_division }) => sub_division === f_types[type]))
-
-	// 	return [{
-	// 		label: all_ftypes[0].sub_division,
-	// 		value: all_ftypes[0].parent
-	// 	},
-	// 	{
-	// 		label: all_ftypes[1].sub_division,
-	// 		value: all_ftypes[1].parent
-	// 	},
-	// 	{
-	// 		label: all_ftypes[2].sub_division,
-	// 		value: all_ftypes[2].parent
-	// 	},
-	// 	{
-	// 		label: all_ftypes[3].sub_division,
-	// 		value: all_ftypes[3].parent
-	// 	},
-	// 	{
-	// 		label: all_ftypes[4].sub_division,
-	// 		value: all_ftypes[4].parent
-	// 	},
-	// 	{
-	// 		label: all_ftypes[5].sub_division,
-	// 		value: all_ftypes[5].parent
-	// 	}
-
-	// 	]
-
-	// })()
-
-
   const operationStatusOptions = [
     {
       value: '190f470f-9678-47c3-a771-de7ceebfc53c',
@@ -197,7 +146,6 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
   ];
 
  
-
   // Effects
   useEffect(() => {
 
@@ -392,32 +340,54 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
 
   });
 
+
+  // console.log({sub_counties, subCountyOptions, error})
+
   // Refs
   const facilityTypeDetailsRef = useRef(null);
   const checkListFileRef = useRef(null);
 
   if(options['19']?.data){
-
     formValues['facility_type'] = facilityTypeOptions.find(({label}) => label == options['19']?.data?.facility_type_parent)?.value
     formValues['facility_type_details'] = filteredOptions.facilityTypeDetailOptions.find(({label}) => label == options['19']?.data?.facility_type_name)?.value
     
-    delete formValues['facility_checklist_document']; 
-
-  
+    // delete formValues['facility_checklist_document']; 
+    // formValues['facility_checklist_document'] = new File([],'Checklist File',undefined)
   }
   
   // console.log({formValues})
+
+//   const fetcher = url => {  
+                
+//     fetch(url, {
+//     headers: {
+//       'Authorization': `Bearer ${options['18']?.token ?? options['22']?.token }`,
+//       'Accept': 'application/json',
+//       'Content-Type': 'application/json, **/**'
+
+//     }
+//     })
+  
+// }
+
+
+// const {data:sub_counties, error} = useSWR(updateSubCountyOptions ? `${process.env.NEXT_PUBLIC_API_URL}/common/sub_counties/${formikState?.values.county_id}` : null, fetcher)
+
 
   return (
     <Formik
       initialValues={formValues}
       onSubmit={(values) => options['19']?.data ? 
       // Update existing facility
-      handleBasicDetailsUpdates(options['22']?.token, values, facilityId, updatedSavedChanges, alert)
+      handleBasicDetailsUpdates(options['22']?.token, values, facilityId, updatedSavedChanges)
       .then((resp) => {
         defer(() => updatedSavedChanges(true));
  
         if (resp.ok) { 
+          
+          alert.success('Facility Basic details updated successfully');
+          localStorage.clear();
+
           fetch(
             `${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${facilityId}/`,
             {
@@ -468,14 +438,16 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
               )
             );
         }
+        else{
+          alert.error('Unable to update facility basic details')
+        }
       })
       .catch((e) =>
         console.error(
           "unable to fetch facility data. Error:",
           e.message
         )
-      )
-        
+      )   
       : 
       // Post new facility
       handleBasicDetailsSubmit(options['18']?.token, values, formId, setFormId, checkListFileRef.current, alert, setGeoJSON, setWardName, setGeoCenter, setFacilityId)}
@@ -483,36 +455,63 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
       enableReinitialize
     >
 
-      {
+      { 
         (formikState) => {
-          const errors = formikState.errors;
+
+        const errors = formikState.errors;
+
+        const fetcher = (url, token) => {  
+                
+          fetch(url, {
+          mode:'no-cors',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Accept': 'application/json, text/plain, */*',
+            'Content-Type': 'application/json;charset=utf-8'
+
+          }
+          })
+
+      }
 
 
+        // const {data:sub_counties, error} = useSWR(isCountyOption ? [`${process.env.NEXT_PUBLIC_API_URL}/common/sub_counties/${formikState?.values.county_id}`, options['18']?.token ?? options['22']?.token ] : null, fetcher)
 
-          //Effects
 
-          useEffect(() => {
+      //Effects
 
-            if(!options['19']?.data){
-              handleFormUpdate(JSON.stringify(formikState?.values))
-            }
+      useEffect(() => {
 
-          }, [handleFormUpdate, formikState?.values])
+        if(!options['19']?.data){
+          handleFormUpdate(JSON.stringify(formikState?.values))
+        }
 
-          // Form Validations
+        if(formikState.values?.county_id !== ""){
+          // Call 
+          console.log({county:formikState.values?.county_id })
+          setIsCountyOption(true)
+        }
 
-          // if(formikState?.values?.facility_type !== ""){
-           
+        return () => {
+          setIsCountyOption(false)
+        }
 
-          //     const facilityTypeDetails =  options['1']?.facility_type_details?.find(
-          //       ({ value }) => value.includes(formikState?.values?.facility_type)
-          //     )?.value ?? " ";
+      }, [handleFormUpdate, formikState?.values])
 
-             
-          //     // console.log({facilityTypeDetails})
-          // }
 
-      
+      // Form Validations
+
+      // if(formikState?.values?.facility_type !== ""){
+        
+
+      //     const facilityTypeDetails =  options['1']?.facility_type_details?.find(
+      //       ({ value }) => value.includes(formikState?.values?.facility_type)
+      //     )?.value ?? " ";
+
+          
+      //     // console.log({facilityTypeDetails})
+      // }
+
           // Hours/Days duration form rules
           if (formikState?.values?.open_whole_day) {
             formikState?.values?.open_late_night = true;
@@ -680,7 +679,7 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
                   placeholder="Select a facility type..."
                   required
                   name='facility_type'
-                  disabled={options['19']?.data ? true: false}
+                  // disabled={options['19']?.data ? true: false}
                 />
                 {errors.facility_type && <span className='font-normal text-sm text-red-500 text-start'>{errors.facility_type}</span>}
 
@@ -704,7 +703,7 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
                   placeholder="Select facility type details..."
                   required
                   name='facility_type_details'
-                  disabled={options['19']?.data ? true: false}
+                  // disabled={options['19']?.data ? true: false}
 
                 />
 
@@ -1306,7 +1305,7 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
                         </span>
                       </label>
                       <Select
-                        options={options['6']?.counties} //
+                        options={options['6']?.counties} // 
                         required
                         placeholder="Select County ..."
                         name='county_id'
@@ -1330,7 +1329,7 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
                         </span>
                       </label>
                       <Select
-                        options={options['7']?.sub_counties}
+                        options={/*sub_counties ?? */options['7']?.sub_counties}  
                         required
                         placeholder="Select Sub County..."
                         name='sub_county_id'

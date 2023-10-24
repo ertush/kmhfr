@@ -72,15 +72,6 @@ function EditListWithCount(
 
     const items = typeof savedItems === 'string' && savedItems.length > 0 ? JSON.parse(savedItems) : savedItems;
 
-
-    // Reset local storage if HR form
-    // const resetForms = useLocalStorageState({
-    //     key: `${itemsCategoryName}_form`,
-    //     value: []
-    // }).actions.reset()
-
-
-
     // Refs
 
     const itemRef = useRef(null);
@@ -182,7 +173,7 @@ function EditListWithCount(
                     fontWeight: 'normal',
                     lineHeight: '1',
                     minWidth: 1,
-                    padding: '0.16666666666667em 0.5em',
+                    padding: '0.167em 0.5em',
                     textAlign: 'center',
                 }
             }>{data.options.length}</span>
@@ -228,7 +219,7 @@ function EditListWithCount(
 
                     // Filter Edited fields only
                     const valueKeys = []
-                    const disjointValues = {}
+                    // const disjointValues = {}
 
                     Object.values(values).filter((v, i) => {
                         if (v !== Object.values(initialValues)[i]) valueKeys.push(Object.keys(values)[i]);
@@ -243,7 +234,6 @@ function EditListWithCount(
                             let update_id;
 
                             if (resp.ok) {
-
                                 fetch(
                                     `${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${itemId}/`,
                                     {
@@ -570,18 +560,7 @@ function EditListWithCount(
                                             </TableCell>
                                         </TableRow>
                                     ))
-                                // ) : (
-                                //     item !== null &&
-                                //     <TableRow>
-                                //         <TableCell>
-                                //             <li className="w-full bg-blue-50 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base">
-                                //                 <p>
-                                //                     {item?.name || item?.official_name} has no listed {itemsCategoryName}. Add some below.
-                                //                 </p>
-                                //             </li>
-                                //         </TableCell>
-                                //     </TableRow>
-                                //)
+
                                 }
                             </>
                         </TableBody>
