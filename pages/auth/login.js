@@ -1,3 +1,4 @@
+import { EyeIcon, EyeOffIcon } from '@heroicons/react/outline'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import React from 'react'
@@ -6,6 +7,7 @@ const Login = (props) => {
     const router = useRouter()
     const [username, setUsername] = React.useState('')
     const [password, setPassword] = React.useState('')
+    const [hidePassword, setHidePassword] = React.useState(false);
     const [error, setError] = React.useState(props.error)
     const [msg, setMsg] = React.useState(props.msg)
     const [loading, setLoading] = React.useState(false)
@@ -90,7 +92,7 @@ const Login = (props) => {
                         {msg && msg.length > 0 && <p className="text-blue-900 bg-blue-200 rounded drop-shadow py-2 font-medium normal-case text-base px-3">{msg}</p>}
                     </div>
                     <div className="flex flex-col gap-0 w-full">
-                        <label className="text-gray-800">Username</label>
+                        <label className="text-gray-800">Email / P_No</label>
                         <input type="text"
                             data-testid="email_input"
                             value={username}
@@ -98,19 +100,42 @@ const Login = (props) => {
                                 setError('')
                                 setUsername(ev.target.value)
                             }}
-                            className="text-gray-900 focus:bg-transparent bg-transparent border border-blue-600 py-3 px-3 w-full flex items-center placeholder-gray-600 leading-none" placeholder="you@geemail.com" />
+                            className="border-2  w-full py-3 px-3 leading-none border-blue-600 bg-transparent focus:outline-none focus:border-indigo-700 focus:bg-white text-gray-700" placeholder="email/personal_number" />
                     </div>
-                    <div className="flex flex-col gap-0 w-full">
-                        <label className="text-gray-800">Password</label>
-                        <input type="password"
-                            data-testid="password_input"
-                            value={password}
-                            onChange={ev => {
-                                setError('')
-                                setPassword(ev.target.value)
-                            }}
-                            className="text-gray-900 focus:bg-transparent bg-transparent border border-blue-600 py-3 px-3 w-full flex items-center placeholder-gray-600 leading-none" placeholder="*********" />
+                    
+                    <div class="flex-col gap-0 items-start w-full">
+                    <label className="text-gray-800" htmlFor='password'>Password</label>
+                    <div className="relative w-full">
+                        <div class="absolute inset-y-0 right-0 flex items-center px-2" onChange={e => {
+                            setHidePassword(e.target.checked)
+                        }}>
+                        <input class="hidden js-password-toggle" id="toggle" type="checkbox" />
+                        <label class="  px-2 py-1 cursor-pointer js-password-label" htmlFor="toggle">
+                            {   
+                                !hidePassword &&
+                                <EyeOffIcon className='w-5 h-5 text-gray-600'></EyeOffIcon>
+                            }
+                            {
+                                hidePassword &&
+                                <EyeIcon className='w-5 h-5 text-gray-600'></EyeIcon>
+                        
+                            }
+                            
+                        </label>
+                        </div>
+                           
+
+                        <input  
+                        data-testid="password_input"
+                        onChange={ev => {
+                            setError('')
+                            setPassword(ev.target.value)
+                        }}
+                        value={password} className="border-2  w-full py-3 px-3 leading-none border-blue-600 bg-transparent focus:outline-none focus:border-indigo-700 focus:bg-white text-gray-700 pr-16" name="password" type={hidePassword ? 'password' : 'text'} 
+                        />
                     </div>
+                    </div>
+                    
                     <div className="flex flex-col gap-4 w-full text-center">
                         <button type="submit" data-testid="login_btn" disabled={loading} className={"focus:outline-none focus:ring-1 focus:ring-yellow-500 text-white px-4 md:px-8 whitespace-nowrap py-3 text-xl font-semibold hover:bg-blue-800 focus:bg-blue-600 active:bg-blue-800 " + (loading ? "bg-gray-900 cursor-not-allowed" : "bg-blue-700")}
                         >{loading ? "Loading..." : "Log in"}</button>
