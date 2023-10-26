@@ -30,9 +30,7 @@ import Typography from '@mui/material/Typography';
 import FacilitySideMenu from "../../components/FacilitySideMenu";
 import { Table, TableBody, TableCell, TableRow } from "@mui/material";
 import { PermissionContext } from "../../providers/permissions";
-import { hasPermission } from "../../utils/checkPermissions";
 import { UserGroupContext } from "../../providers/userGroup";
-import { belongsToUserGroup } from "../../utils/checkUserGroup";
 import { useAlert } from "react-alert";
 
 

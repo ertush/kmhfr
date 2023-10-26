@@ -24,7 +24,7 @@ import {Formik, Form, Field} from 'formik'
 
 
 
-const Home = (props) => {
+const FacilityHome = (props) => {
     
     const router = useRouter()
 
@@ -699,7 +699,7 @@ const Home = (props) => {
     }
 }
 
-Home.getInitialProps = async (ctx) => {
+FacilityHome.getInitialProps = async (ctx) => {
 
     const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -848,4 +848,4 @@ Home.getInitialProps = async (ctx) => {
 
 }
 
-export default Home
+export default FacilityHome

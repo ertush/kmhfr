@@ -1,7 +1,7 @@
 import Head from 'next/head'
 import Link from 'next/link'
 import MainLayout from '../../components/MainLayout'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { checkToken } from '../../controllers/auth/auth'
 import { useRouter } from 'next/router'
 import {  DotsHorizontalIcon,PlusIcon,UsersIcon } from "@heroicons/react/solid";
@@ -36,6 +36,8 @@ const Groups = (props) => {
 
     const rows = props?.data?.results.map(({id, name})=>{return {id, name}})
 
+    const [isClient, setIsClient] = useState(false);
+
     const columns= [
         {
             headerName: "Name", 
@@ -54,8 +56,12 @@ const Groups = (props) => {
          },
     ]
 
+    useEffect(() => {
+        setIsClient(true);
+    }, [])
 
 
+    if(isClient){
     return (
         <div className="">
             <Head>
@@ -127,6 +133,10 @@ const Groups = (props) => {
             </MainLayout >
         </div>
     )
+    }
+    else{
+        return null
+    }
 }   
 
 Groups.getInitialProps = async (ctx) => {

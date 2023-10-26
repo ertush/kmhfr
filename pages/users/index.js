@@ -47,8 +47,7 @@ const Users = (props) => {
     const userCtx = useContext(UserContext)
 
     const router = useRouter()
-    console.log(router.query.status);
-    console.log(Object.keys(router.query).length)
+   
  
     const rows =  props.data?.results?.map((user) => ( 
         {
@@ -90,6 +89,7 @@ const Users = (props) => {
     const [groupsTheme, setGroupsTheme] = useState(false)
     const [show, setShow]=useState(false)
     const [showGroup, setShowGroup]=useState(false)
+    const [isClient, setIsClient] = useState(false);
         
   
 
@@ -115,155 +115,162 @@ const Users = (props) => {
         router.push('/auth/login')
     }
     
+    setIsClient(true)
         
     },[])
-    return (
-        <div className="">
-            <Head>
-                <title>KMHFR - Reports</title>
-                <link rel="icon" href="/favicon.ico" />
-            </Head>
-            <MainLayout isLoading={false} isFullWidth={false}>
-                {console.log({rows})}
-                <div className="w-full grid grid-cols-7 gap-4 p-1 md:mx-4 my-2">
-                    <div className="col-span-7 flex flex-col gap-x-1 ">
-                        <div className="flex flex-wrap items-center justify-between gap-2 text-sm md:text-base py-1">
-                            <div className="flex flex-row items-center justify-between gap-2 text-sm md:text-base py-3">
-                                <Link className="text-blue-700" href="/">Home</Link> {'/'}
-                                <span className="text-gray-500">Users</span> 
+
+    if(isClient){
+        return (
+            <div className="">
+                <Head>
+                    <title>KMHFR - Reports</title>
+                    <link rel="icon" href="/favicon.ico" />
+                </Head>
+                <MainLayout isLoading={false} isFullWidth={false}>
+                    {/* {console.log({rows})} */}
+                    <div className="w-full grid grid-cols-7 gap-4 p-1 md:mx-4 my-2">
+                        <div className="col-span-7 flex flex-col gap-x-1 ">
+                            <div className="flex flex-wrap items-center justify-between gap-2 text-sm md:text-base py-1">
+                                <div className="flex flex-row items-center justify-between gap-2 text-sm md:text-base py-3">
+                                    <Link className="text-blue-700" href="/">Home</Link> {'/'}
+                                    <span className="text-gray-500">Users</span> 
+                                </div>
+                            </div>
+                                
+                                <Collapse in={show}>{Object.keys(router.query).length > 0 ? <div><Alert severity={router?.query.status} sx={{width:'100%'}} onClose={()=> setShow(false)}>{router?.query.message}</Alert></div>: null}</Collapse>
+                                
+                                <div className={`col-span-5 flex justify-between w-full bg-transparent drop-shadow  text-black p-4 md:divide-x md:divide-gray-200 items-center border border-blue-600 border-l-8  ${'border-blue-600'} `}>
+                                    <h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
+                                        <UsersIcon className='ml-2 h-5 w-5'/> 
+                                        {'Manage Users'}
+                                    </h2>
+                                    <button className=' bg-blue-600 p-2 text-white flex items-center text-lg font-semibold'
+                                    onClick={() => {router.push('/users/user')}} 
+                                    >
+                                        {`Add User `}
+                                        <PlusIcon className='text-white ml-2 h-5 w-5'/>
+                                    </button>
+                            
                             </div>
                         </div>
+
+
+                        <div className='col-span-1 w-full col-start-1 h-auto py-0 border border-blue-600'>
                             
-                           <Collapse in={show}>{Object.keys(router.query).length > 0 ? <div><Alert severity={router?.query.status} sx={{width:'100%'}} onClose={()=> setShow(false)}>{router?.query.message}</Alert></div>: null}</Collapse>
+                            <List
+                            sx={{ width: '100%', bgcolor: 'transparent', flexGrow:1, paddingTop:0, paddingBottom:0}}
+                            component="nav"
+                            aria-labelledby="nested-list-subheader"
                             
-                            <div className={`col-span-5 flex justify-between w-full bg-transparent drop-shadow  text-black p-4 md:divide-x md:divide-gray-200 items-center border border-blue-600 border-l-8  ${'border-blue-600'} `}>
-                                <h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
-                                    <UsersIcon className='ml-2 h-5 w-5'/> 
-                                    {'Manage Users'}
-                                </h2>
-                                <button className=' bg-blue-600 p-2 text-white flex items-center text-lg font-semibold'
-                                onClick={() => {router.push('/users/user')}} 
+                            >	
+                                <ListItemButton className='border-b border-blue-600' sx={{
+                                backgroundColor: usersTheme && '#2563eb',
+                                                color: usersTheme && '#ffff',
+                                                borderBottom: 'solid 1px #2563eb', 
+                                                "&:hover": {
+                                                backgroundColor: "#eff6ff",
+                                                color: "rgba(17, 24, 39, 1)"
+                                                }
+                                }} name="rt"
+                                    onClick={()=>{
+                                        setUsersTheme(true)
+                                        setInactiveUsersTheme(false)
+                                        setGroupsTheme(false)
+                                        router.push('/users?is_active=true')
+                                    
+                                    }}
                                 >
-                                    {`Add User `}
-                                    <PlusIcon className='text-white ml-2 h-5 w-5'/>
-                                </button>
-                        
-                        </div>
-                    </div>
-
-
-                    <div className='col-span-1 w-full col-start-1 h-auto py-0 border border-blue-600'>
-						
-                        <List
-                        sx={{ width: '100%', bgcolor: 'transparent', flexGrow:1, paddingTop:0, paddingBottom:0}}
-                        component="nav"
-                        aria-labelledby="nested-list-subheader"
-                       
-                        >	
-                            <ListItemButton className='border-b border-blue-600' sx={{
-                            backgroundColor: usersTheme && '#2563eb',
-											color: usersTheme && '#ffff',
-											borderBottom: 'solid 1px #2563eb', 
-											"&:hover": {
-											backgroundColor: "#eff6ff",
-											color: "rgba(17, 24, 39, 1)"
-										  }
-                            }} name="rt"
-                                onClick={()=>{
-                                    setUsersTheme(true)
-                                    setInactiveUsersTheme(false)
-                                    setGroupsTheme(false)
-                                    router.push('/users?is_active=true')
-                                
-                                }}
-                            >
-                                <ListItemText primary="Users" />
-                            </ListItemButton>
-                            <ListItemButton 
+                                    <ListItemText primary="Users" />
+                                </ListItemButton>
+                                <ListItemButton 
+                                    sx={{
+                                        backgroundColor: inactiveUsersTheme && '#2563eb',
+                                        color: inactiveUsersTheme && '#ffff',
+                                        borderBottom: 'solid 1px #2563eb', 
+                                        "&:hover": {
+                                        backgroundColor: "#eff6ff",
+                                        color: "rgba(17, 24, 39, 1)"
+                                        }
+                                        }} 
+                                    onClick={()=>{
+                                        setUsersTheme(false)
+                                        setInactiveUsersTheme(true)
+                                        setGroupsTheme(false)
+                                        router.push('/users?is_active=false')
+                                    
+                                    }}
+                                >
+                                    <ListItemText primary="InActive Users" />
+                                </ListItemButton>
+                                {!showGroup && 
+                                <ListItemButton 
                                 sx={{
-                                    backgroundColor: inactiveUsersTheme && '#2563eb',
-                                    color: inactiveUsersTheme && '#ffff',
-                                    borderBottom: 'solid 1px #2563eb', 
-                                    "&:hover": {
-                                    backgroundColor: "#eff6ff",
-                                    color: "rgba(17, 24, 39, 1)"
-                                  }
-                                    }} 
-                                onClick={()=>{
-                                    setUsersTheme(false)
-                                    setInactiveUsersTheme(true)
-                                    setGroupsTheme(false)
-                                    router.push('/users?is_active=false')
-                                
-                                }}
-                            >
-                                <ListItemText primary="InActive Users" />
-                            </ListItemButton>
-                            {!showGroup && 
-                            <ListItemButton 
-                            sx={{
-                                  backgroundColor: groupsTheme && '#2563eb',
-											color: groupsTheme && '#ffff',
-											borderBottom: 'solid 1px #2563eb', 
-											"&:hover": {
-											backgroundColor: "#eff6ff",
-											color: "rgba(17, 24, 39, 1)"
-										  }
-                                }}
-                                onClick={()=>{
-                                    setUsersTheme(false)
-                                    setInactiveUsersTheme(false)
-                                    setGroupsTheme(true)
-                                    router.push('/users/groups')
-                                
-                                }}
-                            >
-                                <ListItemText primary="Groups" sx={{fontFamily:'IBM Plex Sans'}}/>
-                            </ListItemButton>}
-                                
-                        </List>
+                                        backgroundColor: groupsTheme && '#2563eb',
+                                                color: groupsTheme && '#ffff',
+                                                borderBottom: 'solid 1px #2563eb', 
+                                                "&:hover": {
+                                                backgroundColor: "#eff6ff",
+                                                color: "rgba(17, 24, 39, 1)"
+                                                }
+                                    }}
+                                    onClick={()=>{
+                                        setUsersTheme(false)
+                                        setInactiveUsersTheme(false)
+                                        setGroupsTheme(true)
+                                        router.push('/users/groups')
+                                    
+                                    }}
+                                >
+                                    <ListItemText primary="Groups" sx={{fontFamily:'IBM Plex Sans'}}/>
+                                </ListItemButton>}
+                                    
+                            </List>
 
-                    </div>
-                    <main className="col-span-6 md:col-span-6 flex flex-col gap-4 order-last md:order-none"> {/* CHANGED colspan */}
-                        
-                        
-                        <div className="flex flex-col justify-center items-center w-full shadow-md" style={{backgroundColor:"#eff6ff"}}>
-                      
-                            <div className='w-full h-auto'>
-                            <StyledDataGrid
-                                        columns={columns}
-                                        rows={rows}
-                                        getRowClassName={() => `super-app-theme--Row`}
-                                        rowSpacingType="border"
-                                        showColumnRightBorder
-                                        showCellRightBorder
-                                        rowSelection={false}
-                                        getCellClassName={() => 'super-app-theme--Cell'}
-                                        slots={{
-                                            toolbar: () => (
-                                                <GridToolbar
-                                                    sx={{
-                                                        flex: 1,
-                                                        display: 'flex',
-                                                        marginX: 'auto',
-                                                        gap: 5,
-                                                        padding: '0.45rem'
-                                                    }}
-                                                />
-                                            ),
-                                        }}
-                                    />
-                              
-                            </div>
                         </div>
-                 
+                        <main className="col-span-6 md:col-span-6 flex flex-col gap-4 order-last md:order-none"> {/* CHANGED colspan */}
+                            
+                            
+                            <div className="flex flex-col justify-center items-center w-full shadow-md" style={{backgroundColor:"#eff6ff"}}>
+                            
+                                <div className='w-full h-auto'>
+                                <StyledDataGrid
+                                            columns={columns}
+                                            rows={rows}
+                                            getRowClassName={() => `super-app-theme--Row`}
+                                            rowSpacingType="border"
+                                            showColumnRightBorder
+                                            showCellRightBorder
+                                            rowSelection={false}
+                                            getCellClassName={() => 'super-app-theme--Cell'}
+                                            slots={{
+                                                toolbar: () => (
+                                                    <GridToolbar
+                                                        sx={{
+                                                            flex: 1,
+                                                            display: 'flex',
+                                                            marginX: 'auto',
+                                                            gap: 5,
+                                                            padding: '0.45rem'
+                                                        }}
+                                                    />
+                                                ),
+                                            }}
+                                        />
+                                    
+                                </div>
+                            </div>
+                        
 
-                    </main>
-                  
-                </div>
-            </MainLayout >
-        </div>
-    )
+                        </main>
+                        
+                    </div>
+                </MainLayout >
+            </div>
+        )
+    }
+    else{
+        return null
+    }
 }   
 
 Users.getInitialProps = async (ctx) => {

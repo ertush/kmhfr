@@ -14,7 +14,7 @@ import { ChevronDownIcon } from '@heroicons/react/outline';
 import CommunityUnitSideMenu from '../../components/CommunityUnitSideMenu';
 
 
-const Home = (props) => {
+const CommunityUnit = (props) => {
 	const router = useRouter();
 	const cus = props?.data?.results;
 	const filters = props?.filters;
@@ -22,6 +22,7 @@ const Home = (props) => {
 	const qf = props?.query?.qf || 'all';
 
 	const [title, setTitle] = useState('Community Health Units') 
+	const[isClient, setIsClient] = useState(false);
 
 	
 	useEffect(() => {
@@ -44,9 +45,12 @@ const Home = (props) => {
 		if(user.id === 6){
 			router.push('/auth/login')
 		}
+
+		setIsClient(true);
 		
 	},[])
 
+	if(isClient){
 	return (
 		<div className=''>
 			<Head>
@@ -357,9 +361,13 @@ const Home = (props) => {
 			</MainLayout>
 		</div>
 	);
+	}
+	else{
+		return null
+	}
 };
 
-Home.getInitialProps = async (ctx) => {
+CommunityUnit.getInitialProps = async (ctx) => {
 	
 	console.log(ctx.query)
 	const API_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -487,4 +495,4 @@ Home.getInitialProps = async (ctx) => {
 		});
 };
 
-export default Home;
+export default CommunityUnit;

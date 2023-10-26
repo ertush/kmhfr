@@ -21,7 +21,7 @@ import TableRow from '@mui/material/TableRow';
 import Link from 'next/link';
 import CommunityUnitSideMenu from "../../components/CommunityUnitSideMenu";
 
-const CommunityUnit = (props) => {
+const EditCommunityUnit = (props) => {
   const Map = dynamic(
     () => import("../../components/Map"),
     {
@@ -728,7 +728,7 @@ const CommunityUnit = (props) => {
   }
 };
 
-CommunityUnit.getInitialProps = async (ctx) => {
+EditCommunityUnit.getInitialProps = async (ctx) => {
   if (ctx.query.q) {
     const query = ctx.query.q;
 
@@ -820,4 +820,4 @@ CommunityUnit.getInitialProps = async (ctx) => {
     });
 };
 
-export default CommunityUnit;
+export default EditCommunityUnit;

@@ -2,7 +2,7 @@ import Head from 'next/head'
 import Link from 'next/link'
 import MainLayout from '../../components/MainLayout'
 import { DownloadIcon } from '@heroicons/react/outline'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { checkToken } from '../../controllers/auth/auth'
 import { useRouter } from 'next/router'
 import { DotsHorizontalIcon } from "@heroicons/react/solid";
@@ -18,7 +18,10 @@ import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
 const OfficersInCharge = (props) => { 
     // require('ag-grid-enterprise')
     LicenseManager.setLicenseKey("test");
-    const router = useRouter()
+    // const router = useRouter()
+
+    const [isClient, setIsClient] = useState(false);
+
     const LinkCellRenderer = (params) =>{
         return(
             <Link
@@ -52,6 +55,11 @@ const OfficersInCharge = (props) => {
     };
    gridApi?.setRowData(lnlst)
 
+   useEffect(() => {
+    setIsClient(true)
+   },[])
+
+   if(isClient){
     return (
         <div className="">
             <Head>
@@ -160,6 +168,11 @@ const OfficersInCharge = (props) => {
             </MainLayout >
         </div>
     )
+    }
+    else
+    {
+        return null
+    }
 }   
 
 OfficersInCharge.getInitialProps = async (ctx) => {
