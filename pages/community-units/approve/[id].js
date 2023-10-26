@@ -12,7 +12,6 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import { useRouter } from 'next/router'
-import dynamic from "next/dynamic";
 import { UserContext } from '../../../providers/user';
 import CommunityUnitSideMenu from '../../../components/CommunityUnitSideMenu';
 
