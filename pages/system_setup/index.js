@@ -161,11 +161,6 @@ const system_setup = (props) => {
             router.push('/unauthorized')
         }
 
-        // return () => {
-        //     setFields(null)
-        //     setIsAddForm(false)
-        //     setRows(null)
-        // }
     },[])
 
 

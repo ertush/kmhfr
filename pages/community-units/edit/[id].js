@@ -19,7 +19,7 @@ import CommunityUnitSideMenu from "../../../components/CommunityUnitSideMenu";
 import Link from 'next/link';
 
 
-const CommUnit = (props) => {
+const CommunityUnitEdit = (props) => {
   const facilities = props.facility_data.results;
   const router = useRouter()
   const alert = useAlert()
@@ -1068,7 +1068,7 @@ const CommUnit = (props) => {
   }
 };
 
-CommUnit.getInitialProps = async (ctx) => {
+CommunityUnitEdit.getInitialProps = async (ctx) => {
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
   if (ctx.query.q) {
@@ -1218,4 +1218,4 @@ CommUnit.getInitialProps = async (ctx) => {
     });
 };
 
-export default CommUnit;
+export default CommunityUnitEdit;

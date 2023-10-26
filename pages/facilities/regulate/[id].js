@@ -17,7 +17,7 @@ import { UserContext } from "../../../providers/user";
 import FacilitySideMenu from '../../../components/FacilitySideMenu'
 
 
-const Regulate = props => {
+const RegulateFacility = props => {
     const facility = props["0"]?.data;
     const regulationStateOptions = props['1']?.regulation_status
     const [isFacDetails, setIsFacDetails] = useState(true);
@@ -856,7 +856,7 @@ const Regulate = props => {
 }
 
 
-Regulate.getInitialProps = async (ctx) => {
+RegulateFacility.getInitialProps = async (ctx) => {
 
     const allOptions = []
 
@@ -967,4 +967,4 @@ Regulate.getInitialProps = async (ctx) => {
         });
 };
 
-export default Regulate
+export default RegulateFacility

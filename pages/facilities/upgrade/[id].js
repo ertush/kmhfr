@@ -15,7 +15,7 @@ import { handleFacilityUpgrades } from '../../../controllers/facility/facilityHa
 
 
 
-const Upgrade = props => {
+const UpgradeFacility = props => {
 
     const alert = useAlert()
     const router = useRouter()
@@ -362,7 +362,7 @@ const Upgrade = props => {
 }
 
 
-Upgrade.getInitialProps = async (ctx) => {
+UpgradeFacility.getInitialProps = async (ctx) => {
 
     const allOptions = []
     const options = [
@@ -572,4 +572,4 @@ Upgrade.getInitialProps = async (ctx) => {
 
 }
 
-export default Upgrade
+export default UpgradeFacility
