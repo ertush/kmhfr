@@ -470,10 +470,24 @@ const Home = (props) => {
 									className="bg-gray-100 border-1 border-black text-black flex items-center justify-center px-4 py-1 "
 									onClick={()=>{
 										setDrillDown({})
-										name.current?.value ='',code.current?.value='', allfacilities.current?.value ='',
-										county.current?.select?.clearValue(),subcounty.current?.select.clearValue(),ward.current?.select.clearValue(),constituency.current?.select.clearValue(),facilityservice.current?.select.clearValue(),
-										facilitytype.current?.select.clearValue(),operationstatus.current?.select.clearValue(),facilityowner.current?.select.clearValue(),ownertype.current?.select.clearValue(),servicecategory.current?.select.clearValue(),
-										beds.current?.checked=false, cots.current?.checked=false, available_holiday.current?.checked=false, available_24hrs.current?.checked=false,available_weekends.current?.checked=false
+										name.current?.value ='';
+										code.current?.value='';
+										allfacilities.current?.value ='';
+										county.current?.select?.clearValue();
+										subcounty.current?.select.clearValue();
+										ward.current?.select.clearValue();
+										constituency.current?.select.clearValue();
+										facilityservice.current?.select.clearValue();
+										facilitytype.current?.select.clearValue();
+										operationstatus.current?.select.clearValue();
+										facilityowner.current?.select.clearValue();
+										ownertype.current?.select.clearValue();
+										servicecategory.current?.select.clearValue();
+										beds.current?.checked=false; 
+										cots.current?.checked=false; 
+										available_holiday.current?.checked=false; 
+										available_24hrs.current?.checked=false;
+										available_weekends.current?.checked=false;
 
 									}}
 								>Reset
