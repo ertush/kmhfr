@@ -100,17 +100,17 @@ const Login = (props) => {
                                 setError('')
                                 setUsername(ev.target.value)
                             }}
-                            className="border-2  w-full py-3 px-3 leading-none border-blue-600 bg-transparent focus:outline-none focus:border-indigo-700 focus:bg-white text-gray-700" placeholder="email/personal_number" />
+                            className="border w-full py-3 px-3 leading-none border-blue-600 bg-transparent focus:outline-none focus:border-indigo-700 focus:bg-white text-gray-700" placeholder="email/personal_number" />
                     </div>
                     
-                    <div class="flex-col gap-0 items-start w-full">
+                    <div className="flex-col gap-0 items-start w-full">
                     <label className="text-gray-800" htmlFor='password'>Password</label>
                     <div className="relative w-full">
-                        <div class="absolute inset-y-0 right-0 flex items-center px-2" onChange={e => {
+                        <div className="absolute inset-y-0 right-0 flex items-center px-2" onChange={e => {
                             setHidePassword(e.target.checked)
                         }}>
-                        <input class="hidden js-password-toggle" id="toggle" type="checkbox" />
-                        <label class="  px-2 py-1 cursor-pointer js-password-label" htmlFor="toggle">
+                        <input className="hidden js-password-toggle" id="toggle" type="checkbox" />
+                        <label className="  px-2 py-1 cursor-pointer js-password-label" htmlFor="toggle">
                             {   
                                 !hidePassword &&
                                 <EyeOffIcon className='w-5 h-5 text-gray-600'></EyeOffIcon>
@@ -131,7 +131,7 @@ const Login = (props) => {
                             setError('')
                             setPassword(ev.target.value)
                         }}
-                        value={password} className="border-2  w-full py-3 px-3 leading-none border-blue-600 bg-transparent focus:outline-none focus:border-indigo-700 focus:bg-white text-gray-700 pr-16" name="password" type={hidePassword ? 'password' : 'text'} 
+                        value={password} className="border w-full py-3 px-3 leading-none border-blue-600 bg-transparent focus:outline-none focus:border-indigo-700 focus:bg-white text-gray-700 pr-16" name="password" type={hidePassword ? 'password' : 'text'} 
                         />
                     </div>
                     </div>
