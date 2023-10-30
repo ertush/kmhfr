@@ -429,8 +429,19 @@ CommunityUnit.getInitialProps = async (ctx) => {
 				url = url + '&' + flt.replace('chu_', '') + '=' + ctx?.query[flt];
 			}
 		});
-		// let current_url = url + '&page_size=25000' //change the limit on prod
-		let current_url = url + '&page_size=100';
+		
+		// Fetch All facility Count
+
+        const getCHUCount = async () => {
+            return (await (await fetch(`${API_URL}/units/chul?format=json`, {headers: {
+                'Authorization': 'Bearer ' + token,
+                'Accept': 'application/json'
+            }})).json())?.count
+        }
+
+		// const count = await getCHUCount();
+
+		let current_url = url + `&page_size=11000`;
 		if (ctx?.query?.page) {
 			url = `${url}&page=${ctx.query.page}`;
 		}

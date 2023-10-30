@@ -178,7 +178,7 @@ const FacilityHome = (props) => {
                                 </div>
                                 }
                             
-                                <Menu.Items as="ul" className="absolute top-10 right-0 flex flex-col gap-y-1 items-center justify-start bg-white  shadow-lg border border-gray-200 p-1 w-1/2">
+                                <Menu.Items as="ul" className="absolute top-10 right-0 z-10 flex flex-col gap-y-1 items-center justify-start bg-white  shadow-lg border border-gray-200 p-1 w-1/2">
                                    
                                     <Menu.Item as="li" className="p-0 flex items-center w-full text-center hover:bg-gray-200 focus:bg-gray-200 active:bg-gray-200">
                                         {({ active }) => (
@@ -440,7 +440,7 @@ const FacilityHome = (props) => {
                                     {/* Data Indicator section */}
                                     <div className='w-full p-2 flex justify-between border-b border-blue-600'>
                                         {/* search input */}
-                                        {/* `${router.asPath}&qf=approved&approved=true&approved_national_level=true&rejected=false` || '/facilities' */}
+                                    
                                         <Formik
                                         initialValues={
                                             {
@@ -531,10 +531,10 @@ const FacilityHome = (props) => {
                                             facilities.map((facility, index) => (
                                                 <div key={index} 
                                                 title={`Incomplete Details : ${facility?.is_complete ? 'none' : facility?.in_complete_details}`}
-                                                className="grid grid-cols-8 gap-2 border-b border-blue-600 py-4 hover:bg-blue-50 w-full">
+                                                className={`grid grid-cols-8 gap-2 border-b py-4 w-full ${!facility?.is_complete ? 'bg-yellow-50 border-yellow-500 hover:bg-blue-50' : 'bg-transparent border-blue-600 hover:border-yellow-100' }`}>
                                                     <div className="px-2 col-span-8 md:col-span-8 lg:col-span-6 flex flex-col group items-center justify-start text-left">
                                                         <h3 className="text-2xl font-semibold w-full">
-                                                            <span onClick={() => router.push({pathname: `/facilities/${facility?.id}`, query: {qf: router.query.qf}})} className="cursor-pointer hover:text-blue-600 group-focus:text-blue-800 active:text-blue-800 " >
+                                                            <span onClick={() => router.push({pathname: `/facilities/${facility?.id}`, query: {qf: router.query.qf}})} className={`cursor-pointer ${facility?.is_complete ? 'hover:text-blue-600' : 'hover:text-yellow-600'} group-focus:text-blue-800 active:text-blue-800`} >
                                                                 {facility?.official_name || facility?.official_name || facility?.name} 
                                                             </span>
                                                         </h3>
@@ -573,9 +573,11 @@ const FacilityHome = (props) => {
                                                         </div>
                                                     </div>
                                                     <div className="col-span-8 md:col-span-8 lg:col-span-2 grid grid-cols-2 grid-rows-4 gap-x-2 gap-y-1 text-lg">
+                                                        {/* {console.log({facility})} */}
                                                         {(facility?.operational || facility?.operation_status_name) ? <span className={"shadow-sm col-start-2 leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 font-semibold text-blue-900"}>Operational</span> : ""}
                                                         {!facility?.rejected ? <span className={"shadow-sm leading-none whitespace-nowrap text-sm col-start-2  py-1 px-2 " + (facility?.approved_national_level ? "bg-green-200 font-semibold text-green-900" : "bg-gray-500 font-semibold p-1 text-gray-50")}>{facility?.approved_national_level ? "Approved" : "Not approved"}</span> : <span className={"shadow-sm  col-start-2 leading-none whitespace-nowrap text-sm font-semibold py-1 px-2 bg-red-200 text-red-900"}>{facility?.rejected ? "Rejected" : ""}</span>}
                                                         {facility?.has_edits ? <span className={"shadow-sm leading-none whitespace-nowrap text-sm col-start-2 py-1 px-2 bg-yellow-200 font-semibold text-yellow-900"}>Has edits</span> : ""}
+                                                        {!facility?.is_complete ? <span className={"shadow-sm leading-none whitespace-nowrap text-sm col-start-2 py-1 px-2 bg-pink-200 font-semibold text-pink-900"}>Incomplete</span> : ""}
                                                     </div>
                                                 </div>
                                             ))
@@ -703,9 +705,13 @@ FacilityHome.getInitialProps = async (ctx) => {
 
     const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
+   
+
+
     const fetchFilters = token => {
         let filters_url = API_URL + '/common/filtering_summaries/?fields=county%2Cfacility_type%2Cconstituency%2Cward%2Coperation_status%2Cservice_category%2Cowner_type%2Cowner%2Cservice%2Ckeph_level%2Csub_county'
 
+      
         return fetch(filters_url, {
             headers: {
                 'Authorization': 'Bearer ' + token,
@@ -724,7 +730,7 @@ FacilityHome.getInitialProps = async (ctx) => {
             })
     }
 
-    const fetchData = (token) => {
+    const fetchData = async (token) => {
 
         let url = API_URL + '/facilities/facilities/?fields=id,code,official_name,facility_type_name,owner_name,county,sub_county,constituency_name,ward_name,updated,operation_status_name,sub_county_name,name,is_complete,in_complete_details,approved_national_level,has_edits,approved,rejected,keph_level'
      
@@ -777,21 +783,25 @@ FacilityHome.getInitialProps = async (ctx) => {
             }
 
 
-            // Remove approved field if fetching for Facilities pending approval
-            // if (flt === 'to_publish') url = url.replace('approved,', '')
-
-          
+                  
         })
 
+        // Fetch All facility Count
 
-        let current_url = url + '&page_size=100'
+        // const getFacilityCount = async () => {
+        //     return (await (await fetch(`${API_URL}/facilities/facilities?format=json`, {headers: {
+        //         'Authorization': 'Bearer ' + token,
+        //         'Accept': 'application/json'
+        //     }})).json())?.count
+        // }
+
+
+        let current_url = url + `&page_size=19000`
         if (ctx?.query?.page) {
             url = `${url}&page=${ctx.query.page}`
         }
 
     
-
-        console.log({url});
 
         return fetch(url, {
             headers: {
