@@ -168,6 +168,9 @@ export default function HeaderLayout({
           </button>
           <ul className="flex-col md:flex-row items-start md:items-start bg-gray-50 inset-x-4  mt-1 md:mx-6 py-1 md:p-1  md:bg-transparent shadow border md:border-none md:shadow-none gap-5 hidden md:flex group-focus:flex group-active:flex group-hover:flex absolute md:relative">
             {/* Dashboard / Home */}
+            {
+              isLoggedIn &&
+            
             <li className="flex-wrap font-semibold" id="dashboard">
               <Link href={isLoggedIn ? "/dashboard" : "/"}>
                 <p
@@ -184,8 +187,11 @@ export default function HeaderLayout({
                 </p>
               </Link>
             </li>
+        }
             {/* Facilities */}
+            {
           
+            isLoggedIn &&
             <li className="flex-wrap font-semibold">
               <Link href="/facilities">
                 <p
@@ -205,9 +211,11 @@ export default function HeaderLayout({
                 </p>
               </Link>
             </li>
+          }
             
             {/* Community Units */}
-           
+           {
+            isLoggedIn &&
             <li className="flex-wrap font-semibold">
               <Link href="/community-units">
                 <p
@@ -225,11 +233,13 @@ export default function HeaderLayout({
                 </p>
               </Link>
             </li>
+          }
             
             {/* Users */}
          
             {( groupID == 7 ||
                groupID == 2 ||
+               groupID == 5 ||
                groupID == 3 ) && isLoggedIn &&
               <li className="flex-wrap font-semibold">
                 <Link href="/users">
@@ -270,8 +280,7 @@ export default function HeaderLayout({
             }
             {/* System setup */}
             {
-              hasPermission(/^common.add_county$/, userPermissions) &&
-              hasPermission(/^common.delete_county$/, userPermissions) && isLoggedIn&&
+              groupID == 7 && isLoggedIn &&
               <li className="flex-wrap font-semibold">
                 <Link href="/system_setup">
                   <p
@@ -511,18 +520,7 @@ export default function HeaderLayout({
                   </button>
                 )}
               </Menu.Item>
-              {/* <Menu.Item as="li" className="flex items-center w-full gap-1">
-                {({ active }) => (
-                  <a
-                    className={`w-full hover:text-blue-400 font-medium flex items-center ${active && "text-blue-400"
-                      }`}
-                    href="https://KMHFR.health.go.ke/"
-                    target="_blank"
-                  >
-                    KMHFR live <ExternalLinkIcon className="h-4 w-4 ml-2" />
-                  </a>
-                )}
-              </Menu.Item> */}
+              
               <Menu.Item
                 as="li"
 

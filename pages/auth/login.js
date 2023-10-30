@@ -95,12 +95,13 @@ const Login = (props) => {
                         <label className="text-gray-800">Email / P_No</label>
                         <input type="text"
                             data-testid="email_input"
+                            autoComplete='on'
                             value={username}
                             onChange={ev => {
                                 setError('')
                                 setUsername(ev.target.value)
                             }}
-                            className="border w-full py-3 px-3 leading-none border-blue-600 bg-transparent focus:outline-none focus:border-indigo-700 focus:bg-white text-gray-700" placeholder="email/personal_number" />
+                            className="border w-full py-3 px-3 leading-none border-blue-600 bg-transparent focus:outline-none focus:border-indigo-700 focus:bg-white text-gray-700" placeholder="user@domain.com" />
                     </div>
                     
                     <div className="flex-col gap-0 items-start w-full">
@@ -131,7 +132,11 @@ const Login = (props) => {
                             setError('')
                             setPassword(ev.target.value)
                         }}
-                        value={password} className="border w-full py-3 px-3 leading-none border-blue-600 bg-transparent focus:outline-none focus:border-indigo-700 focus:bg-white text-gray-700 pr-16" name="password" type={hidePassword ? 'password' : 'text'} 
+                        value={password} 
+                        autoSave='on'
+                        autoComplete='on'
+                        aria-autocomplete='inline'
+                        className="border w-full py-3 px-3 leading-none border-blue-600 bg-transparent focus:outline-none focus:border-indigo-700 focus:bg-white text-gray-700 pr-16" name="password" type={hidePassword ? 'password' : 'text'} 
                         />
                     </div>
                     </div>
@@ -141,7 +146,6 @@ const Login = (props) => {
                         >{loading ? "Loading..." : "Log in"}</button>
                         <div className="flex justify-end items-center w-full px-2">
                             <a data-testid="forgot_password_link" onClick={()=>router.push('/auth/reset_password')} className="text-base text-gray-700 hover:text-blue-700 focus:text-blue-700 active:text-blue-700 hover:underline focus:underline active:underline">Forgot password?</a>
-
                         </div>
                     </div>
                 </form>
