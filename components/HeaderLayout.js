@@ -242,14 +242,14 @@ export default function HeaderLayout({
                groupID == 5 ||
                groupID == 3 ) && isLoggedIn &&
               <li className="flex-wrap font-semibold">
-                <Link href="/users">
+                <Link href="/user">
                   <p
                     className={
                       `
                     text-base 
                     md:text-lg
                     cursor-pointer
-                    ${(currentPath == "/users" ? activeClasses : inactiveClasses)
+                    ${(currentPath == "/user" ? activeClasses : inactiveClasses)
 
                       }`}
                   >
