@@ -93,32 +93,32 @@ export default async function submitFormData(req, res) {
                 contentType = 'application/json;charset=utf-8';
                 break;
             case 'users':
-                url = `${API_URL}/users/`
+                url = `${API_URL}/user/`
                 contentType = 'application/json;charset=utf-8';
                 method = 'POST';
                 break
             case 'groups':
-                url = `${API_URL}/users/groups/`
+                url = `${API_URL}/user/groups/`
                 contentType = 'application/json;charset=utf-8';
                 method = 'POST';
                 break
             case `edit`:
-                url = `${API_URL}/users/groups/${req.query.id}/`
+                url = `${API_URL}/user/groups/${req.query.id}/`
                 contentType = 'application/json;charset=utf-8';
                 method = 'PATCH';
                 break
             case `edit_user`:
-                url = `${API_URL}/users/${req.query.id}/`
+                url = `${API_URL}/user/${req.query.id}/`
                 contentType = 'application/json;charset=utf-8';
                 method = 'PUT';
                 break
             case `delete`:
-                url = `${API_URL}/users/groups/${req.query.id}/`
+                url = `${API_URL}/user/groups/${req.query.id}/`
                 contentType = 'application/json;charset=utf-8';
                 method = 'DELETE';
                 break
             case `delete_user`:
-                url = `${API_URL}/users/${req.query.id}/`
+                url = `${API_URL}/user/${req.query.id}/`
                 contentType = 'application/json;charset=utf-8';
                 method = 'DELETE';
                 break

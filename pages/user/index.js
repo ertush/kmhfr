@@ -65,14 +65,14 @@ const Users = (props) => {
         {headerName: "Name", field: "name",  renderCell: (params) => {
             return(
                 <Link
-                href={{ pathname: `/users/user/`,
-                query: { id: params.row.id } }}
+                href={{ pathname: `/user/edit/${params.row.id}`,
+                  }} /* query: { id:  } */
                 className="cursor-pointer"
         
                 ><span className="cursor-pointer text-blue-600">{params.row.name}</span></Link>
                 
               
-            )} ,flex: 1},
+            )} ,flex: 1},   
         {headerName: "Employee number", field: "employee_number", flex: 1},
         {headerName: "Job Title", field: "job_title_name", flex: 1},
         {headerName: "Email", field: "email", flex: 1},
@@ -145,7 +145,7 @@ const Users = (props) => {
                                         {'Manage Users'}
                                     </h2>
                                     <button className=' bg-blue-600 p-2 text-white flex items-center text-lg font-semibold'
-                                    onClick={() => {router.push('/users/user')}} 
+                                    onClick={() => {router.push('/user/add')}} 
                                     >
                                         {`Add User `}
                                         <PlusIcon className='text-white ml-2 h-5 w-5'/>
@@ -176,12 +176,13 @@ const Users = (props) => {
                                         setUsersTheme(true)
                                         setInactiveUsersTheme(false)
                                         setGroupsTheme(false)
-                                        router.push('/users?is_active=true')
+                                        router.push('/user?is_active=true')
                                     
                                     }}
                                 >
                                     <ListItemText primary="Users" />
                                 </ListItemButton>
+                                
                                 <ListItemButton 
                                     sx={{
                                         backgroundColor: inactiveUsersTheme && '#2563eb',
@@ -196,7 +197,7 @@ const Users = (props) => {
                                         setUsersTheme(false)
                                         setInactiveUsersTheme(true)
                                         setGroupsTheme(false)
-                                        router.push('/users?is_active=false')
+                                        router.push('/user?is_active=false')
                                     
                                     }}
                                 >
@@ -217,7 +218,7 @@ const Users = (props) => {
                                         setUsersTheme(false)
                                         setInactiveUsersTheme(false)
                                         setGroupsTheme(true)
-                                        router.push('/users/groups')
+                                        router.push('/user/groups')
                                     
                                     }}
                                 >
@@ -315,7 +316,7 @@ Users.getInitialProps = async (ctx) => {
         }).then(r => r.json())
             .then(json => {
                     return {
-                        data: json, query, token, path: ctx.asPath || '/users', current_url: current_url 
+                        data: json, query, token, path: ctx.asPath || '/user', current_url: current_url 
                     }
                 
             }).catch(err => {
@@ -325,7 +326,7 @@ Users.getInitialProps = async (ctx) => {
                     err: err,
                     data: [],
                     query: {},
-                    path: ctx.asPath || '/users',
+                    path: ctx.asPath || '/user',
                     current_url: ''
                 }
             })
@@ -344,7 +345,7 @@ Users.getInitialProps = async (ctx) => {
             if (ctx?.asPath) {
                 window.location.href = ctx?.asPath
             } else {
-                window.location.href = '/users'
+                window.location.href = '/user'
             }
         }
         setTimeout(() => {
@@ -353,7 +354,7 @@ Users.getInitialProps = async (ctx) => {
                 err: err,
                 data: [],
                 query: {},
-                path: ctx.asPath || '/users',
+                path: ctx.asPath || '/user',
                 current_url: ''
             }
         }, 1000);

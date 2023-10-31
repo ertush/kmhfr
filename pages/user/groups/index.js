@@ -1,11 +1,11 @@
 import Head from 'next/head'
 import Link from 'next/link'
-import MainLayout from '../../components/MainLayout'
+import MainLayout from '../../../components/MainLayout'
 import { useEffect, useState } from 'react'
-import { checkToken } from '../../controllers/auth/auth'
+import { checkToken } from '../../../controllers/auth/auth'
 import { useRouter } from 'next/router'
 import {  DotsHorizontalIcon,PlusIcon,UsersIcon } from "@heroicons/react/solid";
-import { LicenseManager } from '@ag-grid-enterprise/core';
+// import { LicenseManager } from '@ag-grid-enterprise/core';
 
 import {
     DataGrid,
@@ -46,7 +46,7 @@ const Groups = (props) => {
             renderCell: (params) => {
                 return(
                     <Link
-                    href={{ pathname: `/users/edit/${params.row.id}` }}
+                    href={{ pathname: `/user/groups/edit/${params.row.id}` }}
                     className="cursor-pointer"
             
                     ><span className="cursor-pointer text-blue-600">{params.row.name}</span></Link>
@@ -74,7 +74,7 @@ const Groups = (props) => {
                         <div className="flex flex-wrap items-center justify-between gap-2 text-sm md:text-base py-1">
                             <div className="flex flex-row items-center justify-between gap-x-2 gap-y-0 text-sm md:text-base py-1">
                                 <a className="text-blue-700" href="/">Home</a> {'/'}
-                                <a className="text-blue-700" href="/users/">Users</a> {'/'}
+                                <a className="text-blue-700" href="/user/">Users</a> {'/'}
                                 <span className="text-gray-500">Groups</span> 
                             </div>
                             
@@ -84,7 +84,7 @@ const Groups = (props) => {
                                     {'Manage Groups'}
                                 </h2>
                                 <button className=' bg-blue-600 p-2 text-white flex items-center text-lg font-semibold'
-                                onClick={() => {router.push('/users/add_group')}} 
+                                onClick={() => {router.push('/user/groups/add')}} 
                                 >
                                     {`Add Group `}
                                     <PlusIcon className='text-white ml-2 h-5 w-5'/>
@@ -182,7 +182,7 @@ Groups.getInitialProps = async (ctx) => {
         }).then(r => r.json())
             .then(json => {
                     return {
-                        data: json, query, token, path: ctx.asPath || '/users/groups', current_url: current_url 
+                        data: json, query, token, path: ctx.asPath || '/user/groups', current_url: current_url 
                     }
                 
             }).catch(err => {
@@ -192,7 +192,7 @@ Groups.getInitialProps = async (ctx) => {
                     err: err,
                     data: [],
                     query: {},
-                    path: ctx.asPath || '/users/groups',
+                    path: ctx.asPath || '/user/groups',
                     current_url: ''
                 }
             })
@@ -211,7 +211,7 @@ Groups.getInitialProps = async (ctx) => {
             if (ctx?.asPath) {
                 window.location.href = ctx?.asPath
             } else {
-                window.location.href = '/users/groups'
+                window.location.href = '/user/groups'
             }
         }
         setTimeout(() => {
@@ -220,7 +220,7 @@ Groups.getInitialProps = async (ctx) => {
                 err: err,
                 data: [],
                 query: {},
-                path: ctx.asPath || '/users/groups',
+                path: ctx.asPath || '/user/groups',
                 current_url: ''
             }
         }, 1000);
