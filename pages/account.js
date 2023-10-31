@@ -130,7 +130,7 @@ const Account = () => {
                         console.log(res.length)
                         if(res.id !==undefined ){
 
-                            router.push({pathname:'/users'})
+                            router.push({pathname:'/user'})
                             alert.success(editMode? 'User updated successfully':'User added successfully')
         
                         }else{

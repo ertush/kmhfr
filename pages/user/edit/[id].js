@@ -1,8 +1,8 @@
 // React imports
 import React, { useEffect, useState, useContext } from 'react';
 import router from 'next/router';
-import MainLayout from '../../components/MainLayout';
-import { checkToken } from '../../controllers/auth/auth';
+import MainLayout from '../../../components/MainLayout';
+import { checkToken } from '../../../controllers/auth/auth';
 import { ChevronDoubleLeftIcon, UserAddIcon, PlusIcon, PencilAltIcon } from '@heroicons/react/solid';
 import Select from 'react-select';
 import { withRouter } from 'next/router';
@@ -11,12 +11,13 @@ import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import Fade from '@mui/material/Fade';
 import { useAlert } from "react-alert";
-import { UserContext } from '../../providers/user';
-import { hasPermission } from '../../utils/checkPermissions';
+import { UserContext } from '../../../providers/user';
+import { hasPermission } from '../../../utils/checkPermissions';
 import Alert from '@mui/material/Alert';
 import Link from 'next/link'
 
 const User = (props) => {
+	
 	const [subCountyOptions, setSubCountyOptions] = useState([])
 	const [editMode, setEditMode] = useState(false)
 	const alert = useAlert()
@@ -36,6 +37,7 @@ const User = (props) => {
 	const [isCPasswordDirty, setIsCPasswordDirty] = useState(false);
 	const [isClient, setIsClient] = useState(false);
 
+	const groupID = userCtx?.groups[0]?.id
 
 
 
@@ -116,7 +118,7 @@ const User = (props) => {
 
 					if (res.id !== undefined) {
 
-						router.push({ pathname: '/users' })
+						router.push({ pathname: '/user' })
 						alert.success(editMode ? 'User updated successfully' : 'User added successfully')
 
 					} else {
@@ -144,7 +146,7 @@ const User = (props) => {
 				.then(resp => resp)
 				.then(res => {
 
-					router.push('/users/')
+					router.push('/user/')
 					alert.success('User deleted successfully')
 				})
 
@@ -263,7 +265,7 @@ const User = (props) => {
 						<div className="flex flex-wrap items-center justify-between gap-2 text-sm md:text-base pb-3">
 							<div className="flex flex-row items-center justify-between gap-2 text-sm md:text-base py-3">
 								<Link className="text-blue-800" href='/'>Home</Link>{'/'}
-								<Link className="text-blue-800" href='/users'>Users</Link>{'/'}
+								<Link className="text-blue-800" href='/user'>Users</Link>{'/'}
 								<span className="text-gray-500">{editMode ? 'Edit user' : 'Add user'}</span>
 							</div>
 						</div>
@@ -757,7 +759,11 @@ const User = (props) => {
 																			className='flex-none w-full  flex-grow  placeholder-gray-500 border border-blue-600 outline-none'
 
 																		/>
-																		<Select
+																		{
+																		
+																		grp.id !== 1 &&
+
+																		<Select 
 																			styles={{
 																				control: (baseStyles) => ({
 																					...baseStyles,
@@ -786,6 +792,7 @@ const User = (props) => {
 																			name='sub_county'
 																			className='flex-none w-full  flex-grow  placeholder-gray-500 border border-blue-600 outline-none'
 																		/>
+																		}
 																	</div>
 
 																</div>
