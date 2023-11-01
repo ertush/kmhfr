@@ -238,9 +238,8 @@ export default function HeaderLayout({
             {/* Users */}
          
             {( groupID == 7 ||
-               groupID == 2 ||
-               groupID == 5 ||
-               groupID == 3 ) && isLoggedIn &&
+               groupID == 1 ||
+               groupID == 5) && isLoggedIn &&
               <li className="flex-wrap font-semibold">
                 <Link href="/user">
                   <p
