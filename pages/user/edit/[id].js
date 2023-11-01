@@ -14,7 +14,7 @@ import { useAlert } from "react-alert";
 import { UserContext } from '../../../providers/user';
 import { hasPermission } from '../../../utils/checkPermissions';
 import Alert from '@mui/material/Alert';
-import Link from 'next/link'
+import Link from 'next/link';
 
 const User = (props) => {
 	
@@ -23,7 +23,7 @@ const User = (props) => {
 	const alert = useAlert()
 	let groups = props[0]?.groups
 	let contact_types = props[1]?.contact_type
-	let counties = props[2]?.counties
+	let counties = props[2]?.counties	
 	let regbodies = props[3]?.regulating_bodies
 	let jobs = props[4]?.job_titles
 	let person_details = props[5]?.person_details
@@ -37,9 +37,11 @@ const User = (props) => {
 	const [isCPasswordDirty, setIsCPasswordDirty] = useState(false);
 	const [isClient, setIsClient] = useState(false);
 
-	const groupID = userCtx?.groups[0]?.id
+   
+	
 
-
+	
+	console.log({props})
 
 	const [userData, setUserData] = useState({
 		first_name: '',
@@ -99,18 +101,20 @@ const User = (props) => {
 	})
 
 
-	const handleBasicDetailsSubmit = async (event) => {
+	const handleBasicDetailsSubmit = async (event, token) => {
+		
 		event.preventDefault()
 		let url = ''
-		editMode ? url = `/api/common/submit_form_data/?path=edit_user&id=${person_details.id}` : url = '/api/common/submit_form_data/?path=users'
+		url = editMode ?  `${process.env.NEXT_PUBLIC_API_URL}/users/${person_details.id}/` : `${process.env.NEXT_PUBLIC_API_URL}/users/`
 		try {
 			fetch(url, {
 				headers: {
 					'Accept': 'application/json, text/plain, */*',
+					'Authorization': 'Bearer ' + token,
 					'Content-Type': 'application/json;charset=utf-8'
 
 				},
-				method: (editMode ? 'PUT' : 'POST'),
+				method: (editMode ? 'PATCH' : 'POST'),
 				body: JSON.stringify(userData).replace(',"":""', '')
 			})
 				.then(resp => resp.json())
@@ -134,12 +138,14 @@ const User = (props) => {
 		}
 	}
 
-	const deleteUser = (event) => {
+	const deleteUser = (event, token) => {
 		event.preventDefault()
 		try {
-			fetch(`/api/common/submit_form_data/?path=delete_user&id=${person_details.id}`, {
+			fetch( `${process.env.NEXT_PUBLIC_API_URL}/users/${person_details.id}/`, {
 				headers: {
-					'Content-Type': 'application/json;charset=utf-8'
+					'Content-Type': 'application/json;charset=utf-8',
+					'Authorization': 'Bearer ' + token,
+
 				},
 				method: 'DELETE',
 			})
@@ -251,7 +257,7 @@ const User = (props) => {
 									Are you sure you want to delete<b>{userData?.first_name + ' ' + userData?.last_name + ' ' + userData?.other_names}</b> ?
 								</span>
 								<div className='flex justify-start gap-4 mt-4'>
-									<button className="bg-blue-500 text-white font-semibold  p-2 text-center" type="button" disabled={!delete_user} onClick={(e) => { deleteUser(e); setOpen(false) }} >Delete</button>
+									<button className="bg-blue-500 text-white font-semibold  p-2 text-center" type="button" disabled={!delete_user} onClick={(e) => { deleteUser(e, props['6']?.token); setOpen(false) }} >Delete</button>
 									<button className="bg-red-500 text-white font-semibold  p-2 text-center"
 										onClick={() => { setOpen(false) }}
 									>Cancel</button>
@@ -313,7 +319,7 @@ const User = (props) => {
 								</h4>
 								<form
 									className='flex flex-col w-full items-start justify-start gap-3'
-									onSubmit={handleBasicDetailsSubmit}
+									onSubmit={e => handleBasicDetailsSubmit(e, props['6']?.token)}
 								>
 									{/* first name*/}
 									<div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
@@ -1068,6 +1074,11 @@ User.getInitialProps = async (ctx) => {
 
 				}
 			}
+
+			allOptions.push({
+				token
+			})
+
 			return allOptions
 		}
 	}).catch(err => {
