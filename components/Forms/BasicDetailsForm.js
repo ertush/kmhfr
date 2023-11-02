@@ -126,9 +126,9 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
 
     for (let type in f_types) all_ftypes.push(options['0']?.facility_types?.filter(({ sub_division }) => sub_division === f_types[type]))
 
-    return all_ftypes.map(arr => ({
-      label: arr[0]?.sub_division,
-      value: arr[0]?.parent
+    return  all_ftypes.map(arr => ({
+      label: arr.length > 1 ? arr[0]?.sub_division : [],
+      value: arr.length > 1 ? arr[0]?.parent : []
     }));
 
   })()
@@ -545,7 +545,7 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
           })
 
           // if owner == 'armed forces' then check the facility classified field
-          if(formikState?.values?.owner.includes("93c0fe24-3f12-4be2-b5ff-027e0bd02274")){
+          if(formikState?.values?.owner == "93c0fe24-3f12-4be2-b5ff-027e0bd02274"){
               formikState?.values?.is_classified = true;
           } else {
             formikState?.values?.is_classified = false;
