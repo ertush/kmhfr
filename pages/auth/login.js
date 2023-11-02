@@ -7,7 +7,7 @@ const Login = (props) => {
     const router = useRouter()
     const [username, setUsername] = React.useState('')
     const [password, setPassword] = React.useState('')
-    const [hidePassword, setHidePassword] = React.useState(false);
+    const [hidePassword, setHidePassword] = React.useState(true);
     const [error, setError] = React.useState(props.error)
     const [msg, setMsg] = React.useState(props.msg)
     const [loading, setLoading] = React.useState(false)
@@ -95,7 +95,7 @@ const Login = (props) => {
                         <label className="text-gray-800">Email / P_No</label>
                         <input type="text"
                             data-testid="email_input"
-                            autoComplete='on'
+                            autoComplete='username'
                             value={username}
                             onChange={ev => {
                                 setError('')
@@ -134,7 +134,7 @@ const Login = (props) => {
                         }}
                         value={password} 
                         autoSave='on'
-                        autoComplete='on'
+                        autoComplete='current-password'
                         aria-autocomplete='inline'
                         className="border w-full py-3 px-3 leading-none border-blue-600 bg-transparent focus:outline-none focus:border-indigo-700 focus:bg-white text-gray-700 pr-16" name="password" type={hidePassword ? 'password' : 'text'} 
                         />

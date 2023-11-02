@@ -103,7 +103,7 @@ export default function HeaderLayout({
         (typeof window !== "undefined" &&
           window.document.cookie.indexOf("access_token=") > -1) ||
         false;
-      // console.log("is_user_logged_in", is_user_logged_in)
+ 
       // setIsLoggedIn(is_user_logged_in);
       let session_token = null;
       if (is_user_logged_in) {
@@ -127,8 +127,6 @@ export default function HeaderLayout({
               setUser(null);
             } else {
               usr.id == 6 ?  setIsLoggedIn(false) :setIsLoggedIn(true); setUser(usr);
-              // setIsLoggedIn(true);
-              // setUser(usr);
               
             }
           }
@@ -143,8 +141,6 @@ export default function HeaderLayout({
       mtd = false;
     };
   }, []);
-
-  // console.log(isLoggedIn)
 
   return (
     <header className="flex flex-wrap items-center justify-start gap-x-4 w-full bg-blue-50 p-1 max-w-screen-3xl">
@@ -483,7 +479,7 @@ export default function HeaderLayout({
       </form>
       }
       </div>
-      {isLoggedIn && user ? (
+      {isLoggedIn ? (
         <div className="flex flex-wrap items-center gap-3 md:gap-5 px-2 md:flex-grow justify-end">
           <Menu as="div" className="relative p-2" >
             <Menu.Button
