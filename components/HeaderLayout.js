@@ -24,6 +24,9 @@ const DelayedLoginButton = () => {
 
   const [delayed, setDelayed] = useState(false);
 
+  const user = useContext(UserContext)
+
+  // console.log({user: user?.first_name})
 
   useEffect(() => {
    
@@ -38,7 +41,7 @@ const DelayedLoginButton = () => {
     };
   }, []);
 
-  if (delayed === true) {
+  if (user?.first_name?.includes('public')) {
     return (
       <a
         href="/auth/login"
@@ -47,7 +50,8 @@ const DelayedLoginButton = () => {
         Log in
       </a>
     );
-  } else {
+  } 
+  else {
     return (
       <div className="p-3 w-16">
         {" "}
