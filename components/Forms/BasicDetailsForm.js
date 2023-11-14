@@ -127,13 +127,13 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
     for (let type in f_types) all_ftypes.push(options['0']?.facility_types?.filter(({ sub_division }) => sub_division === f_types[type]))
 
     return  all_ftypes.map(arr => ({
-      label: arr.length > 1 ? arr[0]?.sub_division : [],
-      value: arr.length > 1 ? arr[0]?.parent : []
+      label:  arr[0]?.sub_division,
+      value:  arr[0]?.parent
     }));
 
   })()
 
-
+  
   const operationStatusOptions = [
     {
       value: '190f470f-9678-47c3-a771-de7ceebfc53c',
