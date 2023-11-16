@@ -15,7 +15,7 @@ import { useAlert } from 'react-alert';
 import { defer } from "underscore";
 import { handleBasicDetailsSubmit, handleBasicDetailsUpdates } from '../../controllers/facility/facilityHandlers';
 import { FacilityUpdatesContext } from '../../pages/facilities/edit/[id]';
-import  useSWR from 'swr';
+// import  useSWR from 'swr';
 // import { sortOptions } from '../../utils/sort';
 
 

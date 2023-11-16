@@ -24,9 +24,6 @@ const DelayedLoginButton = () => {
 
   const [delayed, setDelayed] = useState(false);
 
-  const user = useContext(UserContext)
-
-  // console.log({user: user?.first_name})
 
   useEffect(() => {
    
@@ -41,7 +38,7 @@ const DelayedLoginButton = () => {
     };
   }, []);
 
-  if (user?.first_name?.includes('public')) {
+  if (delayed) {
     return (
       <a
         href="/auth/login"
@@ -50,8 +47,7 @@ const DelayedLoginButton = () => {
         Log in
       </a>
     );
-  } 
-  else {
+  } else {
     return (
       <div className="p-3 w-16">
         {" "}
@@ -107,7 +103,7 @@ export default function HeaderLayout({
         (typeof window !== "undefined" &&
           window.document.cookie.indexOf("access_token=") > -1) ||
         false;
- 
+      // console.log("is_user_logged_in", is_user_logged_in)
       // setIsLoggedIn(is_user_logged_in);
       let session_token = null;
       if (is_user_logged_in) {
@@ -131,6 +127,8 @@ export default function HeaderLayout({
               setUser(null);
             } else {
               usr.id == 6 ?  setIsLoggedIn(false) :setIsLoggedIn(true); setUser(usr);
+              // setIsLoggedIn(true);
+              // setUser(usr);
               
             }
           }
@@ -145,6 +143,8 @@ export default function HeaderLayout({
       mtd = false;
     };
   }, []);
+
+  // console.log(isLoggedIn)
 
   return (
     <header className="flex flex-wrap items-center justify-start gap-x-4 w-full bg-blue-50 p-1 max-w-screen-3xl">
@@ -168,9 +168,6 @@ export default function HeaderLayout({
           </button>
           <ul className="flex-col md:flex-row items-start md:items-start bg-gray-50 inset-x-4  mt-1 md:mx-6 py-1 md:p-1  md:bg-transparent shadow border md:border-none md:shadow-none gap-5 hidden md:flex group-focus:flex group-active:flex group-hover:flex absolute md:relative">
             {/* Dashboard / Home */}
-            {
-              isLoggedIn &&
-            
             <li className="flex-wrap font-semibold" id="dashboard">
               <Link href={isLoggedIn ? "/dashboard" : "/"}>
                 <p
@@ -187,11 +184,8 @@ export default function HeaderLayout({
                 </p>
               </Link>
             </li>
-        }
             {/* Facilities */}
-            {
           
-            isLoggedIn &&
             <li className="flex-wrap font-semibold">
               <Link href="/facilities">
                 <p
@@ -211,11 +205,9 @@ export default function HeaderLayout({
                 </p>
               </Link>
             </li>
-          }
             
             {/* Community Units */}
-           {
-            isLoggedIn &&
+           
             <li className="flex-wrap font-semibold">
               <Link href="/community-units">
                 <p
@@ -233,22 +225,21 @@ export default function HeaderLayout({
                 </p>
               </Link>
             </li>
-          }
             
             {/* Users */}
          
             {( groupID == 7 ||
-               groupID == 1 ||
-               groupID == 5) && isLoggedIn &&
+               groupID == 2 ||
+               groupID == 3 ) && isLoggedIn &&
               <li className="flex-wrap font-semibold">
-                <Link href="/user">
+                <Link href="/users">
                   <p
                     className={
                       `
                     text-base 
                     md:text-lg
                     cursor-pointer
-                    ${(currentPath == "/user" ? activeClasses : inactiveClasses)
+                    ${(currentPath == "/users" ? activeClasses : inactiveClasses)
 
                       }`}
                   >
@@ -258,7 +249,7 @@ export default function HeaderLayout({
               </li>
             }
             {/* GIS */}
-            { 1 != 1 && // hasPermission(/^mfl_gis.view_.*$/, userPermissions) && isLoggedIn &&
+            {hasPermission(/^mfl_gis.view_.*$/, userPermissions) && isLoggedIn &&
               <li className="flex-wrap font-semibold">
                 <Link href="/gis">
                   <p
@@ -279,7 +270,8 @@ export default function HeaderLayout({
             }
             {/* System setup */}
             {
-              groupID == 7 && isLoggedIn &&
+              hasPermission(/^common.add_county$/, userPermissions) &&
+              hasPermission(/^common.delete_county$/, userPermissions) && isLoggedIn&&
               <li className="flex-wrap font-semibold">
                 <Link href="/system_setup">
                   <p
@@ -315,7 +307,7 @@ export default function HeaderLayout({
                     hidden 
                     sm:inline
                     cursor-pointer
-                    ${(currentPath == "/public/facilities" || currentPath == "/public/chu/community_units"
+                    ${(currentPath == "/public/facility/facilities" || currentPath == "/public/chu/community_units"
                     ? activeClasses
                     : inactiveClasses)
                   }`}>
@@ -334,7 +326,7 @@ export default function HeaderLayout({
                     <Link
                       className={`w-full hover:text-gray-400  font-medium flex items-center ${active && "text-blue-400"
                         }`}
-                      href="/public/facilities"
+                      href="/public/facility/facilities"
                       target="_blank"
                     >
                       Facilities
@@ -421,13 +413,13 @@ export default function HeaderLayout({
           className="inline-flex flex-row justify-start flex-grow mt-2 lg:py-0"
           action= {(()=>{
             if(searchOption == "Facilities"){
-              return "/public/facilities"
+              return "/public/facility/facilities"
             }else if(searchOption == "Community Health Unit"){
               return "/public/chu/community_units"
             }else if(searchOption == "Services"){
               return "/public/services"
             }else{
-             return  router.asPath.includes('searchTerm')? router.route : "/public/facilities"
+             return  router.asPath.includes('searchTerm')? router.route : "/public/facility/facilities"
             }
           })()}
         >
@@ -483,7 +475,7 @@ export default function HeaderLayout({
       </form>
       }
       </div>
-      {isLoggedIn ? (
+      {isLoggedIn && user ? (
         <div className="flex flex-wrap items-center gap-3 md:gap-5 px-2 md:flex-grow justify-end">
           <Menu as="div" className="relative p-2" >
             <Menu.Button
@@ -519,7 +511,18 @@ export default function HeaderLayout({
                   </button>
                 )}
               </Menu.Item>
-              
+              {/* <Menu.Item as="li" className="flex items-center w-full gap-1">
+                {({ active }) => (
+                  <a
+                    className={`w-full hover:text-blue-400 font-medium flex items-center ${active && "text-blue-400"
+                      }`}
+                    href="https://KMHFR.health.go.ke/"
+                    target="_blank"
+                  >
+                    KMHFR live <ExternalLinkIcon className="h-4 w-4 ml-2" />
+                  </a>
+                )}
+              </Menu.Item> */}
               <Menu.Item
                 as="li"
 

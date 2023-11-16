@@ -6,7 +6,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/router';
 
 
-function CommunityUnitSideMenu({ _pathId, filters, qf }) {
+export default function CommunityUnitSideMenu({ _pathId, filters, qf }) {
 
 
 	const router = useRouter()
@@ -294,4 +294,3 @@ function CommunityUnitSideMenu({ _pathId, filters, qf }) {
 	)
 }
 
-export default CommunityUnitSideMenu
