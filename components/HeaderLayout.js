@@ -475,7 +475,7 @@ export default function HeaderLayout({
       </form>
       }
       </div>
-      {isLoggedIn && user ? (
+      {isLoggedIn ? (
         <div className="flex flex-wrap items-center gap-3 md:gap-5 px-2 md:flex-grow justify-end">
           <Menu as="div" className="relative p-2" >
             <Menu.Button

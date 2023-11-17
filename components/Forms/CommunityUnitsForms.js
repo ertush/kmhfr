@@ -10,9 +10,11 @@ import {
     LockClosedIcon,
     XCircleIcon,
   } from "@heroicons/react/solid";
-import { useContext } from 'react';
+import { useContext, cache } from 'react';
 import { ChuOptionsContext } from '../../pages/community-units/edit/[id]';
 // import SelectSearch from './formComponents/FormikSelectSearch';
+
+
 
 
 
@@ -36,15 +38,14 @@ export function CommunityUnitEditForm({cu: {
   date_operational,
   health_unit_workers,
   location,
-  contacts,
+  contacts, 
   services
 }}) {
 
  
-
-    const options = useContext(ChuOptionsContext);
-
-
+    const options = useContext(ChuOptionsContext)
+  
+    // Constants
 
     const intialValuesBasicDetails = {
         code,
@@ -60,11 +61,22 @@ export function CommunityUnitEditForm({cu: {
         date_operational,
         date_established,
         facility_ward,
-        
-
+   
     }
 
-    console.log(options?.facilities)
+    //Add Contact and Contact Type Name to Basic details initial Values 
+
+    function appendValueToBasicDetails(contacts) {
+      let i = 0
+      for(let {contact_type, contact} of contacts){
+        intialValuesBasicDetails[`contact_type_${i}`] = contact_type
+        intialValuesBasicDetails[`contact_${i}`] = contact
+        i+=1
+
+      }
+    }
+
+    if(contacts) appendValueToBasicDetails(contacts)
 
 
     const initialValuesChews = {
@@ -75,6 +87,21 @@ export function CommunityUnitEditForm({cu: {
     const initalValuesServices = {
 
     }
+
+    // Options
+
+    console.log({options})
+
+    const facilityOptions = options?.facilities?.map(({id, name}) => ({label:name, value:id})) ?? []
+    const operationStatusOptions = options?.statuses?.map(({id, name}) => ({label:name, value:id})) ?? []
+    const serviceOptions = options?.services?.map(({id, name}) => ({label:name, value:id})) ?? []
+    const contactOptions = options?.contact_types?.map(({id, name}) => ({label:name, value:id})) ?? []
+
+    // console.log({
+    //   facilityOptions,
+    //   operationStatusOptions,
+    //   serviceOptions
+    // })
 
     return  (
 
@@ -262,16 +289,8 @@ export function CommunityUnitEditForm({cu: {
                             }),
                           }}
                           
-                          options={options?.facilities?.map(({id, name}) => ({label:name, value:id})) ?? [{
-                            label: "facility A",
-                            value:"A"
-                          },
-                          {
-                            label:"facility B",
-                            value:"B"
-                          }
-                        ]}
-                         
+                          options={facilityOptions}
+                          placeholder="Select Link facility ..."
                           name="facility_name"
                           className='flex-none w-full  flex-grow  placeholder-gray-500 border border-blue-600 outline-none'
 
@@ -303,7 +322,7 @@ export function CommunityUnitEditForm({cu: {
                               height: '4px'
                             }),
                           }}
-                          options={options?.statuses}
+                          options={operationStatusOptions}
                           name="status_name"
                           className='flex-none w-full  flex-grow  placeholder-gray-500 border border-blue-600 outline-none'
 
@@ -523,7 +542,7 @@ export function CommunityUnitEditForm({cu: {
                             Community Health Unit Contacts
                           </h4>
 
-                          {contacts?.map((x, i) => {
+                          {contacts?.map((_, i) => {
                             return (
                               <div
                                 className="w-full flex flex-row items-center  gap-1 gap-x-3 mb-3"
@@ -547,8 +566,9 @@ export function CommunityUnitEditForm({cu: {
                                     required
                                     key={i}
                                     id={`${i}`}
-                                    name="contact_type"
-                                   
+                                    name={`contact_type_${i}`}
+                                    options={contactOptions}
+                                    placeholder="Select Contact.."
                                     className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:bg-white focus:border-black outline-none"
                                  />
                                     
@@ -570,9 +590,8 @@ export function CommunityUnitEditForm({cu: {
                                   <Field
                                     required
                                     type="text"
-                                    name="contact"
+                                    name={`contact_${i}`}
                                     id={i}
-                                    
                                     className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:bg-white focus:border-black outline-none"
                                   />
                                 </div>
@@ -770,8 +789,8 @@ export function CommunityUnitEditForm({cu: {
                             }),
 
                           }}
-
-                          options={{}}
+                          placeholder="Select Service ..."
+                          options={serviceOptions}
                           
                           name="services"
                           className='flex-none w-full  flex-grow  placeholder-gray-500 border border-blue-600 outline-none'

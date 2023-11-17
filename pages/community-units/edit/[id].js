@@ -119,6 +119,8 @@ export async function getServerSideProps({req, res, query}) {
       }
       } 
 
+      console.log({response})
+
       return {
         props: response 
       }
