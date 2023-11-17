@@ -15,7 +15,7 @@ import { useAlert } from 'react-alert';
 import { defer } from "underscore";
 import { handleBasicDetailsSubmit, handleBasicDetailsUpdates } from '../../controllers/facility/facilityHandlers';
 import { FacilityUpdatesContext } from '../../pages/facilities/edit/[id]';
-import  useSWR from 'swr';
+// import  useSWR from 'swr';
 // import { sortOptions } from '../../utils/sort';
 
 
@@ -126,10 +126,21 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
 
     for (let type in f_types) all_ftypes.push(options['0']?.facility_types?.filter(({ sub_division }) => sub_division === f_types[type]))
 
-    return  all_ftypes.map(arr => ({
-      label:  arr[0]?.sub_division,
-      value:  arr[0]?.parent
-    }));
+  
+      return all_ftypes.map(arr => {
+        if(arr) {
+          return {
+            label: arr[0]?.sub_division,
+            value: arr[0]?.parent
+          }
+        } else {
+          return {
+            label: null,
+            value: null
+          }
+        }
+      })
+  
 
   })()
 

@@ -17,7 +17,7 @@ const DelayedLoginButton = () => {
         }, 1000)
         return () => { mtd = false }
     }, [])
-    if (delayed === true) {
+    if (delayed) {
         return <a href="/auth/login" className="bg-black hover:bg-blue-700 focus:bg-blue-700 active:bg-blue-700 focus:outline-none focus:ring-1 focus:ring-indigo-500 text-white px-4 md:px-8 whitespace-nowrap py-2 rounded text-base font-semibold">Log in</a>
     } else {
         return <div className="p-3 w-16"> <LoadingAnimation size={6} isLight={true} /> </div>
