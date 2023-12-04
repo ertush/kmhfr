@@ -32,25 +32,25 @@ export function FacilityContactsForm() {
     // Constants
 
     const options = useContext(FormOptionsContext);
-    const contactTypeOptions = options['11']?.contact_types;
-    const jobTitleOptions = options['10']?.job_titles;
+    const contactTypeOptions = options.contact_types;
+    const jobTitleOptions = options.job_titles;
 
     const facilityContactsData = {}
 
-    facilityContactsData['officer_name'] = options['19']?.data?.officer_in_charge?.name;
-    facilityContactsData['officer_reg_no'] = options['19']?.data?.officer_in_charge?.reg_no;
-    facilityContactsData['officer_title'] = options['19']?.data?.officer_in_charge?.title;
+    facilityContactsData['officer_name'] = options?.data?.officer_in_charge?.name;
+    facilityContactsData['officer_reg_no'] = options?.data?.officer_in_charge?.reg_no;
+    facilityContactsData['officer_title'] = options?.data?.officer_in_charge?.title;
 
 
-    options['19']?.data?.facility_contacts?.forEach((contact, i) => {
+    options?.data?.facility_contacts?.forEach((contact, i) => {
         facilityContactsData[`contact_${i}`] = contact.contact
-        facilityContactsData[`contact_type_${i}`] = options['11']?.contact_types?.find(({label}) => label == contact?.contact_type_name)?.value;
+        facilityContactsData[`contact_type_${i}`] = options.contact_types?.find(({label}) => label == contact?.contact_type_name)?.value;
     })
 
 
-    options['19']?.data?.officer_in_charge?.contacts?.forEach((contact, i) => {
+    options?.data?.officer_in_charge?.contacts?.forEach((contact, i) => {
         facilityContactsData[`officer_details_contact_${i}`] = contact?.contact
-        facilityContactsData[`officer_details_contact_type_${i}`] = options['11']?.contact_types?.find(({label}) => label == contact?.contact_type_name)?.value;
+        facilityContactsData[`officer_details_contact_type_${i}`] = options.contact_types?.find(({label}) => label == contact?.contact_type_name)?.value;
     })
 
 
@@ -63,7 +63,7 @@ export function FacilityContactsForm() {
     const alert = useAlert()
 
 
-    const { updatedSavedChanges, updateFacilityUpdateData } = options['19']?.data ? useContext(FacilityUpdatesContext) : {updatedSavedChanges: null, updateFacilityUpdateData: null }
+    const { updatedSavedChanges, updateFacilityUpdateData } = options?.data ? useContext(FacilityUpdatesContext) : {updatedSavedChanges: null, updateFacilityUpdateData: null }
 
 
     const [facilityContacts, setFacilityContacts] = useState([
@@ -108,11 +108,11 @@ export function FacilityContactsForm() {
 
 
     const [initialValues, handleFormUpdate] = useLocalStorageState({
-        key: options['19']?.data ? 'facility_contacts_edit_form' : 'facility_contacts_form',
-        value: options['19']?.data ? facilityContactsData : formFields
+        key: options?.data ? 'facility_contacts_edit_form' : 'facility_contacts_form',
+        value: options?.data ? facilityContactsData : formFields
       }).actions.use();
 
-  const formValues =  options['19']?.data ?  facilityContactsData : initialValues && initialValues.length > 1 ? JSON.parse(initialValues) : formFields;
+  const formValues =  options?.data ?  facilityContactsData : initialValues && initialValues.length > 1 ? JSON.parse(initialValues) : formFields;
 
     // Effects
 
@@ -120,7 +120,7 @@ export function FacilityContactsForm() {
         const contacts = [];
         const officerContacts = [];
 
-        const initialValueObj = options['19']?.data ? facilityContactsData : typeof initialValues == 'string' ? JSON.parse(initialValues) : {}
+        const initialValueObj = options?.data ? facilityContactsData : typeof initialValues == 'string' ? JSON.parse(initialValues) : {}
 
         // console.log({initialValues, initialValueObj})
         const contactCount = Object.keys(initialValueObj).filter(x => /^contact_\d/.test(x)).length;
@@ -217,8 +217,8 @@ export function FacilityContactsForm() {
         initialValues={formValues}
         onSubmit={(values) => {
 
-            options['19']?.data ? 
-            handleFacilityContactsUpdates(options['22']?.token, values, facilityId)
+            options?.data ? 
+            handleFacilityContactsUpdates(options.token, values, facilityId)
             .then((resp) => {
                 defer(() => updatedSavedChanges(true));
                 if (resp.ok) {
@@ -229,7 +229,7 @@ export function FacilityContactsForm() {
                     `${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${facilityId}/`,
                     {
                         headers: {
-                         'Authorization': 'Bearer ' + options['22']?.token,
+                         'Authorization': 'Bearer ' + options.token,
                          'Accept': 'application/json, text/plain, */*',
                          'Content-Type': 'application/json;charset=utf-8'
                         } 
@@ -249,7 +249,7 @@ export function FacilityContactsForm() {
                             `${process.env.NEXT_PUBLIC_API_URL}/facilities/facility_updates/${results?.latest_update}/`,
                             {
                                 headers: {
-                                 'Authorization': 'Bearer ' + options['22']?.token,
+                                 'Authorization': 'Bearer ' + options.token,
                                  'Accept': 'application/json, text/plain, */*',
                                  'Content-Type': 'application/json;charset=utf-8'
                                 } 
@@ -290,7 +290,7 @@ export function FacilityContactsForm() {
                 )
               )
             :
-            handleFacilityContactsSubmit(options['18']?.token, values, [formId, setFormId, facilityId])
+            handleFacilityContactsSubmit(options.token, values, [formId, setFormId, facilityId])
             .then(resp => {
                 if(resp.statusText.include("OK")){
                     alert.success('Facility Contacts Saved successfully', {
@@ -544,7 +544,7 @@ export function FacilityContactsForm() {
                     </div>
 
                     {
-                options['19']?.data  ? 
+                options?.data  ? 
 
                 <div className='flex justify-end items-center w-full'>
                   <button

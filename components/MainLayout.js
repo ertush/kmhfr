@@ -90,14 +90,20 @@ export default function MainLayout({ children, isLoading, searchTerm, isFullWidt
                     </div> : children}
                 </>
             </div>
-            <footer className="bg-black py-5 items-center justify-center flex flex-wrap gap-y-3 gap-x-4 text-gray-300 text-sm w-full">
-                <p>KMHFR V3 Beta</p>
+            <footer className="bg-blue-50 py-5 items-center justify-evenly flex flex-wrap gap-y-3 gap-x-4 text-gray-300 text-sm w-full">
+            
+            
+                <a className="text-blue-300 hover:underline focus:underline active:underline hover:text-white focus:text-white active:text-white" href="https://www.usaid.gov/kenya" target="_blank" rel="noreferrer noopener">
+                <img src="/USAID.png" alt="" className="h-14" />   
+                </a>
                 <span className="text-lg text-gray-400">&middot;</span>
-                <a className="text-blue-300 hover:underline focus:underline active:underline hover:text-white focus:text-white active:text-white" href="https://health.go.ke" target="_blank" rel="noreferrer noopener">Ministry of Health</a>
+                <a className="text-blue-300 hover:underline focus:underline active:underline hover:text-white focus:text-white active:text-white" href="https://health.go.ke" target="_blank" rel="noreferrer noopener">
+                    <img src="/moh-logo.png" alt="" className="h-14" />
+                </a>
                 <span className="text-lg text-gray-400">&middot;</span>
-                <a className="text-blue-300 hover:underline focus:underline active:underline hover:text-white focus:text-white active:text-white" href="https://healthit.uonbi.ac.ke" target="_blank" rel="noreferrer noopener">USAID HealthIT</a>
-                <span className="text-lg text-gray-400">&middot;</span>
-                <a className="text-blue-300 hover:underline focus:underline active:underline hover:text-white focus:text-white active:text-white" href="http://KMHFR.health.go.ke" target="_blank" rel="noreferrer noopener">KMHFL v2</a>
+                <a className="text-blue-300 hover:underline focus:underline active:underline hover:text-white focus:text-white active:text-white" href="http://healthit.uonbi.ac.ke/" target="_blank" rel="noreferrer noopener">
+                <img src="/healthit.png" alt="" className="h-14" />
+                </a>
             </footer>
         </div>
     );

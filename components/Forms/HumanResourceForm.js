@@ -22,7 +22,7 @@ export function HumanResourceForm() {
     const [formId, setFormId] = useContext(FormContext);
     const[facilityId, _] = useContext(FacilityIdContext);
 
-    const { updatedSavedChanges, updateFacilityUpdateData } = options['19']?.data ? useContext(FacilityUpdatesContext) : {updatedSavedChanges: null, updateFacilityUpdateData: null }
+    const { updatedSavedChanges, updateFacilityUpdateData } = options?.data ? useContext(FacilityUpdatesContext) : {updatedSavedChanges: null, updateFacilityUpdateData: null }
 
 
 
@@ -45,7 +45,7 @@ export function HumanResourceForm() {
 			categories: hrCategories,
 		}
 
-	})(options['17']?.hr ?? [])
+	})(options.hr ?? [])
 
 
     //Event handlers
@@ -67,10 +67,10 @@ export function HumanResourceForm() {
                         itemsCategory={null}
                         categoryItems={hrOptions.categories}
                         itemsCategoryName={'human resource'}
-                        token={options['18']?.token ?? options['22']?.token}
-                        options={options['17']?.hr}
+                        token={options.token}
+                        options={options.hr}
                         itemId={facilityId}
-                        item={options['19']?.data ?? null}
+                        item={options?.data ?? null}
                         handleItemsSubmit={handleHrSubmit}
                         handleItemsUpdate={handleHrUpdates}
                         removeItemHandler={() => null}
@@ -80,7 +80,7 @@ export function HumanResourceForm() {
                         nextItemCategory={'finish'}
                         previousItemCategory={'infrastructure'}
                         setIsSaveAndFinish={updatedSavedChanges}
-                        itemData={options['19']?.data ? options['19']?.data?.facility_humanresources : null}
+                        itemData={options?.data ? options?.data?.facility_humanresources : null}
 
                     />
 

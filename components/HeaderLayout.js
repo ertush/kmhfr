@@ -151,7 +151,7 @@ export default function HeaderLayout({
       <title>KMHFR </title>
       <nav className="flex flex-wrap px-2 items-center justify-between md:justify-start flex-grow sm:flex-grow-0 gap-x-3 gap-y-2 py-1 md:py-3 md:gap-5">
         
-        <div id="logo" className="flex gap-2 items-center justify-start ">
+        <div id="logo" className="flex-col gap-2 items-center justify-start ">
 
           <a
             href="/"
@@ -164,7 +164,7 @@ export default function HeaderLayout({
             </span> */}
           </a>
 
-        <h2 className="text-2xl text-blue-800 font-semibold leading-none">KMHFR</h2>
+        {/* <h2 className="text-2xl text-blue-800 font-semibold leading-none">KMHFR</h2> */}
 
 
         </div>

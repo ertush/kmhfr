@@ -20,7 +20,7 @@ export function InfrastructureForm() {
     const[facilityId, _] = useContext(FacilityIdContext);
 
     
-    const { updatedSavedChanges, updateFacilityUpdateData } = options['19']?.data ? useContext(FacilityUpdatesContext) : {updatedSavedChanges: null, updateFacilityUpdateData: null }
+    const { updatedSavedChanges, updateFacilityUpdateData } = options?.data ? useContext(FacilityUpdatesContext) : {updatedSavedChanges: null, updateFacilityUpdateData: null }
 
     
 
@@ -42,7 +42,7 @@ export function InfrastructureForm() {
 			categories: infraCategories,
 		}
 
-	})(options['16']?.infrastructure ?? [])
+	})(options.infrastructure ?? [])
 
        //Event handlers
        const handleInfrastructurePrevious = useCallback(() => {
@@ -63,10 +63,10 @@ export function InfrastructureForm() {
                         otherItemsCategory={null}
                         itemsCategoryName={'infrastructure'}
                         categoryItems={infrastructureOption.categories}
-                        options={options['16']?.infrastructure}
-                        token={options['18']?.token ?? options['22']?.token}
+                        options={options.infrastructure}
+                        token={options.token}
                         itemId={facilityId}
-                        item={options['19']?.data ?? null}   
+                        item={options?.data ?? null}   
                         handleItemsSubmit={handleInfrastructureSubmit}
                         handleItemsUpdate={handleInfrastructureUpdates}
                         removeItemHandler={() => null}
@@ -78,7 +78,7 @@ export function InfrastructureForm() {
                         nextItemCategory={'human resource'}
                         previousItemCategory={'services'}
                         setIsSaveAndFinish={updatedSavedChanges}
-                        itemData={options['19']?.data ? options['19']?.data?.facility_infrastructure : null}
+                        itemData={options?.data ? options?.data?.facility_infrastructure : null}
                     />
 
                 </div>

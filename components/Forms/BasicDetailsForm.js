@@ -74,7 +74,7 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
 
   for (let item of Object.keys(formFields)) {
     facilityBasicDetails[item] = (item.includes('nhif_accreditation') || item.includes('reporting_in_dhis') || item.includes('accredited_lab_iso_15189'))
-     ? `${options['19']?.data[item]}` : options['19']?.data[item];
+     ? `${options?.data[item]}` : options?.data[item];
   }
 
   // State
@@ -86,17 +86,17 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
   // const [subCountyOptions, setSubCountyOptions] = useState([]);
   const [isCountyOption, setIsCountyOption] = useState(false);
 
-  const { updatedSavedChanges, updateFacilityUpdateData } = options['19']?.data ? useContext(FacilityUpdatesContext) : {updatedSavedChanges: null, updateFacilityUpdateData: null }
+  const { updatedSavedChanges, updateFacilityUpdateData } = options?.data ? useContext(FacilityUpdatesContext) : {updatedSavedChanges: null, updateFacilityUpdateData: null }
 
   // Facility update data 
 
   const [initialValues, handleFormUpdate] = useLocalStorageState({
-    key: options['19']?.data ? 'basic_details_edit_form' : 'basic_details_form',
-    value: options['19']?.data ? facilityBasicDetails : formFields
+    key: options?.data ? 'basic_details_edit_form' : 'basic_details_form',
+    value: options?.data ? facilityBasicDetails : formFields
   }).actions.use();
 
 
-  const formValues = options['19']?.data ? facilityBasicDetails : initialValues && initialValues.length > 1 ? JSON.parse(initialValues) : formFields
+  const formValues = options?.data ? facilityBasicDetails : initialValues && initialValues.length > 1 ? JSON.parse(initialValues) : formFields
 
   // Modify form values
   const [filteredOptions, setFilteredOptions] = useState({
@@ -124,7 +124,7 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
 
     const all_ftypes = []
 
-    for (let type in f_types) all_ftypes.push(options['0']?.facility_types?.filter(({ sub_division }) => sub_division === f_types[type]))
+    for (let type in f_types) all_ftypes.push(options?.facility_types?.filter(({ sub_division }) => sub_division === f_types[type]))
 
   
       return all_ftypes.map(arr => {
@@ -177,7 +177,7 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
       let i = 0;
 
       for (i = 0; i < f_types.length; i++) {
-        all_ftypes.push(options['0']?.facility_types.filter(({ sub_division }) => sub_division === f_types[i]))
+        all_ftypes.push(options?.facility_types.filter(({ sub_division }) => sub_division === f_types[i]))
       }
 
 
@@ -261,21 +261,21 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
           setFilteredOptions((prev) => ({
             ...prev,
             ownerTypeOptions: [
-              options['2']?.owners.filter(({ label }) => label == "Private Practice- Pharmacist")[0] || {},
-              options['2']?.owners.filter(({ label }) => label == "Private Practice - Private Company")[0] || {},
-              options['2']?.owners.filter(({ label }) => label == "Private Practice Lab Technician/Technologist")[0] || {},
-              options['2']?.owners.filter(({ label }) => label == "Private Practice - Nurse / Midwifery")[0] || {},
-              options['2']?.owners.filter(({ label }) => label == "Private Practice - Medical Specialist")[0] || {},
-              options['2']?.owners.filter(({ label }) => label == "Private Practice - General Practitioner")[0] || {},
-              options['2']?.owners.filter(({ label }) => label == "Private Practice - Clinical Officer")[0] || {},
-              options['2']?.owners.filter(({ label }) => label == "Private Practice - Private Institution Academic")[0] || {}
+              options || {},
+              options || {},
+              options || {},
+              options || {},
+              options || {},
+              options || {},
+              options || {},
+              options || {}
             ]
           }))
           break;
         case own_types[1]:
           setFilteredOptions((prev) => ({
             ...prev,
-            ownerTypeOptions: options['2']?.owners.filter(({ label }) => label == 'Non-Governmental Organizations')
+            ownerTypeOptions: options?.owners.filter(({ label }) => label == 'Non-Governmental Organizations')
           }))
 
           break;
@@ -283,12 +283,12 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
           setFilteredOptions((prev) => ({
             ...prev,
             ownerTypeOptions: [
-              options['2']?.owners.filter(({ label }) => label == "Public Institution - Parastatal")[0] || {},
-              options['2']?.owners.filter(({ label }) => label == 'Ministry of Health')[0] || {},
-              options['2']?.owners.filter(({ label }) => label == 'Armed Forces')[0] || {},
-              options['2']?.owners.filter(({ label }) => label == 'Kenya Police Service')[0] || {},
-              options['2']?.owners.filter(({ label }) => label == 'National Youth Service')[0] || {},
-              options['2']?.owners.filter(({ label }) => label == 'Prisons')[0] || {}
+              options || {},
+              options || {},
+              options || {},
+              options || {},
+              options || {},
+              options || {}
 
             ]
           }))
@@ -297,12 +297,12 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
           setFilteredOptions((prev) => ({
             ...prev,
             ownerTypeOptions: [
-              options['2']?.owners.filter(({ label }) => label == 'Seventh Day Adventist')[0] || {},
-              options['2']?.owners.filter(({ label }) => label == 'Supreme Council for Kenya Muslims')[0] || {},
-              options['2']?.owners.filter(({ label }) => label == 'Other Faith Based')[0] || {},
-              options['2']?.owners.filter(({ label }) => label == 'Seventh Day Adventist')[0] || {},
-              options['2']?.owners.filter(({ label }) => label == 'Kenya Episcopal Conference-Catholic Secretariat')[0] || {},
-              options['2']?.owners.filter(({ label }) => label == 'Christian Health Association of Kenya')[0] || {},
+              options || {},
+              options || {},
+              options || {},
+              options || {},
+              options || {},
+              options || {},
             ]
           }))
           break;
@@ -358,9 +358,9 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
   const facilityTypeDetailsRef = useRef(null);
   const checkListFileRef = useRef(null);
 
-  if(options['19']?.data){
-    formValues['facility_type'] = facilityTypeOptions.find(({label}) => label == options['19']?.data?.facility_type_parent)?.value
-    formValues['facility_type_details'] = filteredOptions.facilityTypeDetailOptions.find(({label}) => label == options['19']?.data?.facility_type_name)?.value
+  if(options?.data){
+    formValues['facility_type'] = facilityTypeOptions.find(({label}) => label == options?.data?.facility_type_parent)?.value
+    formValues['facility_type_details'] = filteredOptions.facilityTypeDetailOptions.find(({label}) => label == options?.data?.facility_type_name)?.value
     
     // delete formValues['facility_checklist_document']; 
     // formValues['facility_checklist_document'] = new File([],'Checklist File',undefined)
@@ -372,7 +372,7 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
                 
 //     fetch(url, {
 //     headers: {
-//       'Authorization': `Bearer ${options['18']?.token ?? options['22']?.token }`,
+//       'Authorization': `Bearer ${options?.token }`,
 //       'Accept': 'application/json',
 //       'Content-Type': 'application/json, **/**'
 
@@ -388,9 +388,9 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
   return (
     <Formik
       initialValues={formValues}
-      onSubmit={(values) => options['19']?.data ? 
+      onSubmit={(values) => options?.data ? 
       // Update existing facility
-      handleBasicDetailsUpdates(options['22']?.token, values, facilityId, updatedSavedChanges)
+      handleBasicDetailsUpdates(options?.token, values, facilityId, updatedSavedChanges)
       .then((resp) => {
         defer(() => updatedSavedChanges(true));
  
@@ -403,7 +403,7 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
             `${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${facilityId}/`,
             {
              headers: {
-              'Authorization': 'Bearer ' + options['22']?.token,
+              'Authorization': 'Bearer ' + options?.token,
               'Accept': 'application/json, text/plain, */*',
               'Content-Type': 'application/json;charset=utf-8'
              } 
@@ -420,7 +420,7 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
                       `${process.env.NEXT_PUBLIC_API_URL}/facilities/facility_updates/${results?.latest_update}/`,
                       {
                         headers: {
-                         'Authorization': 'Bearer ' + options['22']?.token,
+                         'Authorization': 'Bearer ' + options?.token,
                          'Accept': 'application/json, text/plain, */*',
                          'Content-Type': 'application/json;charset=utf-8'
                         } 
@@ -461,7 +461,7 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
       )   
       : 
       // Post new facility
-      handleBasicDetailsSubmit(options['18']?.token, values, formId, setFormId, checkListFileRef.current, alert, setGeoJSON, setWardName, setGeoCenter, setFacilityId)}
+      handleBasicDetailsSubmit(options?.token, values, formId, setFormId, checkListFileRef.current, alert, setGeoJSON, setWardName, setGeoCenter, setFacilityId)}
       validationSchema={toFormikValidationSchema(formSchema)}
       enableReinitialize
     >
@@ -486,14 +486,14 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
       }
 
 
-        // const {data:sub_counties, error} = useSWR(isCountyOption ? [`${process.env.NEXT_PUBLIC_API_URL}/common/sub_counties/${formikState?.values.county_id}`, options['18']?.token ?? options['22']?.token ] : null, fetcher)
+        // const {data:sub_counties, error} = useSWR(isCountyOption ? [`${process.env.NEXT_PUBLIC_API_URL}/common/sub_counties/${formikState?.values.county_id}`, options : null, fetcher)
 
 
       //Effects
 
       useEffect(() => {
 
-        if(!options['19']?.data){
+        if(!options?.data){
           handleFormUpdate(JSON.stringify(formikState?.values))
         }
 
@@ -515,7 +515,7 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
       // if(formikState?.values?.facility_type !== ""){
         
 
-      //     const facilityTypeDetails =  options['1']?.facility_type_details?.find(
+      //     const facilityTypeDetails =  options?.facility_type_details?.find(
       //       ({ value }) => value.includes(formikState?.values?.facility_type)
       //     )?.value ?? " ";
 
@@ -551,8 +551,8 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
           if (formikState?.values?.facility_type !== "") setFacilityTypeValue(formikState?.values?.facility_type)
 
         
-          if (formikState?.values?.owner_type !== "" && options['3']?.owner_types ) setOwnerTypeLabel(() => {
-            return options['3']?.owner_types?.filter(({ value }) => value === formikState?.values?.owner_type)[0]?.label
+          if (formikState?.values?.owner_type !== "" && options?.owner_types ) setOwnerTypeLabel(() => {
+            return options?.label
           })
 
           // if owner == 'armed forces' then check the facility classified field
@@ -566,58 +566,58 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
           switch (formikState?.values?.facility_type) {
             // STAND ALONE 
             case '85f2099b-a2f8-49f4-9798-0cb48c0875ff':
-              formikState?.values?.keph_level = options['4']?.keph.find(({ label }) => label === 'Level 2')?.value;
+              formikState?.values?.keph_level = options?.keph.find(({ label }) => label === 'Level 2')?.value;
               break;
             // DISPENSARY
             case '87626d3d-fd19-49d9-98da-daca4afe85bf':
-              formikState?.values?.keph_level = options['4']?.keph.find(({ label }) => label === 'Level 2')?.value
+              formikState?.values?.keph_level = options?.keph.find(({ label }) => label === 'Level 2')?.value
               break;
 
             // MEDICAL CLINIC
             case '8949eeb0-40b1-43d4-a38d-5d4933dc209f':
-              formikState?.values?.keph_level = options['4']?.keph.find(({ label }) => label === 'Level 2')?.value
+              formikState?.values?.keph_level = options?.keph.find(({ label }) => label === 'Level 2')?.value
               break;
 
             // NURSING HOME
             case '0b7f9699-6024-4813-8801-38f188c834f5':
-              formikState?.values?.keph_level = options['4']?.keph.find(({ label }) => label === 'Level 3')?.value
+              formikState?.values?.keph_level = options?.keph.find(({ label }) => label === 'Level 3')?.value
               break;
 
             // HEALTH CENTER
             case '9ad22615-48f2-47b3-8241-4355bb7db835':
-              formikState?.values?.keph_level = options['4']?.keph.find(({ label }) => label === 'Level 3')?.value
+              formikState?.values?.keph_level = options?.keph.find(({ label }) => label === 'Level 3')?.value
               break;
 
             // MEDICAL CENTER
             case 'df69577d-b90f-4b66-920a-d0f3ecd95191':
-              formikState?.values?.keph_level = options['4']?.keph.find(({ label }) => label === 'Level 3')?.value
+              formikState?.values?.keph_level = options?.keph.find(({ label }) => label === 'Level 3')?.value
               break;
             // HOSIPTALS
             case '1f1e3389-f13f-44b5-a48e-c1d2b822e5b5':
 
               // Comprehensive Teaching & Tertiary Referral Hospital
               if (formikState?.values?.facility_type_details === 'b9a51572-c931-4cc5-8e21-f17b22b0fd20') {
-                formikState?.values?.keph_level = options['4']?.keph.find(({ label }) => label === 'Level 6')?.value
+                formikState?.values?.keph_level = options?.keph.find(({ label }) => label === 'Level 6')?.value
                 break;
               }
 
               // Specialized & Tertiary Referral hospitals
               if (formikState?.values?.facility_type_details === '52ccbc58-2a71-4a66-be40-3cd72e67f798') {
-                formikState?.values?.keph_level = options['4']?.keph.find(({ label }) => label === 'Level 6')?.value
+                formikState?.values?.keph_level = options?.keph.find(({ label }) => label === 'Level 6')?.value
                 break;
               }
 
 
               // Secondary care hospitals
               if (formikState?.values?.facility_type_details === 'f222bab7-589c-4ba8-bd9a-fe6c96fcd085') {
-                formikState?.values?.keph_level = options['4']?.keph.find(({ label }) => label === 'Level 5')?.value
+                formikState?.values?.keph_level = options?.keph.find(({ label }) => label === 'Level 5')?.value
                 break;
               }
 
 
               // Primary care hospitals
               if (formikState?.values?.facility_type_details === '0fa47f39-d58e-4a16-845c-82818719188d') {
-                formikState?.values?.keph_level = options['4']?.keph.find(({ label }) => label === 'Level 4')?.value
+                formikState?.values?.keph_level = options?.keph.find(({ label }) => label === 'Level 4')?.value
                 break;
 
               }
@@ -670,7 +670,7 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
 
               </div>
               {/* Facility Type */}
-              <div className={`${options['19']?.data ? "cursor-not-allowed" : "cursor-default"} w-full flex flex-col items-start justify-start gap-1 mb-3`}>
+              <div className={`${options?.data ? "cursor-not-allowed" : "cursor-default"} w-full flex flex-col items-start justify-start gap-1 mb-3`}>
                 <label
                   htmlFor='facility_type'
                   className='text-gray-600 capitalize text-sm'>
@@ -690,14 +690,14 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
                   placeholder="Select a facility type..."
                   required
                   name='facility_type'
-                  // disabled={options['19']?.data ? true: false}
+                  // disabled={options?.data ? true: false}
                 />
                 {errors.facility_type && <span className='font-normal text-sm text-red-500 text-start'>{errors.facility_type}</span>}
 
               </div>
               {/* Facility Type Details */}
               
-              <div className={`${options['19']?.data ? "cursor-not-allowed" : "cursor-default"} w-full flex flex-col items-start justify-start gap-1 mb-3`}>
+              <div className={`${options?.data ? "cursor-not-allowed" : "cursor-default"} w-full flex flex-col items-start justify-start gap-1 mb-3`}>
                 <label
                   htmlFor='facility_type_details'
                   className='text-gray-600 capitalize text-sm'>
@@ -710,11 +710,11 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
 
                 <Select
                   ref={facilityTypeDetailsRef}
-                  options={filteredOptions.facilityTypeDetailOptions} //options['1']?.facility_type_details //
+                  options={filteredOptions.facilityTypeDetailOptions} //options?.facility_type_details //
                   placeholder="Select facility type details..."
                   required
                   name='facility_type_details'
-                  // disabled={options['19']?.data ? true: false}
+                  // disabled={options?.data ? true: false}
 
                 />
 
@@ -808,7 +808,7 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
                   </span>
                 </label>
                 <Select
-                  options={options['3']?.owner_types}
+                  options={options?.owner_types}
                   placeholder="Select owner category.."
                   required
                   name='owner_type'
@@ -839,17 +839,17 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
               </div>
 
               {/* KEPH Level */}
-              <div className={`${options['19']?.data ? "cursor-not-allowed" : "cursor-default"} w-full flex flex-col items-start justify-start gap-1 mb-3`}>
+              <div className={`${options?.data ? "cursor-not-allowed" : "cursor-default"} w-full flex flex-col items-start justify-start gap-1 mb-3`}>
                 <label
                   htmlFor='keph_level'
                   className='text-gray-600 capitalize text-sm'>
                   KEPH Level
                 </label>
                 <Select
-                  options={options['4']?.keph}
+                  options={options?.keph}
                   placeholder="Select a KEPH Level.."
                   name='keph_level'
-                  disabled={options['19']?.data ? true: false}
+                  disabled={options?.data ? true: false}
 
                 />
               </div>
@@ -1153,7 +1153,7 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
                 </label>
 
                 <Select
-                  options={options['5']?.facility_admission_status}
+                  options={options?.facility_admission_status}
                   required
                   placeholder='Select an admission status..'
                   name='admission_status'
@@ -1304,7 +1304,7 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
                   <div className='col-start-1 col-span-1'>
                     <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
                         
-                        {/* {console.log({counties: sortOptions(options['6']?.counties), options:options['6']?.counties})} */}
+                        {/* {console.log({counties: sortOptions(options?.counties})} */}
 
                       <label
                         htmlFor='county_id'
@@ -1316,7 +1316,7 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
                         </span>
                       </label>
                       <Select
-                        options={options['6']?.counties} // 
+                        options={options?.counties} // 
                         required
                         placeholder="Select County ..."
                         name='county_id'
@@ -1340,7 +1340,7 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
                         </span>
                       </label>
                       <Select
-                        options={/*sub_counties ?? */options['7']?.sub_counties}  
+                        options={/*sub_counties ?? */options?.sub_counties}  
                         required
                         placeholder="Select Sub County..."
                         name='sub_county_id'
@@ -1364,7 +1364,7 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
                         </span>
                       </label>
                       <Select
-                        options={options['8']?.constituencies}
+                        options={options?.constituencies}
                         required
                         placeholder="Select Constituency..."
                         name='constituency_id'
@@ -1389,7 +1389,7 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
                         </span>
                       </label>
                       <Select
-                        options={options['9']?.wards}
+                        options={options?.wards}
                         required
                         placeholder="Select Ward ..."
                         name='ward'
@@ -1509,7 +1509,7 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
 
               {/* Cancel & Geolocation */}
               {
-                options['19']?.data  ? 
+                options?.data  ? 
 
                 <div className='flex justify-end items-center w-full'>
                   <button

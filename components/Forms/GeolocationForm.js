@@ -44,28 +44,28 @@ export function GeolocationForm({useGeoJSON, useGeoData}) {
     }
 
 
-  const { updatedSavedChanges, updateFacilityUpdateData } = options['19']?.data ? useContext(FacilityUpdatesContext) : {updatedSavedChanges: null, updateFacilityUpdateData: null }
+  const { updatedSavedChanges, updateFacilityUpdateData } = options?.data ? useContext(FacilityUpdatesContext) : {updatedSavedChanges: null, updateFacilityUpdateData: null }
 
 
     // handle Edit staff
 
   const facilityGeolocationData = {}
 
-  if(options['19']?.data?.lat_long){
-  facilityGeolocationData['latitude'] = options['19']?.data?.lat_long[0] ?? null
-  facilityGeolocationData['longitude'] =  options['19']?.data?.lat_long[1] ?? null
+  if(options?.data?.lat_long){
+  facilityGeolocationData['latitude'] = options?.data?.lat_long[0] ?? null
+  facilityGeolocationData['longitude'] =  options?.data?.lat_long[1] ?? null
   }else{
     facilityGeolocationData['longitude'] = []
     facilityGeolocationData['latitude'] = []
   }
 
-  const coordinates_id = options['19']?.data?.coordinates;
+  const coordinates_id = options?.data?.coordinates;
   const [responseError, setResponseError] = useState(null);
   
 
 //   console.log({options})
 
-  facilityGeolocationData['collection_date'] = options['18']?.collection_date?.split('T')[0]
+  facilityGeolocationData['collection_date'] = options.collection_date?.split('T')[0]
 
 
 
@@ -87,11 +87,11 @@ export function GeolocationForm({useGeoJSON, useGeoData}) {
 
 
     const [initialValues, handleFormUpdate] = useLocalStorageState({
-        key: options['19']?.data ? 'geolocation_edit_form' : 'geolocation_form',
-        value: options['19']?.data ? facilityGeolocationData : formFields 
+        key: options?.data ? 'geolocation_edit_form' : 'geolocation_form',
+        value: options?.data ? facilityGeolocationData : formFields 
     }).actions.use();
 
-    const formValues = options['19']?.data ? facilityGeolocationData : initialValues && initialValues.length > 1 ? JSON.parse(initialValues) : formFields;
+    const formValues = options?.data ? facilityGeolocationData : initialValues && initialValues.length > 1 ? JSON.parse(initialValues) : formFields;
 
 	
 
@@ -108,7 +108,7 @@ export function GeolocationForm({useGeoJSON, useGeoData}) {
     return (
         <Formik
             initialValues={formValues}
-            onSubmit={(values) => { options['19']?.data ? ((values, coordinates_id, facilityId) => {
+            onSubmit={(values) => { options?.data ? ((values, coordinates_id, facilityId) => {
 
                 const payload = {
                     collection_date: (new Date(values.collection_date)).toISOString(),
@@ -120,7 +120,7 @@ export function GeolocationForm({useGeoJSON, useGeoData}) {
                   }
 
     
-                handleGeolocationUpdates(options['22']?.token, payload, coordinates_id) 
+                handleGeolocationUpdates(options.token, payload, coordinates_id) 
                   .then((resp) => {
                     defer(() => updatedSavedChanges(true));
                   
@@ -135,7 +135,7 @@ export function GeolocationForm({useGeoJSON, useGeoData}) {
                       `${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${facilityId}/`,
                         {
                          headers: {
-                          'Authorization': 'Bearer ' + options['22']?.token,
+                          'Authorization': 'Bearer ' + options.token,
                           'Accept': 'application/json, text/plain, */*',
                           'Content-Type': 'application/json;charset=utf-8'
                          } 
@@ -155,7 +155,7 @@ export function GeolocationForm({useGeoJSON, useGeoData}) {
                                   `${process.env.NEXT_PUBLIC_API_URL}/facilities/facility_update/${results?.latest_update}/`,
                                   {
                                     headers: {
-                                      'Authorization': 'Bearer ' + options['22']?.token,
+                                      'Authorization': 'Bearer ' + options.token,
                                       'Accept': 'application/json, text/plain, */*',
                                       'Content-Type': 'application/json;charset=utf-8'
                                      } 
@@ -207,7 +207,7 @@ export function GeolocationForm({useGeoJSON, useGeoData}) {
 
             })(values, coordinates_id, facilityId) 
                :
-                handleGeolocationSubmit(options['18']?.token, values, [formId, setFormId, facilityId])
+                handleGeolocationSubmit(options.token, values, [formId, setFormId, facilityId])
                 .then(resp => {
                   if(resp.status == 201){
                     alert.success('Geolocation details saved successfull')
@@ -324,7 +324,7 @@ export function GeolocationForm({useGeoJSON, useGeoData}) {
 
              {/* Finish | Cancel & Geolocation */}
               {
-                options['19']?.data  ? 
+                options?.data  ? 
 
                 <div className='flex justify-end items-center w-full'>
                   <button
