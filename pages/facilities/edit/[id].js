@@ -610,11 +610,15 @@ EditFacility.getInitialProps = async (ctx) => {
 
 
 								const [_result] = (await _collection_date.json()).results;
-
-								allOptions["collection_date"] = _result["collection_date"];
+								if(_result && _result["collection_date"]){
+									allOptions["collection_date"] = _result["collection_date"];
+								}else{
+									allOptions["collection_date"] = null;
+								}
 								
 
 							} catch (err) {
+								console.log(`Error fetching ${option}: `, err);
 								console.error(`Error fetching ${option}: `, err);
 								
 							}

@@ -359,8 +359,8 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
   const checkListFileRef = useRef(null);
 
   if(options?.data){
-    formValues['facility_type'] = facilityTypeOptions.find(({label}) => label == options?.data?.facility_type_parent)?.value
-    formValues['facility_type_details'] = filteredOptions.facilityTypeDetailOptions.find(({label}) => label == options?.data?.facility_type_name)?.value
+    formValues['facility_type'] = facilityTypeOptions.find(({value}) => value == options?.data?.facility_type)?.value
+    formValues['facility_type_details'] = filteredOptions.facilityTypeDetailOptions.find(({label}) => label?.trim()?.toLowerCase() == options?.data?.facility_type_name?.trim()?.toLowerCase())?.value
     
     // delete formValues['facility_checklist_document']; 
     // formValues['facility_checklist_document'] = new File([],'Checklist File',undefined)
@@ -648,10 +648,6 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
                     *
                   </span>
                 </label>
-                {
-                  
-                  // console.log({facilityTypeOptions})
-                }
 
                 <Select
                   options={facilityTypeOptions}
