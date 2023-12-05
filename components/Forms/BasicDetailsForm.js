@@ -9,22 +9,25 @@ import {
 } from '@heroicons/react/solid';
 import { useAlert } from 'react-alert';
 import { FacilityUpdatesContext } from '../../pages/facilities/edit/[id]';
-// import { useLocalStorageState } from './hooks/formHook';
-// import { handleBasicDetailsSubmit, handleBasicDetailsUpdates } from '../../controllers/facility/facilityHandlers';
 
 
 
-export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
+export function BasicDeatilsForm() {
 
   const options = useContext(FormOptionsContext);
 
 
   // Context
-  const [formId, setFormId] = useContext(FormContext);
-  const [facilityId, setFacilityId] = useContext(FacilityIdContext);
+  // const [formId, setFormId] = useContext(FormContext);
+  // const [facilityId, setFacilityId] = useContext(FacilityIdContext);
 
   const [facilityTypeDetailOptions, setFacilityTypeDetailOptions] = useState(options?.facility_type_details)
   const [ownerTypeDetailsOptions, setOwnerTypeDetailsOptions] = useState(options?.owners)
+  const [subCountyOptions, setSubCountyOptions] = useState(options?.sub_counties)
+  const [constituencyOptions, setConstituencyOptions] = useState(options?.constituencies)
+  const [wardOptions, setWardOptions] = useState(options?.wards)
+  const [isClient, setIsClient] = useState(false)
+  
 
 
   // Options
@@ -75,8 +78,8 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
 
 
   // Refs
-  const facilityTypeDetailsRef = useRef(null);
-  const checkListFileRef = useRef(null);
+  // const facilityTypeDetailsRef = useRef(null);
+  // const checkListFileRef = useRef(null);
 
   // Event handlers
 
@@ -100,7 +103,7 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
     
             const filteredFacilityType = (await facilityTypeDetails.json())?.results
 
-            if(!filteredFacilityType) throw Error('Unable to Fetch Facility Type')
+            if(!filteredFacilityType) throw Error('Unable to Fetch Facility Type Details')
 
     
             const facilityType = Array.from(filteredFacilityType, ({id, name}) => {
@@ -133,25 +136,129 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
             }
           })
 
-          const filteredOwners = (await owners.json())?.results?.filter(({id: value, name: label}) => ({label, value}))
+          const filteredOwners = (await owners.json())?.results
 
-          if(!filteredFacilityType) throw Error('Unable to Fetch Facility Type')
+          if(!filteredOwners) throw Error('Unable to Fetch Owner Type Details')
 
-          setOwnerTypeDetailsOptions(filteredOwners ?? options?.owner_types) 
+
+          const facilityOwnerOptions = Array.from(filteredOwners, ({id, name}) => {
+            return {
+              label: name,
+              value: id
+            }
+          })
+
+          setOwnerTypeDetailsOptions(facilityOwnerOptions ?? options?.owner_types) 
 
         }
         catch (e) {
           console.error(e.message)
         }
     }
-    }
+    } else if (e.target.name.includes('county_id')) {
+
+      // console.log({name: e.target.name, value: e.target.value})
+        if (e.target?.value) {
+          try{
+            const sub_counties = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/common/sub_counties/?county=${e.target.value}`, {
+              headers: {
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${options?.token}`
+              }
+            })
+
+            const constituencies = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/common/constituencies/?county=${e.target.value}`, {
+              headers: {
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${options?.token}`
+              }
+            })
+  
+            const _sub_counties  = (await sub_counties.json())?.results
+  
+            if(!_sub_counties) throw Error('Unable to Fetch sub counties')
+  
+  
+            const filteredSubCounties = Array.from(_sub_counties, ({id, name}) => {
+              return {
+                label: name,
+                value: id
+              }
+            })
+
+
+            const _constitutencies  = (await constituencies.json())?.results
+  
+            if(!constituencies) throw Error('Unable to Fetch sub counties')
+  
+            
+  
+            const filteredConstituencies = Array.from(_constitutencies, ({id, name}) => {
+              return {
+                label: name,
+                value: id
+              }
+            })
+  
+            setSubCountyOptions(filteredSubCounties ?? options?.sub_counties)
+            setConstituencyOptions(filteredConstituencies ?? options?.constituencies) 
+
+  
+          }
+          catch (e) {
+            console.error(e.message)
+          }
+        }
+      }  else if (e.target.name.includes('sub_county_id')) {
+
+        console.log('sub County')
+
+        if (e.target?.value) {
+
+          try{
+            const _wards = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/common/wards/?sub_county=${e.target.value}`, {
+              headers: {
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${options?.token}`
+              }
+            })
+  
+            const wards  = (await _wards.json())?.results
+  
+            if(!_wards) throw Error('Unable to Fetch sub counties')
+  
+            
+  
+            const filteredWards = Array.from(wards, ({id, name}) => {
+              return {
+                label: name,
+                value: id
+              }
+            })
+
+            console.log({filteredWards, wards})
+  
+            setWardOptions(filteredWards ?? options?.sub_counties) 
+  
+          }
+          catch (e) {
+            console.error(e.message)
+          }
+        }
+      }
   }
 
 
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
+
+
+if(isClient){
   return (
           <form name='basic_details_form'
           defaultValue={options?.data?.basic_details_form ?? ''}
-              formAction={handleBasicDetailsSubmitTest}
+              formAction={'/api/save_form'}
               className='flex flex-col w-full mt-4 items-start bg-blue-50 shadow-md p-3 justify-start gap-3'>
 
               {/* Facility Official Name */}
@@ -880,6 +987,7 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
                         required
                         placeholder="Select County ..."
                         defaultValue={options?.data?.county_id ?? ''}
+                        onChange={handleSelectChange}
                         name='county_id'
 
                       />
@@ -901,9 +1009,11 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
                         </span>
                       </label>
                       <Select
-                        options={options?.sub_counties}  
+                        options={subCountyOptions ?? []}  
                         required
                         placeholder="Select Sub County..."
+                        onChange={handleSelectChange}
+
                         defaultValue={options?.data?.sub_county_id ?? ''}
                         name='sub_county_id'
 
@@ -926,7 +1036,7 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
                         </span>
                       </label>
                       <Select
-                        options={options?.constituencies}
+                        options={constituencyOptions ?? []}
                         required
                         placeholder="Select Constituency..."
                         defaultValue={options?.data?.constituency_id ?? ''}
@@ -951,8 +1061,9 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
                           *
                         </span>
                       </label>
+                      {/* {JSON.stringify(wardOptions)} */}
                       <Select
-                        options={options?.wards}
+                        options={wardOptions ?? []}
                         required
                         placeholder="Select Ward ..."
                         defaultValue={options?.data?.ward ?? ''}
@@ -1064,7 +1175,6 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
 
                   <input
                     type='file'
-                    innerRef={checkListFileRef}
                     name='facility_checklist_document'
                     defaultValue={options?.data?.facility_checklist_document ?? ''}
                     className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
@@ -1112,9 +1222,11 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
             }
 
           </form>
-
           )
-        
+} else {
+  return null
+}   
+      
 
 
 }

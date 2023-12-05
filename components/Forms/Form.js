@@ -117,15 +117,15 @@ const [formId, setFormId] = useLocalStorageState({
                            {
                                 formId == '0' && 
                                 <BasicDeatilsForm 
-                                useGeoJSON={() => [geoJSON, setGeoJSON]}  
-                                useGeoData={(type) => { 
-                                    switch(type){
-                                        case 'ward_data':
-                                        return [wardName, setWardName];
-                                        case 'geo_data':
-                                        return [geoCenter, setGeoCenter];
-                                    }}
-                                    }
+                                // useGeoJSON={() => [geoJSON, setGeoJSON]}  
+                                // useGeoData={(type) => { 
+                                //     switch(type){
+                                //         case 'ward_data':
+                                //         return [wardName, setWardName];
+                                //         case 'geo_data':
+                                //         return [geoCenter, setGeoCenter];
+                                //     }}
+                                //     }
                                 />
 
 

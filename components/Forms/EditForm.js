@@ -121,18 +121,7 @@ export function EditForm() {
           >
 
 
-            <BasicDeatilsForm
-              useGeoJSON={() => [geoJSON, setGeoJSON]}
-              useGeoData={(type) => {
-                switch (type) {
-                  case 'ward_data':
-                    return [wardName, setWardName];
-                  case 'geo_data':
-                    return [geoCenter, setGeoCenter];
-                }
-              }
-              }
-            />
+            <BasicDeatilsForm />
 
 
           </Tabs.Panel>

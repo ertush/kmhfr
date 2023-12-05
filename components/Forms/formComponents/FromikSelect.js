@@ -6,7 +6,7 @@ const Select = forwardRef(function Select(props, ref) {
 
     return (
         <select
-          innerRef={ref}
+          ref={ref}
           as="select"
           {...props}
           className='flex-none w-full p-2 border border-blue-600 bg-transparent flex-grow  placeholder-gray-200  focus:border-black outline-none'>

@@ -81,7 +81,7 @@ export default function AddFacility(props) {
 
 AddFacility.getInitialProps = async (ctx) => {
 
-	const allOptions = []
+	// const allOptions = []
 
 	const options = [
 		'facility_types',
@@ -101,10 +101,12 @@ AddFacility.getInitialProps = async (ctx) => {
 		'regulation_status',
 		'services',
 		'infrastructure',
-		'specialities'
+		'specialities',
+		'collection_date',
+		'facility_data'
 	]
 
-
+	const allOptions = {};
 
 	return checkToken(ctx.req, ctx.res)
 		.then(async (t) => {
@@ -119,58 +121,67 @@ AddFacility.getInitialProps = async (ctx) => {
 					const option = options[i]
 					switch (option) {
 						case 'facility_types':
-							url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/${option}/?is_active=true&page_size=10000`;
+							url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/${option}/?is_parent=true&page_size=10000`;
 
 							try {
 
-								const _data = await fetch(url, {
+								const _facilityTypeData = await fetch(url, {
 									headers: {
 										Authorization: 'Bearer ' + token,
 										Accept: 'application/json',
 									},
 								})
 
-								// let results = (await _data.json()).results.map(({id, sub_division, name }) => sub_division ? {value:id, label:sub_division} : {value:id, label:name})
+								if(!_facilityTypeData) throw Error('Unable facility type data')
 
 
-								allOptions.push({ facility_types: (await _data.json()).results })
+								let facilityTypeData = (await _facilityTypeData.json())
+
+								facilityTypeData = Array.from(facilityTypeData?.results, ({id, name}) => {
+								return {
+									label: name,
+									value: id
+								}
+									
+								})
+
+							
+
+								allOptions['facility_types'] = facilityTypeData;
+								
 
 							}
 							catch (err) {
-								console.log(`Error fetching ${option}: `, err);
-								allOptions.push({
-									error: true,
-									err: err,
-									facility_types: [],
-								});
+								console.error(`Error fetching ${option}: `, err);
+								
 							}
 
 							break;
 						case 'facility_type_details':
-							url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/facility_types/?is_active=true&page_size=10000`;
+							url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/facility_types/?is_parent=false`;
 
 							try {
 
-								const _data = await fetch(url, {
+								const _facilityTypeDetails = await fetch(url, {
 									headers: {
 										Authorization: 'Bearer ' + token,
 										Accept: 'application/json',
 									},
 								})
+								
+								if (!_facilityTypeDetails) throw Error("Unable to fetch facility type details")
 
-								let _results = (await _data.json()).results.map(({ id, name }) => ({ value: id, label: name }))
 
-								allOptions.push({ facility_type_details: _results })
+								const facilityTypeDetails = (await _facilityTypeDetails.json()).results.map(({ id, name }) => ({ value: id, label: name }))
+
+
+								allOptions['facility_type_details'] = facilityTypeDetails;
 
 
 							}
 							catch (err) {
-								console.log(`Error fetching ${option}: `, err);
-								allOptions.push({
-									error: true,
-									err: err,
-									facility_types: [],
-								});
+								console.error(`Error fetching ${option}: `, err);
+								
 							}
 							break;
 						case 'owners':
@@ -179,23 +190,23 @@ AddFacility.getInitialProps = async (ctx) => {
 
 							try {
 
-								const _data = await fetch(url, {
+								const _owners = await fetch(url, {
 									headers: {
 										Authorization: 'Bearer ' + token,
 										Accept: 'application/json',
 									},
 								})
 
-								allOptions.push({ owners: (await _data.json()).results.map(({ id, name }) => ({ value: id, label: name })) })
+								if(!_owners) throw new Error('Unable to fetch owners')
+
+								const owners = (await _owners.json())?.results 
+
+								allOptions['owners'] = owners
 
 							}
 							catch (err) {
-								console.log(`Error fetching ${option}: `, err);
-								allOptions.push({
-									error: true,
-									err: err,
-									owners: [],
-								});
+								console.error(`Error fetching ${option}: `, err);
+								
 							}
 
 							break;
@@ -205,23 +216,25 @@ AddFacility.getInitialProps = async (ctx) => {
 
 							try {
 
-								const _data = await fetch(url, {
+								const _owner_types = await fetch(url, {
 									headers: {
 										Authorization: 'Bearer ' + token,
 										Accept: 'application/json',
 									},
 								})
 
-								allOptions.push({ owner_types: (await _data.json()).results.map(({ id, name }) => ({ value: id, label: name })) })
+								if(!_owner_types) throw Error('Unable to fetch owner types')
+								
+								const owner_types = await _owner_types.json()
+
+
+								allOptions["owner_types"] = (await owner_types).results.map(({ id, name }) => ({ value: id, label: name }))
+
 
 							}
 							catch (err) {
-								console.log(`Error fetching ${option}: `, err);
-								allOptions.push({
-									error: true,
-									err: err,
-									owner_types: [],
-								})
+								console.error(`Error fetching ${option}: `, err);
+								
 							}
 
 							break;
@@ -230,24 +243,24 @@ AddFacility.getInitialProps = async (ctx) => {
 
 
 							try {
-
-								const _data = await fetch(url, {
+								const _keph = await fetch(url, {
 									headers: {
 										Authorization: 'Bearer ' + token,
 										Accept: 'application/json',
 									},
 								})
 
-								allOptions.push({ keph: (await _data.json()).results.map(({ id, name }) => ({ value: id, label: name })) })
+								if(!_keph) throw Error('Unable to fetch keph')
+
+								const keph = (await _keph.json()).results.map(({ id, name }) => ({ value: id, label: name })) 
+
+
+								allOptions["keph"] = keph
 
 							}
 							catch (err) {
-								console.log(`Error fetching ${option}: `, err);
-								allOptions.push({
-									error: true,
-									err: err,
-									keph: [],
-								})
+								console.error(`Error fetching ${option}: `, err);
+							
 							}
 
 							break;
@@ -257,241 +270,345 @@ AddFacility.getInitialProps = async (ctx) => {
 
 							try {
 
-								const _data = await fetch(url, {
+								const _facility_admission_status = await fetch(url, {
 									headers: {
 										Authorization: 'Bearer ' + token,
 										Accept: 'application/json',
 									},
 								})
 
-								allOptions.push({ facility_admission_status: (await _data.json()).results.map(({ id, name }) => ({ value: id, label: name })) })
+								if(!_facility_admission_status) throw Error('Unabe to fetch Faility type details')
+
+								const facility_admission_status = (await _facility_admission_status.json()).results.map(({ id, name }) => ({ value: id, label: name }))
+
+
+								allOptions["facility_admission_status"] =  facility_admission_status
 
 							}
 							catch (err) {
-								console.log(`Error fetching ${option}: `, err);
-								allOptions.push({
-									error: true,
-									err: err,
-									facility_admission_status: [],
-								})
+								console.error(`Error fetching ${option}: `, err);
+								
 							}
 							break;
-
 						case 'job_titles':
 							url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/${option}/?fields=id,name`;
 
 
 							try {
 
-								const _data = await fetch(url, {
+								const _job_titles = await fetch(url, {
 									headers: {
 										Authorization: 'Bearer ' + token,
 										Accept: 'application/json',
 									},
 								})
 
-								allOptions.push({ job_titles: (await _data.json()).results.map(({ id, name }) => ({ value: id, label: name })) })
+								if(!_job_titles) throw Error('Unable to fetch job titles')
+
+								const job_titles = (await _job_titles.json()).results.map(({ id, name }) => ({ value: id, label: name })) 
+
+
+								allOptions["job_titles"] = job_titles
 
 							}
 							catch (err) {
-								console.log(`Error fetching ${option}: `, err);
-								allOptions.push({
-									error: true,
-									err: err,
-									facility_admission_status: [],
-								})
+								console.error(`Error fetching ${option}: `, err);
+								
 							}
 							break;
-
 						case 'contact_types':
 							url = `${process.env.NEXT_PUBLIC_API_URL}/common/${option}/?fields=id,name`;
 
 
 							try {
 
-								const _data = await fetch(url, {
+								const _contact_types = await fetch(url, {
 									headers: {
 										Authorization: 'Bearer ' + token,
 										Accept: 'application/json',
 									},
 								})
 
-								allOptions.push({ contact_types: (await _data.json()).results.map(({ id, name }) => ({ value: id, label: name })) })
+								if(!_contact_types) Error("Unable to Contact Types")
+
+								const contact_types = (await _contact_types.json()).results.map(({ id, name }) => ({ value: id, label: name })) 
+
+								allOptions["contact_types"] = contact_types
 
 							}
 							catch (err) {
-								console.log(`Error fetching ${option}: `, err);
-								allOptions.push({
-									error: true,
-									err: err,
-									facility_admission_status: [],
-								})
+								console.error(`Error fetching ${option}: `, err);
+								
 							}
 							break;
-
-
 						case 'facility_depts':
 							url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/${option}/?fields=id,name,regulatory_body,regulatory_body_name`;
 
 
 							try {
 
-								const _data = await fetch(url, {
+								const _faciilty_depts = await fetch(url, {
 									headers: {
 										Authorization: 'Bearer ' + token,
 										Accept: 'application/json',
 									},
 								})
 
-								allOptions.push({ facility_depts: (await _data.json()).results.map(({ id, name, regulatory_body_name }) => ({ value: id, label: name, reg_body_name: regulatory_body_name })) })
+							    if(!_faciilty_depts) throw Error("Unable to fetch facility Departments")
+
+								const facility_depts = (await _faciilty_depts.json()).results.map(({ id, name, regulatory_body_name }) => ({ value: id, label: name, reg_body_name: regulatory_body_name }))
+
+								allOptions["facility_depts"] = facility_depts
 
 							}
 							catch (err) {
-								console.log(`Error fetching ${option}: `, err);
-								allOptions.push({
-									error: true,
-									err: err,
-									facility_depts: [],
-								})
+								console.error(`Error fetching ${option}: `, err);
+								
 							}
 							break;
-
 						case 'regulating_bodies':
 							url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/${option}/?fields=id,name`;
 
 
 							try {
 
-								const _data = await fetch(url, {
+								const _regulating_bodies = await fetch(url, {
+
 									headers: {
 										Authorization: 'Bearer ' + token,
 										Accept: 'application/json',
 									},
 								})
 
-								allOptions.push({ regulating_bodies: (await _data.json()).results.map(({ id, name }) => ({ value: id, label: name })) })
+								if(!_regulating_bodies) throw Error("Unable to fetch reguating bodies")
+
+								const regulating_bodies = (await _regulating_bodies.json()).results.map(({ id, name }) => ({ value: id, label: name }))
+
+								allOptions["regulating_bodies"] = regulating_bodies
 
 							}
 							catch (err) {
 								console.log(`Error fetching ${option}: `, err);
-								allOptions.push({
-									error: true,
-									err: err,
-									regulating_bodies: [],
-								})
+								
 							}
 							break;
-
 						case 'regulation_status':
 							url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/${option}/?page_size=100&page=1`;
 
 
 							try {
 
-								const _data = await fetch(url, {
+								const _regulation_status = await fetch(url, {
 									headers: {
 										Authorization: 'Bearer ' + token,
 										Accept: 'application/json',
 									},
 								})
 
-								allOptions.push({ regulation_status: (await _data.json()).results.map(({ id, name }) => ({ value: id, label: name })) })
+								if(!_regulation_status) throw Error("Unable to fetch Regulation Status")
+
+								const regulation_status = (await _regulation_status.json()).results.map(({ id, name }) => ({ value: id, label: name }))
+
+								allOptions["regulation_status"] = regulation_status
 
 							}
 							catch (err) {
-								console.log(`Error fetching ${option}: `, err);
-								allOptions.push({
-									error: true,
-									err: err,
-									regulation_status: [],
-								})
+								console.error(`Error fetching ${option}: `, err);
+								
 							}
 							break;
-
 						case 'services':
 
 							url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/${option}/?page_size=100&ordering=name`;
 
 							try {
 
-								const _data = await fetch(url, {
+								const _services = await fetch(url, {
 									headers: {
 										Authorization: 'Bearer ' + token,
 										Accept: 'application/json',
 									}
 								})
 
-								allOptions.push({ service: (await _data.json()).results.map(({ id, name, category, category_name }) => ({ id, name, category, category_name })) })
+								if(!_services) throw Error("Unable to fetch services") 
+
+								const services = (await _services.json()).results.map(({ id, name, category, category_name }) => ({ id, name, category, category_name }))
+
+								allOptions["services"] = services
 
 							}
 							catch (err) {
-								console.log(`Error fetching ${option}: `, err);
-								allOptions.push({
-									error: true,
-									err: err,
-									service: [],
-								})
+								console.error(`Error fetching ${option}: `, err);
+								
 							}
 
 							break;
-
 						case 'infrastructure':
 
 							url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/${option}/?page_size=100&page=1`;
 
 							try {
 
-								const _data = await fetch(url, {
+								const _infrastructure = await fetch(url, {
 									headers: {
 										Authorization: 'Bearer ' + token,
 										Accept: 'application/json',
 									}
 								})
 
-								allOptions.push({ infrastructure: (await _data.json()).results.map(({ id, name, category_name, category }) => ({ id, name, category_name, category })) })
+								if(!_infrastructure) throw Error("Unable to fetch infrstructure")
+
+								const infrastructure = (await _infrastructure.json()).results.map(({ id, name, category_name, category }) => ({ id, name, category_name, category }))
+
+								allOptions["infrastructure"] = infrastructure
 
 							}
 							catch (err) {
 								console.log(`Error fetching ${option}: `, err);
-								allOptions.push({
-									error: true,
-									err: err,
-									service: [],
-								})
+							
 							}
 
 							break;
-
 						case 'specialities':
 							url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/${option}/?page_size=2000&ordering=name`;
 
 							try {
 
-								const _data = await fetch(url, {
+								const _specialities = await fetch(url, {
 									headers: {
 										Authorization: 'Bearer ' + token,
 										Accept: 'application/json',
 									}
 								})
 
-								allOptions.push({ hr: (await _data.json()).results.map(({ id, name, category_name, category }) => ({ id, name, category_name, category })) })
+								if(!_specialities) throw Error("Unable to fetch specialities")
+
+								const specialities = (await _specialities.json()).results.map(({ id, name, category_name, category }) => ({ id, name, category_name, category }))
+
+								allOptions["hr"] = specialities
 
 							}
 							catch (err) {
 								console.log(`Error fetching ${option}: `, err);
-								allOptions.push({
-									error: true,
-									err: err,
-									service: [],
-								})
+								
 							}
 
+							break;
+						case "collection_date":
+							try {
+								const _collection_date = await fetch(
+									`${process.env.NEXT_PUBLIC_API_URL}/gis/facility_coordinates/?facility=${ctx.query.id}&format=json`,
+									{
+										headers: {
+											Authorization: 'Bearer ' + token,
+											Accept: 'application/json',
+										}
+									}
+								);
+
+
+								const [_result] = (await _collection_date.json()).results;
+								if(_result && _result["collection_date"]){
+									allOptions["collection_date"] = _result["collection_date"];
+								}else{
+									allOptions["collection_date"] = null;
+								}
+								
+
+							} catch (err) {
+								console.log(`Error fetching ${option}: `, err);
+								console.error(`Error fetching ${option}: `, err);
+								
+							}
+							break;
+						case "facility_data":
+							try {
+								const _facility_data = await fetch(
+									`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${ctx.query.id}/?format=json`,
+									{
+										headers: {
+											Authorization: 'Bearer ' + token,
+											Accept: 'application/json',
+										}
+									}
+
+								);
+								
+								const facilityData = await _facility_data.json()
+
+								// console.log({facilityData: facilityData?.ward})
+							
+
+								if (facilityData) {
+
+									allOptions['data'] = facilityData;
+
+									try {
+
+
+
+										const response = await fetch(
+											`${process.env.NEXT_PUBLIC_API_URL}/common/wards/${facilityData?.ward}/?format=json`,
+											{
+												headers: {
+													Authorization: 'Bearer ' + token,
+													Accept: 'application/json',
+												}
+											}
+										);
+
+										const wardData = await response.json();
+										
+										if(wardData){
+
+										const [lng, lat] =
+										wardData?.ward_boundary.properties.center.coordinates;
+
+										allOptions["geolocation"] = {
+												geoJSON: JSON.parse(JSON.stringify(wardData?.ward_boundary)),
+												centerCoordinates: JSON.parse(
+													JSON.stringify([lat, lng])
+												)
+											}
+										
+
+									}
+
+										
+											try {
+												const response = await fetch(
+													`${process.env.NEXT_PUBLIC_API_URL}/facilities/facility_regulation_status/?facility=${facilityData?.id}/?format=json`,
+													{
+														headers: {
+															Authorization: 'Bearer ' + token,
+															Accept: 'application/json',
+														}
+													}
+												);
+												const regulationData = await response.json();
+												
+												if (regulationData) {
+												allOptions['facility_regulation_status'] = (await regulationData).results
+												
+											}
+											} catch (err) {
+												console.log(`Error fetching ${option}: `, err);
+											
+											}
+										
+									} catch (err) {
+										console.log(`Error fetching ${option}: `, err);
+										
+									}
+								}
+							} catch (err) {
+								console.log(`Error fetching ${option}: `, err);
+								
+							}
 
 							break;
-
 						default:
 							let fields = ''
-							let _obj = {}
 
 							if (option === 'counties') fields = 'id,name&page_size=47'
 							if (option === 'sub_counties') fields = 'id,name,county&page_size=312'
@@ -511,31 +628,23 @@ AddFacility.getInitialProps = async (ctx) => {
 									},
 								})
 
-								_obj[option] = (await _data.json()).results.map(({ id, name }) => ({ value: id, label: name }))
-
-
-								allOptions.push(_obj)
-
-
+								allOptions[option] = (await _data.json())?.results.map(({ id, name }) => ({ value: id, label: name }))
 							}
 							catch (err) {
 								console.log(`Error fetching ${option}: `, err);
-								allOptions.push({
-									error: true,
-									err: err,
-									data: []
-								});
+								
 							}
 							break;
 
 					}
 				}
 
-				allOptions.push({
-					token
-				})
 
-				return allOptions
+				allOptions["token"] = token
+		
+				
+				// console.log("allOptions Log", allOptions)
+				return  allOptions
 
 
 			}
