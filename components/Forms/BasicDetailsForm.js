@@ -322,8 +322,8 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
 
     official_name: string({ required_error: "Facility Official Name is required" }),
     name: string({ required_error: "Facility Unique Name is required" }),
-    facility_type: string({ required_error: "Facility Type is required" }).min(1),
-    facility_type_details: string({ required_error: "Facility Type Details is required" }).min(1),
+    facility_type: string({ required_error: "Facility Type is required" }),
+    facility_type_details: string({ required_error: "Facility Type Details is required" }),
     operation_status: string({ required_error: "Operation Status is required" }),
     date_established: string({
       required_error: "Date established is required",
@@ -365,24 +365,7 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
     // delete formValues['facility_checklist_document']; 
     // formValues['facility_checklist_document'] = new File([],'Checklist File',undefined)
   }
-  
-  // console.log({formValues})
-
-//   const fetcher = url => {  
-                
-//     fetch(url, {
-//     headers: {
-//       'Authorization': `Bearer ${options?.token }`,
-//       'Accept': 'application/json',
-//       'Content-Type': 'application/json, **/**'
-
-//     }
-//     })
-  
-// }
-
-
-// const {data:sub_counties, error} = useSWR(updateSubCountyOptions ? `${process.env.NEXT_PUBLIC_API_URL}/common/sub_counties/${formikState?.values.county_id}` : null, fetcher)
+ 
 
 
   return (
@@ -471,23 +454,19 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
 
         const errors = formikState.errors;
 
-        const fetcher = (url, token) => {  
+      //   const fetcher = (url, token) => {  
                 
-          fetch(url, {
-          mode:'no-cors',
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Accept': 'application/json, text/plain, */*',
-            'Content-Type': 'application/json;charset=utf-8'
+      //     fetch(url, {
+      //     mode:'no-cors',
+      //     headers: {
+      //       'Authorization': `Bearer ${token}`,
+      //       'Accept': 'application/json, text/plain, */*',
+      //       'Content-Type': 'application/json;charset=utf-8'
 
-          }
-          })
+      //     }
+      //     })
 
-      }
-
-
-        // const {data:sub_counties, error} = useSWR(isCountyOption ? [`${process.env.NEXT_PUBLIC_API_URL}/common/sub_counties/${formikState?.values.county_id}`, options : null, fetcher)
-
+      // }
 
       //Effects
 
@@ -511,17 +490,6 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
 
 
       // Form Validations
-
-      // if(formikState?.values?.facility_type !== ""){
-        
-
-      //     const facilityTypeDetails =  options?.facility_type_details?.find(
-      //       ({ value }) => value.includes(formikState?.values?.facility_type)
-      //     )?.value ?? " ";
-
-          
-      //     // console.log({facilityTypeDetails})
-      // }
 
           // Hours/Days duration form rules
           if (formikState?.values?.open_whole_day) {
@@ -797,6 +765,7 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
 
               </div>
               {/* Owner Category */}
+              { console.log({owner_types: options?.owner_types})}
               <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
                 <label
                   htmlFor='owner_type'
