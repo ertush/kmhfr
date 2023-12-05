@@ -242,7 +242,7 @@ function EditListWithCount(
     }, [isFormSubmit])
 
     const filterSpecialities = (ctg) => {
-        const filteredOptions = options.filter((option) => option.category_id=== ctg );
+        const filteredOptions = options.filter((option) => option.category=== ctg );
         setSpecialities(filteredOptions)
 
     }
@@ -278,14 +278,10 @@ function EditListWithCount(
     const onSearch = ((event, issearchcategory,issearchspeciality)=>{
 
         const _query=event.target.value;
-        console.log(_query)
         setQuery(_query);
         if(_query.length > 3){
             if(issearchcategory){
-                let subset = categoryItems.filter(function (el) {
-                    return el.label.toLowerCase().includes(_query.toLowerCase());
-                }
-                );
+                let subset = categoryItems.filter((e)=>e.label.toLowerCase().includes(_query.toLowerCase()))
                 setCategoryItems(subset);
             }else if(issearchspeciality ){
                 let _specialities = specialities.filter((e)=>e.name.toLowerCase().includes(_query.toLowerCase()))
@@ -294,11 +290,9 @@ function EditListWithCount(
         }
         else{
             if(issearchspeciality){
-                filterSpecialities(specialities[0].category_id)
+                filterSpecialities(specialities[0].category)
             }
             setCategoryItems(categoryItems);
-            setSpecialities(specialities);
-            //  return categoryItems, specialities;
         }
     });
     // console.log({ options, categoryItems })
