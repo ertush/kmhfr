@@ -150,18 +150,26 @@ export default function HeaderLayout({
     <header className="flex flex-wrap items-center justify-start gap-x-4 w-full bg-blue-50 p-1 max-w-screen-3xl">
       <title>KMHFR </title>
       <nav className="flex flex-wrap px-2 items-center justify-between md:justify-start flex-grow sm:flex-grow-0 gap-x-3 gap-y-2 py-1 md:py-3 md:gap-5">
-        <div id="logo" className="mx:px-3 pb-1">
+        
+        <div id="logo" className="flex-col gap-2 items-center justify-start ">
+
           <a
             href="/"
             className="leading-none tracking-tight flex gap-x-2 justify-center items-center text-black font-bold relative"
           >
-            <img src="/MOH.png" alt="KMHFL3" className="h-14" />
-            <span className="text-3xl leading-none">KMHFR</span>
+
+            <img src="/moh-logo.png" alt="" className="h-14" />
             {/* <span className="text-sm bg-yellow-300 -sm shadow border border-yellow-400 leading-none text-yellow-900 px-1 absolute bottom-0 -right-2">
               v1
             </span> */}
           </a>
+
+        {/* <h2 className="text-2xl text-blue-800 font-semibold leading-none">KMHFR</h2> */}
+
+
         </div>
+
+
         <div className="group px-3 py-2">
           <button className="border-2 border-gray-600  p-1 md:hidden focus:bg-black focus:border-black focus:text-white hover:bg-black hover:border-black hover:text-white active:bg-black active:border-black active:text-white">
             <MenuAlt1Icon className="w-6" />

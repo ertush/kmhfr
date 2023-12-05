@@ -29,29 +29,30 @@ export function EditForm() {
   // State
   const [geoJSON, setGeoJSON] = useLocalStorageState({
     key: 'geo_json',
-    value: options['20']?.geolocation?.geoJSON
+    value: options?.geolocation?.geoJSON
   }).actions.use();
 
   const [wardName, setWardName] = useLocalStorageState({
     key: 'ward_name',
-    value: options['19']?.data?.ward_name
+    value: options?.data?.ward_name
   }).actions.use();
 
   const [geoCenter, setGeoCenter] = useLocalStorageState({
     key: 'geo_center',
-    value: options['20']?.geolocation?.centerCoordinates
+    value: options?.geolocation?.centerCoordinates
   }).actions.use();
 
   const [facilityId, setFacilityId] = useLocalStorageState({
     key: 'facility_id',
-    value: options['19']?.data?.id
+    value: options?.data?.id
   }).actions.use();
 
   // Update facility ID in the store
 
   useEffect(() => {
 
-    setFacilityId(options['19']?.data?.id)
+    console.log({options})
+    setFacilityId(options?.data?.id)
 
   }, [])
  

@@ -22,7 +22,7 @@ export function ServicesForm() {
     const [formId, setFormId] = useContext(FormContext);
     const options = useContext(FormOptionsContext);
     
-    const { updatedSavedChanges, updateFacilityUpdateData } = options['19']?.data ? useContext(FacilityUpdatesContext) : {updatedSavedChanges: null, updateFacilityUpdateData: null }
+    const { updatedSavedChanges, updateFacilityUpdateData } = options?.data ? useContext(FacilityUpdatesContext) : {updatedSavedChanges: null, updateFacilityUpdateData: null }
 
 
     //Options
@@ -41,7 +41,7 @@ export function ServicesForm() {
 		return {
 			categories: serviceCategories,
 		}
-	})(options['15']?.service ?? [])
+	})(options?.service ?? [])
 
     //State
     const [services, setServices] = useState();
@@ -64,9 +64,9 @@ export function ServicesForm() {
                             itemsCategoryName={'Services'}
                             itemId={facilityId}
                             setItems={setServices}
-                            item={options['19']?.data ?? null}
-                            options={options['15']?.service}
-                            token={options['18']?.token ?? options['22']?.token}
+                            item={options?.data ?? null}
+                            options={options?.service}
+                            token={options?.token}
                             removeItemHandler={handleServiceDelete}
                             handleItemsSubmit={handleServiceSubmit}
                             handleItemsUpdate={handleServiceUpdates}
@@ -77,7 +77,7 @@ export function ServicesForm() {
                             setItemsUpdateData={updateFacilityUpdateData}
                             handleItemPrevious={handleServicePrevious}
                             setIsSaveAndFinish={updatedSavedChanges}
-                            servicesData={options['19']?.data ? options['19']?.data?.facility_services: null}
+                            servicesData={options?.data ? options?.data?.facility_services: null}
                             
                         /> 
 
