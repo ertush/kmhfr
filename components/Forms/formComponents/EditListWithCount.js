@@ -46,6 +46,10 @@ function EditListWithCount(
     const [currentItem, setCurrentItem] = useState(null)
     const [deletedItems, setDeletedItems] = useState([])
     const [itemOptions, setItemOptions] = useState([])
+    const [specialities, setSpecialities] = useState([])
+    const [query, setQuery] = useState('')
+    const [categoryOptions, setCategoryItems] = useState(categoryItems)
+    const [selectedRows, setSelectedRows] = useState([]);
 
 
     const [selectedItems, setSelectedItems] = useState((initialSelectedItems ? (() => {
@@ -197,7 +201,42 @@ function EditListWithCount(
 
     }, [isFormSubmit])
 
+    const filterSpecialities = (ctg) => {
+        const filteredOptions = options.filter((option) => option.category_name === ctg );
+        setSpecialities(filteredOptions)
 
+    }
+
+    const handleCheckboxChange = (id) => {
+        setSelectedRows((prevSelectedRows) => {
+          if (prevSelectedRows.includes(id)) {
+            return prevSelectedRows.filter((rowId) => rowId !== id);
+          } else {
+            return [...prevSelectedRows, id];
+          }
+        });
+      };
+
+    const onSearch = ((event, searchtype)=>{
+
+        const _query=event.target.value;
+        setQuery(_query);
+        if(_query.length > 3){
+            if(searchtype === 'category_search'){
+                let subset = categoryItems.filter(function (el) {
+                    return el.label.toLowerCase().includes(_query.toLowerCase());
+                }
+                );
+                setCategoryItems(subset);
+            }else if(searchtype === 'speciality_search'){
+                let specialities = specialities.filter((e)=>e.name.toLowerCase().includes(_query.toLowerCase()))
+                setSpecialities(specialities);
+            }
+        }
+        else{
+             
+        }
+    });
     // console.log({ options, categoryItems })
 
     return (
@@ -597,6 +636,126 @@ function EditListWithCount(
                             </button>
                         </div>
                     }
+
+                    <div className='w-full grid grid-cols-12 gap-4'>
+                         <div className="col-span-5" >
+                            <input type="text" onChange={(e)=>onSearch(e,'category_search')} className="col-span-12 border border-blue-600 p-2 placeholder-gray-500  focus:shadow-none focus:bg-white focus:border-black outline-none" placeholder="Search" />
+                            <ul>
+                                {categoryOptions.map(({label, value}) => (
+                                    <>
+
+                                        <div key={value} className='card bg-blue-50 shadow-md p-2'>
+
+                                            <li className="flex items-center justify-start space-x-2  p-1 px-2  hover:bg-red" onClick={()=>filterSpecialities(label)} key ={value}>{label}</li>
+                                            <hr></hr>
+                                        </div>
+                                    </>
+                                ))}
+                            </ul>
+                         </div>
+                         <div className="col-span-7" >
+                                <input type="text" onChange={(e)=>onSearch(e,'speciality_search')} className="col-span-12 border border-blue-600 p-2 placeholder-gray-500  focus:shadow-none focus:bg-white focus:border-black outline-none" placeholder="Search" />
+                                {/* {specialities.length === 0 && <p className="text-center">No specialities found</p>} */}
+                                {/* <ul>
+                                {specialities.map(({id, name})=>(
+                                    <>
+                                    <div className='card bg-blue-50 shadow-md p-2 flex col-span-12'>
+                                        <div className="col-span-4  justify-start space-x-2  p-1 px-2">
+
+                                            <li className="flex  justify-start  " key={id}>{name}</li> 
+                                        </div>
+                                        <div className="col-span-4  justify-start space-x-2  p-1 px-2">
+                                            <input type="checkbox" className="bg-transparent border border-blue-600 p-2 placeholder-gray-500  focus:shadow-none focus:bg-white focus:border-black outline-none" />
+                                        </div>
+                                        <div className="col-span-4  justify-start space-x-2  p-1 px-2">
+
+                                            <input type='number' min={0} className='' />
+                                        </div>
+
+                                    </div>
+                                    <hr/>
+                                    </>
+                                ))}
+                                </ul> */}
+
+                                <table className="table-auto w-full">
+                                    <thead>
+                                        <tr>
+                                        <th className="border px-1 py-1">Speciality</th>
+                                        <th className="border px-1 py-1">Present</th>
+                                        <th className="border px-1 py-1">Number</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody className='bg-blue-50 shadow-md'>
+                                        {specialities.length === 0 && <tr><td colSpan={3} className="text-center">No specialities found</td></tr>}
+                                        {specialities.map((row) => (
+                                        <tr key={row.id}>
+                                            <td className="border px-1 py-1">
+                                            <label  className="w-full p-2" >{row.name}</label>
+                                            </td>
+                                            <td className="border px-1 py-1">
+                                            <input
+                                                type="checkbox"
+                                                className="p-1 w-5 h-5"
+                                                checked={selectedRows.includes(row.id)}
+                                                onChange={() => handleCheckboxChange(row.id)}
+                                            /> Yes
+                                            </td>
+                                            <td className="border px-1 py-1">
+                                            <input
+                                                type="number"
+                                                className="p-1" min={0}
+                                                disabled={!selectedRows.includes(row.id)}
+                                            />
+                                            </td>
+                                        </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+
+                                {/* summary table */}
+                                {/* <table className="table-auto w-full">
+                                    <thead>
+                                        <tr>
+                                        <th className="border px-1 py-1">Name</th>
+                                        <th className="border px-1 py-1">Present</th>
+                                        <th className="border px-1 py-1">Number</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody className='bg-blue-50 shadow-md'>
+                                        {specialities.length === 0 && <tr><td colSpan={3} className="text-center">No specialities found</td></tr>}
+                                        {specialities.map((row) => (
+                                        // <tr key={row.id}>
+                                        //     <td className="border px-1 py-1">
+                                        //     <label  className="w-full p-2" >{row.name}</label>
+                                        //     </td>
+                                        //     <td className="border px-1 py-1">
+                                        //     <input
+                                        //         type="checkbox"
+                                        //         className="p-1 w-5 h-5"
+                                        //         checked={selectedRows.includes(row.id)}
+                                        //         onChange={() => handleCheckboxChange(row.id)}
+                                        //     /> Yes
+                                        //     </td>
+                                        //     <td className="border px-1 py-1">
+                                        //     <input
+                                        //         type="number"
+                                        //         className="p-1" min={0}
+                                        //         disabled={!selectedRows.includes(row.id)}
+                                        //     />
+                                        //     </td>
+                                        // </tr>
+                                        <tr>
+                                            <td className="border px-1 py-1"></td>
+                                            <td className="border px-1 py-1"></td>
+                                            <td className="border px-1 py-1"></td>
+                                        </tr>
+                                        ))}
+                                    </tbody>
+                                </table> */}
+
+                         </div>
+                    </div>
 
 
 
