@@ -701,11 +701,10 @@ const FacilityHome = (props) => {
     }
 }
 
-FacilityHome.getInitialProps = async (ctx) => {
+export async function getServerSideProps (ctx) {
 
     const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
-   
 
 
     const fetchFilters = token => {
@@ -828,7 +827,8 @@ FacilityHome.getInitialProps = async (ctx) => {
             })
     }
 
-    return checkToken(ctx.req, ctx.res).then(t => {
+    return {
+        props: checkToken(ctx.req, ctx.res).then(t => {
         if (t.error) {
             throw new Error('Error checking token')
         } else {
@@ -855,6 +855,9 @@ FacilityHome.getInitialProps = async (ctx) => {
             }
         }, 1000);
     })
+    }
+
+ 
 
 }
 
