@@ -45,7 +45,7 @@ export default function EditFacility(props) {
 
 	useEffect(() => {
 
-		console.log({allOptions: props})
+		// console.log({allOptions: props})
 
 		const user = JSON.parse(sessionStorage.getItem('user'))
 		if(user.id === 6){
@@ -232,7 +232,7 @@ EditFacility.getInitialProps = async (ctx) => {
 					const option = options[i]
 					switch (option) {
 						case 'facility_types':
-							url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/${option}/?is_active=true&page_size=10000`;
+							url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/${option}/?is_parent=true&page_size=10000`;
 
 							try {
 
@@ -246,8 +246,17 @@ EditFacility.getInitialProps = async (ctx) => {
 								if(!_facilityTypeData) throw Error('Unable facility type data')
 
 
-								const facilityTypeData = (await _facilityTypeData.json())?.results
+								let facilityTypeData = (await _facilityTypeData.json())
 
+								facilityTypeData = Array.from(facilityTypeData?.results, ({id, name}) => {
+								return {
+									label: name,
+									value: id
+								}
+									
+								})
+
+							
 
 								allOptions['facility_types'] = facilityTypeData;
 								
@@ -260,7 +269,7 @@ EditFacility.getInitialProps = async (ctx) => {
 
 							break;
 						case 'facility_type_details':
-							url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/facility_types/?is_active=true&page_size=10000`;
+							url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/facility_types/?is_parent=false`;
 
 							try {
 
@@ -610,11 +619,15 @@ EditFacility.getInitialProps = async (ctx) => {
 
 
 								const [_result] = (await _collection_date.json()).results;
-
-								allOptions["collection_date"] = _result["collection_date"];
+								if(_result && _result["collection_date"]){
+									allOptions["collection_date"] = _result["collection_date"];
+								}else{
+									allOptions["collection_date"] = null;
+								}
 								
 
 							} catch (err) {
+								console.log(`Error fetching ${option}: `, err);
 								console.error(`Error fetching ${option}: `, err);
 								
 							}
@@ -741,7 +754,7 @@ EditFacility.getInitialProps = async (ctx) => {
 				allOptions["token"] = token
 		
 				
-				console.log("allOptions Log", allOptions)
+				// console.log("allOptions Log", allOptions)
 				return  allOptions
 
 
