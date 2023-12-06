@@ -115,6 +115,7 @@ function EditListWithCount(
       }).actions.use();
 
     const items = typeof savedItems === 'string' && savedItems.length > 0 ? JSON.parse(savedItems) : savedItems;
+    console.log(savedItems)
 
     // Refs
 
@@ -296,6 +297,7 @@ function EditListWithCount(
         }
     });
     // console.log({ options, categoryItems })
+    console.log(initialValues)
 
     return (
 
@@ -303,7 +305,7 @@ function EditListWithCount(
             initialValues={initialValues}
             initialErrors={false}
             onSubmit={(values) => { 
-
+                console.log(values)
                 // setIsSaveAndFinish(true)
                 // console.log({values})
 
@@ -667,7 +669,7 @@ function EditListWithCount(
                     {/* Save btn */}
 
                     {
-                        savedItems.length > 0 && item !== null &&
+                        // savedItems.length > 0 && item !== null &&
 
                         <div className="w-full flex justify-end h-auto mt-3">
                             <button type='submit' className='p-2 text-white bg-blue-600  font-semibold'>save & finish</button>
@@ -697,7 +699,8 @@ function EditListWithCount(
 
                     <div className='w-full grid grid-cols-12 gap-4'>
                          <div className="col-span-5" >
-                            <input type="text" onChange={(e)=>onSearch(e,true,false)} className="col-span-12 border border-blue-600 p-2 placeholder-gray-500  focus:shadow-none focus:bg-white focus:border-black outline-none" placeholder="Search" />
+                            <input type="text" onChange={(e)=>onSearch(e,true,false)} className="col-span-12 border border-blue-600 p-2 placeholder-gray-500  focus:shadow-none focus:bg-white focus:border-black outline-none w-full" placeholder="Search" />
+                            <br/>
                             <ul>
                                 {categoryOptions.map(({label, value}) => (
                                     <>
@@ -712,7 +715,8 @@ function EditListWithCount(
                             </ul>
                          </div>
                          <div className="col-span-7" >
-                                <input type="text" onChange={(e)=>onSearch(e,false,true)} className="col-span-12 border border-blue-600 p-2 placeholder-gray-500  focus:shadow-none focus:bg-white focus:border-black outline-none" placeholder="Search" />
+                                <input type="text" onChange={(e)=>onSearch(e,false,true)} className="col-span-12 border border-blue-600 p-2 placeholder-gray-500  focus:shadow-none focus:bg-white focus:border-black outline-none w-full" placeholder="Search" />
+                                <br/>
                                 {/* {specialities.length === 0 && <p className="text-center">No specialities found</p>} */}
                                 {/* <ul>
                                 {specialities.map(({id, name})=>(
@@ -760,13 +764,29 @@ function EditListWithCount(
                                             /> Yes
                                             </td>
                                             <td className="border px-1 py-1">
-                                            <input
+                                            <Field
+                                                as="input"
                                                 type="number"
                                                 className="p-1" 
                                                 min={0}
-                                                defaultValue={selectedRows.filter(k=>k.rowid==row.id).length>0?Number(selectedRows.filter(k=>k.rowid==row.id)[0].count):0}
-                                                onChange={(e) => handleInputChange(row.id, e.target.value)}
-                                                disabled={!selectedRows.some(item=>item.rowid.includes(row.id))}                                            />
+                                                name={row.id}
+                                                // defaultValue={selectedRows.filter(k=>k.rowid==row.id).length>0?Number(selectedRows.filter(k=>k.rowid==row.id)[0].count):0}
+                                                // onChange={(e) => handleInputChange(row.id, e.target.value)}
+                                                onChange ={(e)=>{
+                                                    // e.preventDefault()
+                                                    // handleChange(e)
+                                                    if(selectedRows.some(item=>item.rowid==row.id)){
+                                                        setSelectedRows(prevArray => 
+                                                            prevArray.map(item => 
+                                                              item.rowid === row.id ? { ...item, count: e.target.value } : item
+                                                            )
+                                                          );
+                                                          
+                                                    }
+                                                    CountCategoryTotalSpecialities(row.id,e.target.value)
+                                                }}
+                                                // disabled={!selectedRows.some(item=>item.rowid.includes(row.id))}  
+                                            />
                                             </td>
                                         </tr>
                                         ))}
