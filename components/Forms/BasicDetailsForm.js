@@ -215,35 +215,37 @@ export function BasicDeatilsForm() {
 
         if (e.target?.value) {
 
-          try{
-            const _wards = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/common/wards/?sub_county=${e.target.value}`, {
-              headers: {
-                'Accept': 'application/json',
-                'Authorization': `Bearer ${options?.token}`
-              }
-            })
+
+          console.log({name: e.target.name, value: e.target.value})
+          // try{
+          //   const _wards = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/common/wards/?sub_county=${e.target.value}`, {
+          //     headers: {
+          //       'Accept': 'application/json',
+          //       'Authorization': `Bearer ${options?.token}`
+          //     }
+          //   })
   
-            const wards  = (await _wards.json())?.results
+          //   const wards  = (await _wards.json())?.results
   
-            if(!_wards) throw Error('Unable to Fetch sub counties')
+          //   if(!_wards) throw Error('Unable to Fetch sub counties')
   
             
   
-            const filteredWards = Array.from(wards, ({id, name}) => {
-              return {
-                label: name,
-                value: id
-              }
-            })
+          //   const filteredWards = Array.from(wards, ({id, name}) => {
+          //     return {
+          //       label: name,
+          //       value: id
+          //     }
+          //   })
 
-            console.log({filteredWards, wards})
+          //   console.log({filteredWards, wards})
   
-            setWardOptions(filteredWards ?? options?.sub_counties) 
+          //   setWardOptions(filteredWards ?? options?.sub_counties) 
   
-          }
-          catch (e) {
-            console.error(e.message)
-          }
+          // }
+          // catch (e) {
+          //   console.error(e.message)
+          // }
         }
       }
   }
@@ -1013,7 +1015,6 @@ if(isClient){
                         required
                         placeholder="Select Sub County..."
                         onChange={handleSelectChange}
-
                         defaultValue={options?.data?.sub_county_id ?? ''}
                         name='sub_county_id'
 
