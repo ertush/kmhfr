@@ -9,12 +9,16 @@ import {
 } from '@heroicons/react/solid';
 import { useAlert } from 'react-alert';
 import { FacilityUpdatesContext } from '../../pages/facilities/edit/[id]';
+// import { UserContext } from '../../providers/user';
 
 
 
-export function BasicDeatilsForm() {
+export function BasicDeatilsForm({mode}) {
 
   const options = useContext(FormOptionsContext);
+  // const user = useContext(UserContext)
+
+  const schrio = "a763c3a5-c608-43d6-9820-93850c5d17f2"
 
 
   // Context
@@ -90,7 +94,7 @@ export function BasicDeatilsForm() {
   async function handleSelectChange(e) {
 
     // Handle facility Type Change
-    if(e.target.name.includes('facility_type')) {
+    if(e.target.name == 'facility_type') {
 
         if(e?.target?.value) {
           try{
@@ -123,7 +127,7 @@ export function BasicDeatilsForm() {
         }
 
 
-    } else if(e.target.name.includes('owner')) {
+    } else if(e.target.name == 'owner_type') {
 
 
       if(e?.target?.value) {
@@ -148,6 +152,8 @@ export function BasicDeatilsForm() {
             }
           })
 
+
+
           setOwnerTypeDetailsOptions(facilityOwnerOptions ?? options?.owner_types) 
 
         }
@@ -155,9 +161,8 @@ export function BasicDeatilsForm() {
           console.error(e.message)
         }
     }
-    } else if (e.target.name.includes('county_id')) {
+    } else if (e.target.name == 'county_id') {
 
-      // console.log({name: e.target.name, value: e.target.value})
         if (e.target?.value) {
           try{
             const sub_counties = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/common/sub_counties/?county=${e.target.value}`, {
@@ -201,7 +206,8 @@ export function BasicDeatilsForm() {
             })
   
             setSubCountyOptions(filteredSubCounties ?? options?.sub_counties)
-            setConstituencyOptions(filteredConstituencies ?? options?.constituencies) 
+            setConstituencyOptions(filteredConstituencies ?? options?.constituencies)
+             
 
   
           }
@@ -209,43 +215,39 @@ export function BasicDeatilsForm() {
             console.error(e.message)
           }
         }
-      }  else if (e.target.name.includes('sub_county_id')) {
-
-        console.log('sub County')
+      } else if (e.target.name == 'sub_county_id') {
+ 
 
         if (e.target?.value) {
 
+          try{
+            const _wards = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/common/wards/?sub_county_id=${e.target.value}`, {
+              headers: {
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${options?.token}`
+              }
+            })
+  
+            const wards  = (await _wards.json())?.results
+  
+            if(!_wards) throw Error('Unable to Fetch sub counties')
 
-          console.log({name: e.target.name, value: e.target.value})
-          // try{
-          //   const _wards = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/common/wards/?sub_county=${e.target.value}`, {
-          //     headers: {
-          //       'Accept': 'application/json',
-          //       'Authorization': `Bearer ${options?.token}`
-          //     }
-          //   })
   
-          //   const wards  = (await _wards.json())?.results
-  
-          //   if(!_wards) throw Error('Unable to Fetch sub counties')
-  
-            
-  
-          //   const filteredWards = Array.from(wards, ({id, name}) => {
-          //     return {
-          //       label: name,
-          //       value: id
-          //     }
-          //   })
+            const filteredWards = Array.from(wards, ({id, name}) => {
+              return {
+                label: name,
+                value: id
+              }
+            })
 
-          //   console.log({filteredWards, wards})
+            console.log({filteredWards, wards})
   
-          //   setWardOptions(filteredWards ?? options?.sub_counties) 
+            setWardOptions(filteredWards ?? options?.sub_counties) 
   
-          // }
-          // catch (e) {
-          //   console.error(e.message)
-          // }
+          }
+          catch (e) {
+            console.error(e.message)
+          }
         }
       }
   }
@@ -260,7 +262,20 @@ if(isClient){
   return (
           <form name='basic_details_form'
           defaultValue={options?.data?.basic_details_form ?? ''}
-              formAction={'/api/save_form'}
+              // formAction={'/api/facility/update'}
+              onSubmit={e => {
+                e.preventDefault()
+                // e.stopPropagation()
+
+                console.log('form', e.target)
+
+                const formData = new FormData(e.target)
+
+                const data = Object.fromEntries(formData)
+
+                console.log({data})
+     
+              }}
               className='flex flex-col w-full mt-4 items-start bg-blue-50 shadow-md p-3 justify-start gap-3'>
 
               {/* Facility Official Name */}
@@ -1014,8 +1029,8 @@ if(isClient){
                         options={subCountyOptions ?? []}  
                         required
                         placeholder="Select Sub County..."
-                        onChange={handleSelectChange}
                         defaultValue={options?.data?.sub_county_id ?? ''}
+                        onChange={handleSelectChange}
                         name='sub_county_id'
 
 
@@ -1028,7 +1043,7 @@ if(isClient){
                   <div className='col-start-3 col-span-1'>
                     <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
                       <label
-                        htmlFor='constituency_id'
+                        htmlFor='c'
                         className='text-gray-600 capitalize text-sm'>
                         Constituency
                         <span className='text-medium leading-12 font-semibold'>
@@ -1040,6 +1055,7 @@ if(isClient){
                         options={constituencyOptions ?? []}
                         required
                         placeholder="Select Constituency..."
+                        // onChange={handleSelectChange}
                         defaultValue={options?.data?.constituency_id ?? ''}
                         name='constituency_id'
 
