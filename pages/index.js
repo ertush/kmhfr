@@ -152,7 +152,11 @@ const Home = (props) => {
 }
 
 
+<<<<<<< HEAD
 export async function getInitialProps(ctx) {
+=======
+export async function getServerSideProps(ctx) {
+>>>>>>> 0f5f7e2 (work in progress in persisitng form data for basic details)
 
     // return {loggedIn: false, token: null}
     return  checkToken(ctx.req, ctx.res, {username:process.env.NEXT_PUBLIC_CLIENT_USERNAME, password:process.env.NEXT_PUBLIC_CLIENT_PASSWORD})

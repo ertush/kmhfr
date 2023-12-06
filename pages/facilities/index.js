@@ -690,10 +690,7 @@ const FacilityHome = (props) => {
                                     {!props?.data && <h2 className='text-gray-400'>No Facilities Found ....</h2>}
                              
                     </div>
-
-                  
                     
-                   
                 </div>
             </MainLayout >
         </>
@@ -703,16 +700,13 @@ const FacilityHome = (props) => {
     }
 }
 
-export async function getServerSideProps (ctx) {
+FacilityHome.getInitialProps = async (ctx) => {
 
     const API_URL = process.env.NEXT_PUBLIC_API_URL;
-
-
 
     const fetchFilters = token => {
         let filters_url = API_URL + '/common/filtering_summaries/?fields=county%2Cfacility_type%2Cconstituency%2Cward%2Coperation_status%2Cservice_category%2Cowner_type%2Cowner%2Cservice%2Ckeph_level%2Csub_county'
 
-      
         return fetch(filters_url, {
             headers: {
                 'Authorization': 'Bearer ' + token,
@@ -731,7 +725,7 @@ export async function getServerSideProps (ctx) {
             })
     }
 
-    const fetchData = async (token) => {
+    const fetchData = (token) => {
 
         let url = API_URL + '/facilities/facilities/?fields=id,code,official_name,facility_type_name,owner_name,county,sub_county,constituency_name,ward_name,updated,operation_status_name,sub_county_name,name,is_complete,in_complete_details,approved_national_level,has_edits,approved,rejected,keph_level'
      
@@ -784,25 +778,21 @@ export async function getServerSideProps (ctx) {
             }
 
 
-                  
+            // Remove approved field if fetching for Facilities pending approval
+            // if (flt === 'to_publish') url = url.replace('approved,', '')
+
+          
         })
 
-        // Fetch All facility Count
 
-        // const getFacilityCount = async () => {
-        //     return (await (await fetch(`${API_URL}/facilities/facilities?format=json`, {headers: {
-        //         'Authorization': 'Bearer ' + token,
-        //         'Accept': 'application/json'
-        //     }})).json())?.count
-        // }
-
-
-        let current_url = url + `&page_size=19000`
+        let current_url = url + '&page_size=100'
         if (ctx?.query?.page) {
             url = `${url}&page=${ctx.query.page}`
         }
 
     
+
+        console.log({url});
 
         return fetch(url, {
             headers: {
@@ -829,8 +819,7 @@ export async function getServerSideProps (ctx) {
             })
     }
 
-    return {
-        props: checkToken(ctx.req, ctx.res).then(t => {
+    return checkToken(ctx.req, ctx.res).then(t => {
         if (t.error) {
             throw new Error('Error checking token')
         } else {
@@ -857,10 +846,8 @@ export async function getServerSideProps (ctx) {
             }
         }, 1000);
     })
-    }
-
- 
 
 }
+
 
 export default FacilityHome
