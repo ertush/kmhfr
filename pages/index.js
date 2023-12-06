@@ -160,17 +160,17 @@ const Home = (props) => {
 }
 
 
-Home.getInitialProps = async (ctx) => {
+export async function getServerSideProps() {
 
     // return {loggedIn: false, token: null}
-    return checkToken(ctx.req, ctx.res, {username:process.env.NEXT_PUBLIC_CLIENT_USERNAME, password:process.env.NEXT_PUBLIC_CLIENT_PASSWORD})
+    return  checkToken(ctx.req, ctx.res, {username:process.env.NEXT_PUBLIC_CLIENT_USERNAME, password:process.env.NEXT_PUBLIC_CLIENT_PASSWORD})
 		.then((t) => {
             console.log(t)
 			if (t.error) {
 				throw new Error('Error checking token');
 			} else {
 				let token = t.token;
-        return {loggedIn: false, token: token}
+        return {props: {loggedIn: false, token: token}}
 				// return fetchData(token).then((t) => t);
 			}
 		})

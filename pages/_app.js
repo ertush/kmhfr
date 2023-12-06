@@ -10,6 +10,7 @@ import { UserContext } from '../providers/user';
 import AlertTemplate from "react-alert-template-basic";
 
 
+
 import 'nprogress/nprogress.css';
 
 Router.events.on('routeChangeStart', () => NProgress.start()); Router.events.on('routeChangeComplete', () => NProgress.done()); Router.events.on('routeChangeError', () => NProgress.done());  
@@ -19,8 +20,12 @@ const options = {
   position: positions.TOP_RIGHT
 };
 
-function MyApp({ Component, pageProps }) {
+export default function App(props) {
+ 
 
+  const  { Component, pageProps, ctx } = props
+
+//  console.log({pageProps, ctx})
   return (
     
     <Provider template={AlertTemplate} {...options}>
@@ -59,5 +64,3 @@ function MyApp({ Component, pageProps }) {
 
 
 
-
-export default MyApp
