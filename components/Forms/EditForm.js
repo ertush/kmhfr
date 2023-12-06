@@ -64,7 +64,7 @@ export function EditForm() {
       <Tabs.Root
         orientation="horizontal"
         className="w-full flex flex-col py-2 tab-root"
-        defaultValue="geolocation"
+        defaultValue="basic_details"
 
       >
         <Tabs.List className="list-none md:grid border-b border-blue-600 md:grid-cols-7 grid grid-cols-2 gap-2  px-2  uppercase leading-none tab-list font-semibold">
@@ -121,18 +121,7 @@ export function EditForm() {
           >
 
 
-            <BasicDeatilsForm
-              useGeoJSON={() => [geoJSON, setGeoJSON]}
-              useGeoData={(type) => {
-                switch (type) {
-                  case 'ward_data':
-                    return [wardName, setWardName];
-                  case 'geo_data':
-                    return [geoCenter, setGeoCenter];
-                }
-              }
-              }
-            />
+            <BasicDeatilsForm />
 
 
           </Tabs.Panel>
