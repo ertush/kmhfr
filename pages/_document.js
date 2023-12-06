@@ -7,7 +7,7 @@ export default class MyDocument extends Document {
       <Html>
         <Head>
           {/* Global Site Tag (gtag.js) - Google Analytics */}
-            <script
+            {/* <script
                 async
                 src={`https://www.googletagmanager.com/gtag/js?id=${measurement_id}`}
             />
@@ -22,7 +22,7 @@ export default class MyDocument extends Document {
                 });
             `,
                 }}
-            />
+            /> */}
           
         </Head>
         <body>

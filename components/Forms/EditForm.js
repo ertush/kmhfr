@@ -121,7 +121,7 @@ export function EditForm() {
           >
 
 
-            <BasicDeatilsForm />
+            <BasicDeatilsForm mode="edit"/>
 
 
           </Tabs.Panel>

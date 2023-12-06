@@ -269,7 +269,7 @@ EditFacility.getInitialProps = async (ctx) => {
 
 							break;
 						case 'facility_type_details':
-							url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/facility_types/?is_parent=false`;
+							url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/facility_types/`;
 
 							try {
 

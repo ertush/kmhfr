@@ -79,9 +79,9 @@ export default function AddFacility(props) {
 }
 
 
-AddFacility.getInitialProps = async (ctx) => {
+export async function getServerSideProps (ctx) {
 
-	// const allOptions = []
+	
 
 	const options = [
 		'facility_types',
@@ -158,7 +158,7 @@ AddFacility.getInitialProps = async (ctx) => {
 
 							break;
 						case 'facility_type_details':
-							url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/facility_types/?is_parent=false`;
+							url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/facility_types/`;
 
 							try {
 
@@ -199,7 +199,7 @@ AddFacility.getInitialProps = async (ctx) => {
 
 								if(!_owners) throw new Error('Unable to fetch owners')
 
-								const owners = (await _owners.json())?.results 
+								const owners = (await _owners.json())?.results.map(({ id, name }) => ({ value: id, label: name })) 
 
 								allOptions['owners'] = owners
 
@@ -644,7 +644,7 @@ AddFacility.getInitialProps = async (ctx) => {
 		
 				
 				// console.log("allOptions Log", allOptions)
-				return  allOptions
+				return  { props: allOptions }
 
 
 			}
@@ -666,4 +666,6 @@ AddFacility.getInitialProps = async (ctx) => {
 				};
 			}, 1000);
 		});
+
+
 }
