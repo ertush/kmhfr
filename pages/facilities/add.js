@@ -199,7 +199,7 @@ AddFacility.getInitialProps = async (ctx) => {
 
 								if(!_owners) throw new Error('Unable to fetch owners')
 
-								const owners = (await _owners.json())?.results 
+								const owners = (await _owners.json())?.results.map(({ id, name }) => ({ value: id, label: name })) 
 
 								allOptions['owners'] = owners
 
