@@ -64,7 +64,7 @@ export function InfrastructureForm() {
 
                     {/* Edit List With Count*/}
                     <EditListWithCount
-                        initialSelectedItems={[]}
+                        initialSelectedItems={options?.data? options?.data.facility_infrastructure:[]}
                         otherItemsCategory={null}
                         itemsCategoryName={'infrastructure'}
                         categoryItems={infrastructureOption.categories}

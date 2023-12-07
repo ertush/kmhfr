@@ -49,7 +49,6 @@ function EditListWithCount(
     const [itemOptions, setItemOptions] = useState([])
     const [specialities, setSpecialities] = useState([])
     const [query, setQuery] = useState('') 
-    const [selectedRows, setSelectedRows] = useState([]);
     const [isActive, setIsActive] = useState(null);
 
 
@@ -83,7 +82,6 @@ function EditListWithCount(
                 });
              }
         });
-        // console.log(total,_categoryid)
         if(categoryOptions.some(item=>item.value==_categoryid)){
             setCategoryItems(prevArray => 
                 prevArray.map(item => 
@@ -92,17 +90,28 @@ function EditListWithCount(
               );
         }
     }
-    // console.log(categoryOptions)
+ 
+    
 
-    const [selectedItems, setSelectedItems] = useState((initialSelectedItems ? (() => {
+    // const [selectedRows, setSelectedRows] = useState([]);
+// 
+    const [selectedRows, setSelectedRows] = useState((initialSelectedItems ? (() => {
         const result = []
-
         if (initialSelectedItems.length > 0) {
-            initialSelectedItems.map(({ subCategories, id, meta_id, count }) => {
-                        
-                result.push({ name: subCategories[0], id, meta_id, count })
 
-            })
+            initialSelectedItems.forEach((element) => {
+                if(itemsCategoryName.includes('human resource')){
+                    result.push({ rowid:element.id, sname: element.speciality_name, count: element.count })
+
+                }
+                else if(itemsCategoryName.includes('infrastructure')){
+                    result.push({ rowid:element.id, 
+                        sname: element.infrastructure_name,
+                        count: element.count, 
+                        category:options.filter((e)=>e.id==element.infrastructure)[0].category_name,
+                        category_name:"x" })
+                }
+            }); 
         }
 ``
         return result
@@ -121,15 +130,13 @@ function EditListWithCount(
 
     const itemRef = useRef(null);
     
-
-
     //Effects 
     useEffect(() => {
         //store service when service is added
-        if(selectedItems.length !== 0){
-            // console.log(selectedItems)
+        
+        if(selectedRows.length !== 0){
 
-            const x = selectedItems;
+            const x = selectedRows;
 
             if(editItem && editItem.length > 1){
                 if(editItem[0]?.id === items[0]?.id) x.push(editItem[0]);
@@ -139,35 +146,37 @@ function EditListWithCount(
 
             x.forEach(obj => {
                 if(
-                    obj?.name?.includes("Main Grid") ||
-                    obj?.name?.includes("Gas") ||
-                    obj?.name?.includes("Bio-Gas") ||
+                    obj?.sname?.includes("Main Grid") ||
+                    obj?.sname?.includes("Gas") ||
+                    obj?.sname?.includes("Bio-Gas") ||
                     // WATER SOURCE
-                    obj?.name?.includes("Roof Harvested Water") ||
-                    obj?.name?.includes("River / Dam / Lake") ||
-                    obj?.name?.includes("Donkey Cart / Vendor") ||
-                    obj?.name?.includes("Piped Water") ||
+                    obj?.sname?.includes("Roof Harvested Water") ||
+                    obj?.sname?.includes("River / Dam / Lake") ||
+                    obj?.sname?.includes("Donkey Cart / Vendor") ||
+                    obj?.sname?.includes("Piped Water") ||
                     // MEDICAL WASTE MANAGEMENT
-                    obj?.name?.includes("Sewer systems") ||
-                    obj?.name?.includes("Dump without burning") ||
-                    obj?.name?.includes("Open burning") ||
-                    obj?.name?.includes("Remove offsite") ||
+                    obj?.sname?.includes("Sewer systems") ||
+                    obj?.sname?.includes("Dump without burning") ||
+                    obj?.sname?.includes("Open burning") ||
+                    obj?.sname?.includes("Remove offsite") ||
                     // ACCESS ROADS
-                    obj?.name?.includes("Tarmac") ||
-                    obj?.name?.includes("Earthen Road") ||
-                    obj?.name?.includes("Graded ( Murrum )") ||
-                    obj?.name?.includes("Gravel")
+                    obj?.sname?.includes("Tarmac") ||
+                    obj?.sname?.includes("Earthen Road") ||
+                    obj?.sname?.includes("Graded ( Murrum )") ||
+                    obj?.sname?.includes("Gravel")
                 ){
                     delete obj['count']
                 }
             })
 
-
+        
           saveSelectedItems(
             JSON.stringify(x)
           );
+          setSelectedRows(x)
+        
         }
-      }, [selectedItems]);
+      }, [ selectedRows]);
 
 
     const initialValues = (() => {
@@ -243,24 +252,25 @@ function EditListWithCount(
     }, [isFormSubmit])
 
     const filterSpecialities = (ctg) => {
-        const filteredOptions = options.filter((option) => option.category=== ctg );
+        const filteredOptions = options.filter((option) => option.category === ctg );
         setSpecialities(filteredOptions)
         setIsActive(ctg)
-
-
     }
 
-    const handleCheckboxChange = (id, name,category) => {
-        setSelectedRows((prevSelectedRows) => {
+    const handleCheckboxChange = (id, name,category, category_name) => {
+
+        setSelectedRows((prevSelectedRows) => { 
           if (prevSelectedRows.filter((row) => row.rowid == id).length>0) {
+           
             return prevSelectedRows.filter((row) => row.rowid !== id);
           } else {
-              let customitem={rowid:id, sname:name, count:0,categoryid:category}
+            let customitem = {}
+            itemsCategoryName.includes('human resource')?customitem={rowid:id, sname:name, count:0,categoryid:category}:itemsCategoryName.includes('infrastructure')?customitem={rowid:id, sname:name, category:category_name ,count:0,categoryid:category}: {}
             return [...prevSelectedRows, customitem];
           }
         });
       }; 
-    //   console.log(specialities)
+  
       
     const handleInputChange = (rowvalue, targetvalue) => {
           // Update the selected rows values
@@ -275,7 +285,6 @@ function EditListWithCount(
           CountCategoryTotalSpecialities(rowvalue,targetvalue)
       };  
   
-    //   console.log(specialities)
   
 
     const onSearch = ((event, issearchcategory,issearchspeciality)=>{
@@ -298,8 +307,7 @@ function EditListWithCount(
             setCategoryItems(categoryItems);
         }
     });
-    // console.log({ options, categoryItems })
-    console.log(initialValues)
+    console.log(categoryItems,specialities, selectedRows, options)
 
     return (
 
@@ -307,9 +315,7 @@ function EditListWithCount(
             initialValues={initialValues}
             initialErrors={false}
             onSubmit={(values) => { 
-                console.log(values)
                 // setIsSaveAndFinish(true)
-                // console.log({values})
 
                 if (item) {
 
@@ -596,31 +602,49 @@ function EditListWithCount(
                                             key={id}
                                         >
                                             <TableCell>{name}</TableCell>
-                                            {/* {console.log({ selectedItems })} */}
                                             <TableCell>
                                                 {
-                                                    !(
-                                                        // Exclude the Number input if   
-                                                        // POWER SOURCE  
-                                                        name.includes("Main Grid") ||
-                                                        name.includes("Gas") ||
-                                                        name.includes("Bio-Gas") ||
-                                                        // WATER SOURCE
-                                                        name.includes("Roof Harvested Water") ||
-                                                        name.includes("River / Dam / Lake") ||
-                                                        name.includes("Donkey Cart / Vendor") ||
-                                                        name.includes("Piped Water") ||
-                                                        // MEDICAL WASTE MANAGEMENT
-                                                        name.includes("Sewer systems") ||
-                                                        name.includes("Dump without burning") ||
-                                                        name.includes("Open burning") ||
-                                                        name.includes("Remove offsite") ||
-                                                        // ACCESS ROADS
-                                                        name.includes("Tarmac") ||
-                                                        name.includes("Earthen Road") ||
-                                                        name.includes("Graded ( Murrum )") ||
-                                                        name.includes("Gravel")
-                                                    ) &&
+                                                    // !(
+                                                    //     // Exclude the Number input if   
+                                                    //     // POWER SOURCE  
+                                                    //     // name.includes("Main Grid") ||
+                                                    //     // name.includes("Gas") ||
+                                                    //     // name.includes("Bio-Gas") ||
+                                                    //     // // WATER SOURCE
+                                                    //     // name.includes("Roof Harvested Water") ||
+                                                    //     // name.includes("River / Dam / Lake") ||
+                                                    //     // name.includes("Donkey Cart / Vendor") ||
+                                                    //     // name.includes("Piped Water") ||
+                                                    //     // // MEDICAL WASTE MANAGEMENT
+                                                    //     // name.includes("Sewer systems") ||
+                                                    //     // name.includes("Dump without burning") ||
+                                                    //     // name.includes("Open burning") ||
+                                                    //     // name.includes("Remove offsite") ||
+                                                    //     // // ACCESS ROADS
+                                                    //     // name.includes("Tarmac") ||
+                                                    //     // name.includes("Earthen Road") ||
+                                                    //     // name.includes("Graded ( Murrum )") ||
+                                                    //     // name.includes("Gravel")
+                                                    //     // sname?.includes("Main Grid") ||
+                                                    //     // sname?.includes("Gas") ||
+                                                    //     // sname?.includes("Bio-Gas") ||
+                                                    //     // // WATER SOURCE
+                                                    //     // includes("Roof Harvested Water") ||
+                                                    //     // sname?.includes("River / Dam / Lake") ||
+                                                    //     // sname?.includes("Donkey Cart / Vendor") ||
+                                                    //     // sname.includes("Piped Water") ||
+                                                    //     // // MEDICAL WASTE MANAGEMENT
+                                                    //     // sname?.includes("Sewer systems") ||
+                                                    //     // sname?.includes("Dump without burning") ||
+                                                    //     // sname?.includes("Open burning") ||
+                                                    //     // sname?.includes("Remove offsite") ||
+                                                    //     // // ACCESS ROADS
+                                                    //     // sname?.includes("Tarmac") ||
+                                                    //     // sname?.includes("Earthen Road") ||
+                                                    //     // sname?.includes("Graded ( Murrum )") ||
+                                                    //     // sname?.includes("Gravel")
+                                                    // ) 
+                                                    // &&
                                                     <Field
                                                         as='input'
                                                         type='number'
@@ -727,44 +751,19 @@ function EditListWithCount(
                          <div className="col-span-7" >
                                 <input type="text" onChange={(e)=>onSearch(e,false,true)} className="col-span-12 border border-blue-600 p-2 placeholder-gray-500  focus:shadow-none focus:bg-white focus:border-black outline-none w-full" placeholder="Search" />
                                 <br/>
-                                {/* {specialities.length === 0 && <p className="text-center">No specialities found</p>} */}
-                                {/* <ul>
-                                {specialities.map(({id, name})=>(
-                                    <>
-                                    <div className='card bg-blue-50 shadow-md p-2 flex col-span-12'>
-                                        <div className="col-span-4  justify-start space-x-2  p-1 px-2">
-
-                                            <li className="flex  justify-start  " key={id}>{name}</li> 
-                                        </div>
-                                        <div className="col-span-4  justify-start space-x-2  p-1 px-2">
-                                            <input type="checkbox" className="bg-transparent border border-blue-600 p-2 placeholder-gray-500  focus:shadow-none focus:bg-white focus:border-black outline-none" />
-                                        </div>
-                                        <div className="col-span-4  justify-start space-x-2  p-1 px-2">
-
-                                            <input type='number' min={0} className='' />
-                                        </div>
-
-                                    </div>
-                                    <hr/>
-                                    </>
-                                ))}
-                                </ul> */}
 
                                 <table className="table-auto w-full">
                                     <thead>
                                         <tr>
-                                        {/* {title.map((t, i)=>(
-
-                                        <th className="border px-1 py-1" key={i}>{t}</th>
-                                        ))} */}
-                                        {/* <th className="border px-1 py-1">Present</th>
-                                        <th className="border px-1 py-1">Number</th> */}
+                                       
                                         </tr>
                                     </thead>
                                     <tbody className='bg-blue-50 shadow-md'>
                                         {specialities.length === 0 && <tr><td colSpan={3} className="text-center">No specialities found</td></tr>}
+                                        
                                         {specialities.map((row) => (
-                                        <tr key={row.id}>
+                                            
+                                        <tr key={row.id}> 
                                             <td className="border px-1 py-1">
                                             <label  className="w-full p-2" >{row.name}</label>
                                             </td>
@@ -772,8 +771,12 @@ function EditListWithCount(
                                             <input
                                                 type="checkbox"
                                                 className="p-1 w-5 h-5"
-                                                checked={selectedRows.some(item=>item.rowid.includes(row.id))}
-                                                onChange={() => handleCheckboxChange(row.id, row.name,row.category)}
+                                                // checked={selectedRows.some(item=>item.rowid.includes(row.id))}
+                                                onChange={() => handleCheckboxChange(
+                                                    itemsCategoryName?.includes('human resource')?row.id:itemsCategoryName.includes('infrastructure')?row.infrastructure: "",
+                                                    row.name,
+                                                    row.category, 
+                                                    row.category_name)}
                                             /> Yes
                                             </td>
                                             <td className="border px-1 py-1">
@@ -790,6 +793,7 @@ function EditListWithCount(
                                                     handleInputChange(row.id, e.target.value)
                                                    
                                                 }}
+                                                hidden={!selectedRows.some(item=>item["count"])}
                                                 disabled={!selectedRows.some(item=>item.rowid.includes(row.id))}  
                                             />
                                             </td>
@@ -816,32 +820,14 @@ function EditListWithCount(
                                     <tbody className='bg-blue-50 shadow-md'>
                                         {selectedRows.length === 0 && <tr><td colSpan={3} className="text-center">No specialities found</td></tr>}
                                         {selectedRows.map((row) => (
-                                        // <tr key={row.id}>
-                                        //     <td className="border px-1 py-1">
-                                        //     <label  className="w-full p-2" >{row.name}</label>
-                                        //     </td>
-                                        //     <td className="border px-1 py-1">
-                                        //     <input
-                                        //         type="checkbox"
-                                        //         className="p-1 w-5 h-5"
-                                        //         checked={selectedRows.includes(row.id)}
-                                        //         onChange={() => handleCheckboxChange(row.id)}
-                                        //     /> Yes
-                                        //     </td>
-                                        //     <td className="border px-1 py-1">
-                                        //     <input
-                                        //         type="number"
-                                        //         className="p-1" min={0}
-                                        //         disabled={!selectedRows.includes(row.id)}
-                                        //     />
-                                        //     </td>
-                                        // </tr>
                                         <tr>
                                             <td className="border px-1 py-1">{row.sname}</td>
+                                            {row.category? <td className="border px-1 py-1">{ row.category}</td>: null}
                                             <td className="border px-1 py-1">Yes</td>
-                                            <td className="border px-1 py-1">{Number(row.count)}</td>
+                                            <td className="border px-1 py-1">{row.count? Number(row.count): null}</td>
                                         </tr>
                                         ))}
+
                                     </tbody>
                          </table>
                          </div>

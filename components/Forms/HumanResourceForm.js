@@ -68,7 +68,7 @@ export function HumanResourceForm() {
 
                     {/* Edit List With Count*/}
                     <EditListWithCount
-                        initialSelectedItems={[]}
+                        initialSelectedItems={options?.data? options?.data.facility_specialists:[]}
                         itemsCategory={null}
                         categoryItems={hrOptions.categories}
                         itemsCategoryName={'human resource'}
