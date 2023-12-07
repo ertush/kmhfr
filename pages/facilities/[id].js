@@ -63,7 +63,7 @@ const Facility = (props) => {
   const filters = []
 
 
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(userCtx);
 
   const [open, setOpen] = useState(true);
   const [openCloseModal, setOpenCloseModal] = useState(true)
@@ -95,22 +95,15 @@ const Facility = (props) => {
  
 	useEffect(() => {
 	  setIsClient(true)
-	}, [])
-
-	
-  
-  // let reject = ''
-
-  useEffect(() => {
-   
-    if (userCtx) setUser(userCtx);
+    
+    if (userCtx) setUser(userCtx); console.log({userCtx})
     return () => {
     };
   }, [isClosingFacility, isReasonRejected]);
 
 
     useEffect(() => {
-      const user = JSON.parse(sessionStorage.getItem('user'))
+      setUser(userCtx);
       if(user.id === 6){
         router.push('/auth/login')
       }

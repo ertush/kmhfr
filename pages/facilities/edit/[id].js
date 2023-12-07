@@ -4,17 +4,20 @@ import MainLayout from '../../../components/MainLayout';
 import Link from "next/link";
 import Head from "next/head";
 import FacilitySideMenu from "../../../components/FacilitySideMenu";
-import { useState, useEffect, createContext } from 'react';
+import React, { useState, useEffect, createContext } from 'react';
 import { FormOptionsContext } from "../add";
 import FacilityUpdatesTable from '../../../components/FacilityUpdatesTable'
 import { useRouter } from "next/router";
 import { useAlert } from "react-alert";
 import { all } from "underscore";
+import { UserContext } from "../../../providers/user";
 
 
 export const FacilityUpdatesContext = createContext(null)
 
 export default function EditFacility(props) {
+	const userCtx = React.useContext(UserContext);
+	const [user, setUser] = useState(userCtx);
 
 	const filters = [];
 	const [khisSynched, setKhisSynched] = useState(false);
@@ -47,7 +50,7 @@ export default function EditFacility(props) {
 
 		// console.log({allOptions: props})
 
-		const user = JSON.parse(sessionStorage.getItem('user'))
+		setUser(userCtx)
 		if(user.id === 6){
 			router.push('/auth/login')
 		}

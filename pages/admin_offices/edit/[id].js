@@ -8,10 +8,13 @@ import {
     ChevronDoubleLeftIcon,
 } from '@heroicons/react/solid';
 import Select from 'react-select';
+import { UserContext } from '../../../providers/user';
 
 const _ = require('underscore')
 
 function EditAdminOffice(props) {
+
+    const userCtx = React.useContext(UserContext);
 
     // Form drop down options
     const  counties = props['0']?.counties ?? {counties: []};
@@ -56,7 +59,7 @@ function EditAdminOffice(props) {
         setHide(!hide)
     }
 
-    const [user, setUser] = useState(null)
+    const [user, setUser] = useState(userCtx)
     //Form Field data
 
     const formRef = useRef(null)
@@ -138,7 +141,7 @@ function EditAdminOffice(props) {
     }
 
     useEffect(() => {
-        const user = JSON.parse(sessionStorage.getItem('user'))
+        setUser(userCtx)
         if(user.id === 6){
             router.push('/auth/login')
         }

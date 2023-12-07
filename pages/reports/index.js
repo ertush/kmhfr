@@ -16,6 +16,7 @@ import {
 // import { Box } from '@material-ui/core';
 
 import { propsToGridData } from '../../components/ReportsData';
+import { UserContext } from '../../providers/user';
 
 
 const StyledDataGrid = styled(DataGrid)(() => ({
@@ -33,6 +34,8 @@ const StyledDataGrid = styled(DataGrid)(() => ({
 
 
 function Reports(props) {
+    const userCtx = React.useContext(UserContext);
+    const [user, setUser] = useState(userCtx);
 
 
     // Constants
@@ -67,7 +70,7 @@ function Reports(props) {
     }, [reportTitle])
 
     useEffect(() => {
-        const user = JSON.parse(sessionStorage.getItem('user'))
+        setUser(userCtx)
 		if(user.id === 6){
 			router.push('/auth/login')
 		}

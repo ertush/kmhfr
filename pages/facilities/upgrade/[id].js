@@ -12,10 +12,13 @@ import { ChevronRightIcon, ChevronDownIcon }  from '@heroicons/react/solid'
 import { Table, TableBody, TableCell, TableRow } from '@mui/material';
 import { useAlert } from 'react-alert'
 import { handleFacilityUpgrades } from '../../../controllers/facility/facilityHandlers'
+import { UserContext } from '../../../providers/user'
 
 
 
 const UpgradeFacility = props => {
+    const userCtx = React.useContext(UserContext)
+    const [user, setUser] = useState(userCtx)
 
     const alert = useAlert()
     const router = useRouter()
@@ -75,7 +78,7 @@ const UpgradeFacility = props => {
     const [isClient, setIsClient] = useState(false)
  
 	useEffect(() => {
-        const user = JSON.parse(sessionStorage.getItem('user'))
+        setUser(userCtx);
 		if(user.id === 6){
 			router.push('/auth/login')
 		}
