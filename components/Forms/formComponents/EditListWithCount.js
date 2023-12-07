@@ -10,6 +10,7 @@ import {
 } from '@heroicons/react/solid';
 import { useAlert } from 'react-alert'
 import { useLocalStorageState } from '../hooks/formHook';
+import { number } from 'prop-types';
 
 
 function EditListWithCount(
@@ -63,18 +64,11 @@ function EditListWithCount(
         return newarray;
   });
     // });
-    function CountCategoryTotalSpecialities(specialityid,newvalue){
-        let total=0;
-        let _categoryid="";
-        selectedRows.forEach(element => {
-            if(element.rowid==specialityid){
-                _categoryid=element.categoryid;
-               
-            }
-        }); 
+    function CountCategoryTotalSpecialities(specialityid,newvalue,category){
+        let total=0; 
         categoryOptions.forEach(item => {
-            if(item.value==_categoryid){
-                selectedRows.filter(k=>k.categoryid==_categoryid).forEach(element => {
+            if(item.value==category){
+                selectedRows.filter(k=>k.category_id==category).forEach(element => {
                     if(element.rowid==specialityid){
                         element.count=newvalue;
                     }
@@ -82,41 +76,70 @@ function EditListWithCount(
                 });
              }
         });
-        if(categoryOptions.some(item=>item.value==_categoryid)){
+        if(categoryOptions.some(item=>item.value==category)){
             setCategoryItems(prevArray => 
                 prevArray.map(item => 
-                  item.value === _categoryid ? { ...item, catcount: total } : item
+                  item.value === category ? { ...item, catcount: total } : item
                 )
               );
         }
     }
+
+    function CountCategoryTotalSInitialize(newvalue,category){
+ 
+        let catt=categoryOptions.filter(item => item.value==category)[0]
+         if(categoryOptions.some(item=>item.value==category)){
+             setCategoryItems(prevArray => 
+                prevArray.map(itemp => 
+                  itemp.value === category ? { ...itemp, catcount: catt.catcount+Number(newvalue) } : itemp
+                )
+              );
+         }
+       
+    }
  
     
 
-    // const [selectedRows, setSelectedRows] = useState([]);
-// 
-    const [selectedRows, setSelectedRows] = useState((initialSelectedItems ? (() => {
+    // const [selectedRows, setSelectedRows] = useState([
+
+    
+    //console.log(options)
+     const [selectedRows, setSelectedRows] = useState((initialSelectedItems ? (() => {
         const result = []
-        if (initialSelectedItems.length > 0) {
-
+        let temp__total = ''
+        if (initialSelectedItems.length > 0) { 
             initialSelectedItems.forEach((element) => {
-                if(itemsCategoryName.includes('human resource')){
-                    result.push({ rowid:element.id, sname: element.speciality_name, count: element.count })
-
-                }
+                if(itemsCategoryName.includes('human resource')){ 
+                    let cat=options.filter((e)=>e.id==element.speciality)[0].category
+                    result.push({ 
+                        rowid:element.speciality, 
+                        sname: element.speciality_name, 
+                        count: element.count,
+                        category_id:cat,
+                        category_name:options.filter((e)=>e.id==element.speciality)[0].category_name,
+                        iscategoryvisible:false})
+                       
+                 }
                 else if(itemsCategoryName.includes('infrastructure')){
-                    result.push({ rowid:element.id, 
+                     
+                    result.push({ rowid:element.infrastructure, 
                         sname: element.infrastructure_name,
                         count: element.count, 
-                        category:options.filter((e)=>e.id==element.infrastructure)[0].category_name,
-                        category_name:"x" })
-                }
+                        category_id:options.filter((e)=>e.id==element.infrastructure)[0].category,
+                        category_name:options.filter((e)=>e.id==element.infrastructure)[0].category_name,
+                        iscategoryvisible:true })
+                        // CountCategoryTotalSInitialize(element.speciality,0,options.filter((e)=>e.id==element.infrastructure)[0].category)
+
+                 }
             }); 
+            
         }
-``
         return result
 
     })() : []))
+
+    console.log(selectedRows)
+
     const editItem = itemsCategoryName.includes('human resource') ? itemData?.map((it) => {return {id:it.id, name:it.speciality_name, count:it.count}}): itemData?.map(({infrastructure_name:name,  infrastructure:id, count}) => ({id, name, count}));
 
     const [savedItems, saveSelectedItems] = useLocalStorageState({
@@ -134,7 +157,7 @@ function EditListWithCount(
     useEffect(() => {
         //store service when service is added
         
-        if(selectedRows.length !== 0){
+         if(selectedRows.length !== 0){
 
             const x = selectedRows;
 
@@ -174,21 +197,35 @@ function EditListWithCount(
             JSON.stringify(x)
           );
           setSelectedRows(x)
+
+
         
         }
+        selectedRows.forEach(element => {
+             CountCategoryTotalSInitialize(element.count,element.category_id)
+        });
+       
       }, [ selectedRows]);
 
 
     const initialValues = (() => {
         const _initValues = {}
-        initialSelectedItems.forEach(({ id, count }) => {
-            _initValues[id] = count
+        initialSelectedItems.forEach((k) => {
+            // { id, count }
+            if(itemsCategoryName.includes('human resource')){
+                _initValues[k.speciality] = k.count 
+            }
+            else if(itemsCategoryName.includes('infrastructure')){
+                _initValues[k.infrastructure] = k.count
+                
+            }
+            
         })
 
 
         return _initValues
     })()
-
+console.log(initialValues)
     function validateCount(value) {
 
         let error;
@@ -257,8 +294,9 @@ function EditListWithCount(
         setIsActive(ctg)
     }
 
-    const handleCheckboxChange = (id, name,category, category_name) => {
-
+    const handleCheckboxChange = (id, name,category, category_name,newcount,ischecked) => {
+ 
+         
         setSelectedRows((prevSelectedRows) => { 
           if (prevSelectedRows.filter((row) => row.rowid == id).length>0) {
            
@@ -268,12 +306,14 @@ function EditListWithCount(
             itemsCategoryName.includes('human resource')?customitem={rowid:id, sname:name, count:0,categoryid:category}:itemsCategoryName.includes('infrastructure')?customitem={rowid:id, sname:name, category:category_name ,count:0,categoryid:category}: {}
             return [...prevSelectedRows, customitem];
           }
-        });
+        });  
+        CountCategoryTotalSpecialities(id,newcount,category)
       }; 
   
       
     const handleInputChange = (rowvalue, targetvalue) => {
           // Update the selected rows values
+          let category=selectedRows.filter(k=>k.rowid==rowvalue)[0]
           if(selectedRows.some(item=>item.rowid==rowvalue)){
               setSelectedRows(prevArray => 
                   prevArray.map(item => 
@@ -281,8 +321,8 @@ function EditListWithCount(
                   )
                 );
                 
-          }
-          CountCategoryTotalSpecialities(rowvalue,targetvalue)
+          } 
+          CountCategoryTotalSInitialize(targetvalue,category.category_id)
       };  
   
   
@@ -306,9 +346,8 @@ function EditListWithCount(
             }
             setCategoryItems(categoryItems);
         }
-    });
-    console.log(categoryItems,specialities, selectedRows, options)
-
+    }); 
+  
     return (
 
         <Formik
@@ -546,8 +585,7 @@ function EditListWithCount(
                             <button className="bg-blue-700  p-2 flex items-center justify-evenly gap-2"
                                 onClick={e => {
                                     e.preventDefault()
-                               
-                                    // console.log({items})
+                                
 
                                     if (currentItem)
                                         setSelectedItems([
@@ -771,12 +809,15 @@ function EditListWithCount(
                                             <input
                                                 type="checkbox"
                                                 className="p-1 w-5 h-5"
-                                                // checked={selectedRows.some(item=>item.rowid.includes(row.id))}
-                                                onChange={() => handleCheckboxChange(
-                                                    itemsCategoryName?.includes('human resource')?row.id:itemsCategoryName.includes('infrastructure')?row.infrastructure: "",
+                                                checked={selectedRows.some(item=>item.rowid.includes(row.id))}
+                                                onChange={(e) => handleCheckboxChange(
+                                                    itemsCategoryName?.includes('human resource')?row.id:itemsCategoryName.includes('infrastructure')?row.id: "",
                                                     row.name,
                                                     row.category, 
-                                                    row.category_name)}
+                                                    row.category_name,
+                                                    row.count?row.count:0,
+                                                    e.target.checked)
+                                                }
                                             /> Yes
                                             </td>
                                             <td className="border px-1 py-1">
@@ -790,7 +831,8 @@ function EditListWithCount(
                                                 // onChange={(e) => handleInputChange(row.id, e.target.value)}
                                                 onChange ={(e)=>{
                                                     handleChange(e)
-                                                    handleInputChange(row.id, e.target.value)
+                                                    let cid=row.id
+                                                    handleInputChange(cid, e.target.value)
                                                    
                                                 }}
                                                 hidden={!selectedRows.some(item=>item["count"])}
@@ -822,7 +864,7 @@ function EditListWithCount(
                                         {selectedRows.map((row) => (
                                         <tr>
                                             <td className="border px-1 py-1">{row.sname}</td>
-                                            {row.category? <td className="border px-1 py-1">{ row.category}</td>: null}
+                                            {row.iscategoryvisible? <td className="border px-1 py-1">{ row.category_name}</td>: null}
                                             <td className="border px-1 py-1">Yes</td>
                                             <td className="border px-1 py-1">{row.count? Number(row.count): null}</td>
                                         </tr>
