@@ -47,40 +47,40 @@ const WardGISMap = ({ markerCoordinates, geoJSON, center, ward }) => {
     }
  
 
-    // useEffect(() => {
-    //     const lngs = []
-    //     const lats = []
+    useEffect(() => {
+        const lngs = []
+        const lats = []
 
-    //     const bounds = geoJSON.properties.bound.coordinates
+        const bounds = geoJSON.properties.bound.coordinates
 
-    //     if (geoJSON) {
+        if (geoJSON) {
 
         
-    //         for (let i = 0; i < bounds.length; i++){
-    //             lngs.push(bounds[i][0])
-    //             lats.push(bounds[i][1])
-    //         }
+            for (let i = 0; i < bounds.length; i++){
+                lngs.push(bounds[i][0])
+                lats.push(bounds[i][1])
+            }
 
-    //         if(
-    //             !(lngs.every(bound => markerCoordinates[1] < bound) &&
-    //             lats.every(bound => markerCoordinates[0] < bound)) 
-    //         ) {
+            if(
+                !(lngs.every(bound => markerCoordinates[1] < bound) &&
+                lats.every(bound => markerCoordinates[0] < bound)) 
+            ) {
 
-    //             // Not Out of Bound
-    //             setIsOutOfBound(false)
+                // Not Out of Bound
+                setIsOutOfBound(false)
 
-    //             console.log("[>>>>>] NoT of Bound")
-    //         }
-    //         else {
-    //                //Out of Bound
-    //             setIsOutOfBound(true)
-    //             console.log("[>>>>>] Out of Bound")
-    //         }
+                console.log("[>>>>>] NoT of Bound")
+            }
+            else {
+                   //Out of Bound
+                setIsOutOfBound(true)
+                console.log("[>>>>>] Out of Bound")
+            }
             
             
-    //     }
+        }
 
-    // }, [markerCoordinates, geoJSON])
+    }, [markerCoordinates, geoJSON])
 
  
 

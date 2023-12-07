@@ -339,10 +339,14 @@ export function BasicDeatilsForm({ mode }) {
   function handeBasicDetailsCreate(e) {
     e.preventDefault()
 
+
+
     const formData = new FormData(e.target)
 
     const data = Object.fromEntries(formData)
 
+    // Persist Data
+    /*
     const params = [];
 
     for(let [k, v] of formData) params.push(`${k}=${v}`)
@@ -350,6 +354,8 @@ export function BasicDeatilsForm({ mode }) {
     const url = new URL(`${document.location.href}/?${params.join('&')}`)
 
     document.location.href = url
+
+    */
 
     fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/`, {
       method: 'POST',
@@ -368,6 +374,12 @@ export function BasicDeatilsForm({ mode }) {
         }
       })
 
+
+      const current_url = new URL(window.document.location.href)
+
+      current_url.searchParams.set('formId', '1')
+
+      window.document.location.href = url
 
   }
 
