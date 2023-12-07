@@ -19,7 +19,7 @@ export function BasicDeatilsForm({ editMode }) {
 
   const options = useContext(FormOptionsContext);
 
-  const [submitting, setSubmitting] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
 
 
   const [facilityTypeDetailOptions, setFacilityTypeDetailOptions] = useState(options?.facility_type_details)
