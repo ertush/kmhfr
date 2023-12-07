@@ -116,7 +116,7 @@ const [formId, setFormId] = useLocalStorageState({
                             {/* { console.log({formId})} */}
                            {
                                 formId == '0' && 
-                                <BasicDeatilsForm 
+                                <BasicDeatilsForm editMode={false}
                                 // useGeoJSON={() => [geoJSON, setGeoJSON]}  
                                 // useGeoData={(type) => { 
                                 //     switch(type){
