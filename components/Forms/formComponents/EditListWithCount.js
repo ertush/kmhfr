@@ -10,7 +10,6 @@ import {
 } from '@heroicons/react/solid';
 import { useAlert } from 'react-alert'
 import { useLocalStorageState } from '../hooks/formHook';
-import { number } from 'zod';
 
 
 function EditListWithCount(
@@ -35,7 +34,8 @@ function EditListWithCount(
         categoryItems,
         options,
         token,
-        itemData
+        itemData,
+        title
     }
 ) {
 
@@ -50,6 +50,8 @@ function EditListWithCount(
     const [specialities, setSpecialities] = useState([])
     const [query, setQuery] = useState('') 
     const [selectedRows, setSelectedRows] = useState([]);
+    const [isActive, setIsActive] = useState(null);
+
 
     const [categoryOptions, setCategoryItems] = useState( (test)=> {
 
@@ -106,8 +108,7 @@ function EditListWithCount(
         return result
 
     })() : []))
-
-    const editItem = itemsCategoryName.includes('human resource') ? itemData?.map(({name, id, count}) => ({id, name, count})) : itemData?.map(({infrastructure_name:name,  infrastructure:id, count}) => ({id, name, count}));
+    const editItem = itemsCategoryName.includes('human resource') ? itemData?.map((it) => {return {id:it.id, name:it.speciality_name, count:it.count}}): itemData?.map(({infrastructure_name:name,  infrastructure:id, count}) => ({id, name, count}));
 
     const [savedItems, saveSelectedItems] = useLocalStorageState({
         key: itemData ? `${itemsCategoryName}_edit_form` :  `${itemsCategoryName}_form`,
@@ -115,7 +116,6 @@ function EditListWithCount(
       }).actions.use();
 
     const items = typeof savedItems === 'string' && savedItems.length > 0 ? JSON.parse(savedItems) : savedItems;
-    console.log(savedItems)
 
     // Refs
 
@@ -245,6 +245,8 @@ function EditListWithCount(
     const filterSpecialities = (ctg) => {
         const filteredOptions = options.filter((option) => option.category=== ctg );
         setSpecialities(filteredOptions)
+        setIsActive(ctg)
+
 
     }
 
@@ -407,7 +409,7 @@ function EditListWithCount(
 
             }}
         >
-            {({ errors }) => (
+            {({ errors, handleChange }) => (
 
                 <Form
                     name="list_item_with_count_form"
@@ -702,12 +704,20 @@ function EditListWithCount(
                             <input type="text" onChange={(e)=>onSearch(e,true,false)} className="col-span-12 border border-blue-600 p-2 placeholder-gray-500  focus:shadow-none focus:bg-white focus:border-black outline-none w-full" placeholder="Search" />
                             <br/>
                             <ul>
-                                {categoryOptions.map(({label, value}) => (
+                                {categoryOptions.map(({label, value, catcount}) => (
                                     <>
 
-                                        <div key={value} className='card bg-blue-50 shadow-md p-2'>
+                                        <div key={value} 
+                                        className={`card bg-blue-50 shadow-md p-2 hover:bg-blue-500 active:${isActive === value ? 'bg-blue-500"' : ''}`}
 
-                                            <li className="flex items-center justify-start space-x-2  p-1 px-2  hover:bg-red" onClick={()=>filterSpecialities(value)} key ={value}>{label}</li>
+                                        >
+                                            <li 
+                                            className="flex items-center justify-start space-x-2 p-1 px-2"
+                                            onClick={()=>{
+                                                filterSpecialities(value)
+                                            }} 
+                                                key ={value}>{label}</li>
+                                            <span>({catcount} selected)</span>
                                             <hr></hr>
                                         </div>
                                     </>
@@ -743,9 +753,12 @@ function EditListWithCount(
                                 <table className="table-auto w-full">
                                     <thead>
                                         <tr>
-                                        <th className="border px-1 py-1">Speciality</th>
-                                        <th className="border px-1 py-1">Present</th>
-                                        <th className="border px-1 py-1">Number</th>
+                                        {/* {title.map((t, i)=>(
+
+                                        <th className="border px-1 py-1" key={i}>{t}</th>
+                                        ))} */}
+                                        {/* <th className="border px-1 py-1">Present</th>
+                                        <th className="border px-1 py-1">Number</th> */}
                                         </tr>
                                     </thead>
                                     <tbody className='bg-blue-50 shadow-md'>
@@ -773,19 +786,11 @@ function EditListWithCount(
                                                 // defaultValue={selectedRows.filter(k=>k.rowid==row.id).length>0?Number(selectedRows.filter(k=>k.rowid==row.id)[0].count):0}
                                                 // onChange={(e) => handleInputChange(row.id, e.target.value)}
                                                 onChange ={(e)=>{
-                                                    // e.preventDefault()
-                                                    // handleChange(e)
-                                                    if(selectedRows.some(item=>item.rowid==row.id)){
-                                                        setSelectedRows(prevArray => 
-                                                            prevArray.map(item => 
-                                                              item.rowid === row.id ? { ...item, count: e.target.value } : item
-                                                            )
-                                                          );
-                                                          
-                                                    }
-                                                    CountCategoryTotalSpecialities(row.id,e.target.value)
+                                                    handleChange(e)
+                                                    handleInputChange(row.id, e.target.value)
+                                                   
                                                 }}
-                                                // disabled={!selectedRows.some(item=>item.rowid.includes(row.id))}  
+                                                disabled={!selectedRows.some(item=>item.rowid.includes(row.id))}  
                                             />
                                             </td>
                                         </tr>
@@ -803,9 +808,9 @@ function EditListWithCount(
                          <table className="table-auto w-full">
                                     <thead>
                                         <tr>
-                                        <th className="border px-1 py-1">Name</th>
-                                        <th className="border px-1 py-1">Present</th>
-                                        <th className="border px-1 py-1">Number</th>
+                                        {title.map((t, i)=>(
+                                            <th className="border px-1 py-1" key={i}>{t}</th>
+                                        ))}
                                         </tr>
                                     </thead>
                                     <tbody className='bg-blue-50 shadow-md'>

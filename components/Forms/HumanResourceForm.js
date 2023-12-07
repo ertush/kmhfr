@@ -25,6 +25,11 @@ export function HumanResourceForm() {
     const { updatedSavedChanges, updateFacilityUpdateData } = options?.data ? useContext(FacilityUpdatesContext) : {updatedSavedChanges: null, updateFacilityUpdateData: null }
 
 
+    const tableheaders =[
+        "Name",
+        "Present",
+        "Number"
+    ]
 
 
     // Options
@@ -80,7 +85,8 @@ export function HumanResourceForm() {
                         nextItemCategory={'finish'}
                         previousItemCategory={'infrastructure'}
                         setIsSaveAndFinish={updatedSavedChanges}
-                        itemData={options?.data ? options?.data?.facility_humanresources : null}
+                        itemData={options?.data ? options?.data?.facility_specialists : null}
+                        title={tableheaders}
 
                     />
 
