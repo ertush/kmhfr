@@ -292,12 +292,12 @@ function EditListWithCount(
     }
 
     const handleCheckboxChange = (id, name,category, category_name) => {
-        setSelectedRows((prevSelectedRows) => { 
+                setSelectedRows((prevSelectedRows) => { 
           if (prevSelectedRows.filter((row) => row.rowid == id).length>0) {
             return prevSelectedRows.filter((row) => row.rowid !== id);
           } else {
             let customitem = {}
-            itemsCategoryName.includes('human resource')?customitem={rowid:id, sname:name, count:0,category_id:category}:itemsCategoryName.includes('infrastructure')?customitem={rowid:id, sname:name, category:category_name ,count:0,category_id:category}: {}
+            itemsCategoryName.includes('human resource')?customitem={rowid:id, sname:name, count:0,category_id:category,category_name:category_name,iscategoryvisible:false}:itemsCategoryName.includes('infrastructure')?customitem={rowid:id, sname:name, category:category_name ,count:0,category_id:category,category_name:category_name,iscategoryvisible:true}: {}
             return [...prevSelectedRows, customitem];
           }
         });  
