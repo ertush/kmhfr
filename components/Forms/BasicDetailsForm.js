@@ -420,7 +420,7 @@ export function BasicDeatilsForm({ mode }) {
           <label
             htmlFor='official_name'
             className='text-gray-600 capitalize text-sm'>
-            Facility Official Name (Test)
+            Facility Official Name
             <span className='text-medium leading-12 font-semibold'>
               {' '}
               *
