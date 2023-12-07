@@ -10,6 +10,7 @@ const Logout = props => {
             if (!props?.error && !props?.detail) {
                 if (typeof window !== 'undefined') {
                     window.sessionStorage.removeItem('user')
+                    window.localStorage.removeItem('user')
                     window.document.cookie = 'access_token=; expires=Thu, 01 Jan 1970 00:00:00 GMT;'
                     window.location.href = '/'
                 } else {

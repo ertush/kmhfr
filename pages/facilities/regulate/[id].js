@@ -18,10 +18,11 @@ import FacilitySideMenu from '../../../components/FacilitySideMenu'
 
 
 const RegulateFacility = props => {
+    const userCtx = useContext(UserContext)
     const facility = props["0"]?.data;
     const regulationStateOptions = props['1']?.regulation_status
     const [isFacDetails, setIsFacDetails] = useState(true);
-    const [user, setUser] = useState(null);
+    const [user, setUser] = useState(userCtx);
     const formRef = useRef(null);
     const regulationRef = useRef(null)
 
@@ -33,16 +34,14 @@ const RegulateFacility = props => {
     const [title, setTitle] = useState('') 
     const filters = []
 
-    const userCtx = useContext(UserContext)
     let reject = ''
 
     useEffect(() => {
-        const user = JSON.parse(sessionStorage.getItem('user'))
+        setUser(userCtx);
 		if(user.id === 6){
 			router.push('/auth/login')
 		}
 
-        if (userCtx) setUser(userCtx);
 
         return () => {
             setIsFacDetails(true);

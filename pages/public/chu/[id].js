@@ -27,7 +27,7 @@ const CommunityUnit = (props) => {
   const center = props['1'].center
   useEffect(() => {
     if (typeof window !== 'undefined') { //auth.add_group
-      let usr = JSON.parse(window.sessionStorage.getItem('user'))
+      // let usr = JSON.parse(window.sessionStorage.getItem('user'))
       if(window.localStorage?.getItem(cu?.id) !== null){
 
         setRating(JSON.parse(window.localStorage?.getItem(cu?.id))[0])

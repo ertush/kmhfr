@@ -19,11 +19,12 @@ import CommunityUnitSideMenu from '../../../components/CommunityUnitSideMenu';
 
 const ApproveCommunityUnit = (props) => {
 
-  const router = useRouter()
+  const router = useRouter();
+  const userCtx = useContext(UserContext);
   let cu = props.data;
   
  	// Reference hooks for the services section
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(userCtx);
   const [isCHULDetails, setIsCHULDetails] = useState(true);
   const [appRejReason, setAppRejReason] = useState('')
   const [isApproveReject, setIsApproveReject] = useState(false);
@@ -49,7 +50,6 @@ const ApproveCommunityUnit = (props) => {
   {value: `${cu.facility_county}`, label: 'County'},
  ]
 
-  const userCtx = useContext(UserContext)
 
   let reject = ''
   useEffect(() =>
@@ -64,7 +64,7 @@ const ApproveCommunityUnit = (props) => {
   }, [cu, reject]);
 
   useEffect(() => {
-    const user = JSON.parse(sessionStorage.getItem('user'))
+    setUser(userCtx);
     if(user.id === 6){
         router.push('/auth/login')
     }

@@ -20,8 +20,7 @@ import NativePickers from '../../components/date-picker'
 // import { PermissionContext } from '../../providers/permissions'
 import FacilitySideMenu from '../../components/FacilitySideMenu'
 import { UserContext } from '../../providers/user'
-import {Formik, Form, Field} from 'formik'
-
+import {Formik, Form, Field} from 'formik';
 
 
 const FacilityHome = (props) => {
@@ -35,27 +34,28 @@ const FacilityHome = (props) => {
     let fltrs = filters
     const [drillDown, setDrillDown] = useState({})
     const userCtx = useContext(UserContext);
+    console.log({userCtx})
 
     // const qf = props?.query?.qf ?? null
     if (filters && typeof filters === "object")
      {
-    filters["has_edits"] = [{ id: "has_edits", name: "Has edits" },]
-    filters["is_approved"] = [{ id: "is_approved", name: "Is approved" }]
-    filters["is_complete"] = [{ id: "is_complete", name: "Is complete" }]
-    filters["number_of_beds"] = [{ id: "number_of_beds", name: "Number of beds" }]
-    filters["number_of_cots"] = [{ id: "number_of_cots", name: "Number of cots" }]
-    filters["open_whole_day"] = [{ id: "open_whole_day", name: "Open whole day" }]
-    filters["open_weekends"] = [{ id: "open_weekends", name: "Open weekends" }]
-    filters["open_public_holidays"] = [{ id: "open_public_holidays", name: "Open public holidays" }]
-    delete fltrs.has_edits
-    delete fltrs.is_approved
-    delete fltrs.is_complete
-    delete fltrs.number_of_beds
-    delete fltrs.number_of_cots
-    delete fltrs.open_whole_day
-    delete fltrs.open_weekends
-    delete fltrs.open_public_holidays
-}
+        filters["has_edits"] = [{ id: "has_edits", name: "Has edits" },]
+        filters["is_approved"] = [{ id: "is_approved", name: "Is approved" }]
+        filters["is_complete"] = [{ id: "is_complete", name: "Is complete" }]
+        filters["number_of_beds"] = [{ id: "number_of_beds", name: "Number of beds" }]
+        filters["number_of_cots"] = [{ id: "number_of_cots", name: "Number of cots" }]
+        filters["open_whole_day"] = [{ id: "open_whole_day", name: "Open whole day" }]
+        filters["open_weekends"] = [{ id: "open_weekends", name: "Open weekends" }]
+        filters["open_public_holidays"] = [{ id: "open_public_holidays", name: "Open public holidays" }]
+        delete fltrs.has_edits
+        delete fltrs.is_approved
+        delete fltrs.is_complete
+        delete fltrs.number_of_beds
+        delete fltrs.number_of_cots
+        delete fltrs.open_whole_day
+        delete fltrs.open_weekends
+        delete fltrs.open_public_holidays
+    }
 
     const multiFilters = ['service_category', 'service', 'county', 'subcounty', 'ward', 'constituency']
 
@@ -71,12 +71,14 @@ const FacilityHome = (props) => {
     const [facilityFeedBack, setFacilityFeedBack] = useState([])
     const [pathId, setPathId] = useState(props?.path.split('id=')[1] || '') 
     const [allFctsSelected, setAllFctsSelected] = useState(true);
-    const [isClient, setIsClient] = useState(false)
+    const [isClient, setIsClient] = useState(false);
+    const [user, setUser] = useState(userCtx)
  
 
 
 	useEffect(() => {
-        const user = JSON.parse(sessionStorage.getItem('user'))
+        setUser(userCtx)
+        console.log({user})
 		if(user.id === 6){
 			router.push('/auth/login')
 		}

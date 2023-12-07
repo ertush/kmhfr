@@ -43,6 +43,7 @@ const AdminOffices = (props) => {
     const router = useRouter()
 
     const userPermissions = useContext(PermissionContext)
+    const userCtx = useContext(UserContext)
 
     const rows = props?.data?.results?.map(({ id, county_name, sub_county_name, name, is_national, phone_number, email }) => ({ id, county_name, sub_county_name, name, is_national: is_national == true ? 'Yes' : 'No', phone_number, email }))
     const columns = [
@@ -74,10 +75,11 @@ const AdminOffices = (props) => {
     , }
     ]
 
+    const [user, setUser] = useState(userCtx)
   
 
     useEffect(() => {
-        const user = JSON.parse(sessionStorage.getItem('user'))
+        setUser(userCtx)
         if(user.id === 6){
             router.push('/auth/login')
         }
