@@ -10,7 +10,6 @@ import {
 } from '@heroicons/react/solid';
 import { useAlert } from 'react-alert'
 import { useLocalStorageState } from '../hooks/formHook';
-import { number } from 'prop-types';
 
 
 function EditListWithCount(
@@ -52,18 +51,6 @@ function EditListWithCount(
     const [query, setQuery] = useState('') 
     const [isActive, setIsActive] = useState(null);
 
-
-    const [categoryOptions, setCategoryItems] = useState( (test)=> {
-
-         
-        let newarray=[];
-        categoryItems.forEach(element => {
-            let customitem={value:element.value, label:element.label, catcount:0}
-            newarray.push(customitem);
-        });
-        return newarray;
-  });
-    // });
     function CountCategoryTotalSpecialities(specialityid,newvalue,category){
         let total=0; 
         categoryOptions.forEach(item => {
@@ -79,7 +66,7 @@ function EditListWithCount(
         if(categoryOptions.some(item=>item.value==category)){
             setCategoryItems(prevArray => 
                 prevArray.map(item => 
-                  item.value === category ? { ...item, catcount: total } : item
+                  item.value === category ? { ...item, catcount: Number(total) } : item
                 )
               );
         }
@@ -99,14 +86,9 @@ function EditListWithCount(
     }
  
     
-
-    // const [selectedRows, setSelectedRows] = useState([
-
-    
     //console.log(options)
      const [selectedRows, setSelectedRows] = useState((initialSelectedItems ? (() => {
         const result = []
-        let temp__total = ''
         if (initialSelectedItems.length > 0) { 
             initialSelectedItems.forEach((element) => {
                 if(itemsCategoryName.includes('human resource')){ 
@@ -128,7 +110,6 @@ function EditListWithCount(
                         category_id:options.filter((e)=>e.id==element.infrastructure)[0].category,
                         category_name:options.filter((e)=>e.id==element.infrastructure)[0].category_name,
                         iscategoryvisible:true })
-                        // CountCategoryTotalSInitialize(element.speciality,0,options.filter((e)=>e.id==element.infrastructure)[0].category)
 
                  }
             }); 
@@ -138,7 +119,27 @@ function EditListWithCount(
 
     })() : []))
 
-    console.log(selectedRows)
+    const selectedCountByNames = selectedRows.reduce((acc, sc) => {
+        const { category_id, count } = sc;
+        acc[category_id] = (acc[category_id] || 0) + count;
+        return acc;
+    },{})
+
+    const [categoryOptions, setCategoryItems] = useState(()=> {
+
+        let newarray=[];
+        categoryItems.forEach(element => {
+            let customitem ={}
+            if(selectedCountByNames.hasOwnProperty(element.value)){
+                customitem={value:element.value, label:element.label, catcount:selectedCountByNames[element.value]}
+            }else{
+                customitem={value:element.value, label:element.label, catcount:0}
+            }
+
+            newarray.push(customitem);
+        });
+        return newarray;
+    });
 
     const editItem = itemsCategoryName.includes('human resource') ? itemData?.map((it) => {return {id:it.id, name:it.speciality_name, count:it.count}}): itemData?.map(({infrastructure_name:name,  infrastructure:id, count}) => ({id, name, count}));
 
@@ -201,9 +202,6 @@ function EditListWithCount(
 
         
         }
-        selectedRows.forEach(element => {
-             CountCategoryTotalSInitialize(element.count,element.category_id)
-        });
        
       }, [ selectedRows]);
 
@@ -211,7 +209,6 @@ function EditListWithCount(
     const initialValues = (() => {
         const _initValues = {}
         initialSelectedItems.forEach((k) => {
-            // { id, count }
             if(itemsCategoryName.includes('human resource')){
                 _initValues[k.speciality] = k.count 
             }
@@ -225,7 +222,7 @@ function EditListWithCount(
 
         return _initValues
     })()
-console.log(initialValues)
+
     function validateCount(value) {
 
         let error;
@@ -294,20 +291,16 @@ console.log(initialValues)
         setIsActive(ctg)
     }
 
-    const handleCheckboxChange = (id, name,category, category_name,newcount,ischecked) => {
- 
-         
+    const handleCheckboxChange = (id, name,category, category_name) => {
         setSelectedRows((prevSelectedRows) => { 
           if (prevSelectedRows.filter((row) => row.rowid == id).length>0) {
-           
             return prevSelectedRows.filter((row) => row.rowid !== id);
           } else {
             let customitem = {}
-            itemsCategoryName.includes('human resource')?customitem={rowid:id, sname:name, count:0,categoryid:category}:itemsCategoryName.includes('infrastructure')?customitem={rowid:id, sname:name, category:category_name ,count:0,categoryid:category}: {}
+            itemsCategoryName.includes('human resource')?customitem={rowid:id, sname:name, count:0,category_id:category}:itemsCategoryName.includes('infrastructure')?customitem={rowid:id, sname:name, category:category_name ,count:0,category_id:category}: {}
             return [...prevSelectedRows, customitem];
           }
         });  
-        CountCategoryTotalSpecialities(id,newcount,category)
       }; 
   
       
@@ -322,7 +315,7 @@ console.log(initialValues)
                 );
                 
           } 
-          CountCategoryTotalSInitialize(targetvalue,category.category_id)
+          CountCategoryTotalSpecialities(rowvalue,targetvalue,category.category_id)
       };  
   
   
