@@ -454,10 +454,159 @@ function EditListWithCount(
                     className="flex flex-col w-full items-start justify-start gap-3 "
                
                 >
+                     <div className='w-full grid grid-cols-12 gap-4'>
+                         <div className="col-span-5" >
+                            <h4 className="text-lg uppercase mt-4 pb-2 border-b border-blue-600 w-full mb-4 font-semibold text-blue-900">Categories</h4>
+                            <input type="text" onChange={(e)=>onSearch(e,true,false)} className="col-span-12 border border-blue-600 p-2 placeholder-gray-500  focus:shadow-none focus:bg-white focus:border-black outline-none w-full" placeholder="Search" />
+                            <br/>
+                            <ul className='max-h-96 overflow-auto'>
+                                {categoryOptions.map(({label, value, catcount}) => (
+                                    <>
 
-                    {/* Item List Dropdown */}
-                    <div className='w-full flex flex-col p-3 bg-blue-50 shadow-md items-start justify-start gap-3 mb-3'>
-                        {/* category */}
+                                        <div key={value} 
+                                        className={`card bg-blue-50 shadow-md p-2 hover:bg-blue-500 active:${isActive === value ? 'bg-blue-500"' : ''}`}
+
+                                        >
+                                            <li 
+                                            className="flex items-center justify-start space-x-2 p-1 px-2"
+                                            onClick={()=>{
+                                                filterSpecialities(value)
+                                            }} 
+                                                key ={value}>{label}</li>
+                                            <span>({catcount} selected)</span>
+                                            <hr></hr>
+                                        </div>
+                                    </>
+                                ))}
+                            </ul>
+                         </div>
+                         <div className="col-span-7" >
+                                <h4 className="text-lg uppercase mt-4 pb-2 border-b border-blue-600 w-full mb-4 font-semibold text-blue-900">{itemsCategoryName.includes('human resource')?'Specialities':itemsCategoryName.includes('infrastructure')? 'Infrastructure': null }</h4>
+                                <input type="text" onChange={(e)=>onSearch(e,false,true)} className="col-span-12 border border-blue-600 p-2 placeholder-gray-500  focus:shadow-none focus:bg-white focus:border-black outline-none w-full" placeholder="Search" />
+                                <br/>
+                                <div className='max-h-96 overflow-auto'>
+
+                                    <table className="table-auto w-full">
+                                        <thead>
+                                            <tr>
+                                        
+                                            </tr>
+                                        </thead>
+                                        <tbody className='bg-blue-50 shadow-md'>
+                                            {specialities.length === 0 && <tr><td colSpan={3} className="text-center">No specialities found</td></tr>}
+                                            
+                                            {specialities.map((row) => (
+                                                
+                                            <tr key={row.id}> 
+                                                <td className="border px-1 py-1">
+                                                <label  className="w-full p-2" >{row.name}</label>
+                                                </td>
+                                                <td className="border px-1 py-1">
+                                                <input
+                                                    type="checkbox"
+                                                    className="p-1 w-5 h-5"
+                                                    checked={selectedRows.some(item=>item.rowid.includes(row.id))}
+                                                    onChange={(e) => handleCheckboxChange(
+                                                        itemsCategoryName?.includes('human resource')?row.id:itemsCategoryName.includes('infrastructure')?row.id: "",
+                                                        row.name,
+                                                        row.category, 
+                                                        row.category_name,
+                                                        row.count?row.count:0,
+                                                        e.target.checked)
+                                                    }
+                                                /> Yes
+                                                </td>
+                                                <td className="border px-1 py-1">
+                                                <Field
+                                                    as="input"
+                                                    type="number"
+                                                    className="p-1" 
+                                                    min={0}
+                                                    name={row.id}
+                                                    // defaultValue={selectedRows.filter(k=>k.rowid==row.id).length>0?Number(selectedRows.filter(k=>k.rowid==row.id)[0].count):0}
+                                                    // onChange={(e) => handleInputChange(row.id, e.target.value)}
+                                                    onChange ={(e)=>{
+                                                        handleChange(e)
+                                                        let cid=row.id
+                                                        handleInputChange(cid, e.target.value)
+                                                    
+                                                    }}
+                                                    hidden={!selectedRows.some(item=>item["count"])}
+                                                    disabled={!selectedRows.some(item=>item.rowid.includes(row.id))}  
+                                                />
+                                                </td>
+                                            </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                
+
+                         </div>
+
+                         {/* summary table */}
+                         <div className="col-span-12 max-h-96 overflow-auto" >
+
+                            <table className="table-auto w-full">
+                                        <thead>
+                                            <tr>
+                                            {title.map((t, i)=>(
+                                                <th className="border px-1 py-1" key={i}>{t}</th>
+                                            ))}
+                                            </tr>
+                                        </thead>
+                                        <tbody className='bg-blue-50 shadow-md'>
+                                            {selectedRows.length === 0 && <tr><td colSpan={3} className="text-center">No specialities found</td></tr>}
+                                            {selectedRows.map((row) => (
+                                            <tr>
+                                                <td className="border px-1 py-1">{row.sname}</td>
+                                                {row.iscategoryvisible? <td className="border px-1 py-1">{ row.category_name}</td>: null}
+                                                <td className="border px-1 py-1">Yes</td>
+                                                <td className="border px-1 py-1">{row.count? Number(row.count): null}</td>
+                                            </tr>
+                                            ))}
+
+                                        </tbody>
+                            </table>
+                         </div>
+                    </div>
+                    {/* Save btn */}
+
+                    {
+                        savedItems.length > 0 && item !== null &&
+
+                        <div className="w-full flex justify-end h-auto mt-3">
+                            <button type='submit' className='p-2 text-white bg-blue-600  font-semibold'>save & finish</button>
+                        </div>
+                    }
+
+                    {
+                        item === null &&
+
+                        <div className='flex justify-between items-center w-full mt-4'>
+                            <button onClick={handleItemPrevious} className='flex items-center justify-start space-x-2 p-1 border border-blue-900  px-2'>
+                                <ChevronDoubleLeftIcon className='w-4 h-4 text-blue-900' />
+                                <span className='text-medium font-semibold text-blue-900 '>
+                                    {previousItemCategory}
+                                </span>
+                            </button>
+                            <button
+                                type='submit'
+                                className='flex items-center justify-start space-x-2 bg-blue-700  p-1 px-2'>
+                                <span className='text-medium font-semibold text-white'>
+                                    {nextItemCategory}
+                                </span>
+                                <ChevronDoubleRightIcon className='w-4 h-4 text-white' />
+                            </button>
+                        </div>
+                    }
+
+                   
+
+
+                     {/* Item List Dropdown */}
+                    {/* <div className='w-full flex flex-col p-3 bg-blue-50 shadow-md items-start justify-start gap-3 mb-3'>
 
                         <label
                             htmlFor='available_items_with_count'
@@ -593,12 +742,11 @@ function EditListWithCount(
 
 
                         </div>
-                    </div>
+                    </div> */}
 
+                                            {/* Item Selected Table */}
 
-                    {/* Item Selected Table */}
-
-                    <Table className="card bg-blue-50 shadow-md">
+                    {/* <Table className="card bg-blue-50 shadow-md">
                         <TableBody>
 
                             <TableRow>
@@ -720,154 +868,7 @@ function EditListWithCount(
                                 }
                             </>
                         </TableBody>
-                    </Table>
-
-
-                    {/* Save btn */}
-
-                    {
-                        // savedItems.length > 0 && item !== null &&
-
-                        <div className="w-full flex justify-end h-auto mt-3">
-                            <button type='submit' className='p-2 text-white bg-blue-600  font-semibold'>save & finish</button>
-                        </div>
-                    }
-
-                    {
-                        item === null &&
-
-                        <div className='flex justify-between items-center w-full mt-4'>
-                            <button onClick={handleItemPrevious} className='flex items-center justify-start space-x-2 p-1 border border-blue-900  px-2'>
-                                <ChevronDoubleLeftIcon className='w-4 h-4 text-blue-900' />
-                                <span className='text-medium font-semibold text-blue-900 '>
-                                    {previousItemCategory}
-                                </span>
-                            </button>
-                            <button
-                                type='submit'
-                                className='flex items-center justify-start space-x-2 bg-blue-700  p-1 px-2'>
-                                <span className='text-medium font-semibold text-white'>
-                                    {nextItemCategory}
-                                </span>
-                                <ChevronDoubleRightIcon className='w-4 h-4 text-white' />
-                            </button>
-                        </div>
-                    }
-
-                    <div className='w-full grid grid-cols-12 gap-4'>
-                         <div className="col-span-5" >
-                            <input type="text" onChange={(e)=>onSearch(e,true,false)} className="col-span-12 border border-blue-600 p-2 placeholder-gray-500  focus:shadow-none focus:bg-white focus:border-black outline-none w-full" placeholder="Search" />
-                            <br/>
-                            <ul>
-                                {categoryOptions.map(({label, value, catcount}) => (
-                                    <>
-
-                                        <div key={value} 
-                                        className={`card bg-blue-50 shadow-md p-2 hover:bg-blue-500 active:${isActive === value ? 'bg-blue-500"' : ''}`}
-
-                                        >
-                                            <li 
-                                            className="flex items-center justify-start space-x-2 p-1 px-2"
-                                            onClick={()=>{
-                                                filterSpecialities(value)
-                                            }} 
-                                                key ={value}>{label}</li>
-                                            <span>({catcount} selected)</span>
-                                            <hr></hr>
-                                        </div>
-                                    </>
-                                ))}
-                            </ul>
-                         </div>
-                         <div className="col-span-7" >
-                                <input type="text" onChange={(e)=>onSearch(e,false,true)} className="col-span-12 border border-blue-600 p-2 placeholder-gray-500  focus:shadow-none focus:bg-white focus:border-black outline-none w-full" placeholder="Search" />
-                                <br/>
-
-                                <table className="table-auto w-full">
-                                    <thead>
-                                        <tr>
-                                       
-                                        </tr>
-                                    </thead>
-                                    <tbody className='bg-blue-50 shadow-md'>
-                                        {specialities.length === 0 && <tr><td colSpan={3} className="text-center">No specialities found</td></tr>}
-                                        
-                                        {specialities.map((row) => (
-                                            
-                                        <tr key={row.id}> 
-                                            <td className="border px-1 py-1">
-                                            <label  className="w-full p-2" >{row.name}</label>
-                                            </td>
-                                            <td className="border px-1 py-1">
-                                            <input
-                                                type="checkbox"
-                                                className="p-1 w-5 h-5"
-                                                checked={selectedRows.some(item=>item.rowid.includes(row.id))}
-                                                onChange={(e) => handleCheckboxChange(
-                                                    itemsCategoryName?.includes('human resource')?row.id:itemsCategoryName.includes('infrastructure')?row.id: "",
-                                                    row.name,
-                                                    row.category, 
-                                                    row.category_name,
-                                                    row.count?row.count:0,
-                                                    e.target.checked)
-                                                }
-                                            /> Yes
-                                            </td>
-                                            <td className="border px-1 py-1">
-                                            <Field
-                                                as="input"
-                                                type="number"
-                                                className="p-1" 
-                                                min={0}
-                                                name={row.id}
-                                                // defaultValue={selectedRows.filter(k=>k.rowid==row.id).length>0?Number(selectedRows.filter(k=>k.rowid==row.id)[0].count):0}
-                                                // onChange={(e) => handleInputChange(row.id, e.target.value)}
-                                                onChange ={(e)=>{
-                                                    handleChange(e)
-                                                    let cid=row.id
-                                                    handleInputChange(cid, e.target.value)
-                                                   
-                                                }}
-                                                hidden={!selectedRows.some(item=>item["count"])}
-                                                disabled={!selectedRows.some(item=>item.rowid.includes(row.id))}  
-                                            />
-                                            </td>
-                                        </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-
-                                
-
-                         </div>
-
-                         {/* summary table */}
-                         <div className="col-span-12" >
-
-                         <table className="table-auto w-full">
-                                    <thead>
-                                        <tr>
-                                        {title.map((t, i)=>(
-                                            <th className="border px-1 py-1" key={i}>{t}</th>
-                                        ))}
-                                        </tr>
-                                    </thead>
-                                    <tbody className='bg-blue-50 shadow-md'>
-                                        {selectedRows.length === 0 && <tr><td colSpan={3} className="text-center">No specialities found</td></tr>}
-                                        {selectedRows.map((row) => (
-                                        <tr>
-                                            <td className="border px-1 py-1">{row.sname}</td>
-                                            {row.iscategoryvisible? <td className="border px-1 py-1">{ row.category_name}</td>: null}
-                                            <td className="border px-1 py-1">Yes</td>
-                                            <td className="border px-1 py-1">{row.count? Number(row.count): null}</td>
-                                        </tr>
-                                        ))}
-
-                                    </tbody>
-                         </table>
-                         </div>
-                    </div>
-
+                    </Table> */}
 
 
                 </Form>
