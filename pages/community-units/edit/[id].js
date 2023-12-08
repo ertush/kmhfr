@@ -18,7 +18,7 @@ export default function CommunityUnitEdit (props){
 
   if(isClient){
     return (
-      <ChuOptionsContext.Provider value={{
+            <ChuOptionsContext.Provider value={{
           facilities: props?.facilities?.results,
           services: props?.services?.results,
           statuses: props?.statuses?.results,
@@ -26,7 +26,7 @@ export default function CommunityUnitEdit (props){
       }}>
           <CommunityUnitEditForm cu={props?.cu} />
       </ChuOptionsContext.Provider>
-    )
+          )
   }else {
     return null
   }
@@ -91,8 +91,11 @@ export async function getServerSideProps({req, res, query}) {
           }
           
         })
+        const facilitiesData = await (await facilities.json())
+    
+        facilitiesData.token = token;
 
-        response["facilities"] =  await (await facilities.json())
+        response["facilities"] = facilitiesData;
         break;
 
       case "contact_types":
@@ -118,7 +121,7 @@ export async function getServerSideProps({req, res, query}) {
 
         response["services"] =  await (await services.json())
         break;
-      }
+}
       } 
 
       console.log({response})

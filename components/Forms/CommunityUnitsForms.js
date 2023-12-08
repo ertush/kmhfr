@@ -16,7 +16,7 @@ import dynamic from 'next/dynamic';
 // import DualListBox from 'react-dual-listbox';
 import 'react-dual-listbox/lib/react-dual-listbox.css';
 import { KeyboardArrowLeft, KeyboardArrowRight } from '@mui/icons-material';
-
+import {handleChulSubmit} from "../../controllers/chul/chulHandlers"
 // import SelectSearch from './formComponents/FormikSelectSearch';
 
 
@@ -43,7 +43,8 @@ export function CommunityUnitEditForm({ cu: {
   health_unit_workers,
   location,
   contacts,
-  services
+  services,
+  id
 } }) {
 
   const DualListBox = dynamic(
@@ -58,7 +59,20 @@ export function CommunityUnitEditForm({ cu: {
     } 
     );
 
+    function getCookie(name) {
+      const cookies = document.cookie.split(';');
+      for (let i = 0; i < cookies.length; i++) {
+          const cookie = cookies[i].trim();
+          if (cookie.startsWith(name + '=')) {
+              return cookie.substring(name.length + 1);
+          }
+      }
+      return null;
+    }
+
   const options = useContext(ChuOptionsContext)
+  const access_token = getCookie(access_token) 
+ 
 
   const [facilityOptions, setFacilityOptions] = useState(options?.facilities?.map(({ id, name }) => ({ label: name, value: id })) ?? []) 
   const [operationStatusOptions, setOperationStatusOptions] = useState(options?.statuses?.map(({ id, name }) => ({ label: name, value: id })) ?? []) 
@@ -79,6 +93,7 @@ export function CommunityUnitEditForm({ cu: {
     date_operational,
     date_established,
     facility_ward,
+    id
   })
   const initialValuesChews = {
     health_unit_workers,
@@ -106,23 +121,37 @@ export function CommunityUnitEditForm({ cu: {
 
     return c_ontacts;
   }
+  let token;
+  
+  useEffect(() => {
 
-  useEffect(()=>{
-    
-    // Options
+    let accessTokenObject;
   
+    console.log({ options });
+    console.log('intialValuesBasicDetails', intialValuesBasicDetails);
   
-    console.log({ options })
-    console.log('intialValuesBasicDetails', intialValuesBasicDetails)
-    // if (contacts) appendValueToBasicDetails(contacts)
-    if(contacts){
+    if (contacts) {
       setBasicDetailValues({
         ...intialValuesBasicDetails,
-        ...appendValueToBasicDetails(contacts)
-      })
+        ...appendValueToBasicDetails(contacts),
+      });
     }
   
-  },[])
+    try {
+      accessTokenObject = JSON.parse(getCookie('access_token'));
+    } catch (error) {
+      console.error('Error parsing access token JSON:', error);
+    }
+  
+ 
+    if (accessTokenObject) {
+      const token = accessTokenObject.token;
+
+    } else {
+      console.error('accessTokenObject is not defined or invalid.');
+    }
+  }, []);
+  
     
     
     // Constants
@@ -288,7 +317,15 @@ export function CommunityUnitEditForm({ cu: {
 
                     const formData = new FormData(e.target)
                     const data = Object.fromEntries(formData)
-                    console.log('submission data', data)
+                    console.log('submission data', data) 
+                    const setter=[data,"basicDetails"]
+                    // const {token} = await checkToken(req, res)
+
+                    // if(token.error) throw Error('Unable to get token')
+                   
+                    console.log("details....",intialValuesBasicDetails?.id)
+                    console.log("identification....",token)
+                    handleChulSubmit(options?.token,setter,intialValuesBasicDetails?.id)
                   }}
                 >
                   {/* CHU Name */}
@@ -789,10 +826,27 @@ export function CommunityUnitEditForm({ cu: {
 
             {/* Chews Panel */}
             <Tabs.Panel value="chews" className="grow-1 p-3 mx-auto w-full tab-panel">
-              <Formik initialValue={{}} onSubmit={() => null}>
-                <Form
+                <form
                   name="chews_form"
                   className="flex flex-col p-3 h-full bg-blue-50 shadow-sm  w-full items-start justify-start gap-3"
+                      
+                  onSubmit={e => {
+                    e.preventDefault();
+
+                    const formData = new FormData(e.target)
+                    const data = Object.fromEntries(formData)
+                    console.log('submission data', data) 
+                    const setter=[data,"chps"]
+                    // const {token} = await checkToken(req, res)
+
+                    // if(token.error) throw Error('Unable to get token')
+                   
+                    console.log("details....",intialValuesBasicDetails?.id)
+                    console.log("identification....",options?.facilities)
+                    handleChulSubmit(options?.token,setter,intialValuesBasicDetails?.id)
+                  }}
+
+
 
                 >
                   <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
@@ -812,7 +866,7 @@ export function CommunityUnitEditForm({ cu: {
                               >
                                 First Name
                               </label>
-                              <Field
+                              <input
                                 required
                                 type="text"
                                 id={index}
@@ -830,7 +884,7 @@ export function CommunityUnitEditForm({ cu: {
                               >
                                 Second Name
                               </label>
-                              <Field
+                              <input
                                 required
                                 type="text"
                                 id={index}
@@ -848,7 +902,7 @@ export function CommunityUnitEditForm({ cu: {
                               >
                                 In Charge
                               </label>
-                              <Field
+                              <input
                                 name="is_incharge"
                                 id={index}
                                 type="checkbox"
@@ -910,8 +964,8 @@ export function CommunityUnitEditForm({ cu: {
 
                     </button>
                   </div>
-                </Form>
-              </Formik>
+                </form>
+              
             </Tabs.Panel>
 
             {/* Services Panel */}
@@ -919,11 +973,26 @@ export function CommunityUnitEditForm({ cu: {
               value="services"
               className="grow-1 p-3 mx-auto w-full tab-panel"
             >
-              <Formik initialValue={{}} onSubmit={() => null}>
-                <Form 
+              
+                <form 
                   name="chu_services_form"
                   className="flex flex-col w-full items-center bg-blue-50 shadow-sm p-3 justify-start gap-3"
+                  
+                  onSubmit={e => {
+                    e.preventDefault();
 
+                    const formData = new FormData(e.target)
+                    const data = Object.fromEntries(formData)
+                    console.log('submission data', data) 
+                    const setter=[data,"chulServices"]
+                    // const {token} = await checkToken(req, res)
+
+                    // if(token.error) throw Error('Unable to get token')
+                   
+                    console.log("details....",intialValuesBasicDetails?.id)
+                    console.log("identification....",options?.facilities)
+                    handleChulSubmit(options?.token,setter,intialValuesBasicDetails?.id)
+                  }}
                 >
                   {/* Transfer list Container */}
                   <span className="text-md w-full font-semibold flex flex-wrap justify-between items-center leading-tight tracking-tight">
@@ -1028,8 +1097,8 @@ export function CommunityUnitEditForm({ cu: {
                       </span>
                     </button>
                   </div>
-                </Form>
-              </Formik>
+                </form>
+             
             </Tabs.Panel>
           </Tabs.Root>
         </div>
