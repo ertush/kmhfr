@@ -347,6 +347,7 @@ function EditListWithCount(
             initialValues={initialValues}
             initialErrors={false}
             onSubmit={(values) => { 
+                console.log(values)
                 // setIsSaveAndFinish(true)
 
                 if (item) {
@@ -454,7 +455,7 @@ function EditListWithCount(
                     className="flex flex-col w-full items-start justify-start gap-3 "
                
                 >
-                     <div className='w-full grid grid-cols-12 gap-4'>
+                    <div className='w-full grid grid-cols-12 gap-4'>
                          <div className="col-span-5" >
                             <h4 className="text-lg uppercase mt-4 pb-2 border-b border-blue-600 w-full mb-4 font-semibold text-blue-900">Categories</h4>
                             <input type="text" onChange={(e)=>onSearch(e,true,false)} className="col-span-12 border border-blue-600 p-2 placeholder-gray-500  focus:shadow-none focus:bg-white focus:border-black outline-none w-full" placeholder="Search" />
