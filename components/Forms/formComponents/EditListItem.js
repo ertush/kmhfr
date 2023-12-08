@@ -11,7 +11,20 @@ import {
   ChevronDoubleLeftIcon,
   PlusIcon
 } from '@heroicons/react/solid';
+import dynamic from 'next/dynamic';
+import 'react-dual-listbox/lib/react-dual-listbox.css';
 
+const DualListBox = dynamic(
+  () => import("react-dual-listbox"), // replace '@components/map' with your component's location
+  {
+    loading: () => (
+      <div className="text-gray-800 text-lg  bg-white py-2 px-5 shadow w-auto mx-2 my-3">
+        Loading&hellip;
+      </div>
+    ),
+    ssr: false, // This line is important. It's what prevents server-side render
+  } 
+);
 
 
 function  EditListItem({
@@ -19,7 +32,7 @@ function  EditListItem({
   // setItems,
   categoryItems,
   itemsCategoryName,
-//   setUpdatedItem,
+  //   setUpdatedItem,
   itemId,
   nextItemCategoryId,
   item,
@@ -36,9 +49,11 @@ function  EditListItem({
   setIsSaveAndFinish,
   servicesData
 }) {
-
+  
+  const [selected_services, setSelectedServices] = useState([])
+  // const current_services = useRef(new Array())
   const alert = useAlert()
-
+  
   
 
 
@@ -306,7 +321,7 @@ function  EditListItem({
           </label>
           <div className="flex items-start gap-2  w-full h-auto">
             {/* {console.log({itemOptions})} */}
-            <Select
+            {/* <Select
               options={itemsCategoryName !== 'CHU Services' ? itemOptions : null}
               formatGroupLabel={formatGroupLabel}
               ref={itemRef}
@@ -331,10 +346,23 @@ function  EditListItem({
               }
               name="item_drop_down_edit_list"
              
+            /> */}
+
+            <DualListBox
+              canFilter
+              options={categoryItems}
+              selected={selected_services}
+              
+              onChange={(selected) => {
+                // handleSelectChangeChu(selected)
+                setSelectedServices(selected)
+                // current_services.current.push(selected)
+                console.log('selected', selected)
+              }}
             />
 
             {/* Add Item Button */}
-            <button name="add_item_btn" className="bg-blue-700  p-2 flex items-center justify-evenly gap-2"
+            {/* <button name="add_item_btn" className="bg-blue-700  p-2 flex items-center justify-evenly gap-2"
               onClick={e => {
                 e.preventDefault()
                 if (currentItem)
@@ -345,14 +373,14 @@ function  EditListItem({
               }}>
               <p className='text-white font-semibold'>Add</p>
               <PlusIcon className='w-4 h-4 text-white' />
-            </button>
+            </button> */}
           </div>  
         </div>
 
 
         {/* Item Selected Table */}
        
-        <Table className="card bg-blue-50 border-b shadow-md" >
+        {/* <Table className="card bg-blue-50 border-b shadow-md" >
           <TableBody >
             <TableRow >
               <TableCell className='bg-transparent text-blue-700 border-b border-blue-600'>
@@ -375,7 +403,7 @@ function  EditListItem({
             </TableRow>
 
             <>
-              {/* {console.log({items})} */}
+              {console.log({items})}
               {
                 typeof items === 'object' && 
                 items.map(({ name, id }, __id) => (
@@ -383,7 +411,7 @@ function  EditListItem({
                     key={__id}
                     className='border-t border-blue-600'
                   >
-                    {/* {
+                    {
                   items !== null &&
                   <>
                     <li className="w-full m-3 bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base">
@@ -394,7 +422,7 @@ function  EditListItem({
                     </li>
                     <br />
                   </>
-                  } */}
+                  }
                     <TableCell className='px-3'>{name}</TableCell>
 
                     <TableCell>
@@ -440,7 +468,7 @@ function  EditListItem({
              }
             </>
           </TableBody>
-        </Table>
+        </Table> */}
 
         {/* Save btn */}
 
