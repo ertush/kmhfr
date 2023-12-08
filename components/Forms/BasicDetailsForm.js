@@ -21,8 +21,8 @@ export function BasicDeatilsForm({ editMode }) {
 
   const [submitting, setSubmitting] = useState(false);
 
-
   const [options, setOptions] = useState(formContext)
+
   const [facilityTypeDetailOptions, setFacilityTypeDetailOptions] = useState(options?.facility_type_details)
 
   const [ownerTypeDetailsOptions, setOwnerTypeDetailsOptions] = useState(Array.from(options?.owners, o => {
@@ -60,20 +60,21 @@ export function BasicDeatilsForm({ editMode }) {
 
 
   function handleChange (e) {
-    if(e.target) {
-        setFormData(formData => {
-          if(e.target.type == 'text' || e.target.type == 'number') {
-            return `${formData},${e.target.name}=${e.target.value}`.split(',').pop()
-          } else if(e.target.type == 'radio' || e.target.type == 'checkbox') {
-            return `${formData},${e.target.name}=${e.target.checked}`
-          } else {
-            return `${formData},${e.target.name}=${e.target.selectedOptions[0]?.innerText}`
+    // if(e.target) {
+    //     setFormData(formData => {
+    //       if(e.target.type == 'text' || e.target.type == 'number') {
+    //         return `${formData},${e.target.name}=${e.target.value}`.split(',').pop()
+    //       } else if(e.target.type == 'radio' || e.target.type == 'checkbox') {
+    //         return `${formData},${e.target.name}=${e.target.checked}`
+    //       } else {
+    //         return `${formData},${e.target.name}=${e.target.selectedOptions[0]?.innerText}`
 
-          }
+    //       }
 
          
-        })
-    }
+    //     })
+    // }
+    return null
   }
 
 
@@ -386,6 +387,7 @@ export function BasicDeatilsForm({ editMode }) {
 
   }
 
+  
   function handleNumberInputChange(e) {
 
     // Total Funcational Input Beds validation
@@ -408,6 +410,7 @@ export function BasicDeatilsForm({ editMode }) {
 
 
 
+
   // Effects
 
   useEffect(() => {
@@ -427,7 +430,7 @@ export function BasicDeatilsForm({ editMode }) {
     return (
       <form name='basic_details_form'
         defaultValue={options?.data?.basic_details_form ?? ''}
-        onSubmit={mode ? handleBasicDetailsUpdate : handeBasicDetailsCreate}
+        onSubmit={editMode ? handleBasicDetailsUpdate : handeBasicDetailsCreate}
         className='flex flex-col w-full mt-4 items-start bg-blue-50 p-3 justify-start gap-3'>
 
         {/* Facility Official Name */}
@@ -1652,7 +1655,7 @@ export function BasicDeatilsForm({ editMode }) {
               type='number'
               min={0}
               name='number_of_inpatient_beds'
-              onChange={handleInputChange}
+              onChange={handleChange}
               defaultValue={options?.data?.number_of_inpatient_beds ?? 0}
               className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
             />
@@ -1699,7 +1702,7 @@ export function BasicDeatilsForm({ editMode }) {
               type='number'
               min={0}
               name='number_of_emergency_casualty_beds'
-              onChange={handleInputChange}
+              onChange={handleChange}
               defaultValue={options?.data?.number_of_emergency_casualty_beds ?? 0}
               className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
             />
@@ -1724,7 +1727,7 @@ export function BasicDeatilsForm({ editMode }) {
               type='number'
               min={0}
               name='number_of_icu_beds'
-              onChange={handleInputChange}
+              onChange={handleChange}
               defaultValue={options?.data?.number_of_icu_beds ?? 0}
               className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
             />
@@ -1749,7 +1752,7 @@ export function BasicDeatilsForm({ editMode }) {
               type='number'
               min={0}
               name='number_of_hdu_beds'
-              onChange={handleInputChange}
+              onChange={handleChange}
               defaultValue={options?.data?.number_of_hdu_beds ?? 0}
               className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
             />
@@ -1774,7 +1777,7 @@ export function BasicDeatilsForm({ editMode }) {
               type='number'
               min={0}
               name='number_of_maternity_beds'
-              onChange={handleInputChange}
+              onChange={handleChange}
               defaultValue={options?.data?.number_of_maternity_beds ?? 0}
               className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
             />

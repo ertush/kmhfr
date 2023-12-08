@@ -542,7 +542,7 @@ function  EditListItem({
              
             /> */}
 
-            <DualListBox
+            {/* <DualListBox
               canFilter
               options={categoryItems}
               selected={selected_services}
@@ -553,10 +553,10 @@ function  EditListItem({
                 // current_services.current.push(selected)
                 console.log('selected', selected)
               }}
-            />
+            /> */}
 
             {/* Add Item Button */}
-            <button name="add_item_btn" className="bg-blue-700  p-2 flex items-center justify-evenly gap-2"
+            {/* <button name="add_item_btn" className="bg-blue-700  p-2 flex items-center justify-evenly gap-2"
               onClick={e => {
                 e.preventDefault()
                 if (currentItem)
@@ -567,7 +567,7 @@ function  EditListItem({
               }}>
               <p className='text-white font-semibold'>Add</p>
               <PlusIcon className='w-4 h-4 text-white' />
-            </button>  
+            </button>   */}
             {/* </div>  
         </div> */}
 

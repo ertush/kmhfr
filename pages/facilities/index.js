@@ -34,7 +34,7 @@ const FacilityHome = (props) => {
     let fltrs = filters
     const [drillDown, setDrillDown] = useState({})
     const userCtx = useContext(UserContext);
-    console.log({userCtx})
+    // console.log({userCtx})
 
     // const qf = props?.query?.qf ?? null
     if (filters && typeof filters === "object")
@@ -152,18 +152,17 @@ const FacilityHome = (props) => {
                                 {/* Button group */}
                              
                                 {
-                                (allFctsSelected || pathId === 'all') &&
+                                (
+                                    userCtx?.groups[0]?.id == 2 || // SCHRIO
+                                    userCtx?.groups[0]?.id == 7    // SuperAdmin
+                                    /*allFctsSelected || pathId === 'all'*/) &&
                                 <div className='flex items-center space-x-6 w-auto'>
                                     {/* Facility Button */}
                                     {
-                                        (
-                                            userCtx?.groups[0]?.id == 2 || // SCHRIO
-                                            userCtx?.groups[0]?.id == 7    // SuperAdmin
-                                            
-                                        ) &&
+                                       
                                          // Display add facility button if  user belong to SCHRIO group
                                    <Menu.Item as="div"  className="px-4 py-2 bg-blue-700 text-white text-md tracking-tighter font-semibold whitespace-nowrap  hover:bg-black focus:bg-black active:bg-black uppercase">
-                                        <button  onClick={() => {router.push('/facilities/add')}} className='flex items-center justify-center'>
+                                        <button  onClick={() => {router.push('/facilities/add?formId=0')}} className='flex items-center justify-center'>
 
                                             <span className='text-base uppercase font-semibold'>Add Facility</span>
                                             <PlusIcon className="w-4 h-4 ml-2" />

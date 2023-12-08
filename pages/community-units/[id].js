@@ -82,7 +82,7 @@ const EditCommunityUnit = (props) => {
     if (typeof window !== 'undefined') { //auth.add_group
       let usr = JSON.parse(window.sessionStorage.getItem('user'))
 
-      if (usr.all_permissions.find((r) => r === 'chul.can_approve_chu') !== undefined) {
+      if (usr?.all_permissions.find((r) => r === 'chul.can_approve_chu') !== undefined) {
         setIsApproveReject(true)
       }
     }

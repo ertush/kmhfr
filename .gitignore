@@ -40,6 +40,7 @@ ecosystem.config.js
 .env
 .env.dev
 .env.local.dev
+.vscode
 .env.remote.dev
 /test-results/
 /playwright-report/
