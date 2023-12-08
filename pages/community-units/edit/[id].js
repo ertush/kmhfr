@@ -21,7 +21,7 @@ export default function CommunityUnitEdit (props){
       <ChuOptionsContext.Provider value={{
           facilities: props?.facilities?.results,
           services: props?.services?.results,
-          statuses: props?.statues?.results,
+          statuses: props?.statuses?.results,
           contact_types: props?.contact_types?.results
       }}>
           <CommunityUnitEditForm cu={props?.cu} />
@@ -48,6 +48,8 @@ export async function getServerSideProps({req, res, query}) {
     "contact_types",
     "services"
   ]
+
+  // cu['facility_name'] = facilities.find(fac => fac.name = cu['facility_name'])[]
 
   try {
       
@@ -79,7 +81,7 @@ export async function getServerSideProps({req, res, query}) {
         })
 
         response["statuses"] =  await (await statuses.json())
-      break;
+        break;
 
       case "facilities":
         const facilities = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/?page_size=20&fields=id,name,county,sub_county_name,constituency,ward_name`,{
@@ -91,7 +93,7 @@ export async function getServerSideProps({req, res, query}) {
         })
 
         response["facilities"] =  await (await facilities.json())
-      break;
+        break;
 
       case "contact_types":
         const contact_types = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/common/contact_types/?fields=id,name`,{
@@ -103,7 +105,7 @@ export async function getServerSideProps({req, res, query}) {
         })
 
         response["contact_types"] =  await (await contact_types.json())
-      break;
+        break;
 
       case "services":
         const services = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/chul/services/?page_size=1000&fields=id,name`,{
@@ -115,7 +117,7 @@ export async function getServerSideProps({req, res, query}) {
         })
 
         response["services"] =  await (await services.json())
-      break;
+        break;
       }
       } 
 

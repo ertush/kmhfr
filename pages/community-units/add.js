@@ -125,7 +125,15 @@ const AddCommunityUnit = (props) => {
 		};
 	}, [formId, facilities, serviceCtg]);
 
-	useEffect(() => {}, [contactCHEW])
+	// useEffect(() => {}, [contactCHEW])
+	useEffect(() => {
+		let mtd = true;
+		if(mtd){
+			if(typeof window != 'undefined') setchulId(window.sessionStorage.getItem('chulId'));
+			console.log('chulId'. chulId);
+		}
+		return () => mtd = false
+	}, [])
 
 	return (
 		<>
@@ -243,7 +251,12 @@ const AddCommunityUnit = (props) => {
 															_id = id;
 
 															if (resp) {
-																setchulId(_id) //setting the state to the current CHUL
+																setchulId(_id)
+																if(typeof window != 'undefined'){
+																	window.sessionStorage.setItem('chulId', _id);
+																}
+																console.log('id', _id)
+																 //setting the state to the current CHUL
 															}
 															alert.success('CHU Basic Details Added Successfully')
 
@@ -910,11 +923,17 @@ const AddCommunityUnit = (props) => {
 										case 2:
 											// Handle Service Form Submit
 											const handleServiceSubmit = (stateSetters, chulId) => {
-
+												// console.log({stateSetters, chulId})
 												const [services, setFormId, setServices] = stateSetters
-												const _payload = services.map(({ id }) => ({ service: id }))
+												const _payload = services.map((s) => ({ service: s }))
 
 												_payload.forEach(obj => obj['health_unit'] = chulId)
+
+												console.log('handleServiceSubmit',{
+													services,
+													_payload
+												})
+
 
 												try {
 													fetch(`/api/common/submit_form_data/?path=chul_services&id=${chulId}`, {
@@ -968,7 +987,7 @@ const AddCommunityUnit = (props) => {
 															{/* Edit list Item Container */}
 															<div className='flex items-center w-full h-auto min-h-[300px]'>
 																
-
+																{'chulid= '+chulId}
 																<EditListItem
 																	initialSelectedItems={[]}
 																	categoryItems={serviceOptions} //serviceOptions	
@@ -985,7 +1004,7 @@ const AddCommunityUnit = (props) => {
 																	previousItemCategory={'CHEWS'}
 																	handleItemPrevious={handleServicesPrevious} //handleServicePrevious
 																	setIsSaveAndFinish={() => null}
-
+																	
 
 																/>
 
