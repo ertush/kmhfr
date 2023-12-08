@@ -15,9 +15,7 @@ import { ChuOptionsContext } from '../../pages/community-units/edit/[id]';
 import dynamic from 'next/dynamic';
 // import DualListBox from 'react-dual-listbox';
 import 'react-dual-listbox/lib/react-dual-listbox.css';
-import { KeyboardArrowLeft, KeyboardArrowRight } from '@mui/icons-material';
 import {handleChulSubmit} from "../../controllers/chul/chulHandlers"
-import dynamic from 'next/dynamic';
 // import DualListBox from 'react-dual-listbox';
 import 'react-dual-listbox/lib/react-dual-listbox.css';
 import { KeyboardArrowLeft, KeyboardArrowRight } from '@mui/icons-material';
@@ -77,6 +75,7 @@ export function CommunityUnitEditForm({ cu: {
 
   const options = useContext(ChuOptionsContext)
   const access_token = getCookie(access_token) 
+
  
 
   const [facilityOptions, setFacilityOptions] = useState(options?.facilities?.map(({ id, name }) => ({ label: name, value: id })) ?? []) 
@@ -84,6 +83,7 @@ export function CommunityUnitEditForm({ cu: {
   const [serviceOptions, setServiceOptions] = useState(options?.services?.map(({ id, name }) => ({ label: name, value: id })) ?? []) 
   const [contactOptions, setContactOptions] = useState(options?.contact_types?.map(({ id, name }) => ({ label: name, value: id })) ?? []) 
   const [current_services, setCurrentServices] = useState(Array.from(services, s=>s?.service) || [])
+  const [token, setToken] = useState();
   const [intialValuesBasicDetails, setBasicDetailValues] = useState({
     code,
     name,
@@ -127,22 +127,38 @@ export function CommunityUnitEditForm({ cu: {
     return c_ontacts;
   }
 
-  useEffect(()=>{
-    
-    // Options
   
+  useEffect(() => {
+
+    let accessTokenObject;
   
-    console.log({ options })
-    console.log('intialValuesBasicDetails', intialValuesBasicDetails)
-    // if (contacts) appendValueToBasicDetails(contacts)
-    if(contacts){
+    console.log({ options });
+    console.log('intialValuesBasicDetails', intialValuesBasicDetails);
+  
+    if (contacts) {
       setBasicDetailValues({
         ...intialValuesBasicDetails,
-        ...appendValueToBasicDetails(contacts)
-      })
+        ...appendValueToBasicDetails(contacts),
+      });
     }
   
-  },[])
+    try {
+      accessTokenObject = JSON.parse(getCookie('access_token'));
+    } catch (error) {
+      console.error('Error parsing access token JSON:', error);
+    }
+  
+ 
+    if (accessTokenObject) {
+      setToken(accessTokenObject.token)
+    
+       
+
+    } else {
+      console.error('accessTokenObject is not defined or invalid.');
+    }
+  }, []);
+  
     
     
     // Constants
@@ -316,10 +332,11 @@ export function CommunityUnitEditForm({ cu: {
                    
                     console.log("details....",intialValuesBasicDetails?.id)
                     console.log("identification....",token)
-                    handleChulSubmit(options?.token,setter,intialValuesBasicDetails?.id)
+                    handleChulSubmit(token,setter,intialValuesBasicDetails?.id)
                   }}
                 >
                   {/* CHU Name */}
+                  {JSON.stringify(token)}
                   <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
                     <label
                       htmlFor="name"
@@ -346,7 +363,7 @@ export function CommunityUnitEditForm({ cu: {
                   </div>
 
                   {/* CHU Linked Facility */}
-                  {JSON.stringify({facilityOptions})}
+                 
                   <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
                     <label
                       htmlFor="facility_name"
