@@ -27,14 +27,10 @@ const _ = require('underscore');
 
 export function GeolocationForm({useGeoJSON, useGeoData, mode}) {
 
-    const options = useContext(FormOptionsContext);
+    const _options = useContext(FormOptionsContext);
+
+    // console.log({options})
      
-    //  // Constants
-     const formFields = {
-        collection_date: "",
-        latitude: "",
-        longitude: ""
-    }
 
 
 
@@ -50,31 +46,140 @@ export function GeolocationForm({useGeoJSON, useGeoData, mode}) {
     facilityGeolocationData['latitude'] = []
   }
 
-  const coordinates_id = options?.data?.coordinates;
+  // const coordinates_id = options?.data?.coordinates;
 
 
 
 
     //Context
-    const[facilityId, ____] = useContext(FacilityIdContext)
+    // const[facilityId, ____] = useContext(FacilityIdContext)
 
     
     // State
-    const [formId, setFormId] = useContext(FormContext);
+    // const [formId, setFormId] = useContext(FormContext);
     const [geoJSON, __] = useGeoJSON();
     const [wardName, ___] = useGeoData('ward_data');
     const [geoCenter, _____] = useGeoData('geo_data');
+    const [options, setOptions] = useState(_options)
 
     const alert = useAlert();
 
 
-    // Form Schema
+    // Event handlers
 
-    const handleGeolocationPrevious = useCallback(() => {
-        setFormId(`${parseInt(formId) - 1}`);
+    function handleGeolocationPrevious() {
+        e.preventDefault()
+
+        const url = new URL(window.document.location.href)
+
+        url.searchParams.set('formId', '0')
+
+        window.document.location.href = url
        
-    }, [])
+    }
 
+   function handleGeolocationFormSubmit() {
+      e.preventDefault()
+
+      const formData = new FormData(e.target)
+
+      const data = Object.fromEntries(formData)
+  
+      // Persist Data
+      /*
+      const params = [];
+  
+      for(let [k, v] of formData) params.push(`${k}=${v}`)
+  
+      const url = new URL(`${document.location.href}/?${params.join('&')}`)
+  
+      document.location.href = url
+
+      */
+  
+      fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/`, {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json;charset=UTF-8',
+          'Authorization': `Bearer ${options?.token}`
+        },
+        body: JSON.stringify(data)
+      })
+        .then(res => {
+          if (res.status == 201 || res.status == 200) {
+            alert.success('Facility Added Successfully')
+          } else {
+            alert.error('Unable to Add facility')
+          }
+        })
+  
+
+
+    // Navigation
+
+    const current_url = new URL(window.document.location.href)
+
+      current_url.searchParams.set('formId', '2')
+
+      window.document.location.href = url
+
+   }
+
+  
+   function handleInput(e) {
+    e.preventDefault()
+    const lat_long = []
+    // const coordinates = []
+  
+    if(e.target.name == 'latitude') {
+
+      lat_long[0] = e.target.value;
+      lat_long[1] = document.getElementsByName('longitude')[0]?.value
+
+
+      setOptions({
+        options: {
+          collection_date: '',
+          data: {
+            lat_long
+          }
+          
+        }
+      })
+
+    } else if (e.target.name == 'longitude') {
+
+      lat_long[0] = document.getElementsByName('latitude')[0]?.value
+      lat_long[1] = e.target.value;
+
+      setOptions({
+        options: {
+          collection_date: '',
+          data: {
+            lat_long,
+          }
+          
+        }
+      })
+    } else {
+
+      lat_long[0] = document.getElementsByName('longitude')[0]?.value
+      lat_long[1] = document.getElementsByName('latitude')[0]?.value
+
+      setOptions({
+        options: {
+          collection_date: e.target.value,
+          data: {
+            lat_long,
+          }
+          
+        }
+      })
+    }
+   }
+
+  
 
     // console.log({options})
 
@@ -84,8 +189,14 @@ export function GeolocationForm({useGeoJSON, useGeoData, mode}) {
 
                 name='geolocation_form'
                 className='flex flex-col w-full mt-4 items-start bg-blue-50 shadow-md p-3 justify-start gap-3'
+                onSubmit={handleGeolocationFormSubmit}
             >
                 {/* Collection Date */}
+                {
+                  JSON.stringify({
+                    options
+                  })
+                }
                 <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
                     <label
                         htmlFor='collection_date'
@@ -100,6 +211,7 @@ export function GeolocationForm({useGeoJSON, useGeoData, mode}) {
                         required
                         type='date'
                         name='collection_date'
+                        onChange={handleInput}
                         defaultValue={options.collection_date?.split('T')[0] ?? ''}
                         className='flex-none w-full  p-2 flex-grow border placeholder-gray-500 bg-transparent border-blue-600 focus:shadow-none focus:border-black outline-none'
                     />
@@ -123,12 +235,9 @@ export function GeolocationForm({useGeoJSON, useGeoData, mode}) {
                             required
                             type='decimal'
                             name='longitude'
-                            defaultValue={options?.data?.lat_long[0] ?? ''}
-                            onChange={
-                              e => {
-                                console.log({name: e.target.name})
-                              }
-                            }
+                            defaultValue={(options?.data?.lat_long && options?.data?.lat_long?.length == 2 && options?.data?.lat_long[0]) ?? ''}
+                            onChange={handleInput}
+                            
                             className='flex-none w-full  p-2 flex-grow border bg-transparent placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
                         />
                 {/* {errors.longitude && <span className='font-normal text-sm text-red-500 text-start'>{errors.longitude}</span>} */}
@@ -149,7 +258,8 @@ export function GeolocationForm({useGeoJSON, useGeoData, mode}) {
                             required
                             type='decimal'
                             name='latitude'
-                            defaultValue={options?.data?.lat_long[1] ?? ''}
+                            onChange={handleInput}
+                            defaultValue={(options?.data?.lat_long && options?.data?.lat_long?.length == 2 && options?.data?.lat_long[1]) ?? ''}
                             className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
                         />
                 {/* {errors.latitude && <span className='font-normal text-sm text-red-500 text-start'>{errors.latitude}</span>} */}
@@ -176,8 +286,11 @@ export function GeolocationForm({useGeoJSON, useGeoData, mode}) {
                               {/* {
                                 JSON.stringify(geoJSON)
                               } */}
+                              {
+                                options?.data?.lat_long &&
                              <Map  markerCoordinates={[options?.data?.lat_long[0], options?.data?.lat_long[1]]} geoJSON={geoJSON} ward={wardName} center={geoCenter} />
-                        </Suspense>
+                              }
+                             </Suspense>
                     </div>
                 </div>
 

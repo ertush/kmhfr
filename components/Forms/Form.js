@@ -1,7 +1,7 @@
 
 "use client"
 
-import {useState, createContext} from 'react';
+import {createContext, useEffect, useState} from 'react';
 
 import Box from '@mui/material/Box';
 import Stepper from '@mui/material/Stepper';
@@ -51,13 +51,27 @@ key:'facility_id',
 value: 'null'
 }).actions.use();
 
+const [formId, setFormId] = useState('0')
+
+
+useEffect(() => {
+  function setStateFromUrl() {
+    const url = new URL(window.document.location.href)
+
+    setFormId(url.searchParams.get('formId'))
+
+  }
+
+  setStateFromUrl()
+}, [])
+
 
 //   const [formId, setFormId] = useState(0); //
 
-const [formId, setFormId] = useLocalStorageState({
-    key: 'formId',
-    value: 0
-}).actions.use();
+// const [formId, setFormId] = useLocalStorageState({
+//     key: 'formId',
+//     value: 0
+// }).actions.use();
  
 
   const steps = [

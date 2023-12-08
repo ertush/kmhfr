@@ -54,12 +54,10 @@ export function EditForm() {
   const [tabOpen, setTabOpen] = useState(null)
 
 
-
   // Update facility ID in the store
 
   useEffect(() => {
-
-    console.log({options})
+    // console.log({options})
     setFacilityId(options?.data?.id)
 
   }, [])
@@ -130,10 +128,7 @@ export function EditForm() {
             value="basic_details"
             className="grow-1 py-1 px-4 tab-panel"
           >
-
-
             <BasicDeatilsForm mode="edit"/>
-
 
           </Tabs.Panel>
 
@@ -141,10 +136,11 @@ export function EditForm() {
           <Tabs.Panel
             value="geolocation"
             className="grow-1 py-1 px-4 tab-panel"
-          
           >
+
             <TabContext.Provider value={tabOpen}>
               <GeolocationForm
+                mode="edit"
                 useGeoJSON={() => [geoJSON, setGeoJSON]}
                 useGeoData={(type) => {
                   switch (type) {
