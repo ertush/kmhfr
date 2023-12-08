@@ -17,11 +17,12 @@ export function BasicDeatilsForm({ editMode }) {
 
   const alert = useAlert();
 
-  const options = useContext(FormOptionsContext);
+  const formContext = useContext(FormOptionsContext);
 
   const [submitting, setSubmitting] = useState(false);
 
 
+  const [options, setOptions] = useState(formContext);
   const [facilityTypeDetailOptions, setFacilityTypeDetailOptions] = useState(options?.facility_type_details)
 
   const [ownerTypeDetailsOptions, setOwnerTypeDetailsOptions] = useState(Array.from(options?.owners, o => {
@@ -40,6 +41,7 @@ export function BasicDeatilsForm({ editMode }) {
   const [wardOptions, setWardOptions] = useState(options?.wards)
   const [isClient, setIsClient] = useState(false)
   const [totalFunctionalBeds, setTotalFunctionalBeds] = useState(0)
+  const [formData, setFormData] = useState('')
 
   // Options
 
@@ -54,9 +56,32 @@ export function BasicDeatilsForm({ editMode }) {
     },
   ];
 
-  // Event handlers
+    // Event handlers
+
+
+  function handleChange (e) {
+    if(e.target) {
+        setFormData(formData => {
+          if(e.target.type == 'text' || e.target.type == 'number') {
+            return `${formData},${e.target.name}=${e.target.value}`.split(',').pop()
+          } else if(e.target.type == 'radio' || e.target.type == 'checkbox') {
+            return `${formData},${e.target.name}=${e.target.checked}`
+          } else {
+            return `${formData},${e.target.name}=${e.target.selectedOptions[0]?.innerText}`
+
+          }
+
+         
+        })
+    }
+  }
+
+
 
   async function handleSelectChange(e) {
+
+    handleChange(e)
+
     const keph = document.getElementsByName('keph_level');
 
     // Handle facility Type Change
@@ -317,11 +342,25 @@ export function BasicDeatilsForm({ editMode }) {
   function handeBasicDetailsCreate(e) {
     e.preventDefault()
 
+
+
     const formData = new FormData(e.target)
 
     const data = Object.fromEntries(formData)
 
     setSubmitting(true)
+
+    // Persist Data
+    /*
+    const params = [];
+
+    for(let [k, v] of formData) params.push(`${k}=${v}`)
+
+    const url = new URL(`${document.location.href}/?${params.join('&')}`)
+
+    document.location.href = url
+
+    */
 
     fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/`, {
       method: 'POST',
@@ -342,13 +381,26 @@ export function BasicDeatilsForm({ editMode }) {
       })
 
 
+      const current_url = new URL(window.document.location.href)
+
+      current_url.searchParams.set('formId', '1')
+
+      window.document.location.href = url
+
+      // const current_url = new URL(window.document.location.href)
+
+      current_url.searchParams.set('formId', '1')
+
+      window.document.location.href = url
+
   }
 
-  function handleInputChange(e) {
+  function handleNumberInputChange(e) {
 
     // Total Funcational Input Beds validation
+
+      handleChange(e)
     
-    if(e.target.value) {
 
       const number_of_inpatient_beds = Number(document.getElementsByName('number_of_inpatient_beds')[0]?.value) 
       const number_of_icu_beds = Number(document.getElementsByName('number_of_icu_beds')[0]?.value)
@@ -358,14 +410,25 @@ export function BasicDeatilsForm({ editMode }) {
       
       const totalBeds = number_of_inpatient_beds + number_of_icu_beds + number_of_hdu_beds + number_of_maternity_beds + number_of_emergency_casualty_beds
 
+      
       setTotalFunctionalBeds(totalBeds)
-    }
+
   }
 
+
+
+  // Effects
+
   useEffect(() => {
+    // console.log({data: options?.data})
     setIsClient(true)
+
   }, [])
 
+
+  useEffect(() => {
+    console.log({formData})
+  }, [formData])
 
 
 
@@ -381,45 +444,47 @@ export function BasicDeatilsForm({ editMode }) {
           onSubmit={editMode ? handleBasicDetailsUpdate : handeBasicDetailsCreate}
           className='flex flex-col w-full mt-4 items-start bg-blue-50 shadow-md p-3 justify-start gap-3'>
 
-          {/* Facility Official Name */}
-          <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-            <label
-              htmlFor='official_name'
-              className='text-gray-600 capitalize text-sm'>
-              Facility Official Name (Test)
-              <span className='text-medium leading-12 font-semibold'>
-                {' '}
-                *
-              </span>
-            </label>
-            <input
-              required
-              type='text'
-              name='official_name'
-              defaultValue={options?.data?.official_name ?? ''}
-              className='flex-none w-full bg-blue-50 p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
-            />
-            {/* {errors.official_name && <span className='font-normal text-sm text-red-500 text-start'>{errors.official_name}</span>} */}
-          </div>
-          {/* Facility Unique Name  */}
-          <div className='w-full flex flex-col items-start justify-start gap-1 mb-3 col-start-2'>
-            <label
-              htmlFor='name'
-              className='text-gray-600 capitalize text-sm'>
-              Facility Unique Name
-              <span className='text-medium leading-12 font-semibold'>
-                {' '}
-                *
-              </span>
-            </label>
-            <input
-              required
-              type='text'
-              name='name'
-              defaultValue={options?.data?.name ?? ''}
-              className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
-            />
-            {/* {errors.name && <span className='font-normal text-sm text-red-500 text-start'>{errors.name}</span>} */}
+        {/* Facility Official Name */}
+        <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+          <label
+            htmlFor='official_name'
+            className='text-gray-600 capitalize text-sm'>
+            Facility Official Name
+            <span className='text-medium leading-12 font-semibold'>
+              {' '}
+              *
+            </span>
+          </label>
+          <input
+            required
+            type='text'
+            name='official_name'
+            defaultValue={options?.data?.official_name ?? ''}
+            onInput={handleChange}
+            className='flex-none w-full bg-blue-50 p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+          />
+          {/* {errors.official_name && <span className='font-normal text-sm text-red-500 text-start'>{errors.official_name}</span>} */}
+        </div>
+        {/* Facility Unique Name  */}
+        <div className='w-full flex flex-col items-start justify-start gap-1 mb-3 col-start-2'>
+          <label
+            htmlFor='name'
+            className='text-gray-600 capitalize text-sm'>
+            Facility Unique Name
+            <span className='text-medium leading-12 font-semibold'>
+              {' '}
+              *
+            </span>
+          </label>
+          <input
+            required
+            type='text'
+            name='name'
+            defaultValue={options?.data?.name ?? ''}
+            onChange={handleChange}
+            className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+          />
+          {/* {errors.name && <span className='font-normal text-sm text-red-500 text-start'>{errors.name}</span>} */}
 
           </div>
           {/* Facility Type */}
@@ -482,45 +547,47 @@ export function BasicDeatilsForm({ editMode }) {
           </div>
 
 
-          {/* Operation Status*/}
-          <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-            <label
-              htmlFor='operation_status'
-              className='text-gray-600 capitalize text-sm'>
-              Operation Status
-              <span className='text-medium leading-12 font-semibold'>
-                {' '}
-                *
-              </span>
-            </label>
-            <Select
-              options={operationStatusOptions ?? options?.operation_status}
-              placeholder="Select operation status..."
-              required
-              name='operation_status'
-              defaultValue={options?.data?.operation_status ?? ''}
+        {/* Operation Status*/}
+        <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+          <label
+            htmlFor='operation_status'
+            className='text-gray-600 capitalize text-sm'>
+            Operation Status
+            <span className='text-medium leading-12 font-semibold'>
+              {' '}
+              *
+            </span>
+          </label>
+          <Select
+            options={operationStatusOptions ?? options?.operation_status}
+            placeholder="Select operation status..."
+            required
+            name='operation_status'
+            onChange={handleChange}
+            defaultValue={options?.data?.operation_status ?? ''}
 
-            />
-        
-            {/* {errors.operation_status && <span className='font-normal text-sm text-red-500 text-start'>{errors.operation_status}</span>} */}
-          </div>
-          {/* Date Established */}
-          <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-            <label
-              htmlFor='date_established'
-              className='text-gray-600 capitalize text-sm'>
-              Date Established
-              <span className='text-medium leading-12 font-semibold'>
-                {' '}
-                *
-              </span>
-            </label>
-            <input
-              type="date"
-              required
-              name="date_established"
-              defaultValue={options?.data?.date_established ?? ''}
-              className='flex-none w-full bg-transparent p-2 flex-grow placeholder-gray-500 border border-blue-600 focus:shadow-none  focus:border-black outline-none'
+          />
+      
+          {/* {errors.operation_status && <span className='font-normal text-sm text-red-500 text-start'>{errors.operation_status}</span>} */}
+        </div>
+        {/* Date Established */}
+        <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+          <label
+            htmlFor='date_established'
+            className='text-gray-600 capitalize text-sm'>
+            Date Established
+            <span className='text-medium leading-12 font-semibold'>
+              {' '}
+              *
+            </span>
+          </label>
+          <input
+            type="date"
+            required
+            name="date_established"
+            onChange={handleChange}
+            defaultValue={options?.data?.date_established ?? ''}
+            className='flex-none w-full bg-transparent p-2 flex-grow placeholder-gray-500 border border-blue-600 focus:shadow-none  focus:border-black outline-none'
 
             />
             {/* {errors.date_established && <span className='font-normal text-sm text-red-500 text-start'>{errors.collection_date}</span>} */}
@@ -584,66 +651,68 @@ export function BasicDeatilsForm({ editMode }) {
             {/* {errors.owner_type && <span className='font-normal text-sm text-red-500 text-start'>{errors.owner_type}</span>} */}
           </div>
 
-          {/* Owner Details */}
-          <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-            <label
-              htmlFor='owner'
-              className='text-gray-600 capitalize text-sm'>
-              Owner Details
-              <span className='text-medium leading-12 font-semibold'>
-                {' '}
-                *
-              </span>
-            </label>
-            <Select
-              options={ownerTypeDetailsOptions ?? []}
-              defaultChecked={options?.data?.owner ?? ''}
-              placeholder="Select owner..."
-              required
-              name='owner'
-              defaultValue={options?.data?.owner ?? ''}
+        {/* Owner Details */}
+        <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+          <label
+            htmlFor='owner'
+            className='text-gray-600 capitalize text-sm'>
+            Owner Details
+            <span className='text-medium leading-12 font-semibold'>
+              {' '}
+              *
+            </span>
+          </label>
+          <Select
+            options={ownerTypeDetailsOptions ?? []}
+            defaultChecked={options?.data?.owner ?? ''}
+            onChange={handleChange}
+            placeholder="Select owner..."
+            required
+            name='owner'
+            defaultValue={options?.data?.owner ?? ''}
 
             />
             {/* {errors.owner && <span className='font-normal text-sm text-red-500 text-start'>{errors.owner}</span>} */}
           </div>
 
-          {/* KEPH Level */}
-          <div className={`${options?.data ? "cursor-not-allowed" : "cursor-default"} w-full flex flex-col items-start justify-start gap-1 mb-3`}>
-            <label
-              htmlFor='keph_level'
-              className='text-gray-600 capitalize text-sm'>
-              KEPH Level
-            </label>
-            <Select
-              options={options?.keph}
-              placeholder="Select a KEPH Level.."
-              name='keph_level'
-              defaultValue={options?.data?.keph_level ?? ''}
-              disabled={options?.data ? true : false}
+        {/* KEPH Level */}
+        <div className={`${options?.data ? "cursor-not-allowed" : "cursor-default"} w-full flex flex-col items-start justify-start gap-1 mb-3`}>
+          <label
+            htmlFor='keph_level'
+            className='text-gray-600 capitalize text-sm'>
+            KEPH Level
+          </label>
+          <Select
+            options={options?.keph}
+            placeholder="Select a KEPH Level.."
+            name='keph_level'
+            defaultValue={options?.data?.keph_level ?? ''}
+            onChange={handleChange}
+            disabled={options?.data ? true : false}
 
             />
           </div>
 
-          {/* Total Functional In-patient Beds */}
-          <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-            <label
-              htmlFor='number_of_beds'
-              className='text-gray-600 capitalize text-sm'>
-              Total Functional In-patient Beds
-              <span className='text-medium leading-12 font-semibold'>
-                {' '}
-                *
-              </span>
-            </label>
-            <input
-
-              type='number'
-              min={0}
-              name='number_of_beds'
-              defaultValue={totalFunctionalBeds ?? options?.data?.number_of_beds ?? 0}
-              className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
-            />
-            {/* {errors.number_of_beds && <span className='font-normal text-sm text-red-500 text-start'>{errors.number_of_beds}</span>} */}
+        {/* Total Functional In-patient Beds */}
+        <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+          <label
+            htmlFor='number_of_beds'
+            className='text-gray-600 capitalize text-sm'>
+            Total Functional In-patient Beds
+            <span className='text-medium leading-12 font-semibold'>
+              {' '}
+              *
+            </span>
+          </label>
+          <input
+            readOnly
+            type='number'
+            min={0}
+            name='number_of_beds'
+            value={totalFunctionalBeds}
+            className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+          />
+          {/* {errors.number_of_beds && <span className='font-normal text-sm text-red-500 text-start'>{errors.number_of_beds}</span>} */}
 
 
           </div>
@@ -660,163 +729,164 @@ export function BasicDeatilsForm({ editMode }) {
               </span>
             </label>
 
-            <input
-              required
-              type='number'
-              min={0}
-              name='number_of_inpatient_beds'
-              onChange={handleInputChange}
-              defaultValue={options?.data?.number_of_inpatient_beds ?? 0}
-              className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
-            />
-            {/* {errors.number_of_inpatient_beds && <span className='font-normal text-sm text-red-500 text-start'>{errors.number_of_inpatient_beds}</span>} */}
+          <input
+            required
+            type='number'
+            min={0}
+            name='number_of_inpatient_beds'
+            onChange={handleNumberInputChange}
+            defaultValue={options?.data?.number_of_inpatient_beds ?? ''}
+            className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+          />
+          {/* {errors.number_of_inpatient_beds && <span className='font-normal text-sm text-red-500 text-start'>{errors.number_of_inpatient_beds}</span>} */}
 
           </div>
 
-          {/* No. Functional cots */}
-          <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-            <label
-              htmlFor='number_of_cots'
-              className='text-gray-600 capitalize text-sm'>
-              Number of Functional Cots
-              <span className='text-medium leading-12 font-semibold'>
-                {' '}
-                *
-              </span>
-            </label>
-            <input
-              required
-              type='number'
-              min={0}
-              name='number_of_cots'
-              defaultValue={options?.data?.number_of_cots ?? 0}
-              className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
-            />
-            {/* {errors.number_of_cots && <span className='font-normal text-sm text-red-500 text-start'>{errors.number_of_cots}</span>} */}
+        {/* No. Functional cots */}
+        <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+          <label
+            htmlFor='number_of_cots'
+            className='text-gray-600 capitalize text-sm'>
+            Number of Functional Cots
+            <span className='text-medium leading-12 font-semibold'>
+              {' '}
+              *
+            </span>
+          </label>
+          <input
+            required
+            type='number'
+            min={0}
+            name='number_of_cots'
+            onChange={handleChange}
+            defaultValue={options?.data?.number_of_cots ?? ''}
+            className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+          />
+          {/* {errors.number_of_cots && <span className='font-normal text-sm text-red-500 text-start'>{errors.number_of_cots}</span>} */}
 
           </div>
 
-          {/* No. Emergency Casulty Beds */}
-          <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-            <label
-              htmlFor='number_of_emergency_casualty_beds'
-              className='text-gray-600 capitalize text-sm'>
-              Number of Emergency Casulty Beds
-              <span className='text-medium leading-12 font-semibold'>
-                {' '}
-                *
-              </span>
-            </label>
-            <input
-              required
-              type='number'
-              min={0}
-              name='number_of_emergency_casualty_beds'
-              onChange={handleInputChange}
-              defaultValue={options?.data?.number_of_emergency_casualty_beds ?? 0}
-              className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
-            />
-            {/* {errors.number_of_emergency_casualty_beds && <span className='font-normal text-sm text-red-500 text-start'>{errors.number_of_emergency_casualty_beds}</span>} */}
-
-
-          </div>
-
-          {/* No. Intensive Care Unit Beds */}
-          <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-            <label
-              htmlFor='number_of_icu_beds'
-              className='text-gray-600 capitalize text-sm'>
-              Number of Intensive Care Unit (ICU) Beds
-              <span className='text-medium leading-12 font-semibold'>
-                {' '}
-                *
-              </span>
-            </label>
-            <input
-              required
-              type='number'
-              min={0}
-              name='number_of_icu_beds'
-              onChange={handleInputChange}
-              defaultValue={options?.data?.number_of_icu_beds ?? 0}
-              className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
-            />
-            {/* {errors.number_of_icu_beds && <span className='font-normal text-sm text-red-500 text-start'>{errors.number_of_icu_beds}</span>} */}
+        {/* No. Emergency Casulty Beds */}
+        <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+          <label
+            htmlFor='number_of_emergency_casualty_beds'
+            className='text-gray-600 capitalize text-sm'>
+            Number of Emergency Casulty Beds
+            <span className='text-medium leading-12 font-semibold'>
+              {' '}
+              *
+            </span>
+          </label>
+          <input
+            required
+            type='number'
+            min={0}
+            name='number_of_emergency_casualty_beds'
+            onChange={handleNumberInputChange}
+            defaultValue={options?.data?.number_of_emergency_casualty_beds ?? ''}
+            className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+          />
+          {/* {errors.number_of_emergency_casualty_beds && <span className='font-normal text-sm text-red-500 text-start'>{errors.number_of_emergency_casualty_beds}</span>} */}
 
 
           </div>
 
-          {/* No. High Dependency Unit HDU */}
-          <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-            <label
-              htmlFor='number_of_hdu_beds'
-              className='text-gray-600 capitalize text-sm'>
-              Number of High Dependency Unit (HDU) Beds
-              <span className='text-medium leading-12 font-semibold'>
-                {' '}
-                *
-              </span>
-            </label>
-            <input
-              required
-              type='number'
-              min={0}
-              name='number_of_hdu_beds'
-              onChange={handleInputChange}
-              defaultValue={options?.data?.number_of_hdu_beds ?? 0}
-              className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
-            />
-            {/* {errors.number_of_hdu_beds && <span className='font-normal text-sm text-red-500 text-start'>{errors.number_of_hdu_beds}</span>} */}
+        {/* No. Intensive Care Unit Beds */}
+        <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+          <label
+            htmlFor='number_of_icu_beds'
+            className='text-gray-600 capitalize text-sm'>
+            Number of Intensive Care Unit (ICU) Beds
+            <span className='text-medium leading-12 font-semibold'>
+              {' '}
+              *
+            </span>
+          </label>
+          <input
+            required
+            type='number'
+            min={0}
+            name='number_of_icu_beds'
+            onChange={handleNumberInputChange}
+            defaultValue={options?.data?.number_of_icu_beds ?? ''}
+            className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+          />
+          {/* {errors.number_of_icu_beds && <span className='font-normal text-sm text-red-500 text-start'>{errors.number_of_icu_beds}</span>} */}
 
 
           </div>
 
-          {/* No. of maternity beds */}
-          <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-            <label
-              htmlFor='number_of_maternity_beds'
-              className='text-gray-600 capitalize text-sm'>
-              Number of Maternity Beds
-              <span className='text-medium leading-12 font-semibold'>
-                {' '}
-                *
-              </span>
-            </label>
-            <input
-              required
-              type='number'
-              min={0}
-              name='number_of_maternity_beds'
-              onChange={handleInputChange}
-              defaultValue={options?.data?.number_of_maternity_beds ?? 0}
-              className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
-            />
-            {/* {errors.number_of_maternity_beds && <span className='font-normal text-sm text-red-500 text-start'>{errors.number_of_maternity_beds}</span>} */}
+        {/* No. High Dependency Unit HDU */}
+        <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+          <label
+            htmlFor='number_of_hdu_beds'
+            className='text-gray-600 capitalize text-sm'>
+            Number of High Dependency Unit (HDU) Beds
+            <span className='text-medium leading-12 font-semibold'>
+              {' '}
+              *
+            </span>
+          </label>
+          <input
+            required
+            type='number'
+            min={0}
+            name='number_of_hdu_beds'
+            onChange={handleNumberInputChange}
+            defaultValue={options?.data?.number_of_hdu_beds ?? ''}
+            className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+          />
+          {/* {errors.number_of_hdu_beds && <span className='font-normal text-sm text-red-500 text-start'>{errors.number_of_hdu_beds}</span>} */}
 
 
           </div>
 
-          {/* No. of Isolation Beds */}
-          <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-            <label
-              htmlFor='number_of_isolation_beds'
-              className='text-gray-600 capitalize text-sm'>
-              Number of Isolation Beds
-              <span className='text-medium leading-12 font-semibold'>
-                {' '}
-                *
-              </span>
-            </label>
-            <input
-              required
-              type='number'
-              min={0}
-              name='number_of_isolation_beds'
-              defaultValue={options?.data?.number_of_isolation_beds ?? 0}
+        {/* No. of maternity beds */}
+        <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+          <label
+            htmlFor='number_of_maternity_beds'
+            className='text-gray-600 capitalize text-sm'>
+            Number of Maternity Beds
+            <span className='text-medium leading-12 font-semibold'>
+              {' '}
+              *
+            </span>
+          </label>
+          <input
+            required
+            type='number'
+            min={0}
+            name='number_of_maternity_beds'
+            onChange={handleNumberInputChange}
+            defaultValue={options?.data?.number_of_maternity_beds ?? ''}
+            className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+          />
+          {/* {errors.number_of_maternity_beds && <span className='font-normal text-sm text-red-500 text-start'>{errors.number_of_maternity_beds}</span>} */}
 
-              className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
-            />
-            {/* {errors.number_of_isolation_beds && <span className='font-normal text-sm text-red-500 text-start'>{errors.number_of_isolation_beds}</span>} */}
+
+          </div>
+
+        {/* No. of Isolation Beds */}
+        <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+          <label
+            htmlFor='number_of_isolation_beds'
+            className='text-gray-600 capitalize text-sm'>
+            Number of Isolation Beds
+            <span className='text-medium leading-12 font-semibold'>
+              {' '}
+              *
+            </span>
+          </label>
+          <input
+            required
+            type='number'
+            min={0}
+            name='number_of_isolation_beds'
+            onChange={handleChange}
+            defaultValue={options?.data?.number_of_isolation_beds ?? ''}
+            className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+          />
+          {/* {errors.number_of_isolation_beds && <span className='font-normal text-sm text-red-500 text-start'>{errors.number_of_isolation_beds}</span>} */}
 
 
           </div>
@@ -833,12 +903,13 @@ export function BasicDeatilsForm({ editMode }) {
               </span>
             </label>
 
-            <input
-              required
-              type='number'
-              min={0}
-              name='number_of_general_theatres'
-              defaultValue={options?.data?.number_of_general_theatres ?? 0}
+          <input
+            required
+            type='number'
+            min={0}
+            name='number_of_general_theatres'
+            onChange={handleChange}
+            defaultValue={options?.data?.number_of_general_theatres ?? ''}
 
               className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
             />
@@ -847,26 +918,27 @@ export function BasicDeatilsForm({ editMode }) {
 
           </div>
 
-          {/* No. of Maternity Theatres */}
-          <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-            <label
-              htmlFor='number_of_maternity_theatres'
-              className='text-gray-600 capitalize text-sm'>
-              Number of Maternity Theatres
-              <span className='text-medium leading-12 font-semibold'>
-                {' '}
-                *
-              </span>
-            </label>
-            <input
-              required
-              type='number'
-              min={0}
-              name='number_of_maternity_theatres'
-              defaultValue={options?.data?.number_of_maternity_theatres ?? 0}
-              className='flex-none w-full  bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
-            />
-            {/* {errors.number_of_maternity_theatres && <span className='font-normal text-sm text-red-500 text-start'>{errors.number_of_maternity_theatres}</span>} */}
+        {/* No. of Maternity Theatres */}
+        <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+          <label
+            htmlFor='number_of_maternity_theatres'
+            className='text-gray-600 capitalize text-sm'>
+            Number of Maternity Theatres
+            <span className='text-medium leading-12 font-semibold'>
+              {' '}
+              *
+            </span>
+          </label>
+          <input
+            required
+            type='number'
+            min={0}
+            name='number_of_maternity_theatres'
+            onChange={handleChange}
+            defaultValue={options?.data?.number_of_maternity_theatres ?? ''}
+            className='flex-none w-full  bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+          />
+          {/* {errors.number_of_maternity_theatres && <span className='font-normal text-sm text-red-500 text-start'>{errors.number_of_maternity_theatres}</span>} */}
 
           </div>
 
@@ -879,15 +951,16 @@ export function BasicDeatilsForm({ editMode }) {
               <span className='text-medium leading-12 font-semibold'>
                 {' '}
 
-              </span>
-            </label>
-            <input
-              type='number'
-              min={0}
-              name='facility_catchment_population'
-              defaultValue={options?.data?.facility_catchment_population ?? 0}
-              className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
-            />
+            </span>
+          </label>
+          <input
+            type='number'
+            min={0}
+            name='facility_catchment_population'
+            onChange={handleChange}
+            defaultValue={options?.data?.facility_catchment_population ?? ''}
+            className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+          />
 
           </div>
 
@@ -899,23 +972,25 @@ export function BasicDeatilsForm({ editMode }) {
                 className='text-gray-700 capitalize text-sm flex-grow'>
                 *Should this facility have reporting in DHIS2?{' '}
 
-              </label>
-              <span className='flex items-center gap-x-1'>
-                <input
-                  type='radio'
-                  name='reporting_in_dhis'
-                  defaultChecked={options?.data?.reporting_in_dhis == true}
-                  value={true}
+            </label>
+            <span className='flex items-center gap-x-1'>
+              <input
+                type='radio'
+                name='reporting_in_dhis'
+                onChange={handleChange}
+                defaultChecked={options?.data?.reporting_in_dhis == true}
+                value={true}
 
-                />
-                <small className='text-gray-700'>Yes</small>
-              </span>
-              <span className='flex items-center gap-x-1'>
-                <input
-                  type='radio'
-                  name='reporting_in_dhis'
-                  defaultChecked={options?.data?.reporting_in_dhis == false}
-                  value={false}
+              />
+              <small className='text-gray-700'>Yes</small>
+            </span>
+            <span className='flex items-center gap-x-1'>
+              <input
+                type='radio'
+                name='reporting_in_dhis'
+                onChange={handleChange}
+                defaultChecked={options?.data?.reporting_in_dhis == false}
+                value={false}
 
                 />
                 <small className='text-gray-700'>No</small>
@@ -938,14 +1013,15 @@ export function BasicDeatilsForm({ editMode }) {
               </span>
             </label>
 
-            <Select
-              options={options?.facility_admission_status}
-              required
-              placeholder='Select an admission status..'
-              name='admission_status'
-              defaultValue={options?.data?.admission_status ?? ''}
-            />
-            {/* {errors.admission_status && <span className='font-normal text-sm text-red-500 text-start'>{errors.admission_status}</span>} */}
+          <Select
+            options={options?.facility_admission_status}
+            required
+            placeholder='Select an admission status..'
+            name='admission_status'
+            onChange={handleChange}
+            defaultValue={options?.data?.admission_status ?? ''}
+          />
+          {/* {errors.admission_status && <span className='font-normal text-sm text-red-500 text-start'>{errors.admission_status}</span>} */}
 
           </div>
 
@@ -958,23 +1034,25 @@ export function BasicDeatilsForm({ editMode }) {
                 *Does this facility have NHIF accreditation?{' '}
 
 
-              </label>
-              <span className='flex items-center gap-x-1'>
-                <input
-                  type='radio'
-                  name='nhif_accreditation'
-                  defaultChecked={options?.data?.nhif_accreditation == true}
-                  value={true}
+            </label>
+            <span className='flex items-center gap-x-1'>
+              <input
+                type='radio'
+                name='nhif_accreditation'
+                onChange={handleChange}
+                defaultChecked={options?.data?.nhif_accreditation == true}
+                value={true}
 
-                />
-                <small className='text-gray-700'>Yes</small>
-              </span>
-              <span className='flex items-center gap-x-1'>
-                <input
-                  type='radio'
-                  name='nhif_accreditation'
-                  defaultChecked={options?.data?.nhif_accreditation == false}
-                  value={false}
+              />
+              <small className='text-gray-700'>Yes</small>
+            </span>
+            <span className='flex items-center gap-x-1'>
+              <input
+                type='radio'
+                name='nhif_accreditation'
+                onChange={handleChange}
+                defaultChecked={options?.data?.nhif_accreditation == false}
+                value={false}
 
                 />
                 <small className='text-gray-700'>No</small>
@@ -985,24 +1063,25 @@ export function BasicDeatilsForm({ editMode }) {
 
           </div>
 
-          {/* Armed Forces Facilities */}
-          <div className=' w-full flex flex-col items-start justify-start p-3  border border-blue-600 bg-transaprent h-auto'>
-            <h4 className='text-lg uppercase pb-2 border-b border-blue-600 w-full mb-4 font-semibold text-blue-900'>
-              Armed Forces Facilities
-            </h4>
-            <div className='w-full flex flex-row items-center px-2 justify-start gap-1 gap-x-3 mb-3'>
-              <label
-                htmlFor='is_classified'
-                className='text-gray-700 capitalize text-sm flex-grow'>
-                {' '}
-                Is this an Armed Force facility?{' '}
-              </label>
-              <input
-                type="checkbox"
-                name='is_classified'
-                defaultChecked={options?.data?.is_classified ?? false}
-              />
-            </div>
+        {/* Armed Forces Facilities */}
+        <div className=' w-full flex flex-col items-start justify-start p-3  border border-blue-600 bg-transaprent h-auto'>
+          <h4 className='text-lg uppercase pb-2 border-b border-blue-600 w-full mb-4 font-semibold text-blue-900'>
+            Armed Forces Facilities
+          </h4>
+          <div className='w-full flex flex-row items-center px-2 justify-start gap-1 gap-x-3 mb-3'>
+            <label
+              htmlFor='is_classified'
+              className='text-gray-700 capitalize text-sm flex-grow'>
+              {' '}
+              Is this an Armed Force facility?{' '}
+            </label>
+            <input
+              type="checkbox"
+              name='is_classified'
+              onChange={handleChange}
+              defaultChecked={options?.data?.is_classified ?? false}
+            />
+          </div>
 
           </div>
 
@@ -1013,10 +1092,11 @@ export function BasicDeatilsForm({ editMode }) {
             </h4>
             <div className='w-full flex flex-row items-center px-2 gap-1 gap-x-3 mb-3'>
 
-              <input
-                type='checkbox'
-                name='open_whole_day'
-                defaultChecked={options?.data?.open_whole_day ?? false}
+            <input
+              type='checkbox'
+              name='open_whole_day'
+              onChange={handleChange}
+              defaultChecked={options?.data?.open_whole_day ?? false}
 
               />
               <label
@@ -1027,11 +1107,12 @@ export function BasicDeatilsForm({ editMode }) {
               </label>
             </div>
 
-            <div className='w-full flex flex-row items-center px-2 justify-start gap-1 gap-x-3 mb-3'>
-              <input
-                type='checkbox'
-                name='open_late_night'
-                defaultChecked={options?.data?.open_late_night ?? false}
+          <div className='w-full flex flex-row items-center px-2 justify-start gap-1 gap-x-3 mb-3'>
+            <input
+              type='checkbox'
+              name='open_late_night'
+              onChange={handleChange}
+              defaultChecked={options?.data?.open_late_night ?? false}
 
               />
               <label
@@ -1042,11 +1123,12 @@ export function BasicDeatilsForm({ editMode }) {
               </label>
             </div>
 
-            <div className='w-full flex flex-row items-center px-2 justify-start gap-1 gap-x-3 mb-3'>
-              <input
-                type='checkbox'
-                name='open_public_holidays'
-                defaultChecked={options?.data?.open_public_holidays ?? false}
+          <div className='w-full flex flex-row items-center px-2 justify-start gap-1 gap-x-3 mb-3'>
+            <input
+              type='checkbox'
+              name='open_public_holidays'
+              onChange={handleChange}
+              defaultChecked={options?.data?.open_public_holidays ?? false}
 
               />
               <label
@@ -1057,11 +1139,12 @@ export function BasicDeatilsForm({ editMode }) {
               </label>
             </div>
 
-            <div className='w-full flex flex-row items-center px-2 justify-start gap-1 gap-x-3 mb-3'>
-              <input
-                type='checkbox'
-                name='open_weekends'
-                defaultChecked={options?.data?.open_weekends ?? false}
+          <div className='w-full flex flex-row items-center px-2 justify-start gap-1 gap-x-3 mb-3'>
+            <input
+              type='checkbox'
+              name='open_weekends'
+              onChange={handleChange}
+              defaultChecked={options?.data?.open_weekends ?? false}
 
               />
               <label
@@ -1072,11 +1155,12 @@ export function BasicDeatilsForm({ editMode }) {
               </label>
             </div>
 
-            <div className='w-full flex flex-row items-center px-2 justify-start gap-1 gap-x-3 mb-3'>
-              <input
-                type='checkbox'
-                name='open_normal_day'
-                defaultChecked={options?.data?.open_normal_day ?? false}
+          <div className='w-full flex flex-row items-center px-2 justify-start gap-1 gap-x-3 mb-3'>
+            <input
+              type='checkbox'
+              name='open_normal_day'
+              onChange={handleChange}
+              defaultChecked={options?.data?.open_normal_day ?? false}
 
               />
               <label
@@ -1150,25 +1234,26 @@ export function BasicDeatilsForm({ editMode }) {
                 </div>
               </div>
 
-              {/* Constituency */}
-              <div className='col-start-3 col-span-1'>
-                <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-                  <label
-                    htmlFor='c'
-                    className='text-gray-600 capitalize text-sm'>
-                    Constituency
-                    <span className='text-medium leading-12 font-semibold'>
-                      {' '}
-                      *
-                    </span>
-                  </label>
-                  <Select
-                    options={constituencyOptions ?? []}
-                    required
-                    placeholder="Select Constituency..."
-                    // onChange={handleSelectChange}
-                    defaultValue={options?.data?.constituency_id ?? ''}
-                    name='constituency_id'
+            {/* Constituency */}
+            <div className='col-start-3 col-span-1'>
+              <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                <label
+                  htmlFor='c'
+                  className='text-gray-600 capitalize text-sm'>
+                  Constituency
+                  <span className='text-medium leading-12 font-semibold'>
+                    {' '}
+                    *
+                  </span>
+                </label>
+                <Select
+                  options={constituencyOptions ?? []}
+                  required
+                  placeholder="Select Constituency..."
+                  // onChange={handleSelectChange}
+                  onChange={handleChange}
+                  defaultValue={options?.data?.constituency_id ?? ''}
+                  name='constituency_id'
 
 
                   />
@@ -1177,25 +1262,26 @@ export function BasicDeatilsForm({ editMode }) {
                 </div>
               </div>
 
-              {/* Ward */}
-              <div className='col-start-4 col-span-1'>
-                <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-                  <label
-                    htmlFor='ward'
-                    className='text-gray-600 capitalize text-sm'>
-                    Ward
-                    <span className='text-medium leading-12 font-semibold'>
-                      {' '}
-                      *
-                    </span>
-                  </label>
-                  {/* {JSON.stringify(wardOptions)} */}
-                  <Select
-                    options={wardOptions ?? []}
-                    required
-                    placeholder="Select Ward ..."
-                    defaultValue={options?.data?.ward ?? ''}
-                    name='ward'
+            {/* Ward */}
+            <div className='col-start-4 col-span-1'>
+              <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                <label
+                  htmlFor='ward'
+                  className='text-gray-600 capitalize text-sm'>
+                  Ward
+                  <span className='text-medium leading-12 font-semibold'>
+                    {' '}
+                    *
+                  </span>
+                </label>
+                {/* {JSON.stringify(wardOptions)} */}
+                <Select
+                  options={wardOptions ?? []}
+                  required
+                  placeholder="Select Ward ..."
+                  defaultValue={options?.data?.ward ?? ''}
+                  onChange={handleChange}
+                  name='ward'
 
                   />
                   {/* {errors.ward && <span className='font-normal text-sm text-red-500 text-start'>{errors.ward}</span>} */}
@@ -1223,12 +1309,13 @@ export function BasicDeatilsForm({ editMode }) {
             </label>
             <input
 
-              type='text'
-              name='town_name'
-              defaultValue={options?.data?.town_name ?? ''}
-              className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
-            />
-          </div>
+            type='text'
+            name='town_name'
+            defaultValue={options?.data?.town_name ?? ''}
+            onChange={handleChange}
+            className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+          />
+        </div>
 
           {/* Plot Number */}
           <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
@@ -1243,12 +1330,13 @@ export function BasicDeatilsForm({ editMode }) {
             </label>
             <input
 
-              type='text'
-              name='plot_number'
-              defaultValue={options?.data?.plot_number ?? ''}
-              className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
-            />
-          </div>
+            type='text'
+            name='plot_number'
+            defaultValue={options?.data?.plot_number ?? ''}
+            onChange={handleChange}
+            className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+          />
+        </div>
 
           {/* Nearest landmark */}
           <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
@@ -1263,12 +1351,13 @@ export function BasicDeatilsForm({ editMode }) {
             </label>
             <input
 
-              type='text'
-              name='nearest_landmark'
-              defaultValue={options?.data?.nearest_landmark ?? ''}
-              className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
-            />
-          </div>
+            type='text'
+            name='nearest_landmark'
+            defaultValue={options?.data?.nearest_landmark ?? ''}
+            onChange={handleChange}
+            className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+          />
+        </div>
 
           {/* Location Description */}
           <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
@@ -1283,12 +1372,13 @@ export function BasicDeatilsForm({ editMode }) {
             </label>
             <input
 
-              type='text'
-              name='location_desc'
-              defaultValue={options?.data?.location_desc ?? ''}
-              className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
-            />
-          </div>
+            type='text'
+            name='location_desc'
+            defaultValue={options?.data?.location_desc ?? ''}
+            onChange={handleChange}
+            className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+          />
+        </div>
 
 
           {/* check file upload */}
