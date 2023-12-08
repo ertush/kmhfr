@@ -817,9 +817,8 @@ const handleServiceUpdates = async (token, stateSetters) => {
 
 
     const [services, facilityId] = stateSetters
-
-
-    const _payload = JSON.parse(services).length > 0 ? JSON.parse(services).map(({ id }) => ({ service: id })) : { services: [{ service: null }] }
+    
+    const _payload = JSON.parse(services).length > 0 ? JSON.parse(services).map(({ rowid }) => ({ service: rowid })) : { services: [{ service: null }] }
 
 
     try {
