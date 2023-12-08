@@ -68,8 +68,8 @@ export function CommunityUnitEditForm({ cu: {
   const [intialValuesBasicDetails, setBasicDetailValues] = useState({
     code,
     name,
-    facility_name: options?.facilities?.find(({name}) => name == facility_name).id ?? '',
-    status_name,
+    facility_name: options?.facilities?.find(({name}) => name == facility_name)?.id ?? '',
+    status_name: options?.statuses?.find(({name}) => name == status_name)?.id ?? '',
     date_established,
     households_monitored,
     number_of_chvs,
@@ -79,6 +79,9 @@ export function CommunityUnitEditForm({ cu: {
     date_operational,
     date_established,
     facility_ward,
+    location: 0,
+    contacts,
+    health_unit_workers
   })
   const initialValuesChews = {
     health_unit_workers,
@@ -123,27 +126,7 @@ export function CommunityUnitEditForm({ cu: {
     }
   
   },[])
-    
-    
-    // Constants
-
   
-
-
-  //Add Contact and Contact Type Name to Basic details initial Values 
-
-
-
-
-  
-
-  const initalValuesServices = {
-
-  }
-
-
-
-
   return (
 
     <MainLayout>
@@ -318,7 +301,6 @@ export function CommunityUnitEditForm({ cu: {
                   </div>
 
                   {/* CHU Linked Facility */}
-                  {JSON.stringify({facilityOptions})}
                   <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
                     <label
                       htmlFor="facility_name"
@@ -645,6 +627,7 @@ export function CommunityUnitEditForm({ cu: {
                       </div>
                     </div>
 
+
                     {/* Area of Coverage */}
                     <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
                       <label
@@ -659,14 +642,13 @@ export function CommunityUnitEditForm({ cu: {
                         name="location"
                         id="location"
                         placeholder="Description of the area of coverage"
-
-                      defaultValue={intialValuesBasicDetails?.location}
-                      onChange={e=>{
-                        setBasicDetailValues({
-                          ...intialValuesBasicDetails,
-                          location: e.target.value
-                        })
-                      }}
+                        defaultValue={intialValuesBasicDetails?.location}
+                        onChange={e=>{
+                          setBasicDetailValues({
+                            ...intialValuesBasicDetails,
+                            location: e.target.value
+                          })
+                        }}
                         min={0}
                         className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:bg-white focus:border-black outline-none"
                       />
@@ -676,8 +658,8 @@ export function CommunityUnitEditForm({ cu: {
                       <h4 className="text-lg uppercase pb-2 border-b border-blue-600 w-full mb-4 font-semibold text-blue-900">
                         Community Health Unit Contacts
                       </h4>
-
-                      {contacts?.map((_, i) => {
+                      {intialValuesBasicDetails?.contacts?.map((_, i) => {
+                        console.log({_, i})
                         return (
                           <div
                             className="w-full flex flex-row items-center  gap-1 gap-x-3 mb-3"
@@ -704,7 +686,7 @@ export function CommunityUnitEditForm({ cu: {
                                 name={`contact_type_${i}`}
                                 options={contactOptions}
 
-                                defaultValue={intialValuesBasicDetails[`contact_type_${i}`]}
+                                defaultValue={_?.contact_type}
                                 onChange={e=>{
                                   let val = {}
                                   val[`contact_type_${i}`] = e.target.value
@@ -737,7 +719,7 @@ export function CommunityUnitEditForm({ cu: {
                                 type="text"
                                 name={`contact_${i}`}
 
-                                defaultValue={intialValuesBasicDetails[`contact_${i}`]}
+                                defaultValue={_?.contact}
                                 onChange={e=>{
                                   let val = {}
                                   val[`contact_${i}`] = e.target.value
@@ -789,19 +771,26 @@ export function CommunityUnitEditForm({ cu: {
 
             {/* Chews Panel */}
             <Tabs.Panel value="chews" className="grow-1 p-3 mx-auto w-full tab-panel">
-              <Formik initialValue={{}} onSubmit={() => null}>
-                <Form
+              {/* <Formik initialValue={{}} onSubmit={() => null}> */}
+                <form
                   name="chews_form"
                   className="flex flex-col p-3 h-full bg-blue-50 shadow-sm  w-full items-start justify-start gap-3"
+                  onSubmit={e => {
+                    e.preventDefault();
 
+                    const formData = new FormData(e.target)
+                    const data = Object.fromEntries(formData)
+                    console.log('chps data', data)
+                  }}
                 >
                   <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-                    {health_unit_workers && health_unit_workers.length > 0 ? (
-                      health_unit_workers.map((contact, index) => {
+                    {intialValuesBasicDetails?.health_unit_workers && intialValuesBasicDetails?.health_unit_workers.length > 0 ? (
+                      intialValuesBasicDetails?.health_unit_workers.map((huw, index) => {
+                        let health_unit_workers = intialValuesBasicDetails?.health_unit_workers;
                         return (
                           <div
-                            className="flex flex-row items-center justify-between md:mx-1 gap-4 w-full"
-                            key={`${contact}~${index}`}
+                          className="flex flex-row items-center justify-between md:mx-1 gap-4 w-full"
+                          key={`${huw}~${index}`}
                           >
                             {/* First Name */}
                             <div className="flex-col gap-2">
@@ -812,13 +801,19 @@ export function CommunityUnitEditForm({ cu: {
                               >
                                 First Name
                               </label>
-                              <Field
+                              <input
                                 required
                                 type="text"
                                 id={index}
-                                name="first_name"
-
-
+                                name={`first_name_${index}`}
+                                defaultValue={huw?.first_name}
+                                onChange={e=>{
+                                  health_unit_workers[index].first_name = e.target.value
+                                  setBasicDetailValues({
+                                    ...intialValuesBasicDetails,
+                                    ...health_unit_workers
+                                  })
+                                }}
                                 className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:bg-white focus:border-black outline-none"
                               />
                             </div>
@@ -830,13 +825,22 @@ export function CommunityUnitEditForm({ cu: {
                               >
                                 Second Name
                               </label>
-                              <Field
+                              
+                              <input
                                 required
                                 type="text"
                                 id={index}
-                                name="last_name"
-
-
+                                name={`last_name_${index}`}
+                                defaultValue={huw?.last_name}
+                                onChange={e=>{
+                                  let val = {}
+                                  health_unit_workers[index].last_name = e.target.value
+                                  setBasicDetailValues({
+                                    ...intialValuesBasicDetails,
+                                    ...health_unit_workers
+                                  })
+                                  console.log({health_unit_workers})
+                                }}
                                 className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:bg-white focus:border-black outline-none"
                               />
                             </div>
@@ -848,12 +852,20 @@ export function CommunityUnitEditForm({ cu: {
                               >
                                 In Charge
                               </label>
-                              <Field
-                                name="is_incharge"
+                              <input
+                                name={`is_incharge_${index}`}
                                 id={index}
                                 type="checkbox"
-
-
+                                onChange={e=>{
+                                  let val = {}
+                                  // health_unit_workers.push({'is_incharge': e.target.value})
+                                  health_unit_workers[index].first_name = e.target.value
+                                  setBasicDetailValues({
+                                    ...intialValuesBasicDetails,
+                                    ...health_unit_workers
+                                  })
+                                  console.log(health_unit_workers)
+                                }}
                                 className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300"
                               />
                             </div>
@@ -866,9 +878,8 @@ export function CommunityUnitEditForm({ cu: {
                                 <button
                                   type="button"
                                   name="delete"
-
-                                  className="flex items-center justify-start space-x-2 bg-red-600  p-1 px-2"
-                                >
+                                  defaultValue={huw?.is_incharge}
+                                  className="flex items-center justify-start space-x-2 bg-red-600  p-1 px-2" >
                                   <span className="text-medium font-semibold text-white">
                                     Remove
                                   </span>
@@ -910,8 +921,8 @@ export function CommunityUnitEditForm({ cu: {
 
                     </button>
                   </div>
-                </Form>
-              </Formik>
+                </form>
+              {/* </Formik> */}
             </Tabs.Panel>
 
             {/* Services Panel */}
@@ -919,8 +930,8 @@ export function CommunityUnitEditForm({ cu: {
               value="services"
               className="grow-1 p-3 mx-auto w-full tab-panel"
             >
-              <Formik initialValue={{}} onSubmit={() => null}>
-                <Form 
+              {/* <Formik initialValue={{}} onSubmit={() => null}> */}
+                <form 
                   name="chu_services_form"
                   className="flex flex-col w-full items-center bg-blue-50 shadow-sm p-3 justify-start gap-3"
 
@@ -1028,8 +1039,8 @@ export function CommunityUnitEditForm({ cu: {
                       </span>
                     </button>
                   </div>
-                </Form>
-              </Formik>
+                </form>
+              {/* </Formik> */}
             </Tabs.Panel>
           </Tabs.Root>
         </div>
