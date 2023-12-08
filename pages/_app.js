@@ -32,22 +32,26 @@ export default function App(props) {
       <UserContext.Provider value={(() => {
           let user
           if (typeof window !== "undefined") {
-                user = JSON.parse(window.sessionStorage.getItem('user'))
-        }
+                // user = JSON.parse(window.sessionStorage.getItem('user'))
+                user = JSON.parse(window.localStorage.getItem('user'))
+          }
+          // console.log({'_app_user':user})
         return user
         
         })()}>
         <UserGroupContext.Provider value={(() => {
            let userGroup
            if (typeof window !== "undefined") {
-                 userGroup = JSON.parse(window.sessionStorage.getItem('user'))?.groups[0]?.name
+                //  userGroup = JSON.parse(window.sessionStorage.getItem('user'))?.groups[0]?.name
+                 userGroup = JSON.parse(window.localStorage.getItem('user'))?.groups[0]?.name
          }
          return userGroup
         })()}>
         <PermissionContext.Provider value={(() => {
           let userPermissions
           if (typeof window !== "undefined") {
-                userPermissions = JSON.parse(window.sessionStorage.getItem('user'))?.all_permissions
+                // userPermissions = JSON.parse(window.sessionStorage.getItem('user'))?.all_permissions
+                userPermissions = JSON.parse(window.localStorage.getItem('user'))?.all_permissions
         }
         return userPermissions
         

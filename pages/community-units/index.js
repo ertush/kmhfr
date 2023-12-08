@@ -12,9 +12,12 @@ import { useRouter } from 'next/router';
 import { Menu } from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/outline';
 import CommunityUnitSideMenu from '../../components/CommunityUnitSideMenu';
+import { UserContext } from '../../providers/user';
 
 
 const CommunityUnit = (props) => {
+	const userCtx = React.useContext(UserContext);
+	const [user, setUser] = useState(userCtx);
 	const router = useRouter();
 	const cus = props?.data?.results;
 	const filters = props?.filters;
@@ -41,7 +44,7 @@ const CommunityUnit = (props) => {
 	// Check user for authentication
 	useEffect(() => {
 	
-		const user = JSON.parse(sessionStorage.getItem('user'))
+		setUser(userCtx)
 		if(user.id === 6){
 			router.push('/auth/login')
 		}

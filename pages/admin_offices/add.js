@@ -7,11 +7,13 @@ import {
 } from '@heroicons/react/solid';
 import Select from 'react-select';
 import Link from 'next/link'
+import { UserContext } from '../../providers/user';
 
 const FormData = require('form-data');
 
 function AddAdminOffice(props) {
 
+    const userCtx = React.useContext(UserContext);
     // Form drop down options
     const countyOptions = props['0']?.counties;
     const subCountyOptions = props['1']?.sub_counties;
@@ -19,6 +21,7 @@ function AddAdminOffice(props) {
 
     const [county, setCounty] = useState('');
     const [hide, setHide] = useState(false)
+    const [user, setUser] = useState(userCtx)
 
     // Drop down select options data
     const formRef = useRef(null)
@@ -73,7 +76,7 @@ function AddAdminOffice(props) {
     }
 
     useEffect(() => {
-        const user = JSON.parse(sessionStorage.getItem('user'))
+        setUser(userCtx)
         if(user.id === 6){
             router.push('/auth/login')
         }

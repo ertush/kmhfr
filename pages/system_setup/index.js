@@ -50,6 +50,7 @@ import {
 
 import { styled } from '@mui/material/styles';
 import { PencilAltIcon } from '@heroicons/react/outline';
+import { UserContext } from '../../providers/user';
 
 
 const StyledDataGrid = styled(DataGrid)(() => ({
@@ -66,6 +67,8 @@ const StyledDataGrid = styled(DataGrid)(() => ({
 
 
 const system_setup = (props) => {
+
+    const userCtx = useContext(UserContext)
 
 
 
@@ -99,6 +102,7 @@ const system_setup = (props) => {
     const handleClose = () => setOpen(false);
     const [sbcty_constituency, setSbctyConstituency] = useState([]);
     const [value, setValue] = React.useState('1');
+    const [user, setUser] = useState(userCtx);
 	  
     const [isClient, setIsClient] = useState(false)
     const [columns, setColumns] = useState([
@@ -152,7 +156,7 @@ const system_setup = (props) => {
     
     useEffect(() => {
 
-        const user = JSON.parse(sessionStorage.getItem('user'))
+        setUser(userCtx);
         if(user.id === 6){
             router.push('/auth/login')
         }
@@ -161,14 +165,6 @@ const system_setup = (props) => {
             router.push('/unauthorized')
         }
 
-    },[])
-
-
-    useEffect(() => {
-        const user = JSON.parse(sessionStorage.getItem('user'))
-		if(user.id === 6){
-			router.push('/auth/login')
-		}
 	  setIsClient(true)
 	}, [])
 

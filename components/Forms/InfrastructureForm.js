@@ -23,7 +23,12 @@ export function InfrastructureForm() {
     const { updatedSavedChanges, updateFacilityUpdateData } = options?.data ? useContext(FacilityUpdatesContext) : {updatedSavedChanges: null, updateFacilityUpdateData: null }
 
     
-
+    const tableheaders =[
+        "Name",
+        "Category",
+        "Present",
+        "Number"
+    ]
 
     //Options
     const infrastructureOption = ((_infrastructure) => {
@@ -59,7 +64,7 @@ export function InfrastructureForm() {
 
                     {/* Edit List With Count*/}
                     <EditListWithCount
-                        initialSelectedItems={[]}
+                        initialSelectedItems={options?.data? options?.data.facility_infrastructure:[]}
                         otherItemsCategory={null}
                         itemsCategoryName={'infrastructure'}
                         categoryItems={infrastructureOption.categories}
@@ -79,6 +84,7 @@ export function InfrastructureForm() {
                         previousItemCategory={'services'}
                         setIsSaveAndFinish={updatedSavedChanges}
                         itemData={options?.data ? options?.data?.facility_infrastructure : null}
+                        title={tableheaders}
                     />
 
                 </div>

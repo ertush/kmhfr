@@ -155,9 +155,11 @@ const checkToken = async (req, res, isProtected, creds) => {
 
 const getUserDetails = async (token, url) => {
     if (typeof window != "undefined") {
-        let savedSession = window.sessionStorage.getItem('user')
+        // let savedSession = window.sessionStorage.getItem('user')
+        let savedSession = window.localStorage.getItem('user')
         if (savedSession && savedSession.length > 0) {
-            savedSession = JSON.parse(window.sessionStorage.getItem('user'))
+            // savedSession = JSON.parse(window.sessionStorage.getItem('user'))
+            savedSession = JSON.parse(window.localStorage.getItem('user'))
         }
         if (savedSession && savedSession?.id && savedSession?.id.length > 0) {
             console.log('Saved session: ', savedSession)
@@ -185,7 +187,8 @@ const getUserDetails = async (token, url) => {
             }
             if (typeof window !== "undefined") {
                 // console.log('getUserDetails returning ', response)
-                window.sessionStorage.setItem('user', JSON.stringify(response))
+                // window.sessionStorage.setItem('user', JSON.stringify(response))
+                window.localStorage.setItem('user', JSON.stringify(response))
             }
             return response
         }).catch(err => {

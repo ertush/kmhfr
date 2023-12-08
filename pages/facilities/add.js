@@ -5,11 +5,13 @@ import Link from "next/link";
 import Head from "next/head";
 import FacilitySideMenu from "../../components/FacilitySideMenu";
 import {useState, useEffect, createContext} from 'react';
+import { UserContext } from "../../providers/user";
 
 
 export const FormOptionsContext = createContext({});
 
 export default function AddFacility(props) {
+	const userCtx = React.useContext(UserContext);
 
 	const filters = [];
 	const [khisSynched, setKhisSynched] = useState(false);
@@ -18,9 +20,10 @@ export default function AddFacility(props) {
 	const [allFctsSelected, setAllFctsSelected] = useState(false);
 	const [title, setTitle] = useState('');
 	const [isClient, setIsClient] = useState(false)
+	const [user, setUser] = useState(userCtx)
  
 	useEffect(() => {
-		const user = JSON.parse(sessionStorage.getItem('user'))
+		setUser(userCtx)
 		if(user.id === 6){
 			router.push('/auth/login')
 		}

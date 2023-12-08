@@ -1,7 +1,7 @@
 
 "use client"
 
-import { createContext, useContext, useEffect } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 import * as Tabs from "@radix-ui/react-tabs";
 
 import { BasicDeatilsForm } from './BasicDetailsForm';
@@ -18,6 +18,9 @@ import { FormOptionsContext } from '../../pages/facilities/add';
 
 
 export const EditFacilityContactsContext = createContext(null)
+
+export const TabContext = createContext(null)
+
 
 
 export function EditForm() {
@@ -47,11 +50,14 @@ export function EditForm() {
     value: options?.data?.id
   }).actions.use();
 
+
+  const [tabOpen, setTabOpen] = useState(null)
+
+
   // Update facility ID in the store
 
   useEffect(() => {
-
-    console.log({options})
+    // console.log({options})
     setFacilityId(options?.data?.id)
 
   }, [])
@@ -77,6 +83,9 @@ export function EditForm() {
           <Tabs.Tab
             value="geolocation"
             className="px-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
+            onClick={e => {
+              setTabOpen(e.target.innerHTML)
+            }}
           >
             Geolocation
           </Tabs.Tab>
@@ -119,10 +128,7 @@ export function EditForm() {
             value="basic_details"
             className="grow-1 py-1 px-4 tab-panel"
           >
-
-
             <BasicDeatilsForm mode="edit"/>
-
 
           </Tabs.Panel>
 
@@ -132,18 +138,21 @@ export function EditForm() {
             className="grow-1 py-1 px-4 tab-panel"
           >
 
-            <GeolocationForm
-              useGeoJSON={() => [geoJSON, setGeoJSON]}
-              useGeoData={(type) => {
-                switch (type) {
-                  case 'ward_data':
-                    return [wardName, setWardName];
-                  case 'geo_data':
-                    return [geoCenter, setGeoCenter];
+            <TabContext.Provider value={tabOpen}>
+              <GeolocationForm
+                mode="edit"
+                useGeoJSON={() => [geoJSON, setGeoJSON]}
+                useGeoData={(type) => {
+                  switch (type) {
+                    case 'ward_data':
+                      return [wardName, setWardName];
+                    case 'geo_data':
+                      return [geoCenter, setGeoCenter];
+                  }
                 }
-              }
-              }
-            />
+                }
+              />
+            </TabContext.Provider>
 
 
           </Tabs.Panel>

@@ -41,7 +41,7 @@ export function ServicesForm() {
 		return {
 			categories: serviceCategories,
 		}
-	})(options?.service ?? [])
+	})(options?.services ?? [])
 
     //State
     const [services, setServices] = useState();
@@ -59,13 +59,13 @@ export function ServicesForm() {
                     <div className='flex items-center w-full h-auto min-h-[300px]'>
 
                         <EditListItem
-                            initialSelectedItems={[]}
+                            initialSelectedItems={options?.data? options?.data.facility_services:[]}
                             categoryItems={serviceOptions.categories}
                             itemsCategoryName={'Services'}
                             itemId={facilityId}
                             setItems={setServices}
                             item={options?.data ?? null}
-                            options={options?.service}
+                            options={options?.services}
                             token={options?.token}
                             removeItemHandler={handleServiceDelete}
                             handleItemsSubmit={handleServiceSubmit}

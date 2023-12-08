@@ -75,7 +75,7 @@ const Dashboard = (props) => {
     const [isquarterOpen, setIsquarterOpen] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
     const [drillDown, setDrillDown] = useState({})
-    const [user, setUser] = useState(null)
+    const [user, setUser] = useState(userCtx)
     const [subcounties, setSubcounties] = useState([])
     const [counties, setCounties] = useState([])
     const [wards, setWards] = useState([])
@@ -149,7 +149,7 @@ const Dashboard = (props) => {
 
 
     useEffect(() => {
-
+        setUser(userCtx)
         
         let mtd = true
         if (mtd) {
@@ -187,9 +187,10 @@ const Dashboard = (props) => {
 
         if(userCtx?.groups[0].id == 2) fetchWards(user?.user_sub_counties[0]?.sub_county ?? null)
         if(userCtx?.groups[0].id == 1) fetchSubCounties(userCtx?.county)
-        if(userCtx?.groups[0].id == 7) fetchCounties()
+        if(userCtx?.groups[0].id == 7) fetchCounties();
+
+        setUser(userCtx)
 	
-		const user = JSON.parse(sessionStorage.getItem('user'))
 		if(user.id === 6){
 			router.push('/auth/login')
 		}else{

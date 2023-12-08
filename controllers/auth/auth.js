@@ -48,7 +48,7 @@ const getToken = (req, res, refresh_token, creds) => {
     bod.client_id = process.env.CLIENT_ID
     bod.client_secret = process.env.CLIENT_SECRET
 
-    console.log({ token_url: process.env.TOKEN_URL })
+    // console.log({ token_url: process.env.TOKEN_URL })
     return fetch(process.env.TOKEN_URL, {
         'method': 'POST',
         'headers': {
@@ -182,9 +182,17 @@ const logUserIn = (req, res, creds, was) => {
 
 const getUserDetails = async (token, url) => {
     if (typeof window != "undefined") {
-        let savedSession = window.sessionStorage.getItem('user')
+        // let savedSession = window.sessionStorage.getItem('user')
+        // if (savedSession && savedSession.length > 0) {
+        //     savedSession = JSON.parse(window.sessionStorage.getItem('user'))
+        // }
+        // if (savedSession && savedSession?.id && savedSession?.id.length > 0) {
+        //     console.log('Saved session: ', savedSession)
+        //     return savedSession
+        // }
+        let savedSession = window.localStorage.getItem('user')
         if (savedSession && savedSession.length > 0) {
-            savedSession = JSON.parse(window.sessionStorage.getItem('user'))
+            savedSession = JSON.parse(window.localStorage.getItem('user'))
         }
         if (savedSession && savedSession?.id && savedSession?.id.length > 0) {
             console.log('Saved session: ', savedSession)
@@ -212,7 +220,8 @@ const getUserDetails = async (token, url) => {
             }
             if (typeof window !== "undefined") {
                 // console.log('getUserDetails returning ', response)
-                window.sessionStorage.setItem('user', JSON.stringify(response))
+                // window.sessionStorage.setItem('user', JSON.stringify(response))
+                window.localStorage.setItem('user', JSON.stringify(response))
             }
             return response
         }).catch(err => {

@@ -20,8 +20,7 @@ import NativePickers from '../../components/date-picker'
 // import { PermissionContext } from '../../providers/permissions'
 import FacilitySideMenu from '../../components/FacilitySideMenu'
 import { UserContext } from '../../providers/user'
-import {Formik, Form, Field} from 'formik'
-
+import {Formik, Form, Field} from 'formik';
 
 
 const FacilityHome = (props) => {
@@ -35,27 +34,28 @@ const FacilityHome = (props) => {
     let fltrs = filters
     const [drillDown, setDrillDown] = useState({})
     const userCtx = useContext(UserContext);
+    // console.log({userCtx})
 
     // const qf = props?.query?.qf ?? null
     if (filters && typeof filters === "object")
      {
-    filters["has_edits"] = [{ id: "has_edits", name: "Has edits" },]
-    filters["is_approved"] = [{ id: "is_approved", name: "Is approved" }]
-    filters["is_complete"] = [{ id: "is_complete", name: "Is complete" }]
-    filters["number_of_beds"] = [{ id: "number_of_beds", name: "Number of beds" }]
-    filters["number_of_cots"] = [{ id: "number_of_cots", name: "Number of cots" }]
-    filters["open_whole_day"] = [{ id: "open_whole_day", name: "Open whole day" }]
-    filters["open_weekends"] = [{ id: "open_weekends", name: "Open weekends" }]
-    filters["open_public_holidays"] = [{ id: "open_public_holidays", name: "Open public holidays" }]
-    delete fltrs.has_edits
-    delete fltrs.is_approved
-    delete fltrs.is_complete
-    delete fltrs.number_of_beds
-    delete fltrs.number_of_cots
-    delete fltrs.open_whole_day
-    delete fltrs.open_weekends
-    delete fltrs.open_public_holidays
-}
+        filters["has_edits"] = [{ id: "has_edits", name: "Has edits" },]
+        filters["is_approved"] = [{ id: "is_approved", name: "Is approved" }]
+        filters["is_complete"] = [{ id: "is_complete", name: "Is complete" }]
+        filters["number_of_beds"] = [{ id: "number_of_beds", name: "Number of beds" }]
+        filters["number_of_cots"] = [{ id: "number_of_cots", name: "Number of cots" }]
+        filters["open_whole_day"] = [{ id: "open_whole_day", name: "Open whole day" }]
+        filters["open_weekends"] = [{ id: "open_weekends", name: "Open weekends" }]
+        filters["open_public_holidays"] = [{ id: "open_public_holidays", name: "Open public holidays" }]
+        delete fltrs.has_edits
+        delete fltrs.is_approved
+        delete fltrs.is_complete
+        delete fltrs.number_of_beds
+        delete fltrs.number_of_cots
+        delete fltrs.open_whole_day
+        delete fltrs.open_weekends
+        delete fltrs.open_public_holidays
+    }
 
     const multiFilters = ['service_category', 'service', 'county', 'subcounty', 'ward', 'constituency']
 
@@ -71,12 +71,14 @@ const FacilityHome = (props) => {
     const [facilityFeedBack, setFacilityFeedBack] = useState([])
     const [pathId, setPathId] = useState(props?.path.split('id=')[1] || '') 
     const [allFctsSelected, setAllFctsSelected] = useState(true);
-    const [isClient, setIsClient] = useState(false)
+    const [isClient, setIsClient] = useState(false);
+    const [user, setUser] = useState(userCtx)
  
 
 
 	useEffect(() => {
-        const user = JSON.parse(sessionStorage.getItem('user'))
+        setUser(userCtx)
+        console.log({user})
 		if(user.id === 6){
 			router.push('/auth/login')
 		}
@@ -150,18 +152,17 @@ const FacilityHome = (props) => {
                                 {/* Button group */}
                              
                                 {
-                                (allFctsSelected || pathId === 'all') &&
+                                (
+                                    userCtx?.groups[0]?.id == 2 || // SCHRIO
+                                    userCtx?.groups[0]?.id == 7    // SuperAdmin
+                                    /*allFctsSelected || pathId === 'all'*/) &&
                                 <div className='flex items-center space-x-6 w-auto'>
                                     {/* Facility Button */}
                                     {
-                                        (
-                                            userCtx?.groups[0]?.id == 2 || // SCHRIO
-                                            userCtx?.groups[0]?.id == 7    // SuperAdmin
-                                            
-                                        ) &&
+                                       
                                          // Display add facility button if  user belong to SCHRIO group
                                    <Menu.Item as="div"  className="px-4 py-2 bg-blue-700 text-white text-md tracking-tighter font-semibold whitespace-nowrap  hover:bg-black focus:bg-black active:bg-black uppercase">
-                                        <button  onClick={() => {router.push('/facilities/add')}} className='flex items-center justify-center'>
+                                        <button  onClick={() => {router.push('/facilities/add?formId=0')}} className='flex items-center justify-center'>
 
                                             <span className='text-base uppercase font-semibold'>Add Facility</span>
                                             <PlusIcon className="w-4 h-4 ml-2" />
@@ -688,10 +689,7 @@ const FacilityHome = (props) => {
                                     {!props?.data && <h2 className='text-gray-400'>No Facilities Found ....</h2>}
                              
                     </div>
-
-                  
                     
-                   
                 </div>
             </MainLayout >
         </>
@@ -701,16 +699,13 @@ const FacilityHome = (props) => {
     }
 }
 
-export async function getServerSideProps (ctx) {
+FacilityHome.getInitialProps = async (ctx) => {
 
     const API_URL = process.env.NEXT_PUBLIC_API_URL;
-
-
 
     const fetchFilters = token => {
         let filters_url = API_URL + '/common/filtering_summaries/?fields=county%2Cfacility_type%2Cconstituency%2Cward%2Coperation_status%2Cservice_category%2Cowner_type%2Cowner%2Cservice%2Ckeph_level%2Csub_county'
 
-      
         return fetch(filters_url, {
             headers: {
                 'Authorization': 'Bearer ' + token,
@@ -729,7 +724,7 @@ export async function getServerSideProps (ctx) {
             })
     }
 
-    const fetchData = async (token) => {
+    const fetchData = (token) => {
 
         let url = API_URL + '/facilities/facilities/?fields=id,code,official_name,facility_type_name,owner_name,county,sub_county,constituency_name,ward_name,updated,operation_status_name,sub_county_name,name,is_complete,in_complete_details,approved_national_level,has_edits,approved,rejected,keph_level'
      
@@ -782,25 +777,21 @@ export async function getServerSideProps (ctx) {
             }
 
 
-                  
+            // Remove approved field if fetching for Facilities pending approval
+            // if (flt === 'to_publish') url = url.replace('approved,', '')
+
+          
         })
 
-        // Fetch All facility Count
 
-        // const getFacilityCount = async () => {
-        //     return (await (await fetch(`${API_URL}/facilities/facilities?format=json`, {headers: {
-        //         'Authorization': 'Bearer ' + token,
-        //         'Accept': 'application/json'
-        //     }})).json())?.count
-        // }
-
-
-        let current_url = url + `&page_size=19000`
+        let current_url = url + '&page_size=100'
         if (ctx?.query?.page) {
             url = `${url}&page=${ctx.query.page}`
         }
 
     
+
+        console.log({url});
 
         return fetch(url, {
             headers: {
@@ -827,8 +818,7 @@ export async function getServerSideProps (ctx) {
             })
     }
 
-    return {
-        props: checkToken(ctx.req, ctx.res).then(t => {
+    return checkToken(ctx.req, ctx.res).then(t => {
         if (t.error) {
             throw new Error('Error checking token')
         } else {
@@ -855,10 +845,8 @@ export async function getServerSideProps (ctx) {
             }
         }, 1000);
     })
-    }
-
- 
 
 }
+
 
 export default FacilityHome

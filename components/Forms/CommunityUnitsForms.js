@@ -1,4 +1,4 @@
-import { Form, Formik, Field } from 'formik'
+import {  Form, Formik, Field  } from 'formik'
 import MainLayout from '../MainLayout';
 import CommunityUnitSideMenu from '../CommunityUnitSideMenu';
 import Select from './formComponents/FromikSelect'
@@ -17,6 +17,11 @@ import dynamic from 'next/dynamic';
 import 'react-dual-listbox/lib/react-dual-listbox.css';
 import { KeyboardArrowLeft, KeyboardArrowRight } from '@mui/icons-material';
 import {handleChulSubmit} from "../../controllers/chul/chulHandlers"
+import dynamic from 'next/dynamic';
+// import DualListBox from 'react-dual-listbox';
+import 'react-dual-listbox/lib/react-dual-listbox.css';
+import { KeyboardArrowLeft, KeyboardArrowRight } from '@mui/icons-material';
+
 // import SelectSearch from './formComponents/FormikSelectSearch';
 
 
@@ -121,37 +126,23 @@ export function CommunityUnitEditForm({ cu: {
 
     return c_ontacts;
   }
-  let token;
-  
-  useEffect(() => {
 
-    let accessTokenObject;
+  useEffect(()=>{
+    
+    // Options
   
-    console.log({ options });
-    console.log('intialValuesBasicDetails', intialValuesBasicDetails);
   
-    if (contacts) {
+    console.log({ options })
+    console.log('intialValuesBasicDetails', intialValuesBasicDetails)
+    // if (contacts) appendValueToBasicDetails(contacts)
+    if(contacts){
       setBasicDetailValues({
         ...intialValuesBasicDetails,
-        ...appendValueToBasicDetails(contacts),
-      });
+        ...appendValueToBasicDetails(contacts)
+      })
     }
   
-    try {
-      accessTokenObject = JSON.parse(getCookie('access_token'));
-    } catch (error) {
-      console.error('Error parsing access token JSON:', error);
-    }
-  
- 
-    if (accessTokenObject) {
-      const token = accessTokenObject.token;
-
-    } else {
-      console.error('accessTokenObject is not defined or invalid.');
-    }
-  }, []);
-  
+  },[])
     
     
     // Constants
