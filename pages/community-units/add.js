@@ -971,7 +971,7 @@ const AddCommunityUnit = (props) => {
 
 																<EditListItem
 																	initialSelectedItems={[]}
-																	itemsCategory={serviceOptions} //serviceOptions	
+																	categoryItems={serviceOptions} //serviceOptions	
 																	itemsCategoryName={'CHU Services'}
 																	setUpdatedItem={() => null}
 																	itemId={chulId} //chulId
