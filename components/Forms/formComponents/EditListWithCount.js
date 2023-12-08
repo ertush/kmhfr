@@ -347,7 +347,7 @@ function EditListWithCount(
             initialValues={initialValues}
             initialErrors={false}
             onSubmit={(values) => { 
-                console.log(values)
+                // console.log(values)
                 // setIsSaveAndFinish(true)
 
                 if (item) {
@@ -532,7 +532,7 @@ function EditListWithCount(
                                                         handleInputChange(cid, e.target.value)
                                                     
                                                     }}
-                                                    hidden={!selectedRows.some(item=>item["count"])}
+                                                    // hidden={!selectedRows.some(item=>item["count"])}
                                                     disabled={!selectedRows.some(item=>item.rowid.includes(row.id))}  
                                                 />
                                                 </td>
