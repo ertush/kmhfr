@@ -51,9 +51,10 @@ function  EditListItem({
 }) {
   
   const [selected_services, setSelectedServices] = useState([])
+  const [form_id, setFormId] =  useState(itemId)
   // const current_services = useRef(new Array())
   const alert = useAlert()
-  
+  console.log('itemId', itemId)
   
 
 
@@ -148,7 +149,7 @@ function  EditListItem({
 
           // console.log({savedItems, values})
 
-          handleItemsUpdate(token, [savedItems, itemId])
+          handleItemsUpdate(token, [savedItems, form_id])
             .then(resp => {
               defer(() => setIsSaveAndFinish(true));
               let update_id
@@ -157,7 +158,7 @@ function  EditListItem({
                 alert.success('Updated Facility services successfully')
 
                 fetch(
-                  `${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${itemId}/`,
+                  `${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${form_id}/`,
                   {
                     headers: {
                         'Authorization': 'Bearer ' + token,
@@ -203,8 +204,8 @@ function  EditListItem({
         }
 
         else {
-
-          handleItemsSubmit(token, [savedItems, nextItemCategoryId, setNextItemCategory], itemId)
+          handleItemsSubmit([selected_services, setFormId, setSelectedServices], form_id)
+          // handleItemsSubmit(token, [savedItems, nextItemCategoryId, setNextItemCategory], form_id)
              .then((resp) => {
               if(resp.ok){
                 alert.success('Facility services saved successfully');
@@ -223,6 +224,7 @@ function  EditListItem({
       <Form
         name="list_item_form"
         className="flex flex-col w-full items-start justify-start gap-3"
+        // onSubmit={handleItemsSubmit}
 
       >
         {/* Item List Dropdown */}
@@ -283,7 +285,7 @@ function  EditListItem({
                 				category: ctg,
                                 categoryId: category,
                 				itemLabels: _subCtgs,
-                				itemIds: _values
+                				form_ids: _values
                 			})
                 		}
 
@@ -295,7 +297,7 @@ function  EditListItem({
                
                   const filters =_options.filter(({categoryId}) => (categoryId === e.value))[0]
                  
-                  const item_options = filters.itemLabels.map((label, i) => ({label, value: filters.itemIds[i]}))
+                  const item_options = filters.itemLabels.map((label, i) => ({label, value: filters.form_ids[i]}))
                 
              
 

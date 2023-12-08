@@ -10,7 +10,7 @@ import {
   LockClosedIcon,
   XCircleIcon,
 } from "@heroicons/react/solid";
-import { useContext, cache, useState } from 'react';
+import { useContext, cache, useState, useEffect } from 'react';
 import { ChuOptionsContext } from '../../pages/community-units/edit/[id]';
 import dynamic from 'next/dynamic';
 // import DualListBox from 'react-dual-listbox';
@@ -18,7 +18,6 @@ import 'react-dual-listbox/lib/react-dual-listbox.css';
 import { KeyboardArrowLeft, KeyboardArrowRight } from '@mui/icons-material';
 
 // import SelectSearch from './formComponents/FormikSelectSearch';
-
 
 
 
@@ -47,7 +46,6 @@ export function CommunityUnitEditForm({ cu: {
   services
 } }) {
 
-
   const DualListBox = dynamic(
     () => import("react-dual-listbox"), // replace '@components/map' with your component's location
     {
@@ -58,17 +56,19 @@ export function CommunityUnitEditForm({ cu: {
       ),
       ssr: false, // This line is important. It's what prevents server-side render
     } 
-  );
-  const [current_services, setCurrentServices] = useState(Array.from(services, s=>s?.service) || [])
+    );
 
   const options = useContext(ChuOptionsContext)
 
-  // Constants
-
-  const intialValuesBasicDetails = {
+  const [facilityOptions, setFacilityOptions] = useState(options?.facilities?.map(({ id, name }) => ({ label: name, value: id })) ?? []) 
+  const [operationStatusOptions, setOperationStatusOptions] = useState(options?.statuses?.map(({ id, name }) => ({ label: name, value: id })) ?? []) 
+  const [serviceOptions, setServiceOptions] = useState(options?.services?.map(({ id, name }) => ({ label: name, value: id })) ?? []) 
+  const [contactOptions, setContactOptions] = useState(options?.contact_types?.map(({ id, name }) => ({ label: name, value: id })) ?? []) 
+  const [current_services, setCurrentServices] = useState(Array.from(services, s=>s?.service) || [])
+  const [intialValuesBasicDetails, setBasicDetailValues] = useState({
     code,
     name,
-    facility_name,
+    facility_name: options?.facilities?.find(({name}) => name == facility_name).id ?? '',
     status_name,
     date_established,
     households_monitored,
@@ -79,41 +79,68 @@ export function CommunityUnitEditForm({ cu: {
     date_operational,
     date_established,
     facility_ward,
-
-  }
-
-  //Add Contact and Contact Type Name to Basic details initial Values 
-
-  function appendValueToBasicDetails(contacts) {
-    let i = 0
-    for (let { contact_type, contact } of contacts) {
-      intialValuesBasicDetails[`contact_type_${i}`] = contact_type
-      intialValuesBasicDetails[`contact_${i}`] = contact
-      i += 1
-
-    }
-  }
-
-  if (contacts) appendValueToBasicDetails(contacts)
-
-
+  })
   const initialValuesChews = {
     health_unit_workers,
     contacts,
   }
 
+  function appendValueToBasicDetails(contacts) {
+    let i = 0
+    // for (let { contact_type, contact } of contacts) {
+    //   let contact_type_data = {}
+    //   contact_type_data[`contact_type_${i}`] = contact_type
+    //   contact_type_data[`contact_${i}`] = contact
+    //   setBasicDetailValues({
+    //     ...intialValuesBasicDetails,
+    //     ...contact_type_data
+
+    //   })
+    //   i += 1
+    // }
+    let c_ontacts = Array.from(contacts, (c,i)=>{
+      let ct = {}
+      ct[`contact_type_${i}`] = c?.contact_type;
+      ct[`contact_${i}`] = c?.contact;
+    }) ?? {}
+
+    return c_ontacts;
+  }
+
+  useEffect(()=>{
+    
+    // Options
+  
+  
+    console.log({ options })
+    console.log('intialValuesBasicDetails', intialValuesBasicDetails)
+    // if (contacts) appendValueToBasicDetails(contacts)
+    if(contacts){
+      setBasicDetailValues({
+        ...intialValuesBasicDetails,
+        ...appendValueToBasicDetails(contacts)
+      })
+    }
+  
+  },[])
+    
+    
+    // Constants
+
+  
+
+
+  //Add Contact and Contact Type Name to Basic details initial Values 
+
+
+
+
+  
+
   const initalValuesServices = {
 
   }
 
-  // Options
-
-  console.log({ options })
-
-  const facilityOptions = options?.facilities?.map(({ id, name }) => ({ label: name, value: id })) ?? []
-  const operationStatusOptions = options?.statuses?.map(({ id, name }) => ({ label: name, value: id })) ?? []
-  const serviceOptions = options?.services?.map(({ id, name }) => ({ label: name, value: id })) ?? []
-  const contactOptions = options?.contact_types?.map(({ id, name }) => ({ label: name, value: id })) ?? []
 
 
 
@@ -253,10 +280,16 @@ export function CommunityUnitEditForm({ cu: {
               value="basic_details"
               className="grow-1 p-3 mx-auto w-full tab-panel"
             >
-              <Formik initialValues={intialValuesBasicDetails} onSubmit={() => null}>
-                <Form
+              {/* <Formik initialValues={intialValuesBasicDetails} onSubmit={() => null}> */}
+              <form
                   className="flex m-1 p-3 bg-blue-50 shadow-sm flex-col w-full items-start justify-start gap-3"
+                  onSubmit={e => {
+                    e.preventDefault();
 
+                    const formData = new FormData(e.target)
+                    const data = Object.fromEntries(formData)
+                    console.log('submission data', data)
+                  }}
                 >
                   {/* CHU Name */}
                   <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
@@ -269,14 +302,23 @@ export function CommunityUnitEditForm({ cu: {
                         *
                       </span>
                     </label>
-                    <Field
+                    <input
                       type="text"
                       name="name"
+
+                      defaultValue={intialValuesBasicDetails?.name}
+                      onChange={e=>{
+                        setBasicDetailValues({
+                          ...intialValuesBasicDetails,
+                          name: e.target.value
+                        })
+                      }}
                       className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:bg-white focus:border-black outline-none"
                     />
                   </div>
 
                   {/* CHU Linked Facility */}
+                  {JSON.stringify({facilityOptions})}
                   <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
                     <label
                       htmlFor="facility_name"
@@ -304,6 +346,13 @@ export function CommunityUnitEditForm({ cu: {
                       }}
 
                       options={facilityOptions}
+                      defaultValue={intialValuesBasicDetails?.facility_name}
+                      onChange={e=>{
+                        setBasicDetailValues({
+                          ...intialValuesBasicDetails,
+                          facility_name: e.target.value
+                        })
+                      }}
                       placeholder="Select Link facility ..."
                       name="facility_name"
                       className='flex-none w-full  flex-grow  placeholder-gray-500 border border-blue-600 outline-none'
@@ -338,6 +387,13 @@ export function CommunityUnitEditForm({ cu: {
                         }),
                       }}
                       options={operationStatusOptions}
+                      defaultValue={intialValuesBasicDetails?.status_name}
+                      onChange={e=>{
+                        setBasicDetailValues({
+                          ...intialValuesBasicDetails,
+                          status_name: e.target.value
+                        })
+                      }}
                       name="status_name"
                       className='flex-none w-full  flex-grow  placeholder-gray-500 border border-blue-600 outline-none'
 
@@ -360,10 +416,17 @@ export function CommunityUnitEditForm({ cu: {
                               *
                             </span>
                           </label>
-                          <Field
+                          <input
                             type="date"
                             name="date_established"
 
+                            defaultValue={intialValuesBasicDetails?.date_established}
+                            onChange={e=>{
+                              setBasicDetailValues({
+                                ...intialValuesBasicDetails,
+                                date_established: e.target.value
+                              })
+                            }}
                             placeholder={'mm/dd/yyyy'}
                             className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:bg-white focus:border-black outline-none"
                           />
@@ -383,10 +446,17 @@ export function CommunityUnitEditForm({ cu: {
                               *
                             </span>
                           </label>
-                          <Field
+                          <input
                             type="date"
                             name="date_operational"
 
+                      defaultValue={intialValuesBasicDetails?.date_operational}
+                      onChange={e=>{
+                        setBasicDetailValues({
+                          ...intialValuesBasicDetails,
+                          date_operational: e.target.value
+                        })
+                      }}
                             placeholder={'mm/dd/yyyy'}
                             className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:bg-white focus:border-black outline-none"
                           />
@@ -407,10 +477,17 @@ export function CommunityUnitEditForm({ cu: {
                         *
                       </span>
                     </label>
-                    <Field
+                    <input
                       type="number"
                       name="households_monitored"
 
+                      defaultValue={intialValuesBasicDetails?.households_monitored}
+                      onChange={e=>{
+                        setBasicDetailValues({
+                          ...intialValuesBasicDetails,
+                          households_monitored: e.target.value
+                        })
+                      }}
                       min={0}
                       className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:bg-white focus:border-black outline-none"
                     />
@@ -428,10 +505,17 @@ export function CommunityUnitEditForm({ cu: {
                         *
                       </span>
                     </label>
-                    <Field
+                    <input
                       type="number"
                       name="number_of_chvs"
 
+                      defaultValue={intialValuesBasicDetails?.number_of_chvs}
+                      onChange={e=>{
+                        setBasicDetailValues({
+                          ...intialValuesBasicDetails,
+                          number_of_chvs: e.target.value
+                        })
+                      }}
                       min={0}
                       className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:bg-white focus:border-black outline-none"
                     />
@@ -453,9 +537,16 @@ export function CommunityUnitEditForm({ cu: {
                               *
                             </span>
                           </label>
-                          <Field
+                          <input
                             readOnly
 
+                      defaultValue={intialValuesBasicDetails?.facility_county}
+                      onChange={e=>{
+                        setBasicDetailValues({
+                          ...intialValuesBasicDetails,
+                          facility_county: e.target.value
+                        })
+                      }}
                             type="text"
                             name="facility_county"
                             className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:bg-white focus:border-black outline-none"
@@ -476,9 +567,16 @@ export function CommunityUnitEditForm({ cu: {
                               *
                             </span>
                           </label>
-                          <Field
+                          <input
                             readOnly
 
+                      defaultValue={intialValuesBasicDetails?.facility_subcounty}
+                      onChange={e=>{
+                        setBasicDetailValues({
+                          ...intialValuesBasicDetails,
+                          facility_subcounty: e.target.value
+                        })
+                      }}
                             type="text"
                             name="facility_subcounty"
                             className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:bg-white focus:border-black outline-none"
@@ -499,9 +597,16 @@ export function CommunityUnitEditForm({ cu: {
                               *
                             </span>
                           </label>
-                          <Field
+                          <input
                             readOnly
 
+                      defaultValue={intialValuesBasicDetails?.facility_constituency}
+                      onChange={e=>{
+                        setBasicDetailValues({
+                          ...intialValuesBasicDetails,
+                          facility_constituency: e.target.value
+                        })
+                      }}
                             type="text"
                             name="facility_constituency"
                             className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:bg-white focus:border-black outline-none"
@@ -522,9 +627,16 @@ export function CommunityUnitEditForm({ cu: {
                               *
                             </span>
                           </label>
-                          <Field
+                          <input
                             readOnly
 
+                      defaultValue={intialValuesBasicDetails?.facility_ward}
+                      onChange={e=>{
+                        setBasicDetailValues({
+                          ...intialValuesBasicDetails,
+                          facility_ward: e.target.value
+                        })
+                      }}
                             type="text"
                             name="facility_ward"
                             className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:bg-white focus:border-black outline-none"
@@ -541,12 +653,20 @@ export function CommunityUnitEditForm({ cu: {
                       >
                         Area of coverage
                       </label>
-                      <Field
+                      <input
                         required
                         type="number"
                         name="location"
                         id="location"
                         placeholder="Description of the area of coverage"
+
+                      defaultValue={intialValuesBasicDetails?.location}
+                      onChange={e=>{
+                        setBasicDetailValues({
+                          ...intialValuesBasicDetails,
+                          location: e.target.value
+                        })
+                      }}
                         min={0}
                         className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:bg-white focus:border-black outline-none"
                       />
@@ -583,6 +703,16 @@ export function CommunityUnitEditForm({ cu: {
                                 id={`${i}`}
                                 name={`contact_type_${i}`}
                                 options={contactOptions}
+
+                                defaultValue={intialValuesBasicDetails[`contact_type_${i}`]}
+                                onChange={e=>{
+                                  let val = {}
+                                  val[`contact_type_${i}`] = e.target.value
+                                  setBasicDetailValues({
+                                    ...intialValuesBasicDetails,
+                                    ...val
+                                  })
+                                }}
                                 placeholder="Select Contact.."
                                 className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:bg-white focus:border-black outline-none"
                               />
@@ -602,10 +732,20 @@ export function CommunityUnitEditForm({ cu: {
                                   *
                                 </span>
                               </label>
-                              <Field
+                              <input
                                 required
                                 type="text"
                                 name={`contact_${i}`}
+
+                                defaultValue={intialValuesBasicDetails[`contact_${i}`]}
+                                onChange={e=>{
+                                  let val = {}
+                                  val[`contact_${i}`] = e.target.value
+                                  setBasicDetailValues({
+                                    ...intialValuesBasicDetails,
+                                    ...val
+                                  })
+                                }}
                                 id={i}
                                 className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:bg-white focus:border-black outline-none"
                               />
@@ -643,8 +783,8 @@ export function CommunityUnitEditForm({ cu: {
 
 
                   </div>
-                </Form>
-              </Formik>
+                </form>
+              {/* </Formik> */}
             </Tabs.Panel>
 
             {/* Chews Panel */}
