@@ -4,14 +4,15 @@ import MainLayout from '../../components/MainLayout';
 import Link from "next/link";
 import Head from "next/head";
 import FacilitySideMenu from "../../components/FacilitySideMenu";
-import {useState, useEffect, createContext} from 'react';
+import {useState, useEffect, createContext, useContext} from 'react';
 import { UserContext } from "../../providers/user";
 
 
 export const FormOptionsContext = createContext({});
 
 export default function AddFacility(props) {
-	const userCtx = React.useContext(UserContext);
+	
+	const userCtx = useContext(UserContext);
 
 	const filters = [];
 	const [khisSynched, setKhisSynched] = useState(false);

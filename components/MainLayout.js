@@ -76,7 +76,7 @@ export default function MainLayout({ children, isLoading, searchTerm, isFullWidt
 
 
     return (
-        <div className="flex flex-col items-center justify-center w-full min-h-screen">
+        <div className="flex flex-col items-center justify-center w-full bg-gray-200 min-h-screen">
             <div className="w-full border-b border-gray-100 shadow-sm flex items-center justify-center lg:sticky lg:top-0 bg-white z-30">
                 <HeaderLayout>
 
