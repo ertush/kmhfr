@@ -1,22 +1,22 @@
-import { useContext, useCallback, useState, memo, Suspense } from 'react';
+import { useContext, useEffect, useState, memo, Suspense } from 'react';
 // import { FacilityIdContext, FormContext } from './Form';
 import { Alert } from '@mui/lab';
 import dynamic from 'next/dynamic';
 import {
-    ChevronDoubleRightIcon,
-    ChevronDoubleLeftIcon
-  } from '@heroicons/react/solid';
+  ChevronDoubleRightIcon,
+  ChevronDoubleLeftIcon
+} from '@heroicons/react/solid';
 import { FormOptionsContext } from '../../pages/facilities/add';
 // import { FacilityUpdatesContext } from '../../pages/facilities/edit/[id]';
 import { useAlert } from 'react-alert';
 
 
 const WardMap = dynamic(
-	() => import('../../components/WardGISMap'), // replace '@components/map' with your component's location
-	{
-		loading: () => <div className="text-gray-800 text-lg  bg-white py-2 px-5 shadow w-auto mx-2 my-3">Loading&hellip;</div>,
-		ssr: false // This line is important. It's what prevents server-side render
-	}
+  () => import('../../components/WardGISMap'), // replace '@components/map' with your component's location
+  {
+    loading: () => <div className="text-gray-800 text-lg  bg-white py-2 px-5 shadow w-auto mx-2 my-3">Loading&hellip;</div>,
+    ssr: false // This line is important. It's what prevents server-side render
+  }
 )
 // import { handleGeolocationSubmit, handleGeolocationUpdates } from '../../controllers/facility/facilityHandlers';
 
@@ -25,23 +25,25 @@ const Map = memo(WardMap)
 const _ = require('underscore');
 
 
-export function GeolocationForm({useGeoJSON, useGeoData, mode}) {
-
-    const _options = useContext(FormOptionsContext);
-
-    // console.log({options})
-     
 
 
+export function GeolocationForm({ useGeoJSON, useGeoData, editMode }) {
 
-    // handle Edit staff
+  const _options = useContext(FormOptionsContext);
+
+  // console.log({options})
+
+
+
+
+  // handle Edit staff
 
   const facilityGeolocationData = {}
 
-  if(options?.data?.lat_long){
-  facilityGeolocationData['latitude'] = options?.data?.lat_long[0] ?? null
-  facilityGeolocationData['longitude'] =  options?.data?.lat_long[1] ?? null
-  }else{
+  if (options?.data?.lat_long) {
+    facilityGeolocationData['latitude'] = options?.data?.lat_long[0] ?? null
+    facilityGeolocationData['longitude'] = options?.data?.lat_long[1] ?? null
+  } else {
     facilityGeolocationData['longitude'] = []
     facilityGeolocationData['latitude'] = []
   }
@@ -51,88 +53,90 @@ export function GeolocationForm({useGeoJSON, useGeoData, mode}) {
 
 
 
-    //Context
-    // const[facilityId, ____] = useContext(FacilityIdContext)
-
-    
-    // State
-    // const [formId, setFormId] = useContext(FormContext);
-    const [geoJSON, __] = useGeoJSON();
-    const [wardName, ___] = useGeoData('ward_data');
-    const [geoCenter, _____] = useGeoData('geo_data');
-    const [options, setOptions] = useState(_options)
-
-    const alert = useAlert();
+  //Context
+  // const[facilityId, ____] = useContext(FacilityIdContext)
 
 
-    // Event handlers
+  // State
+  // const [formId, setFormId] = useContext(FormContext);
+  const [geoJSON, setGeoJSON] = useState([]);
+  const [wardName, setWardName] = useState('');
+  const [geoCenter, setGeoCenter] = useState([]);
+  const [options, setOptions] = useState(_options)
+  const [basicDetailsURL, setBasicDetailsURL] = useState('')
 
-    function handleGeolocationPrevious() {
-        e.preventDefault()
 
-        const url = new URL(window.document.location.href)
+  const alert = useAlert();
 
-        url.searchParams.set('formId', '0')
 
-        window.document.location.href = url
-       
-    }
+  // Event handlers
 
-   function handleGeolocationFormSubmit() {
-      e.preventDefault()
+  function handleGeolocationPrevious(e) {
+    e.preventDefault()
 
-      const formData = new FormData(e.target)
+    const url = new URL(window.document.location.href)
 
-      const data = Object.fromEntries(formData)
-  
-      // Persist Data
-      /*
-      const params = [];
-  
-      for(let [k, v] of formData) params.push(`${k}=${v}`)
-  
-      const url = new URL(`${document.location.href}/?${params.join('&')}`)
-  
-      document.location.href = url
+    url.searchParams.set('formId', '0')
 
-      */
-  
-      fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/`, {
-        method: 'POST',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json;charset=UTF-8',
-          'Authorization': `Bearer ${options?.token}`
-        },
-        body: JSON.stringify(data)
+    window.document.location.href = url
+
+  }
+
+  function handleGeolocationFormSubmit(e) {
+    e.preventDefault()
+
+    const formData = new FormData(e.target)
+
+    const data = Object.fromEntries(formData)
+
+    // Persist Data
+    /*
+    const params = [];
+ 
+    for(let [k, v] of formData) params.push(`${k}=${v}`)
+ 
+    const url = new URL(`${document.location.href}/?${params.join('&')}`)
+ 
+    document.location.href = url
+
+    */
+
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/`, {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json;charset=UTF-8',
+        'Authorization': `Bearer ${options?.token}`
+      },
+      body: JSON.stringify(data)
+    })
+      .then(res => {
+        if (res.status == 201 || res.status == 200) {
+          alert.success('Facility Added Successfully')
+        } else {
+          alert.error('Unable to Add facility')
+        }
       })
-        .then(res => {
-          if (res.status == 201 || res.status == 200) {
-            alert.success('Facility Added Successfully')
-          } else {
-            alert.error('Unable to Add facility')
-          }
-        })
-  
+
 
 
     // Navigation
 
     const current_url = new URL(window.document.location.href)
 
-      current_url.searchParams.set('formId', '2')
+    current_url.searchParams.set('formId', '2')
 
-      window.document.location.href = url
+    window.document.location.href = url
 
-   }
+  }
 
-  
-   function handleInput(e) {
+
+  function handleInput(e) {
     e.preventDefault()
     const lat_long = []
     // const coordinates = []
-  
-    if(e.target.name == 'latitude') {
+
+    if (e.target.name == 'latitude') {
 
       lat_long[0] = e.target.value;
       lat_long[1] = document.getElementsByName('longitude')[0]?.value
@@ -144,7 +148,7 @@ export function GeolocationForm({useGeoJSON, useGeoData, mode}) {
           data: {
             lat_long
           }
-          
+
         }
       })
 
@@ -159,7 +163,7 @@ export function GeolocationForm({useGeoJSON, useGeoData, mode}) {
           data: {
             lat_long,
           }
-          
+
         }
       })
     } else {
@@ -173,106 +177,171 @@ export function GeolocationForm({useGeoJSON, useGeoData, mode}) {
           data: {
             lat_long,
           }
-          
+
         }
       })
     }
-   }
+  }
 
+
+  useEffect(() => {
+
+    if(window) {
+    const params = new URL(window.location.href).searchParams
+    const facilityId = params.get('facilityId')
+
+    setBasicDetailsURL(window.location.href)
+
+    function fetchWardData(facilityId, token) {
+
+       fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${facilityId}/`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: 'application/json',
+          }
+        }
+
+      )
+        .then(async facilityData => {
+          if (facilityData.ok) {
+              try {
+
+										const response = await fetch(
+											`${process.env.NEXT_PUBLIC_API_URL}/common/wards/${facilityData?.ward}/`,
+											{
+												headers: {
+													Authorization: 'Bearer ' + token,
+													Accept: 'application/json',
+												}
+											}
+										);
+
+										const wardData = await response.json();
+										
+										if(wardData){
+
+										const [lng, lat] =
+										wardData?.ward_boundary.properties.center.coordinates;
+
+									  const wardData = {
+												geoJSON: JSON.parse(JSON.stringify(wardData?.ward_boundary)),
+												centerCoordinates: JSON.parse(
+													JSON.stringify([lat, lng])
+												),
+                        ward:facilityData?.wardName
+											}
+										
+                   setGeoJSON(wardData?.geoJSON)
+                   setGeoCenter(wardData?.centerCoordinates)
+                   setWardName(wardData?.ward)
+
+
+									}
+              } catch(e){
+                console.error(e.message)
+              }
+          }
+        })
+        .catch(console.error)
+
+
+    }
   
 
-    // console.log({options})
+    if(facilityId && options?.token) fetchWardData(facilityId, options?.token)
+  }
 
-    return (
-        
-            <form
+  }, [])
 
-                name='geolocation_form'
-                className='flex flex-col w-full mt-4 items-start bg-blue-50 shadow-md p-3 justify-start gap-3'
-                onSubmit={handleGeolocationFormSubmit}
-            >
-                {/* Collection Date */}
-                {
-                  JSON.stringify({
-                    options
-                  })
-                }
-                <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-                    <label
-                        htmlFor='collection_date'
-                        className='text-gray-600 capitalize text-sm'>
-                        Collection date:
-                        <span className='text-medium leading-12 font-semibold'>
-                            {' '}
-                            *
-                        </span>
-                    </label>
-                    <input
-                        required
-                        type='date'
-                        name='collection_date'
-                        onChange={handleInput}
-                        defaultValue={options.collection_date?.split('T')[0] ?? ''}
-                        className='flex-none w-full  p-2 flex-grow border placeholder-gray-500 bg-transparent border-blue-600 focus:shadow-none focus:border-black outline-none'
-                    />
-                {/* {errors.collection_date && <span className='font-normal text-sm text-red-500 text-start'>{errors.collection_date}</span>} */}
 
-                </div>
+  // console.log({options})
 
-                {/* Lon/Lat */}
-                <div className='grid grid-cols-2 gap-4 place-content-start w-full'>
-                    <div className='w-full flex flex-col items-start justify-start gap-1 mb-3 col-start-1'>
-                        <label
-                            htmlFor='longitude'
-                            className='text-gray-600 capitalize text-sm'>
-                            Longitude
-                            <span className='text-medium leading-12 font-semibold'>
-                                {' '}
-                                *
-                            </span>
-                        </label>
-                        <input
-                            required
-                            type='decimal'
-                            name='longitude'
-                            defaultValue={(options?.data?.lat_long && options?.data?.lat_long?.length == 2 && options?.data?.lat_long[0]) ?? ''}
-                            onChange={handleInput}
-                            
-                            className='flex-none w-full  p-2 flex-grow border bg-transparent placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
-                        />
-                {/* {errors.longitude && <span className='font-normal text-sm text-red-500 text-start'>{errors.longitude}</span>} */}
+  return (
 
-                    </div>
+    <form
 
-                    <div className='w-full flex flex-col items-start justify-start gap-1 mb-3 col-start-2'>
-                        <label
-                            htmlFor='latitude'
-                            className='text-gray-600 capitalize text-sm'>
-                            Latitude
-                            <span className='text-medium leading-12 font-semibold'>
-                                {' '}
-                                *
-                            </span>
-                        </label>
-                        <input
-                            required
-                            type='decimal'
-                            name='latitude'
-                            onChange={handleInput}
-                            defaultValue={(options?.data?.lat_long && options?.data?.lat_long?.length == 2 && options?.data?.lat_long[1]) ?? ''}
-                            className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
-                        />
-                {/* {errors.latitude && <span className='font-normal text-sm text-red-500 text-start'>{errors.latitude}</span>} */}
+      name='geolocation_form'
+      className='flex flex-col w-full mt-4 items-start bg-blue-50  justify-start gap-3'
+      onSubmit={handleGeolocationFormSubmit}
+    >
+      {/* Collection Date */}
 
-                    </div>
-                    {/* <>{coordinatesError && <Alert severity="error" sx={{ width: '100%' }}> Please enter the right coordinates</Alert>}</> */}
-                </div>
+      <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+        <label
+          htmlFor='collection_date'
+          className='text-gray-600 capitalize text-sm'>
+          Collection date:
+          <span className='text-medium leading-12 font-semibold'>
+            {' '}
+            *
+          </span>
+        </label>
+        <input
+          required
+          type='date'
+          name='collection_date'
+          onChange={handleInput}
+          defaultValue={options.collection_date?.split('T')[0] ?? ''}
+          className='flex-none w-full  p-2 flex-grow border placeholder-gray-500 bg-transparent border-blue-600 focus:shadow-none focus:border-black outline-none'
+        />
 
-                {/* Ward Geo Map */}
-                <div className='w-full h-auto'>
-                    <div className='w-full bg-gray-200   flex flex-col items-start justify-center text-left relative'>
-                        {/* { console.log({geoCenter, wardName, geoJSON})} */}
-                        {/* {
+
+      </div>
+
+      {/* Lon/Lat */}
+      <div className='grid grid-cols-2 gap-4 place-content-start w-full'>
+        <div className='w-full flex flex-col items-start justify-start gap-1 mb-3 col-start-1'>
+          <label
+            htmlFor='longitude'
+            className='text-gray-600 capitalize text-sm'>
+            Longitude
+            <span className='text-medium leading-12 font-semibold'>
+              {' '}
+              *
+            </span>
+          </label>
+          <input
+            required
+            type='decimal'
+            name='longitude'
+            defaultValue={(options?.data?.lat_long && options?.data?.lat_long?.length == 2 && options?.data?.lat_long[0]) ?? ''}
+            onChange={handleInput}
+
+            className='flex-none w-full  p-2 flex-grow border bg-transparent placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+          />
+
+
+        </div>
+
+        <div className='w-full flex flex-col items-start justify-start gap-1 mb-3 col-start-2'>
+          <label
+            htmlFor='latitude'
+            className='text-gray-600 capitalize text-sm'>
+            Latitude
+            <span className='text-medium leading-12 font-semibold'>
+              {' '}
+              *
+            </span>
+          </label>
+          <input
+            required
+            type='decimal'
+            name='latitude'
+            onChange={handleInput}
+            defaultValue={(options?.data?.lat_long && options?.data?.lat_long?.length == 2 && options?.data?.lat_long[1]) ?? ''}
+            className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+          />
+
+        </div>
+
+      </div>
+
+      {/* Ward Geo Map */}
+      <div className='w-full h-auto'>
+        <div className='w-full bg-gray-200   flex flex-col items-start justify-center text-left relative'>
+          {/* { console.log({geoCenter, wardName, geoJSON})} */}
+          {/* {
                             (geoJSON?.properties && geoCenter && wardName &&
                             Object.keys(geoJSON).length > 2 && geoCenter.length > 1  && wardName.length > 1 ) 
                             ?
@@ -282,55 +351,55 @@ export function GeolocationForm({useGeoJSON, useGeoData, mode}) {
                             <Alert severity="error" sx={{ width: '100%' }}>No Geolocation data</Alert>
                       
                         } */}
-                        <Suspense fallback={<Alert severity='info' className='w-full p-1'>Loading ...</Alert>}>
-                              {/* {
+          <Suspense fallback={<Alert severity='info' className='w-full p-1'>Loading ...</Alert>}>
+            {/* {
                                 JSON.stringify(geoJSON)
                               } */}
-                              {
-                                options?.data?.lat_long &&
-                             <Map  markerCoordinates={[options?.data?.lat_long[0], options?.data?.lat_long[1]]} geoJSON={geoJSON} ward={wardName} center={geoCenter} />
-                              }
-                             </Suspense>
-                    </div>
-                </div>
+            {
+              options?.data?.lat_long &&
+              <Map markerCoordinates={[options?.data?.lat_long[0], options?.data?.lat_long[1]]} geoJSON={geoJSON} ward={wardName} center={geoCenter} />
+            }
+          </Suspense>
+        </div>
+      </div>
 
-             {/* Finish | Cancel & Geolocation */}
-              {
-                mode  ? 
+      {/* Finish | Cancel & Geolocation */}
+      {
+        editMode ?
 
-                <div className='flex justify-end items-center w-full'>
-                  <button
-                    type='submit'
-                    className='flex items-center justify-start space-x-2 bg-blue-700  p-1 px-2'>
-                    <span className='text-medium font-semibold text-white'>
-                      Save & Finish
-                    </span>
-                  </button>
-              </div>
-                :
-                
-                <div className='flex justify-between items-center w-full'>
-                    <button
-                        onClick={handleGeolocationPrevious}
-                        className='flex items-center justify-start space-x-2 p-1 group hover:bg-blue-700 border border-blue-700 px-2'>
-                        <ChevronDoubleLeftIcon className='w-4 h-4 group-hover:text-white text-blue-900' />
-                        <span className='text-medium font-semibold group-hover:text-white text-blue-900 '>
-                            Basic Details
-                        </span>
-                    </button>
-                    <button
-                        type='submit'
-                        className='flex items-center justify-start space-x-2 bg-blue-700 group hover:bg-transparent border border-blue-700 p-1 px-2'>
-                        <span className='text-medium font-semibold group-hover:text-blue-900 text-white'>
-                            Facility Contacts
-                        </span>
-                        <ChevronDoubleRightIcon className='w-4 h-4 group-hover:text-blue-900 text-white' />
-                    </button>
-                </div>
-                 }  
+          <div className='flex justify-end items-center w-full'>
+            <button
+              type='submit'
+              className='flex items-center justify-start space-x-2 bg-blue-700  p-1 px-2'>
+              <span className='text-medium font-semibold text-white'>
+                Save & Finish
+              </span>
+            </button>
+          </div>
+          :
 
-            </form>
-          
-          )
-   
+          <div className='flex justify-between items-center w-full'>
+            <button
+              onClick={handleGeolocationPrevious}
+              className='flex items-center justify-start space-x-2 p-1 group hover:bg-blue-700 border border-blue-700 px-2'>
+              <ChevronDoubleLeftIcon className='w-4 h-4 group-hover:text-white text-blue-900' />
+              <span className='text-medium font-semibold group-hover:text-white text-blue-900 '>
+                Basic Details
+              </span>
+            </button>
+            <button
+              type='submit'
+              className='flex items-center justify-start space-x-2 bg-blue-700 group hover:bg-transparent border border-blue-700 p-1 px-2'>
+              <span className='text-medium font-semibold group-hover:text-blue-900 text-white'>
+                Facility Contacts
+              </span>
+              <ChevronDoubleRightIcon className='w-4 h-4 group-hover:text-blue-900 text-white' />
+            </button>
+          </div>
+      }
+
+    </form>
+
+  )
+
 }

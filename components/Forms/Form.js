@@ -104,7 +104,15 @@ useEffect(() => {
 														label === "Basic Details" ?
 														<span className='cursor-pointer hover:text-indigo-600' onClick={
 															() => {
-																setFormId(JSON.stringify(0))
+                                const url =  new URL(window.location.href)
+
+                                url.searchParams.set('formId', '0')
+
+                                window.location.href = url
+
+																// setFormId(JSON.stringify(0))
+
+
 																// window.sessionStorage.setItem('formId', 0)
 
 															}

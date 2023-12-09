@@ -1,7 +1,8 @@
 // @refresh
 
+"use client"
 
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import Select from './formComponents/FromikSelect';
 import { FormOptionsContext } from '../../pages/facilities/add';
 import {
@@ -9,6 +10,7 @@ import {
   ChevronDoubleLeftIcon
 } from '@heroicons/react/solid';
 import { useAlert } from 'react-alert';
+import Spinner from '../Spinner'
 // import { FacilityUpdatesContext } from '../../pages/facilities/edit/[id]';
 // import { FacilityIdContext, FormContext } from './Form';
 
@@ -352,16 +354,7 @@ export function BasicDeatilsForm({ editMode }) {
     setSubmitting(true)
 
     // Persist Data
-    /*
-    const params = [];
-
-    for(let [k, v] of formData) params.push(`${k}=${v}`)
-
-    const url = new URL(`${document.location.href}/?${params.join('&')}`)
-
-    document.location.href = url
-
-    */
+    
 
     fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/`, {
       method: 'POST',
@@ -372,20 +365,33 @@ export function BasicDeatilsForm({ editMode }) {
       },
       body: JSON.stringify(data)
     })
-      .then(res => {
+      .then(async (res) => {
+
         if (res.status == 201 || res.status == 200) {
           alert.success('Facility Added Successfully')
         } else {
           alert.error('Unable to Add facility')
         }
+
         setSubmitting(false)
 
-        const current_url = new URL(window.document.location.href)
+        const facilityId = (await res.json())?.id
 
-        current_url.searchParams.set('formId', '1')
-  
-        window.document.location.href = current_url
-  
+        const params = [];
+
+        for(let [k, v] of formData) params.push(`${k}=${v}`)
+
+        const url = new URL(`${document.location.href}/?${params.join('&')}`)
+
+        url.searchParams.set('formId', '1')
+
+        url.searchParams.set('facilityId', `${facilityId}`)
+
+
+        document.location.href = url
+
+
+      
 
       })
 
@@ -415,10 +421,32 @@ export function BasicDeatilsForm({ editMode }) {
   }
 
 
-
+  const officialNameRef = useRef(null)
 
   // Effects
   useEffect(() => {
+
+    if(window) {
+      const path = new URL(window.location.href)
+      const params = path.searchParams
+    
+  //     if(params){
+
+  //     for (let [k, v] of params){
+  //         if(v == 'on'){
+  //             window.document.getElementsByName(k)[0].defaultChecked = true  
+  //         } else if(v == 'true' || v == 'false') {
+  //             if (v == 'true') window.document.getElementsByName(k)[0].defaultChecked = v
+  //             if (v == 'false') window.document.getElementsByName(k)[1].defaultChecked = v
+
+  //         }   
+  //         else{
+  //           window.document.getElementsByName(k)[0].defaultChecked = v
+
+  //         }
+  //     }
+  // }
+    }
 
     setIsClient(true)
 
@@ -430,7 +458,7 @@ export function BasicDeatilsForm({ editMode }) {
   if (isClient) {
     return (
       <form name='basic_details_form'
-        onSubmit={editMode ? handleBasicDetailsUpdate : handeBasicDetailsCreate}
+        onSubmit={editMode ? handleBasicDetailsUpdate : handeBasicDetailsCreate }
         className='flex flex-col w-full mt-4 items-start bg-blue-50 p-3 justify-start gap-3'>
 
         {/* Facility Official Name */}
@@ -446,6 +474,7 @@ export function BasicDeatilsForm({ editMode }) {
           </label>
           <input
             required
+            ref={officialNameRef}
             type='text'
             name='official_name'
             defaultValue={options?.data?.official_name ?? ''}
@@ -1401,9 +1430,15 @@ export function BasicDeatilsForm({ editMode }) {
                 {submitting ? <span>Saving...</span> : <button
                   type='submit'
                   disabled={submitting}
-                  className='flex items-center justify-start space-x-2 bg-blue-700  p-1 px-2'>
+                  className={`flex items-center ${submitting ? 'justify-center'  : 'justify-start'} space-x-2 bg-blue-700  p-1 px-2`}>
                   <span className='text-medium font-semibold text-white'>
-                    Save & Finish
+                    {
+                       submitting ? 
+                      <Spinner />
+                      :
+                      'Save & Finish'
+                       
+                    }
                   </span>
                   {/* <ChevronDoubleRightIcon className='w-4 h-4 text-white' /> */}
                 </button>}
@@ -1411,7 +1446,7 @@ export function BasicDeatilsForm({ editMode }) {
 
               :
 
-              <div className='flex justify-between items-center w-full'>
+             <div className='flex justify-between items-center w-full'>
                 <button className='flex items-center justify-start space-x-2 p-1 border border-blue-900  px-2'>
                   <ChevronDoubleLeftIcon className='w-4 h-4 text-blue-900' />
                   <span className='text-medium font-semibold text-blue-900 '>
@@ -1420,11 +1455,23 @@ export function BasicDeatilsForm({ editMode }) {
                 </button>
                 <button
                   type='submit'
-                  className='flex items-center justify-start space-x-2 bg-blue-700  p-1 px-2'>
+                  className='flex items-center justify-start gap-2 text-white bg-blue-700  p-1 px-2'>
                   <span className='text-medium font-semibold text-white'>
-                    Geolocation
+                  {
+                       submitting ? 
+                      <Spinner />
+                      :
+                      'Geolocation'
+                       
+                    }
                   </span>
-                  <ChevronDoubleRightIcon className='w-4 h-4 text-white' />
+                  {
+                    submitting ? 
+                    <span class='text-white'>Submitting </span>
+                    :
+                    <ChevronDoubleRightIcon className='w-4 h-4 text-white' />
+
+                  }
                 </button>
               </div>
           }

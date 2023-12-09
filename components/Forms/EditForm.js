@@ -128,7 +128,7 @@ export function EditForm() {
             value="basic_details"
             className="grow-1 py-1 px-4 tab-panel"
           >
-            <BasicDeatilsForm mode="edit"/>
+            <BasicDeatilsForm editMode="edit"/>
 
           </Tabs.Panel>
 
@@ -140,7 +140,7 @@ export function EditForm() {
 
             <TabContext.Provider value={tabOpen}>
               <GeolocationForm
-                mode="edit"
+                editMode="edit"
                 useGeoJSON={() => [geoJSON, setGeoJSON]}
                 useGeoData={(type) => {
                   switch (type) {

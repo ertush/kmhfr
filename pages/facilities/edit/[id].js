@@ -638,7 +638,7 @@ EditFacility.getInitialProps = async (ctx) => {
 						case "facility_data":
 							try {
 								const _facility_data = await fetch(
-									`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${ctx.query.id}/?format=json`,
+									`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${ctx.query.id}/`,
 									{
 										headers: {
 											Authorization: 'Bearer ' + token,

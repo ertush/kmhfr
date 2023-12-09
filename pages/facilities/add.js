@@ -107,7 +107,6 @@ export async function getServerSideProps (ctx) {
 		'infrastructure',
 		'specialities',
 		'collection_date',
-		'facility_data'
 	]
 
 	const allOptions = {};
@@ -525,92 +524,7 @@ export async function getServerSideProps (ctx) {
 								
 							}
 							break;
-						case "facility_data":
-							try {
-								const _facility_data = await fetch(
-									`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${ctx.query.id}/?format=json`,
-									{
-										headers: {
-											Authorization: 'Bearer ' + token,
-											Accept: 'application/json',
-										}
-									}
-
-								);
-								
-								const facilityData = await _facility_data.json()
-
-								// console.log({facilityData: facilityData?.ward})
-							
-
-								if (facilityData) {
-
-									allOptions['data'] = facilityData;
-
-									try {
-
-
-
-										const response = await fetch(
-											`${process.env.NEXT_PUBLIC_API_URL}/common/wards/${facilityData?.ward}/?format=json`,
-											{
-												headers: {
-													Authorization: 'Bearer ' + token,
-													Accept: 'application/json',
-												}
-											}
-										);
-
-										const wardData = await response.json();
-										
-										if(wardData){
-
-										const [lng, lat] =
-										wardData?.ward_boundary.properties.center.coordinates;
-
-										allOptions["geolocation"] = {
-												geoJSON: JSON.parse(JSON.stringify(wardData?.ward_boundary)),
-												centerCoordinates: JSON.parse(
-													JSON.stringify([lat, lng])
-												)
-											}
-										
-
-									}
-
-										
-											try {
-												const response = await fetch(
-													`${process.env.NEXT_PUBLIC_API_URL}/facilities/facility_regulation_status/?facility=${facilityData?.id}/?format=json`,
-													{
-														headers: {
-															Authorization: 'Bearer ' + token,
-															Accept: 'application/json',
-														}
-													}
-												);
-												const regulationData = await response.json();
-												
-												if (regulationData) {
-												allOptions['facility_regulation_status'] = (await regulationData).results
-												
-											}
-											} catch (err) {
-												console.log(`Error fetching ${option}: `, err);
-											
-											}
-										
-									} catch (err) {
-										console.log(`Error fetching ${option}: `, err);
-										
-									}
-								}
-							} catch (err) {
-								console.log(`Error fetching ${option}: `, err);
-								
-							}
-
-							break;
+						
 						default:
 							let fields = ''
 
