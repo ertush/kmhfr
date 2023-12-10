@@ -15,7 +15,7 @@ import { HumanResourceForm } from './HumanResourceForm';
 import { RegulationForm } from './RegulationForm';
 import { ServicesForm } from './ServicesForm';
 import { GeolocationForm } from './GeolocationForm';
-import { useLocalStorageState } from './hooks/formHook';
+// import { useLocalStorageState } from './hooks/formHook';
 
 
 export const FormContext  = createContext(() => null)
@@ -24,35 +24,13 @@ export const EditFacilityContactsContext = createContext(null)
 
 
 
-
-
 export function Form () {
 
 
 // State
 
-const [geoJSON, setGeoJSON]  = useLocalStorageState({
-    key:'geo_json',
-    value: 'null'
-    }).actions.use();
-
-const [wardName, setWardName] =  useLocalStorageState({
-    key:'ward_name',
-    value: 'null'
-    }).actions.use();
-    
-const [geoCenter, setGeoCenter] =  useLocalStorageState({
-    key:'geo_center',
-    value: 'null'
-    }).actions.use();
-
-const [facilityId, setFacilityId] = useLocalStorageState({
-key:'facility_id',
-value: 'null'
-}).actions.use();
 
 const [formId, setFormId] = useState('0')
-
 
 useEffect(() => {
   function setStateFromUrl() {
@@ -66,13 +44,7 @@ useEffect(() => {
 }, [])
 
 
-//   const [formId, setFormId] = useState(0); //
 
-// const [formId, setFormId] = useLocalStorageState({
-//     key: 'formId',
-//     value: 0
-// }).actions.use();
- 
 
   const steps = [
     'Basic Details',
@@ -130,8 +102,8 @@ useEffect(() => {
 
               {/* Stepper Body */}
               <div className='flex flex-col justify-center items-start px-1 md:px-4 w-full '>
-                  <FormContext.Provider value={[formId, setFormId]}>
-                    <FacilityIdContext.Provider value={[facilityId, setFacilityId]}>
+                  {/* <FormContext.Provider value={[formId, setFormId]}> */}
+                
                       <div
                         className=' w-full flex flex-col items-start justify-start p-4 shadow-md bg-blue-50'
                         style={{ minHeight: '250px' }}>
@@ -139,31 +111,14 @@ useEffect(() => {
                            {
                                 formId == '0' && 
                                 <BasicDeatilsForm editMode={false}
-                                // useGeoJSON={() => [geoJSON, setGeoJSON]}  
-                                // useGeoData={(type) => { 
-                                //     switch(type){
-                                //         case 'ward_data':
-                                //         return [wardName, setWardName];
-                                //         case 'geo_data':
-                                //         return [geoCenter, setGeoCenter];
-                                //     }}
-                                //     }
+                      
                                 />
-
 
                               }
                               {
                                   formId == '1' && 
                                   <GeolocationForm 
-                                  useGeoJSON={() => [geoJSON, setGeoJSON]}
-                                  useGeoData={(type) => { 
-                                    switch(type){
-                                        case 'ward_data':
-                                        return [wardName, setWardName];
-                                        case 'geo_data':
-                                        return [geoCenter, setGeoCenter];
-                                    }}
-                                    }
+                                  
                                   />
                                  
                               } 
@@ -195,8 +150,8 @@ useEffect(() => {
                              
                           
                         </div>
-                        </FacilityIdContext.Provider>
-                    </FormContext.Provider>
+               
+                    {/* </FormContext.Provider> */}
                 </div>
 
     </div>

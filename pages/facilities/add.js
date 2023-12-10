@@ -25,7 +25,7 @@ export default function AddFacility(props) {
  
 	useEffect(() => {
 		setUser(userCtx)
-		if(user.id === 6){
+		if(user && user.id === 6){
 			router.push('/auth/login')
 		}
 	  setIsClient(true)

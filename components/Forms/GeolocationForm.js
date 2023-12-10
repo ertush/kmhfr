@@ -27,41 +27,13 @@ const _ = require('underscore');
 
 
 
-export function GeolocationForm({ useGeoJSON, useGeoData, editMode }) {
+export function GeolocationForm({ editMode }) {
 
   const _options = useContext(FormOptionsContext);
 
-  // console.log({options})
-
-
-
-
-  // handle Edit staff
-
-  const facilityGeolocationData = {}
-
-  if (options?.data?.lat_long) {
-    facilityGeolocationData['latitude'] = options?.data?.lat_long[0] ?? null
-    facilityGeolocationData['longitude'] = options?.data?.lat_long[1] ?? null
-  } else {
-    facilityGeolocationData['longitude'] = []
-    facilityGeolocationData['latitude'] = []
-  }
-
-  // const coordinates_id = options?.data?.coordinates;
-
-
-
-
-  //Context
-  // const[facilityId, ____] = useContext(FacilityIdContext)
-
-
-  // State
-  // const [formId, setFormId] = useContext(FormContext);
-  const [geoJSON, setGeoJSON] = useState([]);
-  const [wardName, setWardName] = useState('');
-  const [geoCenter, setGeoCenter] = useState([]);
+  const [geoJSON, setGeoJSON] = useState(_options?.geolocation?.geoJSON);
+  const [wardName, setWardName] = useState(_options?.data?.ward_name);
+  const [geoCenter, setGeoCenter] = useState(_options?.geolocation?.centerCoordinates);
   const [options, setOptions] = useState(_options)
   const [basicDetailsURL, setBasicDetailsURL] = useState('')
 
@@ -74,7 +46,7 @@ export function GeolocationForm({ useGeoJSON, useGeoData, editMode }) {
   function handleGeolocationPrevious(e) {
     e.preventDefault()
 
-    const url = new URL(window.document.location.href)
+    const url = new URL(basicDetailsURL)
 
     url.searchParams.set('formId', '0')
 
@@ -186,7 +158,9 @@ export function GeolocationForm({ useGeoJSON, useGeoData, editMode }) {
 
   useEffect(() => {
 
-    if(window) {
+    console.log({options})
+
+    if(window && !editMode) {
     const params = new URL(window.location.href).searchParams
     const facilityId = params.get('facilityId')
 
@@ -203,11 +177,11 @@ export function GeolocationForm({ useGeoJSON, useGeoData, editMode }) {
         }
 
       )
-        .then(async facilityData => {
+        .then(facilityData => {
           if (facilityData.ok) {
-              try {
+              
 
-										const response = await fetch(
+									fetch(
 											`${process.env.NEXT_PUBLIC_API_URL}/common/wards/${facilityData?.ward}/`,
 											{
 												headers: {
@@ -215,34 +189,34 @@ export function GeolocationForm({ useGeoJSON, useGeoData, editMode }) {
 													Accept: 'application/json',
 												}
 											}
-										);
+										)
+                    .then( async wardData => {
+                      if(wardData){
 
-										const wardData = await response.json();
+                        const [lng, lat] = await wardData?.ward_boundary.properties.center.coordinates;
+    
+                        const wardData = {
+                            geoJSON: JSON.parse(JSON.stringify(wardData?.ward_boundary)),
+                            centerCoordinates: JSON.parse(
+                              JSON.stringify([lat, lng])
+                            ),
+                            ward:facilityData?.wardName
+                          }
+                        
+                        
+                       setGeoJSON(wardData?.geoJSON)
+                       setGeoCenter(wardData?.centerCoordinates)
+                       setWardName(wardData?.ward)
+                        }
+                    })
+
 										
-										if(wardData){
-
-										const [lng, lat] =
-										wardData?.ward_boundary.properties.center.coordinates;
-
-									  const wardData = {
-												geoJSON: JSON.parse(JSON.stringify(wardData?.ward_boundary)),
-												centerCoordinates: JSON.parse(
-													JSON.stringify([lat, lng])
-												),
-                        ward:facilityData?.wardName
-											}
 										
-                   setGeoJSON(wardData?.geoJSON)
-                   setGeoCenter(wardData?.centerCoordinates)
-                   setWardName(wardData?.ward)
 
 
 									}
-              } catch(e){
-                console.error(e.message)
-              }
-          }
-        })
+              
+          })
         .catch(console.error)
 
 
@@ -262,12 +236,15 @@ export function GeolocationForm({ useGeoJSON, useGeoData, editMode }) {
     <form
 
       name='geolocation_form'
-      className='flex flex-col w-full mt-4 items-start bg-blue-50  justify-start gap-3'
+      className='flex flex-col w-full mt-4 items-start bg-blue-50 p-3 justify-start gap-3'
       onSubmit={handleGeolocationFormSubmit}
     >
       {/* Collection Date */}
 
       <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+        {
+          JSON.stringify({geoJSON, geoCenter, wardName})
+        }
         <label
           htmlFor='collection_date'
           className='text-gray-600 capitalize text-sm'>
@@ -352,11 +329,9 @@ export function GeolocationForm({ useGeoJSON, useGeoData, editMode }) {
                       
                         } */}
           <Suspense fallback={<Alert severity='info' className='w-full p-1'>Loading ...</Alert>}>
-            {/* {
-                                JSON.stringify(geoJSON)
-                              } */}
+        
             {
-              options?.data?.lat_long &&
+               options?.data?.lat_long &&
               <Map markerCoordinates={[options?.data?.lat_long[0], options?.data?.lat_long[1]]} geoJSON={geoJSON} ward={wardName} center={geoCenter} />
             }
           </Suspense>

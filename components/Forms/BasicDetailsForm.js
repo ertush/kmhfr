@@ -2,7 +2,7 @@
 
 "use client"
 
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import Select from './formComponents/FromikSelect';
 import { FormOptionsContext } from '../../pages/facilities/add';
 import {
@@ -11,22 +11,23 @@ import {
 } from '@heroicons/react/solid';
 import { useAlert } from 'react-alert';
 import Spinner from '../Spinner'
-// import { FacilityUpdatesContext } from '../../pages/facilities/edit/[id]';
-// import { FacilityIdContext, FormContext } from './Form';
 
 
 export function BasicDeatilsForm({ editMode }) {
 
+  // Constants
   const alert = useAlert();
 
-  const formContext = useContext(FormOptionsContext);
-
+  // State
+  const [isClient, setIsClient] = useState(false)
+  const [totalFunctionalBeds, setTotalFunctionalBeds] = useState(0)
+  const [facilityId, setFacilityId] = useState('')
   const [submitting, setSubmitting] = useState(false);
 
+  // Options
+  const formContext = useContext(FormOptionsContext);
   const [options, setOptions] = useState(formContext)
-
   const [facilityTypeDetailOptions, setFacilityTypeDetailOptions] = useState(options?.facility_type_details)
-
   const [ownerTypeDetailsOptions, setOwnerTypeDetailsOptions] = useState(Array.from(options?.owners, o => {
     if (o?.owner_type_name || o?.created_by || o?.updated_by) {
       return {
@@ -37,16 +38,9 @@ export function BasicDeatilsForm({ editMode }) {
       return o
     }
   }))
-
   const [subCountyOptions, setSubCountyOptions] = useState(options?.sub_counties)
   const [constituencyOptions, setConstituencyOptions] = useState(options?.constituencies)
   const [wardOptions, setWardOptions] = useState(options?.wards)
-  const [isClient, setIsClient] = useState(false)
-  const [totalFunctionalBeds, setTotalFunctionalBeds] = useState(0)
- 
-
-  // Options
-
   const operationStatusOptions = [
     {
       value: '190f470f-9678-47c3-a771-de7ceebfc53c',
@@ -58,27 +52,11 @@ export function BasicDeatilsForm({ editMode }) {
     },
   ];
 
-    // Event handlers
 
-
+   // Event handlers
   function handleChange (e) {
-    // if(e.target) {
-    //     setFormData(formData => {
-    //       if(e.target.type == 'text' || e.target.type == 'number') {
-    //         return `${formData},${e.target.name}=${e.target.value}`.split(',').pop()
-    //       } else if(e.target.type == 'radio' || e.target.type == 'checkbox') {
-    //         return `${formData},${e.target.name}=${e.target.checked}`
-    //       } else {
-    //         return `${formData},${e.target.name}=${e.target.selectedOptions[0]?.innerText}`
-
-    //       }
-
-         
-    //     })
-    // }
     return null
   }
-
 
   async function handleSelectChange(e) {
 
@@ -305,7 +283,6 @@ export function BasicDeatilsForm({ editMode }) {
     }
   }
 
-
   function handleBasicDetailsUpdate(e) {
 
     e.preventDefault()
@@ -341,11 +318,8 @@ export function BasicDeatilsForm({ editMode }) {
 
   }
 
-
   function handeBasicDetailsCreate(e) {
     e.preventDefault()
-
-
 
     const formData = new FormData(e.target)
 
@@ -379,7 +353,15 @@ export function BasicDeatilsForm({ editMode }) {
 
         const params = [];
 
-        for(let [k, v] of formData) params.push(`${k}=${v}`)
+        for(let [k, v] of formData) {
+          if(k == 'facility_checklist_document') {
+             params.push(`${k}=${JSON.stringify(v)}`)
+          }
+          else { 
+          params.push(`${k}=${v}`)
+
+          }
+        }
 
         const url = new URL(`${document.location.href}/?${params.join('&')}`)
 
@@ -399,7 +381,6 @@ export function BasicDeatilsForm({ editMode }) {
   
   }
 
-  
   function handleNumberInputChange(e) {
 
     // Total Funcational Input Beds validation
@@ -421,31 +402,41 @@ export function BasicDeatilsForm({ editMode }) {
   }
 
 
-  const officialNameRef = useRef(null)
 
   // Effects
   useEffect(() => {
 
-    if(window) {
+    if(window && !editMode) {
       const path = new URL(window.location.href)
       const params = path.searchParams
-    
-  //     if(params){
+      const formData = Object.fromEntries(params.entries())
+      setFacilityId(formData?.facilityId)
 
-  //     for (let [k, v] of params){
-  //         if(v == 'on'){
-  //             window.document.getElementsByName(k)[0].defaultChecked = true  
-  //         } else if(v == 'true' || v == 'false') {
-  //             if (v == 'true') window.document.getElementsByName(k)[0].defaultChecked = v
-  //             if (v == 'false') window.document.getElementsByName(k)[1].defaultChecked = v
+      delete formData?.formId
 
-  //         }   
-  //         else{
-  //           window.document.getElementsByName(k)[0].defaultChecked = v
+      delete formData?.facilityId
 
-  //         }
-  //     }
-  // }
+      console.log({facility_checklist_document: formData?.facility_checklist_document})
+
+      delete formData?.facility_checklist_document
+
+      const newOptions = {}
+
+      Object.assign(newOptions, options)
+
+      newOptions['data'] = formData
+
+      for(let [k, v] of Object.entries(newOptions?.data)) {
+
+        if(v == 'on') newOptions.data[k] = true;
+        if(v == 'false') newOptions.data[k] = false;
+        if(v == 'true') newOptions.data[k] = true;
+        if(k.match(/^number_.+/) !== null) newOptions.data[k] = Number(v)
+
+      }
+
+      setOptions(newOptions)
+
     }
 
     setIsClient(true)
@@ -462,6 +453,7 @@ export function BasicDeatilsForm({ editMode }) {
         className='flex flex-col w-full mt-4 items-start bg-blue-50 p-3 justify-start gap-3'>
 
         {/* Facility Official Name */}
+ 
         <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
           <label
             htmlFor='official_name'
@@ -474,14 +466,12 @@ export function BasicDeatilsForm({ editMode }) {
           </label>
           <input
             required
-            ref={officialNameRef}
             type='text'
             name='official_name'
             defaultValue={options?.data?.official_name ?? ''}
             onInput={handleChange}
             className='flex-none w-full bg-blue-50 p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
           />
-          {/* {errors.official_name && <span className='font-normal text-sm text-red-500 text-start'>{errors.official_name}</span>} */}
         </div>
 
         {/* Facility Unique Name  */}
@@ -503,7 +493,6 @@ export function BasicDeatilsForm({ editMode }) {
             onChange={handleChange}
             className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
           />
-          {/* {errors.name && <span className='font-normal text-sm text-red-500 text-start'>{errors.name}</span>} */}
 
         </div>
 
@@ -534,7 +523,6 @@ export function BasicDeatilsForm({ editMode }) {
             onChange={handleSelectChange}
 
           />
-          {/* {errors.facility_type && <span className='font-normal text-sm text-red-500 text-start'>{errors.facility_type}</span>} */}
 
         </div>
 
@@ -561,7 +549,6 @@ export function BasicDeatilsForm({ editMode }) {
             name='facility_type_details'
 
           />
-          {/* {errors.facility_type_details && <span className='font-normal text-sm text-red-500 text-start'>{errors.facility_type_details}</span>} */}
 
 
         </div>
@@ -587,7 +574,6 @@ export function BasicDeatilsForm({ editMode }) {
 
           />
       
-          {/* {errors.operation_status && <span className='font-normal text-sm text-red-500 text-start'>{errors.operation_status}</span>} */}
         </div>
 
         {/* Date Established */}
@@ -610,7 +596,6 @@ export function BasicDeatilsForm({ editMode }) {
             className='flex-none w-full bg-transparent p-2 flex-grow placeholder-gray-500 border border-blue-600 focus:shadow-none  focus:border-black outline-none'
 
           />
-          {/* {errors.date_established && <span className='font-normal text-sm text-red-500 text-start'>{errors.collection_date}</span>} */}
         </div>
 
         {/* Is Facility accredited */}
@@ -644,7 +629,6 @@ export function BasicDeatilsForm({ editMode }) {
             </span>
 
           </div>
-          {/* {errors.accredited_lab_iso_15189 && <span className='font-normal text-sm text-red-500 text-start'>{errors.accredited_lab_iso_15189}</span>} */}
 
         </div>
 
@@ -668,7 +652,6 @@ export function BasicDeatilsForm({ editMode }) {
             defaultValue={options?.data?.owner_type ?? ''}
 
           />
-          {/* {errors.owner_type && <span className='font-normal text-sm text-red-500 text-start'>{errors.owner_type}</span>} */}
         </div>
 
         {/* Owner Details */}
@@ -692,7 +675,6 @@ export function BasicDeatilsForm({ editMode }) {
             defaultValue={options?.data?.owner ?? ''}
 
           />
-          {/* {errors.owner && <span className='font-normal text-sm text-red-500 text-start'>{errors.owner}</span>} */}
         </div>
 
         {/* KEPH Level */}
@@ -732,7 +714,6 @@ export function BasicDeatilsForm({ editMode }) {
             value={totalFunctionalBeds}
             className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
           />
-          {/* {errors.number_of_beds && <span className='font-normal text-sm text-red-500 text-start'>{errors.number_of_beds}</span>} */}
 
 
         </div>
@@ -758,7 +739,6 @@ export function BasicDeatilsForm({ editMode }) {
             defaultValue={options?.data?.number_of_inpatient_beds ?? ''}
             className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
           />
-          {/* {errors.number_of_inpatient_beds && <span className='font-normal text-sm text-red-500 text-start'>{errors.number_of_inpatient_beds}</span>} */}
 
         </div>
 
@@ -782,7 +762,6 @@ export function BasicDeatilsForm({ editMode }) {
             defaultValue={options?.data?.number_of_cots ?? ''}
             className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
           />
-          {/* {errors.number_of_cots && <span className='font-normal text-sm text-red-500 text-start'>{errors.number_of_cots}</span>} */}
 
         </div>
 
@@ -806,7 +785,6 @@ export function BasicDeatilsForm({ editMode }) {
             defaultValue={options?.data?.number_of_emergency_casualty_beds ?? ''}
             className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
           />
-          {/* {errors.number_of_emergency_casualty_beds && <span className='font-normal text-sm text-red-500 text-start'>{errors.number_of_emergency_casualty_beds}</span>} */}
 
 
         </div>
@@ -831,7 +809,6 @@ export function BasicDeatilsForm({ editMode }) {
             defaultValue={options?.data?.number_of_icu_beds ?? ''}
             className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
           />
-          {/* {errors.number_of_icu_beds && <span className='font-normal text-sm text-red-500 text-start'>{errors.number_of_icu_beds}</span>} */}
 
 
         </div>
@@ -856,7 +833,6 @@ export function BasicDeatilsForm({ editMode }) {
             defaultValue={options?.data?.number_of_hdu_beds ?? ''}
             className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
           />
-          {/* {errors.number_of_hdu_beds && <span className='font-normal text-sm text-red-500 text-start'>{errors.number_of_hdu_beds}</span>} */}
 
 
         </div>
@@ -881,7 +857,6 @@ export function BasicDeatilsForm({ editMode }) {
             defaultValue={options?.data?.number_of_maternity_beds ?? ''}
             className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
           />
-          {/* {errors.number_of_maternity_beds && <span className='font-normal text-sm text-red-500 text-start'>{errors.number_of_maternity_beds}</span>} */}
 
 
         </div>
@@ -906,7 +881,6 @@ export function BasicDeatilsForm({ editMode }) {
             defaultValue={options?.data?.number_of_isolation_beds ?? ''}
             className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
           />
-          {/* {errors.number_of_isolation_beds && <span className='font-normal text-sm text-red-500 text-start'>{errors.number_of_isolation_beds}</span>} */}
 
 
         </div>
@@ -933,7 +907,6 @@ export function BasicDeatilsForm({ editMode }) {
 
             className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
           />
-          {/* {errors.number_of_general_theatres && <span className='font-normal text-sm text-red-500 text-start'>{errors.number_of_general_theatres}</span>} */}
 
 
         </div>
@@ -958,7 +931,6 @@ export function BasicDeatilsForm({ editMode }) {
             defaultValue={options?.data?.number_of_maternity_theatres ?? ''}
             className='flex-none w-full  bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
           />
-          {/* {errors.number_of_maternity_theatres && <span className='font-normal text-sm text-red-500 text-start'>{errors.number_of_maternity_theatres}</span>} */}
 
         </div>
 
@@ -1017,7 +989,6 @@ export function BasicDeatilsForm({ editMode }) {
             </span>
 
           </div>
-          {/* {errors.reporting_in_dhis && <span className='font-normal text-sm text-red-500 text-start'>{errors.reporting_in_dhis}</span>} */}
 
         </div>
 
@@ -1041,7 +1012,6 @@ export function BasicDeatilsForm({ editMode }) {
             onChange={handleChange}
             defaultValue={options?.data?.admission_status ?? ''}
           />
-          {/* {errors.admission_status && <span className='font-normal text-sm text-red-500 text-start'>{errors.admission_status}</span>} */}
 
         </div>
 
@@ -1079,7 +1049,6 @@ export function BasicDeatilsForm({ editMode }) {
             </span>
 
           </div>
-          {/* {errors.nhif_accreditation && <span className='font-normal text-sm text-red-500 text-start'>{errors.nhif_accreditation}</span>} */}
 
         </div>
 
@@ -1203,7 +1172,7 @@ export function BasicDeatilsForm({ editMode }) {
             <div className='col-start-1 col-span-1'>
               <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
 
-                {/* {console.log({counties: sortOptions(options?.counties})} */}
+    
 
                 <label
                   htmlFor='county_id'
@@ -1223,7 +1192,7 @@ export function BasicDeatilsForm({ editMode }) {
                   name='county_id'
 
                 />
-                {/* {errors.county_id && <span className='font-normal text-sm text-red-500 text-start'>{errors.county_id}</span>} */}
+    
 
               </div>
             </div>
@@ -1250,7 +1219,7 @@ export function BasicDeatilsForm({ editMode }) {
 
 
                 />
-                {/* {errors.sub_county_id && <span className='font-normal text-sm text-red-500 text-start'>{errors.sub_county_id}</span>} */}
+    
               </div>
             </div>
 
@@ -1258,7 +1227,7 @@ export function BasicDeatilsForm({ editMode }) {
             <div className='col-start-3 col-span-1'>
               <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
                 <label
-                  htmlFor='c'
+                  htmlFor='constituency_id'
                   className='text-gray-600 capitalize text-sm'>
                   Constituency
                   <span className='text-medium leading-12 font-semibold'>
@@ -1277,7 +1246,7 @@ export function BasicDeatilsForm({ editMode }) {
 
 
                 />
-                {/* {errors.constituency_id && <span className='font-normal text-sm text-red-500 text-start'>{errors.constituency_id}</span>} */}
+    
 
               </div>
             </div>
@@ -1294,7 +1263,7 @@ export function BasicDeatilsForm({ editMode }) {
                     *
                   </span>
                 </label>
-                {/* {JSON.stringify(wardOptions)} */}
+    
                 <Select
                   options={wardOptions ?? []}
                   required
@@ -1304,7 +1273,7 @@ export function BasicDeatilsForm({ editMode }) {
                   name='ward'
 
                 />
-                {/* {errors.ward && <span className='font-normal text-sm text-red-500 text-start'>{errors.ward}</span>} */}
+    
 
               </div>
             </div>
@@ -1417,7 +1386,7 @@ export function BasicDeatilsForm({ editMode }) {
                 className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
               />
 
-              {/* {errors.facility_checklist_document && <span className='font-normal text-sm text-red-500 text-start'>{errors.facility_checklist_document}</span>} */}
+  
 
             </div>
 
@@ -1467,7 +1436,7 @@ export function BasicDeatilsForm({ editMode }) {
                   </span>
                   {
                     submitting ? 
-                    <span class='text-white'>Submitting </span>
+                    <span className='text-white'>Submitting </span>
                     :
                     <ChevronDoubleRightIcon className='w-4 h-4 text-white' />
 
