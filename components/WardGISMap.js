@@ -23,7 +23,9 @@ function MapListener ({tabOpen}) {
     const map = useMap()
 
     useEffect(() => {
+        
         if(tabOpen !== null) map.invalidateSize(false)
+
     }, [tabOpen])
 
     return null
@@ -52,10 +54,12 @@ const WardGISMap = ({ markerCoordinates, geoJSON, center, ward }) => {
     useEffect(() => {
 
 
+
         const lngs = []
         const lats = []
 
-        const bounds = geoJSON.properties.bound.coordinates
+        const bounds = geoJSON.properties.bound.coordinates[0];
+
 
         if (geoJSON) {
 
@@ -66,7 +70,6 @@ const WardGISMap = ({ markerCoordinates, geoJSON, center, ward }) => {
             }
 
             if(
-                
                 !(lngs.every(bound => markerCoordinates[1] < bound) &&
                 lats.every(bound => markerCoordinates[0] < bound)) 
             ) {
@@ -74,7 +77,7 @@ const WardGISMap = ({ markerCoordinates, geoJSON, center, ward }) => {
                 // Not Out of Bound
                 setIsOutOfBound(false)
 
-                console.log("[>>>>>] NoT of Bound")
+                console.log("[>>>>>] NoT out of Bound")
             }
             else {
                    //Out of Bound
@@ -100,12 +103,8 @@ const WardGISMap = ({ markerCoordinates, geoJSON, center, ward }) => {
     
             {/* Ward Map */}
             {
-                JSON.stringify(center)
-            }
-            {/* Center   */}
-            {
                 geoJSON && markerCoordinates && isValidGeoCoordinates ?
-            <MapContainer className='w-full' center={center ?? [-0.818389, 37.477222]} zoom={11.899} maxZoom={18.7} scrollWheelZoom={false} touchZoom={false} style={{ height: '400px', position: 'relative', zIndex: '1', backgroundColor: '#e7eae8', padding: '15px' }}>
+            <MapContainer className='w-full' center={center ?? [-0.818389, 37.477222]} zoom={13.199} maxZoom={18.7} scrollWheelZoom={false} touchZoom={false} style={{ height: '400px', position: 'relative', zIndex: '1', backgroundColor: '#e7eae8', padding: '15px' }}>
 
                 <GeoJSON data={geoJSON} stylez={geoJsonStyles} />
 

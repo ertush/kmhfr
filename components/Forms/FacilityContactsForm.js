@@ -59,6 +59,7 @@ export function FacilityContactsForm() {
     const [formId, setFormId] = useContext(FormContext);
     const[facilityId, _] = useContext(FacilityIdContext);
     const [responseError, setResponseError] = useState(null);
+    const [geolocationUrl, setGeolocationUrl] = useState('')
 
     const alert = useAlert()
 
@@ -206,7 +207,9 @@ export function FacilityContactsForm() {
     // Event handlers
 
     const handleGeolocationPrevious = useCallback(() => {
-        setFormId(`${parseInt(formId) - 1}`);
+        // setFormId(`${parseInt(formId) - 1}`);
+
+        window.location.url = geolocationUrl
 
     }, [])
 

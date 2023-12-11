@@ -343,8 +343,10 @@ export function BasicDeatilsForm({ editMode, wardProps }) {
       .then(async (res) => {
 
         if (res.status == 201 || res.status == 200) {
+          setSubmitting(false)
           alert.success('Facility Added Successfully')
         } else {
+          setSubmitting(false)
           alert.error('Unable to Add facility')
         }
 
@@ -1486,7 +1488,7 @@ export function BasicDeatilsForm({ editMode, wardProps }) {
                   </span>
                   {
                     submitting ? 
-                    <span className='text-white'>Submitting </span>
+                    <span className='text-white'>Saving </span>
                     :
                     <ChevronDoubleRightIcon className='w-4 h-4 text-white' />
 

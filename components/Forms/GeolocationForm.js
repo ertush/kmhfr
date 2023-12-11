@@ -9,7 +9,7 @@ import {
 import { FormOptionsContext } from '../../pages/facilities/add';
 // import { FacilityUpdatesContext } from '../../pages/facilities/edit/[id]';
 import { useAlert } from 'react-alert';
-import { FacilityIdContext, FacilityWardDataContext } from './Form';
+// import { FacilityIdContext, FacilityWardDataContext } from './Form';
 import Spinner from '../Spinner'
 
 
@@ -24,7 +24,7 @@ const WardMap = dynamic(
 
 
 const Map = memo(WardMap)
-const _ = require('underscore');
+// const _ = require('underscore');
 
 
 
@@ -45,6 +45,7 @@ export function GeolocationForm({ editMode }) {
   const [basicDetailsURL, setBasicDetailsURL] = useState('')
   const [latitude, setLatitude] = useState('')
   const [longitude, setLongitude] = useState('')
+  const [wardData, setWardData] = useState({})
 
 
 
@@ -80,20 +81,9 @@ export function GeolocationForm({ editMode }) {
 
     setSubmitting(true)
 
-    // Persist Data
-    /*
-    const params = [];
- 
-    for(let [k, v] of formData) params.push(`${k}=${v}`)
- 
-    const url = new URL(`${document.location.href}/?${params.join('&')}`)
- 
-    document.location.href = url
-
-    */
 
     fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${facilityId}/`, {
-      method: 'POST',
+      method: 'PATCH',
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json;charset=UTF-8',
@@ -102,92 +92,57 @@ export function GeolocationForm({ editMode }) {
       body: JSON.stringify(data)
     })
       .then(res => {
-        if (res.status == 201 || res.status == 200) {
+        if (res.status == 204 || res.status == 200) {
           alert.success('Facility Geolocation Details have been saved successfully')
 
           setSubmitting(false)
 
-          // Navigation
-          const current_url = new URL(window.document.location.href)
+          // Navigation & Persisitng Data
 
-          current_url.searchParams.set('formId', '2')
+          const params = [];
 
-          window.document.location.href = current_url
+          for(let [k, v] of formData) params.push(`${k}=${v}`)
 
+          if(wardData) params.push(`wardData=${Buffer.from(JSON.stringify(wardData)).toString('base64')}`)
+
+          const base64EncParams = Buffer.from(params.join('&')).toString('base64')
+  
+          const url = new URL(`${window.location.origin}/facilities/add?formData=${base64EncParams}`)
+          
+          url.searchParams.set('formId', '2')
+  
+          url.searchParams.set('facilityId', facilityId)
+  
+          window.location.href = url
+       
         } else {
+          setSubmitting(false)
           alert.error('Unable to save to Geolocation details')
         }
       })
-
-    
 
   }
 
 
   function handleInput(e) {
     e.preventDefault()
-    const lat_long = []
     // const coordinates = []
 
     if (e.target.name == 'latitude') {
-
-
-      // lat_long[0] = e.target.value;
-      // lat_long[1] = document.getElementsByName('longitude')[0]?.value
-
-
-      // setOptions({
-      //   options: {
-      //     collection_date: '',
-      //     data: {
-      //       lat_long
-      //     }
-
-      //   }
-      // })
 
       setLatitude(e.target.value)
 
     } else if (e.target.name == 'longitude') {
 
-      // lat_long[0] = document.getElementsByName('latitude')[0]?.value
-      // lat_long[1] = e.target.value;
-
-      // setOptions({
-      //   options: {
-      //     collection_date: '',
-      //     data: {
-      //       lat_long,
-      //     }
-
-      //   }
-      // })
-
       setLongitude(e.target.value)
-    } else {
+    } 
 
-      // lat_long[0] = document.getElementsByName('longitude')[0]?.value
-      // lat_long[1] = document.getElementsByName('latitude')[0]?.value
-
-      // setOptions({
-      //   options: {
-      //     collection_date: e.target.value,
-      //     data: {
-      //       lat_long,
-      //     }
-
-      //   }
-      // })
-
-      setCollection(e.target.value)
-    }
-
-    console.log(options)
+    // console.log(options)
   }
 
 
   useEffect(() => {
-
+    
     // console.log(JSON.stringify({wardData}))
     if(window && !editMode) {
 
@@ -203,13 +158,16 @@ export function GeolocationForm({ editMode }) {
     // const paramEntries = params.entries()
     const base64WardData =  params.get('wardData')
     const wardDataStr = Buffer.from(base64WardData, 'base64').toString()
-    const wardData = JSON.parse(wardDataStr)
+    const _wardData = JSON.parse(wardDataStr)
+    const formData = Object.fromEntries(params.entries())
 
     // const formData = Object.fromEntries(paramEntries)
-    console.log(wardData)
-    setGeoJSON(wardData?.geoJSON)
-    setGeoCenter(wardData?.centerCoordinates)
-    setWardName(wardData?.geoJSON?.properties?.name)
+   
+    setWardData(_wardData)
+
+    setGeoJSON(_wardData?.geoJSON)
+    setGeoCenter(_wardData?.centerCoordinates)
+    setWardName(_wardData?.geoJSON?.properties?.name)
 
     setFacilityId(_facilityId)
 
@@ -218,8 +176,23 @@ export function GeolocationForm({ editMode }) {
     params.delete('wardData')
     current_url.searchParams.delete('facilityId')
   
-
     setBasicDetailsURL(current_url)
+
+
+      const newOptions = {}
+
+      Object.assign(newOptions, options)
+
+      console.log(new Date(formData.collection_date))
+
+      newOptions['data'] =  {lat_long: [formData.latitude, formData.longitude], collection_date: formData.collection_date}
+
+      for(let [k, v] of Object.entries(newOptions?.data)) {
+       newOptions.data[k] = v
+
+      }
+
+      setOptions(newOptions)
   }
 
   }, [])
@@ -237,9 +210,6 @@ export function GeolocationForm({ editMode }) {
 
       {/* Collection Date */}
       <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-          {
-            JSON.stringify(options?.data?.lat_long)
-          }
         <label
           htmlFor='collection_date'
           className='text-gray-600 capitalize text-sm'>
@@ -254,7 +224,7 @@ export function GeolocationForm({ editMode }) {
           type='date'
           name='collection_date'
           onChange={handleInput}
-          defaultValue={options.collection_date?.split('T')[0] ?? ''}
+          defaultValue={options.collection_date.split('T')[0] ??  ''}
           className='flex-none w-full  p-2 flex-grow border placeholder-gray-500 bg-transparent border-blue-600 focus:shadow-none focus:border-black outline-none'
         />
 
@@ -277,9 +247,10 @@ export function GeolocationForm({ editMode }) {
             required
             type='decimal'
             name='longitude'
+            step={0.000001}
             defaultValue={(options?.data?.lat_long && options?.data?.lat_long?.length == 2 && options?.data?.lat_long[0]) ?? ''}
             onChange={handleInput}
-
+            placeholder='Enter longitude'
             className='flex-none w-full  p-2 flex-grow border bg-transparent placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
           />
 
@@ -300,7 +271,9 @@ export function GeolocationForm({ editMode }) {
             required
             type='decimal'
             name='latitude'
+            step={0.000001}
             onChange={handleInput}
+            placeholder='Enter latitude'
             defaultValue={(options?.data?.lat_long && options?.data?.lat_long?.length == 2 && options?.data?.lat_long[1]) ?? ''}
             className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
           />
@@ -311,23 +284,20 @@ export function GeolocationForm({ editMode }) {
 
       {/* Ward Geo Map */}
       <div className='w-full h-auto'>
+        {
+
+        }
         <div className='w-full bg-gray-200   flex flex-col items-start justify-center text-left relative'>
-          {/* { console.log({geoCenter, wardName, geoJSON})} */}
-          {/* {
-                            (geoJSON?.properties && geoCenter && wardName &&
-                            Object.keys(geoJSON).length > 2 && geoCenter.length > 1  && wardName.length > 1 ) 
-                            ?
-                            
-                            // JSON.stringify(geoJSON)
-                            :
-                            <Alert severity="error" sx={{ width: '100%' }}>No Geolocation data</Alert>
-                      
-                        } */}
+        
           <Suspense fallback={<Alert severity='info' className='w-full p-1'>Loading ...</Alert>}>
+            
         
             {
-               geoJSON && geoCenter && wardName && 
+              (editMode && options?.data?.lat_long !== null) || (!editMode && geoJSON && geoCenter && wardName) ?
+               
               <Map markerCoordinates={[options?.data?.lat_long[0] ??  latitude ?? geoCenter[0], options?.data?.lat_long[1] ?? longitude ?? geoCenter[1]]} geoJSON={geoJSON} ward={wardName} center={geoCenter} />
+              :
+              <Alert severity='warning' className='w-full p-1'>Geolocation Data is Missing For this facility</Alert>
             }
           </Suspense>
         </div>
@@ -378,7 +348,7 @@ export function GeolocationForm({ editMode }) {
                   </span>
                   {
                     submitting ? 
-                    <span className='text-white'>Submitting </span>
+                    <span className='text-white'>Saving </span>
                     :
                     <ChevronDoubleRightIcon className='w-4 h-4 text-white' />
 
