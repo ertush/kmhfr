@@ -43,6 +43,8 @@ export function GeolocationForm({ editMode }) {
   const [geoCenter, setGeoCenter] = useState(_options?.geolocation?.centerCoordinates) 
   const [submitting, setSubmitting] = useState(false)
   const [basicDetailsURL, setBasicDetailsURL] = useState('')
+  const [latitude, setLatitude] = useState('')
+  const [longitude, setLongitude] = useState('')
 
 
 
@@ -129,49 +131,58 @@ export function GeolocationForm({ editMode }) {
 
     if (e.target.name == 'latitude') {
 
-      lat_long[0] = e.target.value;
-      lat_long[1] = document.getElementsByName('longitude')[0]?.value
+
+      // lat_long[0] = e.target.value;
+      // lat_long[1] = document.getElementsByName('longitude')[0]?.value
 
 
-      setOptions({
-        options: {
-          collection_date: '',
-          data: {
-            lat_long
-          }
+      // setOptions({
+      //   options: {
+      //     collection_date: '',
+      //     data: {
+      //       lat_long
+      //     }
 
-        }
-      })
+      //   }
+      // })
+
+      setLatitude(e.target.value)
 
     } else if (e.target.name == 'longitude') {
 
-      lat_long[0] = document.getElementsByName('latitude')[0]?.value
-      lat_long[1] = e.target.value;
+      // lat_long[0] = document.getElementsByName('latitude')[0]?.value
+      // lat_long[1] = e.target.value;
 
-      setOptions({
-        options: {
-          collection_date: '',
-          data: {
-            lat_long,
-          }
+      // setOptions({
+      //   options: {
+      //     collection_date: '',
+      //     data: {
+      //       lat_long,
+      //     }
 
-        }
-      })
+      //   }
+      // })
+
+      setLongitude(e.target.value)
     } else {
 
-      lat_long[0] = document.getElementsByName('longitude')[0]?.value
-      lat_long[1] = document.getElementsByName('latitude')[0]?.value
+      // lat_long[0] = document.getElementsByName('longitude')[0]?.value
+      // lat_long[1] = document.getElementsByName('latitude')[0]?.value
 
-      setOptions({
-        options: {
-          collection_date: e.target.value,
-          data: {
-            lat_long,
-          }
+      // setOptions({
+      //   options: {
+      //     collection_date: e.target.value,
+      //     data: {
+      //       lat_long,
+      //     }
 
-        }
-      })
+      //   }
+      // })
+
+      setCollection(e.target.value)
     }
+
+    console.log(options)
   }
 
 
@@ -226,7 +237,9 @@ export function GeolocationForm({ editMode }) {
 
       {/* Collection Date */}
       <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-     
+          {
+            JSON.stringify(options?.data?.lat_long)
+          }
         <label
           htmlFor='collection_date'
           className='text-gray-600 capitalize text-sm'>
@@ -314,7 +327,7 @@ export function GeolocationForm({ editMode }) {
         
             {
                geoJSON && geoCenter && wardName && 
-              <Map markerCoordinates={[options?.data?.lat_long[0] ?? geoCenter[0], options?.data?.lat_long[1] ?? geoCenter[1]]} geoJSON={geoJSON} ward={wardName} center={geoCenter} />
+              <Map markerCoordinates={[options?.data?.lat_long[0] ??  latitude ?? geoCenter[0], options?.data?.lat_long[1] ?? longitude ?? geoCenter[1]]} geoJSON={geoJSON} ward={wardName} center={geoCenter} />
             }
           </Suspense>
         </div>
