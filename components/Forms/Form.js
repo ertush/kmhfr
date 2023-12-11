@@ -19,8 +19,6 @@ import { GeolocationForm } from './GeolocationForm';
 
 
 export const FormContext  = createContext(() => null)
-export const FacilityIdContext = createContext(null)
-export const EditFacilityContactsContext = createContext(null)
 
 
 
@@ -32,8 +30,11 @@ export function Form () {
 
 const [formId, setFormId] = useState('0')
 
+
+
 useEffect(() => {
   function setStateFromUrl() {
+
     const url = new URL(window.document.location.href)
 
     setFormId(url.searchParams.get('formId'))
@@ -65,7 +66,7 @@ useEffect(() => {
 										{steps.map((label, i) => (
 											<Step key={label}>
 												<StepLabel
-                                                StepIconComponent={() => (
+                          StepIconComponent={() => (
 													<span className="w-6 h-6 bg-blue-600 text-white text-sm rounded-full flex items-center justify-center">
 														{(i + 1)}
 													</span>
@@ -82,11 +83,7 @@ useEffect(() => {
 
                                 window.location.href = url
 
-																// setFormId(JSON.stringify(0))
-
-
-																// window.sessionStorage.setItem('formId', 0)
-
+														
 															}
 														} >{label}</span>
 														:
@@ -102,56 +99,53 @@ useEffect(() => {
 
               {/* Stepper Body */}
               <div className='flex flex-col justify-center items-start px-1 md:px-4 w-full '>
-                  {/* <FormContext.Provider value={[formId, setFormId]}> */}
-                
-                      <div
-                        className=' w-full flex flex-col items-start justify-start p-4 shadow-md bg-blue-50'
-                        style={{ minHeight: '250px' }}>
-                            {/* { console.log({formId})} */}
-                           {
-                                formId == '0' && 
-                                <BasicDeatilsForm editMode={false}
-                      
-                                />
-
-                              }
-                              {
-                                  formId == '1' && 
-                                  <GeolocationForm 
-                                  
+           
+                        <div
+                          className=' w-full flex flex-col items-start justify-start p-4 shadow-md bg-blue-50'
+                          style={{ minHeight: '250px' }}>
+                               {
+                                  formId == '0' && 
+                                  <BasicDeatilsForm  
+                                  editMode={false}
                                   />
-                                 
-                              } 
-                              {
-                                  formId == '2' &&    
-                                  <FacilityContactsForm />
-                                
-                              } 
-                              {
-                                  formId == '3' &&    
-                                  <RegulationForm />
-                                
-                              }
-                              {
-                                  formId == '4' &&    
-                                  <ServicesForm />
-                                
-                              }
-                               {
-                                  formId == '5' &&    
-                                  <InfrastructureForm />
-                                
-                              }
-                               {
-                                  formId == '6' &&    
-                                  <HumanResourceForm />
-                                
-                              }
-                             
-                          
+
+                                }
+                                {
+                                    formId == '1' && 
+                                    <GeolocationForm 
+                                      editMode={false}
+                                    />
+                                  
+                                } 
+                                {
+                                    formId == '2' &&    
+                                    <FacilityContactsForm />
+                                  
+                                } 
+                                {
+                                    formId == '3' &&    
+                                    <RegulationForm />
+                                  
+                                }
+                                {
+                                    formId == '4' &&    
+                                    <ServicesForm />
+                                  
+                                }
+                                {
+                                    formId == '5' &&    
+                                    <InfrastructureForm />
+                                  
+                                }
+                                {
+                                    formId == '6' &&    
+                                    <HumanResourceForm />
+                                  
+                                }
+                              
+                            
                         </div>
-               
-                    {/* </FormContext.Provider> */}
+                 
                 </div>
 
     </div>

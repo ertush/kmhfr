@@ -8,7 +8,7 @@ import Select from './formComponents/FromikSelect';
 import { toFormikValidationSchema } from "zod-formik-adapter";
 import { ChevronDoubleLeftIcon, ChevronDoubleRightIcon, PlusIcon } from '@heroicons/react/outline';
 import FacilityDepartmentUnits from './formComponents/FacilityDepartmentUnits'
-import { FacilityIdContext } from './Form'
+import { FacilityIdContext } from './EditForm'
 import { handleRegulationSubmit, handleRegulationSubmitUpdates, handleRegulationUpdates } from '../../controllers/facility/facilityHandlers';
 import { useAlert } from 'react-alert';
 import { FacilityUpdatesContext } from '../../pages/facilities/edit/[id]';

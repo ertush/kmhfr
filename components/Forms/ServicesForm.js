@@ -7,7 +7,7 @@ import {
     handleServiceSubmit,
     handleServiceUpdates
 } from '../../controllers/facility/facilityHandlers'
-import { FacilityIdContext } from './Form'
+import { FacilityIdContext } from './EditForm'
 import { FacilityUpdatesContext } from '../../pages/facilities/edit/[id]';
 
 

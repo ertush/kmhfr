@@ -12,12 +12,12 @@ import { RegulationForm } from './RegulationForm';
 import { ServicesForm } from './ServicesForm';
 import { GeolocationForm } from './GeolocationForm';
 import { useLocalStorageState } from './hooks/formHook';
-import { FacilityIdContext } from './Form';
 import { FormOptionsContext } from '../../pages/facilities/add';
 
 
 
 export const EditFacilityContactsContext = createContext(null)
+export const FacilityIdContext = createContext(null)
 
 export const TabContext = createContext(null)
 

@@ -11,9 +11,10 @@ import {
 } from '@heroicons/react/solid';
 import { useAlert } from 'react-alert';
 import Spinner from '../Spinner'
+import { FacilityIdContext, FacilityWardDataContext } from './Form';
 
 
-export function BasicDeatilsForm({ editMode }) {
+export function BasicDeatilsForm({ editMode, wardProps }) {
 
   // Constants
   const alert = useAlert();
@@ -23,6 +24,7 @@ export function BasicDeatilsForm({ editMode }) {
   const [totalFunctionalBeds, setTotalFunctionalBeds] = useState(0)
   const [facilityId, setFacilityId] = useState('')
   const [submitting, setSubmitting] = useState(false);
+
 
   // Options
   const formContext = useContext(FormOptionsContext);
@@ -95,7 +97,7 @@ export function BasicDeatilsForm({ editMode }) {
         keph[0]?.value = options?.keph.find(({ label }) => label == 'Level 3')?.value;
 
       }
-      else if (facilityTypeLabel.includes('STAND ALONE  ')) {
+      else if (facilityTypeLabel.includes('STAND ALONE')) {
         keph[0]?.value = options?.keph.find(({ label }) => label == 'Level 2')?.value;
 
       }
@@ -328,7 +330,6 @@ export function BasicDeatilsForm({ editMode }) {
     setSubmitting(true)
 
     // Persist Data
-    
 
     fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/`, {
       method: 'POST',
@@ -349,32 +350,76 @@ export function BasicDeatilsForm({ editMode }) {
 
         setSubmitting(false)
 
-        const facilityId = (await res.json())?.id
+        const facilityData = await res.json()
 
-        const params = [];
+        const facilityId = facilityData?.id
 
-        for(let [k, v] of formData) {
-          if(k == 'facility_checklist_document') {
-             params.push(`${k}=${JSON.stringify(v)}`)
-          }
-          else { 
-          params.push(`${k}=${v}`)
+        setFacilityId(facilityId)
 
-          }
+        if(facilityData) {
+          fetch(
+            `${process.env.NEXT_PUBLIC_API_URL}/common/wards/${facilityData?.ward}/`,
+            {
+              headers: {
+                Authorization: 'Bearer ' + options?.token,
+                Accept: 'application/json',
+              }
+            }
+          )
+          .then(resp => resp.json())
+          .then(async wardData => {
+            // console.log(JSON.stringify(data))
+            if(wardData){
+
+              const [lng, lat] = await wardData?.ward_boundary.properties.center.coordinates;
+
+              // console.log([lng, lat])
+
+              const wardGeoData = {
+                  geoJSON: JSON.parse(JSON.stringify(wardData?.ward_boundary)),
+                  centerCoordinates: JSON.parse(
+                    JSON.stringify([lat, lng])
+                  )
+                }
+              
+                // Base64 encode ward data
+
+                const base64EncWardData = Buffer.from(JSON.stringify(wardGeoData)).toString('base64')
+
+                const params = [];
+
+                for(let [k, v] of formData) {
+                  if(k == 'facility_checklist_document') {
+                     params.push(`${k}=${JSON.stringify(v)}`)
+                  }
+                  else { 
+
+                  params.push(`${k}=${v}`)
+        
+                  }
+                }
+
+                params.push(`wardData=${base64EncWardData}`)
+
+                const base64EncParams = Buffer.from(params.join('&')).toString('base64')
+        
+                const url = new URL(`${window.location.origin}/facilities/add?formData=${base64EncParams}`)
+                
+                url.searchParams.set('formId', '1')
+        
+                url.searchParams.set('facilityId', `${facilityId}`)
+        
+                window.location.href = url
+
+
+            }
+
+
+       
+          })
         }
 
-        const url = new URL(`${document.location.href}/?${params.join('&')}`)
-
-        url.searchParams.set('formId', '1')
-
-        url.searchParams.set('facilityId', `${facilityId}`)
-
-
-        document.location.href = url
-
-
-      
-
+       
       })
 
 
@@ -408,15 +453,20 @@ export function BasicDeatilsForm({ editMode }) {
 
     if(window && !editMode) {
       const path = new URL(window.location.href)
-      const params = path.searchParams
-      const formData = Object.fromEntries(params.entries())
-      setFacilityId(formData?.facilityId)
+      const strFormData = Buffer.from(path.searchParams?.get('formData') ?? 'J3t9Jw==', 'base64').toString() ?? "{}"
+      const params = new URL(`${window.location.origin}/facilities/add?${strFormData}`).searchParams
+      const paramEntries = params.entries()
+      const formData = Object.fromEntries(paramEntries)
+      
+      console.log(formData)
 
-      delete formData?.formId
+      if(facilityId == '') setFacilityId(params?.facilityId)
 
-      delete formData?.facilityId
+      // delete formData?.formId
 
-      console.log({facility_checklist_document: formData?.facility_checklist_document})
+      // delete formData?.facilityId
+
+      // console.log({facility_checklist_document: formData?.facility_checklist_document})
 
       delete formData?.facility_checklist_document
 
@@ -1396,7 +1446,7 @@ export function BasicDeatilsForm({ editMode }) {
             editMode ?
 
               <div className='flex justify-end items-center w-full'>
-                {submitting ? <span>Saving...</span> : <button
+                 <button
                   type='submit'
                   disabled={submitting}
                   className={`flex items-center ${submitting ? 'justify-center'  : 'justify-start'} space-x-2 bg-blue-700  p-1 px-2`}>
@@ -1410,7 +1460,7 @@ export function BasicDeatilsForm({ editMode }) {
                     }
                   </span>
                   {/* <ChevronDoubleRightIcon className='w-4 h-4 text-white' /> */}
-                </button>}
+                </button>
               </div>
 
               :

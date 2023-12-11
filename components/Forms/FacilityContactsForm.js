@@ -15,7 +15,7 @@ import {
     handleFacilityContactsUpdates
 } from '../../controllers/facility/facilityHandlers';
 import { FacilityUpdatesContext } from '../../pages/facilities/edit/[id]';
-import { FacilityIdContext } from './Form'
+import { FacilityIdContext } from './EditForm'
 import { defer } from 'underscore';
 import { Alert } from "@mui/lab";
 import { useAlert } from 'react-alert';
