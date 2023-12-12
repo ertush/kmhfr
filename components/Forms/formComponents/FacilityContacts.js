@@ -4,7 +4,7 @@ import { XCircleIcon } from '@heroicons/react/outline'
 import { FacilityContactsContext } from "../../../components/Forms/FacilityContactsForm"
 // import { EditFacilityContactsContext } from "../../../pages/facilities/edit/[id]"
 import { useAlert } from "react-alert"
-import  Select  from './FromikSelect'
+import  Select  from './FormikSelect'
 import { Field } from 'formik'
 
 
@@ -55,7 +55,7 @@ const FacilityContact = ({contactTypeOptions, setFacilityContacts, index, fieldN
             <Select options={contactTypeOptions || []} 
                 required
                 id={`facility-contact-type-${index}`}
-                placeholder="Select Name"
+                placeholder="Select Contact Type"
                 name={`${fieldNames[0]}_${index}`} 
                
                 />
@@ -124,7 +124,7 @@ const OfficerContactDetails = ({contactTypeOptions, setFacilityContacts, contact
             <Select options={contactTypeOptions || []} 
                 required
                 id={`officer-contact-type-${index}`}
-                placeholder="Select Name"
+                placeholder="Select Contact Type"
                 name={`${fieldNames[0]}_${index}`} 
                  />
             

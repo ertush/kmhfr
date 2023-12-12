@@ -3,7 +3,7 @@
 "use client"
 
 import { useContext, useEffect, useState } from 'react';
-import Select from './formComponents/FromikSelect';
+import Select from './formComponents/Select';
 import { FormOptionsContext } from '../../pages/facilities/add';
 import {
   ChevronDoubleRightIcon,
@@ -410,6 +410,9 @@ export function BasicDeatilsForm({ editMode, wardProps }) {
                 url.searchParams.set('formId', '1')
         
                 url.searchParams.set('facilityId', `${facilityId}`)
+
+                url.searchParams.set('from', 'submission')
+                
         
                 window.location.href = url
 
@@ -455,20 +458,17 @@ export function BasicDeatilsForm({ editMode, wardProps }) {
 
     if(window && !editMode) {
       const path = new URL(window.location.href)
+
+      if(path.searchParams.get('from') == 'previous'){
+
       const strFormData = Buffer.from(path.searchParams?.get('formData') ?? 'J3t9Jw==', 'base64').toString() ?? "{}"
       const params = new URL(`${window.location.origin}/facilities/add?${strFormData}`).searchParams
       const paramEntries = params.entries()
       const formData = Object.fromEntries(paramEntries)
       
-      console.log(formData)
+      // console.log(formData)
 
       if(facilityId == '') setFacilityId(params?.facilityId)
-
-      // delete formData?.formId
-
-      // delete formData?.facilityId
-
-      // console.log({facility_checklist_document: formData?.facility_checklist_document})
 
       delete formData?.facility_checklist_document
 
@@ -488,6 +488,7 @@ export function BasicDeatilsForm({ editMode, wardProps }) {
       }
 
       setOptions(newOptions)
+     }
 
     }
 
@@ -1476,6 +1477,7 @@ export function BasicDeatilsForm({ editMode, wardProps }) {
                 </button>
                 <button
                   type='submit'
+                  disabled={submitting}
                   className='flex items-center justify-start gap-2 text-white bg-blue-700  p-1 px-2'>
                   <span className='text-medium font-semibold text-white'>
                   {

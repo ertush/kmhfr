@@ -61,6 +61,8 @@ export function GeolocationForm({ editMode }) {
 
     url.searchParams.set('formId', '0')
 
+    url.searchParams.set('from', 'previous')
+
     window.location.href = url
 
   }
@@ -148,11 +150,14 @@ export function GeolocationForm({ editMode }) {
 
     const current_url = new URL(window.location.href)
 
-    // if(!facilityId) {
-    //   setFacilityId(current_url?.searchParams.get('facilityId'))
-    // }
 
-    const _facilityId = current_url.searchParams.get('facilityId')
+    setFacilityId(current_url.searchParams.get('facilityId'))
+
+    if(current_url.searchParams.get('from') == 'submission') setBasicDetailsURL(current_url)
+
+    if(current_url.searchParams.get('from') == 'previous'){
+
+
     const strFormData = Buffer.from(current_url.searchParams?.get('formData') ?? 'J3t9Jw==', 'base64').toString() ?? "{}"
     const params = new URL(`${window.location.origin}/facilities/add?${strFormData}`).searchParams
     // const paramEntries = params.entries()
@@ -169,16 +174,7 @@ export function GeolocationForm({ editMode }) {
     setGeoCenter(_wardData?.centerCoordinates)
     setWardName(_wardData?.geoJSON?.properties?.name)
 
-    setFacilityId(_facilityId)
-
-
       
-    params.delete('wardData')
-    current_url.searchParams.delete('facilityId')
-  
-    setBasicDetailsURL(current_url)
-
-
       const newOptions = {}
 
       Object.assign(newOptions, options)
@@ -193,6 +189,7 @@ export function GeolocationForm({ editMode }) {
       }
 
       setOptions(newOptions)
+    }
   }
 
   }, [])
@@ -224,7 +221,7 @@ export function GeolocationForm({ editMode }) {
           type='date'
           name='collection_date'
           onChange={handleInput}
-          defaultValue={options.collection_date.split('T')[0] ??  ''}
+          defaultValue={options?.collection_date?.split('T')[0] ??  ''}
           className='flex-none w-full  p-2 flex-grow border placeholder-gray-500 bg-transparent border-blue-600 focus:shadow-none focus:border-black outline-none'
         />
 
@@ -336,6 +333,7 @@ export function GeolocationForm({ editMode }) {
                 </button>
                 <button
                   type='submit'
+                  disabled={submitting}
                   className='flex items-center justify-start gap-2 text-white bg-blue-700  p-1 px-2'>
                   <span className='text-medium font-semibold text-white'>
                     {

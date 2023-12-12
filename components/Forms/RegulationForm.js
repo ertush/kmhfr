@@ -4,7 +4,7 @@ import { FormContext } from './Form';
 import { object, string } from "zod";
 import { FormOptionsContext } from '../../pages/facilities/add';
 import {useLocalStorageState} from './hooks/formHook';
-import Select from './formComponents/FromikSelect';
+import Select from './formComponents/FormikSelect';
 import { toFormikValidationSchema } from "zod-formik-adapter";
 import { ChevronDoubleLeftIcon, ChevronDoubleRightIcon, PlusIcon } from '@heroicons/react/outline';
 import FacilityDepartmentUnits from './formComponents/FacilityDepartmentUnits'

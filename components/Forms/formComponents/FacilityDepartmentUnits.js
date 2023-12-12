@@ -1,5 +1,5 @@
 import { useRef, useEffect, useContext } from "react"
-import Select from './FromikSelect';
+import Select from './Select';
 import { Field } from 'formik'
 import { FacilityDepartmentUnitsContext } from "../RegulationForm";
 import { XCircleIcon } from "@heroicons/react/outline";

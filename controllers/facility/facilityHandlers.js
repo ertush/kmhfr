@@ -239,11 +239,9 @@ const handleGeolocationSubmit = (token, values, stateSetters) => {
 };
 
 // handleFacilityContactsSubmit
-const handleFacilityContactsSubmit = (token, values, stateSetters) => {
+const handleFacilityContactsSubmit = (token, values, facilityId) => {
 
     
-    const [formId, setFormId, facilityId] = stateSetters;
-
     // console.log({values})
 
     const facilityContacts = []
@@ -287,10 +285,10 @@ const handleFacilityContactsSubmit = (token, values, stateSetters) => {
 
 //    console.log({payload})
     
-   
+   if(facilityId && token){
     try{     
 
-        fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${facilityId}/`, {
+      return  fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${facilityId}/`, {
 
             headers:{
                 'Authorization': 'Bearer ' + token,
@@ -303,10 +301,15 @@ const handleFacilityContactsSubmit = (token, values, stateSetters) => {
         })
     }
     catch(e){
-        console.error('Unable to patch facility contacts details', e.message)
+        console.error('Unable to update facility contacts details', e.message)
     }
+} else {
+    return new Promise(reject => {
+        reject(Error('unable to save facility contacts: facilityId or token is missing'))
+    })
+}
 
-    setFormId(`${parseInt(formId) + 1}`);
+    // setFormId(`${parseInt(formId) + 1}`);
 };
 
 // handleRegulationSubmit
