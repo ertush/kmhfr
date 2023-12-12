@@ -1,7 +1,7 @@
 import {  Form, Formik, Field  } from 'formik'
 import MainLayout from '../MainLayout';
 import CommunityUnitSideMenu from '../CommunityUnitSideMenu';
-import Select from './formComponents/FromikSelect'
+import Select from './formComponents/Select'
 import Link from 'next/link';
 import * as Tabs from "@radix-ui/react-tabs";
 import {
@@ -84,10 +84,13 @@ export function CommunityUnitEditForm({ cu: {
   const [contactOptions, setContactOptions] = useState(options?.contact_types?.map(({ id, name }) => ({ label: name, value: id })) ?? []) 
   const [current_services, setCurrentServices] = useState(Array.from(services, s=>s?.service) || [])
   const [token, setToken] = useState();
+
+  console.log(options?.facilities);
+
   const [intialValuesBasicDetails, setBasicDetailValues] = useState({
     code,
     name,
-    facility_name: options?.facilities?.find(({name}) => name == facility_name).id ?? '',
+    facility_name: '',
     status_name,
     date_established,
     households_monitored,
@@ -336,7 +339,7 @@ export function CommunityUnitEditForm({ cu: {
                   }}
                 >
                   {/* CHU Name */}
-                  {JSON.stringify(token)}
+                  {/* {JSON.stringify(token)} */}
                   <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
                     <label
                       htmlFor="name"
