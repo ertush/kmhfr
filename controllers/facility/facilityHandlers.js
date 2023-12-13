@@ -313,16 +313,9 @@ const handleFacilityContactsSubmit = (token, values, facilityId) => {
 };
 
 // handleRegulationSubmit
-const handleRegulationSubmit = async  (token, values, stateSetters, licenseFileRef, alert) => {
+const handleRegulationSubmit = async  (token, values, facilityId, setSubmitting, licenseFile, alert) => {
 
-    let facility_name = ''
-
-    if(window){
-        facility_name = JSON.parse(JSON.parse(window.localStorage.getItem('basic_details_form')))?.official_name
-    }
-
-    const [formId, setFormId, facilityId] = stateSetters
-
+    // console.log({license: licenseFileRef.current})
 
     const {license_number, registration_number, regulation_status, regulatory_body} = values
    
@@ -359,7 +352,7 @@ const handleRegulationSubmit = async  (token, values, stateSetters, licenseFileR
     // console.log({payload, facility_name}) // debug
 
 
-    payload.forEach(async (data) => {
+    payload.forEach(async (data, i) => {
         try {
             const resp = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${facilityId}/`, {
 
@@ -373,8 +366,8 @@ const handleRegulationSubmit = async  (token, values, stateSetters, licenseFileR
                 body: JSON.stringify(data)
             })
 
-            if(resp.ok) {
-                alert.success('Facilty Regulation details saved successfully')
+            if(resp.status == 204 || resp.status == 200) {
+                // alert.success('Facilty Regulation details saved successfully')
             } else {
                 alert.error('unable to save Regulation details ')
             }
@@ -385,52 +378,101 @@ const handleRegulationSubmit = async  (token, values, stateSetters, licenseFileR
 
     
      // Post the license document
-            
-     if (licenseFileRef.files[0]) {
-        alert.success('Facility regulation details saved successfully')
 
-        const formData = new FormData()
+     let facility_name = ''
 
-        if(licenseFileRef !== null) {
-            formData.append('name', `${facility_name} Facility license File`)
-            formData.append('description', 'Facilities license file')
-            formData.append('document_type', 'FACILITY_LICENSE')
-            formData.append('facility_name', facility_name)
-            formData.append('fyl', licenseFileRef.files[0] ?? undefined)
-        }
+     if(facilityId && licenseFile){
+        fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${facilityId}/`, {
+            headers:{
+                'Authorization': 'Bearer ' + token,
+                'Accept': 'application/json, text/plain, */*',
+                'Content-Type': 'application/json;charset=utf-8'
+                
+            },
+        })
+        .then(resp => resp.json())
+        .then(async ({name: facility_name}) => {
 
+            console.log({facility_name})
+            if (licenseFile) {
 
-        try {
+                const formData = new FormData()
+        
+                if(licenseFile !== null) {
+                    formData.append('name', `${facility_name} Facility license File`)
+                    formData.append('description', 'Facilities license file')
+                    formData.append('document_type', 'FACILITY_LICENSE')
+                    formData.append('facility_name', facility_name)
+                    formData.append('fyl', licenseFile?.files[0] ?? undefined)
+                }
+        
+        
+                try {
+        
+                    const resp = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/common/documents/`, {
+        
+                        headers: {
+                            'Authorization': 'Bearer '+ token,
+                            'Accept': 'application/json, text/plain, */*',
+                        },
+                        method: 'POST',
+                        body: formData
+                    })
+        
+                    if(resp.status == 201){
 
-            const resp = await fetch(`${API_URL}/common/documents/`, {
+                    setSubmitting(false)
+                    
+                    alert.success('License Document saved successfully')
 
-                headers: {
-                    'Authorization': 'Bearer '+ token,
-                    'Accept': 'application/json, text/plain, */*',
-                },
-                method: 'POST',
-                body: formData
-            })
+                    const formDataBase64Enc = Buffer.from(JSON.stringify(values)).toString('base64')
 
-            if(resp.ok){
-            alert.success('License Document saved successfully')
+                    const url = new URL(`${window.location.origin}/facilities/add?formData=${formDataBase64Enc}`)
 
-            }
+                    url.searchParams.set('formId', '4')
 
-            return resp
-        }
-        catch (e) {
-            console.error('Unable to Post License Document')
-        }
-    } else {
-        alert.error('Unable to save facility regulation ')
+                    url.searchParams.set('facilityId', facilityId)
+                
+                    url.searchParams.set('from', 'submission')
 
-    }
-
+                    window.location.href = url
                
-            
+                  
+        
+                    }
+        
+                    return resp
+                }
+                catch (e) {
+                    console.error('Unable to Post License Document', e.message)
+                }
+            } else {
+                alert.error('Unable to save facility regulation ')
+        
+            }
+        
+        })
+    }
+    else {
+        setSubmitting(false)
+                    
+        const formDataBase64Enc = Buffer.from(JSON.stringify(values)).toString('base64')
 
-    setFormId(`${parseInt(formId) + 1}`);
+        const url = new URL(`${window.location.origin}/facilities/add?formData=${formDataBase64Enc}`)
+
+        url.searchParams.set('formId', '4')
+
+        url.searchParams.set('facilityId', facilityId)
+
+
+        url.searchParams.set('from', 'submission')
+
+        window.location.href = url
+   
+    }
+            
+  
+    // setFormId(`${parseInt(formId) + 1}`);
 
 
 };
@@ -444,7 +486,7 @@ const handleServiceSubmit = async (token, stateSetters, facilityId) => {
 
    
     try {
-        fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${facilityId}/`, {
+        return {resp: fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${facilityId}/`, {
 
             headers:{
                 'Authorization': 'Bearer ' + token,
@@ -454,14 +496,18 @@ const handleServiceSubmit = async (token, stateSetters, facilityId) => {
             },
             method: 'PATCH',
             body: JSON.stringify({services: _payload})
-        })
+        }), 
+
+        payload: JSON.stringify({services: _payload})
+    }
+       
 
     }
     catch (e) {
         console.error('Unable to submit facility services due to the following error: ', e.message)
     }
 
-    setFormId(`${parseInt(formId) + 1}`);
+    // setFormId(`${parseInt(formId) + 1}`);
     
     // setServices([])
 }

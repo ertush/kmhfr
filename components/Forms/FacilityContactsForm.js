@@ -4,27 +4,26 @@ import { FacilityContact, OfficerContactDetails } from './formComponents/Facilit
 import Select from './formComponents/FormikSelect';
 import { ChevronDoubleLeftIcon, ChevronDoubleRightIcon, PlusIcon } from '@heroicons/react/solid'
 import { FormOptionsContext } from '../../pages/facilities/add';
-import { FormContext } from './Form';
-import { useLocalStorageState } from './hooks/formHook';
+// import { FormContext } from './Form';
+// import { useLocalStorageState } from './hooks/formHook';
 
-import { object, string } from "zod";
-import { toFormikValidationSchema } from "zod-formik-adapter";
+// import { object, string } from "zod";
+// import { toFormikValidationSchema } from "zod-formik-adapter";
 
 import {
     handleFacilityContactsSubmit,
     handleFacilityContactsUpdates
 } from '../../controllers/facility/facilityHandlers';
 import { FacilityUpdatesContext } from '../../pages/facilities/edit/[id]';
-import { FacilityIdContext } from './EditForm'
+// import { FacilityIdContext } from './EditForm'
 import { defer } from 'underscore';
-import { Alert } from "@mui/lab";
+// import { Alert } from "@mui/lab";
 import { useAlert } from 'react-alert';
 import Spinner from '../Spinner'
 
 
 export const FacilityDeptContext = createContext(null)
 export const FacilityContactsContext = createContext(null)
-
 
 
 export function FacilityContactsForm() {
@@ -60,6 +59,8 @@ export function FacilityContactsForm() {
     const [facilityId, setFacilityId] = useState('');
     const [submitting, setSubmitting] = useState(false);
     const [geolocationUrl, setGeolocationUrl] = useState('')
+    // const [responseError, setResponseError] = useState(null);
+
 
     const alert = useAlert()
 
@@ -143,6 +144,7 @@ export function FacilityContactsForm() {
     // const formValues = options?.data ? facilityContactsData : initialValues && initialValues.length > 1 ? JSON.parse(initialValues) : formFields;
 
     const [formValues, setFormValues] = useState(options?.data ? facilityContactsData : initialValues && initialValues.length > 1 ? JSON.parse(initialValues) : formFields)
+    
     // Effects
 
     useEffect(() => {
@@ -241,8 +243,10 @@ export function FacilityContactsForm() {
 
     // Event handlers
 
-    const handleGeolocationPrevious = useCallback(() => {
+    const handleGeolocationPrevious = useCallback((event) => {
         // setFormId(`${parseInt(formId) - 1}`);
+
+        event.preventDefault()
 
         const previous_url =  new URL(geolocationUrl)
 
@@ -356,6 +360,8 @@ export function FacilityContactsForm() {
 
                                 url.searchParams.set('formId', '3')
 
+                                url.searchParams.set('facilityId', facilityId)
+
                                 url.searchParams.set('from', 'submission')
 
 
@@ -411,7 +417,7 @@ export function FacilityContactsForm() {
                                     <h3 className='text-medium font-semibold text-blue-900'>
                                         Contact Details {" *"}
                                     </h3>
-                                    <hr className='col-span-2' />
+                                    <hr className='col-span-2 border-xs border-blue-600' />
 
                                     {/* Contact Type / Contact Details */}
 
@@ -544,7 +550,7 @@ export function FacilityContactsForm() {
                                         <h3 className='text-medium font-semibold text-blue-900'>
                                             Contact Details {" *"}
                                         </h3>
-                                        <hr className='col-span-2' />
+                                        <hr className='col-span-2 border-xs border-blue-600' />
 
                                         {/* Contact Type / Contact Details */}
 

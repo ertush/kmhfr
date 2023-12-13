@@ -257,7 +257,7 @@ export default function HeaderLayout({
               </li>
             }
             {/* GIS */}
-            {hasPermission(/^mfl_gis.view_.*$/, userPermissions) && isLoggedIn &&
+            {hasPermission(/^mfl_gis.view_.*$/, userPermissions) && isLoggedIn && 1 !== 1 &&
               <li className="flex-wrap font-semibold">
                 <Link href="/gis">
                   <p

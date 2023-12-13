@@ -1,13 +1,14 @@
-import {useState, useContext, useCallback} from 'react';
+import {useState, useContext, useMemo} from 'react';
 import EditListItem from './formComponents/EditListItem';
 import { FormOptionsContext } from '../../pages/facilities/add';
-import { FormContext } from './Form';
+// import { FormContext } from './Form';
+
 import {
     handleServiceDelete,
     handleServiceSubmit,
     handleServiceUpdates
 } from '../../controllers/facility/facilityHandlers'
-import { FacilityIdContext } from './EditForm'
+// import { FacilityIdContext } from './EditForm'
 import { FacilityUpdatesContext } from '../../pages/facilities/edit/[id]';
 
 
@@ -18,13 +19,46 @@ import { FacilityUpdatesContext } from '../../pages/facilities/edit/[id]';
 
 export function ServicesForm() {
     // ConstantsityUpdatesContext
-    const[facilityId, _] = useContext(FacilityIdContext);
-    const [formId, setFormId] = useContext(FormContext);
+    const[facilityId, setFacilityId] = useMemo(() => {
+        let id = ''
+
+        function setId(_id) {
+            id = _id
+        }
+
+        if(window) {
+            setId(new URL(window.location.href).searchParams.get('facilityId'))
+        }
+
+        console.log({id})
+
+        return [id, setId]
+    }, [])
+    const [regulationFormURL, setRegulationFormURL] = useState('');
+    const [formId, setFormId] = useMemo(() => {
+        let id = ''
+
+        function setId(_id) {
+            id = _id
+        }
+
+        if(window) {
+            setId(new URL(window.location.href).searchParams.get('formId'))
+        }
+
+        console.log({id})
+
+        return [id, setId]
+    }, [])
+
+    const [submitting, setSubmitting] = useState(false)
+    
     const options = useContext(FormOptionsContext);
     
     const { updatedSavedChanges, updateFacilityUpdateData } = options?.data ? useContext(FacilityUpdatesContext) : {updatedSavedChanges: null, updateFacilityUpdateData: null }
 
-
+    setFormId('6')
+    
     //Options
     const serviceOptions = ((_services) => {
 
@@ -47,15 +81,25 @@ export function ServicesForm() {
     const [services, setServices] = useState();
 
     //Event handlers
-    const handleServicePrevious = useCallback(() => {
-        setFormId(`${parseInt(formId) - 1}`);
-    }, []);
+    function handleServicePrevious() {
+        // setFormId(`${parseInt(formId) - 1}`);
+
+        const url = new URL(regulationFormURL)
+
+        url.searchParams.set('formId', '3')
+
+        window.location.href = url
+
+    
+
+    } 
 
     return <>
                 <h4 className="text-lg uppercase pb-2 mt-4 border-b border-blue-600 w-full mb-4 font-semibold text-blue-900">Services</h4>
                 <div className='flex flex-col w-full items-start justify-start gap-3 mt-6'>
 
                     {/* Edit list Container */}
+                    {JSON.stringify(facilityId)}
                     <div className='flex items-center w-full h-auto min-h-[300px]'>
 
                         <EditListItem
@@ -70,10 +114,8 @@ export function ServicesForm() {
                             removeItemHandler={handleServiceDelete}
                             handleItemsSubmit={handleServiceSubmit}
                             handleItemsUpdate={handleServiceUpdates}
-                            setNextItemCategory={setFormId}
-                            nextItemCategoryId={formId}
-                            nextItemCategory={'infrastructure'}
-                            previousItemCategory={'regulation'}
+                            setSubmitting={setSubmitting}
+                            submitting={submitting}
                             setItemsUpdateData={updateFacilityUpdateData}
                             handleItemPrevious={handleServicePrevious}
                             setIsSaveAndFinish={updatedSavedChanges}

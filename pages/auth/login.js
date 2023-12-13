@@ -19,7 +19,7 @@ const Login = (props) => {
                 <link rel="icon" href="/favicon.ico" />
               
             </Head>
-            <div className="w-full h-screen overflow-hidden bg-django-blue flex flex-col gap-2 items-center justify-center p-3 md:p-0">
+            <div className="w-full h-screen overflow-hidden bg-gray-200 flex flex-col gap-2 items-center justify-center p-3 md:p-0">
                 <div className="w-full flex flex-col max-w-screen-sm items-center justify-between px-2">
                     <div className="text-center text-5xl w-full font-black text-gray-700 flex justify-center gap-x-2 items-center h-24">
                         <img src="/MOH.png" className="h-24" alt="KMHFR 3" />
@@ -92,7 +92,7 @@ const Login = (props) => {
                         {msg && msg.length > 0 && <p className="text-blue-900 bg-blue-200 rounded drop-shadow py-2 font-medium normal-case text-base px-3">{msg}</p>}
                     </div>
                     <div className="flex flex-col gap-0 w-full">
-                        <label className="text-gray-800">Email / P_No</label>
+                        <label className="text-gray-800">Email / Personal Number</label>
                         <input type="text"
                             data-testid="email_input"
                             autoComplete='username'

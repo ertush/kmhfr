@@ -31,18 +31,18 @@ function  EditListItem({
   initialSelectedItems,
   // setItems,
   categoryItems,
-  itemsCategoryName,
+  // itemsCategoryName,
     //   setUpdatedItem,
   itemId,
-  nextItemCategoryId,
+  // nextItemCategoryId,
   item,
-  removeItemHandler,
+  // removeItemHandler,
   handleItemsSubmit,
   handleItemsUpdate,
-  setNextItemCategory,
+  setSubmitting,
+  submitting,
   handleItemPrevious,
-  nextItemCategory,
-  previousItemCategory,
+  // previousItemCategory,
   token,
   options,
   setItemsUpdateData,
@@ -158,8 +158,8 @@ function  EditListItem({
         }
     }
     else{
-        if(issearchservice){
-            filterSpecialities(allServices[0].category)
+        if(issearchservice && Array.isArray(allServices)){
+            filterSpecialities(allServices[0]?.category)
         }
         setCategoryItems(categoryItems);
     }
@@ -198,6 +198,7 @@ function  EditListItem({
 
         if (item) {
 
+          setSubmitting(true)
           // console.log({savedItems, values})
 
           handleItemsUpdate(token, [savedItems, form_id])
@@ -257,12 +258,41 @@ function  EditListItem({
         else {
           handleItemsSubmit([selected_services, setFormId, setSelectedServices], form_id)
           // handleItemsSubmit(token, [savedItems, nextItemCategoryId, setNextItemCategory], form_id)
-             .then((resp) => {
-              if(resp.ok){
+             .then(({resp, payload}) => {
+              if(resp.status == 204 || resp.status == 200){
+                setSubmitting(false)
                 alert.success('Facility services saved successfully');
+
+                const base64EncParams = Buffer.from(payload).toString('base64')
+        
+                const url = new URL(`${window.location.origin}/facilities/add?formData=${base64EncParams}`)
+                
+                url.searchParams.set('formId', '5')
+        
+                url.searchParams.set('facilityId', `${facilityId}`)
+
+                url.searchParams.set('from', 'submission')
+                
+        
+                window.location.href = url
               }
               else {
+                setSubmitting(false)
                 alert.error('Unable to save facility services');
+
+                const base64EncParams = Buffer.from(payload).toString('base64')
+        
+                const url = new URL(`${window.location.origin}/facilities/add?formData=${base64EncParams}`)
+                
+                url.searchParams.set('formId', '5')
+        
+                url.searchParams.set('facilityId', `${facilityId}`)
+
+                url.searchParams.set('from', 'submission')
+                
+        
+                window.location.href = url
+                
 
               }
              })
@@ -280,25 +310,25 @@ function  EditListItem({
       >
         
         <div className='w-full grid grid-cols-12 gap-4'>
-              <div className="col-span-5" >
+              <div className="col-span-5 " >
                 <h4 className="text-lg uppercase mt-4 pb-2 border-b border-blue-600 w-full mb-4 font-semibold text-blue-900">Categories</h4>
                 <input type="text" onChange={(e)=>onSearch(e,true,false)} className="col-span-12 border border-blue-600 p-2 placeholder-gray-500  focus:shadow-none focus:bg-white focus:border-black outline-none w-full" placeholder="Search" />
                 <br/>
-                <ul className='max-h-96 overflow-auto'>
+                <ul className='max-h-96 overflow-auto border-r border-l border-b border-blue-500'>
                     {categoryOptions.map(({label, value}) => (
                         <>
 
                             <div key={value} 
-                            className={`card bg-blue-50 shadow-md p-2 hover:bg-blue-500`}
+                            className='card bg-blue-50 shadow-md p-2 group hover:bg-blue-500 hover:text-gray-50 hover:cursor-pointer'
 
                             >
                                 <li 
-                                className="flex items-center justify-start space-x-2 p-1 px-2"
+                                className="flex items-center justify-start group-hover:cursor-pointer space-x-2 p-1 px-2"
                                 onClick={()=>{
                                     filterSpecialities(value)
                                 }} 
                                     key ={value}>{label}</li>
-                                <hr></hr>
+                                <hr className=' border-xs boredr-gray-200 group-hover:border-blue-500'></hr>
                             </div>
                         </>
                     ))}
@@ -308,7 +338,7 @@ function  EditListItem({
                     <h4 className="text-lg uppercase mt-4 pb-2 border-b border-blue-600 w-full mb-4 font-semibold text-blue-900">Services</h4>
                     <input type="text" onChange={(e)=>onSearch(e,false,true)} className="col-span-12 border border-blue-600 p-2 placeholder-gray-500  focus:shadow-none focus:bg-white focus:border-black outline-none w-full" placeholder="Search" />
                     <br/>
-                    <div className='max-h-96 overflow-auto'>
+                    <div className='max-h-96 overflow-auto border-r border-l border-b border-blue-500'>
 
                         <table className="table-auto w-full">
                             <thead>
@@ -367,7 +397,7 @@ function  EditListItem({
 
               </div>
 
-              <div className="col-span-12 max-h-96 overflow-auto" >
+              <div className="col-span-12 h-full overflow-auto" >
 
                 <table className="table-auto w-full">
                             <thead>
@@ -409,16 +439,28 @@ function  EditListItem({
               <button onClick={handleItemPrevious} className='flex items-center justify-start space-x-2 p-1 border border-blue-900  px-2'>
                 <ChevronDoubleLeftIcon className='w-4 h-4 text-blue-900' />
                 <span className='text-medium font-semibold text-blue-900 '>
-                  {previousItemCategory}
+                  Regulation
                 </span>
               </button>
               <button
                 type='submit'
                 className='flex items-center justify-start space-x-2 bg-blue-700  p-1 px-2'>
-                <span className='text-medium font-semibold text-white'>
-                  {nextItemCategory}
-                </span>
-                <ChevronDoubleRightIcon className='w-4 h-4 text-white' />
+                        <span className='text-medium font-semibold text-white'>
+                    {
+                       submitting ? 
+                      <Spinner />
+                      :
+                      'Infrastructure'
+                       
+                    }
+                  </span>
+                  {
+                    submitting ? 
+                    <span className='text-white'>Saving </span>
+                    :
+                    <ChevronDoubleRightIcon className='w-4 h-4 text-white' />
+
+                  }
               </button>
            
           </div>

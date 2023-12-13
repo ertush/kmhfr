@@ -327,14 +327,14 @@ export function CommunityUnitEditForm({ cu: {
 
                     const formData = new FormData(e.target)
                     const data = Object.fromEntries(formData)
-                    console.log('submission data', data) 
+                    // console.log('submission data', data) 
                     const setter=[data,"basicDetails"]
                     // const {token} = await checkToken(req, res)
 
                     // if(token.error) throw Error('Unable to get token')
                    
-                    console.log("details....",intialValuesBasicDetails?.id)
-                    console.log("identification....",token)
+                    // console.log("details....",intialValuesBasicDetails?.id)
+                    // console.log("identification....",token)
                     handleChulSubmit(token,setter,intialValuesBasicDetails?.id)
                   }}
                 >

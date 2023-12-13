@@ -1,18 +1,20 @@
 import { useState, useContext, useMemo, useEffect, useRef, useCallback, createContext } from 'react';
 import { Formik, Field, Form } from 'formik'
 import { FormContext } from './Form';
-import { object, string } from "zod";
+// import { object, string } from "zod";
 import { FormOptionsContext } from '../../pages/facilities/add';
-import {useLocalStorageState} from './hooks/formHook';
+// import {useLocalStorageState} from './hooks/formHook';
 import Select from './formComponents/FormikSelect';
-import { toFormikValidationSchema } from "zod-formik-adapter";
+// import { toFormikValidationSchema } from "zod-formik-adapter";
 import { ChevronDoubleLeftIcon, ChevronDoubleRightIcon, PlusIcon } from '@heroicons/react/outline';
 import FacilityDepartmentUnits from './formComponents/FacilityDepartmentUnits'
-import { FacilityIdContext } from './EditForm'
+// import { FacilityIdContext } from './EditForm'
 import { handleRegulationSubmit, handleRegulationSubmitUpdates, handleRegulationUpdates } from '../../controllers/facility/facilityHandlers';
 import { useAlert } from 'react-alert';
 import { FacilityUpdatesContext } from '../../pages/facilities/edit/[id]';
 import { defer } from 'underscore';
+import Spinner from '../Spinner';
+
 
 export const FacilityDepartmentUnitsContext = createContext();
 
@@ -22,17 +24,18 @@ export function RegulationForm() {
     const options = useContext(FormOptionsContext);
 
     // Edit Stuff
-    const facilityRequlationData = {};
-    facilityRequlationData['regulatory_body'] = options?.data?.regulatory_body;
-    facilityRequlationData['regulation_status'] = options?.data?.regulation_status;
-    facilityRequlationData['license_number'] = options?.data?.license_number;
-    facilityRequlationData['registration_number'] = options?.data?.registration_number;
+    const facilityRegulationData = {};
+    facilityRegulationData['regulatory_body'] = options?.data?.regulatory_body;
+    facilityRegulationData['regulation_status'] = options?.data?.regulation_status;
+    facilityRegulationData['license_number'] = options?.data?.license_number;
+    facilityRegulationData['registration_number'] = options?.data?.registration_number;
+    facilityRegulationData['license_document'] = options?.data?.facility_license_document
 
     options?.data?.facility_units?.forEach((unit, i) => {
-    facilityRequlationData[`facility_unit_${i}`] = unit.unit
-    facilityRequlationData[`facility_regulating_body_name_${i}`] = unit.regulating_body_name
-    facilityRequlationData[`facility_license_number_${i}`] = unit.license_number
-    facilityRequlationData[`facility_registration_number_${i}`] = unit.registration_number
+    facilityRegulationData[`facility_unit_${i}`] = unit.unit
+    facilityRegulationData[`facility_regulating_body_name_${i}`] = unit.regulating_body_name
+    facilityRegulationData[`facility_license_number_${i}`] = unit.license_number
+    facilityRegulationData[`facility_registration_number_${i}`] = unit.registration_number
 
     })
 
@@ -40,11 +43,15 @@ export function RegulationForm() {
     const { updatedSavedChanges, updateFacilityUpdateData } = options?.data ? useContext(FacilityUpdatesContext) : {updatedSavedChanges: null, updateFacilityUpdateData: null }
 
 
-    const[facilityId, _] = useContext(FacilityIdContext);
+    // const[facilityId, _] = useContext(FacilityIdContext);
 
     const alert = useAlert()
 
     const [responseError, setResponseError] = useState(null);
+    const [facilityId, setFacilityId] = useState('');
+    const [facilityContactsUrl, setFacilityContactsUrl] = useState('');
+    const [submitting, setSubmitting] = useState(false);
+    const [licenseFile, setLicenseFile] = useState(null);
 
 
     const [facilityDepts, setFacilityDepts] = useState([
@@ -60,7 +67,32 @@ export function RegulationForm() {
     ]);
 
     const formFields = useMemo(() => {
-        const vals = {}
+        let vals = {}
+
+
+        if (window && !options?.data) {
+
+            const current_url =  new URL(window.location.href)
+    
+            setFacilityId(current_url.searchParams.get('facilityId'))            
+    
+            if(current_url.searchParams.get('from') == 'submission') setFacilityContactsUrl(window.location.href)
+    
+            if(current_url.searchParams.get('from') == 'previous') {
+    
+            // Extract form data from current url
+    
+            const formDataBase64Enc = current_url.searchParams.get('formData')
+            const formData = JSON.parse(Buffer.from(formDataBase64Enc, 'base64').toString() ?? '{}')
+    
+            // console.log(formData)
+    
+             vals = formData
+                
+            } 
+        } else {
+
+
         for(let i = 0; i < facilityDepts.length; i++){
             vals[`facility_unit_${i}`] = "";
             vals[`facility_regulating_body_name_${i}`] = "";
@@ -78,69 +110,73 @@ export function RegulationForm() {
      
         vals['license_document'] = "";
         
-
+    }
         return vals
     }, [facilityDepts])
 
     // State
-    const [formId, setFormId] = useContext(FormContext);
+    // const [formId, setFormId] = useContext(FormContext);
     const [hideLicenseNumber, setHideLicenseNumber] = useState(false);
     const [hideRegistrationNumber, setHideRegistrationNumber] = useState(false);
-    const [initialValues, handleFormUpdate] = useLocalStorageState({
-        key: options?.data ? 'regulation_edit_form' : 'regulation_form',
-        value: options?.data ? facilityRequlationData :  formFields
-      }).actions.use();
 
-    const formValues = options?.data ? facilityRequlationData :  initialValues && initialValues.length > 1 ? JSON.parse(initialValues) : formFields;
+    const [initialValues, handleFormUpdate] = useState(options?.data ? facilityRegulationData :  formFields)
+    // const [initialValues, handleFormUpdate] = useLocalStorageState({
+    //     key: options?.data ? 'regulation_edit_form' : 'regulation_form',
+    //     value: options?.data ? facilityRegulationData :  formFields
+    //   }).actions.use();
+
+    const [formValues, setFormValues] = useState(options?.data ? facilityRegulationData :  initialValues && initialValues.length > 1 ? JSON.parse(initialValues) : formFields)
+    // const formValues = options?.data ? facilityRegulationData :  initialValues && initialValues.length > 1 ? JSON.parse(initialValues) : formFields;
+    
     delete formValues['license_document'];
 
 
     // FormSchema
-    const formSchema = useMemo(() => hideLicenseNumber ? object({
-        regulatory_body: string({required_error:""}),
-        regulation_status:string({required_error:""}),
-        // facility_unit', 'facility_regulating_body_name', 'facility_license_number', 'facility_registration_number
-        ...(() => {
-            const schema = {}
-            if(facilityDepts.length > 1){
-                for(let i = 0; i < facilityDepts.length; i++){
-                    schema[`facility_unit_${i}`] = string({ required_error: "Facility unit is required" }).min(1);
-                    schema[`facility_regulating_body_name_${i}`] = string({ required_error: "Facility unit regulation body is required" }).min(1);
-                    schema[`facility_license_number_${i}`] = string({ required_error: "Facility unit license number required" }).min(1);
-                    schema[`facility_registration_number_${i}`] = string({ required_error: "Facility unit registration number is required" }).min(1);
+    // const formSchema = useMemo(() => hideLicenseNumber ? object({
+    //     regulatory_body: string({required_error:""}),
+    //     regulation_status:string({required_error:""}),
+    //     // facility_unit', 'facility_regulating_body_name', 'facility_license_number', 'facility_registration_number
+    //     ...(() => {
+    //         const schema = {}
+    //         if(facilityDepts.length > 1){
+    //             for(let i = 0; i < facilityDepts.length; i++){
+    //                 schema[`facility_unit_${i}`] = string({ required_error: "Facility unit is required" }).min(1);
+    //                 schema[`facility_regulating_body_name_${i}`] = string({ required_error: "Facility unit regulation body is required" }).min(1);
+    //                 schema[`facility_license_number_${i}`] = string({ required_error: "Facility unit license number required" }).min(1);
+    //                 schema[`facility_registration_number_${i}`] = string({ required_error: "Facility unit registration number is required" }).min(1);
 
 
-                }
-            }
-            return schema
-        })()
+    //             }
+    //         }
+    //         return schema
+    //     })()
 
 
-    }) : object({
-        regulatory_body: string({required_error:""}),
-        regulation_status:string({required_error:""}),
-        license_number:string({required_error:""}),
-        registration_number:string({required_error:""}),
-        // facility_unit', 'facility_regulating_body_name', 'facility_license_number', 'facility_registration_number
-        ...(() => {
-            const schema = {}
-            if(facilityDepts.length > 1){
-                for(let i = 0; i < facilityDepts.length; i++){
-                    schema[`facility_unit_${i}`] = string({ required_error: "Facility unit is required" }).min(1);
-                    schema[`facility_regulating_body_name_${i}`] = string({ required_error: "Facility unit regulation body is required" }).min(1);
-                    schema[`facility_license_number_${i}`] = string({ required_error: "Facility unit license number required" }).min(1);
-                    schema[`facility_registration_number_${i}`] = string({ required_error: "Facility unit registration number is required" }).min(1);
+    // }) : object({
+    //     regulatory_body: string({required_error:""}),
+    //     regulation_status:string({required_error:""}),
+    //     license_number:string({required_error:""}),
+    //     registration_number:string({required_error:""}),
+    //     // facility_unit', 'facility_regulating_body_name', 'facility_license_number', 'facility_registration_number
+    //     ...(() => {
+    //         const schema = {}
+    //         if(facilityDepts.length > 1){
+    //             for(let i = 0; i < facilityDepts.length; i++){
+    //                 schema[`facility_unit_${i}`] = string({ required_error: "Facility unit is required" }).min(1);
+    //                 schema[`facility_regulating_body_name_${i}`] = string({ required_error: "Facility unit regulation body is required" }).min(1);
+    //                 schema[`facility_license_number_${i}`] = string({ required_error: "Facility unit license number required" }).min(1);
+    //                 schema[`facility_registration_number_${i}`] = string({ required_error: "Facility unit registration number is required" }).min(1);
 
 
-                }
-            }
+    //             }
+    //         }
 
           
-            return schema
-        })()
+    //         return schema
+    //     })()
 
 
-    }))
+    // }))
 
     // Ref
     const _regBodyRef = useRef(null)
@@ -150,17 +186,36 @@ export function RegulationForm() {
     // Event Handlers
  
     const handleRegulationPrevious = useCallback((event) => {
+        // setFormId(`${formId - 1}`)
+
         event.preventDefault();
-        setFormId(`${formId - 1}`)
+
+        const previous_url =  new URL(facilityContactsUrl)
+
+        previous_url.searchParams.set('formId', '2')
+
+        previous_url.searchParams.set('from', 'previous')
+
+        window.location.url = previous_url
+
     }
 , []);
+
+ function handleLicenseFileChange (e) {
+    e.preventDefault()
+
+    setLicenseFile(e?.files)
+ }
 
 
     // Effects
     useEffect(() => {
+
+        
+
         const _units = [];
 
-        const initialValueObj = options?.data ? facilityRequlationData : typeof initialValues == 'string' ? JSON.parse(initialValues) : {}
+        const initialValueObj = options?.data ? facilityRegulationData : typeof initialValues == 'string' ? JSON.parse(initialValues) : {}
 
         const unitCount = Object.keys(initialValueObj).filter(x => /^facility_unit_\d/.test(x)).length;
 
@@ -194,8 +249,11 @@ export function RegulationForm() {
         <Formik
             initialValues={formValues}
             onSubmit={(values) => {
+                
+                setSubmitting(true)
+                
                 options?.data ? 
-                handleRegulationUpdates(options.token, values, facilityId, fileRef.current, alert)
+                handleRegulationUpdates(options.token, values, facilityId, setSubmitting, fileRef.current, alert)
                 .then(resp => {
                     defer(() => updatedSavedChanges(true));
                     if (resp.ok) {
@@ -213,7 +271,7 @@ export function RegulationForm() {
                          }
                       )
                         .then(async (resp) => {
-                        console.log({facilityId, file: fileRef.current})
+                        // console.log({facilityId, file: fileRef.current})
 
                           const results = await resp.json();
     
@@ -264,12 +322,13 @@ export function RegulationForm() {
                     )
                   )
                 :
-                handleRegulationSubmit(options.token, values, [formId, setFormId, facilityId], fileRef.current, alert)
+                handleRegulationSubmit(options.token, values, facilityId, setSubmitting, fileRef.current, alert)
+                
 
             }}
-            validationSchema={toFormikValidationSchema(formSchema)}
+            // validationSchema={toFormikValidationSchema(formSchema)}
             enableReinitialize
-        >
+            >
 
             {
                 (formikState) => {
@@ -312,7 +371,7 @@ export function RegulationForm() {
                   return (
                    <>
                         <h4 className="text-lg uppercase mt-4 pb-2 border-b border-blue-600 w-full mb-4 font-semibold text-blue-900">Facility Regulation</h4>
-                        <Form ref={formRef} name="facility_regulation_form" className='flex flex-col w-full items-start bg-blue-50 shadow-md p-4 justify-start gap-3' >
+                        <Form ref={formRef} name="facility_regulation_form" className='flex flex-col w-full items-start bg-blue-50 p-4 justify-start gap-3' >
 
                             {/* Regulatory Body */}
                             <div className="w-full flex flex-col background items-start justify-start gap-1 mb-3">
@@ -383,7 +442,7 @@ export function RegulationForm() {
                             <div className=" w-full flex flex-col items-start justify-start py-3  h-auto">
                                 <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
                                     <label htmlFor="license_document" className="text-gray-600 capitalize text-sm">Upload license document</label>
-                                    <Field type="file" name="license_document" innerRef={fileRef} className="flex-none w-full   p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none" />
+                                    <Field type="file" onChange={handleLicenseFileChange} name="license_document" innerRef={fileRef} className="flex-none w-full   p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none" />
                                 </div>
                             </div>
 
@@ -414,8 +473,6 @@ export function RegulationForm() {
                                         ))
                                     }
                                 </div>
-
-
 
                             </div>
 
@@ -456,6 +513,7 @@ export function RegulationForm() {
                                       <div className='flex justify-end items-center w-full'>
                                           <button
                                               type='submit'
+                                              disabled={submitting}
                                               className='flex items-center justify-start space-x-2 bg-blue-700  p-1 px-2'>
                                               <span className='text-medium font-semibold text-white'>
                                                   Save & Finish
@@ -470,9 +528,23 @@ export function RegulationForm() {
                                               <ChevronDoubleLeftIcon className='w-4 h-4 group-hover:text-white text-blue-900' />
                                               <span className='text-medium font-semibold group-hover:text-white text-blue-900'>Facility Contacts</span>
                                           </button>
-                                          <button type="submit" className='flex items-center justify-start space-x-2 bg-blue-700 group hover:bg-transparent border border-blue-700 p-1 px-2'>
-                                              <span className='text-medium font-semibold group-hover:text-blue-900 text-white'> Services</span>
-                                              <ChevronDoubleRightIcon className='w-4 h-4 group-hover:text-blue-900 text-white' />
+                                          <button type="submit"  disabled={submitting} className={`${submitting ? 'cursor-not-allowed' : 'cursor-pointer'} flex items-center justify-start gap-2 text-white bg-blue-700  p-1 px-2`}>
+                                                <span className='text-medium font-semibold text-white'>
+                                                    {
+                                                        submitting ?
+                                                            <Spinner />
+                                                            :
+                                                            'Services'
+
+                                                    }
+                                                </span>
+                                                {
+                                                    submitting ?
+                                                        <span className='text-white'>Saving </span>
+                                                        :
+                                                        <ChevronDoubleRightIcon className='w-4 h-4 text-white' />
+
+                                                }
                                           </button>
                                       </div>
                               }
