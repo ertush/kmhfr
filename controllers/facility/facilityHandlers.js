@@ -1,5 +1,6 @@
 
 import router from "next/router";
+import { reject } from "underscore";
 
 // handleBasicDetailsSubmit
 const handleBasicDetailsSubmit = async (token, values, formId, setFormId, fileRef, alert, setGeoJSON, setWardName, setGeoCenter, setFacilityId) => {
@@ -379,7 +380,6 @@ const handleRegulationSubmit = async  (token, values, facilityId, setSubmitting,
     
      // Post the license document
 
-     let facility_name = ''
 
      if(facilityId && licenseFile){
         fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${facilityId}/`, {
@@ -473,21 +473,18 @@ const handleRegulationSubmit = async  (token, values, facilityId, setSubmitting,
             
   
     // setFormId(`${parseInt(formId) + 1}`);
-
-
 };
 
 
 // handleServiceSubmit
-const handleServiceSubmit = async (token, stateSetters, facilityId) => {
+const handleServiceSubmit = async (token, services, facilityId) => {
 
-    const [services, formId, setFormId] = stateSetters
-    const _payload = JSON.parse(services).map(({ id }) => ({ service: id }))
+    const _payload = typeof services == 'string' ? JSON.parse(services).map(({ rowid }) => ({ service: rowid })) : services.map(({ rowid }) => ({ service: rowid }))
 
+    // console.log({facilityId})
    
-    try {
-        return {resp: fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${facilityId}/`, {
-
+    if(facilityId) {
+        return fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${facilityId}/`, {
             headers:{
                 'Authorization': 'Bearer ' + token,
                 'Accept': 'application/json, text/plain, */*',
@@ -496,15 +493,12 @@ const handleServiceSubmit = async (token, stateSetters, facilityId) => {
             },
             method: 'PATCH',
             body: JSON.stringify({services: _payload})
-        }), 
-
-        payload: JSON.stringify({services: _payload})
+        })
+    
+    
     }
-       
-
-    }
-    catch (e) {
-        console.error('Unable to submit facility services due to the following error: ', e.message)
+    else {
+         throw new Error('Unable to save facility services: facilityId not defined')
     }
 
     // setFormId(`${parseInt(formId) + 1}`);

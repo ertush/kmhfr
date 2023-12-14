@@ -30,10 +30,12 @@ export function ServicesForm() {
             setId(new URL(window.location.href).searchParams.get('facilityId'))
         }
 
-        console.log({id})
+        // console.log({id})
 
         return [id, setId]
     }, [])
+
+    
     const [regulationFormURL, setRegulationFormURL] = useState('');
     const [formId, setFormId] = useMemo(() => {
         let id = ''
@@ -46,7 +48,7 @@ export function ServicesForm() {
             setId(new URL(window.location.href).searchParams.get('formId'))
         }
 
-        console.log({id})
+        // console.log({id})
 
         return [id, setId]
     }, [])
@@ -56,8 +58,7 @@ export function ServicesForm() {
     const options = useContext(FormOptionsContext);
     
     const { updatedSavedChanges, updateFacilityUpdateData } = options?.data ? useContext(FacilityUpdatesContext) : {updatedSavedChanges: null, updateFacilityUpdateData: null }
-
-    setFormId('6')
+ 
     
     //Options
     const serviceOptions = ((_services) => {
@@ -98,8 +99,8 @@ export function ServicesForm() {
                 <h4 className="text-lg uppercase pb-2 mt-4 border-b border-blue-600 w-full mb-4 font-semibold text-blue-900">Services</h4>
                 <div className='flex flex-col w-full items-start justify-start gap-3 mt-6'>
 
+                
                     {/* Edit list Container */}
-                    {JSON.stringify(facilityId)}
                     <div className='flex items-center w-full h-auto min-h-[300px]'>
 
                         <EditListItem

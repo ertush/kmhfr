@@ -1,15 +1,16 @@
 import { useState, useEffect, useRef } from 'react'
-import { Table, TableBody, TableCell, TableRow } from '@mui/material';
-import Select from 'react-select'
+// import { Table, TableBody, TableCell, TableRow } from '@mui/material';
+// import Select from 'react-select'
 import { defer } from 'underscore';
 import { Formik, Form, Field } from 'formik'
 import {
     ChevronDoubleRightIcon,
     ChevronDoubleLeftIcon,
-    PlusIcon
+    // PlusIcon
 } from '@heroicons/react/solid';
 import { useAlert } from 'react-alert'
 import { useLocalStorageState } from '../hooks/formHook';
+import Spinner from '../../Spinner'
 
 
 function EditListWithCount(
@@ -30,6 +31,8 @@ function EditListWithCount(
         setNextItemCategory,
         nextItemCategory,
         previousItemCategory,
+        setSubmitting,
+        submitting,
         // setIsSaveAndFinish,
         categoryItems,
         options,
@@ -51,7 +54,7 @@ function EditListWithCount(
     const [query, setQuery] = useState('') 
     const [isActive, setIsActive] = useState(null);
 
-    function CountCategoryTotalSpecialities(specialityid,newvalue,category){
+    function countCategoryTotalSpecialities(specialityid,newvalue,category){
         let total=0; 
         categoryOptions.forEach(item => {
             if(item.value==category){
@@ -72,7 +75,7 @@ function EditListWithCount(
         }
     }
 
-    function CountCategoryTotalSInitialize(newvalue,category){
+    function countCategoryTotalSInitialize(newvalue,category){
  
         let catt=categoryOptions.filter(item => item.value==category)[0]
          if(categoryOptions.some(item=>item.value==category)){
@@ -315,7 +318,7 @@ function EditListWithCount(
                 );
                 
           } 
-          CountCategoryTotalSpecialities(rowvalue,targetvalue,category.category_id)
+          countCategoryTotalSpecialities(rowvalue,targetvalue,category.category_id)
       };  
   
   
@@ -350,8 +353,9 @@ function EditListWithCount(
                 // console.log(values)
                 // setIsSaveAndFinish(true)
 
-                if (item) {
+                setSubmitting(true)
 
+                if (item) {
                     // Update the list of values
                     deletedItems.forEach(([{ id }]) => {
                         delete values[id]
@@ -422,23 +426,35 @@ function EditListWithCount(
 
                         handleItemsSubmit(token, [savedItems, values], itemId, alert)
                         .then(resp => {
-                            if(resp.ok){
+                            if(resp.status == 204 || resp.status == 200){
+                                setSubmitting(false)
                                 alert.success('Facility humanresource saved successfully')
+
                             }else {
+                                setSubmitting(false)
                                 alert.error('Unable to save facility humanresource')
                             }
-                            //
-                            if(window){
-                                window.localStorage.clear()
-                            }
-
+                           
                         })
                         
                     })() :  /* Infrastructure */ handleItemsSubmit(token, [savedItems, values, nextItemCategoryId, setNextItemCategory], itemId)
                         .then(resp => {
-                            if(resp.ok){
+                            if(resp.status == 204 || resp.status == 200){
+                                setSubmitting(false)
                                 alert.success('Facility Infrastructure saved successfully')
+
+                                const url = new URL(`${window.location.origin}/facilities/add?formData=${base64EncParams}`)
+                                
+                                url.searchParams.set('formId', '6')
+                        
+                                url.searchParams.set('facilityId', `${itemId}`)
+
+                                url.searchParams.set('from', 'submission')
+
+
                             }else {
+
+                                setSubmitting(false)
                                 alert.error('Unable to save facility infrastructure')
                             }
                            
@@ -460,22 +476,22 @@ function EditListWithCount(
                             <h4 className="text-lg uppercase mt-4 pb-2 border-b border-blue-600 w-full mb-4 font-semibold text-blue-900">Categories</h4>
                             <input type="text" onChange={(e)=>onSearch(e,true,false)} className="col-span-12 border border-blue-600 p-2 placeholder-gray-500  focus:shadow-none focus:bg-white focus:border-black outline-none w-full" placeholder="Search" />
                             <br/>
-                            <ul className='max-h-96 overflow-auto'>
+                            <ul className='max-h-96 overflow-auto border-r border-l border-b border-blue-500'>
                                 {categoryOptions.map(({label, value, catcount}) => (
                                     <>
 
                                         <div key={value} 
-                                        className={`card bg-blue-50 shadow-md p-2 hover:bg-blue-500 active:${isActive === value ? 'bg-blue-500"' : ''}`}
+                                        className='card bg-blue-50 shadow-md p-2 group hover:bg-blue-500 hover:text-gray-50 hover:cursor-pointer'
 
                                         >
                                             <li 
-                                            className="flex items-center justify-start space-x-2 p-1 px-2"
+                                            className="flex items-center justify-start  group-hover:cursor-pointer space-x-2 p-1 px-2"
                                             onClick={()=>{
                                                 filterSpecialities(value)
                                             }} 
                                                 key ={value}>{label}</li>
                                             <span>({catcount} selected)</span>
-                                            <hr></hr>
+                                            <hr className='border-xs boredr-gray-200 group-hover:border-blue-500'></hr>
                                         </div>
                                     </>
                                 ))}
@@ -485,7 +501,7 @@ function EditListWithCount(
                                 <h4 className="text-lg uppercase mt-4 pb-2 border-b border-blue-600 w-full mb-4 font-semibold text-blue-900">{itemsCategoryName.includes('human resource')?'Specialities':itemsCategoryName.includes('infrastructure')? 'Infrastructure': null }</h4>
                                 <input type="text" onChange={(e)=>onSearch(e,false,true)} className="col-span-12 border border-blue-600 p-2 placeholder-gray-500  focus:shadow-none focus:bg-white focus:border-black outline-none w-full" placeholder="Search" />
                                 <br/>
-                                <div className='max-h-96 overflow-auto'>
+                                <div className='max-h-96 overflow-auto border-r border-l border-b border-blue-500'>
 
                                     <table className="table-auto w-full">
                                         <thead>
@@ -542,8 +558,6 @@ function EditListWithCount(
                                     </table>
                                 </div>
 
-                                
-
                          </div>
 
                          {/* summary table */}
@@ -595,10 +609,23 @@ function EditListWithCount(
                             <button
                                 type='submit'
                                 className='flex items-center justify-start space-x-2 bg-blue-700  p-1 px-2'>
-                                <span className='text-medium font-semibold text-white'>
-                                    {nextItemCategory}
+                               
+                                 <span className='text-medium font-semibold text-white'>
+                                    {
+                                        submitting ? 
+                                        <Spinner />
+                                        :
+                                        nextItemCategory
+                                        
+                                    }
                                 </span>
-                                <ChevronDoubleRightIcon className='w-4 h-4 text-white' />
+                                    {
+                                        submitting ? 
+                                        <span className='text-white'>Saving </span>
+                                        :
+                                        <ChevronDoubleRightIcon className='w-4 h-4 text-white' />
+
+                                    }
                             </button>
                         </div>
                     }

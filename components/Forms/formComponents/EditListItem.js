@@ -1,15 +1,15 @@
 import React, { useEffect, useState, useRef} from 'react'
-import { Table, TableBody, TableCell, TableRow } from '@mui/material';
-import Select from 'react-select'
+// import { Table, TableBody, TableCell, TableRow } from '@mui/material';
+// import Select from 'react-select'
 import { useAlert } from 'react-alert'
-import { Formik, Form } from 'formik'
+// import { Formik, Form } from 'formik'
 import { defer } from 'underscore';
-import { useLocalStorageState } from '../hooks/formHook';
-
+// import { useLocalStorageState } from '../hooks/formHook';
+import Spinner from '../../Spinner';
 import {
   ChevronDoubleRightIcon,
   ChevronDoubleLeftIcon,
-  PlusIcon
+  // PlusIcon
 } from '@heroicons/react/solid';
 import dynamic from 'next/dynamic';
 import 'react-dual-listbox/lib/react-dual-listbox.css';
@@ -51,11 +51,11 @@ function  EditListItem({
 }) {
     
 
-  const [selected_services, setSelectedServices] = useState([])
+  // const [selected_services, setSelectedServices] = useState([])
   const [form_id, setFormId] =  useState(itemId)
   // const current_services = useRef(new Array())
   const alert = useAlert()
-  console.log('itemId', itemId)
+  // console.log('itemId', itemId)
   
 
 
@@ -102,16 +102,19 @@ function  EditListItem({
     return result
 
   })() : []))
-  console.log({categoryItems, options})
+  // console.log({categoryItems, options})
 
   const editService = servicesData?.map(({service_name:name,  service_id, id}) => ({id, service_id, name}));
 
-  const [savedItems, saveSelectedItems] = useLocalStorageState({
-    key: servicesData ? 'services_edit_form' : 'services_form',
-    value:  servicesData ? editService : []
-  }).actions.use();
+  const [savedItems, saveSelectedItems] = useState(servicesData ? editService : [])
+  // const [savedItems, saveSelectedItems] = useLocalStorageState({
+  //   key: servicesData ? 'services_edit_form' : 'services_form',
+  //   value:  servicesData ? editService : []
+  // }).actions.use();
 
-  const items =  typeof savedItems === 'string' && savedItems.length > 0 ? JSON.parse(savedItems) : savedItems;
+  
+
+  const [items, setItems] =  useState(typeof savedItems === 'string' && savedItems.length > 0 ? JSON.parse(savedItems) : savedItems);
 
   // Refs
 
@@ -187,125 +190,114 @@ function  EditListItem({
     }
   }, [selectedItems])
 
+  function handleSubmit(e) {
+  
+      e.preventDefault()
+
+      setSubmitting(true)
+
+      console.log({item, selectedItems, savedItems})
+
+      if (item) {
+
+        // console.log({savedItems, values})
+
+        handleItemsUpdate(token, [savedItems, form_id])
+          .then(resp => {
+            defer(() => setIsSaveAndFinish(true));
+            let update_id
+            if (resp.ok) {
+
+              alert.success('Updated Facility services successfully')
+
+              fetch(
+                `${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${form_id}/`,
+                {
+                  headers: {
+                      'Authorization': 'Bearer ' + token,
+                      'Accept': 'application/json, text/plain, */*',
+                      'Content-Type': 'application/json;charset=utf-8'
+                     }
+               }
+                ).then(async resp => {
+
+                const results = await resp.json()
+
+                update_id = results?.latest_update
+
+                if (update_id) {
+
+                  try {
+                    const _facilityUpdateData = await (await fetch(
+                      `${process.env.NEXT_PUBLIC_API_URL}/facilities/facility_updates/${update_id}/`,
+                      {
+                        headers: {
+                            'Authorization': 'Bearer ' + token,
+                            'Accept': 'application/json, text/plain, */*',
+                            'Content-Type': 'application/json;charset=utf-8'
+                           }
+                     }
+                      )).json()
+                    setItemsUpdateData(_facilityUpdateData)
+                  }
+                  catch (e) {
+                    console.error('Encountered error while fetching facility update data', e.message)
+                  }
+                }
+              })
+                .catch(e => console.error('unable to fetch facility update data. Error:', e.message))
+            }
+            else {
+              alert.error('Unable to update facility services');
+
+            }
+
+          })
+          .catch(e => console.error('unable to update facility data. Error:', e.message))
+      }
+
+      else {
+        
+        handleItemsSubmit(token, selectedItems, itemId)
+           .then((resp) => {
+            if(resp.status == 204 || resp.status == 200){
+              setSubmitting(false)
+              alert.success('Facility services saved successfully');
+
+              const services = typeof selectedItems == 'string' ? JSON.parse(selectedItems).map(({ rowid }) => ({ service: rowid })) : selectedItems.map(({ rowid }) => ({ service: rowid }))
+              const payload = JSON.stringify(services)
+
+              const base64EncParams = Buffer.from(payload).toString('base64')
+      
+              const url = new URL(`${window.location.origin}/facilities/add?formData=${base64EncParams}`)
+              
+              url.searchParams.set('formId', '5')
+      
+              url.searchParams.set('facilityId', `${itemId}`)
+
+              url.searchParams.set('from', 'submission')
+              
+              window.location.href = url
+            }
+            else {
+              setSubmitting(false)
+              alert.error('Unable to save facility services');              
+
+            }
+           })
+          .catch(e => console.error('unable to submit item data. Error:', e.message))
+      }
+
+    
+  }
+
 
   return (
-    <Formik
-      initialValues={{}}
-      initialErrors={false}
-      onSubmit={(values) => {
-
-        // setIsSaveAndFinish(true)
-
-        if (item) {
-
-          setSubmitting(true)
-          // console.log({savedItems, values})
-
-          handleItemsUpdate(token, [savedItems, form_id])
-            .then(resp => {
-              defer(() => setIsSaveAndFinish(true));
-              let update_id
-              if (resp.ok) {
-
-                alert.success('Updated Facility services successfully')
-
-                fetch(
-                  `${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${form_id}/`,
-                  {
-                    headers: {
-                        'Authorization': 'Bearer ' + token,
-                        'Accept': 'application/json, text/plain, */*',
-                        'Content-Type': 'application/json;charset=utf-8'
-                       }
-                 }
-                  ).then(async resp => {
-
-                  const results = await resp.json()
-
-                  update_id = results?.latest_update
-
-                  if (update_id) {
-
-                    try {
-                      const _facilityUpdateData = await (await fetch(
-                        `${process.env.NEXT_PUBLIC_API_URL}/facilities/facility_updates/${update_id}/`,
-                        {
-                          headers: {
-                              'Authorization': 'Bearer ' + token,
-                              'Accept': 'application/json, text/plain, */*',
-                              'Content-Type': 'application/json;charset=utf-8'
-                             }
-                       }
-                        )).json()
-                      setItemsUpdateData(_facilityUpdateData)
-                    }
-                    catch (e) {
-                      console.error('Encountered error while fetching facility update data', e.message)
-                    }
-                  }
-                })
-                  .catch(e => console.error('unable to fetch facility update data. Error:', e.message))
-              }
-              else {
-                alert.error('Unable to update facility services');
-
-              }
-
-            })
-            .catch(e => console.error('unable to update facility data. Error:', e.message))
-        }
-
-        else {
-          handleItemsSubmit([selected_services, setFormId, setSelectedServices], form_id)
-          // handleItemsSubmit(token, [savedItems, nextItemCategoryId, setNextItemCategory], form_id)
-             .then(({resp, payload}) => {
-              if(resp.status == 204 || resp.status == 200){
-                setSubmitting(false)
-                alert.success('Facility services saved successfully');
-
-                const base64EncParams = Buffer.from(payload).toString('base64')
-        
-                const url = new URL(`${window.location.origin}/facilities/add?formData=${base64EncParams}`)
-                
-                url.searchParams.set('formId', '5')
-        
-                url.searchParams.set('facilityId', `${facilityId}`)
-
-                url.searchParams.set('from', 'submission')
-                
-        
-                window.location.href = url
-              }
-              else {
-                setSubmitting(false)
-                alert.error('Unable to save facility services');
-
-                const base64EncParams = Buffer.from(payload).toString('base64')
-        
-                const url = new URL(`${window.location.origin}/facilities/add?formData=${base64EncParams}`)
-                
-                url.searchParams.set('formId', '5')
-        
-                url.searchParams.set('facilityId', `${facilityId}`)
-
-                url.searchParams.set('from', 'submission')
-                
-        
-                window.location.href = url
-                
-
-              }
-             })
-            .catch(e => console.error('unable to submit item data. Error:', e.message))
-        }
-
-      }
-      } 
-    >
-      <Form
+  
+      <form
         name="list_item_form"
         className="flex flex-col w-full items-start justify-start gap-3"
-        // onSubmit={handleItemsSubmit}
+        onSubmit={handleSubmit}
 
       >
         
@@ -323,12 +315,12 @@ function  EditListItem({
 
                             >
                                 <li 
-                                className="flex items-center justify-start group-hover:cursor-pointer space-x-2 p-1 px-2"
+                                className="flex items-center justify-start cursor-pointer space-x-2 p-1 px-2"
                                 onClick={()=>{
                                     filterSpecialities(value)
                                 }} 
                                     key ={value}>{label}</li>
-                                <hr className=' border-xs boredr-gray-200 group-hover:border-blue-500'></hr>
+                                <hr className='border-xs boredr-gray-200 group-hover:border-blue-500'></hr>
                             </div>
                         </>
                     ))}
@@ -709,8 +701,8 @@ function  EditListItem({
           </TableBody>
         </Table> */}
 
-      </Form>
-    </Formik>
+      </form>
+   
   )
 }
 

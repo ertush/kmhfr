@@ -1,8 +1,8 @@
-import { useContext, useCallback} from 'react';
+import { useContext, useMemo, useState} from 'react';
 import EditListWithCount from './formComponents/EditListWithCount';
 import { FormOptionsContext } from '../../pages/facilities/add';
-import { FormContext } from './Form';
-import { FacilityIdContext } from './EditForm'
+// import { FormContext } from './Form';
+// import { FacilityIdContext } from './EditForm'
 
 
 import {
@@ -16,9 +16,42 @@ export function InfrastructureForm() {
 
     // Context
     const options = useContext(FormOptionsContext);
-    const [formId, setFormId] = useContext(FormContext);
-    const[facilityId, _] = useContext(FacilityIdContext);
+    // const [formId, setFormId] = useContext(FormContext);
+    const [formId, setFormId] = useMemo(() => {
+        let id = ''
 
+        function setId(_id) {
+            id = _id
+        }
+
+        if(window) {
+            setId(new URL(window.location.href).searchParams.get('formId'))
+        }
+
+        // console.log({id})
+
+        return [id, setId]
+    }, [])
+
+    // const[facilityId, _] = useContext(FacilityIdContext);
+    const[facilityId, setFacilityId] = useMemo(() => {
+        let id = ''
+
+        function setId(_id) {
+            id = _id
+        }
+
+        if(window) {
+            setId(new URL(window.location.href).searchParams.get('facilityId'))
+        }
+
+        // console.log({id})
+
+        return [id, setId]
+    }, [])
+
+    const [servicesFormUrl, setServicesFormUrl] = useState('')
+    const [submitting, setSubmitting] = useState(false)
     
     const { updatedSavedChanges, updateFacilityUpdateData } = options?.data ? useContext(FacilityUpdatesContext) : {updatedSavedChanges: null, updateFacilityUpdateData: null }
 
@@ -50,9 +83,15 @@ export function InfrastructureForm() {
 	})(options.infrastructure ?? [])
 
        //Event handlers
-       const handleInfrastructurePrevious = useCallback(() => {
-        setFormId(`${parseInt(formId) - 1}`);
-    }, []);
+       function handleInfrastructurePrevious() {
+        // setFormId(`${parseInt(formId) - 1}`);
+        const url = new URL(servicesFormUrl)
+
+        url.searchParams.set('formId', '4')
+
+        window.location.href = url
+
+    }
 
 
        return ( <>
@@ -74,6 +113,8 @@ export function InfrastructureForm() {
                         item={options?.data ?? null}   
                         handleItemsSubmit={handleInfrastructureSubmit}
                         handleItemsUpdate={handleInfrastructureUpdates}
+                        setSubmitting={setSubmitting}
+                        submitting={submitting}
                         removeItemHandler={() => null}
                         setIsSavedChanges={updatedSavedChanges}
                         handleItemPrevious={handleInfrastructurePrevious}
