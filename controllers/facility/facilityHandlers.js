@@ -393,7 +393,7 @@ const handleRegulationSubmit = async  (token, values, facilityId, setSubmitting,
         .then(resp => resp.json())
         .then(async ({name: facility_name}) => {
 
-            console.log({facility_name})
+            // console.log({facility_name})
             if (licenseFile) {
 
                 const formData = new FormData()
