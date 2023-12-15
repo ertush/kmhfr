@@ -46,6 +46,7 @@ export function GeolocationForm({ editMode }) {
   const [latitude, setLatitude] = useState('')
   const [longitude, setLongitude] = useState('')
   const [wardData, setWardData] = useState({})
+  const [from, setFrom] = useState('')
 
 
 
@@ -146,20 +147,23 @@ export function GeolocationForm({ editMode }) {
   useEffect(() => {
     
     // console.log(JSON.stringify({wardData}))
+
     if(window && !editMode) {
 
     const current_url = new URL(window.location.href)
 
+    setFrom(current_url.searchParams.get('from'))
 
     setFacilityId(current_url.searchParams.get('facilityId'))
 
-    if(current_url.searchParams.get('from') == 'submission') setBasicDetailsURL(current_url)
+    if(current_url.searchParams.get('from') == 'previous') setBasicDetailsURL(current_url)
 
-    if(current_url.searchParams.get('from') == 'previous'){
-
+    if(current_url.searchParams.get('from') == 'submission'){
 
     const strFormData = Buffer.from(current_url.searchParams?.get('formData') ?? 'J3t9Jw==', 'base64').toString() ?? "{}"
     const params = new URL(`${window.location.origin}/facilities/add?${strFormData}`).searchParams
+
+
     // const paramEntries = params.entries()
     const base64WardData =  params.get('wardData')
     const wardDataStr = Buffer.from(base64WardData, 'base64').toString()
@@ -281,18 +285,17 @@ export function GeolocationForm({ editMode }) {
 
       {/* Ward Geo Map */}
       <div className='w-full h-auto'>
-        {
-
-        }
+       
         <div className='w-full bg-gray-200   flex flex-col items-start justify-center text-left relative'>
+          
         
           <Suspense fallback={<Alert severity='info' className='w-full p-1'>Loading ...</Alert>}>
             
         
             {
-              (editMode && options?.data?.lat_long !== null) || (!editMode && geoJSON && geoCenter && wardName) ?
+              (editMode && options?.data?.lat_long !== null && Array.isArray(options?.data?.lat_long)) || (!editMode && geoJSON && geoCenter && wardName) ?
                
-              <Map markerCoordinates={[options?.data?.lat_long[0] ??  latitude ?? geoCenter[0], options?.data?.lat_long[1] ?? longitude ?? geoCenter[1]]} geoJSON={geoJSON} ward={wardName} center={geoCenter} />
+              <Map markerCoordinates={[options?.data?.lat_long[0] ??  latitude ?? geoCenter[0], options?.data?.lat_long[1] ?? longitude ?? geoCenter[1]]} geoJSON={geoJSON} from={from} ward={wardName} center={geoCenter} />
               :
               <Alert severity='warning' className='w-full p-1'>Geolocation Data is Missing For this facility</Alert>
             }

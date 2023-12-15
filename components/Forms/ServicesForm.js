@@ -89,6 +89,8 @@ export function ServicesForm() {
 
         url.searchParams.set('formId', '3')
 
+        url.searchParams.set('from', 'previous')
+
         window.location.href = url
 
     

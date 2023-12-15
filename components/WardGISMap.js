@@ -33,7 +33,7 @@ function MapListener ({tabOpen}) {
 }
 
 
-const WardGISMap = ({ markerCoordinates, geoJSON, center, ward }) => {
+const WardGISMap = ({ markerCoordinates, geoJSON, center, ward, from }) => {
 
 
     const isValidGeoCoordinates = /^((\-?|\+?)?\d+(\.\d+)?),\s*((\-?|\+?)?\d+(\.\d+)?)$/.test(markerCoordinates.join(','))
@@ -41,7 +41,6 @@ const WardGISMap = ({ markerCoordinates, geoJSON, center, ward }) => {
     const [isOutOfBound, setIsOutOfBound] = useState(false)
 
     const tabOpen = useContext(TabContext)
-
 
     const geoJsonStyles = {
         color: '#000',
@@ -53,7 +52,7 @@ const WardGISMap = ({ markerCoordinates, geoJSON, center, ward }) => {
 
     useEffect(() => {
 
-
+        // console.log({geoJSON, center, ward, from})
 
         const lngs = []
         const lats = []
@@ -90,31 +89,39 @@ const WardGISMap = ({ markerCoordinates, geoJSON, center, ward }) => {
 
     }, [markerCoordinates])
 
- 
 
 
     return (
 
         <>
-
             {/* Map title */}
+
             <h3 className='mb-1 px-2 text-blue-900 font-normal float-left text-lg bg-gray-300 w-full  capitalize'>{String(ward).toLowerCase()}{" ward"}</h3>
             {isValidGeoCoordinates && isOutOfBound && <Alert severity="error" sx={{ width: '100%' }}>The coordinates are outside the ward boundary</Alert>}
     
             {/* Ward Map */}
             {
-                geoJSON && markerCoordinates && isValidGeoCoordinates ?
-            <MapContainer className='w-full' center={center ?? [-0.818389, 37.477222]} zoom={13.199} maxZoom={18.7} scrollWheelZoom={false} touchZoom={false} style={{ height: '400px', position: 'relative', zIndex: '1', backgroundColor: '#e7eae8', padding: '15px' }}>
+                (geoJSON && from == 'submission' ?  true : (isValidGeoCoordinates && markerCoordinates)) ?
+                <MapContainer 
+                className='w-full' 
+                center={center ?? [-0.818389, 37.477222]} 
+                zoom={13.199} maxZoom={18.7} 
+                scrollWheelZoom={false} 
+                touchZoom={false} 
+                style={{ height: '400px', position: 'relative', zIndex: '1', backgroundColor: '#e7eae8', padding: '15px' }}>
 
-                <GeoJSON data={geoJSON} stylez={geoJsonStyles} />
+                     {/* {JSON.stringify(geoJSON)} */}
 
-                <Marker position={markerCoordinates}></Marker>
 
-                <MapListener tabOpen={tabOpen} />
+                    <GeoJSON data={geoJSON} stylez={geoJsonStyles} />
 
-            </MapContainer>
-            :
-            <Alert severity='info' className='capitalize text-lg ' style={{width: '100%'}}> Please enter  Latitude and Longitude to see {ward.toLowerCase()} map ...</Alert>
+                    <Marker position={markerCoordinates}></Marker>
+
+                    <MapListener tabOpen={tabOpen} />
+
+                </MapContainer>
+                :
+                <Alert severity='info' className='capitalize text-lg ' style={{width: '100%'}}> Please enter  Latitude and Longitude to see {ward.toLowerCase()} map ...</Alert>
            } 
         </>
 

@@ -1,4 +1,4 @@
-import {useContext, useCallback} from 'react';
+import {useContext, useCallback, useMemo, useState} from 'react';
 import EditListWithCount from './formComponents/EditListWithCount';
 import { FormOptionsContext } from '../../pages/facilities/add';
 import { FormContext } from './Form';
@@ -19,13 +19,48 @@ export function HumanResourceForm() {
 
     // Context
     const options = useContext(FormOptionsContext);
-    const [formId, setFormId] = useContext(FormContext);
-    const[facilityId, _] = useContext(FacilityIdContext);
+
+    // const [formId, setFormId] = useContext(FormContext);
+    const [formId, setFormId] = useMemo(() => {
+        let id = ''
+
+        function setId(_id) {
+            id = _id
+        }
+
+        if(window) {
+            setId(new URL(window.location.href).searchParams.get('formId'))
+        }
+
+        // console.log({id})
+
+        return [id, setId]
+    }, [])
+
+    // const[facilityId, _] = useContext(FacilityIdContext);
+    const[facilityId, setFacilityId] = useMemo(() => {
+        let id = ''
+
+        function setId(_id) {
+            id = _id
+        }
+
+        if(window) {
+            setId(new URL(window.location.href).searchParams.get('facilityId'))
+        }
+
+        // console.log({id})
+
+        return [id, setId]
+    }, [])
+
+    const [infrastructureFormUrl, setInfrastructureFormUrl] = useState('')
+    const [submitting, setSubmitting] = useState(false)
 
     const { updatedSavedChanges, updateFacilityUpdateData } = options?.data ? useContext(FacilityUpdatesContext) : {updatedSavedChanges: null, updateFacilityUpdateData: null }
 
 
-    const tableheaders =[
+    const tableheaders = [
         "Name",
         "Present",
         "Number"
@@ -55,7 +90,14 @@ export function HumanResourceForm() {
 
     //Event handlers
     const handleHrPrevious = useCallback(() => {
-    setFormId(`${parseInt(formId) - 1}`);
+    // setFormId(`${parseInt(formId) - 1}`);
+    const url = new URL(infrastructureFormUrl)
+
+    url.searchParams.set('formId', '5')
+
+    url.searchParams.set('from', 'previous')
+
+    window.location.href = url
     }, []);
 
     return (
@@ -78,6 +120,8 @@ export function HumanResourceForm() {
                         item={options?.data ?? null}
                         handleItemsSubmit={handleHrSubmit}
                         handleItemsUpdate={handleHrUpdates}
+                        setSubmitting={setSubmitting}
+                        submitting={submitting}
                         removeItemHandler={() => null}
                         setIsSavedChanges={updatedSavedChanges}
                         setItemsUpdateData={updateFacilityUpdateData}

@@ -437,8 +437,6 @@ const handleRegulationSubmit = async  (token, values, facilityId, setSubmitting,
 
                     window.location.href = url
                
-                  
-        
                     }
         
                     return resp
@@ -507,12 +505,9 @@ const handleServiceSubmit = async (token, services, facilityId) => {
 }
 
 // handleInfrastructureSubmit
-const handleInfrastructureSubmit = (token, stateSetters, facilityId) => {
+const handleInfrastructureSubmit = (token, formData, facilityId) => {
 
-    const [formData, vals, formId, setFormId] = stateSetters
-
-
-    const _payload = JSON.parse(formData).map(({name, id}) => {
+    const _payload = formData.map(({sname:name, rowid: id, count}) => {
         if(
             name.includes("Main Grid") ||
             name.includes("Gas") ||
@@ -536,16 +531,17 @@ const handleInfrastructureSubmit = (token, stateSetters, facilityId) => {
             return {infrastructure:id}
 
         } else {
-            return {infrastructure:id, count: vals[id]}
+            return {infrastructure:id, count: Number(count)}
 
         }
     })
 
+    // console.log({_payload})
 
     if (_payload) {
 
         try {
-            fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${facilityId}/`, {
+            return fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${facilityId}/`, {
 
                 headers:{
                     'Authorization': 'Bearer ' + token,
@@ -562,27 +558,23 @@ const handleInfrastructureSubmit = (token, stateSetters, facilityId) => {
             console.error('Unable to patch facility contacts details', e.message)
         }
 
-        setFormId(`${parseInt(formId) + 1}`)
-       
+        // setFormId(`${parseInt(formId) + 1}`)
     }
 
 }
 
-
 // handleHrSubmit
-const handleHrSubmit = (token, stateSetters, facilityId, alert) => {
+const handleHrSubmit = (token, formData, facilityId) => {
 
-    const [savedVals, formVals] = stateSetters // removed setFormId
+    // const [savedVals, formVals] = stateSetters // removed setFormId
 
-    const _payload = JSON.parse(savedVals).map(({id}) => 
-        ({speciality:id, count: formVals[id]})
+    const _payload = formData.map(({rowid: id, count}) => 
+        ({speciality:id, count: Number(count)})
     )
-
-    // console.log({_payload})
 
 
     try {
-        fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${facilityId}/`, {
+        return fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${facilityId}/`, {
 
             headers:{
                 'Authorization': 'Bearer ' + token,
@@ -593,26 +585,7 @@ const handleHrSubmit = (token, stateSetters, facilityId, alert) => {
             method: 'PATCH',
             body: JSON.stringify({specialities: _payload})
         })
-        .then(res => {
-
-            if (res.ok && alert) {
-                alert.success("Facility Created successfully")
         
-                // Update local storage if successful
-        
-            } else {
-                alert.error("Unable to create facility")
-                
-            }
-           
-            if(res.ok && facilityId) {
-                localStorage.clear()
-                router.push(`/facilities/${facilityId}`)
-            }
-
-           
-        })
-
     }
     catch (e) {
         console.error('Unable to submit facility human ReportsSideMenu  details', e.message)
@@ -656,6 +629,7 @@ const handleBasicDetailsUpdates = async (token, formData, facility_id, updatedSa
         console.error('Error msg:', e.message)
     }
 }
+
 
 // handleGeolocationDataUpdate
 const handleGeolocationUpdates = async (token, formData, coordinates_id) => {

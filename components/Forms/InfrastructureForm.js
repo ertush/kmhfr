@@ -89,6 +89,9 @@ export function InfrastructureForm() {
 
         url.searchParams.set('formId', '4')
 
+        url.searchParams.set('from', 'previous')
+
+
         window.location.href = url
 
     }
