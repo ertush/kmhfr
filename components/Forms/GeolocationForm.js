@@ -11,6 +11,7 @@ import { FormOptionsContext } from '../../pages/facilities/add';
 import { useAlert } from 'react-alert';
 // import { FacilityIdContext, FacilityWardDataContext } from './Form';
 import Spinner from '../Spinner'
+import { handleGeolocationUpdates } from '../../controllers/facility/facilityHandlers';
 
 
 const WardMap = dynamic(
@@ -38,7 +39,10 @@ export function GeolocationForm({ editMode }) {
   const [options, setOptions] = useState(_options)
   // const [wardData, setWardData] = useState({})
   const [facilityId, setFacilityId] = useState('')
-  const [geoJSON, setGeoJSON] =  useState(_options?.geolocation?.geoJSON) 
+  const [geoJSON, setGeoJSON] =  useState(_options?.geolocation?.geoJSON)
+
+  console.log({geoJSON})
+
   const [wardName, setWardName] = useState(_options?.data?.ward_name)
   const [geoCenter, setGeoCenter] = useState(_options?.geolocation?.centerCoordinates) 
   const [submitting, setSubmitting] = useState(false)
@@ -47,7 +51,6 @@ export function GeolocationForm({ editMode }) {
   const [longitude, setLongitude] = useState('')
   const [wardData, setWardData] = useState({})
   const [from, setFrom] = useState('')
-
 
 
 
@@ -69,11 +72,43 @@ export function GeolocationForm({ editMode }) {
   }
 
 
-  function handleGeolocationFormUpdate(e) {
-    e.preventDefault()
+  // handleGeolocationDataUpdate
+function handleGeolocationUpdates (e){
 
-    setSubmitting(true)
+  e.preventDefault()
+  
+  const formData = new FormData(e.target)
+
+  const data = Object.fromEntries(formData)
+
+  setSubmitting(true)
+
+  try {
+        fetch(`${process.env.NEXT_PUBLIC_API_URL}/gis/facility_coordinates/${_options?.coordinates}/`, {
+          headers: {
+              'Authorization': 'Bearer ' + options?.token,
+              'Accept': 'application/json, text/plain, */*',
+              'Content-Type': 'application/json;charset=utf-8'
+          },
+          method: 'PATCH',
+          body: JSON.stringify(data)
+      })
+      .then(resp => {
+        return resp.json()
+      })
+      .then(resp => {
+        console.log({resp})
+      })
+
+
   }
+  catch (e) {
+      console.error('Error msg:', e.message)
+  }
+
+  
+}
+
 
   function handleGeolocationFormCreate(e) {
     e.preventDefault()
@@ -206,7 +241,7 @@ export function GeolocationForm({ editMode }) {
     <form
       name='geolocation_form'
       className='flex flex-col w-full mt-4 items-start bg-blue-50 p-3 justify-start gap-3'
-      onSubmit={handleGeolocationFormCreate}
+      onSubmit={!editMode ? handleGeolocationFormCreate : handleGeolocationUpdates}
     >
 
       {/* Collection Date */}
