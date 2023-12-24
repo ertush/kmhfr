@@ -44,9 +44,9 @@ function FacilityUpdatesTable({ facilityUpdatedJson, originalData }) {
                                             {human_field_name}
                                         </TableCell>
                                         {
-                                            originalData?.data ?
+                                            originalData ?
                                         <TableCell>
-                                            {typeof (originalData?.data[field_name]) === 'boolean' ? (Boolean(originalData?.data[field_name]) ? 'Yes' : 'No') : originalData?.data[field_name]}
+                                            {typeof (originalData[field_name]) === 'boolean' ? (Boolean(originalData[field_name]) ? 'Yes' : 'No') : originalData[field_name]}
                                         </TableCell>
                                         :
                                         <TableCell className='w-auto'>
@@ -68,7 +68,7 @@ function FacilityUpdatesTable({ facilityUpdatedJson, originalData }) {
                                {
                                 facilityUpdatedJson?.geo_codes && facilityUpdatedJson?.geo_codes?.coordinates?.coordinates.length > 0 &&
                                 <>
-                                    <TableRow className='w-full'><h2 className='text-lg font-bold'>Facility Geolocation</h2></TableRow>
+                                    <TableRow className='w-full'><h2 className='text-lg font-bold mt-6'>Facility Geolocation</h2></TableRow>
                                     <TableRow className='w-full'>
                                         <TableCell>
                                             <p className='text-base font-semibold'>Field</p>
@@ -112,7 +112,7 @@ function FacilityUpdatesTable({ facilityUpdatedJson, originalData }) {
                             {
                                 facilityUpdatedJson?.services && facilityUpdatedJson?.services.length > 0 &&
                                 <>
-                                    <TableRow className='w-full'><h2 className='text-lg font-bold'>Facility Services</h2></TableRow>
+                                    <TableRow className='w-full'><h2 className='text-lg font-bold mt-6'>Facility Services</h2></TableRow>
                                     <TableRow className='w-full'>
                                         <TableCell>
                                             <p className='text-base font-semibold'>Service Name</p>
@@ -146,7 +146,7 @@ function FacilityUpdatesTable({ facilityUpdatedJson, originalData }) {
                             {
                                 facilityUpdatedJson?.officer_in_charge &&
                                 <>
-                                    <TableRow className='w-full'><h2 className='text-lg font-bold'>Facility Officer In Charge</h2></TableRow>
+                                    <TableRow className='w-full'><h2 className='text-lg font-bold mt-6'>Facility Officer In Charge</h2></TableRow>
 
                                     <div className='grid  grid-cols-2 md:grid-cols-3 place-content-start gap-2 '>
 
@@ -180,7 +180,7 @@ function FacilityUpdatesTable({ facilityUpdatedJson, originalData }) {
                             {
                                 facilityUpdatedJson?.humanReportsSideMenu  && facilityUpdatedJson?.humanReportsSideMenu .length > 0 &&
                                 <>
-                                    <TableRow className='w-full'><h2 className='text-lg font-bold'>Facility HR</h2></TableRow>
+                                    <TableRow className='w-full'><h2 className='text-lg font-bold mt-6'>Facility HR</h2></TableRow>
                                     <TableRow className='w-full'>
                                         <TableCell>
                                             <p className='text-base font-semibold'>Speciality Name</p>
@@ -219,7 +219,7 @@ function FacilityUpdatesTable({ facilityUpdatedJson, originalData }) {
                             {
                                 facilityUpdatedJson?.infrastructure && facilityUpdatedJson?.infrastructure.length > 0 &&
                                 <>
-                                    <TableRow className='w-full'><h2 className='text-lg font-bold'>Facility Infrasructure</h2></TableRow>
+                                    <TableRow className='w-full'><h2 className='text-lg font-bold mt-6'>Facility Infrasructure</h2></TableRow>
                                     <TableRow className='w-full'>
                                         <TableCell>
                                             <p className='text-base font-semibold'>Name</p>
@@ -259,7 +259,7 @@ function FacilityUpdatesTable({ facilityUpdatedJson, originalData }) {
                             {
                                 facilityUpdatedJson?.units && facilityUpdatedJson?.units.length > 0 &&
                                 <>
-                                    <TableRow className='w-full'><h2 className='text-lg font-bold'>Facility Units</h2></TableRow>
+                                    <TableRow className='w-full'><h2 className='text-lg font-bold mt-6'>Facility Units</h2></TableRow>
                                     <TableRow className='w-full'>
                                         <TableCell>
                                             <p className='text-base font-semibold'>Department Name</p>

@@ -124,7 +124,7 @@ export async function getServerSideProps (ctx) {
 					const option = options[i]
 					switch (option) {
 						case 'facility_types':
-							url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/${option}/?is_parent=true&page_size=10000`;
+							url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/${option}/?is_parent=true`;
 
 							try {
 
@@ -161,7 +161,7 @@ export async function getServerSideProps (ctx) {
 
 							break;
 						case 'facility_type_details':
-							url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/facility_types/`;
+							url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/facility_types/?is_parent=false`;
 
 							try {
 

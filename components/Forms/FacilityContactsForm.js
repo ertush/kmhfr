@@ -20,6 +20,7 @@ import { defer } from 'underscore';
 // import { Alert } from "@mui/lab";
 import { useAlert } from 'react-alert';
 import Spinner from '../Spinner'
+import { useRouter } from 'next/router';
 
 
 export const FacilityDeptContext = createContext(null)
@@ -29,7 +30,7 @@ export const FacilityContactsContext = createContext(null)
 export function FacilityContactsForm() {
 
     // Constants
-
+    const router = useRouter()
     const options = useContext(FormOptionsContext);
     const contactTypeOptions = options.contact_types;
     const jobTitleOptions = options.job_titles;
@@ -268,66 +269,20 @@ export function FacilityContactsForm() {
                 setSubmitting(true)
 
                 options?.data ?
-                    handleFacilityContactsUpdates(options.token, values, facilityId)
+                    handleFacilityContactsUpdates(options.token, values, options?.data?.id)
                         .then((resp) => {
                             defer(() => updatedSavedChanges(true));
-                            if (resp.ok) {
+                            if (resp.status == 200 || resp.status == 204) {
+                                alert.success("Updated facility contacts successfully")
 
-                                alert.success('Facility Contacts Updated successfully')
-
-                                fetch(
-                                    `${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${facilityId}/`,
-                                    {
-                                        headers: {
-                                            'Authorization': 'Bearer ' + options.token,
-                                            'Accept': 'application/json, text/plain, */*',
-                                            'Content-Type': 'application/json;charset=utf-8'
-                                        }
-
+                                router.push({
+                                    pathname: '/facilities/facility_changes/[facility_id]',
+                                    query:{
+                                        facility_id: options?.data?.id
                                     }
-
-                                )
-                                    .then(async (resp) => {
-                                        const results = await resp.json();
-
-
-
-                                        if (results?.latest_update) {
-                                            try {
-                                                const _facilityUpdateData = await (
-                                                    await fetch(
-                                                        `${process.env.NEXT_PUBLIC_API_URL}/facilities/facility_updates/${results?.latest_update}/`,
-                                                        {
-                                                            headers: {
-                                                                'Authorization': 'Bearer ' + options.token,
-                                                                'Accept': 'application/json, text/plain, */*',
-                                                                'Content-Type': 'application/json;charset=utf-8'
-                                                            }
-
-                                                        }
-                                                    )
-                                                ).json();
-                                                updateFacilityUpdateData(_facilityUpdateData);
-                                            } catch (e) {
-                                                console.error(
-                                                    "Encountered error while fetching facility update data",
-                                                    e.message
-                                                );
-                                            }
-                                        }
-                                        else {
-                                            if (results?.latest_update == null) {
-                                                setResponseError('No updates found for this facility')
-                                            }
-                                        }
-                                    })
-                                    .catch((e) =>
-                                        console.error(
-                                            "unable to fetch facility update data. Error:",
-                                            e.message
-                                        )
-                                    );
+                                })
                             }
+
                             else {
                                 alert.error("Unable to update facility contacts")
                             }
@@ -393,10 +348,7 @@ export function FacilityContactsForm() {
 
                     return (
                         <>
-                            {/* {
-                responseError && 
-                <Alert severity="error" sx={{ width: '100%', marginTop:'16px' }}>{responseError}</Alert>
-                } */}
+                           
                             <h4 className='text-lg uppercase pb-2 mt-4 border-b border-blue-600 w-full mb-4 font-semibold text-blue-900'>
                                 Facility Contact
                             </h4>
@@ -617,10 +569,17 @@ export function FacilityContactsForm() {
                                             <button
                                                 type='submit'
                                                 disabled={submitting}
-                                                className='flex items-center justify-start space-x-2 bg-blue-700  p-1 px-2'>
-                                                <span className='text-medium font-semibold text-white'>
-                                                    Save & Finish
-                                                </span>
+                                                className='flex items-center justify-start text-white space-x-2 bg-blue-700  p-1 px-2'>
+                                                {
+                                                    submitting ?
+                                                        <div className='flex items-center gap-2'>
+                                                            <span className='text-white'>Saving </span>
+                                                            <Spinner />
+                                                        </div>
+                                                        :
+                                                        'Save & Finish'
+
+                                                }
                                             </button>
                                         </div>
                                         :

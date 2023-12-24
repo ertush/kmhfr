@@ -11,19 +11,22 @@ import {
 } from '@heroicons/react/solid';
 import { useAlert } from 'react-alert';
 import Spinner from '../Spinner'
-import { FacilityIdContext, FacilityWardDataContext } from './Form';
+import { useRouter } from 'next/router';
+// import { FacilityIdContext, FacilityWardDataContext } from './Form';
 
 
-export function BasicDeatilsForm({ editMode, wardProps }) {
+export function BasicDeatilsForm({ editMode }) {
 
   // Constants
   const alert = useAlert();
+  const router = useRouter()
 
   // State
   const [isClient, setIsClient] = useState(false)
   const [totalFunctionalBeds, setTotalFunctionalBeds] = useState(0)
   const [facilityId, setFacilityId] = useState('')
   const [submitting, setSubmitting] = useState(false);
+  const [touchedFields, setTouchedFields] = useState([]);
 
 
   // Options
@@ -40,6 +43,7 @@ export function BasicDeatilsForm({ editMode, wardProps }) {
       return o
     }
   }))
+
   const [subCountyOptions, setSubCountyOptions] = useState(options?.sub_counties)
   const [constituencyOptions, setConstituencyOptions] = useState(options?.constituencies)
   const [wardOptions, setWardOptions] = useState(options?.wards)
@@ -56,13 +60,13 @@ export function BasicDeatilsForm({ editMode, wardProps }) {
 
 
    // Event handlers
-  function handleChange (e) {
-    return null
+  function handleFocus (e) {
+    setTouchedFields(touchedFields => {
+      return [...touchedFields, e.target.name]
+    })
   }
 
   async function handleSelectChange(e) {
-
-    handleChange(e)
 
     const keph = document.getElementsByName('keph_level');
 
@@ -285,18 +289,28 @@ export function BasicDeatilsForm({ editMode, wardProps }) {
     }
   }
 
+
   function handleBasicDetailsUpdate(e) {
 
     e.preventDefault()
 
+    console.log({touchedFields})
 
     const formData = new FormData(e.target)
 
     const data = Object.fromEntries(formData)
 
+    const payload = {}
+
+    for(let field of touchedFields){
+      payload[field] = data[field] == undefined ? false : data[field] == "on" || data[field] == "true" ? true : data[field] == "false" ? false : (Number(data[field]) ?? data[field])
+    }
+
+    // console.log({payload})
+
     setSubmitting(true)
 
-    // console.log({data})
+    // // console.log({data})
 
     fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${options?.data?.id}/`, {
       method: 'PATCH',
@@ -305,17 +319,29 @@ export function BasicDeatilsForm({ editMode, wardProps }) {
         'Content-Type': 'application/json;charset=UTF-8',
         'Authorization': `Bearer ${options?.token}`
       },
-      body: JSON.stringify(data)
+      body: JSON.stringify(payload)
     })
-      .then(res => {
-        if (res.status == 204 || res.status == 200) {
-          alert.success('Facility Updated Successfully')
-        } else {
-          alert.error('Unable to update facility')
-        }
+    .then(res => {
+      if (res.status == 204 || res.status == 200) {
+        alert.success('Facility Updated Successfully')
         setSubmitting(false)
-      })
 
+        router.push({
+          pathname: '/facilities/facility_changes/[facility_id]/',
+          query: { 
+            facility_id: options?.data?.id
+          }
+        })
+
+      } else {
+        alert.error('Unable to update facility')
+        setSubmitting(false)
+
+      }
+
+    }
+    )
+    
 
 
   }
@@ -435,7 +461,7 @@ export function BasicDeatilsForm({ editMode, wardProps }) {
 
     // Total Funcational Input Beds validation
 
-      handleChange(e)
+      handleFocus(e)
     
 
       const number_of_inpatient_beds = Number(document.getElementsByName('number_of_inpatient_beds')[0]?.value) 
@@ -452,9 +478,24 @@ export function BasicDeatilsForm({ editMode, wardProps }) {
   }
 
 
-
   // Effects
   useEffect(() => {
+
+    // console.log({facility: options?.data})
+
+    function getFacilityTypeDetails(facilityTypeId, token) {
+
+      return fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facility_types_details/?is_parent=false&parent=${facilityTypeId}`, {
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      })
+      .then(resp => resp.json())
+      .then(resp => resp?.results)
+      .catch(console.error)
+
+    }
 
     if(window && !editMode) {
       const path = new URL(window.location.href)
@@ -490,13 +531,21 @@ export function BasicDeatilsForm({ editMode, wardProps }) {
       setOptions(newOptions)
      }
 
+    } 
+    else if (editMode) {
+      getFacilityTypeDetails(options?.data?.facility_type, options?.token)
+      .then(facilityTypeDetails => {
+
+        console.log({facilityTypeDetails})
+
+        const _options = facilityTypeDetails?.map(({id: value, name: label}) => ({label, value}))
+        setFacilityTypeDetailOptions(_options)
+      })
     }
 
     setIsClient(true)
 
   }, [])
-
-
 
 
   if (isClient) {
@@ -522,7 +571,7 @@ export function BasicDeatilsForm({ editMode, wardProps }) {
             type='text'
             name='official_name'
             defaultValue={options?.data?.official_name ?? ''}
-            onInput={handleChange}
+            onFocus={handleFocus}
             className='flex-none w-full bg-blue-50 p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
           />
         </div>
@@ -543,7 +592,7 @@ export function BasicDeatilsForm({ editMode, wardProps }) {
             type='text'
             name='name'
             defaultValue={options?.data?.name ?? ''}
-            onChange={handleChange}
+            onFocus={handleFocus}
             className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
           />
 
@@ -563,17 +612,14 @@ export function BasicDeatilsForm({ editMode, wardProps }) {
 
           <Select
             options={options?.facility_types}
-            defaultValue={(() => {
-              return options?.facility_types?.find(({ label }) => {
-
-                // console.log({label, facility_type_parent: options?.data?.facility_type_parent})
-                return label == options?.data?.facility_type_parent
-              })?.value ?? ''
-            })() ?? ''}
+            defaultValue={options?.facility_types?.map(({value}) => value).includes(options?.data?.facility_type)  ? options?.data?.facility_type : (() => {
+              return options?.facility_types?.find(({label}) => label == options?.data?.facility_type_parent)?.value
+            })()}
             placeholder="Select a facility type..."
             required
             name='facility_type'
             onChange={handleSelectChange}
+            onFocus={handleFocus}
 
           />
 
@@ -593,11 +639,13 @@ export function BasicDeatilsForm({ editMode, wardProps }) {
 
 
           <Select
-
             options={facilityTypeDetailOptions ?? []}
             placeholder="Select facility type details..."
             onChange={handleSelectChange}
-            defaultValue={options?.data?.facility_type}
+            onFocus={handleFocus}
+            defaultValue={(() => {
+              return facilityTypeDetailOptions?.find(({label}) => label == options?.data?.facility_type_name)?.value
+            })()}
             required
             name='facility_type_details'
 
@@ -622,7 +670,7 @@ export function BasicDeatilsForm({ editMode, wardProps }) {
             placeholder="Select operation status..."
             required
             name='operation_status'
-            onChange={handleChange}
+            onFocus={handleFocus}
             defaultValue={options?.data?.operation_status ?? ''}
 
           />
@@ -644,7 +692,7 @@ export function BasicDeatilsForm({ editMode, wardProps }) {
             type="date"
             required
             name="date_established"
-            onChange={handleChange}
+            onFocus={handleFocus}
             defaultValue={options?.data?.date_established ?? ''}
             className='flex-none w-full bg-transparent p-2 flex-grow placeholder-gray-500 border border-blue-600 focus:shadow-none  focus:border-black outline-none'
 
@@ -700,6 +748,7 @@ export function BasicDeatilsForm({ editMode, wardProps }) {
             options={options?.owner_types}
             placeholder="Select owner category.."
             onChange={handleSelectChange}
+            onFocus={handleFocus}
             required
             name='owner_type'
             defaultValue={options?.data?.owner_type ?? ''}
@@ -721,7 +770,7 @@ export function BasicDeatilsForm({ editMode, wardProps }) {
           <Select
             options={ownerTypeDetailsOptions ?? []}
             defaultChecked={options?.data?.owner ?? ''}
-            onChange={handleChange}
+            onFocus={handleFocus}
             placeholder="Select owner..."
             required
             name='owner'
@@ -742,7 +791,7 @@ export function BasicDeatilsForm({ editMode, wardProps }) {
             placeholder="Select a KEPH Level.."
             name='keph_level'
             defaultValue={options?.data?.keph_level ?? ''}
-            onChange={handleChange}
+            onFocus={handleFocus}
             disabled={options?.data ? true : false}
 
           />
@@ -788,8 +837,8 @@ export function BasicDeatilsForm({ editMode, wardProps }) {
             type='number'
             min={0}
             name='number_of_inpatient_beds'
-            onChange={handleNumberInputChange}
-            defaultValue={options?.data?.number_of_inpatient_beds ?? ''}
+            onFocus={handleNumberInputChange}
+            defaultValue={options?.data?.number_of_inpatient_beds ?? 0}
             className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
           />
 
@@ -811,7 +860,7 @@ export function BasicDeatilsForm({ editMode, wardProps }) {
             type='number'
             min={0}
             name='number_of_cots'
-            onChange={handleChange}
+            onFocus={handleFocus}
             defaultValue={options?.data?.number_of_cots ?? ''}
             className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
           />
@@ -834,7 +883,7 @@ export function BasicDeatilsForm({ editMode, wardProps }) {
             type='number'
             min={0}
             name='number_of_emergency_casualty_beds'
-            onChange={handleNumberInputChange}
+            onFocus={handleNumberInputChange}
             defaultValue={options?.data?.number_of_emergency_casualty_beds ?? ''}
             className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
           />
@@ -858,7 +907,7 @@ export function BasicDeatilsForm({ editMode, wardProps }) {
             type='number'
             min={0}
             name='number_of_icu_beds'
-            onChange={handleNumberInputChange}
+            onFocus={handleNumberInputChange}
             defaultValue={options?.data?.number_of_icu_beds ?? ''}
             className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
           />
@@ -882,7 +931,7 @@ export function BasicDeatilsForm({ editMode, wardProps }) {
             type='number'
             min={0}
             name='number_of_hdu_beds'
-            onChange={handleNumberInputChange}
+            onFocus={handleNumberInputChange}
             defaultValue={options?.data?.number_of_hdu_beds ?? ''}
             className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
           />
@@ -906,7 +955,7 @@ export function BasicDeatilsForm({ editMode, wardProps }) {
             type='number'
             min={0}
             name='number_of_maternity_beds'
-            onChange={handleNumberInputChange}
+            onFocus={handleNumberInputChange}
             defaultValue={options?.data?.number_of_maternity_beds ?? ''}
             className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
           />
@@ -930,7 +979,7 @@ export function BasicDeatilsForm({ editMode, wardProps }) {
             type='number'
             min={0}
             name='number_of_isolation_beds'
-            onChange={handleChange}
+            onFocus={handleFocus}
             defaultValue={options?.data?.number_of_isolation_beds ?? ''}
             className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
           />
@@ -955,7 +1004,7 @@ export function BasicDeatilsForm({ editMode, wardProps }) {
             type='number'
             min={0}
             name='number_of_general_theatres'
-            onChange={handleChange}
+            onFocus={handleFocus}
             defaultValue={options?.data?.number_of_general_theatres ?? ''}
 
             className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
@@ -980,7 +1029,7 @@ export function BasicDeatilsForm({ editMode, wardProps }) {
             type='number'
             min={0}
             name='number_of_maternity_theatres'
-            onChange={handleChange}
+            onFocus={handleFocus}
             defaultValue={options?.data?.number_of_maternity_theatres ?? ''}
             className='flex-none w-full  bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
           />
@@ -1002,7 +1051,7 @@ export function BasicDeatilsForm({ editMode, wardProps }) {
             type='number'
             min={0}
             name='facility_catchment_population'
-            onChange={handleChange}
+            onFocus={handleFocus}
             defaultValue={options?.data?.facility_catchment_population ?? ''}
             className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
           />
@@ -1022,7 +1071,7 @@ export function BasicDeatilsForm({ editMode, wardProps }) {
               <input
                 type='radio'
                 name='reporting_in_dhis'
-                onChange={handleChange}
+                onFocus={handleFocus}
                 defaultChecked={options?.data?.reporting_in_dhis == true}
                 value={true}
 
@@ -1033,7 +1082,7 @@ export function BasicDeatilsForm({ editMode, wardProps }) {
               <input
                 type='radio'
                 name='reporting_in_dhis'
-                onChange={handleChange}
+                onFocus={handleFocus}
                 defaultChecked={options?.data?.reporting_in_dhis == false}
                 value={false}
 
@@ -1062,7 +1111,7 @@ export function BasicDeatilsForm({ editMode, wardProps }) {
             required
             placeholder='Select an admission status..'
             name='admission_status'
-            onChange={handleChange}
+            onFocus={handleFocus}
             defaultValue={options?.data?.admission_status ?? ''}
           />
 
@@ -1082,7 +1131,7 @@ export function BasicDeatilsForm({ editMode, wardProps }) {
               <input
                 type='radio'
                 name='nhif_accreditation'
-                onChange={handleChange}
+                onFocus={handleFocus}
                 defaultChecked={options?.data?.nhif_accreditation == true}
                 value={true}
 
@@ -1093,7 +1142,7 @@ export function BasicDeatilsForm({ editMode, wardProps }) {
               <input
                 type='radio'
                 name='nhif_accreditation'
-                onChange={handleChange}
+                onFocus={handleFocus}
                 defaultChecked={options?.data?.nhif_accreditation == false}
                 value={false}
 
@@ -1120,7 +1169,7 @@ export function BasicDeatilsForm({ editMode, wardProps }) {
             <input
               type="checkbox"
               name='is_classified'
-              onChange={handleChange}
+              onFocus={handleFocus}
               defaultChecked={options?.data?.is_classified ?? false}
             />
           </div>
@@ -1137,7 +1186,7 @@ export function BasicDeatilsForm({ editMode, wardProps }) {
             <input
               type='checkbox'
               name='open_whole_day'
-              onChange={handleChange}
+              onFocus={handleFocus}
               defaultChecked={options?.data?.open_whole_day ?? false}
 
             />
@@ -1153,7 +1202,7 @@ export function BasicDeatilsForm({ editMode, wardProps }) {
             <input
               type='checkbox'
               name='open_late_night'
-              onChange={handleChange}
+              onFocus={handleFocus}
               defaultChecked={options?.data?.open_late_night ?? false}
 
             />
@@ -1169,7 +1218,7 @@ export function BasicDeatilsForm({ editMode, wardProps }) {
             <input
               type='checkbox'
               name='open_public_holidays'
-              onChange={handleChange}
+              onFocus={handleFocus}
               defaultChecked={options?.data?.open_public_holidays ?? false}
 
             />
@@ -1185,7 +1234,7 @@ export function BasicDeatilsForm({ editMode, wardProps }) {
             <input
               type='checkbox'
               name='open_weekends'
-              onChange={handleChange}
+              onFocus={handleFocus}
               defaultChecked={options?.data?.open_weekends ?? false}
 
             />
@@ -1201,7 +1250,7 @@ export function BasicDeatilsForm({ editMode, wardProps }) {
             <input
               type='checkbox'
               name='open_normal_day'
-              onChange={handleChange}
+              onFocus={handleFocus}
               defaultChecked={options?.data?.open_normal_day ?? false}
 
             />
@@ -1242,6 +1291,7 @@ export function BasicDeatilsForm({ editMode, wardProps }) {
                   placeholder="Select County ..."
                   defaultValue={options?.data?.county_id ?? ''}
                   onChange={handleSelectChange}
+                  onFocus={handleFocus}
                   name='county_id'
 
                 />
@@ -1268,6 +1318,7 @@ export function BasicDeatilsForm({ editMode, wardProps }) {
                   placeholder="Select Sub County..."
                   defaultValue={options?.data?.sub_county_id ?? ''}
                   onChange={handleSelectChange}
+                  onFocus={handleFocus}
                   name='sub_county_id'
 
 
@@ -1293,7 +1344,7 @@ export function BasicDeatilsForm({ editMode, wardProps }) {
                   required
                   placeholder="Select Constituency..."
                   // onChange={handleSelectChange}
-                  onChange={handleChange}
+                  onFocus={handleFocus}
                   defaultValue={options?.data?.constituency_id ?? ''}
                   name='constituency_id'
 
@@ -1322,7 +1373,7 @@ export function BasicDeatilsForm({ editMode, wardProps }) {
                   required
                   placeholder="Select Ward ..."
                   defaultValue={options?.data?.ward ?? ''}
-                  onChange={handleChange}
+                  onFocus={handleFocus}
                   name='ward'
 
                 />
@@ -1354,7 +1405,7 @@ export function BasicDeatilsForm({ editMode, wardProps }) {
             type='text'
             name='town_name'
             defaultValue={options?.data?.town_name ?? ''}
-            onChange={handleChange}
+            onFocus={handleFocus}
             className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
           />
         </div>
@@ -1375,7 +1426,7 @@ export function BasicDeatilsForm({ editMode, wardProps }) {
             type='text'
             name='plot_number'
             defaultValue={options?.data?.plot_number ?? ''}
-            onChange={handleChange}
+            onFocus={handleFocus}
             className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
           />
         </div>
@@ -1396,7 +1447,7 @@ export function BasicDeatilsForm({ editMode, wardProps }) {
             type='text'
             name='nearest_landmark'
             defaultValue={options?.data?.nearest_landmark ?? ''}
-            onChange={handleChange}
+            onFocus={handleFocus}
             className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
           />
         </div>
@@ -1417,7 +1468,7 @@ export function BasicDeatilsForm({ editMode, wardProps }) {
             type='text'
             name='location_desc'
             defaultValue={options?.data?.location_desc ?? ''}
-            onChange={handleChange}
+            onFocus={handleFocus}
             className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
           />
         </div>
@@ -1456,7 +1507,10 @@ export function BasicDeatilsForm({ editMode, wardProps }) {
                   <span className='text-medium font-semibold text-white'>
                     {
                        submitting ? 
-                      <Spinner />
+                      <div className='flex items-center gap-2'> 
+                        <span className='text-white'>Saving </span>
+                        <Spinner />
+                      </div>
                       :
                       'Save & Finish'
                        

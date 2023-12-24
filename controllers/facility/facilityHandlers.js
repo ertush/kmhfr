@@ -631,32 +631,6 @@ const handleBasicDetailsUpdates = async (token, formData, facility_id, updatedSa
 }
 
 
-// handleGeolocationDataUpdate
-const handleGeolocationUpdates = async (token, formData, coordinates_id) => {
-
-
-    try {
-        const resp = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/gis/facility_coordinates/${coordinates_id}/`, {
-            headers: {
-                'Authorization': 'Bearer ' + token,
-                'Accept': 'application/json, text/plain, */*',
-                'Content-Type': 'application/json;charset=utf-8'
-            },
-            method: 'PATCH',
-            body: JSON.stringify(formData)
-        })
-
-
-        return resp
-        // console.log({formData, coordinates_id})
-    }
-    catch (e) {
-        console.error('Error msg:', e.message)
-    }
-
-  
-}
-
 // handleFacilityContactUpdates
 const handleFacilityContactsUpdates = async (token, values, facility_id) => {
 
@@ -1226,7 +1200,7 @@ export {
     handleInfrastructureSubmit,
     handleHrSubmit,
     handleBasicDetailsUpdates,
-    handleGeolocationUpdates,
+    // handleGeolocationUpdates,
     handleFacilityContactsUpdates,
     handleRegulationUpdates,
     handleServiceUpdates,

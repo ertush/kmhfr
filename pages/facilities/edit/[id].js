@@ -82,7 +82,7 @@ export default function EditFacility(props) {
 								<h2  className='flex items-center text-xl font-bold text-black capitalize gap-2'>
 									Editing <span className="cursor-pointer hover:text-blue-800" onClick={() => router.push(`/facilities/${props?.data?.id}`)}>{props?.data?.official_name}</span> 
 								</h2>
-								<h3 className='text-blue-900 font-semibold '>{props?.data.facility_type_name ?? ''}</h3>
+								<h3 className='text-blue-900 font-semibold '>{props?.data?.facility_type_name ?? ''}</h3>
 								<h4 className='text-gray-700'>{`# ${props?.data?.code ?? 'NO_CODE'}`}</h4>
 							</div>
 
@@ -272,7 +272,7 @@ EditFacility.getInitialProps = async (ctx) => {
 
 							break;
 						case 'facility_type_details':
-							url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/facility_types/`;
+							url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/facility_types/?is_parent=false&page_size=10000`;
 
 							try {
 

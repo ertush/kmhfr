@@ -11,7 +11,8 @@ import { FormOptionsContext } from '../../pages/facilities/add';
 import { useAlert } from 'react-alert';
 // import { FacilityIdContext, FacilityWardDataContext } from './Form';
 import Spinner from '../Spinner'
-import { handleGeolocationUpdates } from '../../controllers/facility/facilityHandlers';
+// import { handleGeolocationUpdates } from '../../controllers/facility/facilityHandlers';
+import { useRouter } from 'next/router';
 
 
 const WardMap = dynamic(
@@ -39,20 +40,21 @@ export function GeolocationForm({ editMode }) {
   const [options, setOptions] = useState(_options)
   // const [wardData, setWardData] = useState({})
   const [facilityId, setFacilityId] = useState('')
-  const [geoJSON, setGeoJSON] =  useState(_options?.geolocation?.geoJSON)
+  const [geoJSON, setGeoJSON] = useState(_options?.geolocation?.geoJSON)
 
-  console.log({geoJSON})
+  // console.log({geoJSON})
 
   const [wardName, setWardName] = useState(_options?.data?.ward_name)
-  const [geoCenter, setGeoCenter] = useState(_options?.geolocation?.centerCoordinates) 
+  const [geoCenter, setGeoCenter] = useState(_options?.geolocation?.centerCoordinates)
   const [submitting, setSubmitting] = useState(false)
   const [basicDetailsURL, setBasicDetailsURL] = useState('')
   const [latitude, setLatitude] = useState('')
   const [longitude, setLongitude] = useState('')
   const [wardData, setWardData] = useState({})
+  // const [facilityUdpatedJSON, setFacilityUpdatedJSON] = useState({})
   const [from, setFrom] = useState('')
 
-
+  const router = useRouter()
 
   const alert = useAlert();
 
@@ -73,41 +75,78 @@ export function GeolocationForm({ editMode }) {
 
 
   // handleGeolocationDataUpdate
-function handleGeolocationUpdates (e){
+  function handleGeolocationUpdates(e) {
 
-  e.preventDefault()
-  
-  const formData = new FormData(e.target)
+    e.preventDefault()
 
-  const data = Object.fromEntries(formData)
+    const formData = new FormData(e.target)
 
-  setSubmitting(true)
+    const data = Object.fromEntries(formData)
 
-  try {
-        fetch(`${process.env.NEXT_PUBLIC_API_URL}/gis/facility_coordinates/${_options?.coordinates}/`, {
+    setSubmitting(true)
+
+    const payload = {
+      coordinates: {
+        coordinates: [Number(data?.latitude), Number(data?.longitude)],
+        type: 'point'
+      },
+      latitude: Number(data?.latitude),
+      longitude: Number(data?.longitude),
+      facility: options?.data?.id
+    }
+
+    try {
+      if (options?.data?.coordinates) {
+
+        fetch(`${process.env.NEXT_PUBLIC_API_URL}/gis/facility_coordinates/${options?.data?.coordinates}/`, {
           headers: {
-              'Authorization': 'Bearer ' + options?.token,
-              'Accept': 'application/json, text/plain, */*',
-              'Content-Type': 'application/json;charset=utf-8'
+            'Authorization': 'Bearer ' + options?.token,
+            'Accept': 'application/json, text/plain, */*',
+            'Content-Type': 'application/json;charset=utf-8'
           },
           method: 'PATCH',
-          body: JSON.stringify(data)
-      })
-      .then(resp => {
-        return resp.json()
-      })
-      .then(resp => {
-        console.log({resp})
-      })
+          body: JSON.stringify(payload)
+        })
+          .then(resp => {
+            if (resp.status == 200) {
+              setSubmitting(false)
+              router.push({
+                pathname: '/facilities/facility_changes/[facility_id]/',
+                query: { 
+                  facility_id: options?.data?.id
+                }
+              })
+            }
+
+          })
+      } else {
+        fetch(`${process.env.NEXT_PUBLIC_API_URL}/gis/facility_coordinates/`, {
+          headers: {
+            'Authorization': 'Bearer ' + options?.token,
+            'Accept': 'application/json, text/plain, */*',
+            'Content-Type': 'application/json;charset=utf-8'
+          },
+          method: 'POST',
+          body: JSON.stringify(payload)
+        })
+          .then(resp => {
+            if (resp.status == 204 || resp.status == 200) {
+              setSubmitting(false)
+
+            }
+
+          })
+
+      }
 
 
-  }
-  catch (e) {
+    }
+    catch (e) {
       console.error('Error msg:', e.message)
-  }
+    }
 
-  
-}
+
+  }
 
 
   function handleGeolocationFormCreate(e) {
@@ -139,20 +178,20 @@ function handleGeolocationUpdates (e){
 
           const params = [];
 
-          for(let [k, v] of formData) params.push(`${k}=${v}`)
+          for (let [k, v] of formData) params.push(`${k}=${v}`)
 
-          if(wardData) params.push(`wardData=${Buffer.from(JSON.stringify(wardData)).toString('base64')}`)
+          if (wardData) params.push(`wardData=${Buffer.from(JSON.stringify(wardData)).toString('base64')}`)
 
           const base64EncParams = Buffer.from(params.join('&')).toString('base64')
-  
+
           const url = new URL(`${window.location.origin}/facilities/add?formData=${base64EncParams}`)
-          
+
           url.searchParams.set('formId', '2')
-  
+
           url.searchParams.set('facilityId', facilityId)
-  
+
           window.location.href = url
-       
+
         } else {
           setSubmitting(false)
           alert.error('Unable to save to Geolocation details')
@@ -173,63 +212,63 @@ function handleGeolocationUpdates (e){
     } else if (e.target.name == 'longitude') {
 
       setLongitude(e.target.value)
-    } 
+    }
 
     // console.log(options)
   }
 
 
   useEffect(() => {
-    
+
     // console.log(JSON.stringify({wardData}))
 
-    if(window && !editMode) {
+    if (window && !editMode) {
 
-    const current_url = new URL(window.location.href)
+      const current_url = new URL(window.location.href)
 
-    setFrom(current_url.searchParams.get('from'))
+      setFrom(current_url.searchParams.get('from'))
 
-    setFacilityId(current_url.searchParams.get('facilityId'))
+      setFacilityId(current_url.searchParams.get('facilityId'))
 
-    if(current_url.searchParams.get('from') == 'previous') setBasicDetailsURL(current_url)
+      if (current_url.searchParams.get('from') == 'previous') setBasicDetailsURL(current_url)
 
-    if(current_url.searchParams.get('from') == 'submission'){
+      if (current_url.searchParams.get('from') == 'submission') {
 
-    const strFormData = Buffer.from(current_url.searchParams?.get('formData') ?? 'J3t9Jw==', 'base64').toString() ?? "{}"
-    const params = new URL(`${window.location.origin}/facilities/add?${strFormData}`).searchParams
+        const strFormData = Buffer.from(current_url.searchParams?.get('formData') ?? 'J3t9Jw==', 'base64').toString() ?? "{}"
+        const params = new URL(`${window.location.origin}/facilities/add?${strFormData}`).searchParams
 
 
-    // const paramEntries = params.entries()
-    const base64WardData =  params.get('wardData')
-    const wardDataStr = Buffer.from(base64WardData, 'base64').toString()
-    const _wardData = JSON.parse(wardDataStr)
-    const formData = Object.fromEntries(params.entries())
+        // const paramEntries = params.entries()
+        const base64WardData = params.get('wardData')
+        const wardDataStr = Buffer.from(base64WardData, 'base64').toString()
+        const _wardData = JSON.parse(wardDataStr)
+        const formData = Object.fromEntries(params.entries())
 
-    // const formData = Object.fromEntries(paramEntries)
-   
-    setWardData(_wardData)
+        // const formData = Object.fromEntries(paramEntries)
 
-    setGeoJSON(_wardData?.geoJSON)
-    setGeoCenter(_wardData?.centerCoordinates)
-    setWardName(_wardData?.geoJSON?.properties?.name)
+        setWardData(_wardData)
 
-      
-      const newOptions = {}
+        setGeoJSON(_wardData?.geoJSON)
+        setGeoCenter(_wardData?.centerCoordinates)
+        setWardName(_wardData?.geoJSON?.properties?.name)
 
-      Object.assign(newOptions, options)
 
-      console.log(new Date(formData.collection_date))
+        const newOptions = {}
 
-      newOptions['data'] =  {lat_long: [formData.latitude, formData.longitude], collection_date: formData.collection_date}
+        Object.assign(newOptions, options)
 
-      for(let [k, v] of Object.entries(newOptions?.data)) {
-       newOptions.data[k] = v
+        console.log(new Date(formData.collection_date))
 
+        newOptions['data'] = { lat_long: [formData.latitude, formData.longitude], collection_date: formData.collection_date }
+
+        for (let [k, v] of Object.entries(newOptions?.data)) {
+          newOptions.data[k] = v
+
+        }
+
+        setOptions(newOptions)
       }
-
-      setOptions(newOptions)
     }
-  }
 
   }, [])
 
@@ -260,7 +299,7 @@ function handleGeolocationUpdates (e){
           type='date'
           name='collection_date'
           onChange={handleInput}
-          defaultValue={options?.collection_date?.split('T')[0] ??  ''}
+          defaultValue={options?.collection_date?.split('T')[0] ?? ''}
           className='flex-none w-full  p-2 flex-grow border placeholder-gray-500 bg-transparent border-blue-600 focus:shadow-none focus:border-black outline-none'
         />
 
@@ -320,19 +359,19 @@ function handleGeolocationUpdates (e){
 
       {/* Ward Geo Map */}
       <div className='w-full h-auto'>
-       
+
         <div className='w-full bg-gray-200   flex flex-col items-start justify-center text-left relative'>
-          
-        
+
+
           <Suspense fallback={<Alert severity='info' className='w-full p-1'>Loading ...</Alert>}>
-            
-        
+
+
             {
               (editMode && options?.data?.lat_long !== null && Array.isArray(options?.data?.lat_long)) || (!editMode && geoJSON && geoCenter && wardName) ?
-               
-              <Map markerCoordinates={[options?.data?.lat_long[0] ??  latitude ?? geoCenter[0], options?.data?.lat_long[1] ?? longitude ?? geoCenter[1]]} geoJSON={geoJSON} from={from} ward={wardName} center={geoCenter} />
-              :
-              <Alert severity='warning' className='w-full p-1'>Geolocation Data is Missing For this facility</Alert>
+
+                <Map markerCoordinates={[options?.data?.lat_long[0] ?? latitude ?? geoCenter[0], options?.data?.lat_long[1] ?? longitude ?? geoCenter[1]]} geoJSON={geoJSON} from={from} ward={wardName} center={geoCenter} />
+                :
+                <Alert severity='warning' className='w-full p-1'>Geolocation Data is Missing For this facility</Alert>
             }
           </Suspense>
         </div>
@@ -340,60 +379,63 @@ function handleGeolocationUpdates (e){
 
       {/* Finish | Cancel & Geolocation */}
       {
-            editMode ?
+        editMode ?
 
-              <div className='flex justify-end items-center w-full'>
-                <button
-                  type='submit'
-                  disabled={submitting}
-                  className={`flex items-center ${submitting ? 'justify-center'  : 'justify-start'} space-x-2 bg-blue-700  p-1 px-2`}>
-                  <span className='text-medium font-semibold text-white'>
-                    {
-                       submitting ? 
+          <div className='flex justify-end items-center w-full'>
+            <button
+              type='submit'
+              disabled={submitting}
+              className={`flex items-center ${submitting ? 'justify-center' : 'justify-start'} space-x-2 bg-blue-700  p-1 px-2`}>
+              <span className='text-medium font-semibold text-white'>
+                {
+                  submitting ?
+                    <span className='flex items-center gap-2'>
+                      <span className='text-white'>Saving </span>
                       <Spinner />
-                      :
-                      'Save & Finish'
-                       
-                    }
-                  </span>
-                  {/* <ChevronDoubleRightIcon className='w-4 h-4 text-white' /> */}
-                </button>
-              </div>
-
-              :
-
-             <div className='flex justify-between items-center w-full'>
-                <button onClick={handleGeolocationPrevious} className='flex items-center justify-start space-x-2 p-1 border border-blue-900  px-2'>
-                  <ChevronDoubleLeftIcon className='w-4 h-4 text-blue-900' />
-                  <span className='text-medium font-semibold text-blue-900 '>
-                    Basic Details
-                  </span>
-                </button>
-                <button
-                  type='submit'
-                  disabled={submitting}
-                  className='flex items-center justify-start gap-2 text-white bg-blue-700  p-1 px-2'>
-                  <span className='text-medium font-semibold text-white'>
-                    {
-                       submitting ? 
-                      <Spinner />
-                      :
-                      'Facility Contacts'
-                       
-                    }
-                  </span>
-                  {
-                    submitting ? 
-                    <span className='text-white'>Saving </span>
+                    </span>
                     :
-                    <ChevronDoubleRightIcon className='w-4 h-4 text-white' />
+                    'Save & Finish'
 
-                  }
-                </button>
-              </div>
-          }
+                }
+              </span>
+              {/* <ChevronDoubleRightIcon className='w-4 h-4 text-white' /> */}
+            </button>
+          </div>
 
-     
+          :
+
+          <div className='flex justify-between items-center w-full'>
+            <button onClick={handleGeolocationPrevious} className='flex items-center justify-start space-x-2 p-1 border border-blue-900  px-2'>
+              <ChevronDoubleLeftIcon className='w-4 h-4 text-blue-900' />
+              <span className='text-medium font-semibold text-blue-900 '>
+                Basic Details
+              </span>
+            </button>
+            <button
+              type='submit'
+              disabled={submitting}
+              className='flex items-center justify-start gap-2 text-white bg-blue-700  p-1 px-2'>
+              <span className='text-medium font-semibold text-white'>
+                {
+                  submitting ?
+                    <Spinner />
+                    :
+                    'Facility Contacts'
+
+                }
+              </span>
+              {
+                submitting ?
+                  <span className='text-white'>Saving </span>
+                  :
+                  <ChevronDoubleRightIcon className='w-4 h-4 text-white' />
+
+              }
+            </button>
+          </div>
+      }
+
+
 
     </form>
 
