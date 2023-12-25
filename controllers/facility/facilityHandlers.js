@@ -824,12 +824,16 @@ async function handleServiceUpdates(token, stateSetters) {
 
     const [services, facilityId] = stateSetters
 
-    const _payload = JSON.parse(services).length > 0 ? JSON.parse(services).map(({ rowid }) => ({ service: rowid })) : { services: [{ service: null }] }
+    const _payload = typeof services == 'string' ? JSON.parse(services).map(({ rowid }) => ({ service: rowid })) : services.map(({ rowid }) => ({ service: rowid }))
 
+
+    console.log({
+        _payload
+    })
 
     try {
 
-        const resp = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${facilityId}/`, {
+        return fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${facilityId}/`, {
             headers: {
                 'Authorization': 'Bearer ' + token,
                 'Accept': 'application/json, text/plain, */*',
@@ -839,11 +843,7 @@ async function handleServiceUpdates(token, stateSetters) {
             body: JSON.stringify({ services: _payload })
         })
 
-        if (resp.ok) {
-            localStorage.clear()
-        }
-
-        return resp
+     
 
     }
     catch (e) {

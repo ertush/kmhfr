@@ -14,11 +14,14 @@ import { FacilityUpdatesContext } from '../../pages/facilities/edit/[id]';
 
 
 
+
 // import {Formik, Field, Form} from 'formik'
 
 
 export function ServicesForm() {
-    // ConstantsityUpdatesContext
+
+
+
     const[facilityId, setFacilityId] = useMemo(() => {
         let id = ''
 
@@ -109,7 +112,7 @@ export function ServicesForm() {
                             initialSelectedItems={options?.data? options?.data.facility_services:[]}
                             categoryItems={serviceOptions.categories}
                             itemsCategoryName={'Services'}
-                            itemId={facilityId}
+                            itemId={facilityId ?? options?.data?.id}
                             setItems={setServices}
                             item={options?.data ?? null}
                             options={options?.services}
