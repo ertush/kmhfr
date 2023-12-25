@@ -9,11 +9,12 @@ import Select from './formComponents/FormikSelect';
 import { ChevronDoubleLeftIcon, ChevronDoubleRightIcon, PlusIcon } from '@heroicons/react/outline';
 import FacilityDepartmentUnits from './formComponents/FacilityDepartmentUnits'
 // import { FacilityIdContext } from './EditForm'
-import { handleRegulationSubmit, handleRegulationSubmitUpdates, handleRegulationUpdates } from '../../controllers/facility/facilityHandlers';
+import { handleRegulationSubmit, handleRegulationUpdates } from '../../controllers/facility/facilityHandlers';
 import { useAlert } from 'react-alert';
-import { FacilityUpdatesContext } from '../../pages/facilities/edit/[id]';
-import { defer } from 'underscore';
+// import { FacilityUpdatesContext } from '../../pages/facilities/edit/[id]';
+// import { defer } from 'underscore';
 import Spinner from '../Spinner';
+import { useRouter } from 'next/router';
 
 
 export const FacilityDepartmentUnitsContext = createContext();
@@ -40,14 +41,15 @@ export function RegulationForm() {
     })
 
 
-    const { updatedSavedChanges, updateFacilityUpdateData } = options?.data ? useContext(FacilityUpdatesContext) : {updatedSavedChanges: null, updateFacilityUpdateData: null }
+    // const { updatedSavedChanges, updateFacilityUpdateData } = options?.data ? useContext(FacilityUpdatesContext) : {updatedSavedChanges: null, updateFacilityUpdateData: null }
 
 
     // const[facilityId, _] = useContext(FacilityIdContext);
 
     const alert = useAlert()
+    const router = useRouter()
 
-    const [responseError, setResponseError] = useState(null);
+    // const [responseError, setResponseError] = useState(null);
     const [facilityId, setFacilityId] = useState('');
     const [facilityContactsUrl, setFacilityContactsUrl] = useState('');
     const [submitting, setSubmitting] = useState(false);
@@ -115,68 +117,16 @@ export function RegulationForm() {
     }, [facilityDepts])
 
     // State
-    // const [formId, setFormId] = useContext(FormContext);
+   
     const [hideLicenseNumber, setHideLicenseNumber] = useState(false);
     const [hideRegistrationNumber, setHideRegistrationNumber] = useState(false);
 
     const [initialValues, handleFormUpdate] = useState(options?.data ? facilityRegulationData :  formFields)
-    // const [initialValues, handleFormUpdate] = useLocalStorageState({
-    //     key: options?.data ? 'regulation_edit_form' : 'regulation_form',
-    //     value: options?.data ? facilityRegulationData :  formFields
-    //   }).actions.use();
-
+ 
     const [formValues, setFormValues] = useState(options?.data ? facilityRegulationData :  initialValues && initialValues.length > 1 ? JSON.parse(initialValues) : formFields)
-    // const formValues = options?.data ? facilityRegulationData :  initialValues && initialValues.length > 1 ? JSON.parse(initialValues) : formFields;
+
     
     delete formValues['license_document'];
-
-
-    // FormSchema
-    // const formSchema = useMemo(() => hideLicenseNumber ? object({
-    //     regulatory_body: string({required_error:""}),
-    //     regulation_status:string({required_error:""}),
-    //     // facility_unit', 'facility_regulating_body_name', 'facility_license_number', 'facility_registration_number
-    //     ...(() => {
-    //         const schema = {}
-    //         if(facilityDepts.length > 1){
-    //             for(let i = 0; i < facilityDepts.length; i++){
-    //                 schema[`facility_unit_${i}`] = string({ required_error: "Facility unit is required" }).min(1);
-    //                 schema[`facility_regulating_body_name_${i}`] = string({ required_error: "Facility unit regulation body is required" }).min(1);
-    //                 schema[`facility_license_number_${i}`] = string({ required_error: "Facility unit license number required" }).min(1);
-    //                 schema[`facility_registration_number_${i}`] = string({ required_error: "Facility unit registration number is required" }).min(1);
-
-
-    //             }
-    //         }
-    //         return schema
-    //     })()
-
-
-    // }) : object({
-    //     regulatory_body: string({required_error:""}),
-    //     regulation_status:string({required_error:""}),
-    //     license_number:string({required_error:""}),
-    //     registration_number:string({required_error:""}),
-    //     // facility_unit', 'facility_regulating_body_name', 'facility_license_number', 'facility_registration_number
-    //     ...(() => {
-    //         const schema = {}
-    //         if(facilityDepts.length > 1){
-    //             for(let i = 0; i < facilityDepts.length; i++){
-    //                 schema[`facility_unit_${i}`] = string({ required_error: "Facility unit is required" }).min(1);
-    //                 schema[`facility_regulating_body_name_${i}`] = string({ required_error: "Facility unit regulation body is required" }).min(1);
-    //                 schema[`facility_license_number_${i}`] = string({ required_error: "Facility unit license number required" }).min(1);
-    //                 schema[`facility_registration_number_${i}`] = string({ required_error: "Facility unit registration number is required" }).min(1);
-
-
-    //             }
-    //         }
-
-          
-    //         return schema
-    //     })()
-
-
-    // }))
 
     // Ref
     const _regBodyRef = useRef(null)
@@ -244,7 +194,6 @@ export function RegulationForm() {
 
     // Constants
 
-
     return (
         <Formik
             initialValues={formValues}
@@ -253,74 +202,7 @@ export function RegulationForm() {
                 setSubmitting(true)
                 
                 options?.data ? 
-                handleRegulationUpdates(options.token, values, facilityId, setSubmitting, fileRef.current, alert)
-                .then(resp => {
-                    defer(() => updatedSavedChanges(true));
-                    if (resp.ok) {
-                     
-                        alert.success('Facility Regulation Details updated successfully')
-
-                      fetch(
-                        `${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${facilityId}/`,
-                        {
-                            headers: {
-                                'Authorization': 'Bearer ' + options.token,
-                                'Accept': 'application/json, text/plain, */*',
-                                'Content-Type': 'application/json;charset=utf-8'
-                               }
-                         }
-                      )
-                        .then(async (resp) => {
-                        // console.log({facilityId, file: fileRef.current})
-
-                          const results = await resp.json();
-    
-                          if (results?.latest_update) {
-                            try {
-                              const _facilityUpdateData = await (
-                                await fetch(
-                                  `${process.env.NEXT_PUBLIC_API_URL}/facilities/facility_updates/${results?.latest_update}/`,
-                                  {
-                                    headers: {
-                                        'Authorization': 'Bearer ' + options.token,
-                                        'Accept': 'application/json, text/plain, */*',
-                                        'Content-Type': 'application/json;charset=utf-8'
-                                       }
-                                 }
-                                )
-                              ).json();
-                              updateFacilityUpdateData(_facilityUpdateData);
-                            } catch (e) {
-                              console.error(
-                                "Encountered error while fetching facility update data",
-                                e.message
-                              );
-                            }
-                          }
-                          else{
-                            if(results?.latest_update == null){
-                                setResponseError('No updates found for this facility') 
-                            }
-                          }
-                        })
-                        .catch((e) =>
-                          console.error(
-                            "unable to fetch facility update data. Error:",
-                            e.message
-                          )
-                        );
-                    }
-                    else
-                    {
-                        alert.error('Unable to update regulation form')
-                    }
-                  })
-                  .catch((e) =>
-                    console.error(
-                      "unable to fetch facility data. Error:",
-                      e.message
-                    )
-                  )
+                handleRegulationUpdates(options?.token, values, options?.data?.id, fileRef.current, setSubmitting, router, alert)
                 :
                 handleRegulationSubmit(options.token, values, facilityId, setSubmitting, fileRef.current, alert)
                 
@@ -329,7 +211,6 @@ export function RegulationForm() {
             // validationSchema={toFormikValidationSchema(formSchema)}
             enableReinitialize
             >
-
             {
                 (formikState) => {
                     const errors = formikState.errors;
@@ -514,10 +395,17 @@ export function RegulationForm() {
                                           <button
                                               type='submit'
                                               disabled={submitting}
-                                              className='flex items-center justify-start space-x-2 bg-blue-700  p-1 px-2'>
-                                              <span className='text-medium font-semibold text-white'>
-                                                  Save & Finish
-                                              </span>
+                                              className='flex items-center text-white justify-start space-x-2 bg-blue-700  p-1 px-2'>
+                                               {
+                                                    submitting ?
+                                                        <div className='flex items-center gap-2'>
+                                                            <span className='text-white'>Saving </span>
+                                                            <Spinner />
+                                                        </div>
+                                                        :
+                                                        'Save & Finish'
+
+                                                }
                                           </button>
                                       </div>
                                       :
