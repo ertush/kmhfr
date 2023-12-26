@@ -10,8 +10,6 @@ function FacilitySideMenu({ states, stateSetters, filters }) {
 
     const userPermissions = useContext(PermissionContext)
 
-
-
     const quickFilters = [
         {
             name: 'All',
@@ -120,7 +118,6 @@ function FacilitySideMenu({ states, stateSetters, filters }) {
     const [DHISSyncedFacilities, setDHISSyncedFacilities] = useState(false);
 
 
-
     if (allFctsSelected && pathId.length > 0) {
         setAllFctsSelected(false)
     }
@@ -177,8 +174,6 @@ function FacilitySideMenu({ states, stateSetters, filters }) {
 
     }
 
-
-
     useEffect(() => {
         const url = window.history.state.as
         if (url.includes('qf=all')) { setPathId('all'); setAllFctsSelected(true) }
@@ -198,7 +193,7 @@ function FacilitySideMenu({ states, stateSetters, filters }) {
 
     return (
 
-        <div className='col-span-1 flex flex-col gap-3 md:col-start-1 border bg-django-blue md:mb-12 py-0 h-full border-blue-600'>
+        <div className='col-span-1 flex flex-col gap-3 md:col-start-1 md:mb-12 py-0 h-full bg-blue-50 shadow-md'>
             <List
                 className='p-0 m-0'
                 component="nav"
@@ -211,10 +206,10 @@ function FacilitySideMenu({ states, stateSetters, filters }) {
                   sx={{  
                     backgroundColor: (allFctsSelected || pathId === 'all') && '#1d4ed8',
                     color: (allFctsSelected || pathId === 'all') && '#ffff',  
-                    borderBottom: 'solid 1px #1d4ed8', 
+                    borderBottom: 'solid 1px  rgba(156, 163, 175, 1)', 
                     "&:hover": {
-                    backgroundColor: "#eff6ff",
-                    color: "rgba(17, 24, 39, 1)"
+                        backgroundColor: "rgba(37, 99, 235, 1)",
+                        color: 'white'
                   }}} 
                 //   className=' hover:bg-blue-50 text-gray-900 bg-transparent focus:bg-blue-600 focus:text-white' 
                  name="rt"
@@ -250,10 +245,10 @@ function FacilitySideMenu({ states, stateSetters, filters }) {
                 sx={{  
                     backgroundColor: (approvedFctsSelected || pathId === 'approved') && '#1d4ed8',
                     color: (approvedFctsSelected || pathId === 'approved') && '#ffff',  
-                    borderBottom: 'solid 1px #1d4ed8', 
+                    borderBottom: 'solid 1px  rgba(156, 163, 175, 1)', 
                     "&:hover": {
-                    backgroundColor: "#eff6ff",
-                    color: "rgba(17, 24, 39, 1)"
+                        backgroundColor: "rgba(37, 99, 235, 1)",
+                        color: 'white'
                   }}} 
 
                 onClick={(ev) => {
@@ -291,10 +286,10 @@ function FacilitySideMenu({ states, stateSetters, filters }) {
                 sx={{  
                     backgroundColor: (newFtsSelected || pathId === 'new_pending_validation') && '#1d4ed8',
                     color: (newFtsSelected || pathId === 'new_pending_validation') && '#ffff',  
-                    borderBottom: 'solid 1px #1d4ed8', 
+                    borderBottom: 'solid 1px  rgba(156, 163, 175, 1)', 
                     "&:hover": {
-                    backgroundColor: "#eff6ff",
-                    color: "rgba(17, 24, 39, 1)"
+                        backgroundColor: "rgba(37, 99, 235, 1)",
+                        color: 'white'
                   }}} 
 
                 onClick={() => {
@@ -330,10 +325,10 @@ function FacilitySideMenu({ states, stateSetters, filters }) {
                   sx={{  
                     backgroundColor: (updatedFctsSelected || pathId === 'updated_pending_validation') && '#1d4ed8',
                     color: (updatedFctsSelected || pathId === 'updated_pending_validation') && '#ffff',  
-                    borderBottom: 'solid 1px #1d4ed8', 
+                    borderBottom: 'solid 1px  rgba(156, 163, 175, 1)', 
                     "&:hover": {
-                    backgroundColor: "#eff6ff",
-                    color: "rgba(17, 24, 39, 1)"
+                        backgroundColor: "rgba(37, 99, 235, 1)",
+                        color: 'white'
                   }}} 
                     onClick={() => {
                         setTitle('Validate Updated Facilities')
@@ -368,10 +363,10 @@ function FacilitySideMenu({ states, stateSetters, filters }) {
                 sx={{  
                     backgroundColor: (facilitiesPendingApproval || pathId === 'to_publish') && '#1d4ed8',
                     color: (facilitiesPendingApproval || pathId === 'to_publish') && '#ffff',  
-                    borderBottom: 'solid 1px #1d4ed8', 
+                    borderBottom: 'solid 1px  rgba(156, 163, 175, 1)', 
                     "&:hover": {
-                    backgroundColor: "#eff6ff",
-                    color: "rgba(17, 24, 39, 1)"
+                        backgroundColor: "rgba(37, 99, 235, 1)",
+                        color: 'white'
                   }}} 
 
                     onClick={() => {
@@ -406,10 +401,10 @@ function FacilitySideMenu({ states, stateSetters, filters }) {
                 sx={{  
                     backgroundColor: (DHISSyncedFacilities || pathId === 'dhis_synced_facilities') && '#1d4ed8',
                     color: (DHISSyncedFacilities || pathId === 'dhis_synced_facilities') && '#ffff',  
-                    borderBottom: 'solid 1px #1d4ed8', 
+                    borderBottom: 'solid 1px  rgba(156, 163, 175, 1)', 
                     "&:hover": {
-                    backgroundColor: "#eff6ff",
-                    color: "rgba(17, 24, 39, 1)"
+                        backgroundColor: "rgba(37, 99, 235, 1)",
+                        color: 'white'
                   }}} 
 
                 onClick={() => {
@@ -444,10 +439,10 @@ function FacilitySideMenu({ states, stateSetters, filters }) {
                 sx={{  
                     backgroundColor: (failedValidationFctsSelected || pathId === 'failed_validation') && '#1d4ed8',
                     color: (failedValidationFctsSelected || pathId === 'failed_validation') && '#ffff',  
-                    borderBottom: 'solid 1px #1d4ed8', 
+                    borderBottom: 'solid 1px  rgba(156, 163, 175, 1)', 
                     "&:hover": {
-                    backgroundColor: "#eff6ff",
-                    color: "rgba(17, 24, 39, 1)"
+                        backgroundColor: "rgba(37, 99, 235, 1)",
+                        color: 'white'
                   }}} 
 
                 onClick={() => {
@@ -481,10 +476,10 @@ function FacilitySideMenu({ states, stateSetters, filters }) {
                 sx={{  
                     backgroundColor: (rejectedFctsSelected || pathId === 'rejected') && '#1d4ed8',
                     color: (rejectedFctsSelected || pathId === 'rejected') && '#ffff',  
-                    borderBottom: 'solid 1px #1d4ed8', 
+                    borderBottom: 'solid 1px  rgba(156, 163, 175, 1)', 
                     "&:hover": {
-                    backgroundColor: "#eff6ff",
-                    color: "rgba(17, 24, 39, 1)"
+                        backgroundColor: "rgba(37, 99, 235, 1)",
+                        color: 'white'
                   }}}    
                 onClick={() => {
                       
@@ -519,10 +514,10 @@ function FacilitySideMenu({ states, stateSetters, filters }) {
                 sx={{  
                     backgroundColor: (closedFctsSelected || pathId === 'closed') && '#1d4ed8',
                     color: (closedFctsSelected || pathId === 'closed') && '#ffff',  
-                    borderBottom: 'solid 1px #1d4ed8', 
+                    borderBottom: 'solid 1px  rgba(156, 163, 175, 1)', 
                     "&:hover": {
-                    backgroundColor: "#eff6ff",
-                    color: "rgba(17, 24, 39, 1)"
+                        backgroundColor: "rgba(37, 99, 235, 1)",
+                        color: 'white'
                   }}} 
 
                     onClick={() => {
@@ -558,10 +553,10 @@ function FacilitySideMenu({ states, stateSetters, filters }) {
                 sx={{  
                     backgroundColor: (incompleteFctsSelected || pathId === 'incomplete') && '#1d4ed8',
                     color: (incompleteFctsSelected || pathId === 'incomplete') && '#ffff',  
-                    borderBottom: 'solid 1px #1d4ed8', 
+                    borderBottom: 'solid 1px  rgba(156, 163, 175, 1)', 
                     "&:hover": {
-                    backgroundColor: "#eff6ff",
-                    color: "rgba(17, 24, 39, 1)"
+                        backgroundColor: "rgba(37, 99, 235, 1)",
+                        color: 'white'
                   }}} 
                     onClick={() => {
                         setTitle('Incomplete Facilities')
@@ -595,10 +590,10 @@ function FacilitySideMenu({ states, stateSetters, filters }) {
                sx={{  
                 backgroundColor: (syncRegulatedFctsSelected || pathId === 'khis_synched') && '#1d4ed8',
                 color: (syncRegulatedFctsSelected || pathId === 'khis_synched') && '#ffff',  
-                borderBottom: 'solid 1px #1d4ed8', 
+                borderBottom: 'solid 1px  rgba(156, 163, 175, 1)', 
                 "&:hover": {
-                backgroundColor: "#eff6ff",
-                color: "rgba(17, 24, 39, 1)"
+                    backgroundColor: "rgba(37, 99, 235, 1)",
+                    color: 'white'
               }}}  
                 onClick={() => {
                             setTitle('Synchronize Regulated Facilities')
@@ -632,10 +627,10 @@ function FacilitySideMenu({ states, stateSetters, filters }) {
                 sx={{  
                     backgroundColor: (feedBackFctsSelected || pathId === 'feedback') && '#1d4ed8',
                     color: (feedBackFctsSelected || pathId === 'feedback') && '#ffff',  
-                    borderBottom: 'solid 1px #1d4ed8', 
+                    borderBottom: 'solid 1px  rgba(156, 163, 175, 1)', 
                     "&:hover": {
-                    backgroundColor: "#eff6ff",
-                    color: "rgba(17, 24, 39, 1)"
+                        backgroundColor: "rgba(37, 99, 235, 1)",
+                        color: 'white'
                   }}} 
 
                     onClick={() => {

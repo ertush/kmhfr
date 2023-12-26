@@ -509,24 +509,24 @@ function handleInfrastructureSubmit(token, formData, facilityId) {
 
     const _payload = formData.map(({ sname: name, rowid: id, count }) => {
         if (
-            name.includes("Main Grid") ||
-            name.includes("Gas") ||
-            name.includes("Bio-Gas") ||
+            name?.includes("Main Grid") ||
+            name?.includes("Gas") ||
+            name?.includes("Bio-Gas") ||
             // WATER SOURCE
-            name.includes("Roof Harvested Water") ||
-            name.includes("River / Dam / Lake") ||
-            name.includes("Donkey Cart / Vendor") ||
-            name.includes("Piped Water") ||
+            name?.includes("Roof Harvested Water") ||
+            name?.includes("River / Dam / Lake") ||
+            name?.includes("Donkey Cart / Vendor") ||
+            name?.includes("Piped Water") ||
             // MEDICAL WASTE MANAGEMENT
-            name.includes("Sewer systems") ||
-            name.includes("Dump without burning") ||
-            name.includes("Open burning") ||
-            name.includes("Remove offsite") ||
+            name?.includes("Sewer systems") ||
+            name?.includes("Dump without burning") ||
+            name?.includes("Open burning") ||
+            name?.includes("Remove offsite") ||
             // ACCESS ROADS
-            name.includes("Tarmac") ||
-            name.includes("Earthen Road") ||
-            name.includes("Graded ( Murrum )") ||
-            name.includes("Gravel")
+            name?.includes("Tarmac") ||
+            name?.includes("Earthen Road") ||
+            name?.includes("Graded ( Murrum )") ||
+            name?.includes("Gravel")
         ) {
             return { infrastructure: id }
 
@@ -881,56 +881,65 @@ async function handleServiceDelete(token, event, facility_service_id) {
 }
 
 // handleInfrastructureUpdates
-async function handleInfrastructureUpdates(token, stateSetters, alert) {
+async function handleInfrastructureUpdates(token, stateSetters) {
 
 
-    const [values, savedItems, facilityId] = stateSetters
-    const payload = {}
+    const [formData, facilityId] = stateSetters
 
-    const newItems = Object.entries(values)
+    console.log({formData})
 
-    const saved = JSON.parse(savedItems)
 
-    payload['infrastructure'] = newItems.map((row) => {
-        if (row[1]) {
-            return { infrastructure: row[0], count: row[1] }
+    const payload = formData.map(({ name, id, count }) => {
+        if (
+            name?.includes("Main Grid") ||
+            name?.includes("Gas") ||
+            name?.includes("Bio-Gas") ||
+            // WATER SOURCE
+            name?.includes("Roof Harvested Water") ||
+            name?.includes("River / Dam / Lake") ||
+            name?.includes("Donkey Cart / Vendor") ||
+            name?.includes("Piped Water") ||
+            // MEDICAL WASTE MANAGEMENT
+            name?.includes("Sewer systems") ||
+            name?.includes("Dump without burning") ||
+            name?.includes("Open burning") ||
+            name?.includes("Remove offsite") ||
+            // ACCESS ROADS
+            name?.includes("Tarmac") ||
+            name?.includes("Earthen Road") ||
+            name?.includes("Graded ( Murrum )") ||
+            name?.includes("Gravel")
+        ) {
+            return { infrastructure: id }
+
+        } else {
+            return { infrastructure: id, count: Number(count) }
+
         }
-        return { infrastructure: row[1] }
     })
 
+    console.log({payload})
 
 
-    // console.log({payload})
+    return new Promise(resolve => resolve({}))
 
-    try {
+    // try {
 
+    //     return fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${facilityId}/`, {
+    //         headers: {
+    //             'Authorization': 'Bearer ' + token,
+    //             'Accept': 'application/json, text/plain, */*',
+    //             'Content-Type': 'application/json;charset=utf-8'
+    //         },
+    //         method: 'PATCH',
+    //         body: JSON.stringify(payload)
+    //     })
 
-        const resp = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${facilityId}/`, {
-            headers: {
-                'Authorization': 'Bearer ' + token,
-                'Accept': 'application/json, text/plain, */*',
-                'Content-Type': 'application/json;charset=utf-8'
-            },
-            method: 'PATCH',
-            body: JSON.stringify(payload)
-        })
-
-        if (resp.ok) {
-            localStorage.clear()
-            alert.success('Facility Infrastructure updated successfully')
-        } else {
-            alert.error("Unable to update facility infrastructure")
-        }
-
-
-        return resp
-
-
-
-    }
-    catch (e) {
-        console.error('Unable to patch facility Infrastructure details', e.message)
-    }
+    
+    // }
+    // catch (e) {
+    //     console.error('Unable to patch facility Infrastructure details', e.message)
+    // }
 }
 
 // handleInfrastructureDelete

@@ -177,11 +177,6 @@ function  EditListItem({
     if(selectedItems.length !== 0){
       let x = selectedItems;
 
-    //   if(editService && editService.length > 1) {
-    //     if(editService[0]?.id === items[0]?.id) x = [...x,...editService]
-    //   }
-
-      // setSelectedItems(x)
 
       saveSelectedItems(
         JSON.stringify(x)
@@ -199,7 +194,7 @@ function  EditListItem({
 
       setSubmitting(true)
 
-      // console.log({item, selectedItems, savedItems})
+
 
       
     if(item) {
@@ -208,6 +203,7 @@ function  EditListItem({
         handleItemsUpdate(token, [selectedItems, itemId])
           .then(resp => {
                   if(resp.status == 200 || resp.status == 204) {
+                    setSubmitting(false)
                     alert.success('Updated facility services successfully');
 
                     router.push({
@@ -396,7 +392,7 @@ function  EditListItem({
               <button
                 type='submit'
                 className='flex items-center justify-start space-x-2 bg-blue-700  p-1 px-2'>
-                        <span className='text-medium font-semibold text-white'>
+                    <span className='text-medium font-semibold text-white'>
                     {
                        submitting ? 
                       <Spinner />

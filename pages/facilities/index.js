@@ -437,7 +437,7 @@ const FacilityHome = (props) => {
                    
                     
                     {/* Main Body */}
-                    <div className="w-full md:col-span-4 mr-24 md:col-start-2 col-span-5 md:h-auto border border-blue-600">
+                    <div className="w-full md:col-span-4 mr-24 md:col-start-2 col-span-5 md:h-auto bg-blue-50 shadow-md">
                                     {/* Data Indicator section */}
                                     <div className='w-full p-2 flex justify-between border-b border-blue-600'>
                                         {/* search input */}

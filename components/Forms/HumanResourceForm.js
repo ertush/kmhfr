@@ -110,7 +110,7 @@ export function HumanResourceForm() {
 
                     {/* Edit List With Count*/}
                     <EditListWithCount
-                        initialSelectedItems={options?.data? options?.data.facility_specialists:[]}
+                    
                         itemsCategory={null}
                         categoryItems={hrOptions.categories}
                         itemsCategoryName={'human resource'}
@@ -129,7 +129,7 @@ export function HumanResourceForm() {
                         nextItemCategory={'finish'}
                         previousItemCategory={'infrastructure'}
                         setIsSaveAndFinish={updatedSavedChanges}
-                        itemData={options?.data ? options?.data?.facility_specialists : null}
+                        itemData={options?.data ? options?.data?.facility_specialists : []}
                         title={tableheaders}
 
                     />
