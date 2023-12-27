@@ -889,39 +889,49 @@ async function handleInfrastructureUpdates(token, stateSetters) {
     console.log({formData})
 
 
-    const payload = formData.map(({ name, id, count }) => {
-        if (
-            name?.includes("Main Grid") ||
-            name?.includes("Gas") ||
-            name?.includes("Bio-Gas") ||
-            // WATER SOURCE
-            name?.includes("Roof Harvested Water") ||
-            name?.includes("River / Dam / Lake") ||
-            name?.includes("Donkey Cart / Vendor") ||
-            name?.includes("Piped Water") ||
-            // MEDICAL WASTE MANAGEMENT
-            name?.includes("Sewer systems") ||
-            name?.includes("Dump without burning") ||
-            name?.includes("Open burning") ||
-            name?.includes("Remove offsite") ||
-            // ACCESS ROADS
-            name?.includes("Tarmac") ||
-            name?.includes("Earthen Road") ||
-            name?.includes("Graded ( Murrum )") ||
-            name?.includes("Gravel")
-        ) {
-            return { infrastructure: id }
+    // const payload = formData.map(({ name, id, count }) => {
+    //     if (
+    //         name?.includes("Main Grid") ||
+    //         name?.includes("Gas") ||
+    //         name?.includes("Bio-Gas") ||
+    //         // WATER SOURCE
+    //         name?.includes("Roof Harvested Water") ||
+    //         name?.includes("River / Dam / Lake") ||
+    //         name?.includes("Donkey Cart / Vendor") ||
+    //         name?.includes("Piped Water") ||
+    //         // MEDICAL WASTE MANAGEMENT
+    //         name?.includes("Sewer systems") ||
+    //         name?.includes("Dump without burning") ||
+    //         name?.includes("Open burning") ||
+    //         name?.includes("Remove offsite") ||
+    //         // ACCESS ROADS
+    //         name?.includes("Tarmac") ||
+    //         name?.includes("Earthen Road") ||
+    //         name?.includes("Graded ( Murrum )") ||
+    //         name?.includes("Gravel")
+    //     ) {
+    //         return { infrastructure: id }
 
-        } else {
-            return { infrastructure: id, count: Number(count) }
+    //     } else {
+    //         return { infrastructure: id, count: Number(count) }
 
-        }
+    //     }
+    // })
+
+    const payload = formData.map(({rowid: infrastructure, count}) => {
+        if(infrastructure && count) {
+            return {
+                infrastructure,
+                count: count && typeof count == 'string' ? Number(count) : count
+            }
+      
+        } 
     })
 
     console.log({payload})
 
 
-    return new Promise(resolve => resolve({}))
+    return new Promise(resolve => resolve(new Response({status: 200})))
 
     // try {
 

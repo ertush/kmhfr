@@ -22,8 +22,8 @@ function EditListWithCount(
         handleItemsSubmit,
         handleItemsUpdate,
         // removeItemHandler,
-        setIsSavedChanges,
-        setItemsUpdateData,
+        // setIsSavedChanges,
+        // setItemsUpdateData,
         handleItemPrevious,
         // setNextItemCategory,
         nextItemCategory,
@@ -47,7 +47,7 @@ function EditListWithCount(
 
     const [isFormSubmit, setIsFormSubmit] = useState(false)
     // const [currentItem, setCurrentItem] = useState(null)
-    const [deletedItems, setDeletedItems] = useState([])
+    // const [deletedItems, setDeletedItems] = useState([])
     const [itemOptions, setItemOptions] = useState([])
     const [specialities, setSpecialities] = useState([])
     const [query, setQuery] = useState('')
@@ -139,13 +139,9 @@ function EditListWithCount(
 
     const [savedItems, saveSelectedItems] = useState(itemData ? editItem : [])
 
-    // const [savedItems, saveSelectedItems] = useLocalStorageState({
-    //     key: itemData ? `${itemsCategoryName}_edit_form` :  `${itemsCategoryName}_form`,
-    //     value: itemData ? editItem : []
-    //   }).actions.use();
+  
 
     const [items, setItems] = useState(typeof savedItems === 'string' && savedItems.length > 0 ? JSON.parse(savedItems) : savedItems)
-    // const items = typeof savedItems === 'string' && savedItems.length > 0 ? JSON.parse(savedItems) : savedItems;
 
     // Refs
 
@@ -203,94 +199,23 @@ function EditListWithCount(
     }, [selectedRows]);
 
 
-    const initialValues = (() => {
-        const _initValues = {}
-        initialSelectedItems?.forEach((k) => {
-            if (itemsCategoryName.includes('human resource')) {
-                _initValues[k.speciality] = k.count
-            }
-            else if (itemsCategoryName.includes('infrastructure')) {
-                _initValues[k.infrastructure] = k.count
-
-            }
-
-        })
-
-
-        return _initValues
-    })()
-
-
-
-
-    // const formatGroupLabel = (data) => (
-    //     <div style={
-    //         {
-    //             display: 'flex',
-    //             alignItems: 'center',
-    //             justifyContent: 'space-between',
+    // const initialValues = (() => {
+    //     const _initValues = {}
+    //     initialSelectedItems?.forEach((k) => {
+    //         if (itemsCategoryName.includes('human resource')) {
+    //             _initValues[k.speciality] = k.count
     //         }
-    //     }>
-    //         <span>{data.label}</span>
-    //         <span style={
-    //             {
-    //                 backgroundColor: '#EBECF0',
-    //                 borderRadius: '2em',
-    //                 color: '#172B4D',
-    //                 display: 'inline-block',
-    //                 fontSize: 12,
-    //                 fontWeight: 'normal',
-    //                 lineHeight: '1',
-    //                 minWidth: 1,
-    //                 padding: '0.167em 0.5em',
-    //                 textAlign: 'center',
-    //             }
-    //         }>{data.options.length}</span>
-    //     </div>
-    // );function validateCount(value) {
+    //         else if (itemsCategoryName.includes('infrastructure')) {
+    //             _initValues[k.infrastructure] = k.count
 
-    //     let error;
-    //     if (value == null || value == undefined || value == '') {
-    //         error = 'This field is required'
-    //     } else {
-
-    //         if (value) {
-    //             if (value.toString().match(/^-\d+$/) !== null) {
-    //                 error = 'This field must be at least 1'
-    //             }
     //         }
-    //     }
 
-    //     return error;
-
-    // }
+    //     })
 
 
-    // const formatGroupLabel = (data) => (
-    //     <div style={
-    //         {
-    //             display: 'flex',
-    //             alignItems: 'center',
-    //             justifyContent: 'space-between',
-    //         }
-    //     }>
-    //         <span>{data.label}</span>
-    //         <span style={
-    //             {
-    //                 backgroundColor: '#EBECF0',
-    //                 borderRadius: '2em',
-    //                 color: '#172B4D',
-    //                 display: 'inline-block',
-    //                 fontSize: 12,
-    //                 fontWeight: 'normal',
-    //                 lineHeight: '1',
-    //                 minWidth: 1,
-    //                 padding: '0.167em 0.5em',
-    //                 textAlign: 'center',
-    //             }
-    //         }>{data.options.length}</span>
-    //     </div>
-    // );
+    //     return _initValues
+    // })()
+
 
     useEffect(() => {
 
@@ -351,32 +276,36 @@ function EditListWithCount(
 
         if (item) {
             // Update the list of values
-            deletedItems.forEach(([{ id }]) => {
-                delete values[id]
-            })
+            // deletedItems.forEach(([{ id }]) => {
+            //     delete values[id]
+            // })
 
-            // Filter Edited fields only
-            const valueKeys = []
-            // const disjointValues = {}
+            // // Filter Edited fields only
+            // const valueKeys = []
+            // // const disjointValues = {}
 
-            Object.values(values).filter((v, i) => {
-                if (v !== Object.values(initialValues)[i]) valueKeys.push(Object.keys(values)[i]);
-                return v !== Object.values(initialValues)[i]
-            })[0];
+            // Object.values(values).filter((v, i) => {
+            //     if (v !== Object.values(initialValues)[i]) valueKeys.push(Object.keys(values)[i]);
+            //     return v !== Object.values(initialValues)[i]
+            // })[0];
+
+            // const updatedItems = itemData
+
+            console.log({itemData, selectedRows})
 
 
-            handleItemsUpdate(token, [values, selectedRows, itemId], alert)
+            handleItemsUpdate(token, [selectedRows, itemId])
                 .then(resp => {
                     if (resp.status == 200 || resp.status == 204) {
                         setSubmitting(false)
-                        alert.success('Facility Infrastructure updated successfully')
+                        // alert.success('Facility Infrastructure updated successfully')
 
-                        router.push({
-                            pathname: '/facilities/facility_changes/[facility_id]',
-                            query:{
-                                facility_id: itemId
-                            }
-                        })
+                        // router.push({
+                        //     pathname: '/facilities/facility_changes/[facility_id]',
+                        //     query:{
+                        //         facility_id: itemId
+                        //     }
+                        // })
 
 
                     } else {
