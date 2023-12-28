@@ -75,7 +75,6 @@ const WardGISMap = ({ markerCoordinates, geoJSON, center, ward, from }) => {
 
                 // Not Out of Bound
                 setIsOutOfBound(false)
-
                 console.log("[>>>>>] NoT out of Bound")
             }
             else {
@@ -101,23 +100,27 @@ const WardGISMap = ({ markerCoordinates, geoJSON, center, ward, from }) => {
     
             {/* Ward Map */}
             {
-                (geoJSON && from == 'submission' ?  true : (isValidGeoCoordinates && markerCoordinates)) ?
+                 markerCoordinates && center  ?
                 <MapContainer 
-                className='w-full' 
-                center={center ?? [-0.818389, 37.477222]} 
-                zoom={13.199} maxZoom={18.7} 
-                scrollWheelZoom={false} 
-                touchZoom={false} 
-                style={{ height: '400px', position: 'relative', zIndex: '1', backgroundColor: '#e7eae8', padding: '15px' }}>
+                    className='w-full' 
+                    center={center ?? [-0.818389, 37.477222]} 
+                    zoom={13.199} 
+                    maxZoom={18.7} 
+                    scrollWheelZoom={false} 
+                    touchZoom={false} 
+                    style={{ height: '400px', position: 'relative', zIndex: '1', backgroundColor: '#e7eae8', padding: '15px' }}>
 
-                     {/* {JSON.stringify(geoJSON)} */}
+                        {
+                            geoJSON && 
+                            <GeoJSON data={geoJSON} stylez={geoJsonStyles} />
+                        }
 
+                        {
+                            isValidGeoCoordinates && markerCoordinates &&
+                            <Marker position={markerCoordinates}></Marker>
+                        }   
 
-                    <GeoJSON data={geoJSON} stylez={geoJsonStyles} />
-
-                    <Marker position={markerCoordinates}></Marker>
-
-                    <MapListener tabOpen={tabOpen} />
+                <MapListener tabOpen={tabOpen} />
 
                 </MapContainer>
                 :
