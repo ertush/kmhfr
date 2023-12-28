@@ -89,8 +89,9 @@ export function HumanResourceForm() {
 
 
     //Event handlers
+
     const handleHrPrevious = useCallback(() => {
-    // setFormId(`${parseInt(formId) - 1}`);
+
     const url = new URL(infrastructureFormUrl)
 
     url.searchParams.set('formId', '5')
@@ -110,26 +111,22 @@ export function HumanResourceForm() {
 
                     {/* Edit List With Count*/}
                     <EditListWithCount
-                    
-                        itemsCategory={null}
+                        initialSelectedItems={options?.data? options?.data.facility_specialists:[]}
                         categoryItems={hrOptions.categories}
                         itemsCategoryName={'human resource'}
                         token={options.token}
                         options={options.hr}
-                        itemId={facilityId}
+                        itemId={facilityId ?? options?.data?.id}
                         item={options?.data ?? null}
                         handleItemsSubmit={handleHrSubmit}
                         handleItemsUpdate={handleHrUpdates}
                         setSubmitting={setSubmitting}
                         submitting={submitting}
-                        removeItemHandler={() => null}
                         setIsSavedChanges={updatedSavedChanges}
-                        setItemsUpdateData={updateFacilityUpdateData}
                         handleItemPrevious={handleHrPrevious}
                         nextItemCategory={'finish'}
                         previousItemCategory={'infrastructure'}
-                        setIsSaveAndFinish={updatedSavedChanges}
-                        itemData={options?.data ? options?.data?.facility_specialists : []}
+                        itemData={options?.data ? options?.data?.facility_specialists : null}
                         title={tableheaders}
 
                     />

@@ -16,7 +16,7 @@ export function InfrastructureForm() {
 
     // Context
     const options = useContext(FormOptionsContext);
-    // const [formId, setFormId] = useContext(FormContext);
+
     const [formId, setFormId] = useMemo(() => {
         let id = ''
 
@@ -32,8 +32,6 @@ export function InfrastructureForm() {
 
         return [id, setId]
     }, [])
-
-    // const[facilityId, _] = useContext(FacilityIdContext);
     const[facilityId, setFacilityId] = useMemo(() => {
         let id = ''
 
@@ -100,7 +98,7 @@ export function InfrastructureForm() {
        return ( <>
             <h4 className="text-lg uppercase mt-4 pb-2 border-b border-blue-600 w-full mb-4 font-semibold text-blue-900">Infrastracture</h4>
             <div className='flex flex-col w-full items-start justify-start gap-3 mt-6'>
-
+          
                 {/* Edit List With Count Container*/}
                 <div className='flex items-center w-full h-auto min-h-[300px]'>
 
@@ -119,7 +117,6 @@ export function InfrastructureForm() {
                         setSubmitting={setSubmitting}
                         submitting={submitting}
                         removeItemHandler={() => null}
-                        setIsSavedChanges={updatedSavedChanges}
                         handleItemPrevious={handleInfrastructurePrevious}
                         setNextItemCategory={setFormId}
                         setItemsUpdateData={updateFacilityUpdateData}

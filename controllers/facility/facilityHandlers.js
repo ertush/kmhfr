@@ -901,7 +901,6 @@ async function handleInfrastructureUpdates(token, stateSetters) {
 
     const payload = {infrastructure: _payload.filter(obj => obj !== undefined)}
 
-    // return new Promise(resolve => resolve(new Response({status: 200})))
 
     try {
 
@@ -958,46 +957,41 @@ async function handleInfrastructureDelete(token, event, facility_infrastructure_
 }
 
 // handleHrUpdates
-async function handleHrUpdates(token, stateSetters, alert) {
+async function handleHrUpdates(token, stateSetters) {
 
-    const [values, savedItems, facilityId] = stateSetters
-    const payload = {}
+  
+    const [formData, facilityId] = stateSetters
 
-    const newItems = Object.entries(values)
-
-    const saved = JSON.parse(savedItems)
-
-    payload['specialities'] = newItems.map((row) => {
-        if (row[1]) {
-            return { speciality: row[0], count: row[1] }
+    const _payload = formData.map(({rowid: speciality, count}) => {
+        if(speciality && count) {
+            return {
+                speciality,
+                count: count && typeof count == 'string' ? Number(count) : count
+            }
+      
+        } else if(speciality) {
+            return {
+                speciality
+            }
         }
-        return { speciality: row[1] }
     })
 
+
+    const payload = {specialities: _payload.filter(obj => obj !== undefined)}
 
 
     try {
 
-
-        const resp = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${facilityId}/`, {
-            headers: {
-                'Authorization': 'Bearer ' + token,
-                'Accept': 'application/json, text/plain, */*',
-                'Content-Type': 'application/json;charset=utf-8'
-            },
-            method: 'PATCH',
-            body: JSON.stringify(payload)
+        return fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${facilityId}/`, {
+                headers: {
+                    'Authorization': 'Bearer ' + token,
+                    'Accept': 'application/json, text/plain, */*',
+                    'Content-Type': 'application/json;charset=utf-8'
+                },
+                method: 'PATCH',
+                body: JSON.stringify(payload)
         })
 
-        if (resp.ok) {
-            localStorage.clear()
-            alert.success('Facility Human Resource successfully updated')
-        } else {
-            alert.error("Unable to update facility Human Resource")
-        }
-
-
-        return resp
 
     }
     catch (e) {

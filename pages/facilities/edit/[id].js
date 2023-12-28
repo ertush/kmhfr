@@ -51,7 +51,7 @@ export default function EditFacility(props) {
 		// console.log({allOptions: props})
 
 		setUser(userCtx)
-		if(user.id === 6){
+		if(user?.id === 6){
 			router.push('/auth/login')
 		}
 		

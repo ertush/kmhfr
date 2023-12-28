@@ -8,10 +8,10 @@ function FacilityUpdatesTable({ facilityUpdatedJson, originalData }) {
 
     return (
         <Table className="md:px-4">
-
+         
             {/* Switch FacilityTableUpdates View */}
             <TableBody className='w-full flex flex-col gap-y-6'>
-
+                
                 {
                     (() => (
                         <>
@@ -178,7 +178,7 @@ function FacilityUpdatesTable({ facilityUpdatedJson, originalData }) {
 
                             {/*  Facility HR Updates */}
                             {
-                                facilityUpdatedJson?.humanReportsSideMenu  && facilityUpdatedJson?.humanReportsSideMenu .length > 0 &&
+                                facilityUpdatedJson?.humanresources  && facilityUpdatedJson?.humanresources.length > 0 &&
                                 <>
                                     <TableRow className='w-full'><h2 className='text-lg font-bold mt-6'>Facility HR</h2></TableRow>
                                     <TableRow className='w-full'>
@@ -195,8 +195,8 @@ function FacilityUpdatesTable({ facilityUpdatedJson, originalData }) {
                                 </>
                             }
                             {
-                                facilityUpdatedJson?.humanReportsSideMenu  && facilityUpdatedJson?.humanReportsSideMenu .length > 0 &&
-                                facilityUpdatedJson?.humanReportsSideMenu .map(({ name, count }, id) => (
+                                facilityUpdatedJson?.humanresources  && facilityUpdatedJson?.humanresources.length > 0 &&
+                                facilityUpdatedJson?.humanresources .map(({ name, count }, id) => (
 
                                     <TableRow className='w-full' key={id}>
                                         <TableCell>

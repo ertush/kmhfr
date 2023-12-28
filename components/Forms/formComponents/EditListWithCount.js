@@ -13,24 +13,17 @@ import { useRouter } from 'next/router'
 function EditListWithCount(
     {
         initialSelectedItems,
-        // itemsCategory,
-        // nextItemCategoryId,
         otherItemsCategory,
         itemsCategoryName,
         itemId,
         item,
         handleItemsSubmit,
         handleItemsUpdate,
-        // removeItemHandler,
-        // setIsSavedChanges,
-        // setItemsUpdateData,
         handleItemPrevious,
-        // setNextItemCategory,
         nextItemCategory,
         previousItemCategory,
         setSubmitting,
         submitting,
-        // setIsSaveAndFinish,
         categoryItems,
         options,
         token,
@@ -43,11 +36,7 @@ function EditListWithCount(
 
     const router = useRouter()
 
-    // const {reset} = useLocalStorageState({key: "reset", value: null}).actions;
-
     const [isFormSubmit, setIsFormSubmit] = useState(false)
-    // const [currentItem, setCurrentItem] = useState(null)
-    // const [deletedItems, setDeletedItems] = useState([])
     const [itemOptions, setItemOptions] = useState([])
     const [specialities, setSpecialities] = useState([])
     const [query, setQuery] = useState('')
@@ -74,16 +63,16 @@ function EditListWithCount(
         }
     }
 
-   
-
 
     //console.log(options)
     const [selectedRows, setSelectedRows] = useState((initialSelectedItems ? (() => {
+        
         const result = []
+
         if (initialSelectedItems.length > 0) {
             initialSelectedItems.forEach((element) => {
                 if (itemsCategoryName.includes('human resource')) {
-                    let cat = options.filter((e) => e.id == element.speciality)[0].category
+                    const cat = options.filter((e) => e.id == element.speciality)[0].category
                     result.push({
                         rowid: element.speciality,
                         sname: element.speciality_name,
@@ -109,6 +98,8 @@ function EditListWithCount(
             });
 
         }
+
+    
         return result
 
     })() : []))
@@ -140,12 +131,10 @@ function EditListWithCount(
     const [savedItems, saveSelectedItems] = useState(itemData ? editItem : [])
 
   
-
     const [items, setItems] = useState(typeof savedItems === 'string' && savedItems.length > 0 ? JSON.parse(savedItems) : savedItems)
 
     // Refs
 
-    const itemRef = useRef(null);
 
     //Effects 
     useEffect(() => {
@@ -196,6 +185,9 @@ function EditListWithCount(
 
         }
 
+        if(item) selectedRows.pop()
+
+
     }, [selectedRows]);
 
 
@@ -225,8 +217,8 @@ function EditListWithCount(
 
     const handleCheckboxChange = (id, name, category, category_name) => {
         setSelectedRows((prevSelectedRows) => {
-            if (prevSelectedRows.filter((row) => row?.rowid == id).length > 0) {
-                return prevSelectedRows.filter((row) => row?.rowid !== id);
+            if (prevSelectedRows?.filter((row) => row?.rowid == id).length > 0) {
+                return prevSelectedRows?.filter((row) => row?.rowid !== id);
             } else {
                 let customitem = {}
                 itemsCategoryName.includes('human resource') ? customitem = { rowid: id, sname: name, count: 0, category_id: category, category_name: category_name, iscategoryvisible: false } : itemsCategoryName.includes('infrastructure') ? customitem = { rowid: id, sname: name, category: category_name, count: 0, category_id: category, category_name: category_name, iscategoryvisible: true } : {}
@@ -263,7 +255,7 @@ function EditListWithCount(
                 .then(resp => {
                     if (resp.status == 200 || resp.status == 204) {
                         setSubmitting(false)
-                        alert.success('Facility Infrastructure updated successfully')
+                        alert.success(`Facility ${e.target.name.includes("infrastructure") ? 'Infrastructure' : 'Human resource'} form updated successfully`)
 
                         router.push({
                             pathname: '/facilities/facility_changes/[facility_id]',
@@ -275,13 +267,12 @@ function EditListWithCount(
 
                     } else {
                         setSubmitting(false)
-                        alert.error("Unable to update facility infrastructure")
-
-
+                        alert.error(`Unable to update facility ${e.target.name.includes("infrastructure") ? 'Infrastructure' : 'Human resource'}`)
                     }
                 })
         }
-        else {
+        else
+         {
             nextItemCategory === 'finish' ? /* Human Resource */ (() => {
 
                 handleItemsSubmit(token, selectedRows, itemId)
@@ -291,7 +282,6 @@ function EditListWithCount(
                             alert.success('Facility humanresource saved successfully')
 
                             router.push(`/facilities/${itemId}`)
-
 
                         } else {
                             setSubmitting(false)
@@ -358,14 +348,16 @@ function EditListWithCount(
         }
     });
 
+
     return (
 
         <form
-            name="list_item_with_count_form"
+            name={`${itemsCategoryName}_form`}
+
             className="flex flex-col w-full items-start justify-start gap-3"
             onSubmit={handleSubmit}
-
         >
+       
             <div className='w-full grid grid-cols-12 gap-4'>
                 <div className="col-span-5" >
                     <h4 className="text-lg uppercase mt-4 pb-2 border-b border-blue-600 w-full mb-4 font-semibold text-blue-900">Categories</h4>
@@ -460,15 +452,16 @@ function EditListWithCount(
                         </thead>
                         <tbody className='bg-blue-50 shadow-md'>
                             {selectedRows.length === 0 && <tr><td colSpan={3} className="text-center">No specialities found</td></tr>}
+                            {/* {selectedRows.pop()} */}
                             {selectedRows.map((row) => {
-                                if(row.name !== "Vaccine Carriers"){
+                                // if(row.name !== "Vaccine Carriers" || row.name !== "Public Health Technician"){
                                 return <tr>
-                                    <td className="border border-gray-300 px-1 py-1">{row?.sname}</td>
-                                    <td className="border border-gray-300 px-1 py-1">{row?.iscategoryvisible ? row?.category_name : null}</td>
-                                    <td className="border border-gray-300 px-1 py-1">Yes</td>
-                                    <td className="border border-gray-300 px-1 py-1">{row?.count ? Number(row?.count) : null}</td>
-                                </tr>
-                                }
+                                        <td className="border border-gray-300 px-1 py-1">{row?.sname}</td>
+                                       {row?.iscategoryvisible ? <td className="border border-gray-300 px-1 py-1">{row?.category_name}</td> :null }
+                                        <td className="border border-gray-300 px-1 py-1">Yes</td>
+                                        <td className="border border-gray-300 px-1 py-1">{row?.count ? Number(row?.count) : null}</td>
+                                    </tr>
+                                // }
                             })}
 
                         </tbody>
