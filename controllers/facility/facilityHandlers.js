@@ -853,7 +853,6 @@ async function handleServiceUpdates(token, stateSetters) {
 }
 
 // handleServiceDelete
-
 async function handleServiceDelete(token, event, facility_service_id) {
 
     event.preventDefault();
@@ -883,77 +882,47 @@ async function handleServiceDelete(token, event, facility_service_id) {
 // handleInfrastructureUpdates
 async function handleInfrastructureUpdates(token, stateSetters) {
 
-
     const [formData, facilityId] = stateSetters
 
-    console.log({formData})
-
-
-    // const payload = formData.map(({ name, id, count }) => {
-    //     if (
-    //         name?.includes("Main Grid") ||
-    //         name?.includes("Gas") ||
-    //         name?.includes("Bio-Gas") ||
-    //         // WATER SOURCE
-    //         name?.includes("Roof Harvested Water") ||
-    //         name?.includes("River / Dam / Lake") ||
-    //         name?.includes("Donkey Cart / Vendor") ||
-    //         name?.includes("Piped Water") ||
-    //         // MEDICAL WASTE MANAGEMENT
-    //         name?.includes("Sewer systems") ||
-    //         name?.includes("Dump without burning") ||
-    //         name?.includes("Open burning") ||
-    //         name?.includes("Remove offsite") ||
-    //         // ACCESS ROADS
-    //         name?.includes("Tarmac") ||
-    //         name?.includes("Earthen Road") ||
-    //         name?.includes("Graded ( Murrum )") ||
-    //         name?.includes("Gravel")
-    //     ) {
-    //         return { infrastructure: id }
-
-    //     } else {
-    //         return { infrastructure: id, count: Number(count) }
-
-    //     }
-    // })
-
-    const payload = formData.map(({rowid: infrastructure, count}) => {
+    const _payload = formData.map(({rowid: infrastructure, count}) => {
         if(infrastructure && count) {
             return {
                 infrastructure,
                 count: count && typeof count == 'string' ? Number(count) : count
             }
       
-        } 
+        } else if(infrastructure) {
+            return {
+                infrastructure
+            }
+        }
     })
 
-    console.log({payload})
 
+    const payload = {infrastructure: _payload.filter(obj => obj !== undefined)}
 
-    return new Promise(resolve => resolve(new Response({status: 200})))
+    // return new Promise(resolve => resolve(new Response({status: 200})))
 
-    // try {
+    try {
 
-    //     return fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${facilityId}/`, {
-    //         headers: {
-    //             'Authorization': 'Bearer ' + token,
-    //             'Accept': 'application/json, text/plain, */*',
-    //             'Content-Type': 'application/json;charset=utf-8'
-    //         },
-    //         method: 'PATCH',
-    //         body: JSON.stringify(payload)
-    //     })
+        return fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${facilityId}/`, {
+            headers: {
+                'Authorization': 'Bearer ' + token,
+                'Accept': 'application/json, text/plain, */*',
+                'Content-Type': 'application/json;charset=utf-8'
+            },
+            method: 'PATCH',
+            body: JSON.stringify(payload)
+        })
 
     
-    // }
-    // catch (e) {
-    //     console.error('Unable to patch facility Infrastructure details', e.message)
-    // }
+    }
+    catch (e) {
+        console.error('Unable to patch facility Infrastructure details', e.message)
+    }
 }
 
 // handleInfrastructureDelete
-
 async function handleInfrastructureDelete(token, event, facility_infrastructure_id, alert) {
 
     event.preventDefault()

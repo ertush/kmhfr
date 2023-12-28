@@ -34,7 +34,7 @@ export default function FacilityChanges({ facility }) {
     if (isClient) {
         return (
             <MainLayout>
-                <div className="w-full grid grid-cols-5 h-full mt-24 gap-4">
+                <div className="w-full grid grid-cols-5 h-full my-24 gap-4">
                     {/* Facility Side Menu Filters */}
                     <div className="md:col-span-1 ">
                         <FacilitySideMenu

@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import { defer } from 'underscore';
+// import { defer } from 'underscore';
 import {
     ChevronDoubleRightIcon,
     ChevronDoubleLeftIcon,
@@ -199,23 +199,6 @@ function EditListWithCount(
     }, [selectedRows]);
 
 
-    // const initialValues = (() => {
-    //     const _initValues = {}
-    //     initialSelectedItems?.forEach((k) => {
-    //         if (itemsCategoryName.includes('human resource')) {
-    //             _initValues[k.speciality] = k.count
-    //         }
-    //         else if (itemsCategoryName.includes('infrastructure')) {
-    //             _initValues[k.infrastructure] = k.count
-
-    //         }
-
-    //     })
-
-
-    //     return _initValues
-    // })()
-
 
     useEffect(() => {
 
@@ -275,37 +258,19 @@ function EditListWithCount(
         setSubmitting(true)
 
         if (item) {
-            // Update the list of values
-            // deletedItems.forEach(([{ id }]) => {
-            //     delete values[id]
-            // })
-
-            // // Filter Edited fields only
-            // const valueKeys = []
-            // // const disjointValues = {}
-
-            // Object.values(values).filter((v, i) => {
-            //     if (v !== Object.values(initialValues)[i]) valueKeys.push(Object.keys(values)[i]);
-            //     return v !== Object.values(initialValues)[i]
-            // })[0];
-
-            // const updatedItems = itemData
-
-            console.log({itemData, selectedRows})
-
 
             handleItemsUpdate(token, [selectedRows, itemId])
                 .then(resp => {
                     if (resp.status == 200 || resp.status == 204) {
                         setSubmitting(false)
-                        // alert.success('Facility Infrastructure updated successfully')
+                        alert.success('Facility Infrastructure updated successfully')
 
-                        // router.push({
-                        //     pathname: '/facilities/facility_changes/[facility_id]',
-                        //     query:{
-                        //         facility_id: itemId
-                        //     }
-                        // })
+                        router.push({
+                            pathname: '/facilities/facility_changes/[facility_id]',
+                            query:{
+                                facility_id: itemId
+                            }
+                        })
 
 
                     } else {
@@ -394,6 +359,7 @@ function EditListWithCount(
     });
 
     return (
+
         <form
             name="list_item_with_count_form"
             className="flex flex-col w-full items-start justify-start gap-3"
@@ -484,24 +450,26 @@ function EditListWithCount(
                 {/* summary table */}
                 <div className="col-span-12 max-h-96 overflow-auto" >
 
-                    <table className="table-auto w-full">
+                    <table className="table-auto border border-gray-300 w-full">
                         <thead>
                             <tr>
                                 {title.map((t, i) => (
-                                    <th className="border px-1 py-1" key={i}>{t}</th>
+                                    <th className="border border-gray-300 px-1 py-1" key={i}>{t}</th>
                                 ))}
                             </tr>
                         </thead>
                         <tbody className='bg-blue-50 shadow-md'>
                             {selectedRows.length === 0 && <tr><td colSpan={3} className="text-center">No specialities found</td></tr>}
-                            {selectedRows.map((row) => (
-                                <tr>
-                                    <td className="border px-1 py-1">{row?.sname}</td>
-                                    {row?.iscategoryvisible ? <td className="border px-1 py-1">{row?.category_name}</td> : null}
-                                    <td className="border px-1 py-1">Yes</td>
-                                    <td className="border px-1 py-1">{row?.count ? Number(row?.count) : null}</td>
+                            {selectedRows.map((row) => {
+                                if(row.name !== "Vaccine Carriers"){
+                                return <tr>
+                                    <td className="border border-gray-300 px-1 py-1">{row?.sname}</td>
+                                    <td className="border border-gray-300 px-1 py-1">{row?.iscategoryvisible ? row?.category_name : null}</td>
+                                    <td className="border border-gray-300 px-1 py-1">Yes</td>
+                                    <td className="border border-gray-300 px-1 py-1">{row?.count ? Number(row?.count) : null}</td>
                                 </tr>
-                            ))}
+                                }
+                            })}
 
                         </tbody>
                     </table>

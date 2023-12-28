@@ -112,7 +112,7 @@ export function InfrastructureForm() {
                         categoryItems={infrastructureOption.categories}
                         options={options.infrastructure}
                         token={options.token}
-                        itemId={facilityId}
+                        itemId={facilityId ?? options?.data?.id}
                         item={options?.data ?? null}   
                         handleItemsSubmit={handleInfrastructureSubmit}
                         handleItemsUpdate={handleInfrastructureUpdates}

@@ -57,7 +57,7 @@ const WardGISMap = ({ markerCoordinates, geoJSON, center, ward, from }) => {
         const lngs = []
         const lats = []
 
-        const bounds = geoJSON.properties.bound.coordinates[0];
+        const bounds = geoJSON?.properties?.bound?.coordinates[0];
 
 
         if (geoJSON) {

@@ -338,8 +338,8 @@ function  EditListItem({
                             <thead>
                                 <tr>
                                 
-                                    <th className="border px-1 py-1" key={'services'}>Services</th>
-                                    <th className="border px-1 py-1" key={'services'}>Present</th>
+                                    <th className="border border-gray-300 px-1 py-1" key={'services'}>Services</th>
+                                    <th className="border border-gray-300 px-1 py-1" key={'services'}>Present</th>
                               
                                 </tr>
                             </thead>
@@ -347,8 +347,8 @@ function  EditListItem({
                                 {selectedItems.length === 0 && <tr><td colSpan={3} className="text-center">No services found</td></tr>}
                                 {selectedItems.map((row) => (
                                   <tr>
-                                      <td className="border px-1 py-1">{row.sname}</td>
-                                      <td className="border px-1 py-1">Yes</td>
+                                      <td className="border border-gray-300 px-1 py-1">{row.sname}</td>
+                                      <td className="border border-gray-300 px-1 py-1">Yes</td>
                                   </tr>
                                 ))}
 
