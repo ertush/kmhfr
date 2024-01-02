@@ -115,7 +115,7 @@ export function FacilityContactsForm() {
         const formDataBase64Enc = current_url.searchParams.get('formData')
         const formData = JSON.parse(Buffer.from(formDataBase64Enc, 'base64').toString() ?? '{}')
 
-        // console.log(formData)
+    
 
          vals = formData
             
@@ -135,14 +135,11 @@ export function FacilityContactsForm() {
     }, [facilityContacts])
 
 
-    // const [initialValues, handleFormUpdate] = useLocalStorageState({
-    //     key: options?.data ? 'facility_contacts_edit_form' : 'facility_contacts_form',
-    //     value: options?.data ? facilityContactsData : formFields
-    // }).actions.use();
+   
 
     const [initialValues, handleFormUpdate] = useState(options?.data ? facilityContactsData : formFields)
 
-    // const formValues = options?.data ? facilityContactsData : initialValues && initialValues.length > 1 ? JSON.parse(initialValues) : formFields;
+    
 
     const [formValues, setFormValues] = useState(options?.data ? facilityContactsData : initialValues && initialValues.length > 1 ? JSON.parse(initialValues) : formFields)
     
@@ -155,18 +152,11 @@ export function FacilityContactsForm() {
 
         const initialValueObj = options?.data ? facilityContactsData : typeof initialValues == 'string' ? JSON.parse(initialValues) : {}
 
-        // console.log({initialValues, initialValueObj})
         const contactCount = Object.keys(initialValueObj).filter(x => /^contact_\d/.test(x)).length;
         const officerContactCount = Object.keys(initialValueObj).filter(x => x.match(/^officer_details_contact_[0-9]/)).length;
 
 
-        // Get facility Id
-
-       
-
-
-        // console.log({initialValueObj, contactCount})
-
+  
         if (contactCount > 1) {
             for (let i = 0; i < contactCount; i++) {
                 contacts.push((() => (
@@ -214,33 +204,7 @@ export function FacilityContactsForm() {
         }
     }, [])
 
-    // Form Schema
-    // const formSchema = useMemo(() => object({
-    //     officer_name: string({ required_error: "Name is required" }),
-    //     officer_title: string({ required_error: "Job Titile Name is required" }),
-    //     ...(() => {
-    //         const schema = {}
-    //         if (facilityContacts.length > 1) {
-    //             for (let i = 0; i < facilityContacts.length; i++) {
-    //                 schema[`contact_type_${i}`] = string({ required_error: "Facility Contact Type is required" }).min(1);
-    //                 schema[`contact_${i}`] = string({ required_error: "Facility Contact is required" }).min(1);
-
-    //             }
-    //         }
-
-    //         if (officerContactDetails.length > 1) {
-    //             for (let i = 0; i < officerContactDetails.length; i++) {
-    //                 schema[`officer_details_contact_type_${i}`] = string({ required_error: "Officer Contact Type is required" }).min(1);
-    //                 schema[`officer_details_contact_${i}`] = string({ required_error: "Officer Contact is required" }).min(1);
-    //             }
-    //         }
-
-
-    //         return schema
-    //     })()
-    // }), [facilityContacts, officerContactDetails])
-
-    // console.log({formSchema})
+    
 
     // Event handlers
 

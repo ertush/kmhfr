@@ -3,7 +3,7 @@
 "use client"
 
 import { useContext, useEffect, useState } from 'react';
-import Select from './formComponents/Select';
+import { Select as CustomSelect} from './formComponents/Select';
 import { FormOptionsContext } from '../../pages/facilities/add';
 import {
   ChevronDoubleRightIcon,
@@ -610,7 +610,7 @@ export function BasicDeatilsForm({ editMode }) {
             </span>
           </label>
 
-          <Select
+          <CustomSelect
             options={options?.facility_types}
             defaultValue={options?.facility_types?.map(({value}) => value).includes(options?.data?.facility_type)  ? options?.data?.facility_type : (() => {
               return options?.facility_types?.find(({label}) => label == options?.data?.facility_type_parent)?.value
@@ -638,7 +638,7 @@ export function BasicDeatilsForm({ editMode }) {
           </label>
 
 
-          <Select
+          <CustomSelect
             options={facilityTypeDetailOptions ?? []}
             placeholder="Select facility type details..."
             onChange={handleSelectChange}
@@ -665,7 +665,7 @@ export function BasicDeatilsForm({ editMode }) {
               *
             </span>
           </label>
-          <Select
+          <CustomSelect
             options={operationStatusOptions ?? options?.operation_status}
             placeholder="Select operation status..."
             required
@@ -744,7 +744,7 @@ export function BasicDeatilsForm({ editMode }) {
               *
             </span>
           </label>
-          <Select
+          <CustomSelect
             options={options?.owner_types}
             placeholder="Select owner category.."
             onChange={handleSelectChange}
@@ -767,7 +767,7 @@ export function BasicDeatilsForm({ editMode }) {
               *
             </span>
           </label>
-          <Select
+          <CustomSelect
             options={ownerTypeDetailsOptions ?? []}
             defaultChecked={options?.data?.owner ?? ''}
             onFocus={handleFocus}
@@ -786,7 +786,7 @@ export function BasicDeatilsForm({ editMode }) {
             className='text-gray-600 capitalize text-sm'>
             KEPH Level
           </label>
-          <Select
+          <CustomSelect
             options={options?.keph}
             placeholder="Select a KEPH Level.."
             name='keph_level'
@@ -1106,7 +1106,7 @@ export function BasicDeatilsForm({ editMode }) {
             </span>
           </label>
 
-          <Select
+          <CustomSelect
             options={options?.facility_admission_status}
             required
             placeholder='Select an admission status..'
@@ -1285,7 +1285,7 @@ export function BasicDeatilsForm({ editMode }) {
                     *
                   </span>
                 </label>
-                <Select
+                <CustomSelect
                   options={options?.counties} // 
                   required
                   placeholder="Select County ..."
@@ -1312,7 +1312,7 @@ export function BasicDeatilsForm({ editMode }) {
                     *
                   </span>
                 </label>
-                <Select
+                <CustomSelect
                   options={subCountyOptions ?? []}
                   required
                   placeholder="Select Sub County..."
@@ -1339,7 +1339,7 @@ export function BasicDeatilsForm({ editMode }) {
                     *
                   </span>
                 </label>
-                <Select
+                <CustomSelect
                   options={constituencyOptions ?? []}
                   required
                   placeholder="Select Constituency..."
@@ -1368,7 +1368,7 @@ export function BasicDeatilsForm({ editMode }) {
                   </span>
                 </label>
     
-                <Select
+                <CustomSelect
                   options={wardOptions ?? []}
                   required
                   placeholder="Select Ward ..."

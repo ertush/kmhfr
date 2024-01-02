@@ -13,6 +13,9 @@ import { Menu } from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/outline';
 import CommunityUnitSideMenu from '../../components/CommunityUnitSideMenu';
 import { UserContext } from '../../providers/user';
+import {Formik, Form, Field} from 'formik';
+import { SearchIcon } from '@heroicons/react/outline'
+
 
 
 const CommunityUnit = (props) => {
@@ -208,9 +211,70 @@ const CommunityUnit = (props) => {
 
 							{/* Main body */}
 							
-							<div className="w-full md:col-span-4 mr-24 md:col-start-2 col-span-5 md:h-auto border border-blue-600">
+							<div className="w-full md:col-span-4 mr-24 md:col-start-2 col-span-5 md:h-auto bg-blue-50 shadow-md">
 								 {/* Data Indicator section */}
-								 <div className='w-full flex justify-end border-b border-blue-600'>
+								   {/* Data Indicator section */}
+								   <div className='w-full p-2 flex justify-between border-b border-blue-600'>
+                                        {/* search input */}
+                                    
+                                        <Formik
+                                        initialValues={
+                                            {
+                                                q:""
+                                            }
+                                        }
+                                            onSubmit={(values) => {
+
+                                                const query = values.q.split(' ').join('+');
+                                                
+
+                                                // console.log({values})
+                                                switch((new URL(window.location.href))?.searchParams.get('qf')){
+                                                    case "all":
+                                                        router.push(`/community-units/?q=${query}&qf=all`)
+                                                        break;
+                                                    case "approved":
+                                                        router.push(`/community-units/?q=${query}&qf=approved&is_approved=true`)
+                                                        break;
+                                                    case "new_pending_approval":
+                                                        router.push(`/community-units/?q=${query}&qf=new_pending_approval&has_edits=false&pending_approval=true`)
+                                                        break;
+                                                    case "updated_pending_approval":
+                                                        router.push(`/community-units/?q=${query}&qf=updated_pending_approval&has_edits=true&is_approved=true`)
+                                                        break;
+                                                    default:
+                                                        router.push(`/community-units/?q=${query}&qf=is_rejected&is_rejected=true`)
+                                                        break;
+
+                                                
+                                                }
+
+                                            }}  
+                                        >
+
+                                        <Form
+                                        className="inline-flex flex-row justify-start flex-grow py-2 lg:py-0"
+                                        
+                                    >
+                                            
+                                        <Field
+                                        name="q"
+                                        id="search-input"
+                                        className="flex-none bg-transparent p-2 w-3/5 md:flex-grow-0 flex-grow shadow-sm border border-blue-600 placeholder-gray-600  focus:shadow-none focus:ring-black focus:border-black outline-none"
+                                        type="search"
+                                        
+                                        placeholder="Search a facility"
+                                        />
+                                        <button
+                                        type="submit"
+                                        className="bg-transparent border-t border-r border-b border-blue-600 text-black flex items-center justify-center px-4 py-1"
+                                        
+                                        >
+                                        <SearchIcon className="w-5 h-5 text-blue-600" />
+                                        </button>
+                                    </Form>
+                                    </Formik>
+
                                         <h5 className="text-lg font-medium text-gray-800 pr-2">      
                                             {props?.data?.count && props?.data?.count > 0 && <small className="text-gray-500 text-base">{props?.data?.start_index ?? ''} - {props?.data?.end_index ?? ''} of {props?.data?.count ?? ''} </small>}
                                         </h5>
@@ -224,7 +288,7 @@ const CommunityUnit = (props) => {
 										cus.map((comm_unit, index) => (
 											<div
 												key={comm_unit.id}
-												className='grid grid-cols-8 gap-2 border-b border-blue-600 py-4 hover:bg-blue-50 w-full'>
+												className='grid grid-cols-8 gap-2 border-b border-gray-400 py-4 hover:bg-blue-50 w-full'>
 												<div className='px-2 col-span-8 md:col-span-8 lg:col-span-6 flex flex-col group items-center justify-start text-left'>
 													<h3 className='text-2xl  font-semibold w-full'>
 														<a

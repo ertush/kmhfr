@@ -19,4 +19,4 @@ const Select = forwardRef(function Select(props, ref) {
     )
 });
 
-export default Select
+export { Select }

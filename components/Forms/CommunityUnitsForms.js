@@ -1,7 +1,7 @@
 import {  Form, Formik, Field  } from 'formik'
 import MainLayout from '../MainLayout';
 import CommunityUnitSideMenu from '../CommunityUnitSideMenu';
-import Select from './formComponents/Select'
+import { Select as CustomSelect } from './formComponents/Select'
 import Link from 'next/link';
 import * as Tabs from "@radix-ui/react-tabs";
 import {
@@ -80,8 +80,8 @@ export function CommunityUnitEditForm({ cu: {
 
   const [facilityOptions, setFacilityOptions] = useState(options?.facilities?.map(({ id, name }) => ({ label: name, value: id })) ?? []) 
   const [operationStatusOptions, setOperationStatusOptions] = useState(options?.statuses?.map(({ id, name }) => ({ label: name, value: id })) ?? []) 
-  const [serviceOptions, setServiceOptions] = useState(options?.services?.map(({ id, name }) => ({ label: name, value: id })) ?? []) 
-  const [contactOptions, setContactOptions] = useState(options?.contact_types?.map(({ id, name }) => ({ label: name, value: id })) ?? []) 
+  const [serviceOptions, setServiceOptions] = useState(options?.services?.map(({ id, name }) => ({ label: name, value: id })) ) 
+  const [contactOptions, setContactOptions] = useState(options?.contact_types?.map(({ id, name }) => ({ label: name, value: id }))) 
   const [current_services, setCurrentServices] = useState(Array.from(services, s=>s?.service) || [])
   const [token, setToken] = useState();
 
@@ -110,17 +110,7 @@ export function CommunityUnitEditForm({ cu: {
 
   function appendValueToBasicDetails(contacts) {
     let i = 0
-    // for (let { contact_type, contact } of contacts) {
-    //   let contact_type_data = {}
-    //   contact_type_data[`contact_type_${i}`] = contact_type
-    //   contact_type_data[`contact_${i}`] = contact
-    //   setBasicDetailValues({
-    //     ...intialValuesBasicDetails,
-    //     ...contact_type_data
-
-    //   })
-    //   i += 1
-    // }
+  
     let c_ontacts = Array.from(contacts, (c,i)=>{
       let ct = {}
       ct[`contact_type_${i}`] = c?.contact_type;
@@ -164,14 +154,7 @@ export function CommunityUnitEditForm({ cu: {
   
     
     
-    // Constants
-
-  
-
-
-  //Add Contact and Contact Type Name to Basic details initial Values 
-
-
+    
 
 
   
@@ -319,7 +302,7 @@ export function CommunityUnitEditForm({ cu: {
               value="basic_details"
               className="grow-1 p-3 mx-auto w-full tab-panel"
             >
-              {/* <Formik initialValues={intialValuesBasicDetails} onSubmit={() => null}> */}
+              
               <form
                   className="flex m-1 p-3 bg-blue-50 shadow-sm flex-col w-full items-start justify-start gap-3"
                   onSubmit={e => {
@@ -329,17 +312,11 @@ export function CommunityUnitEditForm({ cu: {
                     const data = Object.fromEntries(formData)
                     // console.log('submission data', data) 
                     const setter=[data,"basicDetails"]
-                    // const {token} = await checkToken(req, res)
-
-                    // if(token.error) throw Error('Unable to get token')
-                   
-                    // console.log("details....",intialValuesBasicDetails?.id)
-                    // console.log("identification....",token)
+             
                     handleChulSubmit(token,setter,intialValuesBasicDetails?.id)
                   }}
                 >
                   {/* CHU Name */}
-                  {/* {JSON.stringify(token)} */}
                   <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
                     <label
                       htmlFor="name"
@@ -378,7 +355,7 @@ export function CommunityUnitEditForm({ cu: {
                         *
                       </span>
                     </label>
-                    <Select
+                    <CustomSelect
 
                       styles={{
                         control: (baseStyles) => ({
@@ -421,7 +398,7 @@ export function CommunityUnitEditForm({ cu: {
                         *
                       </span>
                     </label>
-                    <Select
+                    <CustomSelect
                       styles={{
                         control: (baseStyles) => ({
                           ...baseStyles,
@@ -745,7 +722,7 @@ export function CommunityUnitEditForm({ cu: {
                                   *
                                 </span>
                               </label>
-                              <Select
+                              <CustomSelect
                                 required
                                 key={i}
                                 id={`${i}`}
@@ -1010,31 +987,10 @@ export function CommunityUnitEditForm({ cu: {
                     Available Services
                   </span>
                   <div className="flex items-center w-full h-auto">
-                    {/* <Select
-                          styles={{
-                            control: (baseStyles) => ({
-                              ...baseStyles,
-                              backgroundColor: 'transparent',
-                              outLine: 'none',
-                              border: 'none',
-                              outLine: 'none',
-                              textColor: 'transparent',
-                              padding: 0,
-                              height: '4px'
-                            }),
-
-                          }}
-                          placeholder="Select Service ..."
-                          options={serviceOptions}
-                          defaultValue={options?.data?.owner_type ?? ''}
-                          id="chu_services"
-                          onChange={handleSelectChangeChu}
-                          name="services"
-                          className='flex-none w-full  flex-grow  placeholder-gray-500 border border-blue-600 outline-none'
-
-                        /> */}
+                    
                     <DualListBox
                       canFilter
+                      className={'w-full'}
                       options={serviceOptions}
                       selected={current_services}
                       // selected={(services && services.length > 0) ? Array.from(services, s=>s.id) : []}
