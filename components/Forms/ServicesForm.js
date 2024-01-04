@@ -117,6 +117,7 @@ export function ServicesForm() {
                             item={options?.data ?? null}
                             options={options?.services}
                             token={options?.token}
+                            itemName={'facility_services'}
                             removeItemHandler={handleServiceDelete}
                             handleItemsSubmit={handleServiceSubmit}
                             handleItemsUpdate={handleServiceUpdates}

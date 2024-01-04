@@ -101,18 +101,20 @@ function CommunityUnitsBasciDetailsForm(props) {
 
 						// const base64EncFromData = Buffer.from(JSON.stringify(payload)).toString('base64')
 
-						// const url = new URL(`${window.location.origin}/community-units/add?formId=1`)
+						const chulId = (await resp.json())?.id
 
-						// router.push(url)
-
-						setFormId(1)
+					
+						router.push({ pathname: '/community-units/add', query: { formId: '1', chulId } })
+						.then((navigated) => {
+							if(navigated) setFormId(1)
+						})
 
 					} else {
 						const detail = await resp.json()
 
 						setSubmitting(false)
 						setFormError(Array.isArray(Object.values(detail)) &&  Object.values(detail).length == 1 && typeof Object.values(detail)[0] == 'string' && detail[0][0])
-						alert.error('Unable to save to Community Units Basic details')
+						alert.error('Unable to save Community Units Basic details')
 					}
 				})
 		}
@@ -161,7 +163,7 @@ function CommunityUnitsBasciDetailsForm(props) {
 
 		const today = new Date()
 
-		const setDate = new Date(event.target.value)
+		const setDate = event.target.valueAsDate
 
 		if(setDate > today) {	
 			if(event.target.name == "date_established"){
@@ -173,6 +175,24 @@ function CommunityUnitsBasciDetailsForm(props) {
 			event.target.value = ''
 		
 		}
+
+
+		const dateEstablished = event.target.value !== '' && event.target.name.includes('date_established') ? event.target.valueAsDate : document.querySelector('input[name="date_established"]').valueAsDate 
+
+		const dateOperational = event.target.value !== '' && event.target.name.includes('date_operational') ? event.target.valueAsDate : document.querySelector('input[name="date_operational"]').valueAsDate
+
+
+		if(dateEstablished && dateOperational) {
+			if(dateEstablished > dateOperational) {	
+				if(event.target.name == "date_operational"){
+					setValidationError({date_operational: 'Date Established Cannot be recent than date operational '})
+					event.target.value = ''
+
+				}
+		}
+
+		
+		}
 	}
 
 
@@ -181,10 +201,10 @@ function CommunityUnitsBasciDetailsForm(props) {
 			const previousFormData = new URL(window.location.href)?.searchParams.get('formData');
 
 			if(previousFormData){
-			setFormData(() => {
-				return JSON.parse(Buffer.from(previousFormData ?? 'J3t9Jw==', 'base64')?.toString())
-			})			
-		}
+				setFormData(() => {
+					return JSON.parse(Buffer.from(previousFormData ?? 'J3t9Jw==', 'base64')?.toString())
+				})			
+			}
 
 		}
 	}, [])
@@ -623,9 +643,18 @@ function CommunityUnitsBasciDetailsForm(props) {
 function CommunityUnitsExtensionWorkersForm(props) {
 
 	const [contactCHEW, setContactCHEW] = useState([{ first_name: '', last_name: '', is_incharge: '' }])
+	const [formError, setFormError] = useState('')
+	const [submitting, setSubmitting] = useState(false)
+	const setFormId = useContext(SetFormIdContext)
+	const alert = useAlert()
+	const router = useRouter()
+	
+
 	
 	function handleCHEWSubmit(event){
 		event.preventDefault();
+
+		setSubmitting(true)
 
 		const formData = new FormData(event.target)
 
@@ -646,43 +675,55 @@ function CommunityUnitsExtensionWorkersForm(props) {
 
 		})
 
-		console.log({payload})
 
-		return 
-		if (payload) {
+		const chulId = window && new URL(window?.location?.href).searchParams.get('chulId')
+
+		
+		if (payload && chulId) {
 
 			try {
-
-				fetch(`/api/common/submit_form_data/?path=chul_data&id=${chulId}`, {
-
+				fetch(`${process.env.NEXT_PUBLIC_API_URL}/chul/units/${chulId}/`, {
 					headers: {
-						'Accept': 'application/json, text/plain */*',
-						'Content-Type': 'application/json;charset=utf-8'
-
+						'Accept': 'application/json, text/plain, */*',
+						'Content-Type': 'application/json;charset=utf-8',
+						'Authorization': `Bearer ${props?.token}`
 					},
 					method: 'PATCH',
-					body: JSON.stringify({ health_unit_workers: payload })
-				}).then(res => res.json()).then((res) => {
-					if (res.details) {
-						alert.error('Failed to add CHEW details')
+					body: JSON.stringify({health_unit_workers: payload})
+				}).then(async resp => {
+					if (resp.status == 200) {
+
+						setSubmitting(false)
+
+						alert.success(`Community Unit Extension Workers Saved successfully`, {
+							containerStyle: {
+								backgroundColor: "green",
+								color: "#fff"
+							}
+						})
+
+						// const base64EncFromData = Buffer.from(JSON.stringify(payload)).toString('base64')
+
+						router.push({ pathname: '/community-units/add', query: { formId: '2', chulId } })
+						.then((navigated) => {
+							if(navigated) setFormId(2)
+						})
+
+
 					} else {
+						const detail = await resp.json()
 
-						alert.success('CHEW details added successfully ')
+						setSubmitting(false)
+						setFormError(Array.isArray(Object.values(detail)) &&  Object.values(detail).length == 1 && typeof Object.values(detail)[0] == 'string' && detail[0][0])
+						alert.error('Unable to save Community Units Extension Workers')
 					}
-				}).catch(err => {
-					alert.error('An error occured: ' + err)
-
 				})
 			}
 			catch (e) {
 				alert.error('An error occured: ' + e.message)
 
-				console.error('Unable to patch facility contacts details'.e.message)
+				console.error(e.message)
 			}
-
-			window.sessionStorage.setItem('chuformId', 2);
-
-			setFormId(window.sessionStorage.getItem('chuformId'));
 
 		}
 	};
@@ -705,6 +746,9 @@ function CommunityUnitsExtensionWorkersForm(props) {
 			<h4 className='text-lg uppercase pb-2 border-b border-blue-600 w-full mb-4 font-semibold text-blue-900'>
 				CHEWs: Community Health Promoters
 			</h4>
+
+			{formError && <Alert severity="danger" sx={{width:'100%', marginY:'15px'}}>{formError}</Alert> }
+
 			<form
 				name='chews_form'
 				className='flex flex-col w-full items-start justify-start gap-3'
@@ -747,10 +791,7 @@ function CommunityUnitsExtensionWorkersForm(props) {
 
 
 					</div>
-					{/* <div className='grid grid-cols-5 gap-x-3 w-full place-content-start'>
-						
-						
-					</div> */}
+					
 					{contactCHEW.map((_, i) => (
 						<div className='w-full grid grid-cols-4 mx-auto place-content-start gap-y-1 gap-x-3' key={i} >
 							{/* First Name */}
@@ -773,6 +814,8 @@ function CommunityUnitsExtensionWorkersForm(props) {
 								
 								type='text'
 								name='last_name'
+								defaultValue={''}
+
 								className='flex-none  md:w-52 w-auto bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
 							/>
 
@@ -799,7 +842,7 @@ function CommunityUnitsExtensionWorkersForm(props) {
 										
 										type='button'
 										className='bg-transparent group hover:bg-red-500 text-red-700 font-semibold hover:text-white p-3 hover:border-transparent '
-										onClick={() => setContactCHEW(prev => prev.splice(1, i))}>
+										onClick={(e) => { e.preventDefault(); setContactCHEW(prev => prev.filter((_, index) => index !== i))}}>
 										<TrashIcon className="w-4 h-4 text-red-500 group-hover:text-white" />
 									</button>
 								</div>
@@ -828,10 +871,23 @@ function CommunityUnitsExtensionWorkersForm(props) {
 					<button
 						type='submit'
 						className='flex items-center justify-start space-x-2 bg-blue-700  p-1 px-2'>
+						
 						<span className='text-medium font-semibold text-white'>
-							Services
+							{
+								submitting ?
+									<Spinner />
+									:
+									'Services'
+
+							}
 						</span>
-						<ChevronDoubleRightIcon className='w-4 h-4 text-white' />
+						{
+							submitting ? 
+							<span className='text-white'>Saving </span>
+							:
+							<ChevronDoubleRightIcon className='w-4 h-4 text-white' />
+
+						}
 					</button>
 				</div>
 			</form>
@@ -839,37 +895,16 @@ function CommunityUnitsExtensionWorkersForm(props) {
 	);
 }
 
-function AddCommunityUnit(props) {
 
+function CommunityUnitsServicesForm(props) {
 
-	
-	const [formId, setFormId] = useState(0);
-	
-
+	// const [formError, setFormError] = useState('')
+	const [submitting, setSubmitting] = useState(false)
+	const [chulId, setChuilId] = useState('')
+	const setFormId = useContext(SetFormIdContext)
 
 	const serviceCtg = props?.service_category ?? []
 
-
-	useEffect(() => {
-		if(window) {
-
-		const id = new URL(window.location.href)?.searchParams.get('formId')
-		if(typeof id == 'string') {
-			setFormId(Number(id))
-			console.log({formId})
-
-		}
-		}
-	}, [])
-	
-	// Define registration steps
-	const steps = [ 
-		'Basic Details',
-		'CHEWS: Community Health Promoters',
-		'Services',
-	];
-
-	const qf = ''
 
 
 	const serviceOptions = ((_services) => {
@@ -912,10 +947,121 @@ function AddCommunityUnit(props) {
 	})(serviceCtg ?? [])
 
 
+	function handleCHUServiceSubmit (token, selectedServices, chulId) {
+		// console.log({stateSetters, chulId})
+		
+		const _payload = selectedServices.map(({value}) => ({ service: value }))
+
+		_payload.forEach(obj => obj['health_unit'] = chulId)
+
+	
+
+		if(_payload && chulId && token ) {
+		try {
+			return fetch(`${process.env.NEXT_PUBLIC_API_URL}/chul/units/${chulId}/`, {
+				headers: {
+					'Accept': 'application/json, text/plain, */*',
+                    'Content-Type': 'application/json;charset=utf-8',
+					'Authorization': `Bearer ${props?.token}`
+				},
+				method: 'PATCH',
+				body: JSON.stringify({services: _payload})
+			})
+				
+
+		}
+		catch (e) {
+			console.error('Unable to patch CHU service details', e.message)
+		}
+		}
+
+	};
+
+	function handleServicesPrevious (event) {
+		event.preventDefault();
+
+		setFormId(1)
+	};
+
+	useEffect(() => {
+		if(window) setChuilId(new URL(window?.location?.href).searchParams.get('chulId'))
+	}, [])
+
+
+	return (
+		<>
+			<h4 className='text-lg uppercase pb-2 border-b border-blue-600 w-full mb-4 font-semibold text-blue-900'>
+				Services Offered
+			</h4>
+
+			{/* {
+				JSON.stringify(props?.service_category)
+			} */}
+
+			<div
+				name='chu_services_form'
+				className='flex flex-col w-full items-start justify-start gap-3'
+			>
+				<div className='flex flex-col w-full items-start justify-start gap-3 mt-6'>
+
+					{/* Edit list Item Container */}
+					<div className='flex items-center w-full h-auto min-h-[300px]'>
+
+						
+						<EditListItem
+							initialSelectedItems={[]}
+							categoryItems={serviceOptions[0]?.options} //serviceOptions
+							itemId={chulId} //chulId
+							item={null}
+                            token={props?.token}
+							handleItemsSubmit={handleCHUServiceSubmit} //handleCHUServiceSubmit
+							handleItemsUpdate={() => null} //handleServiceUpdates
+							setNextItemCategory={setFormId}
+							setSubmitting={setSubmitting}
+							submitting={submitting}
+							options={serviceOptions[0]?.options}
+							itemName={'chul_services'}
+							handleItemPrevious={handleServicesPrevious} //handleServicePrevious
+						
+						/>
+
+					</div>
+				</div>
+			</div>
+		</>
+	);
 
 
 
+}
 
+
+function AddCommunityUnit(props) {
+
+
+	
+	const [formId, setFormId] = useState(0);
+	
+	useEffect(() => {
+		if(window) {
+
+		const id = new URL(window.location.href)?.searchParams.get('formId')
+		if(typeof id == 'string') {
+			setFormId(Number(id))
+			console.log({formId})
+
+		}
+		}
+	}, [])
+	
+	// Define registration steps
+	const steps = [ 
+		'Basic Details',
+		'CHEWS: Community Health Promoters',
+		'Services',
+	];
+
+	const qf = ''
 
 
 
@@ -993,110 +1139,15 @@ function AddCommunityUnit(props) {
 								{/* Form-changing switch statement */}
 
 								<SetFormIdContext.Provider value={setFormId}>
-									{/* { JSON.stringify(formId)} */}
 										{(() => {
 											switch (formId) {
-												// Basic Details Case
 												case 0:
 													return <CommunityUnitsBasciDetailsForm {...props} />
 												case 1:
-													return <CommunityUnitsExtensionWorkersForm {...props}/>
-									
-													
-												// Services Case
+													return <CommunityUnitsExtensionWorkersForm {...props} />
 												case 2:
-													// Handle Service Form Submit
-													const handleServiceSubmit = (stateSetters, chulId) => {
-														// console.log({stateSetters, chulId})
-														const [services, setFormId, setServices] = stateSetters
-														const _payload = services.map((s) => ({ service: s }))
-
-														_payload.forEach(obj => obj['health_unit'] = chulId)
-
-														console.log('handleServiceSubmit', {
-															services,
-															_payload
-														})
-
-
-														try {
-															fetch(`/api/common/submit_form_data/?path=chul_services&id=${chulId}`, {
-																headers: {
-																	'Accept': 'application/json, text/plain, */*',
-																	'Content-Type': 'application/json;charset=utf-8'
-
-																},
-																method: 'POST',
-																body: JSON.stringify({ services: _payload })
-															})
-																.then(resp => {
-																	if (resp?.url) {
-																		alert.success('Community Health Unit Added successfully')
-																		router.push(`/community-units/${new URL(resp?.url).searchParams.get('id')}`)
-
-																	}
-																})
-
-
-														}
-														catch (e) {
-															console.error('Unable to patch CHU service details'.e.message)
-														}
-
-														window.sessionStorage.setItem('chuformId', 0);
-
-														setFormId(window.sessionStorage.getItem('chuformId'))
-														setServices([])
-													};
-
-													const handleServicesPrevious = (event) => {
-														event.preventDefault();
-
-														window.sessionStorage.setItem('chuformId', 1);
-														setFormId(window.sessionStorage.getItem('chuformId'));
-													};
-
-													return (
-														<>
-															<h4 className='text-lg uppercase pb-2 border-b border-blue-600 w-full mb-4 font-semibold text-blue-900'>
-																Services Offered
-															</h4>
-
-															<div
-																name='chu_services_form'
-																className='flex flex-col w-full items-start justify-start gap-3'
-															>
-																<div className='flex flex-col w-full items-start justify-start gap-3 mt-6'>
-
-																	{/* Edit list Item Container */}
-																	<div className='flex items-center w-full h-auto min-h-[300px]'>
-
-																		{'chulid= ' + chulId}
-																		<EditListItem
-																			initialSelectedItems={[]}
-																			categoryItems={serviceOptions} //serviceOptions	
-																			itemsCategoryName={'CHU Services'}
-																			setUpdatedItem={() => null}
-																			itemId={chulId} //chulId
-																			setItems={setServices}
-																			item={null}
-																			removeItemHandler={() => null}
-																			handleItemsSubmit={handleServiceSubmit} //handleServiceSubmit
-																			handleItemsUpdate={() => null} //handleServiceUpdates
-																			setNextItemCategory={setFormId}
-																			nextItemCategory={'Save'}
-																			previousItemCategory={'CHEWS'}
-																			handleItemPrevious={handleServicesPrevious} //handleServicePrevious
-																			setIsSaveAndFinish={() => null}
-
-
-																		/>
-
-																	</div>
-																</div>
-															</div>
-														</>
-													);
+													return <CommunityUnitsServicesForm {...props} />
+						
 											}
 										})()}
 								</SetFormIdContext.Provider>
