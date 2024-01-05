@@ -28,7 +28,6 @@ import { KeyboardArrowLeft, KeyboardArrowRight } from '@mui/icons-material';
 export function CommunityUnitEditForm({ cu: {
   code,
   name,
-  facility_name,
   status_name,
   date_established,
   households_monitored,
@@ -44,7 +43,6 @@ export function CommunityUnitEditForm({ cu: {
   active,
   date_operational,
   health_unit_workers,
-  location,
   contacts,
   services,
   id
@@ -85,7 +83,7 @@ export function CommunityUnitEditForm({ cu: {
   const [current_services, setCurrentServices] = useState(Array.from(services, s=>s?.service) || [])
   const [token, setToken] = useState();
 
-  console.log(options?.facilities);
+  // console.log(options?.facilities);
 
   const [intialValuesBasicDetails, setBasicDetailValues] = useState({
     code,
@@ -103,10 +101,11 @@ export function CommunityUnitEditForm({ cu: {
     facility_ward,
     id
   })
-  const initialValuesChews = {
-    health_unit_workers,
-    contacts,
-  }
+
+  // const initialValuesChews = {
+  //   health_unit_workers,
+  //   contacts,
+  // }
 
   function appendValueToBasicDetails(contacts) {
     let i = 0
@@ -126,7 +125,7 @@ export function CommunityUnitEditForm({ cu: {
     let accessTokenObject;
   
     console.log({ options });
-    console.log('intialValuesBasicDetails', intialValuesBasicDetails);
+    // console.log('intialValuesBasicDetails', intialValuesBasicDetails);
   
     if (contacts) {
       setBasicDetailValues({
@@ -702,7 +701,7 @@ export function CommunityUnitEditForm({ cu: {
                         Community Health Unit Contacts
                       </h4>
 
-                      {contacts?.map((_, i) => {
+                      {contacts?.map(({contact, contact_type_name}, i) => {
                         return (
                           <div
                             className="w-full flex flex-row items-center  gap-1 gap-x-3 mb-3"
@@ -722,14 +721,14 @@ export function CommunityUnitEditForm({ cu: {
                                   *
                                 </span>
                               </label>
+                             
                               <CustomSelect
                                 required
                                 key={i}
                                 id={`${i}`}
                                 name={`contact_type_${i}`}
                                 options={contactOptions}
-
-                                defaultValue={intialValuesBasicDetails[`contact_type_${i}`]}
+                                defaultValue={contactOptions.find(({label}) => label == contact_type_name)?.value}
                                 onChange={e=>{
                                   let val = {}
                                   val[`contact_type_${i}`] = e.target.value
@@ -762,7 +761,7 @@ export function CommunityUnitEditForm({ cu: {
                                 type="text"
                                 name={`contact_${i}`}
 
-                                defaultValue={intialValuesBasicDetails[`contact_${i}`]}
+                                defaultValue={contact}
                                 onChange={e=>{
                                   let val = {}
                                   val[`contact_${i}`] = e.target.value
@@ -837,13 +836,15 @@ export function CommunityUnitEditForm({ cu: {
 
 
                 >
+                 
+
                   <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-                    {health_unit_workers && health_unit_workers.length > 0 ? (
-                      health_unit_workers.map((contact, index) => {
+                    {Array.isArray(health_unit_workers) ? (
+                      health_unit_workers.map(({first_name, last_name, is_incharge}, index) => {
                         return (
                           <div
                             className="flex flex-row items-center justify-between md:mx-1 gap-4 w-full"
-                            key={`${contact}~${index}`}
+                            key={index}
                           >
                             {/* First Name */}
                             <div className="flex-col gap-2">
@@ -857,8 +858,8 @@ export function CommunityUnitEditForm({ cu: {
                               <input
                                 required
                                 type="text"
-                                id={index}
                                 name="first_name"
+                                defaultValue={first_name}
 
 
                                 className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:bg-white focus:border-black outline-none"
@@ -875,8 +876,9 @@ export function CommunityUnitEditForm({ cu: {
                               <input
                                 required
                                 type="text"
-                                id={index}
                                 name="last_name"
+                                defaultValue={last_name}
+
 
 
                                 className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:bg-white focus:border-black outline-none"
@@ -892,8 +894,8 @@ export function CommunityUnitEditForm({ cu: {
                               </label>
                               <input
                                 name="is_incharge"
-                                id={index}
                                 type="checkbox"
+                                defaultChecked={is_incharge}
 
 
                                 className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300"
@@ -912,7 +914,7 @@ export function CommunityUnitEditForm({ cu: {
                                   className="flex items-center justify-start space-x-2 bg-red-600  p-1 px-2"
                                 >
                                   <span className="text-medium font-semibold text-white">
-                                    Remove
+                                    Delete
                                   </span>
                                 </button>
                               </div>
@@ -987,6 +989,7 @@ export function CommunityUnitEditForm({ cu: {
                     Available Services
                   </span>
                   <div className="flex items-center w-full h-auto">
+                  
                     
                     <DualListBox
                       canFilter
