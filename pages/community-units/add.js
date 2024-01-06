@@ -1164,9 +1164,6 @@ function AddCommunityUnit(props) {
 }
 
 
-
-
-
 export async function getServerSideProps(ctx) {
 
 	const allOptions = {}
@@ -1176,6 +1173,22 @@ export async function getServerSideProps(ctx) {
 		'services',
 		'contact_types',
 	]
+
+	async function getFacilityCount(token) {
+		try {
+		return (await (await fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/`, {
+		  headers:{
+			'Authorization': 'Bearer ' + token,
+			'Accept': 'application/json'
+		  }
+	
+		})).json())?.count
+		}
+		catch (e) {
+		  console.error(e.message)
+		}
+	  }
+	
 
 
 	return checkToken(ctx.req, ctx.res)
@@ -1190,7 +1203,10 @@ export async function getServerSideProps(ctx) {
 					const option = options[i]
 					switch (option) {
 						case 'facilities':
-							url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/${option}/?fields=id,name,county,sub_county_name,constituency,ward_name&page=1&page_size=500`;
+
+							const count = await getFacilityCount(token)
+
+							url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/${option}/?fields=id,name,county,sub_county_name,constituency,ward_name&page=1&page_size=${count}`;
 
 							try {
 
