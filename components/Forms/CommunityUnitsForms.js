@@ -32,64 +32,63 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
 
   const alert = useAlert()
 
-  // const current_services = Array.from(props?.services, s => s?.service) || []
 
   function handleFieldChange(event) {
-   
-    if(!typeof event == 'object') event.preventDefault()
+
+    if (!typeof event == 'object') event.preventDefault()
 
 
     setTouchedFields(prev => {
-     prev.add(event?.target?.name ?? 'facility_name')
-     return prev
+      prev.add(event?.target?.name ?? 'facility_name')
+      return prev
     })
   }
 
   function handleDateChange(event) {
 
-		event.preventDefault()
+    event.preventDefault()
 
     handleFieldChange(event)
 
-		if(event.target.name == "date_established"){
-		setValidationError(prev => ({...prev, date_established: null}))
-		} else {
-		setValidationError(prev => ({...prev, date_operational: null}))
-		}
+    if (event.target.name == "date_established") {
+      setValidationError(prev => ({ ...prev, date_established: null }))
+    } else {
+      setValidationError(prev => ({ ...prev, date_operational: null }))
+    }
 
-		const today = new Date()
+    const today = new Date()
 
-		const setDate = event.target.valueAsDate
+    const setDate = event.target.valueAsDate
 
-		if(setDate > today) {	
-			if(event.target.name == "date_established"){
-				setValidationError({date_established: 'Date Established Cannot be in the future'})
-			} else {
-				setValidationError({date_operational: 'Date Operational Cannot be in the future'})
-			}
+    if (setDate > today) {
+      if (event.target.name == "date_established") {
+        setValidationError({ date_established: 'Date Established Cannot be in the future' })
+      } else {
+        setValidationError({ date_operational: 'Date Operational Cannot be in the future' })
+      }
 
-			event.target.value = ''
-		
-		}
+      event.target.value = ''
 
-
-		const dateEstablished = event.target.value !== '' && event.target.name.includes('date_established') ? event.target.valueAsDate : document.querySelector('input[name="date_established"]').valueAsDate 
-
-		const dateOperational = event.target.value !== '' && event.target.name.includes('date_operational') ? event.target.valueAsDate : document.querySelector('input[name="date_operational"]').valueAsDate
+    }
 
 
-		if(dateEstablished && dateOperational) {
-			if(dateEstablished > dateOperational) {	
-				if(event.target.name == "date_operational"){
-					setValidationError({date_operational: 'Date Established Cannot be recent than date operational '})
-					event.target.value = ''
+    const dateEstablished = event.target.value !== '' && event.target.name.includes('date_established') ? event.target.valueAsDate : document.querySelector('input[name="date_established"]').valueAsDate
 
-				}
-		}
+    const dateOperational = event.target.value !== '' && event.target.name.includes('date_operational') ? event.target.valueAsDate : document.querySelector('input[name="date_operational"]').valueAsDate
 
-		
-		}
-	}
+
+    if (dateEstablished && dateOperational) {
+      if (dateEstablished > dateOperational) {
+        if (event.target.name == "date_operational") {
+          setValidationError({ date_operational: 'Date Established Cannot be recent than date operational ' })
+          event.target.value = ''
+
+        }
+      }
+
+
+    }
+  }
 
   function handleFormSubmit(event) {
 
@@ -103,19 +102,19 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
 
     // console.log([...touchedFields.values()])
 
-    if(Array(touchedFields.values()).length >= 1) {
-      for(let field of [...touchedFields.values()]) {
-          if(props[field] !== formDataObject[field]) {
-              if(/contact_type_\d/.test(field)) {
-                payload['contact_type'] = formDataObject[field] 
-              } else if (/contact_\d/.test(field)) {
-                 payload['contact'] = formDataObject[field] 
-              }
-              else {
-                payload[field] = formDataObject[field] 
-
-              }
+    if (Array(touchedFields.values()).length >= 1) {
+      for (let field of [...touchedFields.values()]) {
+        if (props[field] !== formDataObject[field]) {
+          if (/contact_type_\d/.test(field)) {
+            payload['contact_type'] = formDataObject[field]
+          } else if (/contact_\d/.test(field)) {
+            payload['contact'] = formDataObject[field]
           }
+          else {
+            payload[field] = formDataObject[field]
+
+          }
+        }
       }
     }
 
@@ -169,12 +168,12 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
 
   return (
     <form
-      className="flex m-1 p-3 bg-blue-50 shadow-sm flex-col w-full items-start justify-start gap-3"
+      className="flex m-1 p-3 bg-blue-50 flex-col w-full items-start justify-start gap-3"
       onSubmit={handleFormSubmit}
     >
 
-			{formError && <Alert severity="danger" sx={{width:'100%', marginY:'15px'}}>{formError}</Alert> }
-     
+      {formError && <Alert severity="danger" sx={{ width: '100%', marginY: '15px' }}>{formError}</Alert>}
+
       {/* CHU Name */}
       <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
         <label
@@ -226,7 +225,7 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
           }}
 
           options={options?.facilities}
-          defaultValue={options?.facilities?.find(({value}) => value == props?.facility)}
+          defaultValue={options?.facilities?.find(({ value }) => value == props?.facility)}
 
           placeholder="Select Link facility ..."
           name="facility_name"
@@ -299,7 +298,7 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
                 className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:bg-white focus:border-black outline-none"
               />
 
-								{validationError?.date_established && <span className='text-red-500 text-sm'>{validationError?.date_established}</span>}
+              {validationError?.date_established && <span className='text-red-500 text-sm'>{validationError?.date_established}</span>}
 
             </div>
           </div>
@@ -329,7 +328,7 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
                 className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:bg-white focus:border-black outline-none"
               />
 
-								{validationError?.date_operational && <span className='text-red-500 text-sm'>{validationError?.date_operational}</span>}
+              {validationError?.date_operational && <span className='text-red-500 text-sm'>{validationError?.date_operational}</span>}
 
             </div>
           </div>
@@ -599,16 +598,16 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
           >
             <span className="text-medium font-semibold text-white">
               {
-								submitting ?
-									<Spinner />
-									:
-									'Save and Finish'
+                submitting ?
+                  <Spinner />
+                  :
+                  'Save and Finish'
 
-							}
+              }
             </span>
             {
-							submitting &&
-							<span className='text-white'>Saving </span>
+              submitting &&
+              <span className='text-white'>Saving </span>
             }
 
           </button>
@@ -620,6 +619,274 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
       </div>
     </form>
 
+  )
+}
+
+function EditCommunityUnitsCHEWSForm(props) {
+
+  // const current_services = Array.from(props?.services, s => s?.service) || []
+
+  const [submitting, setSubmitting] = useState(false)
+  const [healthUnitWorkers, setHealthUnitWorkers] = useState(props?.health_unit_workers)
+  const alert = useAlert()
+
+  function handleFormSubmit(event) {
+      event.preventDefault()
+
+      const formData = new FormData(event.target)
+      const formDataObject = Object.fromEntries(formData)
+
+      console.log({
+        formDataObject
+      })
+  }
+  return (
+    <form
+      name="chews_form"
+      className="flex flex-col p-3 h-full bg-blue-50 w-full items-start justify-start gap-3"
+      onSubmit={handleFormSubmit}
+    >
+      
+      <div className="w-full flex flex-col items-start justify-start gap-y-7 mb-3">
+        {Array.isArray(healthUnitWorkers) && healthUnitWorkers.length > 0 ? (
+          healthUnitWorkers?.map(({ first_name, last_name, is_incharge }, index) => {
+            return (
+              <div
+                className="flex flex-row items-center justify-between md:mx-1 gap-4 w-full"
+                key={index}
+              >
+                {/* First Name */}
+                <div className="flex-col gap-2">
+                  <label
+                    htmlFor="first_name"
+                    start
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    First Name
+                  </label>
+                  <input
+                    required
+                    type="text"
+                    id='first_name'
+                    name="first_name"
+                    defaultValue={first_name}
+                    className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:bg-white focus:border-black outline-none"
+                  />
+                </div>
+                {/* Second Name */}
+                <div className="flex-col gap-2">
+                  <label
+                    htmlFor="last_name"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Second Name
+                  </label>
+                  <input
+                    required
+                    type="text"
+                    id='last_name'
+                    name="last_name"
+                    defaultValue={last_name}
+                    className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:bg-white focus:border-black outline-none"
+                  />
+                </div>
+                {/* In charge */}
+                <div className="flex-col gap-2">
+                  <label
+                    htmlFor="is_incharge"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    In Charge
+                  </label>
+                  
+                  <input
+                    name="is_incharge"
+                    id='is_incharge'
+                    type="checkbox"
+                    defaultChecked={is_incharge}
+                    className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300"
+                  />
+                </div>
+
+                {/* Delete CHEW */}
+
+                <div className="flex-col gap-2">
+                  <div className="flex items-center">
+                    {/* insert red button for deleting */}
+                    <button
+                      name="delete"
+                      onClick={e => {
+                        e.preventDefault();
+
+                        setHealthUnitWorkers(prev => {
+                          prev.splice(index, 1)
+
+                          return [...prev]
+                        })
+                      }}
+                      className="flex items-center justify-start space-x-2 bg-red-600  p-1 px-2"
+                    >
+                      <span className="text-medium font-semibold text-white">
+                        Delete
+                      </span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )
+          })
+        ) : (
+          <>
+            <li className="w-full  bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base leading-none">
+              <p>No HR data listed for this </p>
+            </li>
+          </>
+        )}
+
+        <div className="sticky top-0 right-10 w-full flex justify-end">
+          <button
+            className=" bg-blue-600 p-2 text-white flex text-md font-semibold "
+            onClick={(e) => {
+              e.preventDefault()
+              setHealthUnitWorkers(prev => [...prev, {first_name: "", last_name:"", is_incharge:""}])
+            }}
+          >
+            {`Add +`}
+            {/* <PlusIcon className='text-white ml-2 h-5 w-5'/> */}
+          </button>
+        </div>
+      </div>
+
+      {/* Save Changes */}
+      <div className="flex justify-end items-center w-full">
+
+        <button
+          type="submit"
+          className="flex items-center justify-end space-x-2 bg-blue-600  p-1 px-2"
+        >
+          <span className="text-medium font-semibold text-white">
+            {
+              submitting ?
+                <Spinner />
+                :
+                'Save and Finish'
+            }
+          </span>
+          {
+            submitting &&
+            <span className='text-white'>Saving </span>
+
+
+          }
+
+        </button>
+      </div>
+    </form>
+
+  )
+
+}
+
+
+function EditCommunityUnitsServicesForm(props) {
+
+  return (
+    <form
+      name="chu_services_form"
+      className="flex flex-col w-full items-center bg-blue-50 p-3 justify-start gap-3"
+
+    >
+      {/* Transfer list Container */}
+      <span className="text-md w-full font-semibold flex flex-wrap justify-between items-center leading-tight tracking-tight">
+        Available Services
+      </span>
+      <div className="flex items-center w-full h-auto">
+        <Select
+          styles={{
+            control: (baseStyles) => ({
+              ...baseStyles,
+              backgroundColor: 'transparent',
+              outLine: 'none',
+              border: 'none',
+              outLine: 'none',
+              textColor: 'transparent',
+              padding: 0,
+              height: '4px'
+            }),
+
+          }}
+          placeholder="Select Service ..."
+          options={serviceOptions}
+
+          name="services"
+          className='flex-none w-full  flex-grow  placeholder-gray-500 border border-blue-600 outline-none'
+
+        />
+      </div>
+      <br />
+      {/* Service Category Table */}
+      <span className="text-md w-full flex font-semibold flex-wrap justify-between items-center leading-tight tracking-tight">
+        Assigned Services
+      </span>{" "}
+      <table className="w-full  h-auto my-1">
+        <thead className="w-full">
+          <tr className="grid grid-cols-2 place-content-end border-b border-blue-600">
+            <td className="text-lg font-semibold text-blue-900 ">
+              Service
+            </td>
+            <td className="text-lg font-semibold text-blue-900 ml-12">
+              Action
+            </td>
+          </tr>
+        </thead>
+        <tbody className="gap-2">
+          {services && services?.length > 0 ? (
+            services?.map(({ id, name }) => (
+              <tr
+                key={id}
+                className="grid grid-cols-2 place-content-end border-b-2 border-gray-300"
+              >
+                <td>{name}</td>
+                <td className="ml-12 text-base my-2">
+                  <button
+                    type="button"
+
+                    className="flex items-center justify-start space-x-2 bg-red-600  p-1 px-2"
+                  >
+                    <span className="text-medium font-semibold text-white">
+                      Remove
+                    </span>
+                  </button>
+                </td>
+              </tr>
+            ))
+          ) : (
+            <>
+              <tr className="w-full  bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base">
+                <td>
+                  <span>
+                    {name} has not listed
+                    the services it offers. Add some below.
+                  </span>
+                  <br />
+
+                </td>
+              </tr>
+            </>
+          )}
+        </tbody>
+      </table>
+      <div className="flex justify-end items-center w-full">
+        <button
+          type="submit"
+          className="flex items-center justify-end space-x-2 bg-blue-600  p-1 px-2"
+        >
+          <span className="text-medium font-semibold text-white">
+            Save & Finish
+          </span>
+        </button>
+      </div>
+    </form>
   )
 }
 
@@ -657,7 +924,7 @@ export function CommunityUnitEditForm(props) {
 
 
   useEffect(() => {
-  
+
     setIsClient(true)
     // console.log({props})
 
@@ -691,11 +958,11 @@ export function CommunityUnitEditForm(props) {
   }, []);
 
 
- if (isClient){
-  return (
+  if (isClient) {
+    return (
 
-    <MainLayout>
-      <div className="w-full grid grid-cols-1 md:grid-cols-7 place-content-center md:grid gap-4 md:p-2 my-6">
+      <MainLayout>
+        <div className="w-full grid grid-cols-1 md:grid-cols-7 place-content-center md:grid gap-4 md:p-2 my-6">
           <div className="md:col-span-7 flex flex-col items-start justify-start gap-3">
             {/* Breadcrumb */}
             <div className="flex flex-row gap-2 text-sm md:text-base">
@@ -733,7 +1000,7 @@ export function CommunityUnitEditForm(props) {
                   >
                     #{props?.code || "NO_CODE"}
                   </span>
-                
+
                 </div>
               </div>
 
@@ -784,76 +1051,76 @@ export function CommunityUnitEditForm(props) {
 
           </div>
 
-            {/* Community Unit Side Menu */}
-            <div className="hidden md:col-span-1 md:flex md:mt-8">
-              <CommunityUnitSideMenu
-                qf={'all'}
-                filters={[]}
-                _pathId={''}
-               
-              />
-            </div>
+          {/* Community Unit Side Menu */}
+          <div className="hidden md:col-span-1 md:flex md:mt-8">
+            <CommunityUnitSideMenu
+              qf={'all'}
+              filters={[]}
+              _pathId={''}
 
-         {/* Form */}
-       <div className="col-span-1 md:col-span-6 flex flex-col md:gap-3 mt-8 border border-blue-600 pt-2">
-          <Tabs.Root
-            orientation="horizontal"
-            className="w-full flex flex-col tab-root"
-            defaultValue="basic_details"
-          >
-            {/* Tabs List */}
-            <Tabs.List className="list-none  border-b border-blue-600 md:grid md:grid-cols-3 flex flex-wrap gap-2 md:gap-3 px-4 uppercase leading-none tab-list font-semibold">
-              <Tabs.Tab
+            />
+          </div>
+
+          {/* Form */}
+          <div className="col-span-1 md:col-span-6 flex flex-col md:gap-3 mt-8 bg-blue-50 shadow-md pt-2">
+            <Tabs.Root
+              orientation="horizontal"
+              className="w-full flex flex-col tab-root"
+              defaultValue="basic_details"
+            >
+              {/* Tabs List */}
+              <Tabs.List className="list-none  border-b border-blue-600 md:grid md:grid-cols-3 flex flex-wrap gap-2 md:gap-3 px-4 uppercase leading-none tab-list font-semibold">
+                <Tabs.Tab
+                  value="basic_details"
+                  className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
+                >
+                  Basic Details
+                </Tabs.Tab>
+                <Tabs.Tab
+                  value="chews"
+                  className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
+                >
+                  CHPs
+                </Tabs.Tab>
+                <Tabs.Tab
+                  value="services"
+                  className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
+                >
+                  Services
+                </Tabs.Tab>
+              </Tabs.List>
+
+              {/* Panel List */}
+
+              {/* Basic Details Panel */}
+              <Tabs.Panel
                 value="basic_details"
-                className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
+                className="grow-1 p-3 mx-auto w-full tab-panel"
               >
-                Basic Details
-              </Tabs.Tab>
-              <Tabs.Tab
-                value="chews"
-                className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
-              >
-                CHPs
-              </Tabs.Tab>
-              <Tabs.Tab
+                <EditCommunityUnitsBasicDeatilsForm {...props?.props} />
+              </Tabs.Panel>
+
+              {/* Chews Panel */}
+              <Tabs.Panel value="chews" className="grow-1 p-3 mx-auto w-full tab-panel">
+                <EditCommunityUnitsCHEWSForm {...props?.props} />
+              </Tabs.Panel>
+
+              {/* Services Panel */}
+              <Tabs.Panel
                 value="services"
-                className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
+                className="grow-1 p-3 mx-auto w-full tab-panel"
               >
-                Services
-              </Tabs.Tab>
-            </Tabs.List>
 
-            {/* Panel List */}
+              </Tabs.Panel>
 
-            {/* Basic Details Panel */}
-            <Tabs.Panel
-              value="basic_details"
-              className="grow-1 p-3 mx-auto w-full tab-panel"
-            >
-              <EditCommunityUnitsBasicDeatilsForm {...props?.props} />
-            </Tabs.Panel>
+            </Tabs.Root>
+          </div>
 
-            {/* Chews Panel */}
-            <Tabs.Panel value="chews" className="grow-1 p-3 mx-auto w-full tab-panel">
-
-            </Tabs.Panel>
-
-             {/* Services Panel */}
-             <Tabs.Panel
-              value="services"
-              className="grow-1 p-3 mx-auto w-full tab-panel"
-            >
-
-            </Tabs.Panel>
-
-          </Tabs.Root>
         </div>
-
-      </div>
-    </MainLayout>
-  )
+      </MainLayout>
+    )
   } else {
-   return null
+    return null
   }
 
 }
