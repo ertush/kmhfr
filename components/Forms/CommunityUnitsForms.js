@@ -20,6 +20,7 @@ import 'react-dual-listbox/lib/react-dual-listbox.css';
 import { useAlert } from 'react-alert'
 import Alert from '@mui/material/Alert';
 import Spinner from '../../components/Spinner'
+import EditListItem from '../../components/Forms/formComponents/EditListItem'
 
 function EditCommunityUnitsBasicDeatilsForm(props) {
 
@@ -226,7 +227,6 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
 
           options={options?.facilities}
           defaultValue={options?.facilities?.find(({ value }) => value == props?.facility)}
-
           placeholder="Select Link facility ..."
           name="facility_name"
           onChange={handleFieldChange}
@@ -624,7 +624,6 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
 
 function EditCommunityUnitsCHEWSForm(props) {
 
-  // const current_services = Array.from(props?.services, s => s?.service) || []
 
   const [submitting, setSubmitting] = useState(false)
   const [deleting, setDeleting] = useState(false)
@@ -923,112 +922,167 @@ function EditCommunityUnitsCHEWSForm(props) {
 
   )
 
-  }
-
-
+}
 
 
 function EditCommunityUnitsServicesForm(props) {
 
-  return (
-    <form
-      name="chu_services_form"
-      className="flex flex-col w-full items-center bg-blue-50 p-3 justify-start gap-3"
+    const currentServices = props?.services?.map(({name: label, service: value}) => ({label, value}))
 
-    >
-      {/* Transfer list Container */}
-      <span className="text-md w-full font-semibold flex flex-wrap justify-between items-center leading-tight tracking-tight">
-        Available Services
-      </span>
-      <div className="flex items-center w-full h-auto">
-        <Select
-          styles={{
-            control: (baseStyles) => ({
-              ...baseStyles,
-              backgroundColor: 'transparent',
-              outLine: 'none',
-              border: 'none',
-              outLine: 'none',
-              textColor: 'transparent',
-              padding: 0,
-              height: '4px'
-            }),
+    // console.log(JSON.stringify(props, null, 2))
 
-          }}
-          placeholder="Select Service ..."
-          options={serviceOptions}
+    // const [formError, setFormError] = useState('')
+    const options = useContext(ChuOptionsContext)
 
-          name="services"
-          className='flex-none w-full  flex-grow  placeholder-gray-500 border border-blue-600 outline-none'
+    const [submitting, setSubmitting] = useState(false)
+  
+    // const serviceCtg = props?.service_category ?? []
+  
+    const serviceOptions = ((_services) => {
+  
+      const _serviceOptions = []
+      let _values = []
+      let _subCtgs = []
+  
+      if (_services.length > 0) {
+        _services.forEach(({ category_name: ctg }) => {
+          let allOccurences = _services.filter(({ category_name }) => category_name === ctg)
+  
+          allOccurences.forEach(({ id, name }) => {
+            _subCtgs.push(name)
+            _values.push(id)
+          })
+  
+          if (_serviceOptions.map(({ name }) => name).indexOf(ctg) === -1) {
+            _serviceOptions.push({
+              name: ctg,
+              subCategories: _subCtgs,
+              value: _values
+            })
+          }
+  
+          _values = []
+          _subCtgs = []
+  
+        })
+      }
+  
+  
+  
+  
+      return _serviceOptions.map(({ name, subCategories, value }) => ({
+        label: name,
+        options: subCategories.map((_label, i) => ({ label: _label, value: value[i] }))
+      }))
+  
+    })(options?.services ?? [])
+  
+  
+    function handleSubmit (token, selectedServices, chulId) {
+      // console.log({stateSetters, chulId})
+      
+  
+    const _payload = selectedServices.map(({value}) => ({ service: value }))
 
-        />
-      </div>
-      <br />
-      {/* Service Category Table */}
-      <span className="text-md w-full flex font-semibold flex-wrap justify-between items-center leading-tight tracking-tight">
-        Assigned Services
-      </span>{" "}
-      <table className="w-full  h-auto my-1">
-        <thead className="w-full">
-          <tr className="grid grid-cols-2 place-content-end border-b border-blue-600">
-            <td className="text-lg font-semibold text-blue-900 ">
-              Service
-            </td>
-            <td className="text-lg font-semibold text-blue-900 ml-12">
-              Action
-            </td>
-          </tr>
-        </thead>
-        <tbody className="gap-2">
-          {services && services?.length > 0 ? (
-            services?.map(({ id, name }) => (
-              <tr
-                key={id}
-                className="grid grid-cols-2 place-content-end border-b-2 border-gray-300"
-              >
-                <td>{name}</td>
-                <td className="ml-12 text-base my-2">
-                  <button
-                    type="button"
+		_payload.forEach(obj => obj['health_unit'] = chulId)
 
-                    className="flex items-center justify-start space-x-2 bg-red-600  p-1 px-2"
-                  >
-                    <span className="text-medium font-semibold text-white">
-                      Remove
-                    </span>
-                  </button>
-                </td>
-              </tr>
-            ))
-          ) : (
-            <>
-              <tr className="w-full  bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base">
-                <td>
-                  <span>
-                    {name} has not listed
-                    the services it offers. Add some below.
-                  </span>
-                  <br />
+    
+  
+      if(_payload) {
+      try {
+        return fetch(`${process.env.NEXT_PUBLIC_API_URL}/chul/units/${props?.id}/`, {
+          headers: {
+            'Accept': 'application/json, text/plain, */*',
+                      'Content-Type': 'application/json;charset=utf-8',
+            'Authorization': `Bearer ${props?.token}`
+          },
+          method: 'PATCH',
+          body: JSON.stringify({services: _payload})
+        })
 
-                </td>
-              </tr>
-            </>
-          )}
-        </tbody>
-      </table>
-      <div className="flex justify-end items-center w-full">
-        <button
-          type="submit"
-          className="flex items-center justify-end space-x-2 bg-blue-600  p-1 px-2"
+        // .then(async resp => {
+        //   if (resp.status == 200 || resp.status == 204) {
+
+        //     setSubmitting(false)
+
+        //     alert.success(`${props?.name} services have been updated successfully`, {
+        //       containerStyle: {
+        //         backgroundColor: "green",
+        //         color: "#fff"
+        //       },
+        //       timeout: 10000
+        //     })
+
+        //   } else {
+        //     // const detail = await resp.json()
+
+        //     setSubmitting(false)
+        //     // setFormError(Array.isArray(Object.values(detail)) && Object.values(detail).length == 1 && typeof Object.values(detail)[0] == 'string' && detail[0][0])
+        //     alert.error(`Unable to update ${props?.name} services`, {
+        //       timeout: 10000
+        //     })
+        //   }
+        // })
+          
+  
+      }
+      catch (e) {
+        console.error(e.message)
+      }
+      }
+  
+    };
+  
+ 
+
+
+    return (
+      <>
+        <h4 className='text-lg uppercase pb-2 border-b border-blue-600 w-full mb-4 font-semibold text-blue-900'>
+          Services Offered
+        </h4>
+  
+        {/* {
+          JSON.stringify(props?.service_category)
+        } */}
+  
+        <div
+          name='chu_services_form'
+          className='flex flex-col w-full items-start justify-start gap-3'
         >
-          <span className="text-medium font-semibold text-white">
-            Save & Finish
-          </span>
-        </button>
-      </div>
-    </form>
-  )
-}
+          <div className='flex flex-col w-full items-start justify-start gap-3 mt-6'>
+  
+            {/* Edit list Item Container */}
+            <div className='flex items-center w-full h-auto min-h-[300px]'>
+  
+              
+              <EditListItem
+                initialSelectedItems={currentServices}
+                categoryItems={serviceOptions[0]?.options} //serviceOptions
+                itemId={props?.id} //chulId
+                item={null}
+                 token={props?.token}
+                handleItemsSubmit={handleSubmit} //handleCHUServiceSubmit
+                handleItemsUpdate={() => null} //handleServiceUpdates
+                setNextItemCategory={null}
+                setSubmitting={setSubmitting}
+                submitting={submitting}
+                options={serviceOptions[0]?.options}
+                itemName={'chul_services'}
+                handleItemPrevious={() => null} //handleServicePrevious
+              
+              />
+  
+            </div>
+          </div>
+        </div>
+      </>
+    );
+  
+  
+  
+  }
+  
 
 
 export function CommunityUnitEditForm(props) {
@@ -1250,6 +1304,7 @@ export function CommunityUnitEditForm(props) {
                 value="services"
                 className="grow-1 p-3 mx-auto w-full tab-panel"
               >
+                <EditCommunityUnitsServicesForm {...props?.props} />
 
               </Tabs.Panel>
 

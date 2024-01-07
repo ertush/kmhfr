@@ -125,7 +125,7 @@ export async function getServerSideProps({req, res, query}) {
         break;
 
       case "services":
-        const services = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/chul/services/?page_size=1000&fields=id,name`,{
+        const services = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/chul/services/?page_size=100&ordering=name`,{
           headers:{
             'Authorization': 'Bearer ' + token,
             'Accept': 'application/json'
@@ -133,7 +133,7 @@ export async function getServerSideProps({req, res, query}) {
           
         })
 
-        response["services"] =  (await (await services.json()))?.results?.map(({ id, name }) => ({ label: name, value: id }))
+        response["services"] =  (await (await services.json()))?.results
         break;
       }
       } 
