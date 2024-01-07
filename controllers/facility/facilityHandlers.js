@@ -201,7 +201,6 @@ function handleGeolocationSubmit(token, values, stateSetters) {
     geolocationData['facility'] = facilityId ?? ''
 
     // Convert the latitude/longitude from string to number
-
     geolocationData['latitude'] = Number(geolocationData.latitude)
     geolocationData['longitude'] = Number(geolocationData.longitude)
 
@@ -213,13 +212,9 @@ function handleGeolocationSubmit(token, values, stateSetters) {
         ],
         type: 'Point'
     }
-
-
     // Post Geolocation Details
 
     // console.log({geo_payload: JSON.stringify(geolocationData).replace(',"":""','')})
-
-
     try {
         fetch(`${process.env.NEXT_PUBLIC_API_URL}/gis/facility_coordinates/`, {
             headers: {
@@ -242,9 +237,7 @@ function handleGeolocationSubmit(token, values, stateSetters) {
 // handleFacilityContactsSubmit
 function handleFacilityContactsSubmit(token, values, facilityId) {
 
-
     // console.log({values})
-
     const facilityContacts = []
     const contactEntries = Object.entries(values).filter(arr => ((/^contact_[0-9]{1}/.test(arr[0])) || (/^contact_type_[0-9]{1}/.test(arr[0]))));
     const contact_temp = contactEntries.filter(contact => /^contact_\d/.test(contact[0])).map(() => ({}))

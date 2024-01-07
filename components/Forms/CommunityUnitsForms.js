@@ -172,7 +172,7 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
       onSubmit={handleFormSubmit}
     >
 
-      {formError && <Alert severity="danger" sx={{ width: '100%', marginY: '15px' }}>{formError}</Alert>}
+      {formError && <Alert severity="error" sx={{ width: '100%', marginY: '15px' }}>{formError}</Alert>}
 
       {/* CHU Name */}
       <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
@@ -627,38 +627,172 @@ function EditCommunityUnitsCHEWSForm(props) {
   // const current_services = Array.from(props?.services, s => s?.service) || []
 
   const [submitting, setSubmitting] = useState(false)
+  const [deleting, setDeleting] = useState(false)
+  const [formError, setFormError] = useState(null)
+
   const [healthUnitWorkers, setHealthUnitWorkers] = useState(props?.health_unit_workers)
   const alert = useAlert()
 
+  const [deleteButton, setDeleteButton] = useState(props?.health_unit_workers.map((_, i) => ({[i]: false})))
+
+  
   function handleFormSubmit(event) {
       event.preventDefault()
 
+      setSubmitting(true)
+
+      
       const formData = new FormData(event.target)
       const formDataObject = Object.fromEntries(formData)
 
-      console.log({
-        formDataObject
-      })
+      for(let [k,v] of formData) {
+        if(v == "on") {
+          formDataObject[k] = true
+        } else {
+            formDataObject[`is_incharge_${k.split('_').at(-1)}`] = false
+            formDataObject[k] = v
+          }
+        }
+      
+        let payload = Object.keys(formDataObject)?.filter(k => /first_name_\d/.test(k)).map(() => ({}))
+   
+        const formDataEntries = Object.entries(formDataObject)
+
+        formDataEntries.forEach((entry) => {
+          console.log({ent0: entry[0],ent1: entry[1]})
+          if (/^first_name_[0-9]{1}/.test(entry[0])) payload[parseInt(entry[0].split('_').at(-1))]['first_name'] = entry[1];
+          if (/^last_name_[0-9]{1}/.test(entry[0])) payload[parseInt(entry[0].split('_').at(-1))]['last_name'] = entry[1];
+          if (/^is_incharge_[0-9]{1}/.test(entry[0])) payload[parseInt(entry[0].split('_').at(-1))]['is_incharge'] = entry[1];
+
+        })
+
+        payload = payload.filter(({first_name}, i) => first_name !== props?.health_unit_workers[i]?.first_name)
+
+        console.log(JSON.stringify(payload, null, 2))
+
+      try {
+        fetch(`${process.env.NEXT_PUBLIC_API_URL}/chul/units/${props?.id}/`, {
+          headers: {
+            'Accept': 'application/json, text/plain, */*',
+            'Content-Type': 'application/json;charset=utf-8',
+            'Authorization': `Bearer ${props?.token}`
+          },
+          method: 'PATCH',
+          body: JSON.stringify({health_unit_workers: payload})
+        })
+  
+          .then(async resp => {
+            if (resp.status == 200) {
+  
+              setSubmitting(false)
+  
+              alert.success(`${props?.name} Community Health Workers Updated successfully`, {
+                containerStyle: {
+                  backgroundColor: "green",
+                  color: "#fff"
+                }
+              })
+  
+            } else {
+              // const detail = await resp.json()
+  
+              setSubmitting(false)
+              // setFormError(Array.isArray(Object.values(detail)) && Object.values(detail).length == 1 && typeof Object.values(detail)[0] == 'string' && detail[0][0])
+              alert.error('Unable to update Community Units healtjh workers')
+            }
+          })
+      }
+  
+      catch (e) {
+        alert.error('Error Occured: ' + e.message)
+      }
   }
-  return (
+
+
+
+  function handleDelete(event, index, id) {
+    event.preventDefault();
+
+    const itemId = event.target.parentNode.dataset.id
+
+    setDeleting(true)
+   
+    setDeleteButton(prev => {
+      prev[index][index] = true
+
+      return prev
+    })
+
+  
+
+    // const index = parseInt(event.target.name.split('_').at(-1))
+    
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/chul/workers/${id}/`, {
+      headers: {
+        'Accept': 'application/json, text/plain, */*',
+        'Content-Type': 'application/json;charset=utf-8',
+        'Authorization': `Bearer ${props?.token}`
+      },
+      method: 'DELETE',
+    })
+    
+    .then(resp => {
+      if(resp.status == 204) {
+
+        setDeleting(false)
+
+
+        setHealthUnitWorkers(prev => {
+          setDeleteButton(prev => {
+            return prev.filter(obj => obj[index] !== true)
+          })
+          return prev.filter(({id}) => id !== itemId)
+  
+  
+         })
+
+        // setDeleteButton(props?.health_unit_workers.map((_, i) => ({[i]: false})))
+
+
+        alert.success(`${props?.health_unit_workers[index]?.name} has been deleted successfully`)
+      } else {
+          resp.json().then(({detail}) => {
+          alert.error('Unable to delete health worker', {timeout: 10000})
+            setDeleting(false)
+            setFormError(detail)
+
+          })
+          // console.log({error})
+
+      }
+    })
+    .catch(e => {
+      console.error(e.message)
+    })
+    
+    
+  }
+
+   return (
     <form
       name="chews_form"
       className="flex flex-col p-3 h-full bg-blue-50 w-full items-start justify-start gap-3"
       onSubmit={handleFormSubmit}
     >
+      {formError && <Alert severity='error' className={'w-full'}>Error when deleting: {formError}</Alert>}
       
       <div className="w-full flex flex-col items-start justify-start gap-y-7 mb-3">
         {Array.isArray(healthUnitWorkers) && healthUnitWorkers.length > 0 ? (
-          healthUnitWorkers?.map(({ first_name, last_name, is_incharge }, index) => {
+          healthUnitWorkers?.map(({ first_name, last_name, is_incharge, id }, index) => {
             return (
               <div
                 className="flex flex-row items-center justify-between md:mx-1 gap-4 w-full"
-                key={index}
+                key={id}
               >
                 {/* First Name */}
                 <div className="flex-col gap-2">
                   <label
-                    htmlFor="first_name"
+                    htmlFor={`first_name_${index}`}
                     start
                     className="block text-sm font-medium text-gray-700"
                   >
@@ -667,8 +801,8 @@ function EditCommunityUnitsCHEWSForm(props) {
                   <input
                     required
                     type="text"
-                    id='first_name'
-                    name="first_name"
+                    id={`first_name_${index}`}
+                    name={`first_name_${index}`}
                     defaultValue={first_name}
                     className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:bg-white focus:border-black outline-none"
                   />
@@ -676,7 +810,7 @@ function EditCommunityUnitsCHEWSForm(props) {
                 {/* Second Name */}
                 <div className="flex-col gap-2">
                   <label
-                    htmlFor="last_name"
+                    htmlFor={`last_name_${index}`}
                     className="block text-sm font-medium text-gray-700"
                   >
                     Second Name
@@ -684,24 +818,25 @@ function EditCommunityUnitsCHEWSForm(props) {
                   <input
                     required
                     type="text"
-                    id='last_name'
-                    name="last_name"
+                    id={`last_name_${index}`}
+                    name={`last_name_${index}`}
                     defaultValue={last_name}
+                   
                     className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:bg-white focus:border-black outline-none"
                   />
                 </div>
                 {/* In charge */}
                 <div className="flex-col gap-2">
                   <label
-                    htmlFor="is_incharge"
+                    htmlFor={`is_incharge_${index}`}
                     className="block text-sm font-medium text-gray-700"
                   >
                     In Charge
                   </label>
                   
                   <input
-                    name="is_incharge"
-                    id='is_incharge'
+                    name={`is_incharge_${index}`}
+                    id={`is_incharge_${index}`}
                     type="checkbox"
                     defaultChecked={is_incharge}
                     className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300"
@@ -714,20 +849,23 @@ function EditCommunityUnitsCHEWSForm(props) {
                   <div className="flex items-center">
                     {/* insert red button for deleting */}
                     <button
-                      name="delete"
-                      onClick={e => {
-                        e.preventDefault();
-
-                        setHealthUnitWorkers(prev => {
-                          prev.splice(index, 1)
-
-                          return [...prev]
-                        })
-                      }}
+                      onClick={(e) => handleDelete(e, index, id)}
                       className="flex items-center justify-start space-x-2 bg-red-600  p-1 px-2"
+                      data-id={props?.health_unit_workers[index]?.id}
+
                     >
                       <span className="text-medium font-semibold text-white">
-                        Delete
+                        {
+                          deleting && deleteButton[index][index] ? 
+                          <span className='flex place-content-center gap-2'>
+                            <Spinner/>
+                            <span>Deleting...</span>
+                          </span>
+                          :
+                          'Delete'
+
+                        }
+                        
                       </span>
                     </button>
                   </div>
@@ -785,7 +923,9 @@ function EditCommunityUnitsCHEWSForm(props) {
 
   )
 
-}
+  }
+
+
 
 
 function EditCommunityUnitsServicesForm(props) {

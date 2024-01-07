@@ -14,9 +14,7 @@ const FacilityContact = ({contactTypeOptions, setFacilityContacts, index, fieldN
 
     const contactTypes = useContext(FacilityContactsContext);
 
-    // console.log({errors})
-
-    // const editContacts = useContext(EditFacilityContactsContext)
+ 
 
     const alert = useAlert()
 

@@ -218,7 +218,7 @@ function CommunityUnitsBasciDetailsForm(props) {
 				Community Health Unit Basic Details
 			</h4>
 
-			{formError && <Alert severity="danger" sx={{width:'100%', marginY:'15px'}}>{formError}</Alert> }
+			{formError && <Alert severity="error" sx={{width:'100%', marginY:'15px'}}>{formError}</Alert> }
 	
 			{/* Actual form */}
 			<form
@@ -747,7 +747,7 @@ function CommunityUnitsExtensionWorkersForm(props) {
 				CHEWs: Community Health Promoters
 			</h4>
 
-			{formError && <Alert severity="danger" sx={{width:'100%', marginY:'15px'}}>{formError}</Alert> }
+			{formError && <Alert severity="error" sx={{width:'100%', marginY:'15px'}}>{formError}</Alert> }
 
 			<form
 				name='chews_form'
