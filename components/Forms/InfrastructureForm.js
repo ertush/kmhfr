@@ -1,8 +1,7 @@
 import { useContext, useMemo, useState} from 'react';
 import EditListWithCount from './formComponents/EditListWithCount';
 import { FormOptionsContext } from '../../pages/facilities/add';
-// import { FormContext } from './Form';
-// import { FacilityIdContext } from './EditForm'
+import { useRouter } from 'next/router'
 
 
 import {
@@ -28,7 +27,7 @@ export function InfrastructureForm() {
             setId(new URL(window.location.href).searchParams.get('formId'))
         }
 
-        // console.log({id})
+        
 
         return [id, setId]
     }, [])
@@ -43,13 +42,13 @@ export function InfrastructureForm() {
             setId(new URL(window.location.href).searchParams.get('facilityId'))
         }
 
-        // console.log({id})
-
+        
         return [id, setId]
     }, [])
 
     const [servicesFormUrl, setServicesFormUrl] = useState('')
     const [submitting, setSubmitting] = useState(false)
+    const router = useRouter()
     
     const { updatedSavedChanges, updateFacilityUpdateData } = options?.data ? useContext(FacilityUpdatesContext) : {updatedSavedChanges: null, updateFacilityUpdateData: null }
 
@@ -64,8 +63,7 @@ export function InfrastructureForm() {
     //Options
     const infrastructureOption = ((_infrastructure) => {
 
-		// extract infrastructure categories and compose into an array of objects
-
+		
 		const categories = _infrastructure.map(({category_name, category}) => ({label:category_name, value:category}));
 
 		const infraCategoryValues = [ ...(new Set(categories.map(({value}) => value)).values()) ];
@@ -83,14 +81,21 @@ export function InfrastructureForm() {
        //Event handlers
        function handleInfrastructurePrevious() {
         // setFormId(`${parseInt(formId) - 1}`);
-        const url = new URL(servicesFormUrl)
+        // const url = new URL(servicesFormUrl)
 
-        url.searchParams.set('formId', '4')
+        // url.searchParams.set('formId', '4')
 
-        url.searchParams.set('from', 'previous')
+        // url.searchParams.set('from', 'previous')
 
+        // router.push(url)
 
-        window.location.href = url
+        router.push({
+            pathname: '/facilities/add',
+            query: {
+                formId: 4
+            }
+        })
+
 
     }
 

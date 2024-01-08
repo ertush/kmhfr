@@ -1,8 +1,7 @@
 import {useContext, useCallback, useMemo, useState} from 'react';
 import EditListWithCount from './formComponents/EditListWithCount';
 import { FormOptionsContext } from '../../pages/facilities/add';
-import { FormContext } from './Form';
-import { FacilityIdContext } from './EditForm'
+import { useRouter } from 'next/router';
 
 import {
     handleHrSubmit, handleHrUpdates
@@ -19,6 +18,7 @@ export function HumanResourceForm() {
 
     // Context
     const options = useContext(FormOptionsContext);
+    const router = useRouter()
 
     // const [formId, setFormId] = useContext(FormContext);
     const [formId, setFormId] = useMemo(() => {
@@ -92,13 +92,22 @@ export function HumanResourceForm() {
 
     const handleHrPrevious = useCallback(() => {
 
-    const url = new URL(infrastructureFormUrl)
+    // const url = new URL(infrastructureFormUrl)
 
-    url.searchParams.set('formId', '5')
+    // url.searchParams.set('formId', '5')
 
-    url.searchParams.set('from', 'previous')
+    // url.searchParams.set('from', 'previous')
 
-    window.location.href = url
+    // router.push(url)
+
+    router.push({
+        pathname: '/facilities/add',
+        query: {
+            formId: 5
+        }
+    })
+
+
     }, []);
 
     return (

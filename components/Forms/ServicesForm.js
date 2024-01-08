@@ -10,6 +10,7 @@ import {
 } from '../../controllers/facility/facilityHandlers'
 // import { FacilityIdContext } from './EditForm'
 import { FacilityUpdatesContext } from '../../pages/facilities/edit/[id]';
+import {useRouter} from 'next/router'
 
 
 
@@ -40,6 +41,9 @@ export function ServicesForm() {
 
     
     const [regulationFormURL, setRegulationFormURL] = useState('');
+
+    const router = useRouter()
+
     const [formId, setFormId] = useMemo(() => {
         let id = ''
 
@@ -88,17 +92,23 @@ export function ServicesForm() {
     function handleServicePrevious() {
         // setFormId(`${parseInt(formId) - 1}`);
 
-        const url = new URL(regulationFormURL)
+        // const url = new URL(regulationFormURL)
 
-        url.searchParams.set('formId', '3')
+        // url.searchParams.set('formId', '3')
 
-        url.searchParams.set('from', 'previous')
+        // url.searchParams.set('from', 'previous')
 
-        window.location.href = url
+        // router.push(url)
 
-    
+        router.push({
+            pathname: '/facilities/add',
+            query: {
+                formId: 3
+            }
+        })
 
-    } 
+
+  } 
 
     return <>
                 <h4 className="text-lg uppercase pb-2 mt-4 border-b border-blue-600 w-full mb-4 font-semibold text-blue-900">Services</h4>
@@ -109,7 +119,7 @@ export function ServicesForm() {
                     <div className='flex items-center w-full h-auto min-h-[300px]'>
 
                         <EditListItem
-                            initialSelectedItems={options?.data? options?.data.facility_services:[]}
+                            initialSelectedItems={options?.data ? options?.data.facility_services:[]}
                             categoryItems={serviceOptions.categories}
                             itemsCategoryName={'Services'}
                             itemId={facilityId ?? options?.data?.id}

@@ -430,6 +430,19 @@ export function BasicDeatilsForm({ editMode }) {
                 params.push(`wardData=${base64EncWardData}`)
 
                 const base64EncParams = Buffer.from(params.join('&')).toString('base64')
+
+
+                // router.push({
+                //   pathname:`${window.location.origin}/facilities/add`,
+                  
+                //   query:{
+                //     formData: base64EncParams,
+                //     formId: 1,
+                //     facilityId: facilityId,
+                //     from: 'submission'
+                //   }
+                
+                // })
         
                 const url = new URL(`${window.location.origin}/facilities/add?formData=${base64EncParams}`)
                 

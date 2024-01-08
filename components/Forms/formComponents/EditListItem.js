@@ -35,11 +35,12 @@ function EditListItem({
 
 
   const [allServices, setallServices] = useState([])
-  const [selectedItems, setSelectedItems] = useState((initialSelectedItems ? (() => {
+  const [selectedItems, setSelectedItems] = useState(Array.isArray(initialSelectedItems) && initialSelectedItems.length > 0 ? (() => {
     const result = []
 
     if(itemName == 'facility_services'){
-    initialSelectedItems.map((service) => {
+      console.log({initialSelectedItems})
+    initialSelectedItems?.map((service) => {
 
       result.push({ sname: service.service_name, rowid: service.service_id, category_id: service.category_id, category_name: service.category_name })
 
@@ -53,7 +54,9 @@ function EditListItem({
   }
 
 
-  })() : []))
+  })() : [])
+
+  // console.log(JSON.stringify(selectedItems, null, 2))
 
 
   const editService = servicesData?.map(({ service_name: name, service_id, id }) => ({ id, service_id, name }));
@@ -97,8 +100,8 @@ function EditListItem({
 
   const handleCheckboxChange = (id, name, category, category_name) => {
     setSelectedItems((prevSelectedRows) => {
-      if (prevSelectedRows.filter((row) => row.rowid == id).length > 0) {
-        return prevSelectedRows.filter((row) => row.rowid !== id);
+      if (prevSelectedRows?.filter((row) => row.rowid == id).length > 0) {
+        return prevSelectedRows?.filter((row) => row.rowid !== id);
       } else {
         let customitem = {}
         customitem = { rowid: id, sname: name, category_id: category, category_name: category_name }
@@ -189,6 +192,17 @@ function EditListItem({
 
               const base64EncParams = Buffer.from(payload).toString('base64')
 
+            //   router.push({
+            //     pathname: `${window.location.origin}/facilities/add`,
+            //     query: { 
+            //       formData: base64EncParams,
+            //       formId: 5,
+            //       facility_id: itemId,
+            //       from: 'submission'
+
+            //     }
+            // })
+
               const url = new URL(`${window.location.origin}/facilities/add?formData=${base64EncParams}`)
 
               url.searchParams.set('formId', '5')
@@ -198,6 +212,7 @@ function EditListItem({
               url.searchParams.set('from', 'submission')
 
               window.location.href = url
+              
               } else {
                 setSubmitting(false)
 
@@ -305,11 +320,11 @@ function EditListItem({
                   </tr>
                 </thead>
                 <tbody className='bg-blue-50 shadow-md'>
-                  {allServices.length === 0 && <tr><td colSpan={3} className="text-center">No services found</td></tr>}
+                  {Array.isArray(allServices) && allServices.length === 0 && <tr><td colSpan={3} className="text-center">No services found</td></tr>}
                   {
                     itemName !== "chul_services" ?
                       <>
-                        {allServices.map((row, i) => (
+                        {allServices?.map((row, i) => (
                           <tr key={i}>
                             <td className="border px-1 py-1">
                               <label className="w-full p-2" >{row.name}</label>
@@ -318,7 +333,7 @@ function EditListItem({
                               <input
                                 type="checkbox"
                                 className="p-1 w-5 h-5"
-                                checked={selectedItems.some(item => item.rowid.includes(row.id))}
+                                checked={selectedItems?.some(item => item.rowid.includes(row.id))}
                                 onChange={(e) => handleCheckboxChange(
                                   row.id,
                                   row.name,
@@ -333,7 +348,7 @@ function EditListItem({
                       </>
                       :
                       <>
-                        {allServices.map(({ label, value }, i) => (
+                        {allServices?.map(({ label, value }, i) => (
                           <tr key={i}>
                             <td className="border px-1 py-1">
                               <label className="w-full p-2" >{label}</label>
@@ -382,11 +397,11 @@ function EditListItem({
               </tr>
             </thead>
             <tbody className='bg-blue-50 shadow-md'>
-              {selectedItems.length === 0 && <tr><td colSpan={3} className="text-center">No services found</td></tr>}
+              {Array.isArray(selectedItems) && selectedItems.length === 0 && <tr><td colSpan={3} className="text-center">No services found</td></tr>}
 
               {
                 itemName == "facility_services" ?
-                  selectedItems.map((row, i) => (
+                  selectedItems?.map((row, i) => (
                     <tr key={i}>
                       <td className="border border-gray-300 px-1 py-1">{row.sname}</td>
                       <td className="border border-gray-300 px-1 py-1">
@@ -395,7 +410,7 @@ function EditListItem({
                     </tr>
                   ))
                   :
-                  selectedItems.map(({ label, value}) => (
+                  selectedItems?.map(({ label, value}) => (
                     <tr key={value}>
                       <td className="border border-gray-300 px-1 py-1">{label}</td>
                       <td className="border border-gray-300 px-1 flex place-content-center py-1">

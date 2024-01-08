@@ -277,7 +277,7 @@ function handleFacilityContactsSubmit(token, values, facilityId) {
     const payload = { contacts: facilityContacts, officer_in_charge: officerDetails };
 
 
-    //    console.log({payload})
+       console.log(JSON.stringify(payload, null, 2))
 
     if (facilityId && token) {
         try {
@@ -343,12 +343,25 @@ async function handleRegulationSubmit(token, values, facilityId, setSubmitting, 
     ]
 
 
-    // console.log({payload, facility_name}) // debug
 
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${facilityId}/`, {
 
-    payload.forEach(async (data, i) => {
-        try {
-            const resp = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${facilityId}/`, {
+        headers: {
+            'Authorization': 'Bearer ' + token,
+            'Accept': 'application/json, text/plain, */*',
+            'Content-Type': 'application/json;charset=utf-8'
+
+        },
+        method: 'PATCH',
+        body: JSON.stringify(payload[0])
+    })
+    .then(resp => {
+        if (resp.status == 204 || resp.status == 200) {
+            alert.success('Facility Regulation Details Created Successfully', {
+                timeout: 10000
+            })
+
+            fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${facilityId}/`, {
 
                 headers: {
                     'Authorization': 'Bearer ' + token,
@@ -357,22 +370,95 @@ async function handleRegulationSubmit(token, values, facilityId, setSubmitting, 
 
                 },
                 method: 'PATCH',
-                body: JSON.stringify(data)
+                body: JSON.stringify(payload[1])
             })
+            .then(resp => {
+                if(resp.status == 204 || resp.status == 200 ) {
+                    setSubmitting(false)
+                    alert.success('Facility Department units Created Successfully', {
+                        timeout: 10000
+                    })
 
-            if (resp.status == 204 || resp.status == 200) {
-                // alert.success('Facilty Regulation details saved successfully')
-            } else {
-                alert.error('unable to save Regulation details ')
-            }
-        } catch (e) {
-            console.error('Unable to patch facility contacts details', e.message)
+                    // Posting  license  file
+
+                    const formDataBase64Enc = Buffer.from(JSON.stringify(payload)).toString('base64')
+
+                    // router.push({
+                    //     pathname: `${window.location.origin}/facilities/add`,
+                    //     query: { 
+                    //       formData: formDataBase64Enc,
+                    //       formId: 4,
+                    //       facility_id: facilityId,
+                    //       from: 'submission'
+    
+                    //     }
+                    // })
+                    const url = new URL(`${window.location.origin}/facilities/add?formData=${formDataBase64Enc}`)
+
+                    url.searchParams.set('formId', '4')
+
+                    url.searchParams.set('facilityId', facilityId)
+
+                    url.searchParams.set('from', 'submission')
+
+                    window.location.href = url
+
+                } else {
+                    setSubmitting(false)
+                    alert.error('Unable to create Facility Department units', {
+                        timeout: 10000
+                    })
+                }
+            })
+            .catch(console.error)
+        } else {
+            setSubmitting(false)
+                    alert.error('Unable to create Facility Reguation Details', {
+                        timeout: 10000
+                    })
         }
-    })
+    }) 
+    .catch(console.error)
+
+    // payload.forEach(async (data, i) => {
+    //     try {
+    //         const resp = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${facilityId}/`, {
+
+    //             headers: {
+    //                 'Authorization': 'Bearer ' + token,
+    //                 'Accept': 'application/json, text/plain, */*',
+    //                 'Content-Type': 'application/json;charset=utf-8'
+
+    //             },
+    //             method: 'PATCH',
+    //             body: JSON.stringify(data)
+    //         })
+
+    //         if (resp.status == 204 || resp.status == 200) {
+    //             setSubmitting(false)
+    //             alert.success('Facilty Regulation details saved successfully')
+
+    //             const formDataBase64Enc = Buffer.from(JSON.stringify(values)).toString('base64')
 
 
-    // Post the license document
+    //             router.push({
+    //                 pathname: `${window.location.origin}/facilities/add?formData=[formData]&formId=[formId]&facilityId=[facilityId]`,
+    //                 query: { 
+    //                   formData: formDataBase64Enc,
+    //                   formId: 3,
+    //                   facility_id: facilityId,
+    //                   from: 'submission'
 
+    //                 }
+    //               })
+    //         } else {
+    //             setSubmitting(false)
+    //             alert.error('unable to save Regulation details ')
+    //         }
+    //     } catch (e) {
+    //         console.error('Unable to patch facility contacts details', e.message)
+    //     }
+    // })
 
     if (facilityId && licenseFile) {
         fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${facilityId}/`, {
@@ -418,49 +504,26 @@ async function handleRegulationSubmit(token, values, facilityId, setSubmitting, 
 
                             alert.success('License Document saved successfully')
 
-                            const formDataBase64Enc = Buffer.from(JSON.stringify(values)).toString('base64')
-
-                            const url = new URL(`${window.location.origin}/facilities/add?formData=${formDataBase64Enc}`)
-
-                            url.searchParams.set('formId', '4')
-
-                            url.searchParams.set('facilityId', facilityId)
-
-                            url.searchParams.set('from', 'submission')
-
-                            window.location.href = url
-
                         }
 
-                        return resp
+                    
                     }
                     catch (e) {
                         console.error('Unable to Post License Document', e.message)
                     }
                 } else {
-                    alert.error('Unable to save facility regulation ')
+                    console.error('No license file ')
 
                 }
 
             })
     }
-    else {
-        setSubmitting(false)
-
-        const formDataBase64Enc = Buffer.from(JSON.stringify(values)).toString('base64')
-
-        const url = new URL(`${window.location.origin}/facilities/add?formData=${formDataBase64Enc}`)
-
-        url.searchParams.set('formId', '4')
-
-        url.searchParams.set('facilityId', facilityId)
 
 
-        url.searchParams.set('from', 'submission')
+    // Post the license document
 
-        window.location.href = url
 
-    }
+   
 
 
     // setFormId(`${parseInt(formId) + 1}`);

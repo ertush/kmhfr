@@ -13,9 +13,7 @@ import {
 import { useContext, useState, useEffect } from 'react';
 import { ChuOptionsContext } from '../../pages/community-units/edit/[id]';
 import Select from 'react-select'
-
 import 'react-dual-listbox/lib/react-dual-listbox.css';
-
 import 'react-dual-listbox/lib/react-dual-listbox.css';
 import { useAlert } from 'react-alert'
 import Alert from '@mui/material/Alert';
@@ -927,11 +925,9 @@ function EditCommunityUnitsCHEWSForm(props) {
 
 function EditCommunityUnitsServicesForm(props) {
 
-    const currentServices = props?.services?.map(({name: label, service: value}) => ({label, value}))
+    const currentServices = props?.services?.map(({name: label, service: value}) => ({label, value})) ?? []
 
-    // console.log(JSON.stringify(props, null, 2))
-
-    // const [formError, setFormError] = useState('')
+  
     const options = useContext(ChuOptionsContext)
 
     const [submitting, setSubmitting] = useState(false)

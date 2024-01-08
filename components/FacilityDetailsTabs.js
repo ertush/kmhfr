@@ -4,7 +4,7 @@ import { CheckCircleIcon, XCircleIcon } from "@heroicons/react/solid";
 
 function FacilityDetailsTabs({ facility }) {
   return (
-    <div className="col-span-5 md:col-span-3 flex border border-blue-600 flex-col gap-3 mt-4">
+    <div className="col-span-5 md:col-span-3 flex bg-blue-50 shadow-md flex-col gap-3 mt-4">
       <Tabs.Root
         orientation="horizontal"
         className="w-full flex flex-col tab-root"
@@ -53,7 +53,7 @@ function FacilityDetailsTabs({ facility }) {
         >
           <div className="col-span-4 md:col-span-4 flex flex-col gap-y-2 group items-center justify-start text-left">
             {/* Status */}
-            <div className="bg-blue-50 w-full p-3 grid grid-cols-2 gap-3 shadow-md mt-4">
+            <div className="bg-blue-50 w-full grid grid-cols-2 gap-3 mt-4">
               <h3 className="text-lg leading-tight underline col-span-2 text-gray-700 font-medium">
                 Status:
               </h3>
@@ -210,7 +210,7 @@ function FacilityDetailsTabs({ facility }) {
               </div>
             </div>
             {/* Regulation */}
-            <div className="bg-blue-50 w-full p-3  flex flex-col gap-3 shadow-md mt-4">
+            <div className="bg-blue-50 w-full  flex flex-col gap-3 mt-4">
               <h3 className="text-lg leading-tight underline text-gray-700 font-medium">
                 Regulation:
               </h3>
@@ -323,7 +323,7 @@ function FacilityDetailsTabs({ facility }) {
               </div>
             </div>
             {/* Ownership */}
-            <div className="bg-blue-50 w-full p-3  flex flex-col gap-3 shadow-md mt-4">
+            <div className="bg-blue-50 w-full  flex flex-col gap-3 mt-4">
               <h3 className="text-lg leading-tight underline text-gray-700 font-medium">
                 Ownership:
               </h3>
@@ -345,7 +345,7 @@ function FacilityDetailsTabs({ facility }) {
               </div>
             </div>
             {/* Location */}
-            <div className="bg-blue-50 w-full p-3  flex flex-col gap-3 shadow-md mt-4">
+            <div className="bg-blue-50 w-full  flex flex-col gap-3 mt-4">
               <h3 className="text-lg leading-tight underline text-gray-700 font-medium">
                 Location:
               </h3>
@@ -423,7 +423,7 @@ function FacilityDetailsTabs({ facility }) {
               </div>
             </div>
             {/* Bed Capacity */}
-            <div className="bg-blue-50 w-full p-3  flex flex-col gap-3 shadow-md mt-4">
+            <div className="bg-blue-50 w-full  flex flex-col gap-3 mt-4">
               <h3 className="text-lg leading-tight underline text-gray-700 font-medium">
                 Bed capacity:
               </h3>
@@ -494,7 +494,7 @@ function FacilityDetailsTabs({ facility }) {
               
             </div>
             {/* Theaters */}
-            <div className="bg-blue-50 w-full p-3  flex flex-col gap-3 shadow-md mt-4">
+            <div className="bg-blue-50 w-full  flex flex-col gap-3 mt-4">
               <h3 className="text-lg leading-tight underline text-gray-700 font-medium">
                 Surgical Theatres:
               </h3>
@@ -516,7 +516,7 @@ function FacilityDetailsTabs({ facility }) {
               </div>
             </div>
             {/* Contacts */}
-            <div className="bg-blue-50 w-full p-3  flex flex-col gap-3 shadow-md my-4">
+            <div className="bg-blue-50 w-full  flex flex-col gap-3 my-4">
               <h3 className="text-lg leading-tight underline text-gray-700 font-medium">
                 Contacts:
               </h3>

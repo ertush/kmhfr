@@ -63,13 +63,21 @@ export function GeolocationForm({ editMode }) {
   function handleGeolocationPrevious(e) {
     e.preventDefault()
 
-    const url = new URL(basicDetailsURL)
+    // const url = new URL(basicDetailsURL)
 
-    url.searchParams.set('formId', '0')
+    // url.searchParams.set('formId', '0')
 
-    url.searchParams.set('from', 'previous')
+    // url.searchParams.set('from', 'previous')
 
-    window.location.href = url
+    // router.push(url)
+
+    router.push({
+      pathname: '/facilities/add',
+      query: {
+          formId: 0
+      }
+  })
+
 
   }
 
@@ -183,6 +191,17 @@ export function GeolocationForm({ editMode }) {
           if (wardData) params.push(`wardData=${Buffer.from(JSON.stringify(wardData)).toString('base64')}`)
 
           const base64EncParams = Buffer.from(params.join('&')).toString('base64')
+
+          // router.push({
+          //   pathname: `${window.location.origin}/facilities/add`,
+          //   query: { 
+          //     formData: base64EncParams,
+          //     formId: 2,
+          //     facilityId: facilityId,
+          //     from: 'submission'
+
+          //   }
+          // })
 
           const url = new URL(`${window.location.origin}/facilities/add?formData=${base64EncParams}`)
 

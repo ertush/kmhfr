@@ -1,18 +1,11 @@
 import { useState, useContext, useMemo, useEffect, useRef, useCallback, createContext } from 'react';
 import { Formik, Field, Form } from 'formik'
-import { FormContext } from './Form';
-// import { object, string } from "zod";
 import { FormOptionsContext } from '../../pages/facilities/add';
-// import {useLocalStorageState} from './hooks/formHook';
 import Select from './formComponents/FormikSelect';
-// import { toFormikValidationSchema } from "zod-formik-adapter";
 import { ChevronDoubleLeftIcon, ChevronDoubleRightIcon, PlusIcon } from '@heroicons/react/outline';
 import FacilityDepartmentUnits from './formComponents/FacilityDepartmentUnits'
-// import { FacilityIdContext } from './EditForm'
 import { handleRegulationSubmit, handleRegulationUpdates } from '../../controllers/facility/facilityHandlers';
 import { useAlert } from 'react-alert';
-// import { FacilityUpdatesContext } from '../../pages/facilities/edit/[id]';
-// import { defer } from 'underscore';
 import Spinner from '../Spinner';
 import { useRouter } from 'next/router';
 
@@ -41,15 +34,11 @@ export function RegulationForm() {
     })
 
 
-    // const { updatedSavedChanges, updateFacilityUpdateData } = options?.data ? useContext(FacilityUpdatesContext) : {updatedSavedChanges: null, updateFacilityUpdateData: null }
-
-
-    // const[facilityId, _] = useContext(FacilityIdContext);
 
     const alert = useAlert()
     const router = useRouter()
 
-    // const [responseError, setResponseError] = useState(null);
+ 
     const [facilityId, setFacilityId] = useState('');
     const [facilityContactsUrl, setFacilityContactsUrl] = useState('');
     const [submitting, setSubmitting] = useState(false);
@@ -140,13 +129,16 @@ export function RegulationForm() {
 
         event.preventDefault();
 
-        const previous_url =  new URL(facilityContactsUrl)
+        
+        router.push({
+            pathname: '/facilities/add',
+            query: {
+                formId: 2
+            }
+        })
 
-        previous_url.searchParams.set('formId', '2')
 
-        previous_url.searchParams.set('from', 'previous')
-
-        window.location.url = previous_url
+        // window.location.url = previous_url
 
     }
 , []);
@@ -253,6 +245,8 @@ export function RegulationForm() {
                    <>
                         <h4 className="text-lg uppercase mt-4 pb-2 border-b border-blue-600 w-full mb-4 font-semibold text-blue-900">Facility Regulation</h4>
                         <Form ref={formRef} name="facility_regulation_form" className='flex flex-col w-full items-start bg-blue-50 p-4 justify-start gap-3' >
+
+                            {/* {formError && <Alert severity='error' className={'w-full'}>Error when submitting: {formError}</Alert>} */}
 
                             {/* Regulatory Body */}
                             <div className="w-full flex flex-col background items-start justify-start gap-1 mb-3">

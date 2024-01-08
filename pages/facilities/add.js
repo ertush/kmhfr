@@ -85,7 +85,6 @@ export default function AddFacility(props) {
 
 export async function getServerSideProps (ctx) {
 
-	
 
 	const options = [
 		'facility_types',

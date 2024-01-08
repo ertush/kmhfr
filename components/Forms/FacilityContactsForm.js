@@ -213,13 +213,21 @@ export function FacilityContactsForm() {
 
         event.preventDefault()
 
-        const previous_url =  new URL(geolocationUrl)
+        // const previous_url =  new URL(geolocationUrl)
 
-        previous_url.searchParams.set('formId', '1')
+        // previous_url.searchParams.set('formId', '1')
 
-        previous_url.searchParams.set('from', 'previous')
+        // previous_url.searchParams.set('from', 'previous')
 
-        window.location.url = previous_url
+        // window.location.url = previous_url
+
+        router.push({
+            pathname: '/facilities/add',
+            query: {
+                formId: 1
+            }
+        })
+
 
     }, [])
 
@@ -260,6 +268,7 @@ export function FacilityContactsForm() {
                     :
                     handleFacilityContactsSubmit(options.token, values,  facilityId)
                         .then(resp => {
+                            console.log(JSON.stringify({token: options.token, values,  facilityId}, null , 2))
                             if (resp.status == 204) {
 
                                 setSubmitting(false)
@@ -274,6 +283,17 @@ export function FacilityContactsForm() {
                                 alert.success('Officer Incharge Contacts Saved successfully')
 
                                 const formDataBase64Enc = Buffer.from(JSON.stringify(values)).toString('base64')
+
+                                // router.push({
+                                //     pathname: `${window.location.origin}/facilities/add`,
+                                //     query: { 
+                                //       formData: formDataBase64Enc,
+                                //       formId: 3,
+                                //       facilityId: facilityId,
+                                //       from: 'submission'
+                        
+                                //     }
+                                //   })
 
                                 const url = new URL(`${window.location.origin}/facilities/add?formData=${formDataBase64Enc}`)
 
