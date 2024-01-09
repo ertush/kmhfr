@@ -135,8 +135,8 @@ dependencies:
     specifier: ^18.2.0
     version: 18.2.0(react@18.2.0)
   react-dual-listbox:
-    specifier: ^6.0.0
-    version: 6.0.1(react@18.2.0)
+    specifier: ^5.0.2
+    version: 5.0.2(react@18.2.0)
   react-highcharts:
     specifier: ^16.1.0
     version: 16.1.0(react-dom@18.2.0)(react@18.2.0)
@@ -6334,13 +6334,14 @@ packages:
       scheduler: 0.23.0
     dev: false
 
-  /react-dual-listbox@6.0.1(react@18.2.0):
-    resolution: {integrity: sha512-LZi3Dj+sBcz18b0Bq2LNWRDAsMTg2bo/4HoJJFHf/Lb1ydJaUTU79Nw6865CL4IopWb7u16wK2sJk96fFS2uuQ==}
+  /react-dual-listbox@5.0.2(react@18.2.0):
+    resolution: {integrity: sha512-n0XzH3pyJmM+JEA5Ji0WkbA9+K/9kM0zqWKixxi2ioo9WgcrYKbMK5G4JVMHqX6c7i1Cu8xKYFhWx905HfKkYA==}
     peerDependencies:
-      react: ^16.8.0 || ^17.0.0 || ^18.0.0
+      react: ^15.0.0 || ^16.0.0 || ^17.0.0 || ^18.0.0
     dependencies:
       classnames: 2.3.2
       lodash: 4.17.21
+      nanoid: 3.3.6
       prop-types: 15.8.1
       react: 18.2.0
     dev: false

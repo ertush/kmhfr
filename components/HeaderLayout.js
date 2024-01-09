@@ -240,7 +240,7 @@ export default function HeaderLayout({
                groupID == 2 ||
                groupID == 3 ) && isLoggedIn &&
               <li className="flex-wrap font-semibold">
-                <Link href="/users">
+                <Link href="/user">
                   <p
                     className={
                       `

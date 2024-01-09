@@ -155,7 +155,7 @@ const Users = (props) => {
                         </div>
 
 
-                        <div className='col-span-1 w-full col-start-1 h-auto py-0 border border-blue-600'>
+                        <div className='col-span-1 w-full col-start-1 h-auto py-0 bg-blue-50 shadow-md'>
                             
                             <List
                             sx={{ width: '100%', bgcolor: 'transparent', flexGrow:1, paddingTop:0, paddingBottom:0}}
@@ -163,10 +163,10 @@ const Users = (props) => {
                             aria-labelledby="nested-list-subheader"
                             
                             >	
-                                <ListItemButton className='border-b border-blue-600' sx={{
+                                <ListItemButton className='border-b border-gray-300' sx={{
                                 backgroundColor: usersTheme && '#2563eb',
                                                 color: usersTheme && '#ffff',
-                                                borderBottom: 'solid 1px #2563eb', 
+                                                borderBottom: 'solid 1px rgba(107, 114, 128, 1)', 
                                                 "&:hover": {
                                                 backgroundColor: "#eff6ff",
                                                 color: "rgba(17, 24, 39, 1)"
@@ -187,7 +187,7 @@ const Users = (props) => {
                                     sx={{
                                         backgroundColor: inactiveUsersTheme && '#2563eb',
                                         color: inactiveUsersTheme && '#ffff',
-                                        borderBottom: 'solid 1px #2563eb', 
+                                        borderBottom: 'solid 1px rgba(107, 114, 128, 1)', 
                                         "&:hover": {
                                         backgroundColor: "#eff6ff",
                                         color: "rgba(17, 24, 39, 1)"
@@ -208,7 +208,7 @@ const Users = (props) => {
                                 sx={{
                                         backgroundColor: groupsTheme && '#2563eb',
                                                 color: groupsTheme && '#ffff',
-                                                borderBottom: 'solid 1px #2563eb', 
+                                                borderBottom: 'solid 1px rgba(107, 114, 128, 1)', 
                                                 "&:hover": {
                                                 backgroundColor: "#eff6ff",
                                                 color: "rgba(17, 24, 39, 1)"
