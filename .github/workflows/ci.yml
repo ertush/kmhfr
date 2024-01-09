@@ -67,7 +67,8 @@ jobs:
           git pull origin main
           pnpm install
           pnpm run build
-          npx pm2 startOrRestart ecosystem.config.js --env local
+          pnpm dlx pm2 startOrRestart ecosystem.config.js --env local
+          pnpm dlx pm2 save
 
           
           

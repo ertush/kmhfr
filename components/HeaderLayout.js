@@ -176,6 +176,8 @@ export default function HeaderLayout({
           </button>
           <ul className="flex-col md:flex-row items-start md:items-start bg-gray-50 inset-x-4  mt-1 md:mx-6 py-1 md:p-1  md:bg-transparent shadow border md:border-none md:shadow-none gap-5 hidden md:flex group-focus:flex group-active:flex group-hover:flex absolute md:relative">
             {/* Dashboard / Home */}
+            {
+              isLoggedIn && 
             <li className="flex-wrap font-semibold" id="dashboard">
               <Link href={isLoggedIn ? "/dashboard" : "/"}>
                 <p
@@ -192,8 +194,11 @@ export default function HeaderLayout({
                 </p>
               </Link>
             </li>
+            }
+
             {/* Facilities */}
-          
+            {
+              isLoggedIn &&
             <li className="flex-wrap font-semibold">
               <Link href="/facilities">
                 <p
@@ -213,9 +218,11 @@ export default function HeaderLayout({
                 </p>
               </Link>
             </li>
+            }
             
             {/* Community Units */}
-           
+           {
+            isLoggedIn &&
             <li className="flex-wrap font-semibold">
               <Link href="/community-units">
                 <p
@@ -233,6 +240,7 @@ export default function HeaderLayout({
                 </p>
               </Link>
             </li>
+          }
             
             {/* Users */}
          
@@ -279,7 +287,7 @@ export default function HeaderLayout({
             {/* System setup */}
             {
               hasPermission(/^common.add_county$/, userPermissions) &&
-              hasPermission(/^common.delete_county$/, userPermissions) && isLoggedIn&&
+              hasPermission(/^common.delete_county$/, userPermissions) && isLoggedIn &&
               <li className="flex-wrap font-semibold">
                 <Link href="/system_setup">
                   <p
@@ -332,9 +340,9 @@ export default function HeaderLayout({
                 <Menu.Item as="li" className="flex items-center w-full gap-1">
                   {({ active }) => (
                     <Link
-                      className={`w-full hover:text-gray-400  font-medium flex items-center ${active && "text-blue-400"
+                      className={`w-full hover:text-blue-600  font-medium flex items-center ${active && "text-blue-400"
                         }`}
-                      href="/public/facility/facilities"
+                      href="/public/facilities"
                       target="_blank"
                     >
                       Facilities
@@ -344,9 +352,9 @@ export default function HeaderLayout({
                 <Menu.Item as="li" className="flex items-center w-full gap-1">
                   {({ active }) => (
                     <Link
-                      className={`w-full hover:text-gray-400  font-medium flex items-center ${active && "text-blue-400"
+                      className={`w-full hover:text-blue-600  font-medium flex items-center ${active && "text-blue-400"
                         }`}
-                      href="/public/chu/community_units"
+                      href="/public/chu/"
                       target="_blank"
                     >
                       Community units
@@ -364,7 +372,7 @@ export default function HeaderLayout({
              <Menu.Item as="li" className="flex items-center w-full gap-1">
                   {({ active }) => (
                     <span
-                      className={`w-full hover:text-gray-400 font-medium flex items-center ${active && "text-blue-400"
+                      className={`w-full hover:text-blue-600 font-medium flex items-center ${active && "text-blue-400"
                         }`}
                       // href="/reports"
                       onClick={() => router.push('/reports')}
