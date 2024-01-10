@@ -446,7 +446,6 @@ EditFacility.getInitialProps = async (ctx) => {
 								if(!_contact_types) Error("Unable to Contact Types")
 
 								const contact_types = (await _contact_types.json()).results.map(({ id, name }) => ({ value: id, label: name })) 
-
 								allOptions["contact_types"] = contact_types
 
 							}

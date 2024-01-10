@@ -295,7 +295,7 @@ function handleFacilityContactsSubmit(token, values, facilityId) {
             })
         }
         catch (e) {
-            console.error('Unable to update facility contacts details', e.message)
+            throw Error('Unable to update facility contacts details', e.message)
         }
     } else {
         return new Promise(reject => {
@@ -307,7 +307,7 @@ function handleFacilityContactsSubmit(token, values, facilityId) {
 };
 
 // handleRegulationSubmit
-async function handleRegulationSubmit(token, values, facilityId, setSubmitting, licenseFile, alert) {
+async function handleRegulationSubmit(token, values, facilityId, setSubmitting, licenseFile, alert, setFormError) {
 
     // console.log({license: licenseFileRef.current})
 
@@ -413,12 +413,35 @@ async function handleRegulationSubmit(token, values, facilityId, setSubmitting, 
             .catch(console.error)
         } else {
             setSubmitting(false)
-                    alert.error('Unable to create Facility Reguation Details', {
-                        timeout: 10000
-                    })
-        }
+            alert.error('Unable to create Facility Reguation Details', {
+                timeout: 10000
+            })
+
+            resp.json()
+            .then(resp => {
+                const formResponse = []
+                setFormError(() => {
+                if(typeof resp == 'object') {
+                    const respEntry = Object.entries(resp)
+
+                    for (let [_, v] of respEntry) {
+                    formResponse.push(v)
+                    }
+
+                    return `Error: ${formResponse.join("")}`
+                }
+                })
+            })
+        
+            
+}
     }) 
-    .catch(console.error)
+
+    .catch(e => {
+        setSubmitting(false)
+        setFormError(`Error :${e.message}`)
+        console.error(e.message)
+    })
 
     // payload.forEach(async (data, i) => {
     //     try {
@@ -688,7 +711,8 @@ async function handleBasicDetailsUpdates(token, formData, facility_id, updatedSa
 
 
 // handleFacilityContactUpdates
-async function handleFacilityContactsUpdates(token, values, facility_id) {
+async function handleFacilityContactsUpdates(token, values, facility_id, currentFacilityContacts, currentOfficerContacts) {
+
 
     const facilityContacts = [];
     const contactEntries = Object.entries(values).filter(arr => ((/^contact_[0-9]{1}/.test(arr[0])) || (/^contact_type_[0-9]{1}/.test(arr[0]))));
@@ -724,10 +748,33 @@ async function handleFacilityContactsUpdates(token, values, facility_id) {
     officerDetails['reg_no'] = values.officer_reg_no;
     officerDetails['title'] = values.officer_title;
 
+    const filteredFacilityContacts = facilityContacts?.filter(({contact}, i) => {
+        return contact !== currentFacilityContacts[i]?.contact
+    })
 
+    const filteredOfficerDetails = {}
 
-    const payload = { contacts: facilityContacts, officer_in_charge: officerDetails };
+    filteredOfficerDetails['contacts'] = officerDetails.contacts?.filter(({contact}, i) => {
+        return contact !== currentOfficerContacts?.contacts[i]?.contact
+    })
 
+    //Omit old values and only include new fields or fields that have changed
+
+    // filteredOfficerDetails['name'] = (officerDetails.name !== currentOfficerContacts.name && officerDetails.name) ?? null
+    // filteredOfficerDetails['reg_no'] = (officerDetails.reg_no !== currentOfficerContacts.reg_no && officerDetails.reg_no) ?? null
+    // filteredOfficerDetails['title'] = (officerDetails.title !== currentOfficerContacts.title && officerDetails.title) ?? null
+
+    // !filteredOfficerDetails['name'] && delete filteredOfficerDetails['name'] 
+    // !filteredOfficerDetails['reg_no'] && delete filteredOfficerDetails['reg_no'] 
+    // !filteredOfficerDetails['title'] && delete filteredOfficerDetails['title']
+    
+    
+    filteredOfficerDetails['name'] = officerDetails['name'] 
+    filteredOfficerDetails['reg_no'] = officerDetails['reg_no'] 
+    filteredOfficerDetails['title'] = officerDetails['title'] 
+
+    const payload = { contacts: filteredFacilityContacts, officer_in_charge: filteredOfficerDetails };
+    
 
     try {
         const resp = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${facility_id}/`, {
@@ -743,17 +790,16 @@ async function handleFacilityContactsUpdates(token, values, facility_id) {
             localStorage.clear()
         }
 
-
         return resp
 
     }
     catch (e) {
-        console.error('Error msg:', e.message)
+        console.error(e.message)
     }
 }
 
 // handleRegulationUpdate
-async function handleRegulationUpdates(token, values, facilityId, licenseFileRef, setSubmitting, router, alert) {
+async function handleRegulationUpdates(token, values, facilityId, licenseFileRef, setSubmitting, router, alert, setFormError) {
 
     let facility_name = ''
 
@@ -861,7 +907,26 @@ async function handleRegulationUpdates(token, values, facilityId, licenseFileRef
                             })
                         }
                         else {
+                            setSubmitting(false)
                             alert.error('Unable to update regulation form')
+                        //     const response = resp.json()
+                        //     if(response) {
+                        //     response    
+                        //     .then(resp => {
+                        //         const formResponse = []
+                        //         setFormError(() => {
+                        //         if(typeof resp == 'object') {
+                        //             const respEntry = Object.entries(resp)
+
+                        //             for (let [_, v] of respEntry) {
+                        //             formResponse.push(v)
+                        //             }
+
+                        //             return `Error: ${formResponse.join("")}`
+                        //         }
+                        //         })
+                        //     })
+                        // }
                         }
                     }
                 })
@@ -869,7 +934,9 @@ async function handleRegulationUpdates(token, values, facilityId, licenseFileRef
 
         }
         catch (e) {
-            console.error('Unable to patch facility contacts details', e.message)
+            setSubmitting(false)
+            setFormError(`Error: ${e.message}`)
+            console.error(e.message)
         }
     })
 }

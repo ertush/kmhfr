@@ -8,7 +8,7 @@ import {
 import 'react-dual-listbox/lib/react-dual-listbox.css';
 import { useRouter } from 'next/router';
 import { TrashIcon } from '@heroicons/react/solid'
-
+import { Alert } from '@mui/lab'
 
 
 
@@ -56,12 +56,12 @@ function EditListItem({
 
   })() : [])
 
-  // console.log(JSON.stringify(selectedItems, null, 2))
 
 
   const editService = servicesData?.map(({ service_name: name, service_id, id }) => ({ id, service_id, name }));
 
   const [savedItems, saveSelectedItems] = useState(servicesData ? editService : [])
+  const [formError, setFormError] = useState(null)
 
 
   // Refs
@@ -151,7 +151,10 @@ function EditListItem({
     //     localStorage.setItem('services_edit_form', '[]')
     //   }
     // }
-  }, [selectedItems])
+
+    console.log(JSON.stringify(selectedItems, null, 2))
+
+  }, [])
 
   function handleSubmit(e) {
 
@@ -173,6 +176,23 @@ function EditListItem({
               query: {
                 facility_id: itemId
               }
+            })
+          } else {
+            
+            resp.json()
+            .then(resp => {
+                const formResponse = []
+                setFormError(() => {
+                if(typeof resp == 'object') {
+                    const respEntry = Object.entries(resp)
+
+                    for (let [_, v] of respEntry) {
+                    formResponse.push(v)
+                    }
+
+                    return `Error: ${formResponse.join("")}`
+                }
+                })
             })
           }
         })
@@ -235,6 +255,22 @@ function EditListItem({
               setSubmitting(false)
               alert.error('Unable to save facility services');
 
+              resp.json()
+              .then(resp => {
+                  const formResponse = []
+                  setFormError(() => {
+                  if(typeof resp == 'object') {
+                      const respEntry = Object.entries(resp)
+
+                      for (let [_, v] of respEntry) {
+                      formResponse.push(v)
+                      }
+
+                      return `Error: ${formResponse.join("")}`
+                  }
+                  })
+              })
+
             }
           })
           .catch(e => console.error('unable to submit item data. Error:', e.message))
@@ -276,6 +312,11 @@ function EditListItem({
       onSubmit={handleSubmit}
 
     >
+
+      {formError && <Alert severity='error' className={'w-full'}>{formError}</Alert>}
+      <pre>{JSON.stringify(selectedItems, null, 2)}</pre>
+
+
 
       <div className='w-full grid grid-cols-12 gap-4'>
         <div className={`${itemName == "chul_services" ? 'col-span-12' : 'col-span-5'}`} >
@@ -398,7 +439,8 @@ function EditListItem({
             </thead>
             <tbody className='bg-blue-50 shadow-md'>
               {Array.isArray(selectedItems) && selectedItems.length === 0 && <tr><td colSpan={3} className="text-center">No services found</td></tr>}
-
+              
+              
               {
                 itemName == "facility_services" ?
                   selectedItems?.map((row, i) => (

@@ -21,6 +21,7 @@ import { defer } from 'underscore';
 import { useAlert } from 'react-alert';
 import Spinner from '../Spinner'
 import { useRouter } from 'next/router';
+import { Alert } from '@mui/lab'
 
 
 export const FacilityDeptContext = createContext(null)
@@ -59,6 +60,7 @@ export function FacilityContactsForm() {
     // const [formId, setFormId] = useState('');
     const [facilityId, setFacilityId] = useState('');
     const [submitting, setSubmitting] = useState(false);
+    const [formError, setFormError] = useState(null)
     const [geolocationUrl, setGeolocationUrl] = useState('')
     // const [responseError, setResponseError] = useState(null);
 
@@ -232,7 +234,6 @@ export function FacilityContactsForm() {
     }, [])
 
 
-
     return (
         <Formik
             initialValues={formValues}
@@ -241,7 +242,7 @@ export function FacilityContactsForm() {
                 setSubmitting(true)
 
                 options?.data ?
-                    handleFacilityContactsUpdates(options.token, values, options?.data?.id)
+                    handleFacilityContactsUpdates(options.token, values, options?.data?.id, options?.data?.facility_contacts, options?.data?.officer_in_charge)
                         .then((resp) => {
                             defer(() => updatedSavedChanges(true));
                             if (resp.status == 200 || resp.status == 204) {
@@ -257,14 +258,30 @@ export function FacilityContactsForm() {
 
                             else {
                                 alert.error("Unable to update facility contacts")
+                                resp.json()
+                                .then(resp => {
+                                  const formResponse = []
+                                  setFormError(() => {
+                                    if(typeof resp == 'object') {
+                                      const respEntry = Object.entries(resp)
+                      
+                                      for (let [_, v] of respEntry) {
+                                        formResponse.push(v)
+                                      }
+                      
+                                      return `Error: ${formResponse.join("")}`
+                                    }
+                                  })
+                                })
                             }
                         })
-                        .catch((e) =>
-                            console.error(
-                                "unable to fetch facility data. Error:",
-                                e.message
-                            )
-                        )
+                        .catch(e => {
+                            setSubmitting(false)
+                      
+                            setFormError(`Error: ${e.message}`)
+                            console.error(e.message)
+                          })
+                          
                     :
                     handleFacilityContactsSubmit(options.token, values,  facilityId)
                         .then(resp => {
@@ -311,8 +328,31 @@ export function FacilityContactsForm() {
                                 setSubmitting(false)
                                 alert.error('Unable to save Facility Contacts')
                                 alert.error('Unable to save Officer Incharge Contacts')
+
+                                resp.json()
+                                .then(resp => {
+                                  const formResponse = []
+                                  setFormError(() => {
+                                    if(typeof resp == 'object') {
+                                      const respEntry = Object.entries(resp)
+                      
+                                      for (let [_, v] of respEntry) {
+                                        formResponse.push(v)
+                                      }
+                      
+                                      return `Error: ${formResponse.join("")}`
+                                    }
+                                  })
+                                })
                             }
                         })
+                        .catch(e => {
+                            setSubmitting(false)
+                      
+                            setFormError(`Error: ${e.message}`)
+                            console.error(e.message)
+                          })
+                          
 
             }}
 
@@ -341,6 +381,10 @@ export function FacilityContactsForm() {
                                 name='facility_contacts_form'
 
                             >
+                                {
+                                    formError && <Alert severity='error' className='w-full'>{formError}</Alert> 
+                                }
+
                                 {/* Contacts */}
 
                                 <div

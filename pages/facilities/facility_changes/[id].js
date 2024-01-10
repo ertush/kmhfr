@@ -55,9 +55,11 @@ export default function FacilityChanges({ facility }) {
                                     Updates were made on {" "}
                                     <span className="text-blue-900 font-semibold text-base ">
                                         {
+                                            facility?.changes?.updated ?
                                             new Date(facility?.changes?.updated)
                                                 .toLocaleString()
                                                 .split(",")[0]
+                                            : '-'
                                         }
                                     </span>
                                     {" "}
