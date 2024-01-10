@@ -18,7 +18,7 @@ import { useRouter } from 'next/router';
 const WardMap = dynamic(
   () => import('../../components/WardGISMap'), // replace '@components/map' with your component's location
   {
-    loading: () => <div className="text-gray-800 text-lg  bg-white py-2 px-5 shadow w-auto mx-2 my-3">Loading&hellip;</div>,
+    loading: () => <div className="text-gray-800 text-lg bg-white py-2 px-5 shadow w-auto mx-2 my-3">Loading&hellip;</div>,
     ssr: false // This line is important. It's what prevents server-side render
   }
 )
@@ -27,7 +27,6 @@ const WardMap = dynamic(
 
 const Map = memo(WardMap)
 // const _ = require('underscore');
-
 
 
 
@@ -51,7 +50,7 @@ export function GeolocationForm({ editMode }) {
   const [latitude, setLatitude] = useState('')
   const [longitude, setLongitude] = useState('')
   const [wardData, setWardData] = useState({})
-  // const [facilityUdpatedJSON, setFacilityUpdatedJSON] = useState({})
+  const [formError, setFormError] = useState(null)
   const [from, setFrom] = useState('')
 
   const router = useRouter()
@@ -103,16 +102,16 @@ export function GeolocationForm({ editMode }) {
       facility: options?.data?.id
     }
 
-    try {
-      if (options?.data?.coordinates) {
+  
+      if (payload) {
 
-        fetch(`${process.env.NEXT_PUBLIC_API_URL}/gis/facility_coordinates/${options?.data?.coordinates}/`, {
+        fetch(`${process.env.NEXT_PUBLIC_API_URL}/gis/facility_coordinates${options?.data?.lat_long ? '/' + options?.data?.coordinates + '/' : '/'}`, {
           headers: {
             'Authorization': 'Bearer ' + options?.token,
             'Accept': 'application/json, text/plain, */*',
             'Content-Type': 'application/json;charset=utf-8'
           },
-          method: 'PATCH',
+          method: options?.data?.lat_long !== null && options?.data?.coordinates !== null ? 'PATCH' : 'POST',
           body: JSON.stringify(payload)
         })
           .then(resp => {
@@ -124,34 +123,37 @@ export function GeolocationForm({ editMode }) {
                   facility_id: options?.data?.id
                 }
               })
-            }
-
-          })
-      } else {
-        fetch(`${process.env.NEXT_PUBLIC_API_URL}/gis/facility_coordinates/`, {
-          headers: {
-            'Authorization': 'Bearer ' + options?.token,
-            'Accept': 'application/json, text/plain, */*',
-            'Content-Type': 'application/json;charset=utf-8'
-          },
-          method: 'POST',
-          body: JSON.stringify(payload)
-        })
-          .then(resp => {
-            if (resp.status == 204 || resp.status == 200) {
+            } else {
+              
               setSubmitting(false)
+              resp.json()
+              .then(resp => {
+                const formResponse = []
+                setFormError(() => {
+                  if(typeof resp == 'object') {
+                    const respEntry = Object.entries(resp)
 
+                    for (let [_, v] of respEntry) {
+                      formResponse.push(v)
+                    }
+
+                    return `Error: ${formResponse.join("")}`
+                  }
+                })
+              })
             }
 
           })
-
+          .catch(e => {
+            setSubmitting(false)
+            setFormError(`Error: ${e.message}`)
+            console.error(e.message)
+          })
+      
       }
 
 
-    }
-    catch (e) {
-      console.error('Error msg:', e.message)
-    }
+ 
 
 
   }
@@ -214,7 +216,29 @@ export function GeolocationForm({ editMode }) {
         } else {
           setSubmitting(false)
           alert.error('Unable to save to Geolocation details')
+
+          res.json()
+          .then(resp => {
+            const formResponse = []
+            setFormError(() => {
+              if(typeof resp == 'object') {
+                const respEntry = Object.entries(resp)
+
+                for (let [_, v] of respEntry) {
+                  formResponse.push(v)
+                }
+
+                return `Error: ${formResponse.join("")}`
+              }
+            })
+          })
         }
+      })
+      .catch(e => {
+        setSubmitting(false)
+
+        setFormError(`Error: ${e.message}`)
+        console.error(e.message)
       })
 
   }
@@ -302,6 +326,10 @@ export function GeolocationForm({ editMode }) {
       onSubmit={!editMode ? handleGeolocationFormCreate : handleGeolocationUpdates}
     >
 
+      {
+        formError && <Alert severity='error' className='w-full'>{formError}</Alert> 
+      }
+
       {/* Collection Date */}
       <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
         <label
@@ -386,9 +414,9 @@ export function GeolocationForm({ editMode }) {
 
 
             {
-              (editMode && options?.data?.lat_long !== null && Array.isArray(options?.data?.lat_long)) || (!editMode && geoJSON && geoCenter && wardName) ?
+              (editMode) || (!editMode && geoJSON && geoCenter && wardName) ?
 
-                <Map markerCoordinates={[options?.data?.lat_long[0] ?? latitude ?? geoCenter[0], options?.data?.lat_long[1] ?? longitude ?? geoCenter[1]]} geoJSON={geoJSON} from={from} ward={wardName} center={geoCenter} />
+                <Map markerCoordinates={[Array.isArray(options?.data?.lat_long) ? options?.data?.lat_long[0] : latitude ?? geoCenter[0], Array.isArray(options?.data?.lat_long) ? options?.data?.lat_long[1] : longitude ?? geoCenter[1]]} geoJSON={geoJSON} from={from} ward={wardName} center={geoCenter} />
                 :
                 <Alert severity='warning' className='w-full p-1'>Geolocation Data is Missing For this facility</Alert>
             }

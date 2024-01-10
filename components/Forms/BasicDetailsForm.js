@@ -12,6 +12,8 @@ import {
 import { useAlert } from 'react-alert';
 import Spinner from '../Spinner'
 import { useRouter } from 'next/router';
+import { Alert } from '@mui/lab';
+
 // import { FacilityIdContext, FacilityWardDataContext } from './Form';
 
 
@@ -27,6 +29,7 @@ export function BasicDeatilsForm({ editMode }) {
   const [facilityId, setFacilityId] = useState('')
   const [submitting, setSubmitting] = useState(false);
   const [touchedFields, setTouchedFields] = useState([]);
+  const [formError, setFormError] = useState(null)
 
 
   // Options
@@ -294,8 +297,6 @@ export function BasicDeatilsForm({ editMode }) {
 
     e.preventDefault()
 
-    console.log({touchedFields})
-
     const formData = new FormData(e.target)
 
     const data = Object.fromEntries(formData)
@@ -336,11 +337,32 @@ export function BasicDeatilsForm({ editMode }) {
       } else {
         alert.error('Unable to update facility')
         setSubmitting(false)
+        res.json()
+          .then(resp => {
+            const formResponse = []
+            setFormError(() => {
+              if(typeof resp == 'object') {
+                const respEntry = Object.entries(resp)
+
+                for (let [_, v] of respEntry) {
+                  formResponse.push(v)
+                }
+
+                return `Error: ${formResponse.join("")}`
+              }
+            })
+          })
 
       }
 
     }
     )
+    .catch(e => {
+      setSubmitting(false)
+
+      setFormError(`Error: ${e.message}`)
+      console.error(e.message)
+    })
     
 
 
@@ -374,6 +396,21 @@ export function BasicDeatilsForm({ editMode }) {
         } else {
           setSubmitting(false)
           alert.error('Unable to Add facility')
+          res.json()
+          .then(resp => {
+            const formResponse = []
+            setFormError(() => {
+              if(typeof resp == 'object') {
+                const respEntry = Object.entries(resp)
+
+                for (let [_, v] of respEntry) {
+                  formResponse.push(v)
+                }
+
+                return `Error: ${formResponse.join("")}`
+              }
+            })
+          })
         }
 
         setSubmitting(false)
@@ -464,6 +501,12 @@ export function BasicDeatilsForm({ editMode }) {
         }
 
        
+      })
+      .catch(e => {
+        setSubmitting(false)
+
+        setFormError(`Error: ${e.message}`)
+        console.error(e.message)
       })
 
 
@@ -566,6 +609,10 @@ export function BasicDeatilsForm({ editMode }) {
       <form name='basic_details_form'
         onSubmit={editMode ? handleBasicDetailsUpdate : handeBasicDetailsCreate }
         className='flex flex-col w-full mt-4 items-start bg-blue-50 p-3 justify-start gap-3'>
+
+      {
+        formError && <Alert severity='error' className='w-full'>{formError}</Alert> 
+      }
 
         {/* Facility Official Name */}
  

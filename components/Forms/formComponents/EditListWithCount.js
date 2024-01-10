@@ -8,6 +8,7 @@ import {
 import { useAlert } from 'react-alert'
 import Spinner from '../../Spinner'
 import { useRouter } from 'next/router'
+import {Alert} from '@mui/lab'
 
 
 function EditListWithCount(
@@ -41,6 +42,8 @@ function EditListWithCount(
     const [specialities, setSpecialities] = useState([])
     const [query, setQuery] = useState('')
     const [isActive, setIsActive] = useState(null);
+    const [formError, setFormError] = useState(null)
+
 
     function countCategoryTotalSpecialities(specialityid, newvalue, category) {
         let total = 0;
@@ -268,6 +271,23 @@ function EditListWithCount(
                     } else {
                         setSubmitting(false)
                         alert.error(`Unable to update facility ${e.target.name.includes("infrastructure") ? 'Infrastructure' : 'Human resource'}`)
+                        
+                        resp.json()
+                        .then(resp => {
+                            const formResponse = []
+                            setFormError(() => {
+                            if(typeof resp == 'object') {
+                                const respEntry = Object.entries(resp)
+          
+                                for (let [_, v] of respEntry) {
+                                formResponse.push(v)
+                                }
+          
+                                return `Error: ${formResponse.join("")}`
+                            }
+                            })
+                        })
+          
                     }
                 })
         }
@@ -286,6 +306,21 @@ function EditListWithCount(
                         } else {
                             setSubmitting(false)
                             alert.error('Unable to save facility humanresource')
+                            resp.json()
+                            .then(resp => {
+                                const formResponse = []
+                                setFormError(() => {
+                                if(typeof resp == 'object') {
+                                    const respEntry = Object.entries(resp)
+            
+                                    for (let [_, v] of respEntry) {
+                                    formResponse.push(v)
+                                    }
+            
+                                    return `Error: ${formResponse.join("")}`
+                                }
+                                })
+                            })
                         }
 
                     })
@@ -329,6 +364,22 @@ function EditListWithCount(
 
                         setSubmitting(false)
                         alert.error('Unable to save facility infrastructure')
+                        resp.json()
+                        .then(resp => {
+                            const formResponse = []
+                            setFormError(() => {
+                            if(typeof resp == 'object') {
+                                const respEntry = Object.entries(resp)
+          
+                                for (let [_, v] of respEntry) {
+                                formResponse.push(v)
+                                }
+          
+                                return `Error: ${formResponse.join("")}`
+                            }
+                            })
+                        })
+          
                     }
 
                 })
@@ -368,7 +419,9 @@ function EditListWithCount(
             className="flex flex-col w-full items-start justify-start gap-3"
             onSubmit={handleSubmit}
         >
-       
+
+            {formError && <Alert severity='error' className={'w-full'}>{formError}</Alert>}
+
             <div className='w-full grid grid-cols-12 gap-4'>
                 <div className="col-span-5" >
                     <h4 className="text-lg uppercase mt-4 pb-2 border-b border-blue-600 w-full mb-4 font-semibold text-blue-900">Categories</h4>
