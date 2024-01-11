@@ -149,9 +149,9 @@ export default function EditFacility(props) {
 											className="flex justify-center text-base font-semibold text-white bg-blue-500  py-1 px-2"
 											onClick={() => {
 												if (isSavedChanges) {
-													alert.success("Facility updates saved successfully")
+													alert.success({timeout: 10000}, "Facility updates saved successfully")
 												} else {
-													alert.error("Unable to save facility updates")
+													alert.error({timeout: 10000}, "Unable to save facility updates")
 												}
 												router.push("/facilities")
 											}}

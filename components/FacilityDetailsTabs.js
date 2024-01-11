@@ -10,7 +10,7 @@ function FacilityDetailsTabs({ facility }) {
         className="w-full flex flex-col tab-root"
         defaultValue="overview"
       >
-        <Tabs.List className="list-none flex flex-wrap gap-2 md:gap-3 px-4 uppercase leading-none tab-list font-semibold border-b border-blue-600">
+        <Tabs.List className="list-none flex justify-evenly flex-wrap gap-2 md:gap-3 px-4 uppercase leading-none tab-list font-semibold border-b border-blue-600">
           <Tabs.Tab
             id={1}
             value="overview"

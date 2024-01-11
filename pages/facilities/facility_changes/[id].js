@@ -98,7 +98,7 @@ export default function FacilityChanges({ facility }) {
                                         className="flex justify-center text-base font-semibold text-white bg-blue-500  py-1 px-2"
                                         onClick={() => {
 
-                                            alert.success("Facility updates saved successfully")
+                                            alert.success({timeout: 10000}, "Facility updates saved successfully")
                                             router.push("/facilities")
                                         }}
                                     >

@@ -152,13 +152,13 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
 
             setSubmitting(false)
             // setFormError(Array.isArray(Object.values(detail)) && Object.values(detail).length == 1 && typeof Object.values(detail)[0] == 'string' && detail[0][0])
-            alert.error('Unable to save Community Units Basic details')
+            alert.error({timeout: 10000}, 'Unable to save Community Units Basic details')
           }
         })
     }
 
     catch (e) {
-      alert.error('Error Occured: ' + e.message)
+      alert.error({timeout: 10000}, 'Error Occured: ' + e.message)
     }
 
 
@@ -695,13 +695,13 @@ function EditCommunityUnitsCHEWSForm(props) {
   
               setSubmitting(false)
               // setFormError(Array.isArray(Object.values(detail)) && Object.values(detail).length == 1 && typeof Object.values(detail)[0] == 'string' && detail[0][0])
-              alert.error('Unable to update Community Units healtjh workers')
+              alert.error({timeout: 10000}, 'Unable to update Community Units healtjh workers')
             }
           })
       }
   
       catch (e) {
-        alert.error('Error Occured: ' + e.message)
+        alert.error({timeout: 10000}, 'Error Occured: ' + e.message)
       }
   }
 
@@ -751,7 +751,7 @@ function EditCommunityUnitsCHEWSForm(props) {
         // setDeleteButton(props?.health_unit_workers.map((_, i) => ({[i]: false})))
 
 
-        alert.success(`${props?.health_unit_workers[index]?.name} has been deleted successfully`)
+        alert.success({timeout: 10000}, `${props?.health_unit_workers[index]?.name} has been deleted successfully`)
       } else {
           resp.json().then(({detail}) => {
           alert.error('Unable to delete health worker', {timeout: 10000})

@@ -906,7 +906,7 @@ const system_setup = (props) => {
                 if(data.details){
                     alert.danger('Error: '+data.details)
                   }else{
-                    alert.success( (editMode? 'Updated' : 'Added') +' Successfully')
+                    alert.success({timeout: 10000},  (editMode? 'Updated' : 'Added') +' Successfully')
                   }
             })
        } catch (error) {
@@ -2565,7 +2565,7 @@ const system_setup = (props) => {
                                                                             if(data.details){
                                                                                 alert.danger('Error: '+data.details)
                                                                             }else{
-                                                                                alert.success( (editMode? 'Updated' : 'Added') +' Successfully')
+                                                                                alert.success({timeout: 10000},  (editMode? 'Updated' : 'Added') +' Successfully')
                                                                             }
                                                                         })
                                                                 } catch (error) {

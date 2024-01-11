@@ -90,11 +90,11 @@ export function GeolocationForm({ editMode }) {
 
     const data = Object.fromEntries(formData)
 
-    setSubmitting(true)
+    setSubmitting(true) 
 
     const payload = {
       coordinates: {
-        coordinates: [Number(data?.latitude), Number(data?.longitude)],
+        coordinates: [Number(data?.longitude), Number(data?.latitude)],
         type: 'point'
       },
       latitude: Number(data?.latitude),
@@ -111,11 +111,12 @@ export function GeolocationForm({ editMode }) {
             'Accept': 'application/json, text/plain, */*',
             'Content-Type': 'application/json;charset=utf-8'
           },
-          method: options?.data?.lat_long !== null && options?.data?.coordinates !== null ? 'PATCH' : 'POST',
+          method: options?.data?.lat_long && options?.data?.coordinates ? 'PATCH' : 'POST',
           body: JSON.stringify(payload)
         })
           .then(resp => {
-            if (resp.status == 200) {
+            if (resp.status == 200 || resp.status == 201) {
+              alert.success('Geolocation Detatils saved Successfully', {timeout: 10000})
               setSubmitting(false)
               router.push({
                 pathname: '/facilities/facility_changes/[facility_id]/',
@@ -124,7 +125,7 @@ export function GeolocationForm({ editMode }) {
                 }
               })
             } else {
-              
+              alert.error('Unable to save Geolocation Details Successfully', {timeout: 10000})
               setSubmitting(false)
               resp.json()
               .then(resp => {
@@ -137,7 +138,7 @@ export function GeolocationForm({ editMode }) {
                       formResponse.push(v)
                     }
 
-                    return `Error: ${formResponse.join("")}`
+                    return `Error: ${formResponse.join(" ")}`
                   }
                 })
               })
@@ -180,7 +181,7 @@ export function GeolocationForm({ editMode }) {
     })
       .then(res => {
         if (res.status == 204 || res.status == 200) {
-          alert.success('Facility Geolocation Details have been saved successfully')
+          alert.success({timeout: 10000}, 'Facility Geolocation Details have been saved successfully')
 
           setSubmitting(false)
 
@@ -215,7 +216,7 @@ export function GeolocationForm({ editMode }) {
 
         } else {
           setSubmitting(false)
-          alert.error('Unable to save to Geolocation details')
+          alert.error({timeout: 10000}, 'Unable to save to Geolocation details')
 
           res.json()
           .then(resp => {
@@ -228,7 +229,7 @@ export function GeolocationForm({ editMode }) {
                   formResponse.push(v)
                 }
 
-                return `Error: ${formResponse.join("")}`
+                return `Error: ${formResponse.join(" ")}`
               }
             })
           })
@@ -263,6 +264,9 @@ export function GeolocationForm({ editMode }) {
 
   useEffect(() => {
 
+    setLatitude(Array.isArray(options?.data?.lat_long) ? options?.data?.lat_long[0] : '' ?? geoCenter[0])
+    setLongitude(Array.isArray(options?.data?.lat_long) ? options?.data?.lat_long[1] : '' ?? geoCenter[1])
+    
     // console.log(JSON.stringify({wardData}))
 
     if (window && !editMode) {
@@ -370,7 +374,7 @@ export function GeolocationForm({ editMode }) {
             type='decimal'
             name='longitude'
             step={0.000001}
-            defaultValue={(options?.data?.lat_long && options?.data?.lat_long?.length == 2 && options?.data?.lat_long[0]) ?? ''}
+            defaultValue={(options?.data?.lat_long && options?.data?.lat_long?.length == 2 && options?.data?.lat_long[1]) ?? ''}
             onChange={handleInput}
             placeholder='Enter longitude'
             className='flex-none w-full  p-2 flex-grow border bg-transparent placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
@@ -396,7 +400,7 @@ export function GeolocationForm({ editMode }) {
             step={0.000001}
             onChange={handleInput}
             placeholder='Enter latitude'
-            defaultValue={(options?.data?.lat_long && options?.data?.lat_long?.length == 2 && options?.data?.lat_long[1]) ?? ''}
+            defaultValue={(options?.data?.lat_long && options?.data?.lat_long?.length == 2 && options?.data?.lat_long[0]) ?? ''}
             className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
           />
 
@@ -416,7 +420,7 @@ export function GeolocationForm({ editMode }) {
             {
               (editMode) || (!editMode && geoJSON && geoCenter && wardName) ?
 
-                <Map markerCoordinates={[Array.isArray(options?.data?.lat_long) ? options?.data?.lat_long[0] : latitude ?? geoCenter[0], Array.isArray(options?.data?.lat_long) ? options?.data?.lat_long[1] : longitude ?? geoCenter[1]]} geoJSON={geoJSON} from={from} ward={wardName} center={geoCenter} />
+                <Map markerCoordinates={[latitude, longitude]} geoJSON={geoJSON} from={from} ward={wardName} center={geoCenter} />
                 :
                 <Alert severity='warning' className='w-full p-1'>Geolocation Data is Missing For this facility</Alert>
             }

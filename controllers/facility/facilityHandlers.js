@@ -94,7 +94,7 @@ async function handleBasicDetailsSubmit(token, values, formId, setFormId, fileRe
 
                     if (resp.status == 201 && formData.get('fyl')) {
 
-                        alert.success('Basic details saved successful');
+                        alert.success({timeout: 10000}, 'Basic details saved successful');
 
                         try {
                             const resp = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/common/documents/`, {
@@ -114,7 +114,7 @@ async function handleBasicDetailsSubmit(token, values, formId, setFormId, fileRe
                         }
                     }
                     else {
-                        alert.error('Unable to save basic details successfully!')
+                        alert.error({timeout: 10000}, 'Unable to save basic details successfully!')
                     }
                 })
                 //  fetch data for Geolocation form
@@ -161,7 +161,7 @@ async function handleBasicDetailsSubmit(token, values, formId, setFormId, fileRe
         }
     }
     else {
-        alert.error('Access Token not supplied !')
+        alert.error({timeout: 10000}, 'Access Token not supplied !')
     }
 
 
@@ -428,7 +428,7 @@ async function handleRegulationSubmit(token, values, facilityId, setSubmitting, 
                     formResponse.push(v)
                     }
 
-                    return `Error: ${formResponse.join("")}`
+                    return `Error: ${formResponse.join(" ")}`
                 }
                 })
             })
@@ -459,7 +459,7 @@ async function handleRegulationSubmit(token, values, facilityId, setSubmitting, 
 
     //         if (resp.status == 204 || resp.status == 200) {
     //             setSubmitting(false)
-    //             alert.success('Facilty Regulation details saved successfully')
+    //             alert.success({timeout: 10000}, 'Facilty Regulation details saved successfully')
 
     //             const formDataBase64Enc = Buffer.from(JSON.stringify(values)).toString('base64')
 
@@ -476,7 +476,7 @@ async function handleRegulationSubmit(token, values, facilityId, setSubmitting, 
     //               })
     //         } else {
     //             setSubmitting(false)
-    //             alert.error('unable to save Regulation details ')
+    //             alert.error({timeout: 10000}, 'unable to save Regulation details ')
     //         }
     //     } catch (e) {
     //         console.error('Unable to patch facility contacts details', e.message)
@@ -525,7 +525,7 @@ async function handleRegulationSubmit(token, values, facilityId, setSubmitting, 
 
                             setSubmitting(false)
 
-                            alert.success('License Document saved successfully')
+                            alert.success({timeout: 10000}, 'License Document saved successfully')
 
                         }
 
@@ -852,84 +852,82 @@ async function handleRegulationUpdates(token, values, facilityId, licenseFileRef
                 method: 'PATCH',
                 body: JSON.stringify(data)
             })
+            // Post the license document
+            .then(resp => {
 
-                // Post the license document
+                const formData = new FormData()
 
-                .then(resp => {
+                if (licenseFileRef) {
+                    if (Array.isArray(licenseFileRef.files)) {
+                        formData.append('name', `${facility_name} Facility license File`)
+                        formData.append('description', 'Facilities license file')
+                        formData.append('document_type', 'FACILITY_LICENSE')
+                        formData.append('facility_name', facility_name)
+                        formData.append('fyl', licenseFileRef.files[0] ?? undefined)
 
-                    const formData = new FormData()
+                        // console.log({licenseFileRef})
 
-                    if (licenseFileRef) {
-                        if (Array.isArray(licenseFileRef.files)) {
-                            formData.append('name', `${facility_name} Facility license File`)
-                            formData.append('description', 'Facilities license file')
-                            formData.append('document_type', 'FACILITY_LICENSE')
-                            formData.append('facility_name', facility_name)
-                            formData.append('fyl', licenseFileRef.files[0] ?? undefined)
+                        if (Object.fromEntries(formData)?.fyl) {
 
-                            // console.log({licenseFileRef})
+                            try {
+                                fetch(`${process.env.NEXT_PUBLIC_API_URL}/common/documents/`, {
 
-                            if (Object.fromEntries(formData)?.fyl) {
-
-                                try {
-                                    fetch(`${process.env.NEXT_PUBLIC_API_URL}/common/documents/`, {
-
-                                        headers: {
-                                            'Accept': 'application/json, text/plain, */*',
-                                            'ContentType': 'multipart/form-data; boundary=---------------------------22584204591762068164170278481'
-                                        },
-                                        method: 'POST',
-                                        body: formData
-                                    })
+                                    headers: {
+                                        'Accept': 'application/json, text/plain, */*',
+                                        'ContentType': 'multipart/form-data; boundary=---------------------------22584204591762068164170278481'
+                                    },
+                                    method: 'POST',
+                                    body: formData
+                                })
 
 
-                                }
-                                catch (e) {
-                                    console.error('Unable to Post License Document')
-                                }
                             }
-
+                            catch (e) {
+                                console.error('Unable to Post License Document')
+                            }
                         }
+
                     }
+                }
 
-                    if (i == 1) {
-                        // console.log({resp})
-                        if (resp.status == 200 || resp.status == 204) {
+                if (i == 1) {
+                    // console.log({resp})
+                    if (resp.status == 200 || resp.status == 204) {
 
-                            alert.success('Facility Regulation Details updated successfully')
-                            setSubmitting(false)
+                        alert.success({timeout: 10000}, 'Facility Regulation Details updated successfully')
+                        setSubmitting(false)
 
-                            router.push({
-                                pathname: '/facilities/facility_changes/[facility_id]',
-                                query: {
-                                    facility_id: facilityId
-                                }
-                            })
-                        }
-                        else {
-                            setSubmitting(false)
-                            alert.error('Unable to update regulation form')
-                        //     const response = resp.json()
-                        //     if(response) {
-                        //     response    
-                        //     .then(resp => {
-                        //         const formResponse = []
-                        //         setFormError(() => {
-                        //         if(typeof resp == 'object') {
-                        //             const respEntry = Object.entries(resp)
-
-                        //             for (let [_, v] of respEntry) {
-                        //             formResponse.push(v)
-                        //             }
-
-                        //             return `Error: ${formResponse.join("")}`
-                        //         }
-                        //         })
-                        //     })
-                        // }
-                        }
+                        router.push({
+                            pathname: '/facilities/facility_changes/[facility_id]',
+                            query: {
+                                facility_id: facilityId
+                            }
+                        })
                     }
-                })
+                    else {
+                        setSubmitting(false)
+                        alert.error({timeout: 10000}, 'Unable to update regulation form')
+                    //     const response = resp.json()
+                    //     if(response) {
+                    //     response    
+                    //     .then(resp => {
+                    //         const formResponse = []
+                    //         setFormError(() => {
+                    //         if(typeof resp == 'object') {
+                    //             const respEntry = Object.entries(resp)
+
+                    //             for (let [_, v] of respEntry) {
+                    //             formResponse.push(v)
+                    //             }
+
+                    //             return `Error: ${formResponse.join(" ")}`
+                    //         }
+                    //         })
+                    //     })
+                    // }
+                    }
+                }
+            })
 
 
         }
@@ -1052,9 +1050,9 @@ async function handleInfrastructureDelete(token, event, facility_infrastructure_
     try {
 
         if (facility_infrastructure_id) {
-            alert.success('Facility Infrastructure Deleted Successfully')
+            alert.success({timeout: 10000}, 'Facility Infrastructure Deleted Successfully')
         } else {
-            alert.error("Unable to delete facility infrastructure")
+            alert.error({timeout: 10000}, "Unable to delete facility infrastructure")
         }
 
         const resp = await fetch(`/api/common/submit_form_data/?path=delete_facility_infrastructure&id=${facility_infrastructure_id}`, {
@@ -1139,9 +1137,9 @@ async function handleHrDelete(event, facility_hr_id, alert) {
         })
 
         if (resp.ok) {
-            alert.success('Facility Human resource Deleted Successfully')
+            alert.success({timeout: 10000}, 'Facility Human resource Deleted Successfully')
         } else {
-            alert.error("Unable to delete facility Human resource")
+            alert.error({timeout: 10000}, "Unable to delete facility Human resource")
         }
 
         return resp
@@ -1173,9 +1171,9 @@ async function handleFacilityUpgrades(payload, alert) {
 
         if (resp.ok) {
             localStorage.clear()
-            alert.success('Facility Upgraded Successfully')
+            alert.success({timeout: 10000}, 'Facility Upgraded Successfully')
         } else {
-            alert.error("Unable to upgrade facility")
+            alert.error({timeout: 10000}, "Unable to upgrade facility")
         }
 
 

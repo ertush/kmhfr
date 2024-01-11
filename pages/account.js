@@ -131,7 +131,7 @@ const Account = () => {
                         if(res.id !==undefined ){
 
                             router.push({pathname:'/user'})
-                            alert.success(editMode? 'User updated successfully':'User added successfully')
+                            alert.success({timeout: 10000}, editMode? 'User updated successfully':'User added successfully')
         
                         }else{
                             setStatus({status:'error', message: res})
