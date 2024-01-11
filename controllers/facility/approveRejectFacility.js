@@ -24,11 +24,11 @@ const validateRejectFacility = (facility_id, reject, comment, alert) => {
             .then(resp => resp)
             .then(res => {
 
-                if (res) {
+                if (res.status == 200) {
                     if (!reject) {
-                        alert.success("Facility validated successfully")
+                        alert.success({timeout: 10000}, "Facility validated successfully")
                     } else {
-                        alert.success("Facility rejected successfully")
+                        alert.success({timeout: 10000}, "Facility rejected successfully")
                     }
                     router.push('/facilities?qf=new_pending_validation&pending_approval=true&has_edits=false&is_complete=true') // redirect to New Facilties Pending Validation
                 }
@@ -72,9 +72,9 @@ const approveRejectFacility = (facility_id, comment, alert, reject) => {
 
                 if (res) {
                     if (reject) {
-                        alert.success(`Facility Approved successfully`)
+                        alert.success({timeout: 10000}, `Facility Approved successfully`)
                     } else {
-                        alert.success(`Facility Rejected successfully`)
+                        alert.success({timeout: 10000}, `Facility Rejected successfully`)
                     }
                     router.push('/facilities?qf=approved&approved=true&approved_national_level=true&rejected=false') // redirect Facilties Pending Approval
                 }
@@ -118,9 +118,9 @@ const approveRejectFacilityUpdates = (reject, alert, update_id) => {
                 if (res) {
 
                     if (reject) {
-                        alert.success("Facility updates approved successfully")
+                        alert.success({timeout: 10000}, "Facility updates approved successfully")
                     } else {
-                        alert.success("Facility updates rejected successfully")
+                        alert.success({timeout: 10000}, "Facility updates rejected successfully")
                     }
 
                     router.push('/facilities?qf=updated_pending_validation&has_edits=true&pending_approval=true') // redirect to New Facilties Pending Validation

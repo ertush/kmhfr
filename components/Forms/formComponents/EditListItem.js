@@ -162,7 +162,7 @@ function EditListItem({
           .then(resp => {
             if (resp.status == 200 || resp.status == 204) {
               setSubmitting(false)
-              alert.success('Updated facility services successfully');
+              alert.success({timeout: 10000}, 'Updated facility services successfully');
 
               router.push({
                 pathname: '/facilities/facility_changes/[facility_id]',
@@ -183,7 +183,7 @@ function EditListItem({
                       formResponse.push(v)
                       }
 
-                      return `Error: ${formResponse.join("")}`
+                      return `Error: ${formResponse.join(" ")}`
                   }
                   })
               })
@@ -195,7 +195,7 @@ function EditListItem({
         .then(resp => {
           if (resp.status == 200 || resp.status == 204) {
             setSubmitting(false)
-            alert.success('Updated Community Health Unit Services successfully');
+            alert.success({timeout: 10000}, 'Updated Community Health Unit Services successfully');
 
             // router.push({
             //   pathname: '/facilities/facility_changes/[facility_id]',
@@ -216,7 +216,7 @@ function EditListItem({
                     formResponse.push(v)
                     }
 
-                    return `Error: ${formResponse.join("")}`
+                    return `Error: ${formResponse.join(" ")}`
                 }
                 })
             })
@@ -232,7 +232,7 @@ function EditListItem({
             if (resp.status == 204 || resp.status == 200) {
               if(itemName == "facility_services") {
               setSubmitting(false)
-              alert.success('Facility services saved successfully');
+              alert.success({timeout: 10000}, 'Facility services saved successfully');
 
               const services = typeof selectedItems == 'string' ? JSON.parse(selectedItems).map(({ rowid }) => ({ service: rowid })) : selectedItems.map(({ rowid }) => ({ service: rowid }))
               const payload = JSON.stringify(services)
@@ -280,7 +280,7 @@ function EditListItem({
             }
             else {
               setSubmitting(false)
-              alert.error('Unable to save facility services');
+              alert.error({timeout: 10000}, 'Unable to save facility services');
 
               resp.json()
               .then(resp => {
@@ -293,7 +293,7 @@ function EditListItem({
                       formResponse.push(v)
                       }
 
-                      return `Error: ${formResponse.join("")}`
+                      return `Error: ${formResponse.join(" ")}`
                   }
                   })
               })
@@ -306,7 +306,7 @@ function EditListItem({
           .then(resp => {
             if (resp.status == 204 || resp.status == 200) {
               setSubmitting(false)
-              alert.success('Community health unit services saved successfully');
+              alert.success({timeout: 10000}, 'Community health unit services saved successfully');
               console.log('  Navigating to CHU Details page ... ')
               
               router.push({
@@ -319,7 +319,7 @@ function EditListItem({
             }
             else {
               setSubmitting(false)
-              alert.error('Unable to save Community Health Unit Services');
+              alert.error({timeout: 10000}, 'Unable to save Community Health Unit Services');
 
             }
           })

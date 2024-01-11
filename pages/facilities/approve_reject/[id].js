@@ -26,7 +26,7 @@ import { UserContext } from '../../../providers/user';
 
 
 function ApproveReject(props) {
-  const userCtx = React.useContext(UserContext);
+  const userCtx = useContext(UserContext);
   const [user, setUser] = useState(userCtx);
   // console.log({props})
 
@@ -300,7 +300,7 @@ function ApproveReject(props) {
                   }
                   // if facility is not approved and is validated
                   if (!facility?.approved_national_level && facility?.approved) {
-                    console.log('FACILITY WILL BE APPROVED')
+                    // console.log('FACILITY WILL BE APPROVED')
                     approveRejectFacility(facility?.id, comment, alert, reject)
                   }
                 }

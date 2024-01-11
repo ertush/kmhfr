@@ -234,7 +234,7 @@ const EditCommunityUnit = (props) => {
               className="w-full flex flex-col border border-blue-600 tab-root"
               defaultValue="overview"
             >
-              <Tabs.List className="list-none border-b border-blue-600 flex flex-wrap gap-2 md:gap-3 uppercase leading-none tab-list font-semibold ">
+              <Tabs.List className="list-non border-b border-blue-600 flex justify-evenly flex-wrap gap-2 md:gap-3 uppercase leading-none tab-list font-semibold ">
                 <Tabs.Tab
                   id={1}
                   value="overview"

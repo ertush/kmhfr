@@ -154,8 +154,6 @@ export function RegulationForm() {
     // Effects
     useEffect(() => {
 
-        
-
         const _units = [];
 
         const initialValueObj = options?.data ? facilityRegulationData : typeof initialValues == 'string' ? JSON.parse(initialValues) : {}

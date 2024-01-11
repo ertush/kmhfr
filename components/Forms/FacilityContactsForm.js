@@ -246,7 +246,7 @@ export function FacilityContactsForm() {
                         .then((resp) => {
                             defer(() => updatedSavedChanges(true));
                             if (resp.status == 200 || resp.status == 204) {
-                                alert.success("Updated facility contacts successfully")
+                                alert.success({timeout: 10000}, "Updated facility contacts successfully")
 
                                 router.push({
                                     pathname: '/facilities/facility_changes/[facility_id]',
@@ -257,7 +257,7 @@ export function FacilityContactsForm() {
                             }
 
                             else {
-                                alert.error("Unable to update facility contacts")
+                                alert.error({timeout: 10000}, "Unable to update facility contacts")
                                 resp.json()
                                 .then(resp => {
                                   const formResponse = []
@@ -269,7 +269,7 @@ export function FacilityContactsForm() {
                                         formResponse.push(v)
                                       }
                       
-                                      return `Error: ${formResponse.join("")}`
+                                      return `Error: ${formResponse.join(" ")}`
                                     }
                                   })
                                 })
@@ -297,7 +297,7 @@ export function FacilityContactsForm() {
                                     }
                                 })
 
-                                alert.success('Officer Incharge Contacts Saved successfully')
+                                alert.success({timeout: 10000}, 'Officer Incharge Contacts Saved successfully')
 
                                 const formDataBase64Enc = Buffer.from(JSON.stringify(values)).toString('base64')
 
@@ -326,8 +326,8 @@ export function FacilityContactsForm() {
                             }
                             else {
                                 setSubmitting(false)
-                                alert.error('Unable to save Facility Contacts')
-                                alert.error('Unable to save Officer Incharge Contacts')
+                                alert.error({timeout: 10000}, 'Unable to save Facility Contacts')
+                                alert.error({timeout: 10000}, 'Unable to save Officer Incharge Contacts')
 
                                 resp.json()
                                 .then(resp => {
@@ -340,7 +340,7 @@ export function FacilityContactsForm() {
                                         formResponse.push(v)
                                       }
                       
-                                      return `Error: ${formResponse.join("")}`
+                                      return `Error: ${formResponse.join(" ")}`
                                     }
                                   })
                                 })
