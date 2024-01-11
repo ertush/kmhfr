@@ -13,10 +13,9 @@ import { Alert } from '@mui/lab'
 
 
 function EditListItem({
-  initialSelectedItems,
+  itemData,
   categoryItems,
   itemId,
-  item,
   itemName,
   handleItemsSubmit,
   handleItemsUpdate,
@@ -24,10 +23,9 @@ function EditListItem({
   submitting,
   handleItemPrevious,
   token,
-  options,
-  servicesData
+  options
+  
 }) {
-
 
 
   const alert = useAlert()
@@ -35,33 +33,12 @@ function EditListItem({
 
 
   const [allServices, setallServices] = useState([])
-  const [selectedItems, setSelectedItems] = useState(Array.isArray(initialSelectedItems) && initialSelectedItems.length > 0 ? (() => {
-    const result = []
-
-    if(itemName == 'facility_services'){
-      console.log({initialSelectedItems})
-    initialSelectedItems?.map((service) => {
-
-      result.push({ sname: service.service_name, rowid: service.service_id, category_id: service.category_id, category_name: service.category_name })
-
-      return result
-
-    })
-
-  }
-  else {
-    return initialSelectedItems
-  }
-
-
-  })() : [])
+  const [selectedItems, setSelectedItems] = useState([])
+  const [showItemCategory, setShowItemCategory] = useState(false)
 
 
 
-  const editService = servicesData?.map(({ service_name: name, service_id, id }) => ({ id, service_id, name }));
-
-  const [savedItems, saveSelectedItems] = useState(servicesData ? editService : [])
-  const [formError, setFormError] = useState(null)
+   const [formError, setFormError] = useState(null)
 
 
   // Refs
@@ -119,7 +96,8 @@ function EditListItem({
 
       if (issearchcategory) {
 
-        subset = categoryItems.filter((e) => e.label.toLowerCase().includes(_query.toLowerCase()))
+     
+       subset = categoryItems.filter((e) => e.label.toLowerCase().includes(_query.toLowerCase()))
 
 
         setCategoryItems(subset);
@@ -138,23 +116,36 @@ function EditListItem({
 
 
   useEffect(() => {
-    //store service when service is added
-    // if (selectedItems.length !== 0) {
-    //   let x = selectedItems;
+  
+    if(Array.isArray(itemData)) {
+      const result = []
 
+      setSelectedItems(() => {
 
-    //   saveSelectedItems(
-    //     JSON.stringify(x)
-    //   );
+      if(itemName == 'facility_services'){
 
-    //   return () => {
-    //     localStorage.setItem('services_edit_form', '[]')
-    //   }
-    // }
+        itemData?.map((service) => {
+            result.push({ sname: service.service_name, rowid: service.service_id, category_id: service.category_id, category_name: service.category_name })
+        })
 
-    console.log(JSON.stringify(selectedItems, null, 2))
+      return result
+
+       }
+    else {
+      return itemData
+    }
+      })
+    }
 
   }, [])
+
+  function handleSearchItemFocus (e) {
+    e.preventDefault()
+
+    if(!showItemCategory) {
+      setShowItemCategory(true)
+    }
+  }
 
   function handleSubmit(e) {
 
@@ -162,23 +153,58 @@ function EditListItem({
 
     setSubmitting(true)
 
-    if (item) {
+    if (itemData) {
 
+      const newSelectedItems = selectedItems.filter(({rowId}, i) => rowId == itemData[i]?.service_id) 
 
-      handleItemsUpdate(token, [selectedItems, itemId])
+      if(itemName == 'facility_services') {     
+        handleItemsUpdate(token, [newSelectedItems, itemId])
+          .then(resp => {
+            if (resp.status == 200 || resp.status == 204) {
+              setSubmitting(false)
+              alert.success('Updated facility services successfully');
+
+              router.push({
+                pathname: '/facilities/facility_changes/[facility_id]',
+                query: {
+                  facility_id: itemId
+                }
+              })
+            } else {
+              setSubmitting(false)
+              resp.json()
+              .then(resp => {
+                  const formResponse = []
+                  setFormError(() => {
+                  if(typeof resp == 'object') {
+                      const respEntry = Object.entries(resp)
+
+                      for (let [_, v] of respEntry) {
+                      formResponse.push(v)
+                      }
+
+                      return `Error: ${formResponse.join("")}`
+                  }
+                  })
+              })
+            }
+          })
+          .catch(e => console.error('unable to update facility services. Error:', e.message))
+      } else {
+        handleItemsUpdate(newSelectedItems, itemId)
         .then(resp => {
           if (resp.status == 200 || resp.status == 204) {
             setSubmitting(false)
-            alert.success('Updated facility services successfully');
+            alert.success('Updated Community Health Unit Services successfully');
 
-            router.push({
-              pathname: '/facilities/facility_changes/[facility_id]',
-              query: {
-                facility_id: itemId
-              }
-            })
+            // router.push({
+            //   pathname: '/facilities/facility_changes/[facility_id]',
+            //   query: {
+            //     facility_id: itemId
+            //   }
+            // })
           } else {
-            
+            setSubmitting(false)
             resp.json()
             .then(resp => {
                 const formResponse = []
@@ -196,7 +222,8 @@ function EditListItem({
             })
           }
         })
-        .catch(e => console.error('unable to fetch facility update data. Error:', e.message))
+        .catch(e => console.error('unable to update CHU servics update. Error:', e.message))
+      }
     }
     else {
       if (itemName == "facility_services") {
@@ -275,7 +302,7 @@ function EditListItem({
           })
           .catch(e => console.error('unable to submit item data. Error:', e.message))
       } else {
-        handleItemsSubmit(token, selectedItems, itemId)
+        handleItemsSubmit(selectedItems, itemId)
           .then(resp => {
             if (resp.status == 204 || resp.status == 200) {
               setSubmitting(false)
@@ -314,15 +341,16 @@ function EditListItem({
     >
 
       {formError && <Alert severity='error' className={'w-full'}>{formError}</Alert>}
-      <pre>{JSON.stringify(selectedItems, null, 2)}</pre>
-
-
-
-      <div className='w-full grid grid-cols-12 gap-4'>
+     
+     <div className='w-full grid grid-cols-12 gap-4'>
         <div className={`${itemName == "chul_services" ? 'col-span-12' : 'col-span-5'}`} >
           <h4 className="text-lg uppercase mt-4 pb-2 border-b border-blue-600 w-full mb-4 font-semibold text-blue-900">{itemName == 'chul_services' ? 'Services' : 'Categories'}</h4>
-          <input type="text" onChange={(e) => onSearch(e, true, false)} className="col-span-12 border border-blue-600 p-2 placeholder-gray-500  focus:shadow-none focus:bg-white focus:border-black outline-none w-full" placeholder="Search" />
+          <input name="searchItem" type="text" onFocus={handleSearchItemFocus} onChange={(e) => onSearch(e, true, false)} className="col-span-12 border border-blue-600 p-2 placeholder-gray-500  focus:shadow-none focus:bg-white focus:border-black outline-none w-full" placeholder="Search" />
+          {!showItemCategory && <div className="text-center border-l border-blue-500 border-r border-b w-full">Search for services</div>}
+
           <br />
+          {
+            showItemCategory &&
           <ul className='max-h-96 overflow-auto border-r border-l border-b border-blue-500'>
 
             {
@@ -345,6 +373,7 @@ function EditListItem({
             }
 
           </ul>
+        }
         </div>
         {
           itemName == "facility_services" &&
@@ -374,12 +403,12 @@ function EditListItem({
                               <input
                                 type="checkbox"
                                 className="p-1 w-5 h-5"
-                                checked={selectedItems?.some(item => item.rowid.includes(row.id))}
+                                checked={selectedItems?.some(item => item?.rowid?.includes(row?.id))}
                                 onChange={(e) => handleCheckboxChange(
-                                  row.id,
-                                  row.name,
-                                  row.category,
-                                  row.category_name,
+                                  row?.id,
+                                  row?.name,
+                                  row?.category,
+                                  row?.category_name,
                                 )}
                               /> Yes
                             </td>
@@ -438,20 +467,23 @@ function EditListItem({
               </tr>
             </thead>
             <tbody className='bg-blue-50 shadow-md'>
+              
+          
               {Array.isArray(selectedItems) && selectedItems.length === 0 && <tr><td colSpan={3} className="text-center">No services found</td></tr>}
               
               
               {
-                itemName == "facility_services" ?
-                  selectedItems?.map((row, i) => (
+                itemName == "facility_services" ?  
+                selectedItems?.map((row, i) => (
                     <tr key={i}>
+                      
                       <td className="border border-gray-300 px-1 py-1">{row.sname}</td>
                       <td className="border border-gray-300 px-1 py-1">
                         Yes
                       </td>
                     </tr>
                   ))
-                  :
+                 :
                   selectedItems?.map(({ label, value}) => (
                     <tr key={value}>
                       <td className="border border-gray-300 px-1 py-1">{label}</td>
@@ -478,7 +510,7 @@ function EditListItem({
       {/* Save btn */}
 
       {
-        savedItems.length > 0 && item !== null &&
+        Array.isArray(itemData)  &&
 
         <div className=" w-full flex justify-end h-auto mr-3">
           <button type='submit' className='p-2 text-white bg-blue-600  font-semibold'>
@@ -498,7 +530,7 @@ function EditListItem({
       }
 
       {
-        item === null &&
+        itemData === null &&
 
         <div className={`flex ${itemName == "facility_services" ? 'justify-between' : 'justify-end'} items-center w-full mt-4`} >
           {

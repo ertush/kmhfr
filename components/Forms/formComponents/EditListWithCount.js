@@ -13,11 +13,9 @@ import {Alert} from '@mui/lab'
 
 function EditListWithCount(
     {
-        initialSelectedItems,
         otherItemsCategory,
         itemsCategoryName,
         itemId,
-        item,
         handleItemsSubmit,
         handleItemsUpdate,
         handleItemPrevious,
@@ -68,12 +66,12 @@ function EditListWithCount(
 
 
     //console.log(options)
-    const [selectedRows, setSelectedRows] = useState((initialSelectedItems ? (() => {
+    const [selectedRows, setSelectedRows] = useState((itemData ? (() => {
         
         const result = []
 
-        if (initialSelectedItems.length > 0) {
-            initialSelectedItems.forEach((element) => {
+        if (itemData.length > 0) {
+            itemData.forEach((element) => {
                 if (itemsCategoryName.includes('human resource')) {
                     const cat = options.filter((e) => e.id == element.speciality)[0].category
                     result.push({
@@ -133,6 +131,7 @@ function EditListWithCount(
 
     const [savedItems, saveSelectedItems] = useState(itemData ? editItem : [])
 
+    const [showItemCategory, setShowItemCategory] = useState(false)
   
     const [items, setItems] = useState(typeof savedItems === 'string' && savedItems.length > 0 ? JSON.parse(savedItems) : savedItems)
 
@@ -188,7 +187,7 @@ function EditListWithCount(
 
         }
 
-        if(item) selectedRows.pop()
+        if(itemData) selectedRows.pop()
 
 
     }, [selectedRows]);
@@ -213,10 +212,26 @@ function EditListWithCount(
     }, [isFormSubmit])
 
     const filterSpecialities = (ctg) => {
+        // function getCheckedCheckBoxCount() {
+        //     const checkboxes = document.querySelectorAll('input[name=itemCheckBox]')
+
+        //     console.log(checkboxes)
+        // }
+
+        // getCheckedCheckBoxCount()
+
         const filteredOptions = options.filter((option) => option.category === ctg);
         setSpecialities(filteredOptions)
         setIsActive(ctg)
     }
+
+    function handleSearchItemFocus (e) {
+        e.preventDefault()
+    
+        if(!showItemCategory) {
+          setShowItemCategory(true)
+        }
+      }
 
     const handleCheckboxChange = (id, name, category, category_name) => {
         setSelectedRows((prevSelectedRows) => {
@@ -252,9 +267,12 @@ function EditListWithCount(
 
         setSubmitting(true)
 
-        if (item) {
+        if (itemData) {
 
-            handleItemsUpdate(token, [selectedRows, itemId])
+            const newSelectedRows = selectedRows.filter(({rowId}, i) => rowId == itemData[i]?.id) 
+
+
+            handleItemsUpdate(token, [newSelectedRows, itemId])
                 .then(resp => {
                     if (resp.status == 200 || resp.status == 204) {
                         setSubmitting(false)
@@ -391,6 +409,7 @@ function EditListWithCount(
 
     const onSearch = ((event, issearchcategory, issearchspeciality) => {
 
+        
         const _query = event.target.value;
         setQuery(_query);
         if (_query.length > 3) {
@@ -425,8 +444,12 @@ function EditListWithCount(
             <div className='w-full grid grid-cols-12 gap-4'>
                 <div className="col-span-5" >
                     <h4 className="text-lg uppercase mt-4 pb-2 border-b border-blue-600 w-full mb-4 font-semibold text-blue-900">Categories</h4>
-                    <input type="text" onChange={(e) => onSearch(e, true, false)} className="col-span-12 border border-blue-600 p-2 placeholder-gray-500  focus:shadow-none focus:bg-white focus:border-black outline-none w-full" placeholder="Search" />
+                    <input type="text" onFocus={handleSearchItemFocus} onChange={(e) => onSearch(e, true, false)} className="col-span-12 border border-blue-600 p-2 placeholder-gray-500  focus:shadow-none focus:bg-white focus:border-black outline-none w-full" placeholder="Search" />
+                    {!showItemCategory && <div className="text-center border-l border-blue-500 border-r border-b w-full">{`Search for ${itemsCategoryName.includes('infrastructure') ? 'infrastructure' : 'a speciality' }`}</div>}
+
                     <br />
+                    {
+                    showItemCategory &&
                     <ul className='max-h-96 overflow-auto border-r border-l border-b border-blue-500'>
                         {categoryOptions.map(({ label, value, catcount }) => (
                             <div key={value}
@@ -444,7 +467,9 @@ function EditListWithCount(
 
                         ))}
                     </ul>
+                    }
                 </div>
+
                 <div className="col-span-7" >
                     <h4 className="text-lg uppercase mt-4 pb-2 border-b border-blue-600 w-full mb-4 font-semibold text-blue-900">{itemsCategoryName.includes('human resource') ? 'Specialities' : itemsCategoryName.includes('infrastructure') ? 'Infrastructure' : null}</h4>
                     <input type="text" onChange={(e) => onSearch(e, false, true)} className="col-span-12 border border-blue-600 p-2 placeholder-gray-500  focus:shadow-none focus:bg-white focus:border-black outline-none w-full" placeholder="Search" />
@@ -458,17 +483,19 @@ function EditListWithCount(
                                 </tr>
                             </thead>
                             <tbody className='bg-blue-50 shadow-md'>
-                                {specialities.length === 0 && <tr><td colSpan={3} className="text-center">No specialities found</td></tr>}
+                                {specialities.length === 0 && <tr><td colSpan={3} className="text-center">{`No ${itemsCategoryName.includes('infrastructure') ? 'infrastructure' : 'specialities'} found`}</td></tr>}
 
                                 {specialities.map((row) => (
 
-                                    <tr key={row?.id}>
+                                    <tr key={row?.id} >
                                         <td className="border px-1 py-1">
                                             <label className="w-full p-2" >{row?.name}</label>
                                         </td>
                                         <td className="border px-1 py-1">
                                             <input
+
                                                 type="checkbox"
+                                                name="itemCheckBox"
                                                 className="p-1 w-5 h-5"
                                                 checked={selectedRows.some(item => item?.rowid?.includes(row?.id))}
                                                 onChange={(e) => handleCheckboxChange(
@@ -519,12 +546,13 @@ function EditListWithCount(
                             {/* {selectedRows.pop()} */}
                             {selectedRows.map((row) => {
                                 // if(row.name !== "Vaccine Carriers" || row.name !== "Public Health Technician"){
-                                return <tr>
+                                return ( <tr>
                                         <td className="border border-gray-300 px-1 py-1">{row?.sname}</td>
                                        {row?.iscategoryvisible ? <td className="border border-gray-300 px-1 py-1">{row?.category_name}</td> :null }
                                         <td className="border border-gray-300 px-1 py-1">Yes</td>
                                         <td className="border border-gray-300 px-1 py-1">{row?.count ? Number(row?.count) : null}</td>
                                     </tr>
+                                )
                                 // }
                             })}
 
@@ -535,7 +563,7 @@ function EditListWithCount(
             {/* Save btn */}
 
             {
-                savedItems.length > 0 && item !== null &&
+                savedItems.length > 0 && itemData !== null &&
 
                 <div className="w-full flex justify-end h-auto mt-3">
                     <button type='submit' className='p-2 text-white bg-blue-600  font-semibold'>
@@ -555,7 +583,7 @@ function EditListWithCount(
             }
 
             {
-                item === null &&
+                itemData === null &&
 
                 <div className='flex justify-between items-center w-full mt-4'>
                     <button onClick={handleItemPrevious} className='flex items-center justify-start space-x-2 p-1 border border-blue-900  px-2'>

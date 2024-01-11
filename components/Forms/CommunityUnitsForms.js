@@ -974,10 +974,9 @@ function EditCommunityUnitsServicesForm(props) {
     })(options?.services ?? [])
   
   
-    function handleSubmit (token, selectedServices, chulId) {
+  function handleSubmit (selectedServices, chulId) {
       // console.log({stateSetters, chulId})
       
-  
     const _payload = selectedServices.map(({value}) => ({ service: value }))
 
 		_payload.forEach(obj => obj['health_unit'] = chulId)
@@ -996,38 +995,39 @@ function EditCommunityUnitsServicesForm(props) {
           body: JSON.stringify({services: _payload})
         })
 
-        // .then(async resp => {
-        //   if (resp.status == 200 || resp.status == 204) {
-
-        //     setSubmitting(false)
-
-        //     alert.success(`${props?.name} services have been updated successfully`, {
-        //       containerStyle: {
-        //         backgroundColor: "green",
-        //         color: "#fff"
-        //       },
-        //       timeout: 10000
-        //     })
-
-        //   } else {
-        //     // const detail = await resp.json()
-
-        //     setSubmitting(false)
-        //     // setFormError(Array.isArray(Object.values(detail)) && Object.values(detail).length == 1 && typeof Object.values(detail)[0] == 'string' && detail[0][0])
-        //     alert.error(`Unable to update ${props?.name} services`, {
-        //       timeout: 10000
-        //     })
-        //   }
-        // })
-          
-  
+    
+ 
       }
       catch (e) {
         console.error(e.message)
       }
       }
   
-    };
+  };
+
+
+  function handleCHUServiceUpdate (selectedServices, chulId) {
+
+    const _payload = selectedServices.map(({value}) => ({ service: value }))
+
+		_payload.forEach(obj => obj['health_unit'] = chulId)
+
+    try {
+      return fetch(`${process.env.NEXT_PUBLIC_API_URL}/chul/units/${chulId}/`, {
+        headers: {
+          'Accept': 'application/json, text/plain, */*',
+          'Content-Type': 'application/json;charset=utf-8',
+          'Authorization': `Bearer ${props?.token}`
+        },
+        method: 'PATCH',
+        body: JSON.stringify({services: _payload})
+      })
+
+      }
+    catch (e) {
+      console.error(e.message)
+    }
+  }
   
  
 
@@ -1053,14 +1053,12 @@ function EditCommunityUnitsServicesForm(props) {
   
               
               <EditListItem
-                initialSelectedItems={currentServices}
+                itemData={currentServices}
                 categoryItems={serviceOptions[0]?.options} //serviceOptions
                 itemId={props?.id} //chulId
-                item={null}
-                 token={props?.token}
+                token={props?.token}
                 handleItemsSubmit={handleSubmit} //handleCHUServiceSubmit
-                handleItemsUpdate={() => null} //handleServiceUpdates
-                setNextItemCategory={null}
+                handleItemsUpdate={handleCHUServiceUpdate} //handleServiceUpdates
                 setSubmitting={setSubmitting}
                 submitting={submitting}
                 options={serviceOptions[0]?.options}
