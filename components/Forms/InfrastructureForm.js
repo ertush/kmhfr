@@ -110,26 +110,19 @@ export function InfrastructureForm() {
 
                     {/* Edit List With Count*/}
                     <EditListWithCount
-                        initialSelectedItems={options?.data? options?.data.facility_infrastructure:[]}
                         otherItemsCategory={null}
                         itemsCategoryName={'infrastructure'}
                         categoryItems={infrastructureOption.categories}
                         options={options.infrastructure}
                         token={options.token}
                         itemId={facilityId ?? options?.data?.id}
-                        item={options?.data ?? null}   
                         handleItemsSubmit={handleInfrastructureSubmit}
                         handleItemsUpdate={handleInfrastructureUpdates}
                         setSubmitting={setSubmitting}
                         submitting={submitting}
-                        removeItemHandler={() => null}
                         handleItemPrevious={handleInfrastructurePrevious}
-                        setNextItemCategory={setFormId}
-                        setItemsUpdateData={updateFacilityUpdateData}
-                        nextItemCategoryId={formId}
                         nextItemCategory={'human resource'}
                         previousItemCategory={'services'}
-                        setIsSaveAndFinish={updatedSavedChanges}
                         itemData={options?.data ? options?.data?.facility_infrastructure : null}
                         title={tableheaders}
                        

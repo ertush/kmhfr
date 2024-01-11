@@ -119,26 +119,19 @@ export function ServicesForm() {
                     <div className='flex items-center w-full h-auto min-h-[300px]'>
 
                         <EditListItem
-                            initialSelectedItems={options?.data ? options?.data.facility_services:[]}
+                            itemData={options?.data ? options?.data.facility_services : null}
                             categoryItems={serviceOptions.categories}
-                            itemsCategoryName={'Services'}
                             itemId={facilityId ?? options?.data?.id}
-                            setItems={setServices}
-                            item={options?.data ?? null}
                             options={options?.services}
                             token={options?.token}
                             itemName={'facility_services'}
-                            removeItemHandler={handleServiceDelete}
                             handleItemsSubmit={handleServiceSubmit}
                             handleItemsUpdate={handleServiceUpdates}
                             setSubmitting={setSubmitting}
                             submitting={submitting}
-                            setItemsUpdateData={updateFacilityUpdateData}
                             handleItemPrevious={handleServicePrevious}
-                            setIsSaveAndFinish={updatedSavedChanges}
-                            servicesData={options?.data ? options?.data?.facility_services: null}
-                            
-                        /> 
+                                                      
+                            /> 
 
                     </div>
                 </div>
