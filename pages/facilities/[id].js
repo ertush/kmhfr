@@ -190,7 +190,7 @@ const Facility = (props) => {
                             
 
                               if(resp.ok){
-                                  alert.success({timeout: 10000}, "Facility Reopened successfully")
+                                  alert.success("Facility Reopened successfully")
                                   _.defer(() => {
                                     handleClose()
 
@@ -296,7 +296,7 @@ const Facility = (props) => {
                         
                             
                           if(resp.ok){
-                              alert.success({timeout: 10000}, "Facility Closed successfully")
+                              alert.success("Facility Closed successfully")
                               _.defer(() => {
                                 handleCloseModal()
 

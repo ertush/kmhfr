@@ -114,13 +114,13 @@ function CommunityUnitsBasciDetailsForm(props) {
 
 						setSubmitting(false)
 						setFormError(Array.isArray(Object.values(detail)) &&  Object.values(detail).length == 1 && typeof Object.values(detail)[0] == 'string' && detail[0][0])
-						alert.error({timeout: 10000}, 'Unable to save Community Units Basic details')
+						alert.error('Unable to save Community Units Basic details')
 					}
 				})
 		}
 
 		catch (e) {
-			alert.error({timeout: 10000}, 'Error Occured: ' + e.message)
+			alert.error('Error Occured: ' + e.message)
 		}
 
 	};
@@ -715,12 +715,12 @@ function CommunityUnitsExtensionWorkersForm(props) {
 
 						setSubmitting(false)
 						setFormError(Array.isArray(Object.values(detail)) &&  Object.values(detail).length == 1 && typeof Object.values(detail)[0] == 'string' && detail[0][0])
-						alert.error({timeout: 10000}, 'Unable to save Community Units Extension Workers')
+						alert.error('Unable to save Community Units Extension Workers')
 					}
 				})
 			}
 			catch (e) {
-				alert.error({timeout: 10000}, 'An error occured: ' + e.message)
+				alert.error('An error occured: ' + e.message)
 
 				console.error(e.message)
 			}

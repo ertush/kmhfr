@@ -324,7 +324,7 @@ export function BasicDeatilsForm({ editMode }) {
     })
     .then(res => {
       if (res.status == 204 || res.status == 200) {
-        alert.success({timeout: 10000}, 'Facility Updated Successfully')
+        alert.success('Facility Updated Successfully')
         setSubmitting(false)
 
         router.push({
@@ -335,7 +335,7 @@ export function BasicDeatilsForm({ editMode }) {
         })
 
       } else {
-        alert.error({timeout: 10000}, 'Unable to update facility')
+        alert.error('Unable to update facility')
         setSubmitting(false)
         res.json()
           .then(resp => {
@@ -392,10 +392,10 @@ export function BasicDeatilsForm({ editMode }) {
 
         if (res.status == 201 || res.status == 200) {
           setSubmitting(false)
-          alert.success({timeout: 10000}, 'Facility Added Successfully')
+          alert.success('Facility Added Successfully')
         } else {
           setSubmitting(false)
-          alert.error({timeout: 10000}, 'Unable to Add facility')
+          alert.error('Unable to Add facility')
           res.json()
           .then(resp => {
             const formResponse = []

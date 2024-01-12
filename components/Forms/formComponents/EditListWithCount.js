@@ -276,7 +276,7 @@ function EditListWithCount(
                 .then(resp => {
                     if (resp.status == 200 || resp.status == 204) {
                         setSubmitting(false)
-                        alert.success({timeout: 10000}, `Facility ${e.target.name.includes("infrastructure") ? 'Infrastructure' : 'Human resource'} form updated successfully`)
+                        alert.success(`Facility ${e.target.name.includes("infrastructure") ? 'Infrastructure' : 'Human resource'} form updated successfully`)
 
                         router.push({
                             pathname: '/facilities/facility_changes/[facility_id]',
@@ -288,7 +288,7 @@ function EditListWithCount(
 
                     } else {
                         setSubmitting(false)
-                        alert.error({timeout: 10000}, `Unable to update facility ${e.target.name.includes("infrastructure") ? 'Infrastructure' : 'Human resource'}`)
+                        alert.error(`Unable to update facility ${e.target.name.includes("infrastructure") ? 'Infrastructure' : 'Human resource'}`)
                         
                         resp.json()
                         .then(resp => {
@@ -317,13 +317,13 @@ function EditListWithCount(
                     .then(resp => {
                         if (resp.status == 204 || resp.status == 200) {
                             setSubmitting(false)
-                            alert.success({timeout: 10000}, 'Facility humanresource saved successfully')
+                            alert.success('Facility humanresource saved successfully')
 
                             router.push(`/facilities/${itemId}`)
 
                         } else {
                             setSubmitting(false)
-                            alert.error({timeout: 10000}, 'Unable to save facility humanresource')
+                            alert.error('Unable to save facility humanresource')
                             resp.json()
                             .then(resp => {
                                 const formResponse = []
@@ -347,7 +347,7 @@ function EditListWithCount(
                 .then(resp => {
                     if (resp.status == 204 || resp.status == 200) {
                         setSubmitting(false)
-                        alert.success({timeout: 10000}, 'Facility Infrastructure saved successfully')
+                        alert.success('Facility Infrastructure saved successfully')
 
                         const infrastructure = selectedRows.map(({ rowid }) => ({ service: rowid }))
 
@@ -381,7 +381,7 @@ function EditListWithCount(
                     } else {
 
                         setSubmitting(false)
-                        alert.error({timeout: 10000}, 'Unable to save facility infrastructure')
+                        alert.error('Unable to save facility infrastructure')
                         resp.json()
                         .then(resp => {
                             const formResponse = []

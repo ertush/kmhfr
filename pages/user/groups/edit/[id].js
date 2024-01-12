@@ -64,7 +64,7 @@ const EditGroup=(props)=> {
 			.then(res => {
 				if(res.id !==undefined ){
 					router.push({pathname:'/user/groups'})
-					alert.success({timeout: 10000}, 'Group updated successfully ')
+					alert.success('Group updated successfully ')
 				}else{
 					setStatus({status:'error', message: res})
 				}
@@ -86,7 +86,7 @@ const EditGroup=(props)=> {
 			.then(resp =>resp)
 			.then(res => {
 					router.push('/user/groups')
-					alert.success({timeout: 10000}, 'Group deleted successfully ')
+					alert.success('Group deleted successfully ')
 			})
 			
 		} catch (error) {

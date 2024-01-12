@@ -85,7 +85,7 @@ const FacilityContact = ({contactTypeOptions, setFacilityContacts, index, fieldN
                             try{
                                 if(contactTypeRef?.current) {
                                 const resp = await fetch(`/api/common/submit_form_data/?path=delete_contact&id=${contactTypeRef?.current?.state?.value[0].id ?? null}`)
-                                if(resp.status == 204) alert.success({timeout: 10000}, 'Deleted Facility Contact Successfully')
+                                if(resp.status == 204) alert.success('Deleted Facility Contact Successfully')
 
                     
                                 }

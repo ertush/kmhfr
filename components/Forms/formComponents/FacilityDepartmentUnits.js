@@ -9,10 +9,12 @@ export default function FacilityDepartmentUnits({facilityDeptOptions,  setFacili
  
     const facilityDepts = useContext(FacilityDepartmentUnitsContext);
 
-   
+    console.log(facilityDepts)
+    
 
     return (
         <> 
+        
       
             {/* Name */}
             <Select options={facilityDeptOptions || []} 
@@ -36,7 +38,10 @@ export default function FacilityDepartmentUnits({facilityDeptOptions,  setFacili
             onClick={(ev) => {
                 ev.preventDefault();
                 facilityDepts.splice(index, 1);
-                setFacilityDepts(facilityDepts);
+                // setFacilityDepts(prev => {
+                //     return prev.filter(({id}) => id )
+                // });
+                return facilityDepts
 
             }}><XCircleIcon className='w-7 h-7 text-red-400' /></button>
 
