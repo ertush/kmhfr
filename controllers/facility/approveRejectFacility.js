@@ -1,17 +1,15 @@
 
 import router from "next/router"
 
-const validateRejectFacility = (facility_id, reject, comment, alert) => {
+function validateRejectFacility (facility_id, reject, comment, alert, token, setSubmitting, setRejecting, setFormError) {
 
     
-    let url = `/api/common/submit_form_data/?path=validate_facility`
 
-
-    try {
-        fetch(url, {
+        fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facility_approvals/`, {
             headers: {
                 'Accept': 'application/json, text/plain, */*',
-                'Content-Type': 'application/json;charset=utf-8'
+                'Content-Type': 'application/json;charset=utf-8',
+                'Authorization': `Bearer ${token}`
 
             },
             method: 'POST',
@@ -21,42 +19,51 @@ const validateRejectFacility = (facility_id, reject, comment, alert) => {
                 is_cancelled: reject,
             })
         })
-            .then(resp => resp)
-            .then(res => {
+         .then(resp => {
 
-                if (res.status == 200) {
+                if (resp.status == 200 || resp.status == 201) {
+                    setSubmitting(false)
                     if (!reject) {
-                        alert.success({timeout: 10000}, "Facility validated successfully")
+                        alert.success("Facility validated successfully")
                     } else {
-                        alert.success({timeout: 10000}, "Facility rejected successfully")
+                        alert.success("Facility rejected successfully")
                     }
                     router.push('/facilities?qf=new_pending_validation&pending_approval=true&has_edits=false&is_complete=true') // redirect to New Facilties Pending Validation
+                } else {
+                    setRejecting(false)
+
+                    resp.json()
+                    .then(resp => {
+                        const formResponse = []
+                        setFormError(() => {
+                          if(typeof resp == 'object') {
+                            const respEntry = Object.entries(resp)
+            
+                            for (let [_, v] of respEntry) {
+                              formResponse.push(v)
+                            }
+            
+                            return `Error: ${formResponse.join(" ")}`
+                          }
+                        })
+                    })
                 }
 
             })
             .catch(e => {
                 console.error(e.message)
             })
-    } catch (e) {
-
-        console.error(e.message)
-
-    }
+    
 
 }
 
-const approveRejectFacility = (facility_id, comment, alert, reject) => {
+function approveRejectFacility (facility_id, comment, alert, reject, token, setSubmitting, setRejecting, setFormError) {
 
-
-   
-
-
-    let url = `/api/common/submit_form_data/?path=validate_facility`
-    try {
-        fetch(url, {
+        fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facility_approvals/`, {
             headers: {
                 'Accept': 'application/json, text/plain, */*',
-                'Content-Type': 'application/json;charset=utf-8'
+                'Content-Type': 'application/json;charset=utf-8',
+                'Authorization': `Bearer ${token}`
 
             },
             method: 'POST',
@@ -67,16 +74,34 @@ const approveRejectFacility = (facility_id, comment, alert, reject) => {
                 is_national_approval: reject,
             })
         })
-            .then(resp => resp)
-            .then(res => {
+            .then(resp => {
 
-                if (res) {
+                if (resp.status == 200 || resp.status == 201) {
+                    setSubmitting(false)
                     if (reject) {
-                        alert.success({timeout: 10000}, `Facility Approved successfully`)
+                        alert.success(`Facility Approved successfully`)
                     } else {
-                        alert.success({timeout: 10000}, `Facility Rejected successfully`)
+                        alert.success(`Facility Rejected successfully`)
                     }
+                    
                     router.push('/facilities?qf=approved&approved=true&approved_national_level=true&rejected=false') // redirect Facilties Pending Approval
+                } else {
+                    setRejecting(false)
+                    resp.json()
+                    .then(resp => {
+                        const formResponse = []
+                        setFormError(() => {
+                          if(typeof resp == 'object') {
+                            const respEntry = Object.entries(resp)
+            
+                            for (let [_, v] of respEntry) {
+                              formResponse.push(v)
+                            }
+            
+                            return `Error: ${formResponse.join(" ")}`
+                          }
+                        })
+                    })
                 }
 
 
@@ -84,58 +109,63 @@ const approveRejectFacility = (facility_id, comment, alert, reject) => {
             .catch(e => {
                 console.error(e.message)
             })
-    } catch (e) {
-
-        console.error(e)
-    }
+    
 
 
 
 }
 
-const approveRejectFacilityUpdates = (reject, alert, update_id) => {
+function approveRejectFacilityUpdates (reject, alert, update_id, token, setSubmitting, setRejecting, setFormError) {
 
-  
-
-    let url = `/api/common/submit_form_data/?path=approve_reject_facility_updates&id=${update_id}`
-
-
-    try {
-        fetch(url, {
+ 
+        fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facility_updates/${update_id}/`, {
             headers: {
                 'Accept': 'application/json, text/plain, */*',
-                'Content-Type': 'application/json;charset=utf-8'
+                'Content-Type': 'application/json;charset=utf-8',
+                'Authorization': `Bearer ${token}`
 
             },
-            method: 'POST',
+            method: 'PATCH',
             body: JSON.stringify({
                 approved: reject
             })
         })
-            .then(resp => resp)
-            .then(res => {
-
-                if (res) {
+            .then(resp => {
+                if (resp.status == 200 || resp.status == 204) {
 
                     if (reject) {
-                        alert.success({timeout: 10000}, "Facility updates approved successfully")
+                        setSubmitting(false)
+                        alert.success("Facility updates approved successfully")
                     } else {
-                        alert.success({timeout: 10000}, "Facility updates rejected successfully")
+                        alert.success("Facility updates rejected successfully")
                     }
 
                     router.push('/facilities?qf=updated_pending_validation&has_edits=true&pending_approval=true') // redirect to New Facilties Pending Validation
+                } else {
+                    setRejecting(false)
+
+                    resp.json()
+                    .then(resp => {
+                        const formResponse = []
+                        setFormError(() => {
+                          if(typeof resp == 'object') {
+                            const respEntry = Object.entries(resp)
+            
+                            for (let [_, v] of respEntry) {
+                              formResponse.push(v)
+                            }
+            
+                            return `Error: ${formResponse.join(" ")}`
+                          }
+                        })
+                    })
                 }
 
             })
             .catch(e => {
                 console.error(e.message)
             })
-    } catch (e) {
-
-        console.error(e.message)
-
-    }
-
+ 
 }
 
 export {

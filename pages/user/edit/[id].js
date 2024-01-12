@@ -123,7 +123,7 @@ const User = (props) => {
 					if (res.id !== undefined) {
 
 						router.push({ pathname: '/user' })
-						alert.success({timeout: 10000}, editMode ? 'User updated successfully' : 'User added successfully')
+						alert.success(editMode ? 'User updated successfully' : 'User added successfully')
 
 					} else {
 						setStatus({ status: 'error', message: res })
@@ -153,7 +153,7 @@ const User = (props) => {
 				.then(res => {
 
 					router.push('/user/')
-					alert.success({timeout: 10000}, 'User deleted successfully')
+					alert.success('User deleted successfully')
 				})
 
 		} catch (error) {

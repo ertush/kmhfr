@@ -23,7 +23,8 @@ import FacilityDetailsTabs from '../../../components/FacilityDetailsTabs';
 import { Formik, Form, Field } from 'formik';
 import { useAlert } from 'react-alert'
 import { UserContext } from '../../../providers/user';
-
+import { Alert } from '@mui/lab'
+import Spinner from '../../../components/Spinner'
 
 function ApproveReject(props) {
   const userCtx = useContext(UserContext);
@@ -41,17 +42,19 @@ function ApproveReject(props) {
   const [pathId, setPathId] = useState('')
   const [allFctsSelected, setAllFctsSelected] = useState(false);
   const [title, setTitle] = useState('')
+  const [submitting, setSubmitting] = useState(false)
+  const [rejecting, setRejecting] = useState(false)
+  const [formError, setFormError] = useState(null)
 
 
-  const facility = props["0"]?.data;
-  const { facility_updated_json } = props["2"]?.updates ?? { facility_updated_json: null };
+  const facility = props?.data;
+  const { facility_updated_json } = props?.updates ?? { facility_updated_json: null };
   const filters = []
   // const [reject, setReject] = useState(null)
 
 
   const [isClient, setIsClient] = useState(false)
-
-
+  const [reject, setReject] = useState(null)
 
   useEffect(() => {
     setUser(userCtx)
@@ -61,8 +64,8 @@ function ApproveReject(props) {
 
     setIsClient(true)
   }, [])
+  
 
-  let reject
 
   if (isClient) {
     return (
@@ -168,6 +171,7 @@ function ApproveReject(props) {
               </div>
               <div className="col-span-6 md:col-span-1 flex flex-col items-center justify-center p-2"></div>
             </div>
+
           </div>
 
           {/* Facility Side Menu Filters */}
@@ -246,6 +250,7 @@ function ApproveReject(props) {
               )}
             </div>
 
+           
 
             {/* Facility details hidden section */}
 
@@ -290,18 +295,19 @@ function ApproveReject(props) {
                   comment: ''
                 }}
                 onSubmit={async ({ comment }) => {
+                  
                   // if facility is not validated and has no edits
                   if (!facility?.approved && !facility?.has_edits) {
-                    validateRejectFacility(facility?.id, reject, comment, alert)
+                    validateRejectFacility(facility?.id, reject, comment, alert, props?.token, setSubmitting, setRejecting, setFormError)
                   }
                   // if facility is validated and has edits
                   if (facility?.approved && facility?.has_edits) {
-                    approveRejectFacilityUpdates(reject, alert, facility?.latest_update)
+                    approveRejectFacilityUpdates(reject, alert, facility?.latest_update, props?.token, setSubmitting, setRejecting, setFormError)
                   }
                   // if facility is not approved and is validated
                   if (!facility?.approved_national_level && facility?.approved) {
                     // console.log('FACILITY WILL BE APPROVED')
-                    approveRejectFacility(facility?.id, comment, alert, reject)
+                    approveRejectFacility(facility?.id, comment, alert, reject, props?.token, setSubmitting, setRejecting, setFormError)
                   }
                 }
                 }
@@ -309,6 +315,10 @@ function ApproveReject(props) {
                 <Form
                   className="space-y-3"
                 >
+                   {/* Alert Section */}
+            
+                  {formError && <Alert severity='error' className='w-full'>{formError}</Alert>}
+
 
                   {
                     !facility?.has_edits ?
@@ -332,20 +342,40 @@ function ApproveReject(props) {
                     <button
                       type="submit"
                       className="bg-blue-600  text-gray-100 -md p-2 font-semibold"
-                      onClick={() => reject = facility?.has_edits ? true : facility?.is_approved ? true : false}
+                      onClick={() => {setSubmitting(true); setReject(facility?.has_edits ? true : facility?.is_approved ? true : false)}}
 
                     >
-                      {facility?.has_edits ? 'Approve Updates' : facility?.is_approved ? facility?.approved_national_level ? "Reject Facility" : "Approve Facility" : "Validate Facility"}
+                      {
+                       submitting ? 
+                       <div className='flex items-center gap-2'> 
+                         <Spinner />
+                         <span className='text-white'>{
+                            facility?.has_edits ? 'Approving updates...' : facility?.is_approved ? facility?.approved_national_level ? "Rejecting facility...": "Approving facility..." : "Validating facility..."
+                         } </span>
+                       </div>
+                       :
+                      facility?.has_edits ? 'Approve Updates' : facility?.is_approved ? facility?.approved_national_level ? "Reject Facility" : "Approve Facility" : "Validate Facility"
+                      }
                     </button>
 
                     {!facility?.approved_national_level &&
                       <button
                         type="submit"
                         className="bg-red-600  text-gray-100 -md p-2 font-semibold"
-                        onClick={() => reject = facility?.has_edits ? false : facility?.is_approved ? false : true}
+                        onClick={() => { setRejecting(true);  setReject(facility?.has_edits ? false : facility?.is_approved ? false : true)}}
 
                       >
-                        {facility?.has_edits ? 'Decline Updates' : facility?.approved_national_level ? '' : 'Reject Facility'}
+                        {
+                        rejecting ? 
+                        <div className='flex items-center gap-2'> 
+                          <Spinner />
+                          <span className='text-white'>{
+                             facility?.has_edits ? 'Declining Updates ...' : facility?.approved_national_level ? '' : 'Rejecting Facility... '
+                          } </span>
+                        </div>
+                        :
+                        facility?.has_edits ? 'Decline Updates' : facility?.approved_national_level ? '' : 'Reject Facility'
+                        }
                       </button>
                     }
                   </div>
@@ -364,7 +394,7 @@ function ApproveReject(props) {
 }
 
 ApproveReject.getInitialProps = async (ctx) => {
-  const allOptions = [];
+  const allOptions = {};
 
   if (ctx.query.q) {
     const query = ctx.query.q;
@@ -400,9 +430,8 @@ ApproveReject.getInitialProps = async (ctx) => {
         })
           .then((r) => r.json())
           .then(async (json) => {
-            allOptions.push({
-              data: json,
-            })
+            allOptions['data'] = json;
+            allOptions['token'] = token;
 
 
             // fetch ward boundaries
@@ -423,10 +452,10 @@ ApproveReject.getInitialProps = async (ctx) => {
                 const [lng, lat] =
                   _data?.ward_boundary.properties.center.coordinates;
 
-                allOptions.push({
+                allOptions['ward'] = {
                   geoLocation: JSON.parse(JSON.stringify(_data?.ward_boundary)),
                   center: [lat, lng],
-                });
+                };
               } catch (e) {
                 console.error("Error in fetching ward boundaries", e.message);
               }
@@ -444,9 +473,8 @@ ApproveReject.getInitialProps = async (ctx) => {
                   }
                 )).json()
 
-                allOptions.push({
-                  updates: facilityUpdateData,
-                })
+                allOptions['updates'] = facilityUpdateData;
+                
 
               }
               catch (e) {

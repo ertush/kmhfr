@@ -45,14 +45,16 @@ export default function FacilityChanges({ facility }) {
 
                     <div className="md:col-span-4 bg-blue-50 p-6 shadow-md flex flex-col items-center md:gap-3 gap-y-3">
 
-                        <div className="flex flex-col justify-start w-full space-y-3">
+                        <div className="flex flex-col justify-start w-full gap-3">
                             <h2 className="text-2xl font-bold justify-center items-center md:ml-0 ml-4">
                                 Updated details
                             </h2>
+
+                            
                             {/* Update Metadata */}
-                            <div className="grid grid-cols-1 gap-y-2 grid-rows-1 md:flex justify-between md:space-x-4 w-full md:mx-0 mx-4">
+                            <div className="flex justify-between items-center gap-3 w-full md:mx-0 mx-4">
                                 <p className="text-base font-normal flex items-center gap-x-1">
-                                    Updates were made on {" "}
+                                    Updated at {": "}
                                     <span className="text-blue-900 font-semibold text-base ">
                                         {
                                             facility?.changes?.updated ?
@@ -62,30 +64,8 @@ export default function FacilityChanges({ facility }) {
                                             : '-'
                                         }
                                     </span>
-                                    {" "}
-                                    by
-                                    {" "}
-                                    <span className="text-blue-900 font-semibold text-base ">
-                                        {facility?.changes?.created_by_name}
-                                    </span>
+                                  
                                 </p>
-
-                                <p className="text-base font-normal flex gap-x-1 ">
-                                    Facility :
-                                    {" "}
-                                    <span className="text-blue-900 font-semibold text-base ">
-                                        {facility?.data?.name}
-                                    </span>
-                                </p>
-                             
-                                <p className="text-base font-normal flex gap-x-1 ">
-                                    Facility Code:
-                                    {" "}
-                                    <span className="text-blue-900 font-semibold text-base ">
-                                        {facility?.data?.code ?? '-'}
-                                    </span>
-                                </p>
-
 
                                 <span className="flex space-x-2">
                                     <button
@@ -98,14 +78,53 @@ export default function FacilityChanges({ facility }) {
                                         className="flex justify-center text-base font-semibold text-white bg-blue-500  py-1 px-2"
                                         onClick={() => {
 
-                                            alert.success({timeout: 10000}, "Facility updates saved successfully")
+                                            alert.success("Facility updates saved successfully")
                                             router.push("/facilities")
                                         }}
                                     >
                                         Confirm Updates
                                     </button>
-                                </span>
+                                 </span>
+
                             </div>
+
+                            <div className="flex justify-start items-center gap-3 w-full md:mx-0 mx-4">
+                            <p className="text-base font-normal flex items-center gap-x-1">
+                                    Updated by {": "}
+                                    <span className="text-blue-900 font-semibold text-base ">
+                                        {facility?.changes?.created_by_name}
+                                    </span>
+                            </p>
+                            </div>
+
+
+                            <div className="flex justify-start items-center gap-3 w-full md:mx-0 mx-4">
+
+                                <p className="text-base font-normal flex gap-x-1 ">
+                                    Facility :
+                                    {" "}
+                                    <span className="text-blue-900 font-semibold text-base ">
+                                        {facility?.data?.name}
+                                    </span>
+                                </p>
+                             
+                            </div>
+
+                            <div  className="flex justify-start items-center gap-3 w-full md:mx-0 mx-4">
+
+                            <p className="text-base font-normal flex gap-x-1 ">
+                                    Facility Code:
+                                    {" "}
+                                    <span className="text-blue-900 font-semibold text-base ">
+                                        {facility?.data?.code ?? '-'}
+                                    </span>
+                                </p>
+                            </div>
+
+                            {/* <div className="flex items-center justify-end gap-3 w-full">
+                                
+
+                            </div> */}
 
                             {/* Update Details */}
 
@@ -155,6 +174,8 @@ export async function getServerSideProps(ctx) {
     }
 
     const facility = await fetchFacility(ctx?.query?.id)
+
+    // console.log(JSON.stringify(facility?.latest_update, null, 2))
 
 
     return {

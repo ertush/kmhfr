@@ -101,7 +101,6 @@ export function GeolocationForm({ editMode }) {
       longitude: Number(data?.longitude),
       facility: options?.data?.id
     }
-
   
       if (payload) {
 
@@ -118,12 +117,14 @@ export function GeolocationForm({ editMode }) {
             if (resp.status == 200 || resp.status == 201) {
               alert.success('Geolocation Detatils saved Successfully', {timeout: 10000})
               setSubmitting(false)
+                         
               router.push({
                 pathname: '/facilities/facility_changes/[facility_id]/',
                 query: { 
                   facility_id: options?.data?.id
                 }
               })
+
             } else {
               alert.error('Unable to save Geolocation Details Successfully', {timeout: 10000})
               setSubmitting(false)
@@ -181,7 +182,7 @@ export function GeolocationForm({ editMode }) {
     })
       .then(res => {
         if (res.status == 204 || res.status == 200) {
-          alert.success({timeout: 10000}, 'Facility Geolocation Details have been saved successfully')
+          alert.success('Facility Geolocation Details have been saved successfully')
 
           setSubmitting(false)
 
@@ -216,7 +217,7 @@ export function GeolocationForm({ editMode }) {
 
         } else {
           setSubmitting(false)
-          alert.error({timeout: 10000}, 'Unable to save to Geolocation details')
+          alert.error('Unable to save to Geolocation details')
 
           res.json()
           .then(resp => {

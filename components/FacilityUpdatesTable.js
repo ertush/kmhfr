@@ -7,7 +7,7 @@ function FacilityUpdatesTable({ facilityUpdatedJson, originalData }) {
 
 
     return (
-        <Table className="md:px-4">
+        <Table className="md:px-4 mt-4">
          
             {/* Switch FacilityTableUpdates View */}
             <TableBody className='w-full flex flex-col gap-y-6'>

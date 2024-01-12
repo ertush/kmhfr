@@ -60,7 +60,7 @@ const AddGroup = (props)=> {
 			.then(res => {
 				if(res.id !==undefined ){
 					router.push({pathname:'/user/groups'})
-					alert.success({timeout: 10000}, 'Group added successfully ')
+					alert.success('Group added successfully ')
 				}else{
 					alert.danger('Failed to add group')
 				}

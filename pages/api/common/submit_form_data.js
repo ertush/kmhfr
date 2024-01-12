@@ -122,17 +122,7 @@ export default async function submitFormData(req, res) {
                 contentType = 'application/json;charset=utf-8';
                 method = 'DELETE';
                 break
-            case `validate_facility`:
-                url = `${API_URL}/facilities/facility_approvals/`
-                contentType = 'application/json;charset=utf-8';
-                method = 'POST';
-                break
-            case `approve_reject_facility_updates`:
-                url = `${API_URL}/facilities/facility_updates/${req.query.id}/`
-                contentType = 'application/json;charset=utf-8';
-                method = 'PATCH';
-                break
-            case `approve_chul`:
+             case `approve_chul`:
                 url = `${API_URL}/chul/units/${req.query.id}/`
                 contentType = 'application/json;charset=utf-8';
                 method = 'PATCH';

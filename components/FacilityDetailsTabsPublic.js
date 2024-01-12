@@ -60,7 +60,7 @@ function FacilityDetailsTabsPulic({ facility }) {
             let rating_val = [];
             rating_val[0] = data.rating;
             rating_val[1] = data.comment;
-            alert.success({timeout: 10000}, "Review submitted successfully");
+            alert.success("Review submitted successfully");
             window.localStorage.setItem("rating", JSON.stringify(rating_val));
 
             //clear
@@ -78,7 +78,7 @@ function FacilityDetailsTabsPulic({ facility }) {
         console.log(error);
       }
     } else {
-      alert.error({timeout: 10000}, "Rating value must be greater than zero");
+      alert.error("Rating value must be greater than zero");
     }
   };
     
