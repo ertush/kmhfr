@@ -8,6 +8,7 @@ import {
     handleInfrastructureSubmit, handleInfrastructureUpdates,
 } from '../../controllers/facility/facilityHandlers'
 import { FacilityUpdatesContext } from '../../pages/facilities/edit/[id]';
+import { UpdateFormIdContext } from './Form';
 
 
 export function InfrastructureForm() {
@@ -15,22 +16,23 @@ export function InfrastructureForm() {
 
     // Context
     const options = useContext(FormOptionsContext);
+    const setFormId = useContext(UpdateFormIdContext)
 
-    const [formId, setFormId] = useMemo(() => {
-        let id = ''
+    // const [formId, setFormId] = useMemo(() => {
+    //     let id = ''
 
-        function setId(_id) {
-            id = _id
-        }
+    //     function setId(_id) {
+    //         id = _id
+    //     }
 
-        if(window) {
-            setId(new URL(window.location.href).searchParams.get('formId'))
-        }
+    //     if(window) {
+    //         setId(new URL(window.location.href).searchParams.get('formId'))
+    //     }
 
         
 
-        return [id, setId]
-    }, [])
+    //     return [id, setId]
+    // }, [])
     const[facilityId, setFacilityId] = useMemo(() => {
         let id = ''
 
@@ -46,12 +48,12 @@ export function InfrastructureForm() {
         return [id, setId]
     }, [])
 
-    const [servicesFormUrl, setServicesFormUrl] = useState('')
+    // const [servicesFormUrl, setServicesFormUrl] = useState('')
     const [submitting, setSubmitting] = useState(false)
 
     const router = useRouter()
     
-    const { updatedSavedChanges, updateFacilityUpdateData } = options?.data ? useContext(FacilityUpdatesContext) : {updatedSavedChanges: null, updateFacilityUpdateData: null }
+    // const { updatedSavedChanges, updateFacilityUpdateData } = options?.data ? useContext(FacilityUpdatesContext) : {updatedSavedChanges: null, updateFacilityUpdateData: null }
 
     
     const tableheaders =[
@@ -96,6 +98,9 @@ export function InfrastructureForm() {
                 formId: 4
             }
         })
+        .then((navigated) => {
+            if(navigated) setFormId(4)
+        })
 
 
     }
@@ -103,6 +108,7 @@ export function InfrastructureForm() {
 
        return ( <>
             <h4 className="text-lg uppercase mt-4 pb-2 border-b border-blue-600 w-full mb-4 font-semibold text-blue-900">Infrastracture</h4>
+            
             <div className='flex flex-col w-full items-start justify-start gap-3 mt-6'>
           
                 {/* Edit List With Count Container*/}
@@ -125,7 +131,7 @@ export function InfrastructureForm() {
                         previousItemCategory={'services'}
                         itemData={options?.data ? options?.data?.facility_infrastructure : null}
                         title={tableheaders}
-                       
+                        setFormId={setFormId}
                     />
 
                 </div>

@@ -27,7 +27,8 @@ function EditListWithCount(
         options,
         token,
         itemData,
-        title
+        title,
+        setFormId
     }
 ) {
 
@@ -355,26 +356,29 @@ function EditListWithCount(
 
                         const base64EncParams = Buffer.from(payload).toString('base64')
 
-                        // router.push({
-                        //     pathname: `${window.location.origin}/facilities/add`,
-                        //     query: { 
-                        //       formData: base64EncParams,
-                        //       formId: 6,
-                        //       facility_id: itemId,
-                        //       from: 'submission'
+                        router.push({
+                            pathname: `${window.location.origin}/facilities/add`,
+                            query: { 
+                              formData: base64EncParams,
+                              formId: 6,
+                              facilityId: itemId,
+                              from: 'submission'
             
-                        //     }
-                        // })
+                            }
+                        })
+                        .then((navigated) => {
+							if(navigated) setFormId(6)
+						})
 
-                        const url = new URL(`${window.location.origin}/facilities/add?formData=${base64EncParams}`)
+                        // const url = new URL(`${window.location.origin}/facilities/add?formData=${base64EncParams}`)
 
-                        url.searchParams.set('formId', '6')
+                        // url.searchParams.set('formId', '6')
 
-                        url.searchParams.set('facilityId', `${itemId}`)
+                        // url.searchParams.set('facilityId', `${itemId}`)
 
-                        url.searchParams.set('from', 'submission')
+                        // url.searchParams.set('from', 'submission')
 
-                        window.location.href = url
+                        // window.location.href = url
 
 
 

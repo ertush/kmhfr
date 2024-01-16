@@ -13,11 +13,15 @@ import { useAlert } from 'react-alert';
 import Spinner from '../Spinner'
 import { useRouter } from 'next/router';
 import { Alert } from '@mui/lab';
+import { UpdateFormIdContext } from './Form';
 
 // import { FacilityIdContext, FacilityWardDataContext } from './Form';
 
 
 export function BasicDeatilsForm({ editMode }) {
+
+  // Context
+  const setFormId = useContext(UpdateFormIdContext)
 
   // Constants
   const alert = useAlert();
@@ -29,7 +33,7 @@ export function BasicDeatilsForm({ editMode }) {
   const [facilityId, setFacilityId] = useState('')
   const [submitting, setSubmitting] = useState(false);
   const [touchedFields, setTouchedFields] = useState([]);
-  const [formError, setFormError] = useState(null)
+  const [formError, setFormError] = useState(null);
 
 
   // Options
@@ -469,28 +473,31 @@ export function BasicDeatilsForm({ editMode }) {
                 const base64EncParams = Buffer.from(params.join('&')).toString('base64')
 
 
-                // router.push({
-                //   pathname:`${window.location.origin}/facilities/add`,
+                router.push({
+                  pathname:`${window.location.origin}/facilities/add`,
                   
-                //   query:{
-                //     formData: base64EncParams,
-                //     formId: 1,
-                //     facilityId: facilityId,
-                //     from: 'submission'
-                //   }
+                  query:{
+                    formData: base64EncParams,
+                    formId: 1,
+                    facilityId: facilityId,
+                    from: 'submission'
+                  }
                 
-                // })
+                })
+                .then((navigated) => {
+                  if(navigated) setFormId(1)
+                })
         
-                const url = new URL(`${window.location.origin}/facilities/add?formData=${base64EncParams}`)
+                // const url = new URL(`${window.location.origin}/facilities/add?formData=${base64EncParams}`)
                 
-                url.searchParams.set('formId', '1')
+                // url.searchParams.set('formId', '1')
         
-                url.searchParams.set('facilityId', `${facilityId}`)
+                // url.searchParams.set('facilityId', `${facilityId}`)
 
-                url.searchParams.set('from', 'submission')
+                // url.searchParams.set('from', 'submission')
                 
         
-                window.location.href = url
+                // window.location.href = url
 
 
             }
