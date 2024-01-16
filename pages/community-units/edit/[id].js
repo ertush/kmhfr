@@ -72,7 +72,7 @@ export async function getServerSideProps({req, res, query}) {
       for( let option of options){
       switch(option){ 
 
-        case "cu":
+        case "cu":getServerSideProps
             const cu = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/chul/units/${query.id}/`,{
             headers:{
               'Authorization': 'Bearer ' + token,
@@ -99,8 +99,8 @@ export async function getServerSideProps({req, res, query}) {
 
       case "facilities":
 
-        const count = await getFacilityCount(token)
-        
+        getFacilityCount(token)
+        .then(async ({count}) => {        
         const facilities = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/?page_size=${count ?? '500'}&fields=id,name,county,sub_county_name,constituency,ward_name`,{
           headers:{
             'Authorization': 'Bearer ' + token,
@@ -110,6 +110,8 @@ export async function getServerSideProps({req, res, query}) {
         })
 
         response["facilities"] =  (await (await facilities.json()))?.results?.map(({ id, name }) => ({ label: name, value: id }))
+
+        })
         break;
 
       case "contact_types":
