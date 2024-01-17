@@ -13,6 +13,7 @@ import { useAlert } from 'react-alert';
 import Spinner from '../Spinner'
 // import { handleGeolocationUpdates } from '../../controllers/facility/facilityHandlers';
 import { useRouter } from 'next/router';
+import { UpdateFormIdContext } from './Form';
 
 
 const WardMap = dynamic(
@@ -33,6 +34,7 @@ const Map = memo(WardMap)
 export function GeolocationForm({ editMode }) {
 
   const _options = useContext(FormOptionsContext);
+  const setFormId = useContext(UpdateFormIdContext);
 
   // const [wardData, setWardData] = useContext(FacilityWardDataContext)
 
@@ -75,7 +77,10 @@ export function GeolocationForm({ editMode }) {
       query: {
           formId: 0
       }
-  })
+    })
+    .then((navigated) => {
+      if(navigated) setFormId(0)
+    })
 
 
   }
@@ -196,24 +201,27 @@ export function GeolocationForm({ editMode }) {
 
           const base64EncParams = Buffer.from(params.join('&')).toString('base64')
 
-          // router.push({
-          //   pathname: `${window.location.origin}/facilities/add`,
-          //   query: { 
-          //     formData: base64EncParams,
-          //     formId: 2,
-          //     facilityId: facilityId,
-          //     from: 'submission'
+          router.push({
+            pathname: `${window.location.origin}/facilities/add`,
+            query: { 
+              formData: base64EncParams,
+              formId: 2,
+              facilityId: facilityId,
+              from: 'submission'
 
-          //   }
-          // })
+            }
+          })
+          .then((navigated) => {
+            if(navigated) setFormId(2)
+          })
 
-          const url = new URL(`${window.location.origin}/facilities/add?formData=${base64EncParams}`)
+          // const url = new URL(`${window.location.origin}/facilities/add?formData=${base64EncParams}`)
 
-          url.searchParams.set('formId', '2')
+          // url.searchParams.set('formId', '2')
 
-          url.searchParams.set('facilityId', facilityId)
+          // url.searchParams.set('facilityId', facilityId)
 
-          window.location.href = url
+          // window.location.href = url
 
         } else {
           setSubmitting(false)

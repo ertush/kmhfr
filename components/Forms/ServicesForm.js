@@ -11,6 +11,7 @@ import {
 // import { FacilityIdContext } from './EditForm'
 import { FacilityUpdatesContext } from '../../pages/facilities/edit/[id]';
 import {useRouter} from 'next/router'
+import { UpdateFormIdContext } from './Form';
 
 
 
@@ -22,6 +23,7 @@ import {useRouter} from 'next/router'
 export function ServicesForm() {
 
 
+    const setFormId = useContext(UpdateFormIdContext)
 
     const[facilityId, setFacilityId] = useMemo(() => {
         let id = ''
@@ -44,21 +46,21 @@ export function ServicesForm() {
 
     const router = useRouter()
 
-    const [formId, setFormId] = useMemo(() => {
-        let id = ''
+    // const [formId, setFormId] = useMemo(() => {
+    //     let id = ''
 
-        function setId(_id) {
-            id = _id
-        }
+    //     function setId(_id) {
+    //         id = _id
+    //     }
 
-        if(window) {
-            setId(new URL(window.location.href).searchParams.get('formId'))
-        }
+    //     if(window) {
+    //         setId(new URL(window.location.href).searchParams.get('formId'))
+    //     }
 
-        // console.log({id})
+    //     // console.log({id})
 
-        return [id, setId]
-    }, [])
+    //     return [id, setId]
+    // }, [])
 
     const [submitting, setSubmitting] = useState(false)
     
@@ -88,6 +90,8 @@ export function ServicesForm() {
     //State
     const [services, setServices] = useState();
 
+    const editMode = options?.data ? true : false
+
     //Event handlers
     function handleServicePrevious() {
         // setFormId(`${parseInt(formId) - 1}`);
@@ -106,6 +110,10 @@ export function ServicesForm() {
                 formId: 3
             }
         })
+        .then((navigated) => {
+            if(navigated) setFormId(3)
+        })
+        
 
 
   } 
@@ -129,8 +137,9 @@ export function ServicesForm() {
                             handleItemsUpdate={handleServiceUpdates}
                             setSubmitting={setSubmitting}
                             submitting={submitting}
+                            editMode={editMode}
                             handleItemPrevious={handleServicePrevious}
-                                                      
+                            setFormId={setFormId}                          
                             /> 
 
                     </div>

@@ -23,11 +23,13 @@ const SetFormIdContext = createContext(null)
 
 function CommunityUnitsBasciDetailsForm(props) {
 
-	const facilities = props?.facility_data
-	const contact_types = props?.contact_types?.map(({ id: value, name: label }) => ({ label, value })) ?? []
+
 	const alert = useAlert()
 	const router = useRouter()
 
+	const facilities = props?.facilities
+
+	const facilityOptions = facilities?.map(({id: value, name: label}) => ({label, value}))
 
 	const [countyValue, setCountyValue] = useState('')
 	const [subCountyValue, setSubCountyValue] = useState('')
@@ -134,12 +136,12 @@ function CommunityUnitsBasciDetailsForm(props) {
 
 	function handleFacilityChange({ value }) {
 
-		facilities.map((facility) => {
-			if (facility.id === value) {
-				setCountyValue(facility.county);
-				setSubCountyValue(facility.sub_county_name);
-				setConstituencyValue(facility.constituency);
-				setWardValue(facility.ward_name);
+		facilities?.map(({id, county, sub_county_name, constituency, ward_name}) => {
+			if (id === value) {
+				setCountyValue(county);
+				setSubCountyValue(sub_county_name);
+				setConstituencyValue(constituency);
+				setWardValue(ward_name);
 			}
 		}
 		);
@@ -273,13 +275,7 @@ function CommunityUnitsBasciDetailsForm(props) {
 						// className='flex-none w-full  flex-grow  placeholder-gray-500 border border-blue-600 outline-none'
 						onChange={handleFacilityChange}
 						className='flex-none w-full bg-transparent border border-blue-600 flex-grow  placehold-gray-500 focus:border-gray-200 outline-none'
-						options={facilities?.map((facility) => {
-							return {
-								value: facility.id,
-								label: facility.name,
-							};
-						}
-						)}
+						options={facilityOptions}
 						defaultInputValue={formData?.facility}
 					
 						placeholder='Select linked facility...'
@@ -306,24 +302,7 @@ function CommunityUnitsBasciDetailsForm(props) {
 
 					<CustomSelect
 
-						options={[
-							{
-								value: '2943e6c1-a581-461e-85a4-b9f25a2674ab',
-								label: 'Closed',
-							},
-							{
-								value: 'bac8ab50-1dad-4f96-ab96-a18a4e420871',
-								label: 'Non-functional',
-							},
-							{
-								value: 'fbc7fce5-3328-4dad-af70-0ec3d8f5ad80',
-								label: 'Semi-functional',
-							},
-							{
-								value: '50ef43f0-887c-44e2-9b09-cfa7a7090deb',
-								label: 'Fully-functional',
-							},
-						]}
+						options={props?.statuses}
 						required
 						placeholder='Select an operation status ...'
 						defaultValue={formData?.status}
@@ -565,7 +544,7 @@ function CommunityUnitsBasciDetailsForm(props) {
 
 									<CustomSelect
 										placeholder="Select Contact ..."
-										options={contact_types}
+										options={props?.contact_types}
 										name={`contact_type_${i}`}
 										defaultValue={Array.isArray(formData?.contacts) ? formData?.contacts[i]?.contact_type : ''}
 									/>
@@ -861,10 +840,10 @@ function CommunityUnitsExtensionWorkersForm(props) {
 				{/* Basic Details and Services */}
 				<div className='flex justify-between items-center w-full p-2'>
 					<button
-						className='flex items-center justify-start space-x-2 p-1 border border-black  px-2'
+						className='flex items-center justify-start space-x-2 p-1 border border-blue-600  px-2'
 						onClick={handleCHEWPrevious}>
-						<ChevronDoubleLeftIcon className='w-4 h-4 text-black' />
-						<span className='text-medium font-semibold text-black '>
+						<ChevronDoubleLeftIcon className='w-4 h-4 text-blue-600' />
+						<span className='text-medium font-semibold text-blue-600 '>
 							Basic Details
 						</span>
 					</button>
@@ -895,7 +874,6 @@ function CommunityUnitsExtensionWorkersForm(props) {
 	);
 }
 
-
 function CommunityUnitsServicesForm(props) {
 
 	// const [formError, setFormError] = useState('')
@@ -903,7 +881,7 @@ function CommunityUnitsServicesForm(props) {
 	const [chulId, setChuilId] = useState('')
 	const setFormId = useContext(SetFormIdContext)
 
-	const serviceCtg = props?.service_category ?? []
+	const serviceCtg = props?.services ?? []
 
 
 
@@ -947,16 +925,18 @@ function CommunityUnitsServicesForm(props) {
 	})(serviceCtg ?? [])
 
 
-	function handleCHUServiceSubmit (token, selectedServices, chulId) {
+	function handleCHUServiceSubmit (selectedServices, chulId) {
 		// console.log({stateSetters, chulId})
+
+		console.log(JSON.stringify(selectedServices, null, 2))
 		
-		const _payload = selectedServices.map(({value}) => ({ service: value }))
+		const _payload = selectedServices?.map(({value}) => ({ service: value }))
 
 		_payload.forEach(obj => obj['health_unit'] = chulId)
 
 	
 
-		if(_payload && chulId && token ) {
+		if(_payload && chulId) {
 		try {
 			return fetch(`${process.env.NEXT_PUBLIC_API_URL}/chul/units/${chulId}/`, {
 				headers: {
@@ -1163,143 +1143,248 @@ function AddCommunityUnit(props) {
 }
 
 
-export async function getServerSideProps(ctx) {
+// export async function getServerSideProps(ctx) {
 
-	const allOptions = {}
+// 	const allOptions = {}
 
+// 	const options = [
+// 		'facilities',
+// 		'services',
+// 		'contact_types',
+// 	]
+
+// 	async function getFacilityCount(token) {
+// 		try {
+// 		return (await (await fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/`, {
+// 		  headers:{
+// 			'Authorization': 'Bearer ' + token,
+// 			'Accept': 'application/json'
+// 		  }
+	
+// 		})).json())?.count
+// 		}
+// 		catch (e) {
+// 		  console.error(e.message)
+// 		}
+// 	  }
+	
+// 	const count = await getFacilityCount(token)
+
+
+// 	return checkToken(ctx.req, ctx.res)
+// 		.then(async (t) => {
+// 			if (t.error) {
+// 				throw new Error('Error checking token');
+// 			} else {
+// 				let token = t.token;
+// 				let url = '';
+
+// 				for (let i = 0; i < options.length; i++) {
+// 					const option = options[i]
+// 					switch (option) {
+// 						case 'facilities':
+
+// 							try {
+
+// 								const _data = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/?fields=id,name,county,sub_county_name,constituency,ward_name&page=1&page_size=${count > 500 ? '500' : count}`, {
+// 									headers: {
+// 										Authorization: 'Bearer ' + token,
+// 										Accept: 'application/json',
+// 									},
+// 								})
+
+
+// 								allOptions['facility_data'] = (await _data.json()).results
+
+// 							}
+// 							catch (err) {
+// 								console.log(`Error fetching ${option}: `, err);
+
+// 							}
+
+// 							break;
+// 						case 'contact_types':
+// 							url = `${process.env.NEXT_PUBLIC_API_URL}/common/${option}/?fields=id,name`;
+
+// 							try {
+
+// 								const _data = await fetch(url, {
+// 									headers: {
+// 										Authorization: 'Bearer ' + token,
+// 										Accept: 'application/json',
+// 									},
+// 								})
+
+
+
+// 								allOptions['contact_types'] = (await _data.json()).results
+
+
+// 							}
+// 							catch (err) {
+// 								console.log(`Error fetching ${option}: `, err);
+
+// 							}
+// 							break;
+
+// 						case 'services':
+
+// 							url = `${process.env.NEXT_PUBLIC_API_URL}/chul/${option}/?page_size=100&ordering=name`;
+
+// 							try {
+
+// 								const _data = await fetch(url, {
+// 									headers: {
+// 										Authorization: 'Bearer ' + token,
+// 										Accept: 'application/json',
+// 									}
+// 								})
+
+// 								allOptions['service_category'] = (await _data.json()).results
+
+// 							}
+// 							catch (err) {
+// 								console.log(`Error fetching ${option}: `, err);
+
+// 							}
+
+// 							break;
+// 					}
+// 				}
+
+// 				allOptions['token'] = token
+
+// 				return {
+// 					props: allOptions
+// 				}
+
+// 			}
+// 		})
+// 		.catch((err) => {
+// 			console.log('Error checking token: ' + err);
+// 			if (typeof window !== 'undefined' && window) {
+// 				if (ctx?.asPath) {
+// 					window.location.href = ctx?.asPath;
+// 				} else {
+// 					window.location.href = '/facilities';
+// 				}
+// 			}
+// 			setTimeout(() => {
+// 				return {
+// 					error: true,
+// 					err: err,
+// 					data: [],
+// 				};
+// 			}, 1000);
+// 		});
+// };
+
+export async function getServerSideProps({req, res, query}) {
+
+	const {token} = await checkToken(req, res)
+  
+	const response = {}
+	
 	const options = [
-		'facilities',
-		'services',
-		'contact_types',
+	  "cu",
+	  "statuses",
+	  "facilities",
+	  "contact_types",
+	  "services"
 	]
-
+  
+  
 	async function getFacilityCount(token) {
-		try {
-		return (await (await fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/`, {
-		  headers:{
-			'Authorization': 'Bearer ' + token,
-			'Accept': 'application/json'
-		  }
-	
-		})).json())?.count
+	  try {
+	  return (await (await fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/`, {
+		headers:{
+		  'Authorization': 'Bearer ' + token,
+		  'Accept': 'application/json'
 		}
-		catch (e) {
-		  console.error(e.message)
-		}
+  
+	  })).json())?.count
 	  }
-	
-
-
-	return checkToken(ctx.req, ctx.res)
-		.then(async (t) => {
-			if (t.error) {
-				throw new Error('Error checking token');
-			} else {
-				let token = t.token;
-				let url = '';
-
-				for (let i = 0; i < options.length; i++) {
-					const option = options[i]
-					switch (option) {
-						case 'facilities':
-
-							const count = await getFacilityCount(token)
-
-							url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/${option}/?fields=id,name,county,sub_county_name,constituency,ward_name&page=1&page_size=${count}`;
-
-							try {
-
-								const _data = await fetch(url, {
-									headers: {
-										Authorization: 'Bearer ' + token,
-										Accept: 'application/json',
-									},
-								})
-
-
-								allOptions['facility_data'] = (await _data.json()).results
-
-							}
-							catch (err) {
-								console.log(`Error fetching ${option}: `, err);
-
-							}
-
-							break;
-						case 'contact_types':
-							url = `${process.env.NEXT_PUBLIC_API_URL}/common/${option}/?fields=id,name`;
-
-							try {
-
-								const _data = await fetch(url, {
-									headers: {
-										Authorization: 'Bearer ' + token,
-										Accept: 'application/json',
-									},
-								})
-
-
-
-								allOptions['contact_types'] = (await _data.json()).results
-
-
-							}
-							catch (err) {
-								console.log(`Error fetching ${option}: `, err);
-
-							}
-							break;
-
-						case 'services':
-
-							url = `${process.env.NEXT_PUBLIC_API_URL}/chul/${option}/?page_size=100&ordering=name`;
-
-							try {
-
-								const _data = await fetch(url, {
-									headers: {
-										Authorization: 'Bearer ' + token,
-										Accept: 'application/json',
-									}
-								})
-
-								allOptions['service_category'] = (await _data.json()).results
-
-							}
-							catch (err) {
-								console.log(`Error fetching ${option}: `, err);
-
-							}
-
-							break;
-					}
-				}
-
-				allOptions['token'] = token
-
-				return {
-					props: allOptions
-				}
-
+	  catch (e) {
+		console.error(e.message)
+	  }
+	}
+  
+	const count = await getFacilityCount(token)
+  
+  
+	try {
+		
+		if(token.error) throw Error('Unable to get token')
+  
+		for( let option of options){
+		switch(option){ 
+  
+		 
+		case "statuses":
+		  const statuses = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/chul/statuses/?fields=id,name`,{
+			headers:{
+			  'Authorization': 'Bearer ' + token,
+			  'Accept': 'application/json'
 			}
-		})
-		.catch((err) => {
-			console.log('Error checking token: ' + err);
-			if (typeof window !== 'undefined' && window) {
-				if (ctx?.asPath) {
-					window.location.href = ctx?.asPath;
-				} else {
-					window.location.href = '/facilities';
-				}
+			
+		  })
+  
+		  response["statuses"] =  (await (await statuses.json()))?.results?.map(({ id, name }) => ({ label: name, value: id }))
+		  break;
+  
+		case "facilities":
+  
+		  
+		  const facilities = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/?page_size=${count > 500 ? '500' : count}&fields=id,name,county,sub_county_name,constituency,ward_name`,{
+			headers:{
+			  'Authorization': 'Bearer ' + token,
+			  'Accept': 'application/json'
 			}
-			setTimeout(() => {
-				return {
-					error: true,
-					err: err,
-					data: [],
-				};
-			}, 1000);
-		});
-};
+			
+		  })
+  
+		  response["facilities"] =  (await (await facilities.json()))?.results
+		  break;
+  
+		case "contact_types":
+		  const contact_types = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/common/contact_types/?fields=id,name`,{
+			headers:{
+			  'Authorization': 'Bearer ' + token,
+			  'Accept': 'application/json'
+			}
+			
+		  })
+  
+		  response["contact_types"] =  (await (await contact_types.json()))?.results?.map(({ id, name }) => ({ label: name, value: id }))
+		  break;
+  
+		case "services":
+		  const services = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/chul/services/?page_size=100&ordering=name`,{
+			headers:{
+			  'Authorization': 'Bearer ' + token,
+			  'Accept': 'application/json'
+			}
+			
+		  })
+  
+		  response["services"] =  (await (await services.json()))?.results
+		  break;
+		}
+		} 
+  
+		response['token'] = token
+	   
+  
+		return {
+		  props: response 
+		}
+		
+	  }
+	  
+	catch(e) {
+	  console.error(e.message)
+	}
+  
+  }
 
 export default AddCommunityUnit; 

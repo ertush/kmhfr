@@ -7,6 +7,7 @@ import {
     handleHrSubmit, handleHrUpdates
 } from '../../controllers/facility/facilityHandlers';
 import { FacilityUpdatesContext } from '../../pages/facilities/edit/[id]';
+import { UpdateFormIdContext } from './Form';
 
 
 
@@ -20,22 +21,23 @@ export function HumanResourceForm() {
     const options = useContext(FormOptionsContext);
     const router = useRouter()
 
-    // const [formId, setFormId] = useContext(FormContext);
-    const [formId, setFormId] = useMemo(() => {
-        let id = ''
+    const setFormId = useContext(UpdateFormIdContext);
 
-        function setId(_id) {
-            id = _id
-        }
+    // const [formId, setFormId] = useMemo(() => {
+    //     let id = ''
 
-        if(window) {
-            setId(new URL(window.location.href).searchParams.get('formId'))
-        }
+    //     function setId(_id) {
+    //         id = _id
+    //     }
 
-        // console.log({id})
+    //     if(window) {
+    //         setId(new URL(window.location.href).searchParams.get('formId'))
+    //     }
 
-        return [id, setId]
-    }, [])
+    //     // console.log({id})
+
+    //     return [id, setId]
+    // }, [])
 
     // const[facilityId, _] = useContext(FacilityIdContext);
     const[facilityId, setFacilityId] = useMemo(() => {
@@ -106,6 +108,10 @@ export function HumanResourceForm() {
             formId: 5
         }
     })
+    .then((navigated) => {
+        if(navigated) setFormId(5)
+    })
+    
 
 
     }, []);

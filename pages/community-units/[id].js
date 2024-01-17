@@ -1,7 +1,7 @@
 import Head from "next/head";
 import * as Tabs from "@radix-ui/react-tabs";
 import { checkToken } from "../../controllers/auth/auth";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import MainLayout from "../../components/MainLayout";
 import router from "next/router";
 import moment from 'moment'
@@ -20,6 +20,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Link from 'next/link';
 import CommunityUnitSideMenu from "../../components/CommunityUnitSideMenu";
+import { UserContext } from "../../providers/user";
 
 const EditCommunityUnit = (props) => {
   const Map = dynamic(
@@ -35,9 +36,14 @@ const EditCommunityUnit = (props) => {
   );
   let cu = props.data;
 
-  const [user, setUser] = useState(null);
-  const [isCHUDetails, setIsCHUDetails] = useState(true);
-  const [isApproveReject, setIsApproveReject] = useState(false);
+  const userCtx = useContext(UserContext)
+
+  const groupID = userCtx?.groups[0]?.id
+
+
+  // const [user, setUser] = useState(null);
+  // const [isCHUDetails, setIsCHUDetails] = useState(true);
+  // const [isApproveReject, setIsApproveReject] = useState(false);
   const [viewLog, setViewLog] = useState(false);
   const [columns, setColumns] = useState([
     { id: 'updated_on', label: 'Date', minWidth: 100 },
@@ -78,15 +84,15 @@ const EditCommunityUnit = (props) => {
 	}, [])
 
 
-  useEffect(() => {
-    if (typeof window !== 'undefined') { //auth.add_group
-      let usr = JSON.parse(window.sessionStorage.getItem('user'))
+  // useEffect(() => {
+  //   if (typeof window !== 'undefined') { //auth.add_group
+  //     let usr = JSON.parse(window.sessionStorage.getItem('user'))
 
-      if (usr?.all_permissions.find((r) => r === 'chul.can_approve_chu') !== undefined) {
-        setIsApproveReject(true)
-      }
-    }
-  }, [])
+  //     if (usr?.all_permissions.find((r) => r === 'chul.can_approve_chu') !== undefined) {
+  //       setIsApproveReject(true)
+  //     }
+  //   }
+  // }, [])
 
   if(isClient) {
 
@@ -200,10 +206,18 @@ const EditCommunityUnit = (props) => {
           <div className="col-span-5 md:col-span-6 flex flex-col gap-3 mt-4">
             {/* Approve/Reject, Edit Buttons */}
             <div className="bg-transparent border border-blue-600 w-full p-3  flex flex-col gap-3 shadow-sm mt-4">
-              <div className="flex flex-row justify-start items-center space-x-3 p-3">
-                {isApproveReject && <button
+         
+           <div className="flex flex-row justify-start items-center space-x-3 p-3">
+                { 
+                 (groupID == 7 || 
+                  groupID == 5 ||
+                  groupID == 1) &&
+                  !cu?.is_approved &&
+                  !cu?.is_closed
+                && <button
                   onClick={() => {
-                    router.push("/community-units/approve/" + cu.id)
+                    router.push(`/community-units/approve/${cu.id}`)
+                   
                   }}
                   className={"p-2 text-center -md font-semibold text-base text-white bg-blue-600"}
                 >

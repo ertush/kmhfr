@@ -163,6 +163,7 @@ function approveRejectFacilityUpdates (reject, alert, update_id, token, setSubmi
 
             })
             .catch(e => {
+                setSubmitting(false)
                 console.error(e.message)
             })
  

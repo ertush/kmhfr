@@ -22,6 +22,7 @@ import { useAlert } from 'react-alert';
 import Spinner from '../Spinner'
 import { useRouter } from 'next/router';
 import { Alert } from '@mui/lab'
+import { UpdateFormIdContext } from './Form';
 
 
 export const FacilityDeptContext = createContext(null)
@@ -35,6 +36,8 @@ export function FacilityContactsForm() {
     const options = useContext(FormOptionsContext);
     const contactTypeOptions = options.contact_types;
     const jobTitleOptions = options.job_titles;
+
+    const setFormId = useContext(UpdateFormIdContext)
 
     const facilityContactsData = {}
 
@@ -229,6 +232,9 @@ export function FacilityContactsForm() {
                 formId: 1
             }
         })
+        .then((navigated) => {
+            if(navigated) setFormId(1)
+        })
 
 
     }, [])
@@ -301,27 +307,30 @@ export function FacilityContactsForm() {
 
                                 const formDataBase64Enc = Buffer.from(JSON.stringify(values)).toString('base64')
 
-                                // router.push({
-                                //     pathname: `${window.location.origin}/facilities/add`,
-                                //     query: { 
-                                //       formData: formDataBase64Enc,
-                                //       formId: 3,
-                                //       facilityId: facilityId,
-                                //       from: 'submission'
+                                router.push({
+                                    pathname: `${window.location.origin}/facilities/add`,
+                                    query: { 
+                                      formData: formDataBase64Enc,
+                                      formId: 3,
+                                      facilityId: facilityId,
+                                      from: 'submission'
                         
-                                //     }
-                                //   })
+                                    }
+                                  })
+                                  .then((navigated) => {
+                                    if(navigated) setFormId(3)
+                                })
 
-                                const url = new URL(`${window.location.origin}/facilities/add?formData=${formDataBase64Enc}`)
+                                // const url = new URL(`${window.location.origin}/facilities/add?formData=${formDataBase64Enc}`)
 
-                                url.searchParams.set('formId', '3')
+                                // url.searchParams.set('formId', '3')
 
-                                url.searchParams.set('facilityId', facilityId)
+                                // url.searchParams.set('facilityId', facilityId)
 
-                                url.searchParams.set('from', 'submission')
+                                // url.searchParams.set('from', 'submission')
 
 
-                                window.location.href = url
+                                // window.location.href = url
 
                             }
                             else {

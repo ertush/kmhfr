@@ -1151,37 +1151,27 @@ async function handleHrDelete(event, facility_hr_id, alert) {
 }
 
 // handleFacilityUpgrades
-async function handleFacilityUpgrades(payload, alert) {
-
-
-    // console.log({payload});
+async function handleFacilityUpgrades(payload, token) {
 
     try {
 
-
-
-        const resp = await fetch(`/api/common/submit_form_data/?path=facility_upgrade`, {
+        const resp = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facility_upgrade/`, {
             headers: {
-                'Accept': 'application/json, text/plain, */*',
-                'Content-Type': 'application/json;charset=utf-8'
+                'Accept': 'application/json',
+                'Content-Type': 'application/json;charset=utf-8',
+                'Authorization': `Bearer ${token}`,
+
             },
             method: 'POST',
             body: JSON.stringify(payload)
         })
 
-        if (resp.ok) {
-            localStorage.clear()
-            alert.success('Facility Upgraded Successfully')
-        } else {
-            alert.error("Unable to upgrade facility")
-        }
-
-
+      
         return resp
 
     }
     catch (e) {
-        console.error('Unable to upgrade facility: ', e.message)
+        throw Error('Unable to upgrade facility: ', e.message)
     }
 }
 

@@ -6,8 +6,6 @@ import { checkToken } from '../../../controllers/auth/auth'
 export const ChuOptionsContext = createContext()
 
 export default function CommunityUnitEdit (props){
-
-
   // console.log({props})
 
   const [isClient, setIsClient] = useState(false)
@@ -65,6 +63,9 @@ export async function getServerSideProps({req, res, query}) {
     }
   }
 
+  const count = await getFacilityCount(token)
+
+
   try {
       
       if(token.error) throw Error('Unable to get token')
@@ -72,7 +73,7 @@ export async function getServerSideProps({req, res, query}) {
       for( let option of options){
       switch(option){ 
 
-        case "cu":getServerSideProps
+        case "cu":
             const cu = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/chul/units/${query.id}/`,{
             headers:{
               'Authorization': 'Bearer ' + token,
@@ -99,9 +100,8 @@ export async function getServerSideProps({req, res, query}) {
 
       case "facilities":
 
-        getFacilityCount(token)
-        .then(async ({count}) => {        
-        const facilities = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/?page_size=${count ?? '500'}&fields=id,name,county,sub_county_name,constituency,ward_name`,{
+        
+        const facilities = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/?page_size=${count > 500 ? '500' : count}&fields=id,name,county,sub_county_name,constituency,ward_name`,{
           headers:{
             'Authorization': 'Bearer ' + token,
             'Accept': 'application/json'
@@ -109,9 +109,7 @@ export async function getServerSideProps({req, res, query}) {
           
         })
 
-        response["facilities"] =  (await (await facilities.json()))?.results?.map(({ id, name }) => ({ label: name, value: id }))
-
-        })
+        response["facilities"] =  (await (await facilities.json()))?.results?.map(({ id, name }) => ({ label: name, value: id })) 
         break;
 
       case "contact_types":

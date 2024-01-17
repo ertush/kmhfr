@@ -17,22 +17,34 @@ import { ServicesForm } from './ServicesForm';
 import { GeolocationForm } from './GeolocationForm';
 
 export const FormContext = createContext(() => null)
-
+export const UpdateFormIdContext = createContext(() => null)
 
 
 export function Form() {
+
   const [formId, setFormId] = useState('0')
 
   useEffect(() => {
-    function setStateFromUrl() {
+    // function setStateFromUrl() {
 
-      const url = new URL(window.document.location.href)
+    //   const url = new URL(window.document.location.href)
 
-      setFormId(url.searchParams.get('formId'))
+    //   setFormId(url.searchParams.get('formId'))
 
-    }
+    // }
 
-    setStateFromUrl()
+    // setStateFromUrl()
+
+
+    if(window) {
+
+      const id = new URL(window.location.href)?.searchParams.get('formId')
+      if(typeof id == 'string') {
+        setFormId(Number(id))
+        // console.log({formId})
+  
+      }
+      }
   }, [])
 
   const steps = [
@@ -93,6 +105,7 @@ export function Form() {
         <div
           className='w-full flex flex-col items-start justify-start my-3 bg-blue-50'
           style={{ minHeight: '250px' }}>
+          <UpdateFormIdContext.Provider value={setFormId}>  
           {
             formId == '0' &&
             <BasicDeatilsForm
@@ -132,6 +145,7 @@ export function Form() {
             <HumanResourceForm />
 
           }
+          </UpdateFormIdContext.Provider>
 
 
         </div>

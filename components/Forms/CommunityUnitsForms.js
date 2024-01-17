@@ -28,9 +28,10 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
   const [submitting, setSubmitting] = useState(false)
   const [formError, setFormError] = useState(null)
   const [validationError, setValidationError] = useState(null)
+  const [contacts, setContacts] = useState(props?.contacts ?? [{contact: '', contact_type_name: ''}]);
+
 
   const alert = useAlert()
-
 
   function handleFieldChange(event) {
 
@@ -122,7 +123,7 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
     payload['basic']['contact'] && delete payload['basic']['contact']
     payload['basic']['contact_type'] && delete payload['basic']['contact_type']
 
-    console.log(payload)
+    // console.log(payload)
 
     try {
       fetch(`${process.env.NEXT_PUBLIC_API_URL}/chul/units/${props?.id}/`, {
@@ -163,6 +164,14 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
 
 
 
+  }
+
+  function handleAddContact(event) {
+    event.preventDefault()
+
+    setContacts(prev => {
+      return [...prev, {contact: '', contact_type_name: ''}]
+    })
   }
 
   return (
@@ -516,7 +525,7 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
             Community Health Unit Contacts
           </h4>
 
-          {props?.contacts?.map(({ contact, contact_type_name }, i) => {
+          {contacts?.map(({ contact, contact_type_name }, i) => {
             return (
               <div
                 className="w-full flex flex-row items-center  gap-1 gap-x-3 mb-3"
@@ -579,7 +588,7 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
         <div className="sticky top-0 right-10 w-full flex justify-end">
           <button
             className=" bg-blue-600 p-2 text-white flex text-md font-semibold mt-3"
-            onClick={e => e.preventDefault()}
+            onClick={handleAddContact}
           >
             {`Add Contact`}
           </button>
@@ -629,7 +638,6 @@ function EditCommunityUnitsCHEWSForm(props) {
 
   const [healthUnitWorkers, setHealthUnitWorkers] = useState(props?.health_unit_workers)
   const alert = useAlert()
-
   const [deleteButton, setDeleteButton] = useState(props?.health_unit_workers.map((_, i) => ({[i]: false})))
 
   
@@ -656,7 +664,6 @@ function EditCommunityUnitsCHEWSForm(props) {
         const formDataEntries = Object.entries(formDataObject)
 
         formDataEntries.forEach((entry) => {
-          console.log({ent0: entry[0],ent1: entry[1]})
           if (/^first_name_[0-9]{1}/.test(entry[0])) payload[parseInt(entry[0].split('_').at(-1))]['first_name'] = entry[1];
           if (/^last_name_[0-9]{1}/.test(entry[0])) payload[parseInt(entry[0].split('_').at(-1))]['last_name'] = entry[1];
           if (/^is_incharge_[0-9]{1}/.test(entry[0])) payload[parseInt(entry[0].split('_').at(-1))]['is_incharge'] = entry[1];
@@ -665,7 +672,6 @@ function EditCommunityUnitsCHEWSForm(props) {
 
         payload = payload.filter(({first_name}, i) => first_name !== props?.health_unit_workers[i]?.first_name)
 
-        console.log(JSON.stringify(payload, null, 2))
 
       try {
         fetch(`${process.env.NEXT_PUBLIC_API_URL}/chul/units/${props?.id}/`, {
@@ -974,7 +980,6 @@ function EditCommunityUnitsServicesForm(props) {
   
   function handleSubmit (selectedServices, chulId) {
       // console.log({stateSetters, chulId})
-      
     const _payload = selectedServices.map(({value}) => ({ service: value }))
 
 		_payload.forEach(obj => obj['health_unit'] = chulId)
@@ -989,7 +994,7 @@ function EditCommunityUnitsServicesForm(props) {
                       'Content-Type': 'application/json;charset=utf-8',
             'Authorization': `Bearer ${props?.token}`
           },
-          method: 'PATCH',
+          method: 'POST',
           body: JSON.stringify({services: _payload})
         })
 
@@ -1061,8 +1066,9 @@ function EditCommunityUnitsServicesForm(props) {
                 submitting={submitting}
                 options={serviceOptions[0]?.options}
                 itemName={'chul_services'}
-                handleItemPrevious={() => null} //handleServicePrevious
-              
+                handleItemPrevious={() => null} 
+                setFormId={() => null}
+                editMode
               />
   
             </div>
@@ -1080,31 +1086,6 @@ function EditCommunityUnitsServicesForm(props) {
 export function CommunityUnitEditForm(props) {
 
 
-  // const DualListBox = dynamic(
-  //   () => import("react-dual-listbox"), // replace '@components/map' with your component's location
-  //   {
-  //     loading: () => (
-  //       <div className="text-gray-800 text-lg  bg-white py-2 px-5 shadow w-auto mx-2 my-3">
-  //         Loading&hellip;
-  //       </div>
-  //     ),
-  //     ssr: false, // This line is important. It's what prevents server-side render
-  //   }
-  // );
-
-
-
-  // function appendValueToBasicDetails(contacts) {
-  //   let i = 0
-
-  //   let c_ontacts = Array.from(contacts, (c, i) => {
-  //     let ct = {}
-  //     ct[`contact_type_${i}`] = c?.contact_type;
-  //     ct[`contact_${i}`] = c?.contact;
-  //   }) ?? {}
-
-  //   return c_ontacts;
-  // }
 
   const [isClient, setIsClient] = useState(false)
 
@@ -1112,35 +1093,7 @@ export function CommunityUnitEditForm(props) {
   useEffect(() => {
 
     setIsClient(true)
-    // console.log({props})
-
-    // let accessTokenObject;
-
-    // console.log({ options });
-    // // console.log('intialValuesBasicDetails', intialValuesBasicDetails);
-
-    // if (contacts) {
-    //   setBasicDetailValues({
-    //     ...intialValuesBasicDetails,
-    //     ...appendValueToBasicDetails(contacts),
-    //   });
-    // }
-
-    // try {
-    //   accessTokenObject = JSON.parse(getCookie('access_token'));
-    // } catch (error) {
-    //   console.error('Error parsing access token JSON:', error);
-    // }
-
-
-    // if (accessTokenObject) {
-    //   setToken(accessTokenObject.token)
-
-
-
-    // } else {
-    //   console.error('accessTokenObject is not defined or invalid.');
-    // }
+    
   }, []);
 
 
