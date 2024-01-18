@@ -9,8 +9,7 @@ import {SearchIcon } from "@heroicons/react/solid";
 import Select from 'react-select'
 
 
-
-const Home = (props) => {
+function Home(props) {
 	const router = useRouter();
 	// const cus = props?.data?.results;
 	const [cus, setcus] = useState([])
@@ -180,11 +179,11 @@ const Home = (props) => {
 					</div>
 				
                     {/* Filter section */}
-					<form className='col-span-1 w-full flex flex-col item-center justify-start md:col-start-1 gap-8 ' onSubmit={(e)=>filterCHUs(e)}>
+					<form className='col-span-1 w-full flex flex-col item-center justify-start md:col-start-1 gap-8' onSubmit={(e)=>filterCHUs(e)}>
 						{/* <div className='card flex flex-wrap'> */}
 						<div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-blue-50" style={{ minHeight: '50px' }}>
 
-									{/* <label className="text-gray-600">Search all CHUs</label> */}
+									<h2>Search for a Community Health Unit</h2>
 									{/* &nbsp; */}
 									<input
 										name="allchus"
@@ -254,7 +253,7 @@ const Home = (props) => {
 						<div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-blue-50" style={{ minHeight: '50px' }}>
 							<h2>Administrative Units</h2> &nbsp;
 							<div  className="w-full max-w-xs flex flex-col gap-3 items-start justify-start mb-3" id='first'>
-								{administrative_units.map(ct=>(
+								{administrative_units?.map(ct=>(
 									<>
 									{/* <label htmlFor={ct.label} className="text-gray-600 capitalize text-sm ml-1">{ct.label}:</label> */}
 									<Select name={ct.label}  ref={ct.ref} defaultValue={drillDown[ct.label] || "national"} id={ct.label} className="w-full max-w-xs border border-gray-400"

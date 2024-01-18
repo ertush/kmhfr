@@ -391,7 +391,7 @@ export function FacilityContactsForm() {
 
                             >
                                 {
-                                    formError && <Alert severity='error' className='w-full'>{formError}</Alert> 
+                                    formError && <Alert severity='error' className='w-full border-2 border-red-500 rounded-none'>{formError}</Alert> 
                                 }
 
                                 {/* Contacts */}
