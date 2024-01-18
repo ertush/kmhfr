@@ -618,7 +618,7 @@ export function BasicDeatilsForm({ editMode }) {
         className='flex flex-col w-full mt-4 items-start bg-blue-50 p-3 justify-start gap-3'>
 
       {
-        formError && <Alert severity='error' className='w-full'>{formError}</Alert> 
+        formError && <Alert severity='error' className='w-full border-2 border-red-500 rounded-none'>{formError}</Alert> 
       }
 
         {/* Facility Official Name */}

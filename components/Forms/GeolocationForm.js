@@ -340,7 +340,7 @@ export function GeolocationForm({ editMode }) {
     >
 
       {
-        formError && <Alert severity='error' className='w-full'>{formError}</Alert> 
+        formError && <Alert severity='error' className='w-full border-2 border-red-500 rounded-none'>{formError}</Alert> 
       }
 
       {/* Collection Date */}
@@ -431,7 +431,7 @@ export function GeolocationForm({ editMode }) {
 
                 <Map markerCoordinates={[latitude, longitude]} geoJSON={geoJSON} from={from} ward={wardName} center={geoCenter} />
                 :
-                <Alert severity='warning' className='w-full p-1'>Geolocation Data is Missing For this facility</Alert>
+                <Alert severity='warning' className='w-full p-1 border-2 border-yellow-500 rounded-none'>Geolocation Data is Missing For this facility</Alert>
             }
           </Suspense>
         </div>

@@ -323,7 +323,7 @@ export default function HeaderLayout({
                     hidden 
                     sm:inline
                     cursor-pointer
-                    ${(currentPath == "/public/facility/facilities" || currentPath == "/public/chu/community_units"
+                    ${(currentPath == "/public/facilities" || currentPath == "/public/chu/community_units"
                     ? activeClasses
                     : inactiveClasses)
                   }`}>
@@ -429,13 +429,13 @@ export default function HeaderLayout({
           className="inline-flex flex-row justify-start flex-grow mt-2 lg:py-0"
           action= {(()=>{
             if(searchOption == "Facilities"){
-              return "/public/facility/facilities"
+              return "/public/facilities"
             }else if(searchOption == "Community Health Unit"){
               return "/public/chu/community_units"
             }else if(searchOption == "Services"){
               return "/public/services"
             }else{
-             return  router.asPath.includes('searchTerm')? router.route : "/public/facility/facilities"
+             return  router.asPath.includes('searchTerm')? router.route : "/public/facilities"
             }
           })()}
         >
