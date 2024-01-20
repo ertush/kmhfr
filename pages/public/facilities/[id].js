@@ -84,11 +84,11 @@ const FacilityDetails = (props) => {
                 (facility?.is_approved ? "border-blue-600" : "border-red-600")
               }  
             >
-              <div className="col-span-6 md:col-span-3">
+              <div className="col-span-6">
                 <h1 className="text-4xl tracking-tight font-bold leading-tight">
                   {facility?.official_name}
                 </h1>
-                <div className="flex gap-2 items-center w-full justify-between">
+                <div className=" flex flex-col gap-2 place-content-start">
                   <span
                     className={
                       "font-bold text-2xl " +
@@ -106,8 +106,9 @@ const FacilityDetails = (props) => {
                 {/* Type : {facility?.facility_type_name ?? ""} */}
                 </p>
               </div>
-              <div className="flex flex-wrap gap-3 items-center justify-end col-span-6 md:col-span-2">
-                <div className="flex flex-wrap gap-3 w-full items-center justify-start md:justify-end">
+
+              <div className="flex flex-col gap-2 place-content-start">
+                <div className="flex">
                   {facility?.operational || facility?.operation_status_name ? (
                     <span
                       className={
@@ -127,15 +128,15 @@ const FacilityDetails = (props) => {
                     </span>
                   )}
                 </div>
-                <div>
+                <p>
                   <b>Regulatory Body:</b> {facility.regulatory_body_name || ""}
-                </div>
+                </p>
               </div>
               <div className="col-span-6 md:col-span-1 flex flex-col items-center justify-center p-2"></div>
             </div>
           </div>      
 
-          <div className={`col-span-1 md:col-span-4 border border-blue-600 md:w-full flex flex-col gap-3 mt-4`}>
+          <div className={`col-span-1 md:col-span-4 bg-gray-50 shadow-md md:w-full flex flex-col gap-3 mt-4`}>
             {/* Facility Details Tab Section */}
               <FacilityDetailsTabsPulic facility={facility}/>
           </div>

@@ -53,8 +53,8 @@ function Home(props) {
 	useEffect(() => {
 
 		let qry = props?.query;
-		delete qry.searchTerm;
-		delete qry.qf
+		delete qry?.searchTerm;
+		delete qry?.qf
 		setDrillDown({ ...drillDown, ...qry });
 		if (filters && Object.keys(filters).length > 0) {
 			filters['status'] = filters['chu_status'];
@@ -191,7 +191,7 @@ function Home(props) {
 
 		// TODO: Fix the facility detials display list
 
-		let url = API_URL + `/facilities/facilities/?fields=id,code,name,regulatory_status_name,facility_type_name,owner_name,county,constituency,ward_name,keph_level,operation_status_name` 
+		let url = API_URL + `/facilities/facilities/?fields=id,code,name,regulatory_status_name,facility_type_name,owner_name,county,sub_county_name,constituency,ward_name,keph_level_name,operation_status_name` 
 	
 
 		const formData = new FormData(e.target)
@@ -320,15 +320,16 @@ function Home(props) {
 								<h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
 									{'Facilities'}
 								</h2>
-								<p>Use the form on the left to filter facilities or
-									{'   '}
+								<p>Use thew filters to search for a facility
+									{/* {'   '}
 									<button className='text-lg text-blue-500 hover:underline font-semibold'
 										onClick={() => {
 											setViewAll(true)
 											fetchAllfacilities()
 										}
 										}
-									>view all facilities</button></p>
+									>view all facilities</button>*/}
+									</p> 
 
 
 							</div>
@@ -349,7 +350,7 @@ function Home(props) {
 							<button
 								type="submit"
 								disabled={submitting}
-								className="bg-blue-500 border-1 border-gray-50 text-gray-50 flex place-content-center gap-2 px-2 py-1 "
+								className="bg-gray-500 border-1 border-gray-50 text-gray-50 flex place-content-center gap-2 px-2 py-1 "
 							>
 								<span className='text-medium font-semibold text-white'>
 									{
@@ -370,7 +371,7 @@ function Home(props) {
 							</button>
 							<button
 								type='submit'
-								className="bg-blue-50  text-black flex items-center justify-center px-4 py-1 "
+								className="bg-gray-50  text-black flex items-center justify-center px-4 py-1 "
 								onClick={() => setReset(true)}
 							>Reset
 							</button>
@@ -378,45 +379,45 @@ function Home(props) {
 
 
 						{/* <div className='card flex flex-wrap'> */}
-						<div className="card col-span-6 md:col-span-2 flex flex-col items-start gap-4 justify-start p-3  shadow-lg border border-gray-300/70 bg-blue-50" style={{ minHeight: '50px' }}>
+						<div className="card col-span-6 md:col-span-2 flex flex-col items-start gap-4 justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '50px' }}>
 							<h2>Search for a Facility</h2>
 
 
 							<input
 								name="facility"
-								className="flex-none bg-blue-50  p-2 flex-grow shadow-sm border placeholder-gray-500 w-full border-gray-400 focus:shadow-none focus:bg-white focus:border-black outline-none"
+								className="flex-none bg-gray-50  p-2 flex-grow shadow-sm border placeholder-gray-500 w-full border-gray-400 focus:shadow-none focus:bg-white focus:border-black outline-none"
 								type="search"
 								placeholder="Search all facilities"
 							/>
 
 							<input
 								name="service"
-								className="flex-none bg-blue-50  p-2 flex-grow shadow-sm border placeholder-gray-500 w-full border-gray-400 focus:shadow-none focus:bg-white focus:border-black outline-none"
+								className="flex-none bg-gray-50  p-2 flex-grow shadow-sm border placeholder-gray-500 w-full border-gray-400 focus:shadow-none focus:bg-white focus:border-black outline-none"
 								type="search"
 								placeholder="Search services"
 							/>
 						</div>
 
-						<div className="card col-span-6 md:col-span-2 flex flex-col gap-4 items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-blue-50" style={{ minHeight: '50px' }}>
+						<div className="card col-span-6 md:col-span-2 flex flex-col gap-4 items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '50px' }}>
 							<h2>Facility Info</h2>
 
 							<input
 								name="name"
-								className="flex-none bg-blue-50  p-2 flex-grow shadow-sm border placeholder-gray-500 w-full border-gray-400 focus:shadow-none focus:bg-white focus:border-black outline-none"
+								className="flex-none bg-gray-50  p-2 flex-grow shadow-sm border placeholder-gray-500 w-full border-gray-400 focus:shadow-none focus:bg-white focus:border-black outline-none"
 								type="search"
 								placeholder="Facility Name"
 							/>
 
 							<input
 								name="code"
-								className="flex-none bg-blue-50  p-2 flex-grow shadow-sm border placeholder-gray-500 w-full border-gray-400 focus:shadow-none focus:bg-white focus:border-black outline-none"
+								className="flex-none bg-gray-50  p-2 flex-grow shadow-sm border placeholder-gray-500 w-full border-gray-400 focus:shadow-none focus:bg-white focus:border-black outline-none"
 								type="search"
 								placeholder="Facility Code"
 							/>
 
 						</div>
 
-						<div className="card col-span-6 md:col-span-2 flex flex-col gap-4 items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-blue-50" style={{ minHeight: '50px' }}>
+						<div className="card col-span-6 md:col-span-2 flex flex-col gap-4 items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '50px' }}>
 							<h2>Administrative Unit</h2>
 							<div className="w-full max-w-xs flex flex-col gap-4 items-start justify-start mb-3" id='first'>
 								{administrative_units?.map((ct, i) => (
@@ -473,7 +474,7 @@ function Home(props) {
 						</div>
 
 
-						<div className="card col-span-6 md:col-span-2 flex flex-col gap-4 items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-blue-50" style={{ minHeight: '50px' }}>
+						<div className="card col-span-6 md:col-span-2 flex flex-col gap-4 items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '50px' }}>
 							<h2>Services</h2>
 							<div className="w-full max-w-xs flex flex-col gap-4 items-start justify-start mb-3" id='first'>
 								{service_units.map((ct, i) => (
@@ -530,7 +531,7 @@ function Home(props) {
 						</div>
 
 
-						<div className="card col-span-6 md:col-span-2 flex flex-col gap-4 items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-blue-50" style={{ minHeight: '50px' }}>
+						<div className="card col-span-6 md:col-span-2 flex flex-col gap-4 items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '50px' }}>
 							<h2>Facility Details</h2>
 							<div className="w-full max-w-xs flex flex-col gap-4 items-start justify-start mb-3" id='first'>
 								{facility_details.map((ct, i) => (
@@ -615,7 +616,7 @@ function Home(props) {
 						</div>
 
 
-						<div className="card col-span-6 md:col-span-2 flex flex-col gap-4 items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-blue-50" style={{ minHeight: '50px' }}>
+						<div className="card col-span-6 md:col-span-2 flex flex-col gap-4 items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '50px' }}>
 							<h2>Availability</h2>
 							<div className="w-full max-w-xs flex flex-col gap-3 items-start justify-start mb-3" id='first'>
 								<div className="w-full max-w-xs  flex-col items-start justify-start mb-3" id='first'>
@@ -665,14 +666,9 @@ function Home(props) {
 
 					</form>
 
-					{/* <pre>
-						{JSON.stringify(facilities, null, 2)}
-					</pre> */}
-
-
 					{/* Main body */}
 					{/* <div className='col-span-5 md:col-span-4 flex flex-col items-center gap-4 mt-2 order-last md:order-none'> */}
-					<div className={`${(Array.isArray(facilities) && facilities?.length == 0) || (!formError || !submitting) && 'p-4'} col-span-6 bg-blue-50 shadow-md md:col-span-4 flex flex-col gap-4 order-last md:order-none`}> {/* CHANGED colspan */}
+					<div className={`${(Array.isArray(facilities) && facilities?.length == 0) || (!formError || !submitting) && 'p-4'} col-span-6 bg-gray-50 shadow-md md:col-span-4 flex flex-col gap-4 order-last md:order-none`}> {/* CHANGED colspan */}
 
 						{
 							formError && <Alert severity='error' className='w-full border-2 border-red-500 rounded-none'>{formError}</Alert>
@@ -682,84 +678,115 @@ function Home(props) {
 						{
 							submitting && <Alert severity='info' className='w-full border-2 border-blue-500 rounded-none'>Loading...</Alert>
 						}
+{/* 
+						<pre>
+							{
+								JSON.stringify(facilities, null, 2)
+							}
+						</pre> */}
 
 
-						<div className='flex flex-col justify-center items-center  w-full '>
+						<div className='flex flex-col justify-center items-center md:col-span-4 w-full '>
 							{/* <pre>{JSON.stringify(facilities[0], null, 2)}</pre> */}
 
 							{viewAll && facilities?.results && facilities?.results.length > 0 ? (
 								facilities?.results.map((hf, index) => (
 									<div
 										key={index}
-										className='px-1 md:px-3 grid grid-cols-8 gap-4 border-b border-blue-600 py-4 hover:bg-gray-50 w-full'>
-										<div className='col-span-8 md:col-span-4 flex flex-col gap-1 group items-center justify-start text-left'>
+										className='px-1 md:px-3 grid grid-cols-8 gap-3 border-b border-gray-400 py-4 hover:bg-gray-50 w-full'>
+										<div className='col-span-8 flex flex-col gap-1 group items-start justify-center gap-3 text-left'>
 											<h3 className='text-2xl w-full'>
 												<a
-													href={'/public/facilities/' + hf.id}
+													href={'/public/facilities/' + hf?.id}
 													className='hover:text-blue-800 group-focus:text-blue-800 active:text-blue-800'>
 													<small className='text-gray-500'>
-														{index + props?.data?.start_index}.
+														{/* {index + props?.data?.start_index}. */}
 													</small>{' '}
-													{hf.official_name ||
-														hf.official_name ||
-														hf.name}
+													{	
+														hf?.official_name ||
+														hf?.official_name ||
+														hf?.name
+													}
 												</a>
 											</h3>
 											{/* <p className="text-sm text-gray-600 w-full">{comm_unit.nearest_landmark || ' '}{' '} {comm_unit.location_desc || ' '}</p> */}
 											<p className='text-sm text-gray-600 w-full flex gap-2 items-center'>
 												<span className='text-lg text-black font-semibold'>
-													# {hf.code ? hf.code : 'NO_CODE' || ' '}
+													# {hf?.code ?? 'NO_CODE'}
 												</span>
-												<span>{hf.facility_name || ' '}</span>
+												<span>{hf?.facility_name ?? ' '}</span>
 											</p>
 											<p className='text-sm text-gray-600 w-full flex gap-2 items-center'>
 
 												{(hf?.facility_type_category) ? <span className={"shadow-sm leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 text-black"}>{hf?.facility_type_category}</span> : ""}
 											</p>
-											<p className='text-sm text-gray-600 w-full flex gap-2 items-center'>
 
-												{(hf?.facility_type_name) ? <span className={"shadow-sm leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 text-black"}>{hf?.facility_type_name}</span> : ""}
-											</p>
+											<div className='flex items-center justify-start gap-3'>
+												<p className='text-sm text-gray-600 w-full flex gap-2 items-center'>
+													{hf?.facility_type_name &&  <span className={"shadow-sm leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 text-black"}>{hf?.facility_type_name}</span>}
+												</p>
 
-											<div className='text-base grid grid-cols-2 md:grid-cols-4 items-center justify-start gap-4 w-full'>
+												<p className='text-sm text-gray-600 w-full flex gap-2 items-center'>
+													{hf?.keph_level_name && <span className={"shadow-sm leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 text-black"}>{hf?.keph_level_name}</span> }
+												</p>
+
+
+												<p className='text-sm text-gray-600 w-full flex gap-2 items-center'>
+													{(hf?.operational || hf?.operation_status_name) && <span className={"shadow-sm leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 text-black"}>Operational</span> }
+												</p>
+											</div>
+
+											<div className='text-base grid grid-cols-2 md:grid-cols-4 items-center justify-start gap-3 w-full'>
 												<div className='flex flex-col items-start justify-start gap-0 leading-none'>
-
+													<label className='text-xs text-gray-500'>
+														County:
+													</label>
 
 													<span>
-														{hf.facility_county ||
-															hf.county_name ||
-															'N/A'}
+														{
+															hf?.facility_county ||
+															hf?.county_name || 
+															hf?.county ||
+															'N/A'
+														}
 													</span>
 												</div>
 												<div className='flex flex-col items-start justify-start gap-0 leading-none'>
-
+													<label className='text-xs text-gray-500'>
+														Sub-county:
+													</label>
 
 													<span>
-														{hf.facility_subcounty ||
-															hf.sub_county_name ||
-															'N/A'}
+														{
+															hf?.facility_subcounty ||
+															hf?.sub_county_name ||
+															'N/A' 
+														}
 													</span>
 												</div>
 												<div className='flex flex-col items-start justify-start gap-0 leading-none'>
-
-													<span>{hf.ward_name || 'N/A'}</span>
+													<label className='text-xs text-gray-500'>Ward:</label>
+													
+													<span>{hf?.ward_name || 'N/A'}</span>
 												</div>
 												<div className='flex flex-col items-start justify-start gap-0 leading-none'>
-
+													<label className='text-xs text-gray-500'>
+														Constituency:
+													</label>
 
 													<span>
-														{hf.constituency_name ||
-															hf.constituency_name ||
-															'N/A'}
+														{
+															hf?.constituency_name ||
+															hf?.constituency ||
+															'N/A'
+														}
 													</span>
 												</div>
 											</div>
 										</div>
-										<div className='col-span-8 md:col-span-3 flex flex-wrap items-center gap-4 text-lg'>
-											{(hf?.operational || hf?.operation_status_name) ? <span className={"shadow-sm leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 text-black"}>Operational</span> : ""}
-										</div>
-										<div className='col-span-8 md:col-span-1 flex flex-wrap items-center gap-4 text-lg pt-3 md:pt-0 justify-around md:justify-end'>
-										</div>
+										
+										{/* <div className='col-span-8  border-2 border-red-600 md:col-span-1 flex flex-wrap items-center gap-4 text-lg pt-3 md:pt-0 justify-around md:justify-end'>
+										</div> */}
 									</div>
 								))
 							) : (
@@ -820,6 +847,7 @@ function Home(props) {
 								</ul>
 							)}
 						</div>
+
 					</div>
 
 				</div>
@@ -828,12 +856,14 @@ function Home(props) {
 	);
 };
 
-Home.getInitialProps = async (ctx) => {
+export async function getServerSideProps (ctx) {
 	const API_URL = process.env.NEXT_PUBLIC_API_URL;
+	
+	
 	const fetchFilters = async (token) => {
 		let filters_url =
 			API_URL +
-			'/common/filtering_summaries/?fields=county,facility_type,operation_status,service_category,owner_type,owner,service,keph_level';
+			'/common/filtering_summaries/?fields=county,facility_type,operation_status,service_category,owner_type,owner,service,keph_level_name';
 		try {
 			const r = await fetch(filters_url, {
 				headers: {
@@ -855,7 +885,7 @@ Home.getInitialProps = async (ctx) => {
 	};
 
 	const fetchData = async (token) => {
-		let url = API_URL + `/facilities/material/?fields=id,code,name,regulatory_status_name,facility_type_name,owner_name,county,constituency,ward_name,keph_level,operation_status_name`
+		let url = API_URL + `/facilities/material/?fields=id,code,name,regulatory_status_name,facility_type_name,owner_name,county,constituency,ward_name,keph_level_name,operation_status_name`
 		let query = { searchTerm: '' };
 		if (ctx?.query?.q) {
 			query.searchTerm = ctx.query.q;
@@ -888,14 +918,15 @@ Home.getInitialProps = async (ctx) => {
 			});
 			const json = await r.json();
 			const ft = await fetchFilters(token);
-			return {
+			return { props: {
 				data: json,
 				query,
 				token,
 				filters: { ...ft },
 				path: ctx.asPath || '/facilities',
 				current_url: current_url,
-			};
+			}
+		};
 		} catch (err) {
 			console.log('Error fetching facilities: ', err);
 			return {
@@ -937,6 +968,6 @@ Home.getInitialProps = async (ctx) => {
 				};
 			}, 1000);
 		});
-};
+}
 
 export default Home;

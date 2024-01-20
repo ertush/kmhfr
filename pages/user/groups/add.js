@@ -101,7 +101,7 @@ const AddGroup = (props)=> {
                     </div>
 
 						<div className='col-span-5 flex flex-col justify-center items-start px-1 md:px-4 w-full'>
-							<div className=' w-full flex flex-col items-start p-3 bg-blue-50 shadow-md'
+							<div className=' w-full flex flex-col items-start p-3 bg-gray-50 shadow-md'
 								style={{ minHeight: '250px' }}>
 							
 												<>
@@ -346,7 +346,7 @@ const AddGroup = (props)=> {
                 
                
                     {/* Floating div at bottom right of page */}
-                    {/* <div className="fixed bottom-4 right-4 z-10 w-96 h-auto bg-blue-50/50 bg-blend-lighten shadow-lg -lg flex flex-col justify-center items-center py-2 px-3">
+                    {/* <div className="fixed bottom-4 right-4 z-10 w-96 h-auto bg-gray-50/50 bg-blend-lighten shadow-lg -lg flex flex-col justify-center items-center py-2 px-3">
                         <h5 className="text-sm font-bold">
                             <span className="text-gray-600 uppercase">Limited results</span>
                         </h5>

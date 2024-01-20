@@ -1,4 +1,4 @@
-import React,{useContext,useEffect,useState} from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import * as Tabs from "@radix-ui/react-tabs";
 import { UserContext } from '../providers/user';
 import { CheckCircleIcon, XCircleIcon } from "@heroicons/react/solid";
@@ -9,43 +9,43 @@ function FacilityDetailsTabsPulic({ facility }) {
 
   const [user, setUser] = useState(null);
 
-   //rating
-   const [rating, setRating] = useState(0);
-   const [comment, setComment] = useState("");
+  //rating
+  const [rating, setRating] = useState(0);
+  const [comment, setComment] = useState("");
 
-   const userCtx = useContext(UserContext);
+  const userCtx = useContext(UserContext);
 
-   //alert
-    const alert = useAlert();
+  //alert
+  const alert = useAlert();
 
 
   // const [isFormVisible, setIsFormVisible] = useState(false); 
-  const [formVisibility, setFormVisibility] = useState(Array(facility.facility_services.length).fill(false) || []);   
+  const [formVisibility, setFormVisibility] = useState(Array(facility.facility_services.length).fill(false) || []);
 
-   useEffect(() => {
+  useEffect(() => {
     let user_id
-    if(userCtx){
-      let s_r=userCtx
-      user_id=s_r.id
+    if (userCtx) {
+      let s_r = userCtx
+      user_id = s_r.id
       setUser(s_r)
     }
   }, [userCtx])
-  
+
 
   const handleServiceRating = async (event, serviceId) => {
     event.preventDefault();
     const commentString = Array.isArray(comment) ? comment.join(" ") : comment;
     const ratingInteger = Array.isArray(rating) ? rating[0] : rating;
-  
+
     if (ratingInteger > 0) {
       const data = {
         rating: ratingInteger,
         comment: commentString,
         facility_service: serviceId,
       };
-  
+
       const url = `/api/common/submit_form_data/?path=facility_service_ratings`;
-  
+
       try {
         await fetch(url, {
           headers: {
@@ -72,7 +72,7 @@ function FacilityDetailsTabsPulic({ facility }) {
             if (inputElement) {
               inputElement.value = '';
             }
-            
+
           });
       } catch (error) {
         console.log(error);
@@ -81,7 +81,7 @@ function FacilityDetailsTabsPulic({ facility }) {
       alert.error("Rating value must be greater than zero");
     }
   };
-    
+
   return (
     <div className="col-span-5 md:col-span-3 flex flex-col gap-3 mt-4">
       <Tabs.Root
@@ -116,289 +116,380 @@ function FacilityDetailsTabsPulic({ facility }) {
           value="overview"
           className="grow-1 py-1 px-4 tab-panel"
         >
-          <div className="col-span-4 md:col-span-4 flex flex-col gap-y-2 group items-center justify-start text-left">
-            <div className="bg-white border border-gray-100 w-full p-3  grid grid-cols-2 gap-3 shadow-sm mt-4">
+          <div className="col-span-4 my-6 md:col-span-4 flex flex-col gap-y-2 group place-content-center text-left">
+            
+            {/* Status */}
+            <div className="w-full flex flex-col">
+
               <h3 className="text-lg leading-tight underline col-span-2 text-gray-700 font-medium">
                 Status:
               </h3>
-              <div className="grid grid-cols-2 w-full md:w-11/12 md:px-3 col-span-2 md:col-span-1 mx-auto leading-none items-center">
-                <label className=" text-gray-600">
-                  Type
-                </label>
-                <p className="text-black font-medium text-base flex">
-                {facility?.facility_type_name || ""}
-                </p>
-              </div>
-              <div className="grid grid-cols-2 w-full md:w-11/12 md:px-3 col-span-2 md:col-span-1 mx-auto leading-none items-center">
-                <label className=" text-gray-600">
-                  Open 24 hours
-                </label>
-                <p className="text-black font-medium text-base flex">
-                  {facility?.open_normal_day ? (
-                    <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 text-blue-900 flex gap-x-1 items-center cursor-default">
-                      <CheckCircleIcon className="h-4 w-4" />
-                      Yes
-                    </span>
-                  ) : (
-                    <span className="bg-red-200 text-red-900 p-1 px-2 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
-                      <XCircleIcon className="h-4 w-4" />
-                      No
-                    </span>
-                  )}
-                </p>
+
+              <div className="w-full flex flex-col justify-center gap-y-3 mt-3">
+
+                {/* Facility Type */}
+                <div className="flex flex-1 w-11/12 mx-auto leading-none">
+                  <div className='grid grid-cols-4 w-full'>
+
+                    <label className="text-gray-600 ">
+                      Facility type
+                    </label>
+
+                    <p className="text-black col-start-4 font-medium text-base flex">
+                      {facility?.facility_type_name || ""}
+                    </p>
+        
+                  </div>
+                </div>
+
+                {/* Open Status */}
+                <div className="flex flex-1 w-11/12 mx-auto leading-none">
+                  <div className='grid grid-cols-4 w-full'>
+
+                 
+                    <label className=" text-gray-600">
+                      Open 24 hours
+                    </label>
+
+                        <p className="text-black col-start-4 font-medium text-base flex">
+                      {facility?.open_normal_day ? (
+                        <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 text-blue-900 flex gap-x-1 items-center cursor-default">
+                          <CheckCircleIcon className="h-4 w-4" />
+                          Yes
+                        </span>
+                      ) : (
+                        <span className="bg-red-200 text-red-900 p-1 px-2 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
+                          <XCircleIcon className="h-4 w-4" />
+                          No
+                        </span>
+                      )}
+                    </p>
+                  </div>
+                </div>
+            
+
+                {/* Regulation */}
+                <div className="flex flex-1 w-11/12 mx-auto leading-none">  
+                  <div className='grid grid-cols-4 w-full'>
+
+                    <label className=" text-gray-600">
+                    Regulated
+                    </label>
+
+                    <p className="col-start-4 text-black font-medium text-base flex">
+                      {facility?.regulated ? (
+                        <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 text-blue-900 flex gap-x-1 items-center cursor-default">
+                          <CheckCircleIcon className="h-4 w-4" />
+                          Yes
+                        </span>
+                      ) : (
+                        <span className="bg-red-200 text-red-900 p-1 px-2 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
+                          <XCircleIcon className="h-4 w-4" />
+                          No
+                        </span>
+                      )}
+                    </p>
+                  </div>
+                </div>
+
               </div>
             </div>
-            <div className="bg-white border border-gray-100 w-full p-3  flex flex-col gap-3 shadow-sm mt-4">
-              <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
-                <label className="col-span-1 text-gray-600">
-                  Regulated
-                </label>
-                <p className="col-span-2 text-black font-medium text-base flex">
-                  {facility?.regulated ? (
-                    <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 text-blue-900 flex gap-x-1 items-center cursor-default">
-                      <CheckCircleIcon className="h-4 w-4" />
-                      Yes
-                    </span>
-                  ) : (
-                    <span className="bg-red-200 text-red-900 p-1 px-2 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
-                      <XCircleIcon className="h-4 w-4" />
-                      No
-                    </span>
-                  )}
-                </p>
-              </div>
-              <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
-                <label className="col-span-1 text-gray-600">
-                  Regulation status
-                </label>
-                <p className="col-span-2 text-black font-medium text-base">
-                  {facility?.regulatory_status_name || " - "}
-                </p>
-              </div>
-            </div>
-            <div className="bg-white border border-gray-100 w-full p-3  flex flex-col gap-3 shadow-sm mt-4">
+
+
+            {/* Ownership */}
+            <div className="w-full flex flex-col">
+
               <h3 className="text-lg leading-tight underline text-gray-700 font-medium">
                 Ownership:
               </h3>
-              <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
-                <label className="col-span-1 text-gray-600">
-                  Category
-                </label>
-                <p className="col-span-2 text-black font-medium text-base">
-                  {facility?.owner_type_name || " - "}
-                </p>
-              </div>
-              <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
-                <label className="col-span-1 text-gray-600">
-                  Owner
-                </label>
-                <p className="col-span-2 text-black font-medium text-base">
-                  {facility?.owner_name || " - "}
-                </p>
+
+              <div className="w-full flex flex-col justify-center gap-y-3 mt-3">
+           
+                {/* Category */}
+                <div className="flex flex-1 w-11/12 mx-auto leading-none">
+                   <div className='grid grid-cols-4 w-full'>
+                      <label className="col-span-1 text-gray-600">
+                        Category
+                      </label>
+                      <p className="col-span-2 col-start-4 text-black font-medium text-base">
+                        {facility?.owner_type_name || " - "}
+                      </p>
+                    </div>
+                </div>
+
+                  {/* Owner */}
+                <div className="flex flex-1 w-11/12 mx-auto leading-none">
+                  <div className='grid grid-cols-4 w-full'>
+                    <label className="col-span-1 text-gray-600">
+                      Owner
+                    </label>
+                    <p className="col-span-2 col-start-4 text-black font-medium text-base">
+                      {facility?.owner_name || " - "}
+                    </p>
+                  </div>
+                </div>
+
               </div>
             </div>
-            <div className="bg-white border border-gray-100 w-full p-3  flex flex-col gap-3 shadow-sm mt-4">
+
+
+            {/* Loction */}
+            <div className="w-full flex flex-col gap-3">
               <h3 className="text-lg leading-tight underline text-gray-700 font-medium">
-                Location: 
+                Location:
               </h3>
-              <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
-                <label className="col-span-1 text-gray-600">
-                  County
-                </label>
-                <p className="col-span-2 text-black font-medium text-base">
-                  {facility?.county || " - "}
-                </p>
-              </div>
-              <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
+
+              <div className="w-full flex flex-col justify-center gap-y-3 mt-3">
+               
+               {/* County */}
+                <div className='flex flex-1 w-11/12 mx-auto leading-none'>
+                  <div className='grid grid-cols-4 w-full'>
+                    <label className="col-span-1 text-gray-600">
+                      County
+                    </label>
+                    <p className="col-span-2 col-start-4 text-black font-medium text-base">
+                      {facility?.county || " - "}
+                    </p>
+                  </div>
+                </div>
+
+              {/* Sub County */}
+              <div className="flex flex-1 w-11/12 mx-auto leading-none">
+                <div className='grid grid-cols-4 w-full'>
                 <label className="col-span-1 text-gray-600">
                   Sub-County
                 </label>
-                <p className="col-span-2 text-black font-medium text-base">
+                <p className="col-span-2 col-start-4 text-black font-medium text-base">
                   {facility?.sub_county_name || " - "}
                 </p>
+                </div>
               </div>
-              <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
+
+                {/* Constituency */}
+              <div className="flex flex-1 w-11/12 mx-auto leading-none">
+                <div className='grid grid-cols-4 w-full'>
                 <label className="col-span-1 text-gray-600">
                   Constituency
                 </label>
-                <p className="col-span-2 text-black font-medium text-base">
+                <p className="col-span-2 col-start-4 text-black font-medium text-base">
                   {facility?.constituency_name || " - "}
                 </p>
+               </div>
               </div>
-              <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
+
+              {/* Ward */}
+              <div className="flex flex-1 w-11/12 mx-auto leading-none">
+                <div className='grid grid-cols-4 w-full'>
                 <label className="col-span-1 text-gray-600">
                   Ward
                 </label>
-                <p className="col-span-2 text-black font-medium text-base">
+                <p className="col-span-2 col-start-4 text-black font-medium text-base">
                   {facility?.ward_name || " - "}
                 </p>
               </div>
-              <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
+              </div>
+
+              {/* Town */}
+              <div className="flex flex-1 w-11/12 mx-auto leading-none">
+                <div className='grid grid-cols-4 w-full'>
                 <label className="col-span-1 text-gray-600">
                   Town
                 </label>
-                <p className="col-span-2 text-black font-medium text-base">
+                <p className="col-span-2 col-start-4 text-black font-medium text-base">
                   {facility?.town_name || " - "}
                 </p>
               </div>
-              <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
+              </div>
+
+              {/* Description */}
+              <div className="flex flex-1 w-11/12 mx-auto leading-none">
+                <div className='grid grid-cols-4 w-full'>
                 <label className="col-span-1 text-gray-600">
                   Description
                 </label>
-                <p className="col-span-2 text-black font-medium text-base">
+                <p className="col-span-2 col-start-4 text-black font-medium text-base">
                   {facility?.location_desc || " - "}
                 </p>
               </div>
-              <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
+              </div>
+
+              {/* Nearest landmark */}
+              <div className="flex flex-1 w-11/12 mx-auto leading-none">
+                <div className='grid grid-cols-4 w-full'>
                 <label className="col-span-1 text-gray-600">
                   Nearest landmark
                 </label>
-                <p className="col-span-2 text-black font-medium text-base">
+                <p className="col-span-2 col-start-4 text-black font-medium text-base">
                   {facility?.nearest_landmark || " - "}
                 </p>
               </div>
-              <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
+              </div>
+
+              {/* Plot number */}
+              <div className="flex flex-1 w-11/12 mx-auto leading-none">
+                <div className='grid grid-cols-4 w-full'>
                 <label className="col-span-1 text-gray-600">
                   Plot number
                 </label>
-                <p className="col-span-2 text-black font-medium text-base">
+                <p className="col-span-2 col-start-4 text-black font-medium text-base">
                   {facility?.plot_number || " - "}
                 </p>
               </div>
             </div>
-            <div className="bg-white border border-gray-100 w-full p-3  flex flex-col gap-3 shadow-sm mt-4">
+      
+              </div>
+
+            {/* Bed capacity */}
+            <div className="w-full flex flex-col gap-3">
               <h3 className="text-lg leading-tight underline text-gray-700 font-medium">
                 Bed capacity:
               </h3>
-              <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
+
+              <div className="flex flex-1 w-11/12 mx-auto leading-none">
+                <div className='grid grid-cols-4 w-full'>
                 <label className="col-span-1 text-gray-600">
-                  Total In-patient beds 
+                  Total In-patient beds
                 </label>
-                <p className="col-span-2 text-black font-medium text-base">
+                <p className="col-span-2 col-start-4 text-black font-medium text-base">
                   {facility?.number_of_beds}
                 </p>
+                </div>
               </div>
-              <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
+
+              <div className="flex flex-1 w-11/12 mx-auto leading-none">
+                <div className='grid grid-cols-4 w-full'>
                 <label className="col-span-1 text-gray-600">
                   Cots
                 </label>
-                <p className="col-span-2 text-black font-medium text-base">
+                <p className="col-span-2 col-start-4 text-black font-medium text-base">
                   {facility?.number_of_cots}
                 </p>
-              </div>
-            <div className="bg-white border border-gray-100 w-full p-3  flex flex-col gap-3 shadow-sm mt-4">
-              <h3 className="text-lg leading-tight underline text-gray-700 font-medium">
-                Contacts:
-              </h3>
-              {facility?.facility_contacts &&
-                facility?.facility_contacts.length > 0 &&
-                facility?.facility_contacts.map((contact) => (
-                  <div
-                    key={contact.contact_id}
-                    className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center"
-                  >
-                    <label className="col-span-1 text-gray-600 capitalize">
-                      {contact.contact_type_name[0].toLocaleUpperCase() +
-                        contact.contact_type_name
-                          .slice(1)
-                          .toLocaleLowerCase() || "Contact"}
-                    </label>
-                    <p className="col-span-2 text-black font-medium text-base">
-                      {contact.contact || " - "}
-                    </p>
-                  </div>
-                ))}
-              {facility?.officer_in_charge && (
-                <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
-                  <label className="col-span-1 text-gray-600 capitalize">
-                    {"Officer in charge"}
-                  </label>
-                  <p className="col-span-2 text-black font-medium text-base">
-                    {facility?.officer_in_charge.name || " - "}
-                  </p>
                 </div>
-              )}
-              {facility?.officer_in_charge &&
-                facility?.officer_in_charge.contacts.length > 0 &&
-                facility?.officer_in_charge.contacts.map((contact) => (
-                  <div
-                    key={contact.contact_id}
-                    className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center"
-                  >
+              </div>
+
+              <div className="w-full flex flex-col gap-3">
+                <h3 className="text-lg leading-tight underline text-gray-700 font-medium">
+                  Contacts:
+                </h3>
+                {facility?.facility_contacts &&
+                  facility?.facility_contacts.length > 0 &&
+                  facility?.facility_contacts.map((contact) => (
+                    <div
+                      key={contact.contact_id}
+                      className="flex flex-1 w-11/12 mx-auto leading-none"
+                    >
+                      <div className='grid grid-cols-4 w-full'>
+                      <label className="col-span-1 text-gray-600 capitalize">
+                        {contact.contact_type_name[0].toLocaleUpperCase() +
+                          contact.contact_type_name
+                            .slice(1)
+                            .toLocaleLowerCase() || "Contact"}
+                      </label>
+                      <p className="col-span-2 col-start-4 text-black font-medium text-base">
+                        {contact.contact || " - "}
+                      </p>
+                      </div>
+                    </div>
+                    
+                  ))}
+                {facility?.officer_in_charge && (
+                  <div className="flex flex-1 w-11/12 mx-auto leading-none">
+                    <div className='grid grid-cols-4 w-full'>
                     <label className="col-span-1 text-gray-600 capitalize">
-                      In charge{" "}
-                      {contact.contact_type_name[0].toLocaleUpperCase() +
-                        contact.contact_type_name
-                          .slice(1)
-                          .toLocaleLowerCase() || "Contact"}
+                      {"Officer in charge"}
                     </label>
-                    <p className="col-span-2 text-black font-medium text-base">
-                      {contact.contact || " - "}
+                    <p className="col-span-2 col-start-4 text-black font-medium text-base">
+                      {facility?.officer_in_charge.name || " - "}
                     </p>
+                    </div>
                   </div>
-                ))}
+                )}
+                {facility?.officer_in_charge &&
+                  facility?.officer_in_charge.contacts.length > 0 &&
+                  facility?.officer_in_charge.contacts.map((contact) => (
+                    <div
+                      key={contact.contact_id}
+                      className="flex flex-1 w-11/12 mx-auto leading-none"
+                    >
+                      <div className="grid grid-cols-4 w-full">
+                      <label className="col-span-1 text-gray-600 capitalize">
+                        In charge{" "}
+                        {contact.contact_type_name[0].toLocaleUpperCase() +
+                          contact.contact_type_name
+                            .slice(1)
+                            .toLocaleLowerCase() || "Contact"}
+                      </label>
+                      <p className="col-span-2 col-start-4 text-black font-medium text-base">
+                        {contact.contact || " - "}
+                      </p>
+                      </div>
+                    </div>
+                  ))}
+              </div>
+            </div>
+
             </div>
           </div>
-          </div>
+
         </Tabs.Panel>
         <Tabs.Panel
           value="services"
           className="grow-1 p-4 tab-panel"
         >
           <div className="col-span-4 md:col-span-4 flex flex-col group items-center justify-start text-left">
-            <div className="bg-white w-full p-4 ">
+            <div className="w-full p-4 ">
               <h3 className="text-2xl w-full flex flex-wrap justify-between items-center leading-tight tracking-tight">
                 <span className="font-semibold">Services</span>
               </h3>
               <ul>
-                  {facility?.facility_services &&
+                {facility?.facility_services &&
                   facility?.facility_services.length > 0 ? (
-                    facility?.facility_services.map((service, index) => (
-                      <li
-                        key={service.service_id}
-                        className="w-full grid grid-cols-1 gap-3 place-content-end my-2 p-3 border-b border-gray-300"
-                      >
-                        <div>
-                          
-                          <p className="text-gray-800 text-base">
-                            {
-                              index + 1 + "."
-                            }
-                            {service.service_name}
-                          </p>
-                          <small className="text-xs text-gray-500">
+                  facility?.facility_services.map((service, index) => (
+                    <li
+                      key={service.service_id}
+                      className="w-full grid grid-cols-1 gap-3 place-content-end my-2 p-3 border-b border-gray-300"
+                    >
+                      <div>
+
+                        <p className="text-gray-800 text-base">
+                          {
+                            index + 1 + "."
+                          }
+                          {service.service_name}
+                        </p>
+                        <small className="text-xs text-gray-500">
                           <span><b>Category: </b></span>{service.category_name || ""}
-                          </small>
-                          <label className="text-sm text-gray-600 flex gap-1 items-center">
-                            <CheckCircleIcon className="h-6 w-6 text-blue-500" />
-                            <span>Active</span>
-                          </label>
-                          <div className="flex justify-between">
+                        </small>
+                        <label className="text-sm text-gray-600 flex gap-1 items-center">
+                          <CheckCircleIcon className="h-6 w-6 text-blue-500" />
+                          <span>Active</span>
+                        </label>
+                        <div className="flex justify-between">
                           <p className="text-left">
                             <span className="text-sm text-gray-600">
-                             <b>Average Rating:</b> {service.average_rating.toFixed(2)}
+                              <b>Average Rating:</b> {service.average_rating.toFixed(2)}
                             </span>
                           </p>
                           <p className="text-left">
                             <span className="text-sm text-gray-600">
-                             <b>Number of Rating:</b> {service.number_of_ratings}
+                              <b>Number of Rating:</b> {service.number_of_ratings}
                             </span>
                           </p>
-                          </div>
-                          <div>
-                          </div>
-                          <button
-                            type="button"
-                            className="bg-gray-200  p-1 h-8 px-4"
-                            onClick={() => {
-                              const newFormVisibility = [...formVisibility];
-                              newFormVisibility[index] = !newFormVisibility[index];
-                              setFormVisibility(newFormVisibility);
-                            }}
-                          >
-                          {formVisibility[index] ?  "Hide Rating" : "Rate Service"}  
-                          </button>
-                          {formVisibility[index] && (
+                        </div>
+                        <div>
+                        </div>
+                        <button
+                          type="button"
+                          className="bg-gray-200  p-1 h-8 px-4"
+                          onClick={() => {
+                            const newFormVisibility = [...formVisibility];
+                            newFormVisibility[index] = !newFormVisibility[index];
+                            setFormVisibility(newFormVisibility);
+                          }}
+                        >
+                          {formVisibility[index] ? "Hide Rating" : "Rate Service"}
+                        </button>
+                        {formVisibility[index] && (
                           <div className="flex flex-col gap-2">
                             <form
                               onSubmit={(e) =>
@@ -423,8 +514,8 @@ function FacilityDetailsTabsPulic({ facility }) {
                                     })
                                   }
                                 />
-                                 <p className='text-sm text-gray-600'>Stars Represent Level Of Satisfaction: 5 (Very Good), 4 (Good), 3 (Average), 2 (Poor), 1 (Very Poor)</p>
-                                 <StarRatingComponent
+                                <p className='text-sm text-gray-600'>Stars Represent Level Of Satisfaction: 5 (Very Good), 4 (Good), 3 (Average), 2 (Poor), 1 (Very Poor)</p>
+                                <StarRatingComponent
                                   className="text-2xl"
                                   name="rate1"
                                   starCount={5}
@@ -432,17 +523,17 @@ function FacilityDetailsTabsPulic({ facility }) {
                                   onStarClick={(e) =>
                                     setRating((prev) => {
                                       let newRating = Array.isArray(prev) ? [...prev] : [];
-                                      newRating[index] = e; 
+                                      newRating[index] = e;
                                       return Array.isArray(newRating) ? newRating : [];
                                     })
                                   }
                                 />
-                                
+
                               </div>
                               <div>
-                              <button
+                                <button
                                   type="submit"
-                                  className="bg-blue-500 text-white  p-1  h-8 px-4"
+                                  className="bg-gray-500 text-white  p-1  h-8 px-4"
                                 >
                                   Submit
                                 </button>
@@ -450,15 +541,15 @@ function FacilityDetailsTabsPulic({ facility }) {
                             </form>
 
                           </div>
-                          )}
-                        </div>
-                      </li>
-                    ))
-                  ) : (
-                    <li className="w-full  bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base">
-                      <p>No services listed for this facility?.</p>
+                        )}
+                      </div>
                     </li>
-                  )}
+                  ))
+                ) : (
+                  <li className="w-full  bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base">
+                    <p>No services listed for this facility?.</p>
+                  </li>
+                )}
               </ul>
             </div>
           </div>
@@ -468,7 +559,7 @@ function FacilityDetailsTabsPulic({ facility }) {
           className="grow-1 p-4 tab-panel"
         >
           <div className="col-span-4 md:col-span-4 flex flex-col group items-center justify-start text-left">
-            <div className="bg-white w-full p-4 ">
+            <div className="w-full p-4 ">
               <h3 className="text-2xl w-full flex flex-wrap justify-between items-center leading-tight tracking-tight">
                 <span className="font-semibold">Facility units</span>
                 {/* {user && user?.id ? <a href={"/facility/edit/"+facility?.id+"#units"} className="text-base text-blue-700 font-medium hover:text-black focus:text-black active:text-black">Edit facility units</a> : ""} */}

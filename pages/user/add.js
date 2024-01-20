@@ -253,7 +253,7 @@ const User = (props) => {
 									Are you sure you want to delete<b>{userData?.first_name + ' ' + userData?.last_name + ' ' + userData?.other_names}</b> ?
 								</span>
 								<div className='flex justify-start gap-4 mt-4'>
-									<button className="bg-blue-500 text-white font-semibold  p-2 text-center" type="button" disabled={!delete_user} onClick={(e) => { deleteUser(e); setOpen(false) }} >Delete</button>
+									<button className="bg-gray-500 text-white font-semibold  p-2 text-center" type="button" disabled={!delete_user} onClick={(e) => { deleteUser(e); setOpen(false) }} >Delete</button>
 									<button className="bg-red-500 text-white font-semibold  p-2 text-center"
 										onClick={() => { setOpen(false) }}
 									>Cancel</button>
@@ -875,7 +875,7 @@ const User = (props) => {
 
 
 					{/* Floating div at bottom right of page */}
-					{/* <div className="fixed bottom-4 right-4 z-10 w-96 h-auto bg-blue-50/50 bg-blend-lighten shadow-lg -lg flex flex-col justify-center items-center py-2 px-3">
+					{/* <div className="fixed bottom-4 right-4 z-10 w-96 h-auto bg-gray-50/50 bg-blend-lighten shadow-lg -lg flex flex-col justify-center items-center py-2 px-3">
                         <h5 className="text-sm font-bold">
                             <span className="text-gray-600 uppercase">Limited results</span>
                         </h5>

@@ -193,7 +193,7 @@ function FacilitySideMenu({ states, stateSetters, filters }) {
 
     return (
 
-        <div className='col-span-1 flex flex-col gap-3 md:col-start-1 md:mb-12 py-0 h-full bg-blue-50 shadow-md'>
+        <div className='col-span-1 flex flex-col gap-3 md:col-start-1 md:mb-12 py-0 h-full bg-gray-50 shadow-md'>
             <List
                 className='p-0 m-0'
                 component="nav"
@@ -211,7 +211,7 @@ function FacilitySideMenu({ states, stateSetters, filters }) {
                         backgroundColor: "rgba(37, 99, 235, 1)",
                         color: 'white'
                   }}} 
-                //   className=' hover:bg-blue-50 text-gray-900 bg-transparent focus:bg-blue-600 focus:text-white' 
+                //   className=' hover:bg-gray-50 text-gray-900 bg-transparent focus:bg-blue-600 focus:text-white' 
                  name="rt"
                     onClick={(ev) => {
                         setTitle('Facilities')

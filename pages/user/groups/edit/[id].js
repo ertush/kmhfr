@@ -139,7 +139,7 @@ const EditGroup=(props)=> {
                                       Are you sure you want to delete<b>{group_details?.name}</b> ?
                                 </span>
                                <div className='flex justify-start gap-4 mt-4'>
-                                    <button className="bg-blue-500 text-white font-semibold  p-2 text-center" type="button" onClick={(e)=>{deleteGroup(e);setOpen(false)}} disabled={!delete_permission} >Delete</button>
+                                    <button className="bg-gray-500 text-white font-semibold  p-2 text-center" type="button" onClick={(e)=>{deleteGroup(e);setOpen(false)}} disabled={!delete_permission} >Delete</button>
                                     <button className="bg-red-500 text-white font-semibold  p-2 text-center" 
                                     onClick={()=> {setOpen(false)}} 
                                     >Cancel</button>

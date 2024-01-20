@@ -155,7 +155,7 @@ const Users = (props) => {
                         </div>
 
 
-                        <div className='col-span-1 w-full col-start-1 h-auto py-0 bg-blue-50 shadow-md'>
+                        <div className='col-span-1 w-full col-start-1 h-auto py-0 bg-gray-50 shadow-md'>
                             
                             <List
                             sx={{ width: '100%', bgcolor: 'transparent', flexGrow:1, paddingTop:0, paddingBottom:0}}

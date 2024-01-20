@@ -356,7 +356,7 @@ function EditListItem({
                 categoryOptions.map(({ label, value }, i) => (
                   <>
                     <div key={i}
-                      className='card bg-blue-50 shadow-md p-2 group hover:bg-blue-500 hover:text-gray-50 hover:cursor-pointer'
+                      className='card bg-gray-50 shadow-md p-2 group hover:bg-gray-500 hover:text-gray-50 hover:cursor-pointer'
 
                     >
                       <li
@@ -388,7 +388,7 @@ function EditListItem({
 
                   </tr>
                 </thead>
-                <tbody className='bg-blue-50 shadow-md'>
+                <tbody className='bg-gray-50 shadow-md'>
                   {Array.isArray(allServices) && allServices.length === 0 && <tr><td colSpan={3} className="text-center">No services found</td></tr>}
                   {
                     itemName !== "chul_services" ?
@@ -465,7 +465,7 @@ function EditListItem({
 
               </tr>
             </thead>
-            <tbody className='bg-blue-50 shadow-md'>
+            <tbody className='bg-gray-50 shadow-md'>
 
 
               {Array.isArray(selectedItems) && selectedItems.length === 0 && <tr><td colSpan={3} className="text-center">No services found</td></tr>}

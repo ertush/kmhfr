@@ -170,7 +170,7 @@ const ApproveCommunityUnit = (props) => {
                 </h3>
 
                 {/* CHU details */}
-                <div className="bg-blue-50  shadow-lg border border-gray-300/70 w-full p-3  flex flex-col gap-3 mt-4">
+                <div className="bg-gray-50  shadow-lg border border-gray-300/70 w-full p-3  flex flex-col gap-3 mt-4">
                   {CHU_MainDetails.map((dt)=>(
 
                     <div className="grid grid-cols-3 w-full md:w-11/12 leading-none items-center">
@@ -220,7 +220,7 @@ const ApproveCommunityUnit = (props) => {
                 </div>
 
                 {!isCHULDetails && (
-                    <div className="bg-blue-50  shadow-lg border border-gray-300/70 w-full p-3  flex flex-col gap-3 mt-6">
+                    <div className="bg-gray-50  shadow-lg border border-gray-300/70 w-full p-3  flex flex-col gap-3 mt-6">
                         {CHULDetails.map((dt)=>(
                             <div className="grid grid-cols-3 w-full md:w-11/12  leading-none items-center">
                                 <label className="col-span-1 text-gray-600">{dt.label}</label>
@@ -235,7 +235,7 @@ const ApproveCommunityUnit = (props) => {
 
                 {/* Pending updates approval */}
                 {cu.pending_updates && Object.keys(cu.pending_updates).length > 0 && (
-                <div className="bg-blue-50  shadow-lg border border-gray-300/70 w-full p-3  flex flex-col gap-3 mt-6">
+                <div className="bg-gray-50  shadow-lg border border-gray-300/70 w-full p-3  flex flex-col gap-3 mt-6">
                   <h3 className="text-gray-900 font-semibold leading-16 text-medium">
                     Pending Updates
                   </h3>
@@ -429,7 +429,7 @@ const ApproveCommunityUnit = (props) => {
                 {/* CHU Rejection Commment */}
                 {cu.pending_updates && Object.keys(cu.pending_updates).length == 0 && (
 
-                  <div className="bg-blue-50  shadow-lg border border-gray-300/70 w-full p-3  flex flex-col gap-3 mt-6">
+                  <div className="bg-gray-50  shadow-lg border border-gray-300/70 w-full p-3  flex flex-col gap-3 mt-6">
                     <h3 className="text-gray-900 font-semibold leading-16 text-medium">Approval comment: </h3>
                     {cu.is_approved}
                     <form

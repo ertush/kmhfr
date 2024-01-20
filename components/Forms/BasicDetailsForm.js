@@ -615,7 +615,7 @@ export function BasicDeatilsForm({ editMode }) {
     return (
       <form name='basic_details_form'
         onSubmit={editMode ? handleBasicDetailsUpdate : handeBasicDetailsCreate }
-        className='flex flex-col w-full mt-4 items-start bg-blue-50 p-3 justify-start gap-3'>
+        className='flex flex-col w-full mt-4 items-start bg-gray-50 p-3 justify-start gap-3'>
 
       {
         formError && <Alert severity='error' className='w-full border-2 border-red-500 rounded-none'>{formError}</Alert> 
@@ -639,7 +639,7 @@ export function BasicDeatilsForm({ editMode }) {
             name='official_name'
             defaultValue={options?.data?.official_name ?? ''}
             onFocus={handleFocus}
-            className='flex-none w-full bg-blue-50 p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+            className='flex-none w-full bg-gray-50 p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
           />
         </div>
 

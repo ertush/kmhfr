@@ -201,7 +201,7 @@ function UpgradeFacility(props) {
                           
                             <form 
                             onSubmit={handleSubmit}
-                            className='md:col-span-5 flex flex-col bg-blue-50 shadow-md p-3 w-full justify-start items-start gap-2 md:mt-1'>
+                            className='md:col-span-5 flex flex-col bg-gray-50 shadow-md p-3 w-full justify-start items-start gap-2 md:mt-1'>
 
                                 {
                                     formError && <Alert severity='error' className='w-full my-4'>{formError}</Alert>

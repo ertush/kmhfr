@@ -144,7 +144,7 @@ const Facility = (props) => {
                               p: 4,
                           }
                       }
-                      className="bg-blue-50 shadow-md"
+                      className="bg-gray-50 shadow-md"
                       >
                           <span className="flex gap-2">
                             <InformationCircleIcon className="w-7 h-7 text-red-500"/>
@@ -218,7 +218,7 @@ const Facility = (props) => {
                                 >
                                 </Field>
                                 <div className='flex justify-start gap-4 mt-4'>
-                                    <button className="bg-blue-500 text-white font-semibold  p-2 text-center" type="submit">Reopen</button>
+                                    <button className="bg-gray-500 text-white font-semibold  p-2 text-center" type="submit">Reopen</button>
                                     <button className="bg-red-500 text-white font-semibold  p-2 text-center"  type="button" onClick={handleClose}>Cancel</button>
                                 </div>
                               </Form>
@@ -256,7 +256,7 @@ const Facility = (props) => {
                           p: 4,
                       }
                     }
-                      className="bg-blue-50 shadow-md"
+                      className="bg-gray-50 shadow-md"
 
                   >
                       <span className="grid grid-cols-4 gap-2">
@@ -457,7 +457,7 @@ const Facility = (props) => {
                 {
               
                   !facility?.closed &&
-                  <div className="bg-transparent bg-blue-50 w-full p-3  flex flex-col gap-3 shadow-md mt-4">
+                  <div className="bg-transparent bg-gray-50 w-full p-3  flex flex-col gap-3 shadow-md mt-4">
                     <div className="flex flex-row justify-start items-center space-x-3 p-3">
 
                    
@@ -642,7 +642,7 @@ const Facility = (props) => {
                     />
                   </div>
                 ) : (
-                  <div className="w-full bg-transparent p-2  bg-blue-50 shadow-md flex mt-1 flex-col items-center justify-center relative">
+                  <div className="w-full bg-transparent p-2  bg-gray-50 shadow-md flex mt-1 flex-col items-center justify-center relative">
                     <div className="w-full  bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base leading-none">
                       <p>No location data found for this facility?.</p>
                     </div>

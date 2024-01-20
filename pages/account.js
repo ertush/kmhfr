@@ -188,13 +188,13 @@ const Account = () => {
 						p: 4,
 					}
 				}
-                className="bg-blue-50 shadow-md"
+                className="bg-gray-50 shadow-md"
                 >
 					<span className="flex gap-2">    
 							Are you sure you want to delete<b></b> ?
 					</span>
 					<div className='flex justify-start gap-4 mt-4'> 
-						<button className="bg-blue-500 text-white font-semibold  p-2 text-center" type="button" 
+						<button className="bg-gray-500 text-white font-semibold  p-2 text-center" type="button" 
                          onClick={(e)=>{
                             setPath(`delete_profile_contact&id=${contact_id}`);setOpen(false)
                         }}
@@ -268,7 +268,7 @@ const Account = () => {
                             </Tabs.List>
                             <Tabs.Panel value="basic" className="grow-1  p-4 tab-panel">
                                 <div className="col-span-4 md:col-span-4 flex flex-col gap-y-2 group items-center justify-start text-left">
-                                    <div className="flex flex-row items-center bg-blue-50 px-3 shadow-md mt-4 justify-end w-full py-2">
+                                    <div className="flex flex-row items-center bg-gray-50 px-3 shadow-md mt-4 justify-end w-full py-2">
                                         <div className="py-2 w-full flex flex-row items-center justify-between">
                                             <h3 className="text-2xl flex flex-wrap justify-between items-center leading-tight tracking-tight">
                                                 <span className="font-semibold">Basic details</span>
@@ -281,7 +281,7 @@ const Account = () => {
                                             <div className="flex items-center justify-center min-h-screen">
                                                 <Dialog.Overlay className="fixed inset-0 bg-black opacity-30" />
 
-                                                <div className="bg-blue-50  max-w-sm sm:max-w-screen-sm sm:w-full flex flex-col items-center mx-auto z-20 p-8">
+                                                <div className="bg-gray-50  max-w-sm sm:max-w-screen-sm sm:w-full flex flex-col items-center mx-auto z-20 p-8">
                                                     <div className="w-full flex flex-col gap-2">
                                                         <Dialog.Title as="h2" className="font-semibold text-black text-2xl">Edit basic details</Dialog.Title>
                                                         <Dialog.Description as="div" className="flex flex-col items-center justify-start gap-3 w-full">
@@ -362,7 +362,7 @@ const Account = () => {
 
                                         </Dialog>
                                     </div>
-                                    <div className="bg-blue-50 shadow-md w-full p-3  grid grid-cols-2 gap-3 mt-4">
+                                    <div className="bg-gray-50 shadow-md w-full p-3  grid grid-cols-2 gap-3 mt-4">
                                         <h3 className="text-lg leading-tight underline col-span-2 text-gray-700 font-medium">Status:</h3>
                                         <div className="grid grid-cols-2 w-full md:w-11/12 md:px-3 col-span-2 md:col-span-1 mx-auto leading-none items-center">
                                             <label className=" text-gray-600">Active</label>
@@ -407,7 +407,7 @@ const Account = () => {
                                         ))}
                                     </div>
                                   
-                                    <div className="bg-blue-50 shadow-md w-full p-3  grid grid-cols-2 gap-3 mt-4">
+                                    <div className="bg-gray-50 shadow-md w-full p-3  grid grid-cols-2 gap-3 mt-4">
                                         <h3 className="text-lg leading-tight underline text-gray-700 font-medium">Location:</h3>
                                         <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
                                             <label className="col-span-1 text-gray-600">County</label>
@@ -431,7 +431,7 @@ const Account = () => {
                                             </p>
                                         </div>
                                     </div>
-                                    <div className="bg-blue-50 shadow-md w-full p-3  grid grid-cols-2 gap-3 mt-4">
+                                    <div className="bg-gray-50 shadow-md w-full p-3  grid grid-cols-2 gap-3 mt-4">
                                         <h3 className="text-lg leading-tight underline text-gray-700 font-medium">Other details:</h3>
                                         <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
                                             <label className="col-span-1 text-gray-600">Role</label>
@@ -468,7 +468,7 @@ const Account = () => {
                             </Tabs.Panel>
                             <Tabs.Panel value="contacts" className="grow-1 py-1 px-4 tab-panel">
                                 <div className="col-span-4 md:col-span-4 flex flex-col group items-center justify-start text-left">
-                                    <div className="bg-blue-50 shadow-md m-3 w-full p-4  flex flex-col gap-y-2">
+                                    <div className="bg-gray-50 shadow-md m-3 w-full p-4  flex flex-col gap-y-2">
                                         {/* ---- EDIT CONTACTS ---- */}
                                         <div className="w-ful flex flex-row items-center justify-between">
                                             <h3 className="text-2xl flex flex-wrap justify-between items-center leading-tight tracking-tight">
@@ -488,7 +488,7 @@ const Account = () => {
                                                             <Dialog.Title as="h2" className="font-semibold text-black text-2xl">Add new contact</Dialog.Title>
                                                             <Dialog.Description as="div" className="flex flex-col items-center justify-start gap-3 w-full">
 
-                                                                <form className="flex flex-col bg-blue-50 shadow-md p-4 gap-2 w-full" onSubmit={fm => {
+                                                                <form className="flex flex-col bg-gray-50 shadow-md p-4 gap-2 w-full" onSubmit={fm => {
                                                                     fm.preventDefault();
                                                                     setPath('contacts')
                                                                     // handleBasicDetailsSubmit(fm)
@@ -550,7 +550,7 @@ const Account = () => {
                             </Tabs.Panel>
                             <Tabs.Panel value="password" className="grow-1 m-4 tab-panel">
                                 <div className="col-span-4 md:col-span-4 flex flex-col group items-center justify-start text-left">
-                                    <div className="bg-blue-50 shadow-md  w-full p-4  flex flex-col gap-2">
+                                    <div className="bg-gray-50 shadow-md  w-full p-4  flex flex-col gap-2">
                                         <h3 className="text-2xl w-full flex flex-wrap justify-between items-center leading-tight tracking-tight">
                                             <span className="font-semibold">Change your password</span>
                                         </h3>

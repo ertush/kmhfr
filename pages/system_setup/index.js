@@ -1207,7 +1207,7 @@ const system_setup = (props) => {
                                         Are you sure you want to delete<b>{editData.name}</b> ?
                                     </span>
                                 <div className='flex justify-start gap-4 mt-4'>
-                                        <button className="bg-blue-500 text-white font-semibold  p-2 text-center" type="button" onClick={()=>{handleDelete(addBtnLabel);setOpen(false)}}>Yes</button>
+                                        <button className="bg-gray-500 text-white font-semibold  p-2 text-center" type="button" onClick={()=>{handleDelete(addBtnLabel);setOpen(false)}}>Yes</button>
                                         <button className="bg-red-500 text-white font-semibold  p-2 text-center" 
                                         onClick={()=> {setEditMode(false);setEditID(null);setIsAddForm(false);setEditData([]);setOpen(false)}} 
                                         >No</button>
@@ -1653,7 +1653,7 @@ const system_setup = (props) => {
                                 <div className='col-span-4 w-full h-auto'>
                                     {/* <form className="flex items-center space-x-3 m-3" onSubmit={e => {e.preventDefault()}}>
                                         <TextField id="search_table_data" label="Search anything" variant="standard" />
-                                        <button type= "submit" className='bg-blue-500  p-2 text-base font-semibold text-white'>Export</button>
+                                        <button type= "submit" className='bg-gray-500  p-2 text-base font-semibold text-white'>Export</button>
                                     </form> */}
                                 <Paper className="shadow-md rounded-none" sx={{ width: '100%', height:'auto', overflow: 'hidden', boxShadow:'0', flexDirection:'column', alignContent:'start', justifyContent:'start', backgroundColor:'#eff6ff'}}>
                                 <StyledDataGrid

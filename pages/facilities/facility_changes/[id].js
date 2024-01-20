@@ -43,7 +43,7 @@ export default function FacilityChanges({ facility }) {
                             stateSetters={[setKhisSynched, setFacilityFeedBack, setPathId, setAllFctsSelected, setTitle]} />
                     </div>
 
-                    <div className="md:col-span-4 bg-blue-50 p-6 shadow-md flex flex-col items-center md:gap-3 gap-y-3">
+                    <div className="md:col-span-4 bg-gray-50 p-6 shadow-md flex flex-col items-center md:gap-3 gap-y-3">
 
                         <div className="flex flex-col justify-start w-full gap-3">
                             <h2 className="text-2xl font-bold justify-center items-center md:ml-0 ml-4">
@@ -69,13 +69,13 @@ export default function FacilityChanges({ facility }) {
 
                                 <span className="flex space-x-2">
                                     <button
-                                        className="flex justify-center text-base font-semibold text-white bg-blue-500  py-1 px-2"
+                                        className="flex justify-center text-base font-semibold text-white bg-gray-500  py-1 px-2"
                                         onClick={() => router.push(`/facilities/edit/${facility?.data?.id}`)}
                                     >
                                         Edit
                                     </button>
                                     <button
-                                        className="flex justify-center text-base font-semibold text-white bg-blue-500  py-1 px-2"
+                                        className="flex justify-center text-base font-semibold text-white bg-gray-500  py-1 px-2"
                                         onClick={() => {
 
                                             alert.success("Facility updates saved successfully")

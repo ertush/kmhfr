@@ -1113,7 +1113,7 @@ function AddCommunityUnit(props) {
 						{/* Stepper Body */}
 						<div className='flex flex-col justify-center items-start px-1 md:px-4 w-full '>
 							<div
-								className=' w-full flex flex-col items-start justify-start p-4 bg-blue-50 shadow-md'
+								className=' w-full flex flex-col items-start justify-start p-4 bg-gray-50 shadow-md'
 								style={{ minHeight: '250px' }}>
 								{/* Form-changing switch statement */}
 

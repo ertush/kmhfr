@@ -184,7 +184,7 @@ const RegulateFacility = props => {
 
                             <div className="col-start-1 col-span-1 mb-4">
                                 <button
-                                    className="bg-blue-500 font-semibold w-auto text-white flex text-left items-center p-2 h-auto rounded-md"
+                                    className="bg-gray-500 font-semibold w-auto text-white flex text-left items-center p-2 h-auto rounded-md"
                                     onClick={() => {
                                         if (isFacDetails) {
                                             setIsFacDetails(false);

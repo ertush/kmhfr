@@ -457,7 +457,7 @@ function EditListWithCount(
                     <ul className='max-h-96 overflow-auto border-r border-l border-b border-blue-500'>
                         {categoryOptions.map(({ label, value, catcount }) => (
                             <div key={value}
-                                className='card bg-blue-50 shadow-md p-2 group hover:bg-blue-500 hover:text-gray-50 hover:cursor-pointer'
+                                className='card bg-gray-50 shadow-md p-2 group hover:bg-gray-500 hover:text-gray-50 hover:cursor-pointer'
                             >
                                 <li
                                     className="flex items-center justify-start cursor-pointer space-x-2 p-1 px-2"
@@ -486,7 +486,7 @@ function EditListWithCount(
 
                                 </tr>
                             </thead>
-                            <tbody className='bg-blue-50 shadow-md'>
+                            <tbody className='bg-gray-50 shadow-md'>
                                 {specialities.length === 0 && <tr><td colSpan={3} className="text-center">{`No ${itemsCategoryName.includes('infrastructure') ? 'infrastructure' : 'specialities'} found`}</td></tr>}
 
                                 {specialities.map((row) => (
@@ -545,7 +545,7 @@ function EditListWithCount(
                                 ))}
                             </tr>
                         </thead>
-                        <tbody className='bg-blue-50 shadow-md'>
+                        <tbody className='bg-gray-50 shadow-md'>
                             {selectedRows.length === 0 && <tr><td colSpan={3} className="text-center">No specialities found</td></tr>}
                             {/* {selectedRows.pop()} */}
                             {selectedRows.map((row) => {

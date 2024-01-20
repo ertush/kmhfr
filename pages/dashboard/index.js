@@ -498,7 +498,7 @@ const Dashboard = (props) => {
                                                                             router.push(`/dashboard ${encodeURI(querySelector)}`)
                                                                         }
                                                                         }
-                                                                        className="w-full px-4 py-2 bg-blue-500 text-white -md"
+                                                                        className="w-full px-4 py-2 bg-gray-500 text-white -md"
                                                                     >
                                                                         Set
                                                                     </button>
@@ -920,7 +920,7 @@ const Dashboard = (props) => {
                         </div>
                     
                         {/* <div id="dashboard" className="w-full grid grid-cols-6 gap-4 px-1 md:px-4 py-2 my-4"> */}
-                        <div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-blue-50" style={{ minHeight: '250px' }}>
+                        <div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
                             <h4 className="text-lg uppercase pt-4 text-center border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Facility owners </h4>
                             <table className="w-full text-sm md:text-base p-2">
                                 <thead className="border-b border-gray-300">
@@ -940,7 +940,7 @@ const Dashboard = (props) => {
                             </table>
                         </div>
 
-                        <div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-blue-50" style={{ minHeight: '250px' }}>
+                        <div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
                             <h4 className="text-lg uppercase pt-4 text-center border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Facility Types </h4>
                             <table className="w-full text-sm md:text-base p-2">
                                 <thead className="border-b border-gray-300">
@@ -961,7 +961,7 @@ const Dashboard = (props) => {
                         </div>
 
                         {/* Facilities summary 1/3 - FILTERABLE */}
-                        <div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-blue-50" style={{ minHeight: '250px' }}>
+                        <div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
                             <h4 className="text-lg uppercase pt-4 text-center border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Facilities summary</h4>
                             <table className="w-full text-sm md:text-base p-2">
                                 <thead className="border-b border-gray-300">
@@ -981,7 +981,7 @@ const Dashboard = (props) => {
                             </table>
                         </div>
                         {/* CUs summary - FILTERABLE 1/3 */}
-                        <div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-blue-50" style={{ minHeight: '250px' }}>
+                        <div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
                             <h4 className="text-lg uppercase pt-4 text-center border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Community Units summary</h4>
                             <table className="w-full text-sm md:text-base p-2">
                                 <thead className="border-b border-gray-300">
@@ -1001,7 +1001,7 @@ const Dashboard = (props) => {
                             </table>
                         </div>
                         {/* Recent changes 1/3 - FILTERABLE */}
-                        <div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-blue-50" style={{ minHeight: '250px' }}>
+                        <div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
                             <h4 className="text-lg uppercase pt-4 text-center border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Recent changes</h4>
                             <table className="w-full text-sm md:text-base p-2">
                                 <thead className="border-b border-gray-300">
@@ -1021,7 +1021,7 @@ const Dashboard = (props) => {
                             </table>
                         </div>
                         {/* facilities by keph level */}
-                        <div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-blue-50" style={{ minHeight: '250px' }}>
+                        <div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
                             <h4 className="text-lg uppercase pt-4 text-center border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Facility KEPH Level </h4>
                             <table className="w-full text-sm md:text-base p-2">
                                 <thead className="border-b border-gray-300">
@@ -1042,7 +1042,7 @@ const Dashboard = (props) => {
                         </div>
                         {/* Facilities & CHUs by county (bar) 1/1 */}
                         {(groupID === 7 || groupID === 5) &&
-                            <div className="no-print col-span-6 flex flex-col items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-blue-50" style={{ minHeight: '250px' }}>
+                            <div className="no-print col-span-6 flex flex-col items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
                                 <h4 className="text-lg uppercase pt-4 border-b text-center border-gray-100 w-full mb-2 font-semibold text-blue-900">Facilities &amp; CHUs by County</h4>
                                 <BarChart
                                     title=""
@@ -1066,7 +1066,7 @@ const Dashboard = (props) => {
                         }
                         {/* Facilities & CHUs by subcounties (bar) 1/1 */}
                         {groupID === 1 &&
-                            <div className="no-print col-span-6 flex flex-col items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-blue-50" style={{ minHeight: '250px' }}>
+                            <div className="no-print col-span-6 flex flex-col items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
                                 <h4 className="text-lg uppercase pt-4 text-center border-b border-gray-100 w-full mb-2 font-semibold text-blue-900">Facilities &amp; CHUs by Subcounty</h4>
                                 <BarChart
                                     title=""
@@ -1090,7 +1090,7 @@ const Dashboard = (props) => {
                         }
                         {/* Facilities & CHUs by ward (bar) 1/1 */}
                         {groupID === 2 &&
-                            <div className="no-print col-span-6 flex flex-col items-start justify-start p-3 shadow-lg border border-gray-300/70 bg-blue-50" style={{ minHeight: '250px' }}>
+                            <div className="no-print col-span-6 flex flex-col items-start justify-start p-3 shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
                                 <h4 className="text-lg uppercase pt-4 text-center border-b border-gray-100 w-full mb-2 font-semibold text-blue-900">Facilities &amp; CHUs by Ward</h4>
                                 <BarChart
                                     title=""
@@ -1113,7 +1113,7 @@ const Dashboard = (props) => {
                             </div>
                         }
                         {/* Facility owners & categories - national summary - FILTERABLE (bar) 1/2 */}
-                        <div className="no-print col-span-6 md:col-span-3 flex flex-col items-start justify-start p-3 shadow-lg border border-gray-300/70 bg-blue-50" style={{ minHeight: '250px' }}>
+                        <div className="no-print col-span-6 md:col-span-3 flex flex-col items-start justify-start p-3 shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
                             <h4 className="text-lg uppercase pt-4 text-center border-b border-gray-100 w-full mb-2 font-semibold text-blue-900">Facility owners</h4>
                             <BarChart
                                 title=""
@@ -1126,7 +1126,7 @@ const Dashboard = (props) => {
                                 })() || []} />
                         </div>
                         {/* Facility types - national summary - FILTERABLE (bar) 1/2 */}
-                        <div className="no-print col-span-6 md:col-span-3 flex flex-col items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-blue-50" style={{ minHeight: '250px' }}>
+                        <div className="no-print col-span-6 md:col-span-3 flex flex-col items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
                             <h4 className="text-lg uppercase pt-4 text-center border-b border-gray-100 w-full mb-2 font-semibold text-blue-900">Facility types</h4>
                             <BarChart
                                 title=""
@@ -1141,7 +1141,7 @@ const Dashboard = (props) => {
 
 
                         {/* Floating div at bottom right of page */}
-                        {/* <div className="fixed bottom-4 right-4 z-10 w-96 h-auto bg-blue-50/50 bg-blend-lighten shadow-lg -lg flex flex-col justify-center items-center py-2 px-3">
+                        {/* <div className="fixed bottom-4 right-4 z-10 w-96 h-auto bg-gray-50/50 bg-blend-lighten shadow-lg -lg flex flex-col justify-center items-center py-2 px-3">
                             <h5 className="text-sm font-bold">
                                 <span className="text-gray-600 uppercase">Limited results</span>
                             </h5>

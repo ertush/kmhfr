@@ -437,7 +437,7 @@ const FacilityHome = (props) => {
                    
                     
                     {/* Main Body */}
-                    <div className="w-full md:col-span-4 mr-24 md:col-start-2 col-span-5 md:h-auto bg-blue-50 shadow-md">
+                    <div className="w-full md:col-span-4 mr-24 md:col-start-2 col-span-5 md:h-auto bg-gray-50 shadow-md">
                                     {/* Data Indicator section */}
                                     <div className='w-full p-2 flex justify-between border-b border-blue-600'>
                                         {/* search input */}
@@ -532,7 +532,7 @@ const FacilityHome = (props) => {
                                             facilities.map((facility, index) => (
                                                 <div key={index} 
                                                 title={`Incomplete Details : ${facility?.is_complete ? 'none' : facility?.in_complete_details}`}
-                                                className={`grid grid-cols-8 gap-2 border-b py-4 w-full ${!facility?.is_complete ? 'bg-yellow-50 border-yellow-500 hover:bg-blue-50' : 'bg-transparent border-gray-400 hover:border-yellow-100' }`}>
+                                                className={`grid grid-cols-8 gap-2 border-b py-4 w-full ${!facility?.is_complete ? 'bg-yellow-50 border-yellow-500 hover:bg-gray-50' : 'bg-transparent border-gray-400 hover:border-yellow-100' }`}>
                                                     <div className="px-2 col-span-8 md:col-span-8 lg:col-span-6 flex flex-col group items-center justify-start text-left">
                                                         <h3 className="text-2xl font-semibold w-full">
                                                             <span onClick={() => router.push({pathname: `/facilities/${facility?.id}`, query: {qf: router.query.qf}})} className={`cursor-pointer ${facility?.is_complete ? 'hover:text-blue-600' : 'hover:text-yellow-600'} group-focus:text-blue-800 active:text-blue-800`} >
