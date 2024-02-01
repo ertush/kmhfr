@@ -288,7 +288,7 @@ if(filters){
                 {/* Aside with filters */}
                 <div className="w-full grid grid-cols-6 gap-5 px-1 md:px-4 p-4 mx-auto bg-transparent min-h-screen">
                   {/* Actual Aside */}
-                  <aside className="col-span-6 bg-blue-50 md:col-span-3 lg:col-span-2 xl:col-span-1 p-1 md:p-2 flex flex-col lg:gap-3 items-center justify-start shadow-md">
+                  <aside className="col-span-6 bg-gray-50 md:col-span-3 lg:col-span-2 xl:col-span-1 p-1 md:p-2 flex flex-col lg:gap-3 items-center justify-start shadow-md">
                     {/* Tabs */}
                     <Tabs.Root
                       orientation="horizontal"
@@ -2311,7 +2311,7 @@ if(filters){
         </>
 
         {/* Floating div at bottom right of page */}
-        {/* <div className="fixed bottom-4 right-4 z-10 w-96 h-auto bg-blue-50/50 bg-blend-lighten shadow-lg -lg flex flex-col justify-center items-center py-2 px-3">
+        {/* <div className="fixed bottom-4 right-4 z-10 w-96 h-auto bg-gray-50/50 bg-blend-lighten shadow-lg -lg flex flex-col justify-center items-center py-2 px-3">
           <h5 className="text-sm font-bold">
             <span className="text-gray-600 uppercase">Limited results</span>
           </h5>

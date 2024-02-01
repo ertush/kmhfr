@@ -335,7 +335,7 @@ export function GeolocationForm({ editMode }) {
 
     <form
       name='geolocation_form'
-      className='flex flex-col w-full mt-4 items-start bg-blue-50 p-3 justify-start gap-3'
+      className='flex flex-col w-full mt-4 items-start bg-gray-50 p-3 justify-start gap-3'
       onSubmit={!editMode ? handleGeolocationFormCreate : handleGeolocationUpdates}
     >
 

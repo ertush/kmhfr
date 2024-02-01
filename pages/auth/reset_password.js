@@ -16,7 +16,7 @@ const ResetPassword = (props) => {
                 <link rel="icon" href="/favicon.ico" />
                
             </Head>
-            <div className="w-full h-screen overflow-hidden bg-blue-50 flex flex-col gap-2 items-center justify-center p-3 md:p-0">
+            <div className="w-full h-screen overflow-hidden bg-gray-50 flex flex-col gap-2 items-center justify-center p-3 md:p-0">
                 <div className="w-full flex flex-col max-w-screen-sm items-center justify-between px-2">
                     <div className="text-center text-5xl w-full font-black text-gray-700 flex justify-center gap-x-2 items-center">
                         <img src="/MOH.png" className="h-16" alt="KMHFR 3" />

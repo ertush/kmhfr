@@ -245,11 +245,18 @@ const FacilityHome = (props) => {
                                                             </div>)
                                                             : (
                                                                 <div className='grid grid-cols-4 place-content-center items-content-end gap-2'>
-                                                                    {filters && Object.keys(filters).length > 0 &&
+                                                                    {  
+                                                                        filters && Object.keys(filters).length > 0 &&
                                                                         Object.keys(fltrs).map((ft, i) => (
                                                                             <div key={i} className="w-full flex flex-col items-start justify-start gap-1 mb-1">
+                                                                                
                                                                                 <label htmlFor={ft} className="text-gray-600 capitalize text-sm">{ft.split('_').join(' ')}</label>
-                                                                                <Select isMulti={multiFilters.includes(ft)} name={ft} defaultValue={drillDown[ft] || ""} id={ft} className="w-full border border-blue-600 bg-gray-50"
+                                                                                <Select 
+                                                                                    isMulti={multiFilters.includes(ft)} 
+                                                                                    name={ft}
+                                                                                    defaultValue={drillDown[ft] || ""} 
+                                                                                    id={ft} 
+                                                                                    className="w-full border border-blue-600 bg-gray-50"
                                                                                     styles={{
                                                                                         input:(styles) => ({
                                                                                             ...styles,
@@ -290,9 +297,10 @@ const FacilityHome = (props) => {
                                                                                            
                                                                                         }
                                                                                         setDrillDown({ ...drillDown, ...nf })
-                                                                                    }} />
+                                                                                }} />
                                                                             </div>
-                                                                        ))}
+                                                                        ))
+                                                                    }
                                                                     {/* From and To Date Picker Components */}
 
                                                                     {/* <NativePickers onSelected={
@@ -386,6 +394,7 @@ const FacilityHome = (props) => {
                                                                         
                                                                     
                                                                     </div>
+
                                                                     <button onClick={ev => {
 
                                                                         
@@ -437,7 +446,7 @@ const FacilityHome = (props) => {
                    
                     
                     {/* Main Body */}
-                    <div className="w-full md:col-span-4 mr-24 md:col-start-2 col-span-5 md:h-auto bg-blue-50 shadow-md">
+                    <div className="w-full md:col-span-4 mr-24 md:col-start-2 col-span-5 md:h-auto bg-gray-50 shadow-md">
                                     {/* Data Indicator section */}
                                     <div className='w-full p-2 flex justify-between border-b border-blue-600'>
                                         {/* search input */}
@@ -532,7 +541,7 @@ const FacilityHome = (props) => {
                                             facilities.map((facility, index) => (
                                                 <div key={index} 
                                                 title={`Incomplete Details : ${facility?.is_complete ? 'none' : facility?.in_complete_details}`}
-                                                className={`grid grid-cols-8 gap-2 border-b py-4 w-full ${!facility?.is_complete ? 'bg-yellow-50 border-yellow-500 hover:bg-blue-50' : 'bg-transparent border-gray-400 hover:border-yellow-100' }`}>
+                                                className={`grid grid-cols-8 gap-2 border-b py-4 w-full ${!facility?.is_complete ? 'bg-yellow-50 border-yellow-500 hover:bg-gray-50' : 'bg-transparent border-gray-400 hover:border-yellow-100' }`}>
                                                     <div className="px-2 col-span-8 md:col-span-8 lg:col-span-6 flex flex-col group items-center justify-start text-left">
                                                         <h3 className="text-2xl font-semibold w-full">
                                                             <span onClick={() => router.push({pathname: `/facilities/${facility?.id}`, query: {qf: router.query.qf}})} className={`cursor-pointer ${facility?.is_complete ? 'hover:text-blue-600' : 'hover:text-yellow-600'} group-focus:text-blue-800 active:text-blue-800`} >
@@ -802,7 +811,12 @@ FacilityHome.getInitialProps = async (ctx) => {
             .then(json => {
                 return fetchFilters(token).then(ft => {
                     return {
-                        data: json, query,token, filters: { ...ft }, path: ctx.asPath || '/facilities', current_url: current_url
+                        data: json, 
+                        query,
+                        token, 
+                        filters: { ...ft }, 
+                        path: ctx.asPath || '/facilities', 
+                        current_url: current_url
                     }
                 })
             }).catch(err => {

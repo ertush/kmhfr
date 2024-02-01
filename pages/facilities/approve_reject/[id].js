@@ -194,7 +194,7 @@ function ApproveReject(props) {
 
 
             {/* Facility details */}
-            <div className="bg-blue-50 shadow-md w-full p-3  flex flex-col gap-3 mt-4">
+            <div className="bg-gray-50 shadow-md w-full p-3  flex flex-col gap-3 mt-4">
               <div className="grid grid-cols-3 w-full md:w-11/12 leading-none items-center">
                 <label className="col-span-1 text-gray-600">
                   Functional Status
@@ -285,7 +285,7 @@ function ApproveReject(props) {
 
             {/* Comments and Updates Section  */}
 
-            <div className="bg-blue-50 shadow-md w-full p-3  flex flex-col gap-3 mt-6">
+            <div className="bg-gray-50 shadow-md w-full p-3  flex flex-col gap-3 mt-6">
               <h3 className="text-gray-900 font-semibold leading-16 text-medium">
                 {facility?.has_edits ? 'Approve Updates' : facility?.is_approved ? "Approval / Reject facility" : "Comment on the validation"}
               </h3>

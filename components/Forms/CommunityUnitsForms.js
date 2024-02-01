@@ -176,7 +176,7 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
 
   return (
     <form
-      className="flex m-1 p-3 bg-blue-50 flex-col w-full items-start justify-start gap-3"
+      className="flex m-1 p-3 bg-gray-50 flex-col w-full items-start justify-start gap-3"
       onSubmit={handleFormSubmit}
     >
 
@@ -779,7 +779,7 @@ function EditCommunityUnitsCHEWSForm(props) {
    return (
     <form
       name="chews_form"
-      className="flex flex-col p-3 h-full bg-blue-50 w-full items-start justify-start gap-3"
+      className="flex flex-col p-3 h-full bg-gray-50 w-full items-start justify-start gap-3"
       onSubmit={handleFormSubmit}
     >
       {formError && <Alert severity='error' className={'w-full'}>Error when deleting: {formError}</Alert>}
@@ -1201,7 +1201,7 @@ export function CommunityUnitEditForm(props) {
           </div>
 
           {/* Form */}
-          <div className="col-span-1 md:col-span-6 flex flex-col md:gap-3 mt-8 bg-blue-50 shadow-md pt-2">
+          <div className="col-span-1 md:col-span-6 flex flex-col md:gap-3 mt-8 bg-gray-50 shadow-md pt-2">
             <Tabs.Root
               orientation="horizontal"
               className="w-full flex flex-col tab-root"

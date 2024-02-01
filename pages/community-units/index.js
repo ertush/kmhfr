@@ -211,7 +211,7 @@ const CommunityUnit = (props) => {
 
 							{/* Main body */}
 							
-							<div className="w-full md:col-span-4 mr-24 md:col-start-2 col-span-5 md:h-auto bg-blue-50 shadow-md">
+							<div className="w-full md:col-span-4 mr-24 md:col-start-2 col-span-5 md:h-auto bg-gray-50 shadow-md">
 								 {/* Data Indicator section */}
 								   {/* Data Indicator section */}
 								   <div className='w-full p-2 flex justify-between border-b border-blue-600'>
@@ -288,7 +288,7 @@ const CommunityUnit = (props) => {
 										cus.map((comm_unit, index) => (
 											<div
 												key={comm_unit.id}
-												className='grid grid-cols-8 gap-2 border-b border-gray-400 py-4 hover:bg-blue-50 w-full'>
+												className='grid grid-cols-8 gap-2 border-b border-gray-400 py-4 hover:bg-gray-50 w-full'>
 												<div className='px-2 col-span-8 md:col-span-8 lg:col-span-6 flex flex-col group items-center justify-start text-left'>
 													<h3 className='text-2xl  font-semibold w-full'>
 														<a

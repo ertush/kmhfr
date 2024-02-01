@@ -90,7 +90,7 @@ export default function MainLayout({ children, isLoading, searchTerm, isFullWidt
                     </div> : children}
                 </>
             </div>
-            <footer className="bg-blue-50 py-5 items-center justify-evenly flex flex-wrap gap-y-3 gap-x-4 text-gray-300 text-sm w-full">
+            <footer className="bg-gray-50 mt-8 py-5 items-center justify-evenly flex flex-wrap gap-y-3 gap-x-4 text-gray-300 text-sm w-full">
             
             
                 <a className="text-blue-300 hover:underline focus:underline active:underline hover:text-white focus:text-white active:text-white" href="https://www.usaid.gov/kenya" target="_blank" rel="noreferrer noopener">

@@ -140,7 +140,7 @@ function Home(props) {
 	}
 
 	return (
-		<div className=''>
+		<div>
 			<Head>
 				<title>KMHFR - Community Units</title>
 				<link rel='icon' href='/favicon.ico' />
@@ -159,7 +159,7 @@ function Home(props) {
 								{'/'}
 								<span className='text-gray-500'>Community Units</span>
 							</div>
-							<div className={"col-span-5 flex shadow-md justify-between w-full bg-blue-50 drop-shadow  text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-blue-600" : "border-red-600")}>
+							<div className={"col-span-5 flex shadow-md justify-between w-full bg-gray-50 drop-shadow  text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-blue-600" : "border-red-600")}>
                                 <h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
                                     {'Community Units'}
                                 </h2>
@@ -181,7 +181,7 @@ function Home(props) {
                     {/* Filter section */}
 					<form className='col-span-1 w-full flex flex-col item-center justify-start md:col-start-1 gap-8' onSubmit={(e)=>filterCHUs(e)}>
 						{/* <div className='card flex flex-wrap'> */}
-						<div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-blue-50" style={{ minHeight: '50px' }}>
+						<div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '50px' }}>
 
 									<h2>Search for a Community Health Unit</h2>
 									{/* &nbsp; */}
@@ -189,13 +189,13 @@ function Home(props) {
 										name="allchus"
 										ref={allchus}
 										id="search-input"
-										className="flex-none bg-blue-50  p-2 flex-grow shadow-sm border placeholder-gray-500 w-full border-gray-400 focus:shadow-none focus:bg-white focus:border-black outline-none"
+										className="flex-none bg-gray-50  p-2 flex-grow shadow-sm border placeholder-gray-500 w-full border-gray-400 focus:shadow-none focus:bg-white focus:border-black outline-none"
 										type="search"
 										placeholder="Search all CHUs"
 									/>                          
 						</div>
 						
-						<div className="card col-span-6 md:col-span-2 flex flex-col gap-3 items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-blue-50" style={{ minHeight: '50px' }}>
+						<div className="card col-span-6 md:col-span-2 flex flex-col gap-3 items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '50px' }}>
 									<h2>Community Health Info</h2>
 									
 									{/* <label className=" text-gray-600">CHU Name</label> */}
@@ -203,7 +203,7 @@ function Home(props) {
 										name="name"
 										ref={name}
 										id="search-input"
-										className="flex-none bg-blue-50  p-2 flex-grow shadow-sm border placeholder-gray-500 w-full border-gray-400 focus:shadow-none focus:bg-white focus:border-black outline-none"
+										className="flex-none bg-gray-50  p-2 flex-grow shadow-sm border placeholder-gray-500 w-full border-gray-400 focus:shadow-none focus:bg-white focus:border-black outline-none"
 										type="search"
 										placeholder="CHU Name"
 									/>    
@@ -213,7 +213,7 @@ function Home(props) {
 										name="code"
 										ref={code}
 										id="search-input"
-										className="flex-none bg-blue-50  p-2 flex-grow shadow-sm border placeholder-gray-500 w-full border-gray-400 focus:shadow-none focus:bg-white focus:border-black outline-none"
+										className="flex-none bg-gray-50  p-2 flex-grow shadow-sm border placeholder-gray-500 w-full border-gray-400 focus:shadow-none focus:bg-white focus:border-black outline-none"
 										type="search"
 										placeholder="CHU Code"
 									/>  
@@ -250,7 +250,7 @@ function Home(props) {
 										/>
 						</div>
 					
-						<div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-blue-50" style={{ minHeight: '50px' }}>
+						<div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '50px' }}>
 							<h2>Administrative Units</h2> &nbsp;
 							<div  className="w-full max-w-xs flex flex-col gap-3 items-start justify-start mb-3" id='first'>
 								{administrative_units?.map(ct=>(
@@ -307,14 +307,14 @@ function Home(props) {
 
 						<button
 							type="submit"
-							className="bg-blue-500  text-gray-50 flex place-content-center gap-2 p-2"
+							className="bg-gray-500  text-gray-50 flex place-content-center gap-2 p-2"
 						>
 							<span>Search</span>
 							<SearchIcon className="w-5 h-5 " /> 
 						</button>  
 						<button
 							type="button"
-							className="bg-blue-50 border-1 border-black text-black flex items-center justify-center px-4 py-1 "
+							className="bg-gray-50 border-1 border-black text-black flex items-center justify-center px-4 py-1 "
 							onClick={()=>{
 								setDrillDown({})
 								name.current.value ='',code.current.value='', st.current.select.clearValue(), allchus.current.value = '',
@@ -327,7 +327,7 @@ function Home(props) {
                     
 
                      {/* Main body */}
-					<div className="col-span-6 md:col-span-4 flex h-[696px] overflow-scroll bg-blue-50 shadow-md flex-col gap-4 order-last md:order-none"> {/* CHANGED colspan */}
+					<div className="col-span-6 md:col-span-4 flex h-[696px] overflow-scroll bg-gray-50 shadow-md flex-col gap-4 order-last md:order-none"> {/* CHANGED colspan */}
 
 					    {/* <div className='mx-4 float-right'>
 							 
@@ -341,7 +341,7 @@ function Home(props) {
 								cus?.results.map((comm_unit, index) => (
 									<div
 										key={comm_unit.id}
-										className='px-1 md:px-3 grid grid-cols-8 gap-3 border-b border-gray-400 py-4 hover:bg-blue-50 w-full'>
+										className='px-1 md:px-3 grid grid-cols-8 gap-3 border-b border-gray-400 py-4 hover:bg-gray-50 w-full'>
 										<div className='col-span-8 flex flex-col gap-1 group items-center justify-start text-left'>
 											<h3 className='text-2xl w-full'>
 												<a

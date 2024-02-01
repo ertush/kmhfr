@@ -58,7 +58,7 @@ export function Form() {
   ];
 
   return (
-    <div className='col-span-4 p-3 pb-4 flex flex-col bg-blue-50 shadow-md justify-center items-center w-full'>
+    <div className='col-span-4 p-3 pb-4 flex flex-col bg-gray-50 shadow-md justify-center items-center w-full'>
       {/* Stepper Header */}
       <div className='flex flex-col justify-center items-center px-1 md:px-4 w-full m-6'>
         <Box sx={{ width: '100%' }}>
@@ -103,7 +103,7 @@ export function Form() {
         <hr className='border-1 border-gray-400 w-full'/>
 
         <div
-          className='w-full flex flex-col items-start justify-start my-3 bg-blue-50'
+          className='w-full flex flex-col items-start justify-start my-3 bg-gray-50'
           style={{ minHeight: '250px' }}>
           <UpdateFormIdContext.Provider value={setFormId}>  
           {

@@ -10,11 +10,21 @@ import Link from 'next/link'
 import { useReactToPrint } from 'react-to-print'
 import 'react-datepicker/dist/react-datepicker.css';
 import { DownloadIcon } from '@heroicons/react/outline';
+import propTypes from 'prop-types'
 
 
 
 
-const Dashboard = (props) => {
+function Dashboard(props) {
+
+    // return (
+    //     <pre>
+    //         {
+    //             JSON.stringify(props?.data?.keph_level, null, 2)
+    //         }
+    //     </pre>
+    // )
+
     const router = useRouter()
 
     const userCtx = useContext(UserContext)
@@ -81,24 +91,24 @@ const Dashboard = (props) => {
     const [wards, setWards] = useState([])
     const [isClient, setIsClient] = useState(false);
 
-    
+
     const dwn = useRef()
 
     async function fetchCounties() {
-        
+
         try {
             const r = await fetch(`/api/common/fetch_form_data/?path=counties`)
-            setCounties({county: (await r.json())?.results})
+            setCounties({ county: (await r.json())?.results })
         } catch (err) {
             console.log(`Unable to fetch counties: ${err.message}`)
         }
     }
 
     async function fetchSubCounties(county) {
-      
+
         try {
             const r = await fetch(`/api/common/fetch_form_data/?path=sub_counties&id=${county}`)
-            setSubcounties({subcounties: (await r.json())?.results})
+            setSubcounties({ subcounties: (await r.json())?.results })
         } catch (err) {
             console.log(`Unable to fetch sub_counties: ${err.message}`)
         }
@@ -108,7 +118,7 @@ const Dashboard = (props) => {
 
         try {
             const r = await fetch(`/api/common/fetch_form_data/?path=wards&id=${sub_county}`)
-            setWards({wards: (await r.json())?.results})
+            setWards({ wards: (await r.json())?.results })
         } catch (err) {
             console.log(`Unable to fetch wards: ${err.message}`)
         }
@@ -150,26 +160,26 @@ const Dashboard = (props) => {
 
     useEffect(() => {
         setUser(userCtx)
-        
+
         let mtd = true
         if (mtd) {
 
             if (filters && Object.keys(filters).length > 0) {
-                Object.keys(filters).map(ft => {
+                Object.keys(filters)?.map(ft => {
                     if (props?.query[ft] && props?.query[ft] != null && props?.query[ft].length > 0) {
                         setDrillDown({ ...drillDown, [ft]: props?.query[ft] })
                     }
                 })
             }
             if (subcounties && Object.keys(subcounties).length > 0) {
-                Object.keys(subcounties).map(ft => {
+                Object.keys(subcounties)?.map(ft => {
                     if (props?.query[ft] && props?.query[ft] != null && props?.query[ft].length > 0) {
                         setDrillDown({ ...drillDown, [ft]: props?.query[ft] })
                     }
                 })
             }
             if (wards && Object.keys(wards).length > 0) {
-                Object.keys(wards).map(ft => {
+                Object.keys(wards)?.map(ft => {
                     if (props?.query[ft] && props?.query[ft] != null && props?.query[ft].length > 0) {
                         setDrillDown({ ...drillDown, [ft]: props?.query[ft] })
                     }
@@ -181,67 +191,70 @@ const Dashboard = (props) => {
 
     }, [filters, subcounties, wards])
 
-    
-    // Check for user authentication
-	useEffect(() => {
 
-        if(userCtx?.groups[0].id == 2) fetchWards(user?.user_sub_counties[0]?.sub_county ?? null)
-        if(userCtx?.groups[0].id == 1) fetchSubCounties(userCtx?.county)
-        if(userCtx?.groups[0].id == 7) fetchCounties();
+    // Check for user authentication
+    useEffect(() => {
+
+        if (userCtx?.groups[0].id == 2) fetchWards(user?.user_sub_counties[0]?.sub_county ?? null)
+        if (userCtx?.groups[0].id == 1) fetchSubCounties(userCtx?.county)
+        if (userCtx?.groups[0].id == 7) fetchCounties();
 
         setUser(userCtx)
-	
-		if(user.id === 6){
-			router.push('/auth/login')
-		}else{
+
+        if (user.id === 6) {
+            router.push('/auth/login')
+        } else {
             fetchWards(userCtx.county)
             fetchSubCounties(userCtx.county)
         }
 
         setIsClient(true)
-		
-	},[])
 
-  
-// console.log(props.data)
+    }, [])
+
+
+    // console.log(props.data)
 
     const exportToPdf = useReactToPrint({
         documentTitle: 'Summary',
-        content: () => dwn.current,   
+        content: () => dwn.current,
     });
 
-    let totalSummary =[
-        {name:'Total Facilities', count: `${props?.data.total_facilities || 0}` }, 
-        {name:'Total approved facilities', count: `${props?.data.approved_facilities || 0}` },
-        {name:'Total rejected facilities', count: `${props?.data.rejected_facilities_count || 0}` },
-        {name:'Total closed facilities', count: `${props?.data.closed_facilities_count || 0}` },
-        {name:'Total facilities pending approval', count: `${props?.data.pending_updates || 0}` },
-        {name:'Total facilities rejected at validation', count: `${props?.data.facilities_rejected_at_validation || 0}`},
-        {name:'Total facilities rejected at approval', count: `${props?.data.facilities_rejected_at_approval || 0}`},
+
+
+    const totalSummary = [
+        { name: 'Total Facilities', count: `${props?.data?.total_facilities || 0}` },
+        { name: 'Total approved facilities', count: `${props?.data?.approved_facilities || 0}` },
+        { name: 'Total rejected facilities', count: `${props?.data?.rejected_facilities_count || 0}` },
+        { name: 'Total closed facilities', count: `${props?.data?.closed_facilities_count || 0}` },
+        { name: 'Total facilities pending approval', count: `${props?.data?.pending_updates || 0}` },
+        { name: 'Total facilities rejected at validation', count: `${props?.data?.facilities_rejected_at_validation || 0}` },
+        { name: 'Total facilities rejected at approval', count: `${props?.data?.facilities_rejected_at_approval || 0}` },
 
     ]
 
-    let chuSummary =[
-        {name:'Total community health units', count: `${props?.data?.total_chus || 0}`},
-        {name:'Total CHUs rejected', count: `${props?.data?.rejected_chus || 0}`},
-        {name:'New CHUs pending approval', count: `${props?.data?.recently_created_chus || 0}`},
-        {name:'Updated CHUs pending approval', count: `${props?.data?.chus_pending_approval || 0}`},
-        
-    ]   
-    for(let i=0; i<props?.data?.cu_summary?.length; i++) {
+    const chuSummary = [
+        { name: 'Total community health units', count: `${props?.data?.total_chus || 0}` },
+        { name: 'Total CHUs rejected', count: `${props?.data?.rejected_chus || 0}` },
+        { name: 'New CHUs pending approval', count: `${props?.data?.recently_created_chus || 0}` },
+        { name: 'Updated CHUs pending approval', count: `${props?.data?.chus_pending_approval || 0}` },
+
+    ]
+
+    for (let i = 0; i < props?.data?.cu_summary?.length; i++) {
         chuSummary.push(props?.data?.cu_summary[i]);
     }
-    for(let i=0; i<props?.data?.validations?.length; i++) {
+    for (let i = 0; i < props?.data?.validations?.length; i++) {
         totalSummary.push(props?.data?.validations[i]);
     }
-         
-    console.log({data: props?.data})
-    const recentChanges =[
-        {name: 'New facilities added', count: `${props?.data?.recently_created || 0}`},
-        {name: 'Facilities updated', count: `${props?.data?.recently_updated || 0}`},
-        {name: 'New CHUs added', count: `${props?.data?.recently_created_chus || 0}`},
-        {name: 'CHUs updated', count: `${props?.data?.recently_updated_chus || 0}`}
-    ]     
+
+    // console.log({data: props?.data})
+    const recentChanges = [
+        { name: 'New facilities added', count: `${props?.data?.recently_created || 0}` },
+        { name: 'Facilities updated', count: `${props?.data?.recently_updated || 0}` },
+        { name: 'New CHUs added', count: `${props?.data?.recently_created_chus || 0}` },
+        { name: 'CHUs updated', count: `${props?.data?.recently_updated_chus || 0}` }
+    ]
     // console.log(user)
     const csvHeaders = useMemo(
         () => [
@@ -263,7 +276,7 @@ const Dashboard = (props) => {
     // console.log({wards: drillDown?.wards})
     // console.log({county: filters?.county.find(ft => ft.id == drillDown?.county), filters, drillDown, counties})
 
-    if(isClient){
+    if (isClient) {
         return (
             <div className="">
                 <Head>
@@ -273,8 +286,10 @@ const Dashboard = (props) => {
 
                 <MainLayout isLoading={false} searchTerm={props?.query?.searchTerm}>
 
-                    <div className="w-full grid grid-cols-6 gap-4 px-1 md:px-4 py-2 my-4 main"  ref={dwn}> 
+                    <div className="w-full grid grid-cols-6 gap-4 px-1 md:px-4 py-2 my-4 main" ref={dwn}>
                         <div className="col-span-6 flex flex-col gap-3 md:gap-5 mb-8 px-2">
+                            {/* Debug */}
+                        
                             <div className="no-print flex flex-row gap-2 text-sm md:text-base py-3">
                                 <Link className="text-blue-700" href="/" >Home</Link> {'/'}
                                 <span className="text-gray-600">Dashboardboard</span>
@@ -291,19 +306,19 @@ const Dashboard = (props) => {
                                         }
                                         {user && userCounty &&
                                             <small className="text-blue-900 text-base font-semibold">
-                                            
+
                                                 {`${userCounty ?? user?.county_name} County`}
-                                            
+
                                             </small>
                                         }
-                                        { user && userSubCounty ?
+                                        {user && userSubCounty ?
                                             <>
                                                 <span className='text-gray-500 text-base'> / </span>
 
                                                 <small className="text-blue-900 text-base font-semibold ">
-                                                
-                                                {`${userSubCounty ?? user?.sub_county_name} Sub county`}
-                                                    
+
+                                                    {`${userSubCounty ?? user?.sub_county_name} Sub county`}
+
                                                 </small>
                                             </>
                                             :
@@ -311,22 +326,22 @@ const Dashboard = (props) => {
                                                 {groupID !== 7 && groupID !== 5 && <span className='text-gray-500 text-base text-center'> / </span>}
                                                 <small className="text-blue-900 text-base font-semibold">
                                                     {subcounties && subcounties?.subcounties && subcounties?.subcounties.find(ft => ft.id == drillDown?.subcounties)?.name != undefined ? subcounties.subcounties.find(ft => ft.id == drillDown?.subcounties)?.name + " Sub county" : !drillDown?.county && "" || ""}
-                                    
+
                                                 </small>
                                             </>
                                         }
                                         {drillDown && drillDown?.wards &&
-                                        <>
-                                            <span className='text-gray-500 text-base text-center'> / </span>
-                                            <small className="text-blue-900 text-base font-semibold ml-1">
-                                                
-                                                {wards && wards?.wards && wards?.wards.find(ft => ft.id == drillDown?.wards)?.name != undefined ? wards?.wards.find(ft => ft.id == drillDown?.wards)?.name + " Ward" : "Subcounty Summary" || ""}
-                                            </small>
-                                        </>
+                                            <>
+                                                <span className='text-gray-500 text-base text-center'> / </span>
+                                                <small className="text-blue-900 text-base font-semibold ml-1">
+
+                                                    {wards && wards?.wards && wards?.wards.find(ft => ft.id == drillDown?.wards)?.name != undefined ? wards?.wards.find(ft => ft.id == drillDown?.wards)?.name + " Ward" : "Subcounty Summary" || ""}
+                                                </small>
+                                            </>
                                         }
                                     </div>
                                 </h1>
-                            
+
                                 <div className=" no-print flex-grow flex gap-x-3 items-center justify-end w-full md:w-auto">
 
                                     {/* show datetime filters */}
@@ -341,18 +356,18 @@ const Dashboard = (props) => {
                                                     data-modal-target="defaultModal" data-modal-toggle="defaultModal"
                                                     styles={{
                                                         control: (baseStyles) => ({
-                                                        ...baseStyles,
-                                                        backgroundColor: 'transparent',
-                                                        outLine:'none',
-                                                        border:'none',
-                                                        outLine:'none',
-                                                        textColor: 'transparent',
-                                                        padding:0,
-                                                        height:'4px'
+                                                            ...baseStyles,
+                                                            backgroundColor: 'transparent',
+                                                            outLine: 'none',
+                                                            border: 'none',
+                                                            outLine: 'none',
+                                                            textColor: 'transparent',
+                                                            padding: 0,
+                                                            height: '4px'
                                                         }),
-                                                    
+
                                                     }}
-                                                    
+
                                                     onChange={async (sl) => {
                                                         let startdate = ''
                                                         let enddate = ''
@@ -498,7 +513,7 @@ const Dashboard = (props) => {
                                                                             router.push(`/dashboard ${encodeURI(querySelector)}`)
                                                                         }
                                                                         }
-                                                                        className="w-full px-4 py-2 bg-blue-500 text-white -md"
+                                                                        className="w-full px-4 py-2 bg-gray-500 text-white -md"
                                                                     >
                                                                         Set
                                                                     </button>
@@ -524,16 +539,16 @@ const Dashboard = (props) => {
                                                     placeholder='Select Quarter'
                                                     styles={{
                                                         control: (baseStyles) => ({
-                                                        ...baseStyles,
-                                                        backgroundColor: 'transparent',
-                                                        outLine:'none',
-                                                        border:'none',
-                                                        outLine:'none',
-                                                        textColor: 'transparent',
-                                                        padding:0,
-                                                        height:'4px'
+                                                            ...baseStyles,
+                                                            backgroundColor: 'transparent',
+                                                            outLine: 'none',
+                                                            border: 'none',
+                                                            outLine: 'none',
+                                                            textColor: 'transparent',
+                                                            padding: 0,
+                                                            height: '4px'
                                                         }),
-                                                    
+
                                                     }}
                                                     onChange={async (sl) => {
 
@@ -633,23 +648,23 @@ const Dashboard = (props) => {
                                     {/* national */}
                                     {(groupID === 5 || groupID === 7) && <div className="w-full flex  items-center justify-end space-x-3">
                                         {filters && Object.keys(filters).length > 0 &&
-                                            Object.keys(filters).map(ft => (
+                                            Object.keys(filters)?.map(ft => (
                                                 <div key={ft} className="w-full max-w-xs flex flex-col items-start justify-start" id='first'>
                                                     {/* <label htmlFor={ft} className="text-gray-600 capitalize font-semibold text-sm ml-1">{ft.split('_').join(' ')}</label> */}
                                                     <Select name={ft} defaultValue={drillDown[ft] || "national"} id={ft} className="w-full max-w-xs bg-django-blue border border-blue-600"
-                                                    styles={{
-                                                        control: (baseStyles) => ({
-                                                        ...baseStyles,
-                                                        backgroundColor: 'transparent',
-                                                        outLine:'none',
-                                                        border:'none',
-                                                        outLine:'none',
-                                                        textColor: 'transparent',
-                                                        padding:0,
-                                                        height:'4px'
-                                                        }),
-                                                    
-                                                    }}
+                                                        styles={{
+                                                            control: (baseStyles) => ({
+                                                                ...baseStyles,
+                                                                backgroundColor: 'transparent',
+                                                                outLine: 'none',
+                                                                border: 'none',
+                                                                outLine: 'none',
+                                                                textColor: 'transparent',
+                                                                padding: 0,
+                                                                height: '4px'
+                                                            }),
+
+                                                        }}
                                                         options={
                                                             (() => {
                                                                 if (groupID === 5 || groupID === 7) {
@@ -657,7 +672,7 @@ const Dashboard = (props) => {
                                                                         fltopt => {
                                                                             if (fltopt.id != null && fltopt.id.length > 0) {
                                                                                 return {
-                                                                                    value: fltopt.id, label: fltopt.name 
+                                                                                    value: fltopt.id, label: fltopt.name
                                                                                 }
                                                                             }
                                                                         })]
@@ -667,7 +682,7 @@ const Dashboard = (props) => {
                                                                         fltopt => {
                                                                             if (fltopt.id != null && fltopt.id.length > 0) {
                                                                                 return {
-                                                                                    value: fltopt.id, label: fltopt.name 
+                                                                                    value: fltopt.id, label: fltopt.name
                                                                                 }
                                                                             }
                                                                         })]
@@ -702,7 +717,7 @@ const Dashboard = (props) => {
                                                             if (props?.query.dateto) {
                                                                 ar.push("dateto=" + props.query['dateto'])
                                                             }
-                                                            ar.map(k => {
+                                                            ar?.map(k => {
                                                                 if (parameters.includes('?')) {
                                                                     parameters += "&" + k
                                                                 } else {
@@ -717,24 +732,24 @@ const Dashboard = (props) => {
                                         {/* ~~~F L T R S~~~ */}
                                     </div>}
                                     {/* county user */}
-                                    {groupID === 1  && <div className="w-full flex  items-center justify-end space-x-3">
+                                    {groupID === 1 && <div className="w-full flex  items-center justify-end space-x-3">
                                         {subcounties && Object.keys(subcounties).length > 0 &&
-                                            Object.keys(subcounties).map(ft => (
+                                            Object.keys(subcounties)?.map(ft => (
                                                 <div key={ft} className="w-full max-w-xs flex flex-col items-start justify-start" id="second">
                                                     {/* <label htmlFor={ft} className="text-gray-600 capitalize font-semibold text-sm ml-1">{ft.split('_').join(' ').replace('ies', 'y')}</label> */}
                                                     <Select name={ft} id={ft} className="w-full max-w-xs border border-blue-600"
                                                         styles={{
                                                             control: (baseStyles) => ({
-                                                            ...baseStyles,
-                                                            backgroundColor: 'transparent',
-                                                            outLine:'none',
-                                                            border:'none',
-                                                            outLine:'none',
-                                                            textColor: 'transparent',
-                                                            padding:0,
-                                                            height:'4px'
+                                                                ...baseStyles,
+                                                                backgroundColor: 'transparent',
+                                                                outLine: 'none',
+                                                                border: 'none',
+                                                                outLine: 'none',
+                                                                textColor: 'transparent',
+                                                                padding: 0,
+                                                                height: '4px'
                                                             }),
-                                                        
+
                                                         }}
                                                         options={
                                                             (() => {
@@ -743,7 +758,7 @@ const Dashboard = (props) => {
                                                                         fltopt => {
                                                                             if (fltopt.id != null && fltopt.id.length > 0) {
                                                                                 return {
-                                                                                    value: fltopt.id, label: fltopt.name 
+                                                                                    value: fltopt.id, label: fltopt.name
                                                                                 }
                                                                             }
                                                                         })]
@@ -753,7 +768,7 @@ const Dashboard = (props) => {
                                                                         fltopt => {
                                                                             if (fltopt.id != null && fltopt.id.length > 0) {
                                                                                 return {
-                                                                                    value: fltopt.id, label: fltopt.name 
+                                                                                    value: fltopt.id, label: fltopt.name
                                                                                 }
                                                                             }
                                                                         })]
@@ -790,7 +805,7 @@ const Dashboard = (props) => {
                                                             if (props?.query.dateto) {
                                                                 ar.push("dateto=" + props.query['dateto'])
                                                             }
-                                                            ar.map(k => {
+                                                            ar?.map(k => {
                                                                 if (parameters.includes('?')) {
                                                                     parameters += "&" + k
                                                                 } else {
@@ -803,39 +818,39 @@ const Dashboard = (props) => {
 
                                                 </div>
                                             ))}
-                                    </div> 
+                                    </div>
                                     }
                                     {/* sub_county user */}
-                                    
-                                    { groupID === 2 &&
+
+                                    {groupID === 2 &&
                                         <div className="w-full flex  items-center justify-end space-x-3">
-                                        
+
                                             {wards && Object.keys(wards).length > 0 &&
-                                                Object.keys(wards).map(ft => (
+                                                Object.keys(wards)?.map(ft => (
                                                     <div key={ft} className="w-full max-w-xs flex flex-col items-start justify-start" id="third">
                                                         {/* <label htmlFor={ft} className="text-gray-600 capitalize font-semibold text-sm ml-1">{ft.split('_').join(' ').replace('s', '')}</label> */}
                                                         <Select name={ft} defaultValue={drillDown[ft] || "Subcounty"} id={ft} className="w-full max-w-xs  bg-django-gree border border-blue-600"
                                                             styles={{
                                                                 control: (baseStyles) => ({
-                                                                ...baseStyles,
-                                                                backgroundColor: 'transparent',
-                                                                outLine:'none',
-                                                                border:'none',
-                                                                outLine:'none',
-                                                                textColor: 'transparent',
-                                                                padding:0,
-                                                                height:'4px'
+                                                                    ...baseStyles,
+                                                                    backgroundColor: 'transparent',
+                                                                    outLine: 'none',
+                                                                    border: 'none',
+                                                                    outLine: 'none',
+                                                                    textColor: 'transparent',
+                                                                    padding: 0,
+                                                                    height: '4px'
                                                                 }),
-                                                            
+
                                                             }}
-                                                            options={   
+                                                            options={
                                                                 (() => {
                                                                     if (groupID === 2) {
                                                                         let opts = [{ value: "Subcounty", label: "Subcounty summary" }, ...Array.from(wards[ft] || [],
                                                                             fltopt => {
                                                                                 if (fltopt.id != null && fltopt.id.length > 0) {
                                                                                     return {
-                                                                                        value: fltopt.id, label: fltopt.name 
+                                                                                        value: fltopt.id, label: fltopt.name
                                                                                     }
                                                                                 }
                                                                             })]
@@ -845,7 +860,7 @@ const Dashboard = (props) => {
                                                                             fltopt => {
                                                                                 if (fltopt.id != null && fltopt.id.length > 0) {
                                                                                     return {
-                                                                                        value: fltopt.id, label: fltopt.name 
+                                                                                        value: fltopt.id, label: fltopt.name
                                                                                     }
                                                                                 }
                                                                             })]
@@ -892,20 +907,20 @@ const Dashboard = (props) => {
                                                                 if (props?.query.dateto) {
                                                                     ar.push("dateto=" + props.query['dateto'])
                                                                 }
-                                                                ar.map(k => {
+                                                                ar?.map(k => {
                                                                     if (parameters.includes('?')) {
                                                                         parameters += "&" + k
                                                                     } else {
                                                                         parameters += "?" + k
                                                                     }
                                                                 })
-    
+
                                                                 router.push('/dashboard' + parameters)
                                                             }} />
 
                                                     </div>
                                                 ))}
-                                        </div> 
+                                        </div>
                                     }
 
                                 </div>
@@ -915,12 +930,12 @@ const Dashboard = (props) => {
                                     <span>Export</span>
                                 </button>
 
-                            
+
                             </div>
                         </div>
-                    
+
                         {/* <div id="dashboard" className="w-full grid grid-cols-6 gap-4 px-1 md:px-4 py-2 my-4"> */}
-                        <div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-blue-50" style={{ minHeight: '250px' }}>
+                        <div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
                             <h4 className="text-lg uppercase pt-4 text-center border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Facility owners </h4>
                             <table className="w-full text-sm md:text-base p-2">
                                 <thead className="border-b border-gray-300">
@@ -940,7 +955,7 @@ const Dashboard = (props) => {
                             </table>
                         </div>
 
-                        <div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-blue-50" style={{ minHeight: '250px' }}>
+                        <div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
                             <h4 className="text-lg uppercase pt-4 text-center border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Facility Types </h4>
                             <table className="w-full text-sm md:text-base p-2">
                                 <thead className="border-b border-gray-300">
@@ -961,7 +976,7 @@ const Dashboard = (props) => {
                         </div>
 
                         {/* Facilities summary 1/3 - FILTERABLE */}
-                        <div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-blue-50" style={{ minHeight: '250px' }}>
+                        <div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
                             <h4 className="text-lg uppercase pt-4 text-center border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Facilities summary</h4>
                             <table className="w-full text-sm md:text-base p-2">
                                 <thead className="border-b border-gray-300">
@@ -971,7 +986,7 @@ const Dashboard = (props) => {
                                     </tr>
                                 </thead>
                                 <tbody className="text-lg">
-                                    {totalSummary.map((ts, i) => (
+                                    {totalSummary?.map((ts, i) => (
                                         <tr key={i}>
                                             <><td className="table-cell text-left text-gray-900 p-2">{ts.name}</td>
                                                 <td className="table-cell text-right font-semibold text-gray-900 p-2">{ts.count}</td></>
@@ -981,7 +996,7 @@ const Dashboard = (props) => {
                             </table>
                         </div>
                         {/* CUs summary - FILTERABLE 1/3 */}
-                        <div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-blue-50" style={{ minHeight: '250px' }}>
+                        <div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
                             <h4 className="text-lg uppercase pt-4 text-center border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Community Units summary</h4>
                             <table className="w-full text-sm md:text-base p-2">
                                 <thead className="border-b border-gray-300">
@@ -991,7 +1006,7 @@ const Dashboard = (props) => {
                                     </tr>
                                 </thead>
                                 <tbody className="text-lg">
-                                    {chuSummary.map((ts, i) => (
+                                    {chuSummary?.map((ts, i) => (
                                         <tr key={i}>
                                             <><td className="table-cell text-left text-gray-900 p-2">{ts.name}</td>
                                                 <td className="table-cell text-right font-semibold text-gray-900 p-2">{ts.count}</td></>
@@ -1001,7 +1016,7 @@ const Dashboard = (props) => {
                             </table>
                         </div>
                         {/* Recent changes 1/3 - FILTERABLE */}
-                        <div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-blue-50" style={{ minHeight: '250px' }}>
+                        <div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
                             <h4 className="text-lg uppercase pt-4 text-center border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Recent changes</h4>
                             <table className="w-full text-sm md:text-base p-2">
                                 <thead className="border-b border-gray-300">
@@ -1011,7 +1026,7 @@ const Dashboard = (props) => {
                                     </tr>
                                 </thead>
                                 <tbody className="text-lg">
-                                    {recentChanges.map((ts, i) => (
+                                    {recentChanges?.map((ts, i) => (
                                         <tr key={i}>
                                             <><td className="table-cell text-left text-gray-900 p-2">{ts.name}</td>
                                                 <td className="table-cell text-right font-semibold text-gray-900 p-2">{ts.count}</td></>
@@ -1021,7 +1036,7 @@ const Dashboard = (props) => {
                             </table>
                         </div>
                         {/* facilities by keph level */}
-                        <div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-blue-50" style={{ minHeight: '250px' }}>
+                        <div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
                             <h4 className="text-lg uppercase pt-4 text-center border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Facility KEPH Level </h4>
                             <table className="w-full text-sm md:text-base p-2">
                                 <thead className="border-b border-gray-300">
@@ -1031,10 +1046,10 @@ const Dashboard = (props) => {
                                     </tr>
                                 </thead>
                                 <tbody className="text-lg">
-                                    {props?.data?.keph_level?.map((kl, i) => (
+                                    {Object.entries(props?.data?.keph_level).map(([keph, count], i) => (
                                         <tr key={i}>
-                                            <td className="table-cell text-left text-gray-900 p-2">{kl.name}</td>
-                                            <td className="table-cell text-right font-semibold text-gray-900 p-2">{kl.count || 0}</td>
+                                            <td className="table-cell text-left text-gray-900 p-2">{keph}</td>
+                                            <td className="table-cell text-right font-semibold text-gray-900 p-2">{count || 0}</td>
                                         </tr>
                                     ))}
                                 </tbody>
@@ -1042,7 +1057,7 @@ const Dashboard = (props) => {
                         </div>
                         {/* Facilities & CHUs by county (bar) 1/1 */}
                         {(groupID === 7 || groupID === 5) &&
-                            <div className="no-print col-span-6 flex flex-col items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-blue-50" style={{ minHeight: '250px' }}>
+                            <div className="no-print col-span-6 flex flex-col items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
                                 <h4 className="text-lg uppercase pt-4 border-b text-center border-gray-100 w-full mb-2 font-semibold text-blue-900">Facilities &amp; CHUs by County</h4>
                                 <BarChart
                                     title=""
@@ -1052,11 +1067,11 @@ const Dashboard = (props) => {
                                     yaxistitle="Number"
                                     data={(() => {
                                         let data = [];
-                                        data.push({
+                                        data?.push({
                                             name: 'Facilities',
                                             data: Array.from(props?.data?.county_summary ?? [], cs => parseFloat(cs.count)) || []
                                         });
-                                        data.push({
+                                        data?.push({
                                             name: 'CHUs',
                                             data: Array.from(props?.data?.county_summary ?? [], cs => parseFloat(cs.chu_count)) || []
                                         });
@@ -1066,7 +1081,7 @@ const Dashboard = (props) => {
                         }
                         {/* Facilities & CHUs by subcounties (bar) 1/1 */}
                         {groupID === 1 &&
-                            <div className="no-print col-span-6 flex flex-col items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-blue-50" style={{ minHeight: '250px' }}>
+                            <div className="no-print col-span-6 flex flex-col items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
                                 <h4 className="text-lg uppercase pt-4 text-center border-b border-gray-100 w-full mb-2 font-semibold text-blue-900">Facilities &amp; CHUs by Subcounty</h4>
                                 <BarChart
                                     title=""
@@ -1076,11 +1091,11 @@ const Dashboard = (props) => {
                                     yaxistitle="Number"
                                     data={(() => {
                                         let data = [];
-                                        data.push({
+                                        data?.push({
                                             name: 'Facilities',
                                             data: Array.from(props?.data?.constituencies_summary ?? [], cs => parseFloat(cs.count)) || []
                                         });
-                                        data.push({
+                                        data?.push({
                                             name: 'CHUs',
                                             data: Array.from(props?.data?.constituencies_summary ?? [], cs => parseFloat(cs.chu_count)) || []
                                         });
@@ -1090,7 +1105,7 @@ const Dashboard = (props) => {
                         }
                         {/* Facilities & CHUs by ward (bar) 1/1 */}
                         {groupID === 2 &&
-                            <div className="no-print col-span-6 flex flex-col items-start justify-start p-3 shadow-lg border border-gray-300/70 bg-blue-50" style={{ minHeight: '250px' }}>
+                            <div className="no-print col-span-6 flex flex-col items-start justify-start p-3 shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
                                 <h4 className="text-lg uppercase pt-4 text-center border-b border-gray-100 w-full mb-2 font-semibold text-blue-900">Facilities &amp; CHUs by Ward</h4>
                                 <BarChart
                                     title=""
@@ -1100,11 +1115,11 @@ const Dashboard = (props) => {
                                     yaxistitle="Number"
                                     data={(() => {
                                         let data = [];
-                                        data.push({
+                                        data?.push({
                                             name: 'Facilities',
                                             data: Array.from(props?.data?.wards_summary ?? [], cs => parseFloat(cs.count)) || []
                                         });
-                                        data.push({
+                                        data?.push({
                                             name: 'CHUs',
                                             data: Array.from(props?.data?.wards_summary ?? [], cs => parseFloat(cs.chu_count)) || []
                                         });
@@ -1113,7 +1128,7 @@ const Dashboard = (props) => {
                             </div>
                         }
                         {/* Facility owners & categories - national summary - FILTERABLE (bar) 1/2 */}
-                        <div className="no-print col-span-6 md:col-span-3 flex flex-col items-start justify-start p-3 shadow-lg border border-gray-300/70 bg-blue-50" style={{ minHeight: '250px' }}>
+                        <div className="no-print col-span-6 md:col-span-3 flex flex-col items-start justify-start p-3 shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
                             <h4 className="text-lg uppercase pt-4 text-center border-b border-gray-100 w-full mb-2 font-semibold text-blue-900">Facility owners</h4>
                             <BarChart
                                 title=""
@@ -1126,7 +1141,7 @@ const Dashboard = (props) => {
                                 })() || []} />
                         </div>
                         {/* Facility types - national summary - FILTERABLE (bar) 1/2 */}
-                        <div className="no-print col-span-6 md:col-span-3 flex flex-col items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-blue-50" style={{ minHeight: '250px' }}>
+                        <div className="no-print col-span-6 md:col-span-3 flex flex-col items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
                             <h4 className="text-lg uppercase pt-4 text-center border-b border-gray-100 w-full mb-2 font-semibold text-blue-900">Facility types</h4>
                             <BarChart
                                 title=""
@@ -1141,7 +1156,7 @@ const Dashboard = (props) => {
 
 
                         {/* Floating div at bottom right of page */}
-                        {/* <div className="fixed bottom-4 right-4 z-10 w-96 h-auto bg-blue-50/50 bg-blend-lighten shadow-lg -lg flex flex-col justify-center items-center py-2 px-3">
+                        {/* <div className="fixed bottom-4 right-4 z-10 w-96 h-auto bg-gray-50/50 bg-blend-lighten shadow-lg -lg flex flex-col justify-center items-center py-2 px-3">
                             <h5 className="text-sm font-bold">
                                 <span className="text-gray-600 uppercase">Limited results</span>
                             </h5>
@@ -1149,9 +1164,9 @@ const Dashboard = (props) => {
                                 For testing reasons, results are limited at the moment.
                             </p>
                         </div> */}
-                    {/* </div> */}
+                        {/* </div> */}
 
-                    <style jsx global>{`
+                        <style jsx global>{`
                         @media print {
                         /* Exclude the content with the "no-print" class */
                         .no-print {
@@ -1177,115 +1192,110 @@ const Dashboard = (props) => {
             </div>
         )
     }
-    else 
-    {
+    else {
         return null
     }
 }
 
-Dashboard.getInitialProps = async (ctx) => {
-    const API_URL = process.env.NEXT_PUBLIC_API_URL
+//  filters: { ...ft }, path: ctx.asPath || '/dashboard', current_url: url, api_url: `${process.env.NEXT_PUBLIC_API_URL}`
 
-    const fetchFilters = async token => {
-        // let filters_url = API_URL + '/common/filtering_summaries/?fields=county%2Cfacility_type%2Cconstituency%2Cward%2Csub_county'
-        let filters_url = API_URL + '/common/filtering_summaries/?fields=county'
-        try {
-            const r = await fetch(filters_url, {
-                headers: {
-                    'Authorization': 'Bearer ' + token,
-                    'Accept': 'application/json'
-                }
-            })
-            const jzon = await r.json()
-            return jzon
-        } catch (err) {
-            console.log('Error fetching filters: ', err)
-            return {
-                error: true,
-                err: err,
-                filters: [],
-                api_url: API_URL
-            }
-        }
-    }
-    const fetchData = (token) => {
-        let url = API_URL + '/facilities/dashboard/'
-        let query = { 'searchTerm': '' }
+
+Dashboard.propTypes = {
+
+    json: propTypes.object,
+    query: propTypes.object,
+    filter: propTypes.object,
+    path: propTypes.string,
+    current: propTypes.string,
+    api_url: propTypes.string,
+
+}
+
+Dashboard.defaultProps = {
+    api_url: `${process.env.NEXT_PUBLIC_API_URL}`,
+    path: '/dashboard',
+    current:`${process.env.NEXT_PUBLIC_API_URL}/facilities/dashboard`
+}
+
+
+export async function getServerSideProps(ctx) {
+
+    const token = (await checkToken(ctx.req, ctx.res))?.token
+
+    console.log({ token })
+
+    let query = { 'searchTerm': '' }
+
+    async function fetchFilters(apiToken) {
+    
+        let url = `${process.env.NEXT_PUBLIC_API_URL}/common/filtering_summaries/?fields=county`
+
         if (ctx?.query?.q) {
             query.searchTerm = ctx.query.q
             url += `&search={"query":{"query_string":{"default_field":"name","query":"${ctx.query.q}"}}}`
         }
-        let other_posssible_filters = ["datefrom", "dateto", "county", "sub_county", "ward"]
-        //ensure county and subcounties parameters are passed if the user is countyuser or subcountyuser respectively
 
-        other_posssible_filters.map(flt => {
-            if (ctx?.query[flt]) {
-                query[flt] = ctx?.query[flt]
-                if (url.includes('?')) {
-                    url += `&${flt}=${ctx?.query[flt]}`
-                } else {
-                    url += `?${flt}=${ctx?.query[flt]}`
-                }
-            }
-        })
+
         return fetch(url, {
             headers: {
-                'Authorization': 'Bearer ' + token,
+                'Authorization': `Bearer ${apiToken}`,
                 'Accept': 'application/json'
             }
-        }).then(r => r.json())
-            .then(json => {
-                return fetchFilters(token).then(ft => {
-                    return {
-                        data: json, query, filters: { ...ft }, path: ctx.asPath || '/dashboard', current_url: url, api_url: API_URL
-                    }
-                })
-            })
-            .catch(err => {
-                console.log('Error fetching facilities: ', err)
-                return {
-                    error: true,
-                    err: err,
-                    data: [],
-                    query: {},
-                    filters: {},
-                    path: ctx.asPath || '/dashboard',
-                    current_url: '',
-                    api_url: API_URL
-                }
-            })
-
-
-
+        })
+        .then(resp => resp.json())
+        .catch(console.error)
     }
-    return checkToken(ctx.req, ctx.res).then(t => {
-        if (t.error) {
-            throw new Error('Error checking token')
-        } else {
-            let token = t.token
-            return fetchData(token).then(t => t)
-        }
-    }).catch(err => {
-        console.log('Error checking token: ', err)
-        if (typeof window !== 'undefined' && window) {
-            if (ctx?.asPath) {
-                window.location.href = ctx?.asPath
+
+    async function fetchDashboardData(token) {
+
+    let url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/dashboard`
+   
+    let other_posssible_filters = ["datefrom", "dateto", "county", "sub_county", "ward"]
+    //ensure county and subcounties parameters are passed if the user is countyuser or subcountyuser respectively
+
+    other_posssible_filters?.map(flt => {
+        if (ctx?.query[flt]) {
+            query[flt] = ctx?.query[flt]
+            if (url.includes('?')) {
+                url += `&${flt}=${ctx?.query[flt]}`
             } else {
-                window.location.href = '/dashboard'
+                url += `?${flt}=${ctx?.query[flt]}`
             }
         }
-        setTimeout(() => {
-            return {
-                error: true,
-                err: err,
-                data: [],
-                query: {},
-                path: ctx.asPath || '/dashboard',
-                current_url: '',
-                api_url: API_URL
-            }
-        }, 1000);
     })
+
+       return fetch(url, {
+            headers: {
+                "Accept": "application/json",
+                "Authorization": `Bearer ${token}`
+            }
+        })
+            .then(resp => resp.json())
+            .then(json => ({
+                data: json
+                
+            }))
+            .catch(e => console.error(e.message))
+     }
+    
+
+     const ft = await fetchFilters(token)
+    
+     return fetchDashboardData(token)
+      .then(({data}) => {
+          
+          // console.log({ft, query})
+          return {
+              props: {
+                  data,
+                  query,
+                  filters: { ...ft }, 
+          
+              }
+          }
+      
+  
+      })    
 
 }
 

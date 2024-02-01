@@ -105,7 +105,7 @@ const CommunityUnit = (props) => {
 
             <div
               className={
-                "md:col-span-7 grid grid-cols-6 gap-5 md:gap-8 py-6 w-full bg-blue-50 drop-shadow  text-black p-4 md:divide-x md:divide-gray-200z shadow-md items-center border-l-8 " +
+                "md:col-span-7 grid grid-cols-6 gap-5 md:gap-8 py-6 w-full bg-gray-50 drop-shadow  text-black p-4 md:divide-x md:divide-gray-200z shadow-md items-center border-l-8 " +
                 (cu.active ? "border-blue-600" : "border-red-600")
               }
             >
@@ -143,7 +143,7 @@ const CommunityUnit = (props) => {
           <div className="col-span-1 md:col-span-7 flex flex-row gap-3 mt-4">
 
               {/* CHU Details Tab section */}
-              <div className="bg-blue-50 shadow-md flex flex-col gap-3 m-4 w-2/3">
+              <div className="bg-gray-50 shadow-md flex flex-col gap-3 m-4 w-2/3">
                 {/* Approve/Reject, Edit Buttons */}
               
 
@@ -477,7 +477,7 @@ const CommunityUnit = (props) => {
                                     id='chu-rating'
                                     onChange={(e)=>setComment(e.target.value)}
                                     placeholder="Leave a comment"
-                                    className='flex-none w-1/2 bg-blue-50  p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:focus:border-black outline-none'
+                                    className='flex-none w-1/2 bg-gray-50  p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:focus:border-black outline-none'
                                 />
                                   <StarRatingComponent 
                                     className="text-2xl"
@@ -488,7 +488,7 @@ const CommunityUnit = (props) => {
                                     />
                                 <button
                                     type='submit'
-                                    className='flex items-center justify-start space-x-2 bg-blue-500  p-1 px-2'>
+                                    className='flex items-center justify-start space-x-2 bg-gray-500  p-1 px-2'>
                                     <span className='text-medium font-semibold text-white'>
                                         Submit Rating
                                     </span>

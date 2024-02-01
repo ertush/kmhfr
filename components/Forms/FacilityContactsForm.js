@@ -397,7 +397,7 @@ export function FacilityContactsForm() {
                                 {/* Contacts */}
 
                                 <div
-                                    className='grid grid-cols-2 bg-blue-50 border border-blue-600 p-3 place-content-start gap-3 w-full bg-light-grey '
+                                    className='grid grid-cols-2 bg-gray-50 border border-blue-600 p-3 place-content-start gap-3 w-full bg-light-grey '
                                 >
                                     {/* Contact Headers */}
                                     <h3 className='text-medium font-semibold text-blue-900'>
@@ -472,7 +472,7 @@ export function FacilityContactsForm() {
                                 <h5 className='text-lg uppercase pb-2 border-b border-blue-600 w-full mb-4 font-semibold text-blue-900'>
                                     Facility Officer In-Charge Details
                                 </h5>
-                                <div className='flex flex-col items-start bg-light-grey bg-blue-50 p-3 justify-start gap-1 w-full  h-auto'>
+                                <div className='flex flex-col items-start bg-light-grey bg-gray-50 p-3 justify-start gap-1 w-full  h-auto'>
                                     {/*  Name  */}
                                     <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
                                         <label

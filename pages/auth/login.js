@@ -84,7 +84,7 @@ const Login = (props) => {
                     }
                 }}
 
-                    className="bg-blue-50 w-full max-w-screen-sm p-4 md:p-6 drop-shadow backdrop-filter flex flex-col items-center gap-4 md:gap-6 shadow-lg border border-blue-50">
+                    className="bg-gray-50 w-full max-w-screen-sm p-4 md:p-6 drop-shadow backdrop-filter flex flex-col items-center gap-4 md:gap-6 shadow-lg border border-blue-50">
 
                     <h3 className="text-center leading-tight text-xl font-bold tracking-wide text-gray-800 uppercase">Log in</h3>
                     <div className="flex flex-col gap-0 w-full">

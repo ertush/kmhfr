@@ -243,7 +243,7 @@ export function RegulationForm() {
                   return (
                    <>
                         <h4 className="text-lg uppercase mt-4 pb-2 border-b border-blue-600 w-full mb-4 font-semibold text-blue-900">Facility Regulation</h4>
-                        <Form ref={formRef} name="facility_regulation_form" className='flex flex-col w-full items-start bg-blue-50 p-4 justify-start gap-3' >
+                        <Form ref={formRef} name="facility_regulation_form" className='flex flex-col w-full items-start bg-gray-50 p-4 justify-start gap-3' >
 
                             {formError && <Alert severity='error' className={'w-full'}>{formError}</Alert>}
 
