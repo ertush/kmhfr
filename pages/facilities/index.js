@@ -22,8 +22,11 @@ import FacilitySideMenu from '../../components/FacilitySideMenu'
 import { UserContext } from '../../providers/user'
 import {Formik, Form, Field} from 'formik';
 
+function handleFacilityFilter() {
 
-const FacilityHome = (props) => {
+}
+
+function FacilityHome (props){
     
     const router = useRouter()
 
@@ -69,7 +72,7 @@ const FacilityHome = (props) => {
     // quick filter themes
     const [khisSynched, setKhisSynched] = useState(false);
     const [facilityFeedBack, setFacilityFeedBack] = useState([])
-    const [pathId, setPathId] = useState(props?.path.split('id=')[1] || '') 
+    const [pathId, setPathId] = useState(props?.path?.split('id=')[1] || '') 
     const [allFctsSelected, setAllFctsSelected] = useState(true);
     const [isClient, setIsClient] = useState(false);
     const [user, setUser] = useState(userCtx)
@@ -89,8 +92,8 @@ const FacilityHome = (props) => {
     useEffect(() => {
         let qry = props?.query
         
-        delete qry.searchTerm
-        delete qry.qfstart
+        delete qry?.searchTerm
+        delete qry?.qfstart
         setDrillDown({ ...drillDown, ...qry })
 
         return () => {
@@ -185,7 +188,7 @@ const FacilityHome = (props) => {
                                         {({ active }) => (
                                             <button className={"flex items-center justify-start text-center hover:bg-gray-200 focus:bg-gray-200 text-gray-800 font-medium active:bg-gray-200 py-2 px-1 w-full " + (active ? 'bg-gray-200' : '')} onClick={() => {
                                                 let dl_url = props?.current_url
-                                                if (dl_url.includes('?')) { dl_url += `&format=csv&access_token=${props.token}` } else { dl_url += `?format=csv&access_token=${props.token}` }
+                                                if (dl_url.includes('?')) { dl_url += `&format=csv&access_token=${props?.token}` } else { dl_url += `?format=csv&access_token=${props?.token}` }
                                                 console.log('Downloading CSV. ' + dl_url || '')
                                                 // window.open(dl_url, '_blank', 'noopener noreferrer')
                                                 window.location.href = dl_url
@@ -199,7 +202,7 @@ const FacilityHome = (props) => {
                                         {({ active }) => (
                                             <button className={"flex items-center justify-start text-center hover:bg-gray-200 focus:bg-gray-200 text-gray-800 font-medium active:bg-gray-200 py-2 px-1 w-full " + (active ? 'bg-gray-200' : '')} onClick={() => {
                                                 let dl_url = props?.current_url
-                                                if (dl_url.includes('?')) { dl_url += `&format=excel&access_token=${props.token}` } else { dl_url += `?format=excel&access_token=${props.token}` }
+                                                if (dl_url.includes('?')) { dl_url += `&format=excel&access_token=${props?.token}` } else { dl_url += `?format=excel&access_token=${props?.token}` }
                                                 console.log('Downloading Excel. ' + dl_url || '')
                                                 // window.open(dl_url, '_blank', 'noopener noreferrer')
                                                 window.location.href = dl_url
@@ -248,35 +251,33 @@ const FacilityHome = (props) => {
                                                                     {  
                                                                         filters && Object.keys(filters).length > 0 &&
                                                                         Object.keys(fltrs).map((ft, i) => (
-                                                                            <div key={i} className="w-full flex flex-col items-start justify-start gap-1 mb-1">
+                                                                            <form 
+                                                                            key={i} 
+                                                                            // onSubmit={handleFacilityFilter}
+                                                                            className="w-full flex flex-col items-start justify-start gap-1 mb-1">
                                                                                 
                                                                                 <label htmlFor={ft} className="text-gray-600 capitalize text-sm">{ft.split('_').join(' ')}</label>
+                                                                               
                                                                                 <Select 
                                                                                     isMulti={multiFilters.includes(ft)} 
                                                                                     name={ft}
                                                                                     defaultValue={drillDown[ft] || ""} 
                                                                                     id={ft} 
-                                                                                    className="w-full border border-blue-600 bg-gray-50"
+                                                                                    className="w-full max-w-xs  border border-gray-400"
                                                                                     styles={{
-                                                                                        input:(styles) => ({
-                                                                                            ...styles,
-                                                                                            backgroundColor:"#d2e2ed",
-                                                                                            borderRadius:'0px',
-                                                                                            border:'none'
-
-
-                                                                                        }),
                                                                                         control: (baseStyles) => ({
-                                                                                          ...baseStyles,
-                                                                                          backgroundColor: '#d2e2ed',
-                                                                                          outLine:'none',
-                                                                                          border:'0px',
-                                                                                          outLine:'none',
-                                                                                          textColor: 'transparent',
-                                                                                          padding:0,
-                                                                                          height:'4px'
-                                                                                        })
+                                                                                            ...baseStyles,
+                                                                                            backgroundColor: 'transparent',
+                                                                                            outLine: 'none',
+                                                                                            border: 'none',
+                                                                                            outLine: 'none',
+                                                                                            textColor: 'transparent',
+                                                                                            padding: 0,
+                                                                                            height: '4px'
+                                                                                        }),
+                                        
                                                                                     }}
+                                                                                
                                                                                    options={
                                                                                         Array.from(filters[ft] || [],
                                                                                             fltopt => {
@@ -298,7 +299,7 @@ const FacilityHome = (props) => {
                                                                                         }
                                                                                         setDrillDown({ ...drillDown, ...nf })
                                                                                 }} />
-                                                                            </div>
+                                                                            </form>
                                                                         ))
                                                                     }
                                                                     {/* From and To Date Picker Components */}
@@ -401,19 +402,19 @@ const FacilityHome = (props) => {
                                                                         if (Object.keys(drillDown).length > 0) {
                                                                             let qry = Object.keys(drillDown).map(key => {
                                                                                 let er = ''
-                                                                                if (props.path && !props.path.includes(key + '=')) {
+                                                                                if (props?.path && !props?.path.includes(key + '=')) {
                                                                                     er = encodeURIComponent(key) + '=' + encodeURIComponent(drillDown[key]);
                                                                                 }
                                                                                 return er
                                                                             }).join('&')
                                                                             let op = '?'
-                                                                            if (props.path && props.path.includes('?') && props.path.includes('=')) { op = '&' }
+                                                                            if (props?.path && props?.path.includes('?') && props?.path.includes('=')) { op = '&' }
                                                                             
                                                                             if (router || typeof window == 'undefined') {
-                                                                                router.push(props.path + op + qry)
+                                                                                router.push(props?.path + op + qry)
                                                                             } else {
                                                                                 if (typeof window !== 'undefined' && window) {
-                                                                                    window.location.href = props.path + op + qry
+                                                                                    window.location.href = props?.path + op + qry
                                                                                 }
                                                                             }
 
@@ -650,16 +651,16 @@ const FacilityHome = (props) => {
                                                     <Link 
                                                     href={
                                                         (() => 
-                                                            props.path.includes('?page') ?
-                                                            props.path.replace(/\?page=\d+/,`?page=${props?.data?.current_page}`)
+                                                            props?.path.includes('?page') ?
+                                                            props?.path.replace(/\?page=\d+/,`?page=${props?.data?.current_page}`)
                                                             :
-                                                            props.path.includes('?q') && props.path.includes('&page') ?
-                                                            props.path.replace(/&page=\d+/, `&page=${props?.data?.current_page}`)
+                                                            props?.path.includes('?q') && props?.path.includes('&page') ?
+                                                            props?.path.replace(/&page=\d+/, `&page=${props?.data?.current_page}`)
                                                             :
-                                                            props.path.includes('?q') ?
-                                                            `${props.path}&page=${props?.data?.current_page}`                                    
+                                                            props?.path.includes('?q') ?
+                                                            `${props?.path}&page=${props?.data?.current_page}`                                    
                                                             :
-                                                            `${props.path}?page=${props?.data?.current_page}`
+                                                            `${props?.path}?page=${props?.data?.current_page}`
                                                         )()
                                                     }>
                                                         <span className="text-white  bg-blue-600 cursor-pointer font-semibold px-2 py-1 underline">{props?.data?.current_page}</span>
@@ -668,16 +669,16 @@ const FacilityHome = (props) => {
                                                 {props?.path && props?.data?.near_pages && props?.data?.near_pages.map((page, i) => (
                                                     <li key={i} className="text-base group text-blue-500">
                                                         <Link href={(() => 
-                                                            props.path.includes('?page') ?
-                                                            props.path.replace(/\?page=\d+/,`?page=${page}`)
+                                                            props?.path.includes('?page') ?
+                                                            props?.path.replace(/\?page=\d+/,`?page=${page}`)
                                                             :
-                                                            props.path.includes('?q') && props.path.includes('&page') ?
-                                                            props.path.replace(/&page=\d+/, `&page=${page}`)
+                                                            props?.path.includes('?q') && props?.path.includes('&page') ?
+                                                            props?.path.replace(/&page=\d+/, `&page=${page}`)
                                                             :
-                                                            props.path.includes('?q') ?
-                                                            `${props.path}&page=${page}`
+                                                            props?.path.includes('?q') ?
+                                                            `${props?.path}&page=${page}`
                                                             :
-                                                            `${props.path}?page=${page}`
+                                                            `${props?.path}?page=${page}`
                    
                                                         )()}>
                                                             <span className="text-blue-800 cursor-pointer  px-2 py-1 hover:underline">{page}</span>
@@ -708,7 +709,17 @@ const FacilityHome = (props) => {
     }
 }
 
+
+
 FacilityHome.getInitialProps = async (ctx) => {
+
+
+    ctx?.res?.setHeader(
+        'Cache-Control',
+        'public, s-maxage=10, stale-while-revalidate=59'
+      )
+
+    
 
     const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
