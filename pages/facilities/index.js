@@ -713,13 +713,10 @@ function FacilityHome (props){
 
 FacilityHome.getInitialProps = async (ctx) => {
 
-
     ctx?.res?.setHeader(
         'Cache-Control',
         'public, s-maxage=10, stale-while-revalidate=59'
       )
-
-    
 
     const API_URL = process.env.NEXT_PUBLIC_API_URL;
 

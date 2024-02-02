@@ -1220,6 +1220,11 @@ Dashboard.defaultProps = {
 
 export async function getServerSideProps(ctx) {
 
+    ctx?.res?.setHeader(
+        'Cache-Control',
+        'public, s-maxage=10, stale-while-revalidate=59'
+      )
+
     const token = (await checkToken(ctx.req, ctx.res))?.token
 
     console.log({ token })
