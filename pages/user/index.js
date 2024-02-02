@@ -36,7 +36,7 @@ const StyledDataGrid = styled(DataGrid)(() => ({
 }))
 
 
-const Users = (props) => {
+function Users (props) {
 
     LicenseManager.setLicenseKey("test");
 
@@ -275,6 +275,12 @@ const Users = (props) => {
 }   
 
 Users.getInitialProps = async (ctx) => {
+
+    ctx?.res?.setHeader(
+        'Cache-Control',
+        'public, s-maxage=10, stale-while-revalidate=59'
+      )
+      
     const API_URL = process.env.NEXT_PUBLIC_API_URL 
 // console.log(ctx.query.is_active);
 
