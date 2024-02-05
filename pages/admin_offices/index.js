@@ -8,7 +8,7 @@ import {  PlusIcon } from "@heroicons/react/solid";
 import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
-import { UserContext } from '../../providers/user'
+
 
 import {
     DataGrid,
@@ -38,7 +38,7 @@ const StyledDataGrid = styled(DataGrid)(() => ({
 
 
 
-function AdminOffices(props) {
+const AdminOffices = (props) => {
   
     const router = useRouter()
 
@@ -120,7 +120,7 @@ function AdminOffices(props) {
                             </div>
                         </div>
                     </div>
-                    <div className='col-span-1 w-full col-start-1 h-auto bg-blue-50 shadow-sm'>
+                    <div className='col-span-1 w-full col-start-1 h-auto border border-blue-600'>
 
                         <List
                             sx={{ width: '100%', bgcolor: 'transparent', flexGrow: 1, paddingTop:0, paddingBottom: 0 }}
@@ -195,12 +195,6 @@ function AdminOffices(props) {
 }
 
 AdminOffices.getInitialProps = async (ctx) => {
-
-    ctx?.res?.setHeader(
-        'Cache-Control',
-        'public, s-maxage=10, stale-while-revalidate=59'
-      )
-
     const API_URL = process.env.NEXT_PUBLIC_API_URL
 
     const fetchFilters = async token => {

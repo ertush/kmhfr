@@ -5,6 +5,7 @@ import { DotsHorizontalIcon } from '@heroicons/react/solid';
 import { checkToken } from '../../../controllers/auth/public_auth';
 import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
+import { SearchIcon } from "@heroicons/react/solid";
 import Select from 'react-select'
 import { Alert } from '@mui/lab'
 import Spinner from '../../../components/Spinner'
@@ -319,7 +320,7 @@ function Home(props) {
 								<h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
 									{'Facilities'}
 								</h2>
-								<p>Use the filters to search for a facility
+								<p>Use thew filters to search for a facility
 									{/* {'   '}
 									<button className='text-lg text-blue-500 hover:underline font-semibold'
 										onClick={() => {
@@ -357,6 +358,7 @@ function Home(props) {
 											<Spinner />
 											:
 											'Search'
+
 
 									}
 								</span>
@@ -692,20 +694,20 @@ function Home(props) {
 									<div
 										key={index}
 										className='px-1 md:px-3 grid grid-cols-8 gap-3 border-b border-gray-400 py-4 hover:bg-gray-50 w-full'>
-										<div className='col-span-8 flex flex-col gap-1 group items-start justify-center text-left'>
+										<div className='col-span-8 flex flex-col gap-1 group items-start justify-center gap-3 text-left'>
 											<h3 className='text-2xl w-full'>
-												<Link
+												<a
 													href={'/public/facilities/' + hf?.id}
 													className='hover:text-blue-800 group-focus:text-blue-800 active:text-blue-800'>
-													{/* <small className='text-gray-500'> */}
+													<small className='text-gray-500'>
 														{/* {index + props?.data?.start_index}. */}
-													{/* </small>{' '} */}
+													</small>{' '}
 													{	
 														hf?.official_name ||
 														hf?.official_name ||
 														hf?.name
 													}
-												</Link>
+												</a>
 											</h3>
 											{/* <p className="text-sm text-gray-600 w-full">{comm_unit.nearest_landmark || ' '}{' '} {comm_unit.location_desc || ' '}</p> */}
 											<p className='text-sm text-gray-600 w-full flex gap-2 items-center'>
@@ -854,14 +856,7 @@ function Home(props) {
 	);
 };
 
-
 export async function getServerSideProps (ctx) {
-
-	ctx?.res?.setHeader(
-        'Cache-Control',
-        'public, s-maxage=10, stale-while-revalidate=59'
-      )
-
 	const API_URL = process.env.NEXT_PUBLIC_API_URL;
 	
 	

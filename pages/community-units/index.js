@@ -18,7 +18,7 @@ import { SearchIcon } from '@heroicons/react/outline'
 
 
 
-function CommunityUnit (props) {
+const CommunityUnit = (props) => {
 	const userCtx = React.useContext(UserContext);
 	const [user, setUser] = useState(userCtx);
 	const router = useRouter();
@@ -435,11 +435,6 @@ function CommunityUnit (props) {
 };
 
 CommunityUnit.getInitialProps = async (ctx) => {
-
-	ctx?.res?.setHeader(
-        'Cache-Control',
-        'public, s-maxage=10, stale-while-revalidate=59'
-      )
 	
 	console.log(ctx.query)
 	const API_URL = process.env.NEXT_PUBLIC_API_URL;

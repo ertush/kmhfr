@@ -1,6 +1,6 @@
 import Head from 'next/head';
 import Link from 'next/link';
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect } from 'react';
 import { checkToken } from '../../controllers/auth/auth';
 import MainLayout from '../../components/MainLayout';
 import * as Tabs from "@radix-ui/react-tabs";
@@ -12,6 +12,7 @@ import {
 } from '@mui/x-data-grid';
 
 // import { DataGridPro, GridToolbar } from '@mui/x-data-grid-pro';
+
 // import { Box } from '@material-ui/core';
 
 import { propsToGridData } from '../../components/ReportsData';
@@ -33,16 +34,7 @@ const StyledDataGrid = styled(DataGrid)(() => ({
 
 
 function Reports(props) {
-
-    // return (
-    //     <pre>
-    //         {
-    //             JSON.stringify(Object.keys(props), null, 2)
-    //         }
-    //     </pre>
-    // ) 
-
-    const userCtx = useContext(UserContext);
+    const userCtx = React.useContext(UserContext);
     const [user, setUser] = useState(userCtx);
 
 
@@ -68,7 +60,7 @@ function Reports(props) {
              lng,
              id:index
          }))
-     )(props?.gis)
+     )(props['8']?.gis)
 
     const [reportTitle, setReportTitle] = useState('Beds and Cots');
     const [isClient, setIsClient] = useState(false);
@@ -766,11 +758,6 @@ function Reports(props) {
 
 Reports.getInitialProps = async (ctx) => {
 
-    ctx?.res?.setHeader(
-        'Cache-Control',
-        'public, s-maxage=10, stale-while-revalidate=59'
-      )
-
     const reports = [
         'beds_and_cots_by_all_hierachies',
         'facility_keph_level_report_all_hierachies',
@@ -786,22 +773,7 @@ Reports.getInitialProps = async (ctx) => {
         'facility_human_resource_category_report_all_hierachies'
     ];
 
-    /**
-     * [
-  "facility_keph_level_report_all_hierachies",
-  "facility_owner_report_all_hierachies",
-  "facility_type_report_all_hierachies:",
-  "facility_regulatory_body_report_all_hierachies",
-  "facility_services_report_all_hierachies",
-  "facility_infrastructure_report_all_hierachies",
-  "chul_status_all_hierachies",
-  "gis",
-  "chul_services_all_hierachies",
-  "chul_count_all_hierachies"
-]
-     */
-
-    const allReports = {};
+    const allReports = [];
 
 
     return checkToken(ctx.req, ctx.res).then(async (t) => {
@@ -817,7 +789,7 @@ Reports.getInitialProps = async (ctx) => {
                 const report = reports[i];
                 switch (report) {
                     case 'beds_and_cots_by_all_hierachies':
-                        url = `${process.env.NEXT_PUBLIC_API_URL}/reporting/?report_type=${report}&page_size=100`;
+                        url = `${process.env.NEXT_PUBLIC_API_URL}/reporting/?report_type=${report}`;
 
 
                         try {
@@ -830,7 +802,7 @@ Reports.getInitialProps = async (ctx) => {
                             })
 
 
-                            allReports["beds_and_cots_by_all_hierachies"] = (await _data.json()).result
+                            allReports.push({ beds_and_cots_by_all_hierachies: (await _data.json()).results })
 
                         }
                         catch (err) {
@@ -845,7 +817,7 @@ Reports.getInitialProps = async (ctx) => {
 
                         break;
                     case 'facility_keph_level_report_all_hierachies':
-                        url = `${process.env.NEXT_PUBLIC_API_URL}/reporting/?report_type=${report}&page_size=100`;
+                        url = `${process.env.NEXT_PUBLIC_API_URL}/reporting/?report_type=${report}`;
 
                         try {
 
@@ -856,7 +828,7 @@ Reports.getInitialProps = async (ctx) => {
                                 },
                             })
 
-                            allReports["facility_keph_level_report_all_hierachies"] = (await _data.json()).results 
+                            allReports.push({ facility_keph_level_report_all_hierachies: (await _data.json()).results })
 
 
                         }
@@ -870,7 +842,7 @@ Reports.getInitialProps = async (ctx) => {
                         }
                         break;
                     case 'facility_owner_report_all_hierachies':
-                        url = `${process.env.NEXT_PUBLIC_API_URL}/reporting/?report_type=${report}&page_size=100`;
+                        url = `${process.env.NEXT_PUBLIC_API_URL}/reporting/?report_type=${report}`;
 
 
                         try {
@@ -882,7 +854,7 @@ Reports.getInitialProps = async (ctx) => {
                                 },
                             })
 
-                            allReports["facility_owner_report_all_hierachies"] = (await _data.json()).results
+                            allReports.push({ facility_owner_report_all_hierachies: (await _data.json()).results })
 
                         }
                         catch (err) {
@@ -896,7 +868,7 @@ Reports.getInitialProps = async (ctx) => {
 
                         break;
                     case 'facility_type_report_all_hierachies':
-                        url = `${process.env.NEXT_PUBLIC_API_URL}/reporting/?report_type=${report}&page_size=100`;
+                        url = `${process.env.NEXT_PUBLIC_API_URL}/reporting/?report_type=${report}`;
 
 
                         try {
@@ -908,7 +880,7 @@ Reports.getInitialProps = async (ctx) => {
                                 },
                             })
 
-                            allReports["facility_type_report_all_hierachies:"] = (await _data.json()).results 
+                            allReports.push({ facility_type_report_all_hierachies: (await _data.json()).results })
 
                         }
                         catch (err) {
@@ -922,7 +894,7 @@ Reports.getInitialProps = async (ctx) => {
 
                         break;
                     case 'facility_regulatory_body_report_all_hierachies':
-                        url = `${process.env.NEXT_PUBLIC_API_URL}/reporting/?report_type=${report}&page_size=100`;
+                        url = `${process.env.NEXT_PUBLIC_API_URL}/reporting/?report_type=${report}`;
 
 
                         try {
@@ -934,7 +906,7 @@ Reports.getInitialProps = async (ctx) => {
                                 },
                             })
 
-                            allReports["facility_regulatory_body_report_all_hierachies"] = (await _data.json()).results
+                            allReports.push({ facility_regulatory_body_report_all_hierachies: (await _data.json()).results })
 
                         }
                         catch (err) {
@@ -948,7 +920,7 @@ Reports.getInitialProps = async (ctx) => {
 
                         break;
                     case 'facility_services_report_all_hierachies':
-                            url = `${process.env.NEXT_PUBLIC_API_URL}/reporting/?report_type=${report}&page_size=100`;
+                            url = `${process.env.NEXT_PUBLIC_API_URL}/reporting/?report_type=${report}`;
     
     
                             try {
@@ -960,7 +932,7 @@ Reports.getInitialProps = async (ctx) => {
                                     },
                                 })
     
-                                allReports["facility_services_report_all_hierachies"] = (await _data.json()).results
+                                allReports.push({ facility_services_report_all_hierachies: (await _data.json()).results })
     
                             }
                             catch (err) {
@@ -974,7 +946,7 @@ Reports.getInitialProps = async (ctx) => {
     
                             break;
                     case 'facility_human_resource_category_report_all_hierachies':
-                                url = `${process.env.NEXT_PUBLIC_API_URL}/reporting/?report_type=${report}&page_size=100`;
+                                url = `${process.env.NEXT_PUBLIC_API_URL}/reporting/?report_type=${report}`;
         
         
                                 try {
@@ -986,7 +958,7 @@ Reports.getInitialProps = async (ctx) => {
                                         },
                                     })
         
-                                    allReports["facility_human_resource_category_report_all_hierachies"] = (await _data.json()).results
+                                    allReports.push({ facility_human_resource_category_report_all_hierachies: (await _data.json()).results })
         
                                 }
                                 catch (err) {
@@ -1000,7 +972,7 @@ Reports.getInitialProps = async (ctx) => {
         
                                 break;
                     case 'facility_infrastructure_report_all_hierachies':
-                                url = `${process.env.NEXT_PUBLIC_API_URL}/reporting/?report_type=${report}&page_size=100`;
+                                url = `${process.env.NEXT_PUBLIC_API_URL}/reporting/?report_type=${report}`;
         
         
                                 try {
@@ -1012,7 +984,7 @@ Reports.getInitialProps = async (ctx) => {
                                         },
                                     })
         
-                                    allReports["facility_infrastructure_report_all_hierachies"] = (await _data.json()).results
+                                    allReports.push({ facility_infrastructure_report_all_hierachies: (await _data.json()).results })
         
                                 }
                                 catch (err) {
@@ -1026,7 +998,7 @@ Reports.getInitialProps = async (ctx) => {
         
                                 break;
                     case 'chul_status_all_hierachies':
-                        url = `${process.env.NEXT_PUBLIC_API_URL}/reporting/chul/?report_type=${report}&page_size=100`;
+                        url = `${process.env.NEXT_PUBLIC_API_URL}/reporting/chul/?report_type=${report}`;
 
 
                         try {
@@ -1038,7 +1010,7 @@ Reports.getInitialProps = async (ctx) => {
                                 },
                             })
 
-                            allReports["chul_status_all_hierachies"] = (await _data.json()).results
+                            allReports.push({ chul_status_all_hierachies: (await _data.json()).results })
 
                         }
                         catch (err) {
@@ -1051,7 +1023,7 @@ Reports.getInitialProps = async (ctx) => {
                         }
                         break;
                     case 'chul_services_all_hierachies':
-                        url = `${process.env.NEXT_PUBLIC_API_URL}/reporting/chul/?report_type=${report}&page_size=100`;
+                        url = `${process.env.NEXT_PUBLIC_API_URL}/reporting/chul/?report_type=${report}`;
 
 
                         try {
@@ -1063,7 +1035,7 @@ Reports.getInitialProps = async (ctx) => {
                                 },
                             })
 
-                                allReports["chul_services_all_hierachies"] = (await _data.json()).results.map((
+                                allReports.push({ chul_services_all_hierachies: (await _data.json()).results.map((
                                     {
                                         
                                         "WASH: Water, sanitation and hygiene education, including hand washing": wash_sanitation,
@@ -1122,8 +1094,8 @@ Reports.getInitialProps = async (ctx) => {
                              
                                     id:index
                                     
-                                }))
-                                
+                                })
+                                ) })
 
                         }
                         catch (err) {
@@ -1137,7 +1109,7 @@ Reports.getInitialProps = async (ctx) => {
                         break;
 
                     case 'gis':
-                        url = `${process.env.NEXT_PUBLIC_API_URL}/reporting/?report_type=${report}&page_size=100`;
+                        url = `${process.env.NEXT_PUBLIC_API_URL}/reporting/?report_type=${report}`;
 
 
                         try {
@@ -1149,7 +1121,7 @@ Reports.getInitialProps = async (ctx) => {
                                 },
                             })
 
-                            allReports["gis"] =(await _data.json()).results
+                            allReports.push({ gis: (await _data.json()).results })
 
                         }
                         catch (err) {
@@ -1164,7 +1136,7 @@ Reports.getInitialProps = async (ctx) => {
                     
                    
                     case 'chul_status_all_hierachies':
-                        url = `${process.env.NEXT_PUBLIC_API_URL}/reporting/chul/?report_type=${report}&page_size=100`;
+                        url = `${process.env.NEXT_PUBLIC_API_URL}/reporting/chul/?report_type=${report}`;
 
 
                         try {
@@ -1176,7 +1148,7 @@ Reports.getInitialProps = async (ctx) => {
                                 },
                             })
 
-                            allReports["chul_status_all_hierachies"] = (await _data.json()).results
+                            allReports.push({ chul_status_all_hierachies: (await _data.json()).results })
 
                         }
                         catch (err) {
@@ -1189,7 +1161,7 @@ Reports.getInitialProps = async (ctx) => {
                         }
                         break;
                     case 'chul_count_all_hierachies':
-                        url = `${process.env.NEXT_PUBLIC_API_URL}/reporting/chul/?report_type=${report}&page_size=100`;
+                        url = `${process.env.NEXT_PUBLIC_API_URL}/reporting/chul/?report_type=${report}`;
 
 
                         try {
@@ -1201,7 +1173,7 @@ Reports.getInitialProps = async (ctx) => {
                                 },
                             })
 
-                            allReports["chul_count_all_hierachies"] = (await _data.json()).results
+                            allReports.push({ chul_count_all_hierachies: (await _data.json()).results })
 
                         }
                         catch (err) {
