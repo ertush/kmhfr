@@ -66,7 +66,7 @@ const StyledDataGrid = styled(DataGrid)(() => ({
 }))
 
 
-function SystemSetup(props) {
+const system_setup = (props) => {
 
     const userCtx = useContext(UserContext)
 
@@ -4254,13 +4254,7 @@ function SystemSetup(props) {
 }
 
 
-SystemSetup.getInitialProps = async (ctx) => {
-    
-    ctx?.res?.setHeader(
-        'Cache-Control',
-        'public, s-maxage=10, stale-while-revalidate=59'
-      )
-    
+system_setup.getInitialProps = async (ctx) => {
     const fetchData = (token) => {
         
 
