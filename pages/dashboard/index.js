@@ -1046,7 +1046,7 @@ function Dashboard(props) {
                                     </tr>
                                 </thead>
                                 <tbody className="text-lg">
-                                    {Object.entries(props?.data?.keph_level).map(([keph, count], i) => (
+                                    {Object.entries(props?.data?.keph_level ?? [])?.map(([keph, count], i) => (
                                         <tr key={i}>
                                             <td className="table-cell text-left text-gray-900 p-2">{keph}</td>
                                             <td className="table-cell text-right font-semibold text-gray-900 p-2">{count || 0}</td>

@@ -7,7 +7,7 @@ export const propsToGridData = (props, index) => {
         // Beds and Cots, Theaters
         case 0:
             return {
-                rows: props[`${index}`]?.beds_and_cots_by_all_hierachies.map((
+                rows: props?.beds_and_cots_by_all_hierachies?.map((
                     {
                         ward__sub_county__county__name: county,
                         ward__sub_county__name: sub_county,
@@ -32,7 +32,7 @@ export const propsToGridData = (props, index) => {
                     cots,
                     id: index
 
-                }))
+                })) || []
 
                 , columns: [
                     {
@@ -86,7 +86,7 @@ export const propsToGridData = (props, index) => {
         // Keph Level
         case 1:
             return {
-                rows: props[`${index}`]?.facility_keph_level_report_all_hierachies.map((
+                rows: props?.facility_keph_level_report_all_hierachies?.map((
                     {
                         ward__sub_county__county__name: county,
                         ward__sub_county__name: sub_county,
@@ -109,7 +109,7 @@ export const propsToGridData = (props, index) => {
                     level_6,
                     id: index
 
-                }))
+                })) || []
 
                 , columns: [
                     {
@@ -158,7 +158,7 @@ export const propsToGridData = (props, index) => {
         // Facility Ownership
         case 2:
             return {
-                rows: props[`${index}`]?.facility_owner_report_all_hierachies.map((
+                rows: props?.facility_owner_report_all_hierachies?.map((
                     {
                         ward__sub_county__county__name: county,
                         ward__sub_county__name: sub_county,
@@ -233,7 +233,7 @@ export const propsToGridData = (props, index) => {
                     supreme_council_for_muslims,
                     id:index
 
-                }))
+                })) || []
 
                 , columns: [
                     {
@@ -423,7 +423,7 @@ export const propsToGridData = (props, index) => {
         // Facility Type 
         case 3:
             return {
-                rows: props[`${index}`]?.facility_type_report_all_hierachies.map((
+                rows: props?.facility_type_report_all_hierachies?.map((
                     {
                         ward__sub_county__county__name: county,
                         ward__sub_county__name: sub_county,
@@ -500,7 +500,7 @@ export const propsToGridData = (props, index) => {
                     specialized_tertiary_hospitals,
                     id:index
                 })
-                ),
+                ) || [],
 
                 columns: [
                     {
@@ -717,7 +717,7 @@ export const propsToGridData = (props, index) => {
         // Regulatory Body
         case 4:
             return {
-                rows: props[`${index}`]?.facility_regulatory_body_report_all_hierachies.map((
+                rows: props?.facility_regulatory_body_report_all_hierachies?.map((
                     {
                         ward__sub_county__county__name: county,
                         ward__sub_county__name: sub_county,
@@ -751,7 +751,7 @@ export const propsToGridData = (props, index) => {
                     ppb,
                     id:index
                 })
-                ),
+                ) || [],
 
                 columns: [
                     {
@@ -826,7 +826,7 @@ export const propsToGridData = (props, index) => {
         // Services
         case 5:
         return {
-            rows: props[`${index}`]?.facility_services_report_all_hierachies.map((
+            rows: props?.facility_services_report_all_hierachies?.map((
                 {
                     facility__ward__sub_county__county__name: county,
                     facility__ward__sub_county__name: sub_county,
@@ -920,7 +920,7 @@ export const propsToGridData = (props, index) => {
                 cat_operating_theaters,
                 id:index
             })
-            ),
+            ) || [],
 
             columns: [
                 {
@@ -1176,7 +1176,7 @@ export const propsToGridData = (props, index) => {
         // Infrastructure
         case 6:
             return {
-                rows: props[`${index}`]?.facility_infrastructure_report_all_hierachies.map((
+                rows: props?.facility_infrastructure_report_all_hierachies?.map((
                     {
                         
                         "ICT INFRASTRUCTURE": cat_ict_infrastructure, 
@@ -1319,7 +1319,7 @@ export const propsToGridData = (props, index) => {
                    eathen_road,
                     id:index
                 })
-                ),
+                ) || [],
     
                 columns: [
                     {
@@ -1699,7 +1699,7 @@ export const propsToGridData = (props, index) => {
         case 7:
 
             return {
-                rows: props[`${index}`]?.chul_status_all_hierachies.map((
+                rows: props?.chul_status_all_hierachies?.map((
                     {
                         "Fully-functional": fully_functional,
                         "Non-functional": non_functional,
@@ -1721,7 +1721,7 @@ export const propsToGridData = (props, index) => {
                     sub_county,
                     id:index
                 })
-                ),
+                ) || [],
 
                 columns: [
                     {
@@ -1766,7 +1766,7 @@ export const propsToGridData = (props, index) => {
         // CHU Services
         case 9:
             return {
-                rows: props[`${index}`]?.chul_services_all_hierachies,
+                rows: props?.chul_services_all_hierachies || [],
                 columns: [
                     {
                         headerName: 'County',
@@ -1912,7 +1912,7 @@ export const propsToGridData = (props, index) => {
         // CHU Count
         case 10:
             return {
-                rows: props[`${index}`]?.chul_count_all_hierachies.map((
+                rows: props?.chul_count_all_hierachies?.map((
                     {
                         "chvs": chv,
                         "ward_name": ward,
@@ -1932,7 +1932,7 @@ export const propsToGridData = (props, index) => {
                      number_of_units,
                      id:index
                 })
-                ),
+                ) || [],
 
                 columns: [
                     {
@@ -1968,7 +1968,7 @@ export const propsToGridData = (props, index) => {
         // Human resource
         case 11:
         return {
-            rows: props[`${index}`]?.facility_human_resource_category_report_all_hierachies.map((
+            rows: props?.facility_human_resource_category_report_all_hierachies?.map((
                 {
                     
                     facility_id__ward__sub_county__county__name: county,
@@ -2023,7 +2023,7 @@ export const propsToGridData = (props, index) => {
                     support_staffs,
                     id:index
                     })
-            ),
+            ) || [],
 
             columns: [
                 {

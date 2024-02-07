@@ -1,6 +1,6 @@
 import Head from 'next/head';
 import Link from 'next/link';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { checkToken } from '../../controllers/auth/auth';
 import MainLayout from '../../components/MainLayout';
 import * as Tabs from "@radix-ui/react-tabs";
@@ -34,7 +34,7 @@ const StyledDataGrid = styled(DataGrid)(() => ({
 
 
 function Reports(props) {
-    const userCtx = React.useContext(UserContext);
+    const userCtx = useContext(UserContext);
     const [user, setUser] = useState(userCtx);
 
 
