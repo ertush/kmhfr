@@ -3,6 +3,7 @@ import { MapContainer, Marker, GeoJSON,  } from 'react-leaflet'
 import Alert from '@mui/material/Alert';
 import { useMap } from 'react-leaflet/hooks'
 import { TabContext } from '../components/Forms/EditForm'
+import { MarkerIcon } from './MarkerIcon';
 
 
 
@@ -104,8 +105,8 @@ const WardGISMap = ({ markerCoordinates, geoJSON, center, ward, from }) => {
                 <MapContainer 
                     className='w-full' 
                     center={center ?? [-0.818389, 37.477222]} 
-                    zoom={13.199} 
-                    maxZoom={18.7} 
+                    zoom={11.199} 
+                    maxZoom={13.7} 
                     scrollWheelZoom={false} 
                     touchZoom={false} 
                     style={{ height: '400px', position: 'relative', zIndex: '1', backgroundColor: '#e7eae8', padding: '15px' }}>
@@ -117,7 +118,7 @@ const WardGISMap = ({ markerCoordinates, geoJSON, center, ward, from }) => {
 
                         {
                             isValidGeoCoordinates && markerCoordinates &&
-                            <Marker position={markerCoordinates}></Marker>
+                            <Marker icon={MarkerIcon} position={markerCoordinates}></Marker>
                         }   
 
                 <MapListener tabOpen={tabOpen} />

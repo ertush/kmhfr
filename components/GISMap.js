@@ -4,7 +4,7 @@ import { MapContainer, Marker, Popup, TileLayer, GeoJSON } from "react-leaflet";
 import MapData from "../assets/maps/counties.min.json";
 // import MapCenters from "../assets/maps/county-centers-coordinates";
 import Box from "@mui/material/Box";
-// import { iconPerson } from "./icon";
+import { MarkerIcon } from "./MarkerIcon";
 
 const GISMap = ({ data }) => {
   const [geoJSON, setGeoJSON] = useState(MapData);
@@ -81,6 +81,7 @@ const GISMap = ({ data }) => {
                 <Marker
                   position={[facility.lat_long[0], facility.lat_long[1]]}
                   key={facility.id}
+                  icon={MarkerIcon}
                 >
                   <Popup>
                     <div className="flex flex-col items-center">
