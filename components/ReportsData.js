@@ -32,7 +32,7 @@ export const propsToGridData = (props, index) => {
                     cots,
                     id: index
 
-                })) || []
+                })) ?? []
 
                 , columns: [
                     {
@@ -109,7 +109,7 @@ export const propsToGridData = (props, index) => {
                     level_6,
                     id: index
 
-                })) || []
+                })) ?? []
 
                 , columns: [
                     {
@@ -233,7 +233,7 @@ export const propsToGridData = (props, index) => {
                     supreme_council_for_muslims,
                     id:index
 
-                })) || []
+                })) ?? []
 
                 , columns: [
                     {
@@ -500,7 +500,7 @@ export const propsToGridData = (props, index) => {
                     specialized_tertiary_hospitals,
                     id:index
                 })
-                ) || [],
+                ) ?? [],
 
                 columns: [
                     {
@@ -751,7 +751,7 @@ export const propsToGridData = (props, index) => {
                     ppb,
                     id:index
                 })
-                ) || [],
+                ) ?? [],
 
                 columns: [
                     {
@@ -920,7 +920,7 @@ export const propsToGridData = (props, index) => {
                 cat_operating_theaters,
                 id:index
             })
-            ) || [],
+            ) ?? [],
 
             columns: [
                 {
@@ -1319,7 +1319,7 @@ export const propsToGridData = (props, index) => {
                    eathen_road,
                     id:index
                 })
-                ) || [],
+                ) ?? [],
     
                 columns: [
                     {
@@ -1721,7 +1721,7 @@ export const propsToGridData = (props, index) => {
                     sub_county,
                     id:index
                 })
-                ) || [],
+                ) ?? [],
 
                 columns: [
                     {
@@ -1766,7 +1766,7 @@ export const propsToGridData = (props, index) => {
         // CHU Services
         case 9:
             return {
-                rows: props?.chul_services_all_hierachies || [],
+                rows: props?.chul_services_all_hierachies ?? [],
                 columns: [
                     {
                         headerName: 'County',
@@ -1932,7 +1932,7 @@ export const propsToGridData = (props, index) => {
                      number_of_units,
                      id:index
                 })
-                ) || [],
+                ) ?? [],
 
                 columns: [
                     {
@@ -2023,7 +2023,7 @@ export const propsToGridData = (props, index) => {
                     support_staffs,
                     id:index
                     })
-            ) || [],
+            ) ?? [],
 
             columns: [
                 {
