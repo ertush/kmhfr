@@ -34,6 +34,7 @@ const StyledDataGrid = styled(DataGrid)(() => ({
 
 
 function Reports(props) {
+
     const userCtx = useContext(UserContext);
     const [user, setUser] = useState(userCtx);
 
@@ -60,7 +61,7 @@ function Reports(props) {
              lng,
              id:index
          }))
-     )(props['8']?.gis)
+     )(props?.gis)
 
     const [reportTitle, setReportTitle] = useState('Beds and Cots');
     const [isClient, setIsClient] = useState(false);
@@ -773,8 +774,7 @@ Reports.getInitialProps = async (ctx) => {
         'facility_human_resource_category_report_all_hierachies'
     ];
 
-    const allReports = [];
-
+    const allReports = {};
 
     return checkToken(ctx.req, ctx.res).then(async (t) => {
         if (t.error) {
@@ -802,7 +802,7 @@ Reports.getInitialProps = async (ctx) => {
                             })
 
 
-                            allReports.push({ beds_and_cots_by_all_hierachies: (await _data.json()).results })
+                            allReports["beds_and_cots_by_all_hierachies"] = (await _data.json()).results
 
                         }
                         catch (err) {
@@ -828,7 +828,7 @@ Reports.getInitialProps = async (ctx) => {
                                 },
                             })
 
-                            allReports.push({ facility_keph_level_report_all_hierachies: (await _data.json()).results })
+                            allReports["facility_keph_level_report_all_hierachies"] = (await _data.json()).results
 
 
                         }
@@ -854,7 +854,7 @@ Reports.getInitialProps = async (ctx) => {
                                 },
                             })
 
-                            allReports.push({ facility_owner_report_all_hierachies: (await _data.json()).results })
+                            allReports["facility_owner_report_all_hierachies"] = (await _data.json()).results
 
                         }
                         catch (err) {
@@ -880,7 +880,7 @@ Reports.getInitialProps = async (ctx) => {
                                 },
                             })
 
-                            allReports.push({ facility_type_report_all_hierachies: (await _data.json()).results })
+                            allReports["facility_type_report_all_hierachies"] = (await _data.json()).results
 
                         }
                         catch (err) {
@@ -906,7 +906,7 @@ Reports.getInitialProps = async (ctx) => {
                                 },
                             })
 
-                            allReports.push({ facility_regulatory_body_report_all_hierachies: (await _data.json()).results })
+                            allReports["facility_regulatory_body_report_all_hierachies"] = (await _data.json()).results
 
                         }
                         catch (err) {
@@ -932,7 +932,7 @@ Reports.getInitialProps = async (ctx) => {
                                     },
                                 })
     
-                                allReports.push({ facility_services_report_all_hierachies: (await _data.json()).results })
+                                allReports["facility_services_report_all_hierachies"] = (await _data.json()).results
     
                             }
                             catch (err) {
@@ -958,7 +958,7 @@ Reports.getInitialProps = async (ctx) => {
                                         },
                                     })
         
-                                    allReports.push({ facility_human_resource_category_report_all_hierachies: (await _data.json()).results })
+                                    allReports["facility_human_resource_category_report_all_hierachies"] = (await _data.json()).results 
         
                                 }
                                 catch (err) {
@@ -984,7 +984,7 @@ Reports.getInitialProps = async (ctx) => {
                                         },
                                     })
         
-                                    allReports.push({ facility_infrastructure_report_all_hierachies: (await _data.json()).results })
+                                    allReports["facility_infrastructure_report_all_hierachies"] = (await _data.json()).results 
         
                                 }
                                 catch (err) {
@@ -1010,7 +1010,7 @@ Reports.getInitialProps = async (ctx) => {
                                 },
                             })
 
-                            allReports.push({ chul_status_all_hierachies: (await _data.json()).results })
+                            allReports["chul_status_all_hierachies"] = (await _data.json()).results 
 
                         }
                         catch (err) {
@@ -1035,7 +1035,7 @@ Reports.getInitialProps = async (ctx) => {
                                 },
                             })
 
-                                allReports.push({ chul_services_all_hierachies: (await _data.json()).results.map((
+                                allReports["chul_services_all_hierachies"] = (await _data.json()).results.map((
                                     {
                                         
                                         "WASH: Water, sanitation and hygiene education, including hand washing": wash_sanitation,
@@ -1095,11 +1095,12 @@ Reports.getInitialProps = async (ctx) => {
                                     id:index
                                     
                                 })
-                                ) })
+                                ) 
 
                         }
                         catch (err) {
                             console.log(`Error fetching ${report}: `, err);
+
                             allReports.push({
                                 error: true,
                                 err: err,
@@ -1121,7 +1122,7 @@ Reports.getInitialProps = async (ctx) => {
                                 },
                             })
 
-                            allReports.push({ gis: (await _data.json()).results })
+                            allReports["gis"] = (await _data.json()).results 
 
                         }
                         catch (err) {
@@ -1148,7 +1149,7 @@ Reports.getInitialProps = async (ctx) => {
                                 },
                             })
 
-                            allReports.push({ chul_status_all_hierachies: (await _data.json()).results })
+                            allReports["chul_status_all_hierachies"] = (await _data.json()).results 
 
                         }
                         catch (err) {
@@ -1173,7 +1174,7 @@ Reports.getInitialProps = async (ctx) => {
                                 },
                             })
 
-                            allReports.push({ chul_count_all_hierachies: (await _data.json()).results })
+                            allReports["chul_count_all_hierachies"] = (await _data.json()).results 
 
                         }
                         catch (err) {
