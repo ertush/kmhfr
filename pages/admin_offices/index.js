@@ -8,6 +8,8 @@ import {  PlusIcon } from "@heroicons/react/solid";
 import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
+import { UserContext } from '../../providers/user';
+
 
 
 import {
@@ -106,7 +108,7 @@ const AdminOffices = (props) => {
                                 <a className="text-blue-700" href="/">Home</a> {'/'}
                                 <span className="text-gray-500">Adminoffices</span>
                             </div>
-                            <div className={"col-span-5 flex  justify-between w-full  drop-shadow  text-black p-4 md:divide-x border border-blue-600 md:divide-gray-200z items-center border-l-8 " + (true && "border-blue-600")}>
+                            <div className={"col-span-5 flex  justify-between w-full  drop-shadow  text-black p-4 md:divide-x bg-gray-50 shadow-md md:divide-gray-200 items-center border-l-8 " + (true && "border-blue-600")}>
                                 <h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
 
                                     {'Admin Offices'}
@@ -120,7 +122,7 @@ const AdminOffices = (props) => {
                             </div>
                         </div>
                     </div>
-                    <div className='col-span-1 w-full col-start-1 h-auto border border-blue-600'>
+                    <div className='col-span-1 w-full col-start-1 h-auto bg-gray-50 shadow-sm'>
 
                         <List
                             sx={{ width: '100%', bgcolor: 'transparent', flexGrow: 1, paddingTop:0, paddingBottom: 0 }}
@@ -153,7 +155,7 @@ const AdminOffices = (props) => {
 
                         <div className="flex flex-col justify-center items-center px-1 md:px-2 w-full">
 
-                            <div className="shadow-md" style={{ Height: 'auto', width: '100%', backgroundColor: '#eff6ff' }}>
+                            <div className="shadow-md bg-gray-50" style={{ Height: 'auto', width: '100%' }}>
                                
                                 <StyledDataGrid
                                         columns={columns}

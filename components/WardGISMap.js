@@ -109,7 +109,7 @@ const WardGISMap = ({ markerCoordinates, geoJSON, center, ward, from }) => {
                     maxZoom={13.7} 
                     scrollWheelZoom={false} 
                     touchZoom={false} 
-                    style={{ height: '400px', position: 'relative', backgroundColor: '#e7eae8', padding: '15px', 'overflow-y': 'scroll'}}>
+                    style={{ height: '400px', position: 'relative', backgroundColor: '#e7eae8', padding: '15px', 'overflow': 'hidden'}}>
 
                         {
                             geoJSON && 

@@ -1,14 +1,15 @@
 import { memo } from 'react'
 import { MapContainer, Marker, Popup, TileLayer, GeoJSON } from 'react-leaflet'
+import { MarkerIcon } from './MarkerIcon'
 
 
 const Map = ({ operational, lat, long, name, ward_name, code, geoJSON }) => {
 
     return (
-        <MapContainer center={[lat, long]} zoom={10.899} maxZoom={15.70} scrollWheelZoom={false} touchZoom={false} style={{ height: 650, width: "100%", position: 'relative', zIndex: '1', backgroundColor: '#e7eae8', padding: '15px'}}>
+        <MapContainer center={[lat, long]} zoom={13.899} maxZoom={15.70} scrollWheelZoom={false} touchZoom={false} style={{ height: 650, width: "100%", position: 'relative', zIndex: '1', backgroundColor: '#e7eae8', padding: '15px'}}>
             <TileLayer attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors' url='http://{s}.tile.osm.org/{z}/{x}/{y}.png' />
             <GeoJSON data={geoJSON} key={geoJSON} style={`color: '#006400'; weight: 5; opacity: 0.65;`} />
-            <Marker position={[lat, long]}>
+            <Marker position={[lat, long]} icon={MarkerIcon}>
                 <Popup>
                     <div className="flex flex-col items-center">
                         <h4 className="text-sm font-medium text-black">{ward_name}</h4>
