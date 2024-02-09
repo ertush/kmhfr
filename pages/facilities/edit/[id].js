@@ -65,6 +65,8 @@ export default function EditFacility(props) {
 				<Head>
 					<title>KMHFR - Edit Facility</title>
 					<link rel="icon" href="/favicon.ico" />
+					<link rel="stylesheet" href="/assets/css/leaflet.css" />
+
 				</Head>
 
 				<MainLayout isLoading={false} searchTerm={props?.query?.searchTerm}>

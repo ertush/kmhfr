@@ -136,6 +136,7 @@ const Login = (props) => {
                         autoSave='on'
                         autoComplete='current-password'
                         aria-autocomplete='inline'
+                        placeholder='**********'
                         className="border w-full py-3 px-3 leading-none border-blue-600 bg-transparent focus:outline-none focus:border-indigo-700 focus:bg-white text-gray-700 pr-16" name="password" type={hidePassword ? 'password' : 'text'} 
                         />
                     </div>
