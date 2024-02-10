@@ -17,9 +17,9 @@ import {
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { UserContext } from "../providers/user";
+import Image from 'next/image';
 
-
-const DelayedLoginButton = () => {
+export const DelayedLoginButton = () => {
 
 
   const [delayed, setDelayed] = useState(false);
@@ -158,7 +158,7 @@ export default function HeaderLayout({
             className="leading-none tracking-tight flex gap-x-2 justify-center items-center text-black font-bold relative"
           >
 
-            <img src="/moh-logo.png" alt="" className="h-14" />
+            <Image src="/moh-logo.png" alt="logo" height="56" width="300"/>
             {/* <span className="text-sm bg-yellow-300 -sm shadow border border-yellow-400 leading-none text-yellow-900 px-1 absolute bottom-0 -right-2">
               v1
             </span> */}

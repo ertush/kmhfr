@@ -3,7 +3,7 @@
 "use client"
 
 import { useContext, useEffect, useState } from 'react';
-import { Select as CustomSelect} from './formComponents/Select';
+import { Select as CustomSelect } from './formComponents/Select';
 import { FormOptionsContext } from '../../pages/facilities/add';
 import {
   ChevronDoubleRightIcon,
@@ -66,8 +66,8 @@ export function BasicDeatilsForm({ editMode }) {
   ];
 
 
-   // Event handlers
-  function handleFocus (e) {
+  // Event handlers
+  function handleFocus(e) {
     setTouchedFields(touchedFields => {
       return [...touchedFields, e.target.name]
     })
@@ -307,7 +307,7 @@ export function BasicDeatilsForm({ editMode }) {
 
     const payload = {}
 
-    for(let field of touchedFields){
+    for (let field of touchedFields) {
       payload[field] = data[field] == undefined ? false : data[field] == "on" || data[field] == "true" ? true : data[field] == "false" ? false : (Number(data[field]) ?? data[field])
     }
 
@@ -326,48 +326,48 @@ export function BasicDeatilsForm({ editMode }) {
       },
       body: JSON.stringify(payload)
     })
-    .then(res => {
-      if (res.status == 204 || res.status == 200) {
-        alert.success('Facility Updated Successfully')
-        setSubmitting(false)
+      .then(res => {
+        if (res.status == 204 || res.status == 200) {
+          alert.success('Facility Updated Successfully')
+          setSubmitting(false)
 
-        router.push({
-          pathname: '/facilities/facility_changes/[facility_id]/',
-          query: { 
-            facility_id: options?.data?.id
-          }
-        })
-
-      } else {
-        alert.error('Unable to update facility')
-        setSubmitting(false)
-        res.json()
-          .then(resp => {
-            const formResponse = []
-            setFormError(() => {
-              if(typeof resp == 'object') {
-                const respEntry = Object.entries(resp)
-
-                for (let [_, v] of respEntry) {
-                  formResponse.push(v)
-                }
-
-                return `Error: ${formResponse.join(" ")}`
-              }
-            })
+          router.push({
+            pathname: '/facilities/facility_changes/[facility_id]/',
+            query: {
+              facility_id: options?.data?.id
+            }
           })
 
+        } else {
+          alert.error('Unable to update facility')
+          setSubmitting(false)
+          res.json()
+            .then(resp => {
+              const formResponse = []
+              setFormError(() => {
+                if (typeof resp == 'object') {
+                  const respEntry = Object.entries(resp)
+
+                  for (let [_, v] of respEntry) {
+                    formResponse.push(v)
+                  }
+
+                  return `Error: ${formResponse.join(" ")}`
+                }
+              })
+            })
+
+        }
+
       }
+      )
+      .catch(e => {
+        setSubmitting(false)
 
-    }
-    )
-    .catch(e => {
-      setSubmitting(false)
+        setFormError(`Error: ${e.message}`)
+        console.error(e.message)
+      })
 
-      setFormError(`Error: ${e.message}`)
-      console.error(e.message)
-    })
-    
 
 
   }
@@ -401,20 +401,20 @@ export function BasicDeatilsForm({ editMode }) {
           setSubmitting(false)
           alert.error('Unable to Add facility')
           res.json()
-          .then(resp => {
-            const formResponse = []
-            setFormError(() => {
-              if(typeof resp == 'object') {
-                const respEntry = Object.entries(resp)
+            .then(resp => {
+              const formResponse = []
+              setFormError(() => {
+                if (typeof resp == 'object') {
+                  const respEntry = Object.entries(resp)
 
-                for (let [_, v] of respEntry) {
-                  formResponse.push(v)
+                  for (let [_, v] of respEntry) {
+                    formResponse.push(v)
+                  }
+
+                  return `Error: ${formResponse.join(" ")}`
                 }
-
-                return `Error: ${formResponse.join(" ")}`
-              }
+              })
             })
-          })
         }
 
         setSubmitting(false)
@@ -425,7 +425,7 @@ export function BasicDeatilsForm({ editMode }) {
 
         setFacilityId(facilityId)
 
-        if(facilityData) {
+        if (facilityData) {
           fetch(
             `${process.env.NEXT_PUBLIC_API_URL}/common/wards/${facilityData?.ward}/`,
             {
@@ -435,36 +435,36 @@ export function BasicDeatilsForm({ editMode }) {
               }
             }
           )
-          .then(resp => resp.json())
-          .then(async wardData => {
-            // console.log(JSON.stringify(data))
-            if(wardData){
+            .then(resp => resp.json())
+            .then(async wardData => {
+              // console.log(JSON.stringify(data))
+              if (wardData) {
 
-              const [lng, lat] = await wardData?.ward_boundary.properties.center.coordinates;
+                const [lng, lat] = await wardData?.ward_boundary.properties.center.coordinates;
 
-              // console.log([lng, lat])
+                // console.log([lng, lat])
 
-              const wardGeoData = {
+                const wardGeoData = {
                   geoJSON: JSON.parse(JSON.stringify(wardData?.ward_boundary)),
                   centerCoordinates: JSON.parse(
                     JSON.stringify([lat, lng])
                   )
                 }
-              
+
                 // Base64 encode ward data
 
                 const base64EncWardData = Buffer.from(JSON.stringify(wardGeoData)).toString('base64')
 
                 const params = [];
 
-                for(let [k, v] of formData) {
-                  if(k == 'facility_checklist_document') {
-                     params.push(`${k}=${JSON.stringify(v)}`)
+                for (let [k, v] of formData) {
+                  if (k == 'facility_checklist_document') {
+                    params.push(`${k}=${JSON.stringify(v)}`)
                   }
-                  else { 
+                  else {
 
-                  params.push(`${k}=${v}`)
-        
+                    params.push(`${k}=${v}`)
+
                   }
                 }
 
@@ -474,40 +474,40 @@ export function BasicDeatilsForm({ editMode }) {
 
 
                 router.push({
-                  pathname:`${window.location.origin}/facilities/add`,
-                  
-                  query:{
+                  pathname: `${window.location.origin}/facilities/add`,
+
+                  query: {
                     formData: base64EncParams,
                     formId: 1,
                     facilityId: facilityId,
                     from: 'submission'
                   }
-                
+
                 })
-                .then((navigated) => {
-                  if(navigated) setFormId(1)
-                })
-        
+                  .then((navigated) => {
+                    if (navigated) setFormId(1)
+                  })
+
                 // const url = new URL(`${window.location.origin}/facilities/add?formData=${base64EncParams}`)
-                
+
                 // url.searchParams.set('formId', '1')
-        
+
                 // url.searchParams.set('facilityId', `${facilityId}`)
 
                 // url.searchParams.set('from', 'submission')
-                
-        
+
+
                 // window.location.href = url
 
 
-            }
+              }
 
 
-       
-          })
+
+            })
         }
 
-       
+
       })
       .catch(e => {
         setSubmitting(false)
@@ -517,26 +517,26 @@ export function BasicDeatilsForm({ editMode }) {
       })
 
 
-  
+
   }
 
   function handleNumberInputChange(e) {
 
     // Total Funcational Input Beds validation
 
-      handleFocus(e)
-    
+    handleFocus(e)
 
-      const number_of_inpatient_beds = Number(document.getElementsByName('number_of_inpatient_beds')[0]?.value) 
-      const number_of_icu_beds = Number(document.getElementsByName('number_of_icu_beds')[0]?.value)
-      const number_of_hdu_beds = Number(document.getElementsByName('number_of_hdu_beds')[0]?.value)
-      const number_of_maternity_beds = Number(document.getElementsByName('number_of_maternity_beds')[0]?.value)
-      const number_of_emergency_casualty_beds = Number(document.getElementsByName('number_of_emergency_casualty_beds')[0]?.value)
-      
-      const totalBeds = number_of_inpatient_beds + number_of_icu_beds + number_of_hdu_beds + number_of_maternity_beds + number_of_emergency_casualty_beds
 
-      
-      setTotalFunctionalBeds(totalBeds)
+    const number_of_inpatient_beds = Number(document.getElementsByName('number_of_inpatient_beds')[0]?.value)
+    const number_of_icu_beds = Number(document.getElementsByName('number_of_icu_beds')[0]?.value)
+    const number_of_hdu_beds = Number(document.getElementsByName('number_of_hdu_beds')[0]?.value)
+    const number_of_maternity_beds = Number(document.getElementsByName('number_of_maternity_beds')[0]?.value)
+    const number_of_emergency_casualty_beds = Number(document.getElementsByName('number_of_emergency_casualty_beds')[0]?.value)
+
+    const totalBeds = number_of_inpatient_beds + number_of_icu_beds + number_of_hdu_beds + number_of_maternity_beds + number_of_emergency_casualty_beds
+
+
+    setTotalFunctionalBeds(totalBeds)
 
   }
 
@@ -545,6 +545,37 @@ export function BasicDeatilsForm({ editMode }) {
   useEffect(() => {
 
     // console.log({facility: options?.data})
+    async function updateFacilityTypeDetailOptions() {
+      try {
+        const facilityTypeDetails = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facility_types_details/?is_parent=false&parent=${e.target.value}`, {
+          headers: {
+            'Accept': 'application/json',
+            'Authorization': `Bearer ${options?.token}`
+          }
+        })
+
+        const filteredFacilityType = (await facilityTypeDetails.json())?.results
+
+        if (!filteredFacilityType) throw Error('Unable to Fetch Facility Type Details')
+
+
+        const facilityType = Array.from(filteredFacilityType, ({ id, name }) => {
+          return {
+            label: name,
+            value: id
+          }
+        })
+
+
+        setFacilityTypeDetailOptions(facilityType ?? options?.facility_type_details)
+
+      }
+      catch (e) {
+        console.error(e.message)
+      }
+    }
+
+    updateFacilityTypeDetailOptions()
 
     function getFacilityTypeDetails(facilityTypeId, token) {
 
@@ -554,56 +585,56 @@ export function BasicDeatilsForm({ editMode }) {
           'Authorization': `Bearer ${token}`
         }
       })
-      .then(resp => resp.json())
-      .then(resp => resp?.results)
-      .catch(console.error)
+        .then(resp => resp.json())
+        .then(resp => resp?.results)
+        .catch(console.error)
 
     }
 
-    if(window && !editMode) {
+    if (window && !editMode) {
       const path = new URL(window.location.href)
 
-      if(path.searchParams.get('from') == 'previous'){
+      if (path.searchParams.get('from') == 'previous') {
 
-      const strFormData = Buffer.from(path.searchParams?.get('formData') ?? 'J3t9Jw==', 'base64').toString() ?? "{}"
-      const params = new URL(`${window.location.origin}/facilities/add?${strFormData}`).searchParams
-      const paramEntries = params.entries()
-      const formData = Object.fromEntries(paramEntries)
-      
-      // console.log(formData)
+        const strFormData = Buffer.from(path.searchParams?.get('formData') ?? 'J3t9Jw==', 'base64').toString() ?? "{}"
+        const params = new URL(`${window.location.origin}/facilities/add?${strFormData}`).searchParams
+        const paramEntries = params.entries()
+        const formData = Object.fromEntries(paramEntries)
 
-      if(facilityId == '') setFacilityId(params?.facilityId)
+        // console.log(formData)
 
-      delete formData?.facility_checklist_document
+        if (facilityId == '') setFacilityId(params?.facilityId)
 
-      const newOptions = {}
+        delete formData?.facility_checklist_document
 
-      Object.assign(newOptions, options)
+        const newOptions = {}
 
-      newOptions['data'] = formData
+        Object.assign(newOptions, options)
 
-      for(let [k, v] of Object.entries(newOptions?.data)) {
+        newOptions['data'] = formData
 
-        if(v == 'on') newOptions.data[k] = true;
-        if(v == 'false') newOptions.data[k] = false;
-        if(v == 'true') newOptions.data[k] = true;
-        if(k.match(/^number_.+/) !== null) newOptions.data[k] = Number(v)
+        for (let [k, v] of Object.entries(newOptions?.data)) {
 
+          if (v == 'on') newOptions.data[k] = true;
+          if (v == 'false') newOptions.data[k] = false;
+          if (v == 'true') newOptions.data[k] = true;
+          if (k.match(/^number_.+/) !== null) newOptions.data[k] = Number(v)
+
+        }
+
+        setOptions(newOptions)
       }
 
-      setOptions(newOptions)
-     }
-
-    } 
+    }
     else if (editMode) {
       getFacilityTypeDetails(options?.data?.facility_type, options?.token)
-      .then(facilityTypeDetails => {
+        .then(facilityTypeDetails => {
 
-        console.log({facilityTypeDetails})
+          console.log({ facilityTypeDetails })
 
-        const _options = facilityTypeDetails?.map(({id: value, name: label}) => ({label, value}))
-        setFacilityTypeDetailOptions(_options)
-      })
+          const _options = facilityTypeDetails?.map(({ id: value, name: label }) => ({ label, value }))
+          setFacilityTypeDetailOptions(_options)
+        })
     }
 
     setIsClient(true)
@@ -612,17 +643,19 @@ export function BasicDeatilsForm({ editMode }) {
 
 
   if (isClient) {
+
     return (
       <form name='basic_details_form'
-        onSubmit={editMode ? handleBasicDetailsUpdate : handeBasicDetailsCreate }
+        onSubmit={editMode ? handleBasicDetailsUpdate : handeBasicDetailsCreate}
         className='flex flex-col w-full mt-4 items-start bg-gray-50 p-3 justify-start gap-3'>
 
-      {
-        formError && <Alert severity='error' className='w-full border-2 border-red-500 rounded-none'>{formError}</Alert> 
-      }
+
+        {
+          formError && <Alert severity='error' className='w-full border-2 border-red-500 rounded-none'>{formError}</Alert>
+        }
 
         {/* Facility Official Name */}
- 
+
         <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
           <label
             htmlFor='official_name'
@@ -679,8 +712,8 @@ export function BasicDeatilsForm({ editMode }) {
 
           <CustomSelect
             options={options?.facility_types}
-            defaultValue={options?.facility_types?.map(({value}) => value).includes(options?.data?.facility_type)  ? options?.data?.facility_type : (() => {
-              return options?.facility_types?.find(({label}) => label == options?.data?.facility_type_parent)?.value
+            defaultValue={options?.facility_types?.map(({ value }) => value).includes(options?.data?.facility_type) ? options?.data?.facility_type : (() => {
+              return options?.facility_types?.find(({ label }) => label == options?.data?.facility_type_parent)?.value
             })()}
             placeholder="Select a facility type..."
             required
@@ -706,13 +739,11 @@ export function BasicDeatilsForm({ editMode }) {
 
 
           <CustomSelect
-            options={facilityTypeDetailOptions ?? []}
+            options={facilityTypeDetailOptions.length > 0 ? facilityTypeDetailOptions : options?.facility_type_details}
             placeholder="Select facility type details..."
             onChange={handleSelectChange}
             onFocus={handleFocus}
-            defaultValue={(() => {
-              return facilityTypeDetailOptions?.find(({label}) => label == options?.data?.facility_type_name)?.value
-            })()}
+            defaultValue={options?.facility_type_details?.find(({ label }) => label == options?.data?.facility_type_name)?.value}
             required
             name='facility_type_details'
 
@@ -733,7 +764,7 @@ export function BasicDeatilsForm({ editMode }) {
             </span>
           </label>
           <CustomSelect
-            options={operationStatusOptions ?? options?.operation_status}
+            options={options?.operation_status ?? operationStatusOptions}
             placeholder="Select operation status..."
             required
             name='operation_status'
@@ -741,7 +772,7 @@ export function BasicDeatilsForm({ editMode }) {
             defaultValue={options?.data?.operation_status ?? ''}
 
           />
-      
+
         </div>
 
         {/* Date Established */}
@@ -1341,7 +1372,7 @@ export function BasicDeatilsForm({ editMode }) {
             <div className='col-start-1 col-span-1'>
               <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
 
-    
+
 
                 <label
                   htmlFor='county_id'
@@ -1362,7 +1393,7 @@ export function BasicDeatilsForm({ editMode }) {
                   name='county_id'
 
                 />
-    
+
 
               </div>
             </div>
@@ -1372,7 +1403,8 @@ export function BasicDeatilsForm({ editMode }) {
               <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
                 <label
                   htmlFor='sub_county_id'
-                  className='text-gray-600 capitalize text-sm'>
+                  className='text-gray-600 capitalize text-sm'
+                >
                   Sub-county
                   <span className='text-medium leading-12 font-semibold'>
                     {' '}
@@ -1390,7 +1422,7 @@ export function BasicDeatilsForm({ editMode }) {
 
 
                 />
-    
+
               </div>
             </div>
 
@@ -1417,7 +1449,7 @@ export function BasicDeatilsForm({ editMode }) {
 
 
                 />
-    
+
 
               </div>
             </div>
@@ -1434,7 +1466,7 @@ export function BasicDeatilsForm({ editMode }) {
                     *
                   </span>
                 </label>
-    
+
                 <CustomSelect
                   options={wardOptions ?? []}
                   required
@@ -1444,7 +1476,7 @@ export function BasicDeatilsForm({ editMode }) {
                   name='ward'
 
                 />
-    
+
 
               </div>
             </div>
@@ -1543,85 +1575,85 @@ export function BasicDeatilsForm({ editMode }) {
 
         {/* check file upload */}
         <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-              <label
-                htmlFor='facility_checklist_document'
-                className='text-gray-600 capitalize text-sm'>
-                checklist file upload
+          <label
+            htmlFor='facility_checklist_document'
+            className='text-gray-600 capitalize text-sm'>
+            checklist file upload
 
-              </label>
+          </label>
 
-              <input
-                type='file'
-                name='facility_checklist_document'
-                defaultValue={options?.data?.facility_checklist_document ?? ''}
-                className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
-              />
-
-  
-
-            </div>
+          <input
+            type='file'
+            name='facility_checklist_document'
+            defaultValue={options?.data?.facility_checklist_document ?? ''}
+            className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+          />
 
 
-          {/* Cancel & Geolocation */}
-          {
-            editMode ?
 
-              <div className='flex justify-end items-center w-full'>
-                 <button
-                  type='submit'
-                  disabled={submitting}
-                  className={`flex items-center ${submitting ? 'justify-center'  : 'justify-start'} space-x-2 bg-blue-700  p-1 px-2`}>
-                  <span className='text-medium font-semibold text-white'>
-                    {
-                       submitting ? 
-                      <div className='flex items-center gap-2'> 
+        </div>
+
+
+        {/* Cancel & Geolocation */}
+        {
+          editMode ?
+
+            <div className='flex justify-end items-center w-full'>
+              <button
+                type='submit'
+                disabled={submitting}
+                className={`flex items-center ${submitting ? 'justify-center' : 'justify-start'} space-x-2 bg-blue-700  p-1 px-2`}>
+                <span className='text-medium font-semibold text-white'>
+                  {
+                    submitting ?
+                      <div className='flex items-center gap-2'>
                         <span className='text-white'>Saving </span>
                         <Spinner />
                       </div>
                       :
                       'Save & Finish'
-                       
-                    }
-                  </span>
-                  {/* <ChevronDoubleRightIcon className='w-4 h-4 text-white' /> */}
-                </button>
-              </div>
 
-              :
+                  }
+                </span>
+                {/* <ChevronDoubleRightIcon className='w-4 h-4 text-white' /> */}
+              </button>
+            </div>
 
-             <div className='flex justify-between items-center w-full'>
-                <button className='flex items-center justify-start space-x-2 p-1 border border-blue-900  px-2'>
-                  <ChevronDoubleLeftIcon className='w-4 h-4 text-blue-900' />
-                  <span className='text-medium font-semibold text-blue-900 '>
-                    Cancel
-                  </span>
-                </button>
-                <button
-                  type='submit'
-                  disabled={submitting}
-                  className='flex items-center justify-start gap-2 text-white bg-blue-700  p-1 px-2'>
-                  <span className='text-medium font-semibold text-white'>
+            :
+
+            <div className='flex justify-between items-center w-full'>
+              <button className='flex items-center justify-start space-x-2 p-1 border border-blue-900  px-2'>
+                <ChevronDoubleLeftIcon className='w-4 h-4 text-blue-900' />
+                <span className='text-medium font-semibold text-blue-900 '>
+                  Cancel
+                </span>
+              </button>
+              <button
+                type='submit'
+                disabled={submitting}
+                className='flex items-center justify-start gap-2 text-white bg-blue-700  p-1 px-2'>
+                <span className='text-medium font-semibold text-white'>
                   {
-                       submitting ? 
+                    submitting ?
                       <Spinner />
                       :
                       'Geolocation'
-                       
-                    }
-                  </span>
-                  {
-                    submitting ? 
+
+                  }
+                </span>
+                {
+                  submitting ?
                     <span className='text-white'>Saving </span>
                     :
                     <ChevronDoubleRightIcon className='w-4 h-4 text-white' />
 
-                  }
-                </button>
-              </div>
-          }
+                }
+              </button>
+            </div>
+        }
 
-        </form>
-    
+      </form>
+
     )
   } else {
     return null
