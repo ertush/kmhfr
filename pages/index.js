@@ -1,16 +1,13 @@
 import Head from 'next/head'
 import Link from 'next/link'
 import Image from 'next/image'
-import MainLayout from '../components/MainLayout'
 import { useEffect, useState, useRef } from 'react'
 import { useRouter } from 'next/router'
 import { getUserDetails } from "../controllers/auth/public_auth";
 import { checkToken } from '../controllers/auth/public_auth';
-import LogoutIcon from '@mui/icons-material/Logout';
-import { DelayedLoginButton } from '../components/HeaderLayout'
-import { Menu } from "@headlessui/react";
 import { Login } from '@mui/icons-material'
 import { NorthEast } from '@mui/icons-material'
+import propTypes from 'prop-types'
 
 
 function Home(props) {
@@ -499,42 +496,128 @@ function Home(props) {
   }
 }
 
+//  Home.defaultProps = {
+//   props : {
+//     loggedIn: false,
+//     token: null
+//   }
+// }
 
+Home.propTypes = {
+  loggedIn: propTypes.string,
+  token: propTypes.string || null,
+  data: propTypes.object | null
+}
 
 export async function getServerSideProps(ctx) {
 
   // return {loggedIn: false, token: null}
-  return checkToken(ctx.req, ctx.res, { username: process.env.NEXT_PUBLIC_CLIENT_USERNAME, password: process.env.NEXT_PUBLIC_CLIENT_PASSWORD })
-    .then((t) => {
-      console.log(t)
-      if (t.error) {
-        throw new Error('Error checking token');
-      } else {
-        let token = t.token;
-        return { props: { loggedIn: false, token: token } }
-        // return fetchData(token).then((t) => t);
-      }
-    })
-    .catch((err) => {
-      console.log('Error checking token: ', err);
-      if (typeof window !== 'undefined' && window) {
-        if (ctx?.asPath) {
-          window.location.href = ctx?.asPath;
-        } else {
-          window.location.href = '/';
+  const token = (await checkToken(ctx.req, ctx.res, { username: process.env.NEXT_PUBLIC_CLIENT_USERNAME, password: process.env.NEXT_PUBLIC_CLIENT_PASSWORD }))?.token
+  const data = {}
+
+  const ownerTypes = [
+    "moh",
+    "faith_based",
+    "private_facilities",
+    "ngo"
+  ]
+
+if(token) {
+    
+    for(let type of ownerTypes) {
+        switch(type) {
+          case 'moh':
+            const moh = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/?owner_type=${type}`, {
+              headers : {
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${token}`
+              }
+            })
+
+            data["moh"] = (await moh.json())?.count
+
+          break; 
+          case 'faith_based':
+            const faith_based = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/?owner_type=${type}`, {
+              headers : {
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${token}`
+              }
+            })
+
+            data["faith_based"] = (await faith_based.json())?.count
+          break;
+          case 'private_facilities':
+            const private_facilities = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/?owner_type=${type}`, {
+              headers : {
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${token}`
+              }
+            })
+
+            data["private_facilities"] = (await private_facilities.json())?.count
+          break; 
+          case 'ngo':
+            const ngo = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/?owner_type=${type}`, {
+              headers : {
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${token}`
+              }
+            })
+
+            data["ngo"] = (await ngo.json())?.count
+          break;
         }
-      }
-      setTimeout(() => {
-        return {
-          error: true,
-          err: err,
-          data: [],
-          query: {},
-          path: ctx.asPath || '/',
-          current_url: '',
-        };
-      }, 1000);
-    });
+    }
+
+
+  return {
+    props: {
+      loggedIn: true,
+      token, 
+      data
+    }
+  }
+} else {
+  return {
+    props : {
+      loggedIn: false,
+      token: null,
+      data: null
+    }
+  }
+}
+  // return checkToken(ctx.req, ctx.res, { username: process.env.NEXT_PUBLIC_CLIENT_USERNAME, password: process.env.NEXT_PUBLIC_CLIENT_PASSWORD })
+  //   .then((t) => {
+  //     console.log(t)
+  //     if (t.error) {
+  //       throw new Error('Error checking token');
+  //     } else {
+  //       let token = t.token;
+  //       return { props: { loggedIn: false, token: token } }
+  //       // return fetchData(token).then((t) => t);
+  //     }
+  //   })
+  //   .catch((err) => {
+  //     console.log('Error checking token: ', err);
+  //     if (typeof window !== 'undefined' && window) {
+  //       if (ctx?.asPath) {
+  //         window.location.href = ctx?.asPath;
+  //       } else {
+  //         window.location.href = '/';
+  //       }
+  //     }
+  //     setTimeout(() => {
+  //       return {
+  //         error: true,
+  //         err: err,
+  //         data: [],
+  //         query: {},
+  //         path: ctx.asPath || '/',
+  //         current_url: '',
+  //       };
+  //     }, 1000);
+  //   });
 
 }
 
