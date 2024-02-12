@@ -12,9 +12,8 @@ module.exports = {
         },
         color:{
             'django-blue': '#d2e2ed',
-            'charred-paper': 'whitesmoke',
             'light-grey':'#eff6ff',
-            'moh-blue': '#1651b6'
+            
         }
     },
     variants: {
@@ -25,4 +24,5 @@ module.exports = {
     plugins: [
         
     ],
+    
 }
