@@ -142,7 +142,7 @@ function Home(props) {
 
                   {/* Title */}
 
-                  <h2 style={{ color: '#1651b6' }} className=' leading-4 font-semibold text-3xl uppercase'>Kenya Master Health Facility Registry</h2>
+                  <h2 /*style={{ color: '#1651b6' }}*/ className=' leading-4 font-semibold text-2xl uppercase'>Kenya Master Health Facility Registry</h2>
                 </div>
 
                 {/* Login Button */}
