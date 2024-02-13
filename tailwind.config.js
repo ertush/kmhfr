@@ -1,7 +1,7 @@
 const plugin = require('tailwindcss/plugin')
 module.exports = {
     mode: 'aot',
-    purge: ['./pages/**/*.{js,ts,jsx,tsx}', './components/**/*.{js,ts,jsx,tsx}'],
+    content: ['./pages/**/*.{js,ts,jsx,tsx}', './components/**/*.{js,ts,jsx,tsx}'],
     theme: {
         fontFamily: {
             'serif': ['serif'],
@@ -15,11 +15,7 @@ module.exports = {
             
         }
     },
-    variants: {
-        extend: {
-            
-        },
-    },
+  
     plugins: [
         
     ],
