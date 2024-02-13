@@ -2,6 +2,7 @@ import { EyeIcon, EyeOffIcon } from '@heroicons/react/outline'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import React from 'react'
+import Link from 'next/link'
 
 const Login = (props) => {
     const router = useRouter()
@@ -22,17 +23,18 @@ const Login = (props) => {
             <div className="w-full h-screen overflow-hidden bg-gray-200 flex flex-col gap-2 items-center justify-center p-3 md:p-0">
                 <div className="w-full flex flex-col max-w-screen-sm items-center justify-between px-2">
                     <div className="text-center text-5xl w-full font-black text-gray-700 flex justify-center gap-x-2 items-center h-24">
-                        <img src="/MOH.png" className="h-24" alt="KMHFR 3" />
-                        <div className='leading-none tracking-tight flex gap-x-2 justify-center items-center text-black font-bold relative'>
-                            <span className="text-6xl leading-none top-0">KMHFR</span>
+                        <img src="/MOH.png" className="h-24" alt="Court of Arms" />
+                        <div className='flex flex-col max-w-min gap-y-[1px] items-start justify-center '>
+                            <span className="text-5xl leading-none top-0">KMHFR</span>
+                            <span className='text-base flex-1 min-w-max text-start tracking-10 font-semi-bold'>Ministry of health</span>
                             {/* <span className="text-sm bg-yellow-300 rounded-sm shadow border border-yellow-400 leading-none text-yellow-900 p-1 absolute -bottom-3 -right-4">
                             v3
                             </span> */}
                         </div>
                        
                     </div>
-                    <div className="flex items-center justify-start w-full py-3">
-                        <Link className="text-blue-800 text-lg font-medium hover:underline focus:underline active:underline" href="/">&larr; Back home</Link>
+                    <div className="flex items-center hover:underline justify-start w-full py-3">
+                        <Link className="text-blue-800 text-lg font-medium  focus:underline active:underline" href="/">&larr; Back home</Link>
                     </div>
                 </div>
                 <form onSubmit={ev => {

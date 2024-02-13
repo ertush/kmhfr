@@ -1,15 +1,16 @@
 import Head from 'next/head';
 import Link from 'next/link';
 import MainLayout from '../../../components/MainLayout';
-import {DotsHorizontalIcon} from '@heroicons/react/solid';
+import { DotsHorizontalIcon } from '@heroicons/react/solid';
 import { checkToken } from '../../../controllers/auth/public_auth';
 import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
-import {SearchIcon } from "@heroicons/react/solid";
+// import { SearchIcon } from "@heroicons/react/solid";
 import Select from 'react-select'
 
 
 function Home(props) {
+
 	const router = useRouter();
 	// const cus = props?.data?.results;
 	const [cus, setcus] = useState([])
@@ -19,7 +20,7 @@ function Home(props) {
 	const [viewAll, setViewAll] = useState(false);
 	const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
-	const code=useRef(null)
+	const code = useRef(null)
 	const allchus = useRef(null)
 	const name = useRef(null)
 	const county = useRef(null)
@@ -29,12 +30,12 @@ function Home(props) {
 
 	const status_options = props.filters?.chu_status || props.filters?.status || [];
 	const counties = props?.filters?.county || [];
-	const [units, setUnits]=useState([])
-	const st =useRef(null)
+	const [units, setUnits] = useState([])
+	const st = useRef(null)
 
 
 	useEffect(() => {
-		
+
 		let qry = props?.query;
 		delete qry.searchTerm;
 		delete qry.qf
@@ -45,78 +46,83 @@ function Home(props) {
 		}
 
 	}, [filters]);
+
+
 	useEffect(() => {
-		if(props?.current_url.includes('search')|| router.asPath.includes('search')){
+		if (props?.current_url.includes('q') || router.asPath.includes('q')) {
 			setViewAll(true)
 			setcus(props?.data)
 
-		}else{
+		} else {
 			setViewAll(false)
 		}
-		
+
 	}, [props?.current_url]);
 
 	useEffect(() => {
+		if (!(props?.current_url.includes('q') || router.asPath.includes('q'))) {
+
 		setViewAll(true)
 		filterCHUs()
+		}
 	}, [])
 
-	const administrative_units= [
-		{label:'county', ref:county,array: counties},
-		{label: 'subcounty', ref:subcounty, array: units['sub_counties']},
-		{label: 'constituency', ref:constituency, array: units['sub_counties']},
-		{label: 'wards', ref:ward, array: units['wards']}
+	const administrative_units = [
+		{ label: 'county', ref: county, array: counties },
+		{ label: 'subcounty', ref: subcounty, array: units['sub_counties'] },
+		{ label: 'constituency', ref: constituency, array: units['sub_counties'] },
+		{ label: 'wards', ref: ward, array: units['wards'] }
 	]
 
-	
+
 	const getUnits = async (path, id) => {
-		try{
+		try {
 			let url = `/api/common/fetch_form_data/?path=${path}&id=${id}`
 
 			const response = await fetch(url, {
-				headers:{
+				headers: {
 					'Accept': 'application/json, text/plain, */*',
 					'Content-Type': 'application/json',
 				},
-				method:'GET'
+				method: 'GET'
 			})
 
 			let results = await response.json()
 			let res = {}
-			res[path]= results.results
-			setUnits({...units,...res})
-			
-		}catch (err){
-			
+			res[path] = results.results
+			setUnits({ ...units, ...res })
+
+		} catch (err) {
+
 		}
 	}
 
 	const filterCHUs = async (e) => {
-		if(e !== undefined){
+		if (e !== undefined) {
 			e.preventDefault()
 		}
-		let url = API_URL +`/chul/units/?fields=id,code,name,status_name,date_established,facility,facility_name,facility_county,facility_subcounty,facility_ward,facility_constituency`
-		const filter_options ={
+		let url = API_URL + `/chul/units/?fields=id,code,name,status_name,date_established,facility,facility_name,facility_county,facility_subcounty,facility_ward,facility_constituency`
+		const filter_options = {
 			name: name.current.value,
 			code: code.current.value,
 			status: st?.current?.state?.value?.value || '',
-			county: county?.current?.state?.value?.value|| '',
+			county: county?.current?.state?.value?.value || '',
 			sub_county: subcounty?.current?.state?.value?.value || '',
-			constituency: constituency?.current?.state?.value?.value|| '',
-			ward:ward?.current?.state?.value?.value|| ''
+			constituency: constituency?.current?.state?.value?.value || '',
+			ward: ward?.current?.state?.value?.value || ''
 		}
-		
+
 		let qry = Object.keys(filter_options).map(function (key) {
-			if(filter_options[key] !== ''){
+			if (filter_options[key] !== '') {
 				let er = (key) + '=' + (filter_options[key]);
 				return er
 			}
-         }).filter(Boolean).join('&')
-		
-		if(qry !== ''){
+		}).filter(Boolean).join('&')
+
+		if (qry !== '') {
 			url += `&${qry}`
 		}
-		if(allchus.current.value !== ''){
+		if (allchus.current.value !== '') {
 			url += `&search={"query":{"query_string":{"default_field":"name","query":"${allchus.current.value}"}}}`
 		}
 
@@ -159,177 +165,179 @@ function Home(props) {
 								{'/'}
 								<span className='text-gray-500'>Community Units</span>
 							</div>
-							<div className={"col-span-5 flex shadow-md justify-between w-full bg-gray-50 drop-shadow  text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-blue-600" : "border-red-600")}>
-                                <h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
-                                    {'Community Units'}
-                                </h2>
+							<div className={"col-span-5 flex shadow-md justify-between w-full bg-gray-50  text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-blue-600" : "border-red-600")}>
+								<h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
+									{'Community Units'}
+								</h2>
 								<p>Use the form on the left to filter CHUs or &nbsp;
-								 <button className='text-lg text-blue-500 font-semibold' 
-								 onClick={()=>{
-									setViewAll(true)
-									filterCHUs()
-								}
-								}
-								>view all CHUs</button></p>
-                               
-                        </div>
+									<button className='text-lg text-blue-500 font-semibold'
+										onClick={() => {
+											setViewAll(true)
+											filterCHUs()
+										}
+										}
+									>view all CHUs</button></p>
+
+							</div>
 
 						</div>
-							
+
 					</div>
-				
-                    {/* Filter section */}
-					<form className='col-span-1 w-full flex flex-col item-center justify-start md:col-start-1 gap-8' onSubmit={(e)=>filterCHUs(e)}>
+
+					{/* Filter section */}
+					<form className='col-span-1 w-full flex flex-col item-center justify-start md:col-start-1 gap-8' onSubmit={(e) => filterCHUs(e)}>
+
+						<div className='flex flex-row gap-4'>
+
+							<button
+								type="submit"
+								className="bg-gray-500  text-gray-50 flex place-content-center gap-2 p-2"
+							>
+								<span>Search</span>
+								{/* <SearchIcon className="w-5 h-5 " />  */}
+							</button>
+							<button
+								type="button"
+								className="bg-gray-50 border-1 border-black text-black flex items-center justify-center px-4 py-1 "
+								onClick={() => {
+									setDrillDown({})
+									name.current.value = '', code.current.value = '', st.current.select.clearValue(), allchus.current.value = '',
+										county.current.select.clearValue(), subcounty.current.select.clearValue(), ward.current.select.clearValue(), constituency.current.select.clearValue()
+								}}
+							>Reset
+							</button>
+						</div>
 						{/* <div className='card flex flex-wrap'> */}
 						<div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '50px' }}>
 
-									<h2>Search for a Community Health Unit</h2>
-									{/* &nbsp; */}
-									<input
-										name="allchus"
-										ref={allchus}
-										id="search-input"
-										className="flex-none bg-gray-50  p-2 flex-grow shadow-sm border placeholder-gray-500 w-full border-gray-400 focus:shadow-none focus:bg-white focus:border-black outline-none"
-										type="search"
-										placeholder="Search all CHUs"
-									/>                          
+							<h2>Search for a Community Health Unit</h2>
+							{/* &nbsp; */}
+							<input
+								name="allchus"
+								ref={allchus}
+								id="search-input"
+								className="flex-none bg-gray-50  p-2 flex-grow shadow-sm mt-2 border placeholder-gray-500 w-full border-gray-400 focus:shadow-none focus:bg-white focus:border-black outline-none"
+								type="search"
+								placeholder="Search all CHUs"
+							/>
 						</div>
-						
+
 						<div className="card col-span-6 md:col-span-2 flex flex-col gap-3 items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '50px' }}>
-									<h2>Community Health Info</h2>
-									
-									{/* <label className=" text-gray-600">CHU Name</label> */}
-									<input
-										name="name"
-										ref={name}
-										id="search-input"
-										className="flex-none bg-gray-50  p-2 flex-grow shadow-sm border placeholder-gray-500 w-full border-gray-400 focus:shadow-none focus:bg-white focus:border-black outline-none"
-										type="search"
-										placeholder="CHU Name"
-									/>    
-										
-									{/* <label className=" text-gray-600">CHU Code</label> */}
-									<input
-										name="code"
-										ref={code}
-										id="search-input"
-										className="flex-none bg-gray-50  p-2 flex-grow shadow-sm border placeholder-gray-500 w-full border-gray-400 focus:shadow-none focus:bg-white focus:border-black outline-none"
-										type="search"
-										placeholder="CHU Code"
-									/>  
-										
-									{/* <label className=" text-gray-600">Status</label> */}
-										<Select name={'status'} ref={st} id={'status'} className="w-full max-w-xs  border border-gray-400"
-										styles={{
-											control: (baseStyles) => ({
-												...baseStyles,
-												backgroundColor: 'transparent',
-												outLine: 'none',
-												border: 'none',
-												outLine: 'none',
-												textColor: 'transparent',
-												padding: 0,
-												height: '4px'
-											}),
-				
-										}}
-										options={
-											(() => {
-													let opts = [...Array.from(status_options || [],
-														fltopt => {
-															if (fltopt.id != null && fltopt.id.length > 0) {
-																return {
-																	value: fltopt.id, label: fltopt.name 
-																}
-															}
-														})]
-													return opts
-											})()
-										}
-										placeholder={`Select status`}
-										/>
+							<h2>Community Health Info</h2>
+
+							{/* <label className=" text-gray-600">CHU Name</label> */}
+							<input
+								name="name"
+								ref={name}
+								id="search-input"
+								className="flex-none bg-gray-50  p-2 flex-grow shadow-sm border placeholder-gray-500 w-full border-gray-400 focus:shadow-none focus:bg-white focus:border-black outline-none"
+								type="search"
+								placeholder="CHU Name"
+							/>
+
+							{/* <label className=" text-gray-600">CHU Code</label> */}
+							<input
+								name="code"
+								ref={code}
+								id="search-input"
+								className="flex-none bg-gray-50  p-2 flex-grow shadow-sm border placeholder-gray-500 w-full border-gray-400 focus:shadow-none focus:bg-white focus:border-black outline-none"
+								type="search"
+								placeholder="CHU Code"
+							/>
+
+							{/* <label className=" text-gray-600">Status</label> */}
+							<Select name={'status'} ref={st} id={'status'} className="w-full max-w-xs  border border-gray-400"
+								styles={{
+									control: (baseStyles) => ({
+										...baseStyles,
+										backgroundColor: 'transparent',
+										outLine: 'none',
+										border: 'none',
+										outLine: 'none',
+										textColor: 'transparent',
+										padding: 0,
+										height: '4px'
+									}),
+
+								}}
+								options={
+									(() => {
+										let opts = [...Array.from(status_options || [],
+											fltopt => {
+												if (fltopt.id != null && fltopt.id.length > 0) {
+													return {
+														value: fltopt.id, label: fltopt.name
+													}
+												}
+											})]
+										return opts
+									})()
+								}
+								placeholder={`Select status`}
+							/>
 						</div>
-					
+
 						<div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '50px' }}>
 							<h2>Administrative Units</h2> &nbsp;
-							<div  className="w-full max-w-xs flex flex-col gap-3 items-start justify-start mb-3" id='first'>
-								{administrative_units?.map(ct=>(
+							<div className="w-full max-w-xs flex flex-col gap-3 items-start justify-start mb-3" id='first'>
+								{administrative_units?.map(ct => (
 									<>
-									{/* <label htmlFor={ct.label} className="text-gray-600 capitalize text-sm ml-1">{ct.label}:</label> */}
-									<Select name={ct.label}  ref={ct.ref} defaultValue={drillDown[ct.label] || "national"} id={ct.label} className="w-full max-w-xs border border-gray-400"
-										styles={{
-											control: (baseStyles) => ({
-												...baseStyles,
-												backgroundColor: 'transparent',
-												outLine: 'none',
-												border: 'none',
-												outLine: 'none',
-												textColor: 'transparent',
-												padding: 0,
-												height: '4px'
-											}),
-				
-										}}  
-										options={
-											(() => {
+										{/* <label htmlFor={ct.label} className="text-gray-600 capitalize text-sm ml-1">{ct.label}:</label> */}
+										<Select name={ct.label} ref={ct.ref} defaultValue={drillDown[ct.label] || "national"} id={ct.label} className="w-full max-w-xs border border-gray-400"
+											styles={{
+												control: (baseStyles) => ({
+													...baseStyles,
+													backgroundColor: 'transparent',
+													outLine: 'none',
+													border: 'none',
+													outLine: 'none',
+													textColor: 'transparent',
+													padding: 0,
+													height: '4px'
+												}),
+
+											}}
+											options={
+												(() => {
 													let opts = [...Array.from(ct.array || [],
 														fltopt => {
 															if (fltopt.id != null && fltopt.id.length > 0) {
 																return {
-																	value: fltopt.id, label: fltopt.name 
+																	value: fltopt.id, label: fltopt.name
 																}
 															}
 														})]
 													return opts
-											})()
-										}
-										placeholder={`Select ${ct.label}`}
-										onChange={sl => {
-											let nf = {}
-											if (sl && sl !== null && typeof sl === 'object' && !Array.isArray(sl)) {
-												nf[ct.label] = sl.value
-											} else {
-												delete nf[ct.label]
+												})()
 											}
-											ct.label == 'county' && sl?.value !== undefined && getUnits('sub_counties', sl?.value)
-											ct.label == 'subcounty' && sl?.value !== undefined && getUnits('wards', sl?.value)
-										}} 
+											placeholder={`Select ${ct.label}`}
+											onChange={sl => {
+												let nf = {}
+												if (sl && sl !== null && typeof sl === 'object' && !Array.isArray(sl)) {
+													nf[ct.label] = sl.value
+												} else {
+													delete nf[ct.label]
+												}
+												ct.label == 'county' && sl?.value !== undefined && getUnits('sub_counties', sl?.value)
+												ct.label == 'subcounty' && sl?.value !== undefined && getUnits('wards', sl?.value)
+											}}
 										/>
 
-								
+
 									</>
 								))}
 							</div>
-							
-						</div>
-						
-						<div className='flex flex-row gap-4'> 
 
-						<button
-							type="submit"
-							className="bg-gray-500  text-gray-50 flex place-content-center gap-2 p-2"
-						>
-							<span>Search</span>
-							<SearchIcon className="w-5 h-5 " /> 
-						</button>  
-						<button
-							type="button"
-							className="bg-gray-50 border-1 border-black text-black flex items-center justify-center px-4 py-1 "
-							onClick={()=>{
-								setDrillDown({})
-								name.current.value ='',code.current.value='', st.current.select.clearValue(), allchus.current.value = '',
-								county.current.select.clearValue(),subcounty.current.select.clearValue(),ward.current.select.clearValue(),constituency.current.select.clearValue()
-							}}
-						>Reset
-						</button>  
 						</div>
+
+
 					</form>
-                    
 
-                     {/* Main body */}
-					<div className="col-span-6 md:col-span-4 flex h-[696px] overflow-scroll bg-gray-50 shadow-md flex-col gap-4 order-last md:order-none"> {/* CHANGED colspan */}
 
-					    {/* <div className='mx-4 float-right'>
+					{/* Main body */}
+					<div className="col-span-6 md:col-span-4 flex max-h-min overflow-scroll bg-gray-50 shadow-md flex-col gap-4 order-last md:order-none"> {/* CHANGED colspan */}
+
+						{/* <div className='mx-4 float-right'>
 							 
 						   {viewAll && <h5 className="text-lg font-medium text-gray-800 float-right">
                                 {cus?.count && cus?.count > 0 && <small className="text-gray-500 ml-2 text-base">{cus?.start_index || 0} - {cus?.end_index || 0} of {cus?.count || 0} </small>}
@@ -344,17 +352,16 @@ function Home(props) {
 										className='px-1 md:px-3 grid grid-cols-8 gap-3 border-b border-gray-400 py-4 hover:bg-gray-50 w-full'>
 										<div className='col-span-8 flex flex-col gap-1 group items-center justify-start text-left'>
 											<h3 className='text-2xl w-full'>
-												<a
+												<Link
 													href={'/public/chu/' + comm_unit.id}
-													// href={'#'}
 													className='hover:text-blue-800 group-focus:text-blue-800 active:text-blue-800'>
-													<small className='text-gray-500'>
-														{index + props?.data?.start_index}.
-													</small>{' '}
-													{comm_unit.official_name ||
+														
+													{		
 														comm_unit.official_name ||
-														comm_unit.name}
-												</a>
+														comm_unit.official_name ||
+														comm_unit.name
+													}
+												</Link>
 											</h3>
 											{/* <p className="text-sm text-gray-600 w-full">{comm_unit.nearest_landmark || ' '}{' '} {comm_unit.location_desc || ' '}</p> */}
 											<p className='text-sm text-gray-600 w-full flex gap-2 items-center'>
@@ -411,10 +418,10 @@ function Home(props) {
 															.includes('non-')
 															? ' bg-red-200 border-red-300/60'
 															: comm_unit.status_name
-																	.toLocaleLowerCase()
-																	.includes('fully')
-															? ' bg-blue-200 border-blue-300/60'
-															: ' bg-yellow-200 border-yellow-300/60')
+																.toLocaleLowerCase()
+																.includes('fully')
+																? ' bg-blue-200 border-blue-300/60'
+																: ' bg-yellow-200 border-yellow-300/60')
 													}>
 													{comm_unit.status_name[0].toLocaleUpperCase()}
 													{comm_unit.status_name.slice(1).toLocaleLowerCase()}
@@ -455,21 +462,21 @@ function Home(props) {
 							{viewAll && cus?.results && cus?.results.length >= 30 && (
 								<ul className='list-none flex p-2 flex-row gap-2 w-full items-center my-2'>
 									<li className='text-base text-gray-600'>
-		
+
 										<a
 											href={
-												(() => 
-												props.path.includes('?page') ?
-												props.path.replace(/\?page=\d+/,`?page=${cus?.current_page}`)
-												:
-												props.path.includes('?q') && props.path.includes('&page') ?
-												props.path.replace(/&page=\d+/, `&page=${cus?.current_page}`)
-												:
-												props.path.includes('?q') ?
-												`${props.path}&page=${cus?.current_page}`                                    
-												:
-												`${props.path}?page=${cus?.current_page}`
-											)()
+												(() =>
+													props.path.includes('?page') ?
+														props.path.replace(/\?page=\d+/, `?page=${cus?.current_page}`)
+														:
+														props.path.includes('?q') && props.path.includes('&page') ?
+															props.path.replace(/&page=\d+/, `&page=${cus?.current_page}`)
+															:
+															props.path.includes('?q') ?
+																`${props.path}&page=${cus?.current_page}`
+																:
+																`${props.path}?page=${cus?.current_page}`
+												)()
 											}
 											className='text-gray-400 font-semibold p-2 hover:underline active:underline focus:underline'>
 											{cus?.current_page}
@@ -481,19 +488,19 @@ function Home(props) {
 
 												<a
 													href={
-														(() => 
-                                                            props.path.includes('?page') ?
-                                                            props.path.replace(/\?page=\d+/,`?page=${page}`)
-                                                            :
-                                                            props.path.includes('?q') && props.path.includes('&page') ?
-                                                            props.path.replace(/&page=\d+/, `&page=${page}`)
-                                                            :
-                                                            props.path.includes('?q') ?
-                                                            `${props.path}&page=${page}`
-                                                            :
-                                                            `${props.path}?page=${page}`
-                   
-                                                        )()
+														(() =>
+															props.path.includes('?page') ?
+																props.path.replace(/\?page=\d+/, `?page=${page}`)
+																:
+																props.path.includes('?q') && props.path.includes('&page') ?
+																	props.path.replace(/&page=\d+/, `&page=${page}`)
+																	:
+																	props.path.includes('?q') ?
+																		`${props.path}&page=${page}`
+																		:
+																		`${props.path}?page=${page}`
+
+														)()
 													}
 													className='text-blue-800 p-2 hover:underline active:underline focus:underline'>
 													{page}
@@ -503,7 +510,7 @@ function Home(props) {
 									<li className='text-sm text-gray-400 flex'>
 										<DotsHorizontalIcon className='h-3' />
 									</li>
-									
+
 								</ul>
 							)}
 						</div>
@@ -515,7 +522,7 @@ function Home(props) {
 };
 
 Home.getInitialProps = async (ctx) => {
-	
+
 	const API_URL = process.env.NEXT_PUBLIC_API_URL;
 	const fetchFilters = async (token) => {
 		let filters_url =
@@ -545,7 +552,7 @@ Home.getInitialProps = async (ctx) => {
 	const fetchData = async (token) => {
 		let filterQuery = JSON.parse(JSON.stringify(ctx.query));
 		let qry = ''
-		let url =API_URL + `/chul/units/?fields=id,code,name,status_name,date_established,facility,facility_name,facility_county,facility_subcounty,facility_ward,facility_constituency`;	
+		let url = API_URL + `/chul/units/?fields=id,code,name,status_name,date_established,facility,facility_name,facility_county,facility_subcounty,facility_ward,facility_constituency`;
 		let query = { searchTerm: '' };
 		if (ctx?.query?.q) {
 			query.searchTerm = ctx.query.q;
@@ -599,6 +606,7 @@ Home.getInitialProps = async (ctx) => {
 			};
 		}
 	};
+
 	return checkToken(ctx.req, ctx.res)
 		.then((t) => {
 			if (t.error) {

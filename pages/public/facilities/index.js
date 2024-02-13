@@ -310,7 +310,7 @@ function Home(props) {
 							{/* Bread Crumbs */}
 
 							<div className='flex flex-row gap-2 text-sm md:text-base py-3'>
-								<Link className='text-blue-700' href='/public/facilities'>
+								<Link className='text-blue-700' href='/'>
 									Home
 								</Link>
 								{'/'}
@@ -320,16 +320,9 @@ function Home(props) {
 								<h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
 									{'Facilities'}
 								</h2>
-								<p>Use the filters to search for a facility
-									{/* {'   '}
-									<button className='text-lg text-blue-500 hover:underline font-semibold'
-										onClick={() => {
-											setViewAll(true)
-											fetchAllfacilities()
-										}
-										}
-									>view all facilities</button>*/}
-									</p> 
+								<p>
+									Use the filters to search for a facility
+								</p> 
 
 
 							</div>
@@ -696,18 +689,16 @@ function Home(props) {
 										className='px-1 md:px-3 grid grid-cols-8 gap-3 border-b border-gray-400 py-4 hover:bg-gray-50 w-full'>
 										<div className='col-span-8 flex flex-col gap-1 group items-start justify-center  text-left'>
 											<h3 className='text-2xl w-full'>
-												<a
+												<Link
 													href={'/public/facilities/' + hf?.id}
 													className='hover:text-blue-800 group-focus:text-blue-800 active:text-blue-800'>
-													<small className='text-gray-500'>
-														{/* {index + props?.data?.start_index}. */}
-													</small>{' '}
-													{	
-														hf?.official_name ||
-														hf?.official_name ||
-														hf?.name
-													}
-												</a>
+													
+														{	
+															hf?.official_name ||
+															hf?.official_name ||
+															hf?.name
+														}
+												</Link>
 											</h3>
 											{/* <p className="text-sm text-gray-600 w-full">{comm_unit.nearest_landmark || ' '}{' '} {comm_unit.location_desc || ' '}</p> */}
 											<p className='text-sm text-gray-600 w-full flex gap-2 items-center'>
