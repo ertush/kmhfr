@@ -32,7 +32,7 @@ const Login = (props) => {
                        
                     </div>
                     <div className="flex items-center justify-start w-full py-3">
-                        <a className="text-blue-800 text-lg font-medium hover:underline focus:underline active:underline" href="/">&larr; Back home</a>
+                        <Link className="text-blue-800 text-lg font-medium hover:underline focus:underline active:underline" href="/">&larr; Back home</Link>
                     </div>
                 </div>
                 <form onSubmit={ev => {

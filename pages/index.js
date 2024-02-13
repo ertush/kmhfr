@@ -1,14 +1,14 @@
 import Head from 'next/head'
 import Link from 'next/link'
 import Image from 'next/image'
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import { getUserDetails } from "../controllers/auth/public_auth";
 import { checkToken } from '../controllers/auth/public_auth';
 import { Login } from '@mui/icons-material'
 import { NorthEast } from '@mui/icons-material'
 import propTypes from 'prop-types'
-
+import Select from 'react-select'
 
 function Home(props) {
 
@@ -17,8 +17,9 @@ function Home(props) {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [_, setUser] = useState(null);
   const [isClient, setIsClient] = useState(null);
+  const [searchOption, setSearchOption] = useState('Facilities');
 
-  const mohRef = useRef(null)
+  
 
   let API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -54,7 +55,11 @@ function Home(props) {
               setIsLoggedIn(false);
               setUser(null);
             } else {
-              usr.id == 6 ? setIsLoggedIn(false) : setIsLoggedIn(true);
+              
+              if(usr.type !== undefined) {
+                 usr.type == 6  ? setIsLoggedIn(false) : setIsLoggedIn(true);
+              }
+
               setUser(usr);
 
             }
@@ -81,7 +86,7 @@ function Home(props) {
 
 
     if (mtd) {
-      isLoggedIn ? router.push('/dashboard') : router.push('/')
+      if(isLoggedIn) router.push('/dashboard') 
     }
 
     return () => {
@@ -110,6 +115,7 @@ function Home(props) {
 
   if (isClient) {
 
+ 
     return (
       <>
         <Head>
@@ -125,18 +131,18 @@ function Home(props) {
               <div className='w-full flex justify-between py-4 max-h-min '>
                 <div className='flex gap-6 items-center'>
                   {/* Logo */}
-                  <a
+                  <Link
                     href="/"
                     className="leading-none tracking-tight flex justify-center items-center text-black font-bold relative"
                   >
 
                     <Image src="/moh_court_of_arms.png" alt="logo" height="56" width="85" />
 
-                  </a>
+                  </Link>
 
                   {/* Title */}
 
-                  <h2 style={{ color: '3#1651b6' }} className=' leading-4 font-semibold text-xl uppercase'>Kenya Master Health Facility Registry</h2>
+                  <h2 style={{ color: '#1651b6' }} className=' leading-4 font-semibold text-3xl uppercase'>Kenya Master Health Facility Registry</h2>
                 </div>
 
                 {/* Login Button */}
@@ -224,7 +230,7 @@ function Home(props) {
                   <Link href='/public/facilities'>Facilities</Link>
                 </li>
                 <li className='text-base font-semibold capitalize text-gray-100 hover:border-b-2 hover:border-gray-100'>
-                  <Link href='/public/cu'>Community Units</Link>
+                  <Link href='/public/chu'>Community Units</Link>
                 </li>
                 <li className='text-base font-semibold capitalize text-gray-100 hover:border-b-2 hover:border-gray-100'>
                   <Link href='/public/faq'>FAQs</Link>
@@ -252,8 +258,84 @@ function Home(props) {
 
 
               <div className='w-[60%] left-[20%] bottom-[26%] absolute h-auto bg-gray-200 bg-opacity-40 p-5 flex place-content-center'>
-                <form className='w-full bg-gray-100 flex'>
-                  <input placeholder="Search for a facility" className=' w-full border-none h-12 p-3 outline-none placeholder-gray-500' />
+                <form className='w-full bg-gray-100 flex' onSubmit={
+                    (e) => {
+                      e.preventDefault();
+
+                      const formDataEntries = new FormData(e.target)
+                      const formData = Object.fromEntries(formDataEntries)
+
+                      if(searchOption == "Facilities"){
+                        router.push({pathname: '/public/facilities', query:{
+                          find: 'Facilities',
+                          q: formData.search
+                        }})
+                      }
+                      else
+                      {
+                         router.push({pathname:"/public/chu/community_units", query:{
+                            find: 'chu',
+                            q: formData.search
+                         }})
+                      
+                      }
+                    }
+                  }>
+                  <input placeholder={`Search for a ${searchOption == 'Facilities' ? 'facility' : 'community health unit'}`} name="search" type="text" className=' w-full border-none h-12 p-3 outline-none placeholder-gray-500' />
+
+                  <Select
+                  readOnly 
+                  styles={{
+                    control: (_) => {
+                      // console.log({baseStyles})
+                      return {
+                        // background: "inherit",
+                        boxSizing: "border-box",
+                        cursor: "default",
+                        display: "flex",
+                        flexWrap: "wrap",
+                        justifyContent: "space-between",
+                        label: "control",
+                        
+                        outline: "0 !important",
+                        position: "relative",
+                        transition: "all 100ms",                      
+                        outLine: 'none',
+                        borderTop: 'none',
+                        borderBottom: 'none',
+                        borderLeft: 'none',
+                        margin: 0
+                      }
+                     
+                
+                    },
+                  }}
+
+                  options={
+                    [
+                      {
+                        label:'Facilities',
+                        value: 'facilities'
+                      },
+                      {
+                        label:'Community Health Units',
+                        value: 'chus'
+                      },
+                      
+                    ]
+                  }
+                  defaultValue={{
+                    label:'Facilities',
+                    value: 'facilities'
+                  }}
+                  placeholder="Select Category"
+                  name="facility_name"
+                  onChange={(e) => setSearchOption(e.label)}
+                  id="facility_name"
+                  className='flex-none bg-white focus:ring-0 p-1 max-h-min focus:outline-none rounded-none  w-[250px] text-gray-600 placeholder-gray-500  flex-grow border-l border-gray-400 outline-none'
+
+
+                  />
                   <button type="submit" className='py-2 px-3 bg-blue-600 text-gray-100 font-semibold '>search</button>
                 </form>
               </div>
@@ -261,23 +343,23 @@ function Home(props) {
 
               <div className="absolute -bottom-[9%] left-[20%] w-[60%] h-auto grid grid-cols-4 place-content-center gap-6">
                 <div style={{ backgroundColor: '#1651b6' }} className='h-36 w-full  rounded py-4 shadow-md flex flex-col justify-start items-center gap-5'>
-                  <h2 className="text-lg font-semibold text-gray-100">Ministy of Health</h2>
-                  <h1 ref={mohRef} id="moh_owner_counter" onMouseOver={e => animateValue(e, 0, 34, 1000)} className="text-5xl font-bold text-gray-100">34</h1>
+                  <h2 className="text-lg font-semibold  flex place-content-center flex-wrap text-gray-100">Ministy of Health Facilities</h2>
+                  <h1 type="moh_owner_counter" onMouseOver={e => animateValue(e, 0, props?.data?.moh, 1000)} className="text-5xl font-bold text-gray-100">{ props?.data?.moh }</h1>
                 </div>
 
                 <div style={{ backgroundColor: '#1651b6' }} className='h-36 w-full  rounded py-4 shadow-md flex flex-col justify-start items-center gap-5'>
-                  <h2 className="text-lg font-semibold text-gray-100">Private</h2>
-                  <h1 id="private_owner_counter" onMouseOver={e => animateValue(e, 0, 30, 1000)} className="text-5xl font-bold text-gray-100">30</h1>
+                  <h2 className="text-lg font-semibold  flex place-content-center flex-wrap text-gray-100">Private Practice Facilities</h2>
+                  <h1 type="private_owner_counter" onMouseOver={e => animateValue(e, 0, props?.data?.private_facilities, 1000)} className="text-5xl font-bold text-gray-100">{ props?.data?.private_facilities }</h1>
                 </div>
 
                 <div style={{ backgroundColor: '#1651b6' }} className='h-36 w-full  rounded py-4 shadow-md flex flex-col justify-start items-center gap-5'>
-                  <h2 className="text-lg font-semibold text-gray-100">Faith Based</h2>
-                  <h1 id="faith_based_owner_counter" onMouseOver={e => animateValue(e, 0, 64, 1000)} className="text-5xl font-bold text-gray-100">64</h1>
+                  <h2 className="text-lg font-semibold  flex place-content-center flex-wrap text-gray-100">Faith Based Facilities</h2>
+                  <h1 type="faith_based_owner_counter" onMouseOver={e => animateValue(e, 0, props?.data?.faith_based, 1000)} className="text-5xl font-bold text-gray-100">{props?.data?.faith_based}</h1>
                 </div>
 
                 <div style={{ backgroundColor: '#1651b6' }} className='h-36 w-full rounded py-4 shadow-md flex flex-col justify-start items-center gap-5'>
-                  <h2 className="text-lg font-semibold text-gray-100">Non Govermental</h2>
-                  <h1 id="non_gov_owner_counter" onMouseOver={e => animateValue(e, 0, 14, 1000)} className="text-5xl font-bold text-gray-100">14</h1>
+                  <h2 className="text-lg font-semibold  flex place-content-center flex-wrap text-gray-100">Non Govermental Facilities</h2>
+                  <h1 type="non_gov_owner_counter" onMouseOver={e => animateValue(e, 0, props?.data?.ngo, 1000)} className="text-5xl font-bold text-gray-100">{props?.data?.ngo}</h1>
                 </div>
 
               </div>
@@ -291,8 +373,9 @@ function Home(props) {
           </div>
 
 
-          <div className='w-[60%] mx-auto flex mt-8'>
+          <div className='w-[60%] mx-auto flex flex-col items-start gap-2 mt-8'>
             <h1 className='text-blue-600 opacity-80 font-semibold text-4xl'>About</h1>
+            <hr className='w-[50px] h-2 opacity-80 bg-blue-600'></hr>
           </div>
 
           {/* Body */}
@@ -332,11 +415,13 @@ function Home(props) {
 
           </div>
 
-          <div className='w-[60%] mx-auto flex mt-8'>
+          <div className='w-[60%] mx-auto flex flex-col items-start gap-2 mt-8'>
             <h1 className='text-blue-600 opacity-80 font-semibold text-4xl'>Partners</h1>
+            <hr className='w-[50px] h-2 opacity-80 bg-blue-600'></hr>
+
           </div>
 
-          <div className="w-[60%] mx-auto mt-12 h-auto mb-8 flex items-center flex-wrap gap-5 justify-center">
+          <div className="w-[60%] mx-auto mt-12 h-auto mb-8 flex items-center flex-wrap gap-5 justify-between">
 
 
             <Link href="https://healthit.uonbi.ac.ke">
@@ -504,86 +589,110 @@ function Home(props) {
 // }
 
 Home.propTypes = {
-  loggedIn: propTypes.string,
-  token: propTypes.string || null,
-  data: propTypes.object | null
+  loggedIn: propTypes.bool,
+  token: propTypes.string, 
+  data:  propTypes.object
 }
+
 
 export async function getServerSideProps(ctx) {
 
   // return {loggedIn: false, token: null}
+
+  ctx?.res?.setHeader(
+    'Cache-Control',
+    'public, s-maxage=10, stale-while-revalidate=59'
+  )
+
   const token = (await checkToken(ctx.req, ctx.res, { username: process.env.NEXT_PUBLIC_CLIENT_USERNAME, password: process.env.NEXT_PUBLIC_CLIENT_PASSWORD }))?.token
   const data = {}
 
   const ownerTypes = [
-    "moh",
-    "faith_based",
-    "private_facilities",
-    "ngo"
+    {moh:"6a833136-5f50-46d9-b1f9-5f961a42249f"},
+    {faith_based:"ca268e6b-7e45-4264-97bf-43b6c68fb21e"},
+    {private_facilities:"d9a0ce65-baeb-4f3b-81e3-083a24403e92"},
+    {ngo:"ffad4810-0bfb-4434-84cb-d2ab9b911c41"}
   ]
 
-if(token) {
+  if(token) {
     
-    for(let type of ownerTypes) {
-        switch(type) {
-          case 'moh':
-            const moh = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/?owner_type=${type}`, {
+    for(let [idx, type] of Object.entries([...Object.values(ownerTypes)])) {
+      // console.log("id", idx, "type", type.moh)
+      
+        switch(idx) {
+          case '0':
+            const moh = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/?owner_type=${type.moh}`, {
               headers : {
                 'Accept': 'application/json',
                 'Authorization': `Bearer ${token}`
               }
-            })
-
-            data["moh"] = (await moh.json())?.count
+            }) 
+           
+            data["moh"] = (await moh.json())?.count 
 
           break; 
-          case 'faith_based':
-            const faith_based = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/?owner_type=${type}`, {
+
+          case '1':
+            const faith_based = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/?owner_type=${type.faith_based}`, {
               headers : {
                 'Accept': 'application/json',
                 'Authorization': `Bearer ${token}`
               }
             })
+            
+                data["faith_based"] = (await faith_based.json())?.count 
 
-            data["faith_based"] = (await faith_based.json())?.count
           break;
-          case 'private_facilities':
-            const private_facilities = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/?owner_type=${type}`, {
+
+          case '2':
+            const private_facilities = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/?owner_type=${type.private_facilities}`, {
               headers : {
                 'Accept': 'application/json',
                 'Authorization': `Bearer ${token}`
               }
             })
 
-            data["private_facilities"] = (await private_facilities.json())?.count
+            data["private_facilities"] = (await private_facilities.json())?.count 
+
           break; 
-          case 'ngo':
-            const ngo = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/?owner_type=${type}`, {
+
+          case '3':
+            const ngo = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/?owner_type=${type.ngo}`, {
               headers : {
                 'Accept': 'application/json',
                 'Authorization': `Bearer ${token}`
               }
-            })
-
+            }) 
+           
             data["ngo"] = (await ngo.json())?.count
+
           break;
         }
-    }
+      }
+         
+    
 
 
   return {
     props: {
-      loggedIn: true,
+      loggedIn: false,
       token, 
       data
     }
   }
+  
+
 } else {
   return {
     props : {
       loggedIn: false,
       token: null,
-      data: null
+      data: {
+        moh:0,
+        faith_based:0,
+        private_facilities: 0,
+        ngo:0
+      }
     }
   }
 }
