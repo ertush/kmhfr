@@ -316,11 +316,11 @@ function Home(props) {
 								{'/'}
 								<span className='text-gray-500'>Facilities</span>
 							</div>
-							<div className={"col-span-5 flex justify-between w-full bg-gray-50 drop-shadow  text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-blue-600" : "border-red-600")}>
+							<div className={"col-span-5 flex justify-between w-full bg-gray-50  text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-blue-600" : "border-red-600")}>
 								<h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
 									{'Facilities'}
 								</h2>
-								<p>Use thew filters to search for a facility
+								<p>Use the filters to search for a facility
 									{/* {'   '}
 									<button className='text-lg text-blue-500 hover:underline font-semibold'
 										onClick={() => {
@@ -694,7 +694,7 @@ function Home(props) {
 									<div
 										key={index}
 										className='px-1 md:px-3 grid grid-cols-8 gap-3 border-b border-gray-400 py-4 hover:bg-gray-50 w-full'>
-										<div className='col-span-8 flex flex-col gap-1 group items-start justify-center gap-3 text-left'>
+										<div className='col-span-8 flex flex-col gap-1 group items-start justify-center  text-left'>
 											<h3 className='text-2xl w-full'>
 												<a
 													href={'/public/facilities/' + hf?.id}
