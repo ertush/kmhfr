@@ -27,7 +27,6 @@ function Home(props) {
 
   useEffect(() => {
 
-
     let mtd = true;
     if (mtd) {
       let is_user_logged_in =
@@ -80,7 +79,6 @@ function Home(props) {
 
 
 
-
   useEffect(() => {
     let mtd = true
 
@@ -107,9 +105,6 @@ function Home(props) {
     };
     window.requestAnimationFrame(step);
   }
-
-
-
 
 
 
@@ -152,66 +147,6 @@ function Home(props) {
                     log in
                   </Link>
                 </div>
-
-                {/* {isLoggedIn ? (
-            <div className="flex flex-wrap items-center gap-3 md:gap-5 px-2 md:flex-grow justify-end">
-              <Menu as="div" className="relative p-2" >
-                <Menu.Button
-                  as="div"
-                  className="flex items-center justify-center gap-1 cursor-pointer"
-                >
-                  <span className="leading-none p-0 inline sm:hidden">
-                    <UserCircleIcon className="h-6 w-6" />
-                  </span>
-                  <span className="leading-none p-0 hidden sm:inline">
-                    {user.full_name || "My account"}
-                  </span>
-                  <span className="leading-none p-0">
-                    <ChevronDownIcon className="h-4 w-5" />
-                  </span>
-                </Menu.Button>
-                <Menu.Items
-                  as="ul"
-                  style={{backgroundColor:"#eff6ff", color: "black", outline:'none'}}
-                  className="list-none shadow-md flex flex-col items-center justify-start gap-2 p-3 absolute mt-3 bg-black right-0 text-white w-40 "
-                >
-
-                  <Menu.Item as="li" className="flex items-center w-full ">
-                    {({ active }) => (
-                      <button
-                        className={`w-full hover:text-blue-600 font-medium cursor-pointer flex items-center ${active && "text-blue-400"
-                          }`}
-                      onClick={() => router.push('/account')}
-                      >
-                      
-                      <AccountCircleOutlinedIcon fontSize="small"/> &nbsp; Profile
-                      
-                      </button>
-                    )}
-                  </Menu.Item>
-                
-                  <Menu.Item
-                    as="li"
-
-                    className="flex items-center w-full gap-1 mt-2 border-t border-gray-300 py-2"
-                  >
-                    {({ active }) => (
-                      <a
-                        data-testid="logout"
-                        className={`w-full hover:text-blue-600 font-medium ${active && "text-blue-400"
-                          }`}
-                        href="/logout"
-                      >
-                      <LogoutIcon /> &nbsp; Log out
-                      </a>
-                    )}
-                  </Menu.Item>
-                </Menu.Items>
-              </Menu>
-            </div>
-                    ) : (
-                      <DelayedLoginButton />
-                    )} */}
 
               </div>
 
@@ -267,14 +202,12 @@ function Home(props) {
 
                       if(searchOption == "Facilities"){
                         router.push({pathname: '/public/facilities', query:{
-                          find: 'Facilities',
                           q: formData.search
                         }})
                       }
                       else
                       {
-                         router.push({pathname:"/public/chu/community_units", query:{
-                            find: 'chu',
+                         router.push({pathname:"/public/chu", query:{
                             q: formData.search
                          }})
                       
@@ -379,35 +312,38 @@ function Home(props) {
           </div>
 
           {/* Body */}
-          <div className='h-[1200px] items-start w-[60%] mx-auto flex mt-12  gap-8'>
+          <div className='h-[1200px] items-start w-[60%] mx-auto flex-col mt-12 gap-3 '>
 
-            <Image src="/assets/css/images/distribution_map.png" objectFit="contain" width="1200" height="1200" />
+            <p className="text-md">Kenya Master Health Facility Registry (KMHFR) is an application with all health facilities and community units in Kenya. Each health facility and community unit is identified with unique code and their details describing the geographical location, administrative location, ownership, type and the services offered. </p>
 
-            <div className="flex flex-col justify-start mt-8 h-full gap-y-24">
-              <p className="text-base text-justify relative">
-                <h1 className="text-8xl absolute text-blue-600 font-extrabold opacity-30 -top-[40px] -left-[10px]">1</h1>
-                Users can view administrative units (counties, constituencies, wards) and their facilities and Community Health Units. Users can also rate Facilities and Community Health Units.
-              </p>
+           <div className="h-auto w-full flex items-start mt-8 gap-8">      
+              <Image src="/assets/css/images/distribution_map.png" objectFit="contain" width="1200" height="1200" />
+              <div className="flex flex-col justify-start mt-8 h-full gap-y-24">
+                <p className="text-md text-justify relative">
+                  <h1 className="text-8xl absolute text-blue-600 font-extrabold opacity-30 -top-[40px] -left-[10px]">1</h1>
+                  Users can view administrative units (counties, constituencies, wards) and their facilities and Community Health Units. Users can also rate Facilities and Community Health Units.
+                </p>
 
-              <p className="text-base text-justify relative">
-                <h1 className="text-8xl absolute text-blue-600 font-extrabold opacity-30 -top-[40px] -left-[10px]">2</h1>
-                KMHFR provides a list of all health facilities which comes with an advanced search where you can refine your search.
-              </p>
+                <p className="text-md text-justify relative">
+                  <h1 className="text-8xl absolute text-blue-600 font-extrabold opacity-30 -top-[40px] -left-[10px]">2</h1>
+                  KMHFR provides a list of all health facilities which comes with an advanced search where you can refine your search.
+                </p>
 
-              <p className="text-base text-justify relative">
-                <h1 className="text-8xl absolute text-blue-600 font-extrabold opacity-30 -top-[40px] -left-[10px]">3</h1>
-                The system provides a list of all community health units along side an advance search where you can refine your search by using administrative units.
-              </p>
+                <p className="text-md text-justify relative">
+                  <h1 className="text-8xl absolute text-blue-600 font-extrabold opacity-30 -top-[40px] -left-[10px]">3</h1>
+                  The system provides a list of all community health units along side an advance search where you can refine your search by using administrative units.
+                </p>
 
-              <p className="text-base text-justify relative">
-                <h1 className="text-8xl absolute text-blue-600 font-extrabold opacity-30 -top-[40px] -left-[10px]">4</h1>
-                KMHFR provides a RESTful API for developers to use. The documentation is available at <br /> <a className="text-blue-700 group-hover:underline group-hover:text-gray-50 focus:underline active:underline" href="https://mfl-api-docs.readthedocs.io/en/latest/" target="_blank" rel="noopener noreferrer">https://mfl-api-docs.readthedocs.io/en/latest</a>
-              </p>
+                <p className="text-md text-justify relative">
+                  <h1 className="text-8xl absolute text-blue-600 font-extrabold opacity-30 -top-[40px] -left-[10px]">4</h1>
+                  KMHFR provides a RESTful API for developers to use. The documentation is available at <br /> <a className="text-blue-700 group-hover:underline group-hover:text-gray-50 focus:underline active:underline" href="https://mfl-api-docs.readthedocs.io/en/latest/" target="_blank" rel="noopener noreferrer">https://mfl-api-docs.readthedocs.io/en/latest</a>
+                </p>
 
-              <p className="text-base text-justify relative">
-                <h1 className="text-8xl absolute text-blue-600 font-extrabold opacity-30 -top-[40px] -left-[10px]">5</h1>
-                To learn all about KMHFR, its implementation and how to use it here (<a className="text-blue-700 group-hover:underline group-hover:text-white focus:underline active:underline" target="_blank" rel="noopener noreferrer" href="https://elearning.health.go.ke">https://elearning.health.go.ke</a>). Enrol and start learning.
-              </p>
+                <p className="text-md text-justify relative">
+                  <h1 className="text-8xl absolute text-blue-600 font-extrabold opacity-30 -top-[40px] -left-[10px]">5</h1>
+                  To learn all about KMHFR, its implementation and how to use it here (<a className="text-blue-700 group-hover:underline group-hover:text-white focus:underline active:underline" target="_blank" rel="noopener noreferrer" href="https://elearning.health.go.ke">https://elearning.health.go.ke</a>). Enrol and start learning.
+                </p>
+              </div>
             </div>
 
 
@@ -475,18 +411,18 @@ function Home(props) {
                     <h2 className='text-blue-50 font-semibold mb-2'>Quick Links</h2>
                     <div className='flex items-center gap-2'>
                     <Link href="https://healthit.uonbi.ac.ke" className="text-gray-200 hover:underline">HealthIT</Link>
-                    <NorthEast className="text-gray-200 w-2 aspect-square"/>
+                    <NorthEast className="text-gray-200 w-3 aspect-square"/>
                     </div>
 
                     <div className='flex items-center gap-2'>
                     <Link href="https://usaid.gov/kenya" className="text-gray-200 hover:underline">USAID</Link>
-                    <NorthEast className="text-gray-200 w-2 aspect-square"/>
+                    <NorthEast className="text-gray-200 w-3 aspect-square"/>
                     
                     </div>
 
                     <div className='flex items-center gap-2'>
                     <Link href="https://health.go.ke" className="text-gray-200 hover:underline">Ministry of Health</Link>
-                    <NorthEast className="text-gray-200 w-2 aspect-square"/>
+                    <NorthEast className="text-gray-200 w-3 aspect-square"/>
                     
                     </div>
                   </div>
@@ -523,53 +459,7 @@ function Home(props) {
             </div>
           </div>
 
-          {/* <MainLayout isLoading={false} searchTerm={props?.query?.searchTerm}>
-                  <div className="w-full grid grid-cols-2 gap-6 px-3 md:px-4 p-4 my-4 max-w-screen-lg mx-auto">
-                      <div className="col-span-2 p-2 md:p-4 flex flex-col gap-4 items-center justify-center">
-                          <h3 className="text-5xl font-medium text-black">Welcome to KMHFR</h3>
-                          <p className="font-normal text-lg text-gray-900 text-left">
-                              Kenya Master Health Facility List (KMHFR) is an application with all health facilities and community units in Kenya. Each health facility and community unit is identified with unique code and their details describing the geographical location, administrative location, ownership, type and the services offered.
-                          </p>
-                      </div>
-                      <div className="col-span-2 md:col-span-1 hover:border bg-gray-50 shadow-sm ease-in-out delay-150 hover:border-blue-600 group hover:bg-blue-600 hover:text-gray-50 focus:bg-gray-50 active:bg-gray-50 p-4 flex flex-col items-center justify-start">
-                          <Link href="/facilities">
-                              <span className="tex3t-left w-full cursor-pointer  group:hover:text-white font-semibold text-xl">Facilities</span>
-                          </Link>
-                          <p className="text-base">
-                              This provides a list of all health facilities and there is a provided advanced search where you can refine your search.
-                          </p>
-                      </div>
-                      <div className="col-span-2 md:col-span-1 hover:border bg-gray-50 shadow-sm ease-in-out delay-150 hover:border-blue-600 group hover:bg-blue-600 hover:text-gray-50 focus:bg-gray-50 active:bg-gray-50 p-4 flex flex-col items-center justify-start">
-                          <Link href="/community-units">
-                              <span className="tex3t-left w-full cursor-pointer  group:hover:text-white font-semibold text-xl">Community Units</span>
-                          </Link>
-                          <p className="text-base">
-                              This provides a list of all community health units and the system provided advance search where you can refine your search by using administrative units.
-                          </p>
-                      </div>
-                      <div className="col-span-2 md:col-span-1 hover:border bg-gray-50 shadow-sm ease-in-out delay-150 hover:border-blue-600 group hover:bg-blue-600 hover:text-gray-50 focus:bg-gray-50 active:bg-gray-50 p-4 flex flex-col items-center justify-start">
-                          <Link href="/gis">
-                              <span className="tex3t-left w-full cursor-pointer  group:hover:text-white font-semibold text-xl">GIS Explorer</span>
-                          </Link>
-                          <p className="text-base">
-                              This visualizes administrative units (counties, constituencies, wards) and their facilities and Community Health Units. Users can also rate Facilities and Community Health Units.
-                          </p>
-                      </div>
-                      
-                      <div className="col-span-2 md:col-span-1 hover:border bg-gray-50 shadow-sm ease-in-out delay-150 hover:border-blue-600 group hover:bg-blue-600 hover:text-gray-50 focus:bg-gray-50 active:bg-gray-50 p-4 flex flex-col items-center justify-start">
-                          <a href="https://mfl3-api-docs.readthedocs.io/en/latest/" className="text-left w-full cursor-pointer  group:hover:text-white font-semibold text-xl">KMHFR API</a>
-                          <p className="text-base">
-                              This provides a RESTful API for developers to use. The documentation is available at <br /> <a className="text-blue-700 group-hover:underline group-hover:text-gray-50 focus:underline active:underline" href="https://mfl-api-docs.readthedocs.io/en/latest/" target="_blank" rel="noopener noreferrer">https://mfl-api-docs.readthedocs.io/en/latest</a>
-                          </p>
-                      </div>
-                      <div className="col-span-2 md:col-span-1 hover:border bg-gray-50 shadow-sm ease-in-out delay-150 hover:border-blue-600 group hover:bg-blue-600 hover:text-gray-50 focus:bg-gray-50 active:bg-gray-50 p-4 flex flex-col items-center justify-start">
-                          <a className="font-s3emibold text-left text-xl w-full cursor-pointer group-hover:text-white focus:text-black active:text-black" href="https://elearning.health.go.ke" target="_blank" rel="noopener noreferrer">MoH Virtual Academy</a>
-                          <p className="text-base">
-                              You can learn all about KMHFR, its implementation and how to use it here (<a className="text-blue-700 group-hover:underline group-hover:text-white focus:underline active:underline" target="_blank" rel="noopener noreferrer" href="https://elearning.health.go.ke">https://elearning.health.go.ke</a>). Enrol and start learning.
-                          </p>
-                      </div>
-                  </div>
-              </MainLayout> */}
+          
 
 
         </div>
@@ -581,12 +471,7 @@ function Home(props) {
   }
 }
 
-//  Home.defaultProps = {
-//   props : {
-//     loggedIn: false,
-//     token: null
-//   }
-// }
+
 
 Home.propTypes = {
   loggedIn: propTypes.bool,
@@ -696,37 +581,6 @@ export async function getServerSideProps(ctx) {
     }
   }
 }
-  // return checkToken(ctx.req, ctx.res, { username: process.env.NEXT_PUBLIC_CLIENT_USERNAME, password: process.env.NEXT_PUBLIC_CLIENT_PASSWORD })
-  //   .then((t) => {
-  //     console.log(t)
-  //     if (t.error) {
-  //       throw new Error('Error checking token');
-  //     } else {
-  //       let token = t.token;
-  //       return { props: { loggedIn: false, token: token } }
-  //       // return fetchData(token).then((t) => t);
-  //     }
-  //   })
-  //   .catch((err) => {
-  //     console.log('Error checking token: ', err);
-  //     if (typeof window !== 'undefined' && window) {
-  //       if (ctx?.asPath) {
-  //         window.location.href = ctx?.asPath;
-  //       } else {
-  //         window.location.href = '/';
-  //       }
-  //     }
-  //     setTimeout(() => {
-  //       return {
-  //         error: true,
-  //         err: err,
-  //         data: [],
-  //         query: {},
-  //         path: ctx.asPath || '/',
-  //         current_url: '',
-  //       };
-  //     }, 1000);
-  //   });
 
 }
 
