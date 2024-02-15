@@ -40,12 +40,13 @@ const StyledDataGrid = styled(DataGrid)(() => ({
 
 
 
-const AdminOffices = (props) => {
+function AdminOffices(props) {
   
     const router = useRouter()
 
     const userPermissions = useContext(PermissionContext)
     const userCtx = useContext(UserContext)
+    const [isClient, setIsClient] = useState(false)
 
     const rows = props?.data?.results?.map(({ id, county_name, sub_county_name, name, is_national, phone_number, email }) => ({ id, county_name, sub_county_name, name, is_national: is_national == true ? 'Yes' : 'No', phone_number, email }))
     const columns = [
@@ -81,6 +82,7 @@ const AdminOffices = (props) => {
   
 
     useEffect(() => {
+        setIsClient(true)
         setUser(userCtx)
         if(user.id === 6){
             router.push('/auth/login')
@@ -94,26 +96,27 @@ const AdminOffices = (props) => {
     const [officeTheme, setOfficeTheme] = useState([]);
 
 
+    if(isClient) {
     return (
-        <div className="">
+        <>
             <Head>
-                <title>KMHFR - Reports</title>
+                <title>KMHFR - Admin Offices</title>
                 <link rel="icon" href="/favicon.ico" />
             </Head>
             <MainLayout isLoading={false} isFullWidth={false}>
-                <div className="w-full grid grid-cols-7 gap-4 p-1 md:mx-4 my-2">
+                <div className="w-full grid grid-cols-7 mt-8 gap-4 p-1 md:mx-4 my-2">
                     <div className="col-span-7 flex flex-col gap-x-1">
                         <div className="flex flex-wrap items-center justify-between gap-2 text-sm md:text-base py-1">
                             <div className="flex flex-row items-center justify-between gap-x-2 gap-y-0 text-sm md:text-base py-1">
                                 <a className="text-blue-700" href="/">Home</a> {'/'}
-                                <span className="text-gray-500">Adminoffices</span>
+                                <span className="text-gray-500">Admin Offices</span>
                             </div>
-                            <div className={"col-span-5 flex  justify-between w-full  drop-shadow  text-black p-4 md:divide-x bg-gray-50 shadow-md md:divide-gray-200 items-center border-l-8 " + (true && "border-blue-600")}>
+                            <div className={"col-span-5 flex  justify-between w-full  drop-shadow  text-black p-4 md:divide-x bg-transparent border border-blue-600 md:divide-gray-200 items-center border-l-8 " + (true && "border-blue-600")}>
                                 <h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
 
                                     {'Admin Offices'}
                                 </h2>
-                                <button className=' bg-blue-600 p-2 text-white flex items-center text-lg font-semibold'
+                                <button className='bg-blue-600  p-2 text-white flex items-center text-lg font-semibold'
                                     onClick={() => { router.push('admin_offices/add') }}
                                 >
                                     {`Add Admin Office `}
@@ -122,7 +125,7 @@ const AdminOffices = (props) => {
                             </div>
                         </div>
                     </div>
-                    <div className='col-span-1 w-full col-start-1 h-auto bg-gray-50 shadow-sm'>
+                    <div className='col-span-1 w-full col-start-1 h-auto shadow-sm bg-gray-50'>
 
                         <List
                             sx={{ width: '100%', bgcolor: 'transparent', flexGrow: 1, paddingTop:0, paddingBottom: 0 }}
@@ -192,11 +195,22 @@ const AdminOffices = (props) => {
 
                 </div>
             </MainLayout >
-        </div>
+        </>
     )
+    } 
+    else {
+        return null
+    }
 }
 
 AdminOffices.getInitialProps = async (ctx) => {
+
+    ctx?.res?.setHeader(
+        'Cache-Control',
+        'public, s-maxage=10, stale-while-revalidate=59'
+      )
+
+
     const API_URL = process.env.NEXT_PUBLIC_API_URL
 
     const fetchFilters = async token => {

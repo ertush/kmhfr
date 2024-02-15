@@ -66,7 +66,7 @@ const StyledDataGrid = styled(DataGrid)(() => ({
 }))
 
 
-const system_setup = (props) => {
+function SystemSetup(props) {
 
     const userCtx = useContext(UserContext)
 
@@ -1238,15 +1238,15 @@ const system_setup = (props) => {
                         </div> 
 
                         {/* Side Menu */}
-                        <div className='col-span-1 w-full col-start-1 h-auto border border-blue-600'>
+                        <div className='col-span-1 w-full col-start-1 h-auto shadow-sm bg-gray-50'>
                                     <List
-                                        sx={{ width: '100%', bgcolor: 'transparent', flexGrow:1}}
+                                        sx={{ width: '100%', bgcolor: '#f9fafb', flexGrow:1}}
                                         component="div"
                                         aria-labelledby="nested-list-subheader"
                                         
                                         >
                                         {/* Administrative Units */}
-                                        <ListItemButton onClick={handleAdminUnitsClick} sx={{ borderBottom: 'solid 1px #2563eb'}}>
+                                        <ListItemButton onClick={handleAdminUnitsClick} sx={{ borderBottom: 'solid 1px #d3d6db'}}>
                                             <ListItemIcon>
                                                 <AddLocationAlt />
                                             </ListItemIcon>
@@ -1260,7 +1260,7 @@ const system_setup = (props) => {
                                                 sx={{
                                                 backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'county' ? '#2563eb' : 'none'}`, 
                                                 color:`${addBtnLabel.toLocaleLowerCase() == 'county' ? 'white' :'none'}`,
-                                                borderBottom:`${addBtnLabel.toLocaleLowerCase() == 'county' ? 'solid 1px #2563eb': 'solid 1px rgba(156, 163, 175, 1)'}`
+                                                borderBottom:`${addBtnLabel.toLocaleLowerCase() == 'county' ? 'solid 1px #d3d6db': 'solid 1px rgba(156, 163, 175, 1)'}`
                                                 }} 
                                                 onClick={() =>  {setIsAddForm(false); setFields(['id','name', 'code']); setResource('counties'); setResourceCategory('AdminUnits'); setTitle('counties'); setAddBtnLabel('county'); setEditMode(false); setEditID(null) }}>
                                                     <ListItemText primary="Counties" />
@@ -1270,7 +1270,7 @@ const system_setup = (props) => {
                                                 sx={{
                                                     backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'sub county' ? '#2563eb' : 'none'}`, 
                                                     color:`${addBtnLabel.toLocaleLowerCase() == 'sub county' ? 'white' :'none'}`,
-                                                    borderBottom:`${addBtnLabel.toLocaleLowerCase() == 'sub county' ? 'solid 1px #2563eb': 'solid 1px rgba(156, 163, 175, 1)'}`
+                                                    borderBottom:`${addBtnLabel.toLocaleLowerCase() == 'sub county' ? 'solid 1px #d3d6db': 'solid 1px rgba(156, 163, 175, 1)'}`
                                                     }} 
                                                     onClick={() =>  {setIsAddForm(false); setAddBtnLabel('sub county'); setTitle('Sub Counties'); setFields(['id','name', 'code']); setResource('sub_counties')}} 
 
@@ -1282,7 +1282,7 @@ const system_setup = (props) => {
                                                 sx={{
                                                     backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'constituency' ? '#2563eb' : 'none'}`, 
                                                     color:`${addBtnLabel.toLocaleLowerCase() == 'constituency' ? 'white' :'none'}`,
-                                                    borderBottom:`${addBtnLabel.toLocaleLowerCase() == 'constituency' ? 'solid 1px #2563eb': 'solid 1px rgba(156, 163, 175, 1)'}`
+                                                    borderBottom:`${addBtnLabel.toLocaleLowerCase() == 'constituency' ? 'solid 1px #d3d6db': 'solid 1px rgba(156, 163, 175, 1)'}`
                                                     }} 
                                                     onClick={() =>  {setIsAddForm(false); setAddBtnLabel('constituency'); setFields(['id','name', 'code']); setTitle('Constituencies'); setResource('constituencies')}} 
                                                 >
@@ -1294,7 +1294,7 @@ const system_setup = (props) => {
                                                 sx={{
                                                     backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'ward' ? '#2563eb' : 'none'}`, 
                                                     color:`${addBtnLabel.toLocaleLowerCase() == 'ward' ? 'white' :'none'}`,
-                                                    borderBottom:`${addBtnLabel.toLocaleLowerCase() == 'ward' ? 'solid 1px #2563eb': 'solid 1px rgba(156, 163, 175, 1)'}`
+                                                    borderBottom:`${addBtnLabel.toLocaleLowerCase() == 'ward' ? 'solid 1px #d3d6db': 'solid 1px rgba(156, 163, 175, 1)'}`
                                                     }} 
                                                 onClick={() =>  {setIsAddForm(false); setFields(['id','name', 'code', 'county_name', 'constituency_name', 'sub_county_name', 'county']); setTitle('Wards'); setResource('wards'); setResourceCategory('AdminUnits'); setTitle('wards'); setAddBtnLabel('ward'); setEditMode(false); setEditID(null) }}>
                                                     <ListItemText primary="Wards" />
@@ -1304,7 +1304,7 @@ const system_setup = (props) => {
                                                         sx={{
                                                             backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'town' ? '#2563eb' : 'none'}`, 
                                                             color:`${addBtnLabel.toLocaleLowerCase() == 'town' ? 'white' :'none'}`,
-                                                            borderBottom:`${addBtnLabel.toLocaleLowerCase() == 'town' ? 'solid 1px #2563eb': 'solid 1px rgba(156, 163, 175, 1)'}`
+                                                            borderBottom:`${addBtnLabel.toLocaleLowerCase() == 'town' ? 'solid 1px #d3d6db': 'solid 1px rgba(156, 163, 175, 1)'}`
                                                             }} 
                                                 onClick={() =>  {setIsAddForm(false); setFields(['id','name', 'ward_name']); setResource('towns'); setResourceCategory('AdminUnits'); setTitle('Towns'); setAddBtnLabel('town'); setEditMode(false); setEditID(null) }}>
                                                     <ListItemText primary="Towns" />
@@ -1313,7 +1313,7 @@ const system_setup = (props) => {
                                         </Collapse>
 
                                         {/* Service Catalogue */}
-                                        <ListItemButton onClick={handleServiceCatalogueClick}  sx={{ borderBottom: 'solid 1px #2563eb'}}>
+                                        <ListItemButton onClick={handleServiceCatalogueClick}  sx={{ borderBottom: 'solid 1px #d3d6db'}}>
                                             <ListItemIcon>
                                                 <MiscellaneousServices />
                                             </ListItemIcon>
@@ -1327,7 +1327,7 @@ const system_setup = (props) => {
                                                     sx={{
                                                             backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'category' ? '#2563eb' : 'none'}`, 
                                                             color:`${addBtnLabel.toLocaleLowerCase() == 'category' ? 'white' :'none'}`,
-                                                            borderBottom:`${addBtnLabel.toLocaleLowerCase() == 'category' ? 'solid 1px #2563eb': 'solid 1px rgba(156, 163, 175, 1)'}`
+                                                            borderBottom:`${addBtnLabel.toLocaleLowerCase() == 'category' ? 'solid 1px #d3d6db': 'solid 1px rgba(156, 163, 175, 1)'}`
                                                             }} 
                                                 onClick={() =>  {setIsAddForm(false); setFields(['id','name', 'abbreviation', 'description']); setResource('service_categories'); setResourceCategory('ServiceCatalogue'); setTitle('Service categories'); setAddBtnLabel('Service Category'); setEditMode(false); setEditID(null)}}>
                                                     <ListItemText primary="Categories" />
@@ -1337,7 +1337,7 @@ const system_setup = (props) => {
                                                 sx={{
                                                             backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'option group' ? '#2563eb' : 'none'}`, 
                                                             color:`${addBtnLabel.toLocaleLowerCase() == 'option group' ? 'white' :'none'}`,
-                                                            borderBottom:`${addBtnLabel.toLocaleLowerCase() == 'option group' ? 'solid 1px #2563eb': 'solid 1px rgba(156, 163, 175, 1)'}`
+                                                            borderBottom:`${addBtnLabel.toLocaleLowerCase() == 'option group' ? 'solid 1px #d3d6db': 'solid 1px rgba(156, 163, 175, 1)'}`
                                                             }}
                                                 onClick={() =>  {setIsAddForm(false); setFields(['id','name']); setResource('option_groups'); setResourceCategory('ServiceCatalogue'); setTitle('option groups'); setAddBtnLabel('option group'); setEditMode(false); setEditID(null)}}>
                                                     <ListItemText primary="Option Groups" />
@@ -1347,7 +1347,7 @@ const system_setup = (props) => {
                                                 sx={{
                                                     backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'service' ? '#2563eb' : 'none'}`, 
                                                     color:`${addBtnLabel.toLocaleLowerCase() == 'service' ? 'white' :'none'}`,
-                                                    borderBottom:`${addBtnLabel.toLocaleLowerCase() == 'service' ? 'solid 1px #2563eb': 'solid 1px rgba(156, 163, 175, 1)'}`
+                                                    borderBottom:`${addBtnLabel.toLocaleLowerCase() == 'service' ? 'solid 1px #d3d6db': 'solid 1px rgba(156, 163, 175, 1)'}`
                                                     }}
                                                 onClick={() =>  {setIsAddForm(false); setFields(['id','name', 'code', 'abbreviation', 'category_name']); setResource('services'); setResourceCategory('ServiceCatalogue'); setTitle('services'); setAddBtnLabel('service'); setEditMode(false); setEditID(null)}}>
                                                     <ListItemText primary="Services" />
@@ -1357,7 +1357,7 @@ const system_setup = (props) => {
                                         </Collapse>
 
                                         {/* Health Infrastructure */}
-                                        <ListItemButton onClick={handleHealthInfrClick}  sx={{ borderBottom: 'solid 1px #2563eb'}}>
+                                        <ListItemButton onClick={handleHealthInfrClick}  sx={{ borderBottom: 'solid 1px #d3d6db'}}>
                                             <ListItemIcon>
                                                 <LocalHospital />
                                             </ListItemIcon>
@@ -1371,7 +1371,7 @@ const system_setup = (props) => {
                                                     sx={{
                                                         backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'infrastructure category' ? '#2563eb' : 'none'}`, 
                                                         color:`${addBtnLabel.toLocaleLowerCase() == 'infrastructure category' ? 'white' :'none'}`,
-                                                        borderBottom:`${addBtnLabel.toLocaleLowerCase() == 'infrastructure category' ? 'solid 1px #2563eb': 'solid 1px rgba(156, 163, 175, 1)'}`
+                                                        borderBottom:`${addBtnLabel.toLocaleLowerCase() == 'infrastructure category' ? 'solid 1px #d3d6db': 'solid 1px rgba(156, 163, 175, 1)'}`
                                                         }}
                                                     onClick={() =>  {setIsAddForm(false); setFields(['id','name', 'description']); setResource('infrastructure_categories'); setResourceCategory('HealthInfrastructure'); setTitle('Infrastructure categories'); setAddBtnLabel('infrastructure category'); setEditMode(false); setEditID(null)}}>
                                                     <ListItemText primary="Categories" />
@@ -1381,7 +1381,7 @@ const system_setup = (props) => {
                                                     sx={{
                                                         backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'infrastructure' ? '#2563eb' : 'none'}`, 
                                                         color:`${addBtnLabel.toLocaleLowerCase() == 'infrastructure' ? 'white' :'none'}`,
-                                                        borderBottom:`${addBtnLabel.toLocaleLowerCase() == 'infrastructure' ? 'solid 1px #2563eb': 'solid 1px rgba(156, 163, 175, 1)'}`
+                                                        borderBottom:`${addBtnLabel.toLocaleLowerCase() == 'infrastructure' ? 'solid 1px #d3d6db': 'solid 1px rgba(156, 163, 175, 1)'}`
                                                         }}
                                                         onClick={() =>  {setIsAddForm(false); setFields(['id','name', 'category_name', 'numbers']); setResource('infrastructure'); setResourceCategory('HealthInfrastructure'); setTitle('infrastructures'); setAddBtnLabel('infrastructure'); setEditMode(false); setEditID(null)}}>
                                                     <ListItemText primary="Infrastructure" />
@@ -1390,7 +1390,7 @@ const system_setup = (props) => {
                                         </Collapse>
 
                                         {/* Human Resource */}
-                                        <ListItemButton onClick={handleHRClick}  sx={{ borderBottom: 'solid 1px #2563eb'}}>
+                                        <ListItemButton onClick={handleHRClick}  sx={{ borderBottom: 'solid 1px #d3d6db'}}>
                                             <ListItemIcon>
                                                 <ReduceCapacity />
                                             </ListItemIcon>
@@ -1404,7 +1404,7 @@ const system_setup = (props) => {
                                                 sx={{
                                                     backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'human resource category' ? '#2563eb' : 'none'}`, 
                                                     color:`${addBtnLabel.toLocaleLowerCase() == 'human resource category' ? 'white' :'none'}`,
-                                                    borderBottom:`${addBtnLabel.toLocaleLowerCase() == 'human resource category' ? 'solid 1px #2563eb': 'solid 1px rgba(156, 163, 175, 1)'}`
+                                                    borderBottom:`${addBtnLabel.toLocaleLowerCase() == 'human resource category' ? 'solid 1px #d3d6db': 'solid 1px rgba(156, 163, 175, 1)'}`
                                                     }}
                                             onClick={() =>  {setIsAddForm(false); setFields(['id','name', 'description']); setResource('speciality_categories'); setResourceCategory('HR'); setTitle('HR Categories'); setAddBtnLabel('human resource category')}}>
                                                     <ListItemText primary="HR Categories" />
@@ -1414,7 +1414,7 @@ const system_setup = (props) => {
                                                 sx={{
                                                     backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'specialty' ? '#2563eb' : 'none'}`, 
                                                     color:`${addBtnLabel.toLocaleLowerCase() == 'specialty' ? 'white' :'none'}`,
-                                                    borderBottom:`${addBtnLabel.toLocaleLowerCase() == 'specialty' ? 'solid 1px #2563eb': 'solid 1px rgba(156, 163, 175, 1)'}`
+                                                    borderBottom:`${addBtnLabel.toLocaleLowerCase() == 'specialty' ? 'solid 1px #d3d6db': 'solid 1px rgba(156, 163, 175, 1)'}`
                                                     }}
                                                 onClick={() =>  {setIsAddForm(false); setFields(['id','name', 'category_name']); setResource('specialities'); setResourceCategory('HR'); setTitle('specialities'); setAddBtnLabel('specialty')}}>
                                                     <ListItemText primary="Specialities" />
@@ -1423,7 +1423,7 @@ const system_setup = (props) => {
                                         </Collapse>
 
                                         {/* Contacts */}
-                                        <ListItemButton onClick={hanldeConactsClick}  sx={{ borderBottom: 'solid 1px #2563eb'}}>
+                                        <ListItemButton onClick={hanldeConactsClick}  sx={{ borderBottom: 'solid 1px #d3d6db'}}>
                                             <ListItemIcon>
                                                 <Phone />
                                             </ListItemIcon>
@@ -1437,7 +1437,7 @@ const system_setup = (props) => {
                                                     sx={{
                                                         backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'contact type' ? '#2563eb' : 'none'}`, 
                                                         color:`${addBtnLabel.toLocaleLowerCase() == 'contact type' ? 'white' :'none'}`,
-                                                        borderBottom:`${addBtnLabel.toLocaleLowerCase() == 'contact type' ? 'solid 1px #2563eb': 'solid 1px rgba(156, 163, 175, 1)'}`
+                                                        borderBottom:`${addBtnLabel.toLocaleLowerCase() == 'contact type' ? 'solid 1px #d3d6db': 'solid 1px rgba(156, 163, 175, 1)'}`
                                                         }}
                                                     onClick={() =>  {setIsAddForm(false); setFields(['id','name']); setResource('contact_types'); setResourceCategory('Contacts'); setTitle('contact types'); setAddBtnLabel('contact type'); setEditMode(false); setEditID(null)}}>
                                                     <ListItemText primary="Contact Type" />
@@ -1447,7 +1447,7 @@ const system_setup = (props) => {
                                         </Collapse>
 
                                         {/* Facilities */}
-                                        <ListItemButton onClick={handleFacilitiesClick}  sx={{ borderBottom: 'solid 1px #2563eb'}}>
+                                        <ListItemButton onClick={handleFacilitiesClick}  sx={{ borderBottom: 'solid 1px #d3d6db'}}>
                                             <ListItemIcon>
                                                 <MapsHomeWork />
                                             </ListItemIcon>
@@ -1462,7 +1462,7 @@ const system_setup = (props) => {
                                                 sx={{
                                                     backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'facility department' ? '#2563eb' : 'none'}`, 
                                                     color:`${addBtnLabel.toLocaleLowerCase() == 'facility department' ? 'white' :'none'}`,
-                                                    borderBottom:`${addBtnLabel.toLocaleLowerCase() == 'facility department' ? 'solid 1px #2563eb': 'solid 1px rgba(156, 163, 175, 1)'}`
+                                                    borderBottom:`${addBtnLabel.toLocaleLowerCase() == 'facility department' ? 'solid 1px #d3d6db': 'solid 1px rgba(156, 163, 175, 1)'}`
                                                     }}
                                                 onClick={() =>  {setIsAddForm(false); setFields(['']); setResource('facility_depts'); setIsParent(null); setResourceCategory('Facilities'); setTitle('facility departments'); setAddBtnLabel('facility department'); setEditMode(false);}}>
                                                     <ListItemText primary="Facility Departments" />
@@ -1473,7 +1473,7 @@ const system_setup = (props) => {
                                                 sx={{
                                                     backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'facility type detail' ? '#2563eb' : 'none'}`, 
                                                     color:`${addBtnLabel.toLocaleLowerCase() == 'facility type detail' ? 'white' :'none'}`,
-                                                    borderBottom:`${addBtnLabel.toLocaleLowerCase() == 'facility type detail' ? 'solid 1px #2563eb': 'solid 1px rgba(156, 163, 175, 1)'}`
+                                                    borderBottom:`${addBtnLabel.toLocaleLowerCase() == 'facility type detail' ? 'solid 1px #d3d6db': 'solid 1px rgba(156, 163, 175, 1)'}`
                                                     }}
                                                 onClick={() =>  {setIsAddForm(false); setFields(['id','name', 'sub_division']); setIsParent(true); setResource('facility_types'); setResourceCategory('Facilities'); setTitle('facility type details'); setAddBtnLabel('facility type detail'); setEditMode(false);}}>
                                                     <ListItemText primary="Facility Type Details" />
@@ -1484,7 +1484,7 @@ const system_setup = (props) => {
                                                 sx={{
                                                     backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'facility type category' ? '#2563eb' : 'none'}`, 
                                                     color:`${addBtnLabel.toLocaleLowerCase() == 'facility type category'? 'white' :'none'}`,
-                                                    borderBottom:`${addBtnLabel.toLocaleLowerCase() == 'facility type category' ? 'solid 1px #2563eb': 'solid 1px rgba(156, 163, 175, 1)'}`
+                                                    borderBottom:`${addBtnLabel.toLocaleLowerCase() == 'facility type category' ? 'solid 1px #d3d6db': 'solid 1px rgba(156, 163, 175, 1)'}`
                                                     }}
                                                 onClick={() =>  {setIsAddForm(false); setFields(['id','name', 'sub_division']); setIsParent(false); setResource('facility_types'); setResourceCategory('Facilities'); setTitle('facility type categories'); setAddBtnLabel('facility type category'); setEditMode(false);}}>
                                                     <ListItemText primary="Facility Type Categories" />
@@ -1495,7 +1495,7 @@ const system_setup = (props) => {
                                                 sx={{
                                                     backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'facility operation status' ? '#2563eb' : 'none'}`, 
                                                     color:`${addBtnLabel.toLocaleLowerCase() == 'facility operation status'? 'white' :'none'}`,
-                                                    borderBottom:`${addBtnLabel.toLocaleLowerCase() == 'facility operation status' ? 'solid 1px #2563eb': 'solid 1px rgba(156, 163, 175, 1)'}`
+                                                    borderBottom:`${addBtnLabel.toLocaleLowerCase() == 'facility operation status' ? 'solid 1px #d3d6db': 'solid 1px rgba(156, 163, 175, 1)'}`
                                                     }}
                                                 onClick={() =>  {setIsAddForm(false); setFields([]); setResource('facility_status');setIsParent(null); setResourceCategory('Facilities'); setTitle('facility operation statuses'); setAddBtnLabel('facility operation status'); setEditMode(false);}}>
                                                     <ListItemText primary="Facility Operation Status" />
@@ -1506,7 +1506,7 @@ const system_setup = (props) => {
                                                 sx={{
                                                     backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'facility admission status' ? '#2563eb' : 'none'}`, 
                                                     color:`${addBtnLabel.toLocaleLowerCase() == 'facility admission status' ? 'white' :'none'}`,
-                                                    borderBottom:`${addBtnLabel.toLocaleLowerCase() == 'facility admission status' ? 'solid 1px #2563eb': 'solid 1px rgba(156, 163, 175, 1)'}`
+                                                    borderBottom:`${addBtnLabel.toLocaleLowerCase() == 'facility admission status' ? 'solid 1px #d3d6db': 'solid 1px rgba(156, 163, 175, 1)'}`
                                                     }}
                                                 onClick={() =>  {setIsAddForm(false); setFields(['']); setResource('facility_admission_status');setIsParent(null); setResourceCategory('Facilities'); setTitle('facility admission statuses'); setAddBtnLabel('facility admission status'); setEditMode(false);}}>
                                                     <ListItemText primary="Facility Admission Status" />
@@ -1517,7 +1517,7 @@ const system_setup = (props) => {
                                                 sx={{
                                                     backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'feedback' ? '#2563eb' : 'none'}`, 
                                                     color:`${addBtnLabel.toLocaleLowerCase() == 'feedback' ? 'white' :'none'}`,
-                                                    borderBottom:`${addBtnLabel.toLocaleLowerCase() == 'feedback' ? 'solid 1px #2563eb': 'solid 1px rgba(156, 163, 175, 1)'}`
+                                                    borderBottom:`${addBtnLabel.toLocaleLowerCase() == 'feedback' ? 'solid 1px #d3d6db': 'solid 1px rgba(156, 163, 175, 1)'}`
                                                     }}
                                                 onClick={() =>  {setIsAddForm(false); setFields(['']);setIsParent(null); setResource('facility_service_ratings'); setResourceCategory('Facilities'); setTitle('feedbacks'); setAddBtnLabel('feedback'); setEditMode(false);}}>
                                                     <ListItemText primary="Feedback" />
@@ -1528,7 +1528,7 @@ const system_setup = (props) => {
                                                 sx={{
                                                     backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'facility owner detail'? '#2563eb' : 'none'}`, 
                                                     color:`${addBtnLabel.toLocaleLowerCase() == 'facility owner detail' ? 'white' :'none'}`,
-                                                    borderBottom:`${addBtnLabel.toLocaleLowerCase() == 'facility owner detail' ? 'solid 1px #2563eb': 'solid 1px rgba(156, 163, 175, 1)'}`
+                                                    borderBottom:`${addBtnLabel.toLocaleLowerCase() == 'facility owner detail' ? 'solid 1px #d3d6db': 'solid 1px rgba(156, 163, 175, 1)'}`
                                                     }}
                                                 onClick={() =>  {setIsAddForm(false); setFields(['id', 'name']);setIsParent(null); setResource('owner_types'); setResourceCategory('Facilities'); setTitle('facility owner details'); setAddBtnLabel('facility owner detail'); setEditMode(false);}}>
                                                     <ListItemText primary="Facility Owner Details" />
@@ -1539,7 +1539,7 @@ const system_setup = (props) => {
                                                 sx={{
                                                     backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'facility owner category' ? '#2563eb' : 'none'}`, 
                                                     color:`${addBtnLabel.toLocaleLowerCase() == 'facility owner category' ? 'white' :'none'}`,
-                                                    borderBottom:`${addBtnLabel.toLocaleLowerCase() == 'facility owner category' ? 'solid 1px #2563eb': 'solid 1px rgba(156, 163, 175, 1)'}`
+                                                    borderBottom:`${addBtnLabel.toLocaleLowerCase() == 'facility owner category' ? 'solid 1px #d3d6db': 'solid 1px rgba(156, 163, 175, 1)'}`
                                                     }}
                                                 onClick={() =>  {setIsAddForm(false); setFields(['id','name', 'code', 'abbreviation', 'owner_type_name']);setIsParent(null); setResource('owners'); setResourceCategory('Facilities'); setTitle('facility owner categories'); setAddBtnLabel('facility owner category'); setEditMode(false);}}>
                                                     <ListItemText primary="Facility Owners Categories" />
@@ -1550,7 +1550,7 @@ const system_setup = (props) => {
                                                 sx={{
                                                     backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'job title' ? '#2563eb' : 'none'}`, 
                                                     color:`${addBtnLabel.toLocaleLowerCase() == 'job title' ? 'white' :'none'}`,
-                                                    borderBottom:`${addBtnLabel.toLocaleLowerCase() == 'job title' ? 'solid 1px #2563eb': 'solid 1px rgba(156, 163, 175, 1)'}`
+                                                    borderBottom:`${addBtnLabel.toLocaleLowerCase() == 'job title' ? 'solid 1px #d3d6db': 'solid 1px rgba(156, 163, 175, 1)'}`
                                                     }}
                                                 onClick={() =>  {setIsAddForm(false); setFields(['id','name']);setIsParent(null); setResource('job_titles'); setResourceCategory('Facilities'); setTitle('job titles'); setAddBtnLabel('job title'); setEditMode(false); }}>
                                                     <ListItemText primary="Job Titles" />
@@ -1561,7 +1561,7 @@ const system_setup = (props) => {
                                                 sx={{
                                                     backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'regulatory body' ? '#2563eb' : 'none'}`, 
                                                     color:`${addBtnLabel.toLocaleLowerCase() == 'regulatory body' ? 'white' :'none'}`,
-                                                    borderBottom:`${addBtnLabel.toLocaleLowerCase() == 'regulatory body' ? 'solid 1px #2563eb': 'solid 1px rgba(156, 163, 175, 1)'}`
+                                                    borderBottom:`${addBtnLabel.toLocaleLowerCase() == 'regulatory body' ? 'solid 1px #d3d6db': 'solid 1px rgba(156, 163, 175, 1)'}`
                                                     }}
                                                 onClick={() =>  {setIsAddForm(false); setFields(['id','name', 'abbreviation', 'regulatory_body_type_name', 'regulation_verb']); setIsParent(null);setResource('regulating_bodies'); setResourceCategory('Facilities'); setTitle('regulatory bodies'); setAddBtnLabel('regulatory body'); setEditMode(false); }}>
                                                     <ListItemText primary="Regulatory Bodies" />
@@ -1572,7 +1572,7 @@ const system_setup = (props) => {
                                                 sx={{
                                                     backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'regulatory status' ? '#2563eb' : 'none'}`, 
                                                     color:`${addBtnLabel.toLocaleLowerCase() == 'regulatory status' ? 'white' :'none'}`,
-                                                    borderBottom:`${addBtnLabel.toLocaleLowerCase() == 'regulatory status' ? 'solid 1px #2563eb': 'solid 1px rgba(156, 163, 175, 1)'}`
+                                                    borderBottom:`${addBtnLabel.toLocaleLowerCase() == 'regulatory status' ? 'solid 1px #d3d6db': 'solid 1px rgba(156, 163, 175, 1)'}`
                                                     }}
                                                 onClick={() =>  {setIsAddForm(false); setFields(['']);setIsParent(null); setResource('regulation_status'); setResourceCategory('Facilities'); setTitle('regulatory statuses'); setAddBtnLabel('regulatory status'); setEditMode(false); }}>
                                                     <ListItemText primary="Regulatory Status" />
@@ -1583,7 +1583,7 @@ const system_setup = (props) => {
                                                 sx={{
                                                     backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'upgrade reason' ? '#2563eb' : 'none'}`, 
                                                     color:`${addBtnLabel.toLocaleLowerCase() == 'upgrade reason' ? 'white' :'none'}`,
-                                                    borderBottom:`${addBtnLabel.toLocaleLowerCase() == 'upgrade reason' ? 'solid 1px #2563eb': 'solid 1px rgba(156, 163, 175, 1)'}`
+                                                    borderBottom:`${addBtnLabel.toLocaleLowerCase() == 'upgrade reason' ? 'solid 1px #d3d6db': 'solid 1px rgba(156, 163, 175, 1)'}`
                                                     }} 
                                                 onClick={() =>  {setIsAddForm(false); setFields(['id','reason', 'description']);setIsParent(null); setResource('level_change_reasons'); setResourceCategory('Facilities'); setTitle('upgrade reasons'); setAddBtnLabel('upgrade reason'); setEditMode(false); }}>
                                                     <ListItemText primary="Upgrade Reason" />
@@ -1594,7 +1594,7 @@ const system_setup = (props) => {
                                         </Collapse>
 
                                         {/* CHU */}
-                                        <ListItemButton onClick={handleCHUClick}  sx={{ borderBottom: 'solid 1px #2563eb'}}>
+                                        <ListItemButton onClick={handleCHUClick}  sx={{ borderBottom: 'solid 1px #d3d6db'}}>
                                             <ListItemIcon>
                                                 <GroupAdd />
                                             </ListItemIcon>
@@ -1608,7 +1608,7 @@ const system_setup = (props) => {
                                                 sx={{
                                                     backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'chu rating comment' ? '#2563eb' : 'none'}`, 
                                                     color:`${addBtnLabel.toLocaleLowerCase() == 'chu rating comment' ? 'white' :'none'}`,
-                                                    borderBottom:`${addBtnLabel.toLocaleLowerCase() == 'chu rating comment' ? 'solid 1px #2563eb': 'solid 1px rgba(156, 163, 175, 1)'}`
+                                                    borderBottom:`${addBtnLabel.toLocaleLowerCase() == 'chu rating comment' ? 'solid 1px #d3d6db': 'solid 1px rgba(156, 163, 175, 1)'}`
                                                     }} 
                                                 onClick={() =>  {setIsAddForm(false); setFields(['']); setResource('chu_ratings'); setResourceCategory('CHU'); setTitle('CHU Rating Comments'); setAddBtnLabel('CHU Rating Comment') }}>
                                                     <ListItemText primary="CHU Rating Comments" />
@@ -1619,7 +1619,7 @@ const system_setup = (props) => {
 
 
                                         {/* Documents */}
-                                        <ListItemButton onClick={handleDocumentsClick}  sx={{ borderBottom: 'solid 1px #2563eb'}}>
+                                        <ListItemButton onClick={handleDocumentsClick}  sx={{ borderBottom: 'solid 1px #d3d6db'}}>
                                             <ListItemIcon>
                                                 <Article />
                                             </ListItemIcon>
@@ -1633,7 +1633,7 @@ const system_setup = (props) => {
                                                 sx={{
                                                     backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'document' ? '#2563eb' : 'none'}`, 
                                                     color:`${addBtnLabel.toLocaleLowerCase() == 'document' ? 'white' :'none'}`,
-                                                    borderBottom:`${addBtnLabel.toLocaleLowerCase() == 'document' ? 'solid 1px #2563eb': 'solid 1px rgba(156, 163, 175, 1)'}`
+                                                    borderBottom:`${addBtnLabel.toLocaleLowerCase() == 'document' ? 'solid 1px #d3d6db': 'solid 1px rgba(156, 163, 175, 1)'}`
                                                     }}  
                                                 onClick={() =>  {setIsAddForm(false); setFields(['id','name', 'description','fyl','document_type']); setResource('documents'); setResourceCategory('Documents'); setTitle('Documents'); setAddBtnLabel('Document') }}>
                                                     <ListItemText primary="Documents" />
@@ -1655,7 +1655,7 @@ const system_setup = (props) => {
                                         <TextField id="search_table_data" label="Search anything" variant="standard" />
                                         <button type= "submit" className='bg-gray-500  p-2 text-base font-semibold text-white'>Export</button>
                                     </form> */}
-                                <Paper className="shadow-md rounded-none" sx={{ width: '100%', height:'auto', overflow: 'hidden', boxShadow:'0', flexDirection:'column', alignContent:'start', justifyContent:'start', backgroundColor:'#eff6ff'}}>
+                                <Paper className="shadow-md rounded-none" sx={{ width: '100%', height:'auto', overflow: 'hidden', boxShadow:'0', flexDirection:'column', alignContent:'start', justifyContent:'start', backgroundColor:'#f9fafb'}}>
                                 <StyledDataGrid
                                             columns={columns}
                                             rows={rows}
@@ -1687,7 +1687,7 @@ const system_setup = (props) => {
 
                                 <div className='col-span-4 flex items-start justify-start h-auto w-full'>
                                     {/* Add Form */}
-                                    <div className="w-full h-auto p-3 shadow-md" style={{backgroundColor: '#eff6ff'}}>
+                                    <div className="w-full h-auto p-3 bg-gray-50 shadow-md" >
                                         {
                                     
                                                 (() => {
@@ -1701,7 +1701,7 @@ const system_setup = (props) => {
                                                                                 htmlFor={`add_${addBtnLabel}`}
                                                                                 className='text-gray-600 capitalize text-sm'>
                                                                                 County Name
-                                                                                Counties        <span className='text-medium leading-12 font-semibold'>
+                                                                                   <span className='text-medium leading-12 font-semibold'>
                                                                                     {' '}
                                                                                     *
                                                                                 </span>
@@ -4254,7 +4254,13 @@ const system_setup = (props) => {
 }
 
 
-system_setup.getInitialProps = async (ctx) => {
+SystemSetup.getInitialProps = async (ctx) => {
+
+    ctx?.res?.setHeader(
+        'Cache-Control',
+        'public, s-maxage=10, stale-while-revalidate=59'
+      )
+
     const fetchData = (token) => {
         
 
@@ -4331,4 +4337,4 @@ system_setup.getInitialProps = async (ctx) => {
 
 }
 
-export default system_setup
+export default SystemSetup
