@@ -1,47 +1,62 @@
 import Head from 'next/head'
 import { useRouter } from 'next/router'
-import React, { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import MainLayout from '../components/MainLayout'
 
 const Logout = props => {
     const router = useRouter()
+
+    const [isClient, setIsClient] = useState(false)
+
+    
     useEffect(() => {
-        setTimeout(() => {
+
+        setIsClient(true)
+
+        // setTimeout(() => {
             if (!props?.error && !props?.detail) {
                 if (typeof window !== 'undefined') {
                     window.sessionStorage.removeItem('user')
                     window.localStorage.removeItem('user')
                     window.document.cookie = 'access_token=; expires=Thu, 01 Jan 1970 00:00:00 GMT;'
-                    window.location.href = '/'
+                    router.push('/')
+
                 } else {
                     const cookieCutter = require('cookie-cutter')
                     cookieCutter.set('access_token', '', "{}", { expires: new Date(0), httpOnly: false })
                 }
             } else {
                 if (typeof window !== 'undefined') {
-                    window.location.href = '/'
+                    router.push('/')
                 } else {
                     router.push('/')
                 }
             }
-        }, 1200);
+        // }, 1000);
+
     }, [])
-    return (
-        <>
-            <Head>
-                <title>KMHFR - Log out</title>
-                <link rel="icon" href="/favicon.ico" />
-            </Head>
-            <MainLayout>
-                <div className="w-full flex py-60 overflow-hidden flex-col items-center justify-center">
-                    <div className="flex flex-col items-center">
-                        <h1 className="text-2xl text-black">Logout</h1>
-                        <p>You have been logged out.</p>
+
+    if(isClient) {
+        return (
+            <>
+                <Head>
+                    <title>KMHFR - Log out</title>
+                    <link rel="icon" href="/favicon.ico" />
+                </Head>
+                <MainLayout>
+                    <div className="w-full flex py-60 overflow-hidden flex-col items-center justify-center">
+                        <div className="flex flex-col items-center">
+                            <h1 className="text-2xl text-black">Logout</h1>
+                            <p>You have been logged out.</p>
+                        </div>
                     </div>
-                </div>
-            </MainLayout>
-        </>
-    )
+                </MainLayout>
+            </>
+        )
+    }
+    else {
+        return null
+    }
 }
 
 Logout.getInitialProps = async () => {

@@ -112,7 +112,7 @@ function Home(props) {
 
  
     return (
-      <>
+    <header className='w-full max-h-min block'>
         <Head>
           <title>KMHFR - Home</title>
           <link rel="icon" href="/favicon.ico" />
@@ -160,17 +160,17 @@ function Home(props) {
           <div style={{ backgroundColor: '#1651b6' }} className='w-full top-[88px] fixed z-10 max-h-min flex'>
             {/* Menu Heading */}
             <nav style={{ width: "60%" }} className="max-h-min container flex  mx-auto ">
-              <ul className='list-none w-full flex items-center py-4 justify-between '>
-                <li className='text-base font-semibold capitalize text-gray-100 hover:border-b-2 hover:border-gray-100'>
+              <ul className='list-none w-full flex items-center  justify-between '>
+                <li className='text-lg h-[65px] flex items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 hover:border-b-2 hover:border-gray-100'>
                   <Link href='/public/facilities'>Facilities</Link>
                 </li>
-                <li className='text-base font-semibold capitalize text-gray-100 hover:border-b-2 hover:border-gray-100'>
+                <li className='text-lg h-[65px] flex items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 hover:border-b-2 hover:border-gray-100'>
                   <Link href='/public/chu'>Community Units</Link>
                 </li>
-                <li className='text-base font-semibold capitalize text-gray-100 hover:border-b-2 hover:border-gray-100'>
+                <li className='text-lg h-[65px] flex items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 hover:border-b-2 hover:border-gray-100'>
                   <Link href='/public/faq'>FAQs</Link>
                 </li>
-                <li className='text-base font-semibold capitalize text-gray-100 hover:border-b-2 hover:border-gray-100'>
+                <li className='text-lg h-[65px] flex items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 hover:border-b-2 hover:border-gray-100'>
                   <Link href='/public/contacts'>Contacts</Link>
                 </li>
               </ul>
@@ -389,7 +389,7 @@ function Home(props) {
           {/* Footer */}
 
           <div className="w-full flex flex-col mt-12 h-auto">
-            <div className="w-full max-h-min py-5  bg-gray-500">
+            <div className="w-full max-h-min py-8  bg-gray-500">
               <div className="flex flex-col gap-4 items-between">
                 <div className="w-[60%] mx-auto flex justify-between">
                   <div className="flex flex-col text-gray-200 gap-2">
@@ -463,7 +463,7 @@ function Home(props) {
 
 
         </div>
-      </>
+    </header>
     )
   }
   else {

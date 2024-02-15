@@ -17,14 +17,6 @@ import propTypes from 'prop-types'
 
 function Dashboard(props) {
 
-    // return (
-    //     <pre>
-    //         {
-    //             JSON.stringify(props?.data?.keph_level, null, 2)
-    //         }
-    //     </pre>
-    // )
-
     const router = useRouter()
 
     const userCtx = useContext(UserContext)
@@ -33,7 +25,7 @@ function Dashboard(props) {
 
 
     //create period items 
-    let Years = [
+    const Years = [
         {
             value: (new Date().getFullYear()).toString() + '-01-01',
             label: (new Date().getFullYear()).toString()
@@ -60,7 +52,7 @@ function Dashboard(props) {
         }
     ]
 
-    let quarters = [
+    const quarters = [
         {
             value: 'All',
             label: 'All Quarters'
@@ -194,6 +186,7 @@ function Dashboard(props) {
 
     // Check for user authentication
     useEffect(() => {
+        setIsClient(true)
 
         if (userCtx?.groups[0].id == 2) fetchWards(user?.user_sub_counties[0]?.sub_county ?? null)
         if (userCtx?.groups[0].id == 1) fetchSubCounties(userCtx?.county)
@@ -201,14 +194,21 @@ function Dashboard(props) {
 
         setUser(userCtx)
 
-        if (user.id === 6) {
-            router.push('/auth/login')
-        } else {
-            fetchWards(userCtx.county)
-            fetchSubCounties(userCtx.county)
-        }
+        // const timeout = setTimeout(() => {
+        //    // Should redirecct
+        //     if (user.id === 6) {
+        //         router.push('/auth/login')
+        //     } else {
+        //         fetchWards(userCtx.county)
+        //         fetchSubCounties(userCtx.county)
+        //     }
+        // }, 4000)
+       
 
-        setIsClient(true)
+
+        // return () => {
+        //     clearTimeout(timeout)
+        // }
 
     }, [])
 
@@ -1220,9 +1220,15 @@ Dashboard.defaultProps = {
 
 export async function getServerSideProps(ctx) {
 
+
+    ctx?.res?.setHeader(
+        'Cache-Control',
+        'public, s-maxage=10, stale-while-revalidate=59'
+      )
+
+
     const token = (await checkToken(ctx.req, ctx.res))?.token
 
-    console.log({ token })
 
     let query = { 'searchTerm': '' }
 
@@ -1281,21 +1287,30 @@ export async function getServerSideProps(ctx) {
 
      const ft = await fetchFilters(token)
     
-     return fetchDashboardData(token)
-      .then(({data}) => {
+     const {data} = await fetchDashboardData(token)
+      
           
-          // console.log({ft, query})
-          return {
-              props: {
-                  data,
-                  query,
-                  filters: { ...ft }, 
-          
-              }
-          }
+    if(data) {      // console.log({ft, query})
+    return {
+        props: {
+            data,
+            query,
+            filters: { ...ft }, 
+    
+        }
+    }
+   } else {
+    return {
+        props: {
+            data: null,
+            query,
+            filters: { ...ft }, 
+    
+        }
+    }
+   }
       
   
-      })    
 
 }
 

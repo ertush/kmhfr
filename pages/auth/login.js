@@ -148,7 +148,7 @@ const Login = (props) => {
                         <button type="submit" data-testid="login_btn" disabled={loading} className={"focus:outline-none focus:ring-1 focus:ring-yellow-500 text-white px-4 md:px-8 whitespace-nowrap py-3 text-xl font-semibold hover:bg-blue-800 focus:bg-blue-600 active:bg-blue-800 " + (loading ? "bg-gray-900 cursor-not-allowed" : "bg-blue-700")}
                         >{loading ? "Loading..." : "Log in"}</button>
                         <div className="flex justify-end items-center w-full px-2">
-                            <a data-testid="forgot_password_link" onClick={()=>router.push('/auth/reset_password')} className="text-base text-gray-700 hover:text-blue-700 focus:text-blue-700 active:text-blue-700 hover:underline focus:underline active:underline">Forgot password?</a>
+                            <span data-testid="forgot_password_link" onClick={()=>router.push('/auth/reset_password')} className="text-base text-gray-700 hover:text-blue-700 focus:text-blue-700 active:text-blue-700 hover:underline focus:underline active:underline">Forgot password?</span>
                         </div>
                     </div>
                 </form>
@@ -159,14 +159,17 @@ const Login = (props) => {
 }
 
 Login.getInitialProps = async (ctx) => {
-    const was = ctx.query.was || '/'
+    const was = ctx.query.was || '/dashboard'
     const err = ctx.query.err || ''
     const msg = ctx.query.msg || ''
+
+    
+     
     return {
         'was': was,
         'error': err,
         'msg': msg
-    }
+    }   
 }
 
 

@@ -466,7 +466,7 @@ function FacilityHome (props){
                                                 // console.log({values})
                                                 switch((new URL(window.location.href))?.searchParams.get('qf')){
                                                     case "all":
-                                                        router.push(`/facilities/?q=${query}&qf=all`)
+                                                        router.push(`/facilities/?q=${query}&qf=all&closed=false`)
                                                         break;
                                                     case "approved":
                                                         router.push(`/facilities/?q=${query}&qf=approved&approved=true&approved_national_level=true&rejected=false`)
@@ -496,7 +496,7 @@ function FacilityHome (props){
                                                         router.push(`/facilities/?q=${query}&qf=incomplete&is_complete=false&in_complete_details=false`)
                                                         break;
                                                     default:
-                                                        router.push(`/facilities/?q=${query}&qf=all`)
+                                                        router.push(`/facilities/?q=${query}&qf=all&closed=false`)
                                                         break;
 
                                                 
