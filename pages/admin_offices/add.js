@@ -18,6 +18,7 @@ function AddAdminOffice(props) {
     const countyOptions = props['0']?.counties;
     const subCountyOptions = props['1']?.sub_counties;
     const [status, setStatus] = useState(null)
+    const [isClient, setIsClient] = useState(false)
 
     const [county, setCounty] = useState('');
     const [hide, setHide] = useState(false)
@@ -76,15 +77,18 @@ function AddAdminOffice(props) {
     }
 
     useEffect(() => {
+        setIsClient(true)
         setUser(userCtx)
         if(user.id === 6){
             router.push('/auth/login')
         }
     }, [])
 
+
+    if(isClient){
     return (
         <MainLayout isLoading={false} searchTerm={props?.query?.searchTerm}>
-            <div className="w-full grid grid-cols-5 gap-4 px-1 md:px-4 py-2 my-4">
+            <div className="w-full grid grid-cols-5 gap-4 px-1 md:px-4 py-2 h-auto mt-8 my-4">
                 <div className="col-span-5 flex flex-col gap-3 md:gap-5 px-4">
                     <div className="flex flex-wrap items-center justify-between gap-2 text-sm md:text-base py-3">
                         <div className="flex flex-row items-center justify-between gap-2 text-sm md:text-base py-3">
@@ -103,8 +107,8 @@ function AddAdminOffice(props) {
                 </div>
 
                 <div className='col-span-5 flex flex-col justify-center items-start px-1 md:px-4 w-full '>
-                    <div className=' w-full flex flex-col items-start p-3 text-blue shadow-md'
-                        style={{ minHeight: '250px', backgroundColor: '#eff6ff' }}>
+                    <div className=' w-full flex flex-col bg-gray-50 mt-4 items-start p-3 text-blue shadow-md'
+                        style={{ minHeight: '250px' }}>
 
                         <>
 
@@ -302,6 +306,10 @@ function AddAdminOffice(props) {
         </MainLayout>
 
     )
+    }
+    else {
+        return null
+    }
 }
 
 AddAdminOffice.getInitialProps = async (ctx) => {

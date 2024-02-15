@@ -10,11 +10,6 @@ import {
     DataGrid,
     GridToolbar
 } from '@mui/x-data-grid';
-
-// import { DataGridPro, GridToolbar } from '@mui/x-data-grid-pro';
-
-// import { Box } from '@material-ui/core';
-
 import { propsToGridData } from '../../components/ReportsData';
 import { UserContext } from '../../providers/user';
 
@@ -130,13 +125,13 @@ function Reports(props) {
                         </div>
 
                         {/* Tabs */}
-                        <div className='w-full col-span-1 md:col-span-7 flex border border-blue-600 px-0 mx-0 h-700 flex-1'>
+                        <div className='w-full col-span-1 md:col-span-7 flex shadow-sm bg-gray-50 px-0 mx-0 h-700 flex-1'>
                         <Tabs.Root
                             orientation="horizontal"
                             className="w-full flex flex-col tab-root"
                             defaultValue="facilities"
                         >
-                            <Tabs.List className="list-none w-full flex justify-evenly flex-wrap gap-2 md:gap-3 px-4 uppercase leading-none tab-list font-semibold border-b border-blue-600">
+                            <Tabs.List className="list-none w-full flex justify-evenly flex-wrap gap-2 md:gap-3 px-4 uppercase leading-none tab-list font-semibold border-b border-gray-400">
                                         {/* Facilities Tab */}
                                         <Tabs.Tab
                                             id={1}
@@ -167,7 +162,7 @@ function Reports(props) {
                                     defaultValue="beds_cots"
                                 >
                                     
-                                    <Tabs.List className="list-none w-full flex justify-evenly flex-wrap gap-2 md:gap-3 px-4 uppercase leading-none tab-list font-semibold border-b border-blue-600">
+                                    <Tabs.List className="list-none w-full flex justify-evenly flex-wrap gap-2 md:gap-3 px-4 uppercase leading-none tab-list font-semibold border-b border-gray-400">
                                         <Tabs.Tab
                                             id={1}
                                             value="beds_cots"
@@ -259,7 +254,7 @@ function Reports(props) {
                                     >
                                         {/* Beds and Cots Data Grid */}
 
-                                        <div style={{ height: 700, width: '100%', backgroundColor: '#eff6ff' }} className='shadow-md col-span-7'>
+                                        <div style={{ height: 700, width: '100%', backgroundColor: '#f9fafb' }} className='shadow-md col-span-7'>
                                             <StyledDataGrid
                                                 columns={propsToGridData(props, 0).columns}
                                                 rows={propsToGridData(props, 0)?.rows}
@@ -294,7 +289,7 @@ function Reports(props) {
                                     >
                                         {/* Keph Level Data grid */}
 
-                                        <div style={{ height: 700, width: '100%', backgroundColor: '#eff6ff' }} className='shadow-md col-span-7'>
+                                        <div style={{ height: 700, width: '100%', backgroundColor: '#f9fafb' }} className='shadow-md col-span-7'>
                                             <StyledDataGrid
                                                 columns={propsToGridData(props, 1).columns}
                                                 rows={propsToGridData(props, 1)?.rows}
@@ -758,6 +753,12 @@ function Reports(props) {
 }
 
 Reports.getInitialProps = async (ctx) => {
+
+    ctx?.res?.setHeader(
+        'Cache-Control',
+        'public, s-maxage=10, stale-while-revalidate=59'
+      )
+
 
     const reports = [
         'beds_and_cots_by_all_hierachies',

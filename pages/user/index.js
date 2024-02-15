@@ -36,7 +36,7 @@ const StyledDataGrid = styled(DataGrid)(() => ({
 }))
 
 
-const Users = (props) => {
+function Users (props) {
 
     LicenseManager.setLicenseKey("test");
 
@@ -231,7 +231,7 @@ const Users = (props) => {
                         <main className="col-span-6 md:col-span-6 flex flex-col gap-4 order-last md:order-none"> {/* CHANGED colspan */}
                             
                             
-                            <div className="flex flex-col justify-center items-center w-full shadow-md" style={{backgroundColor:"#eff6ff"}}>
+                            <div className="flex flex-col justify-center items-center w-full shadow-md" style={{backgroundColor:"#f9fafb"}}>
                             
                                 <div className='w-full h-auto'>
                                 <StyledDataGrid
@@ -275,6 +275,13 @@ const Users = (props) => {
 }   
 
 Users.getInitialProps = async (ctx) => {
+
+    ctx?.res?.setHeader(
+        'Cache-Control',
+        'public, s-maxage=10, stale-while-revalidate=59'
+      )
+
+
     const API_URL = process.env.NEXT_PUBLIC_API_URL 
 // console.log(ctx.query.is_active);
 
