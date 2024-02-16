@@ -194,22 +194,6 @@ function Dashboard(props) {
 
         setUser(userCtx)
 
-        // const timeout = setTimeout(() => {
-        //    // Should redirecct
-        //     if (user.id === 6) {
-        //         router.push('/auth/login')
-        //     } else {
-        //         fetchWards(userCtx.county)
-        //         fetchSubCounties(userCtx.county)
-        //     }
-        // }, 4000)
-       
-
-
-        // return () => {
-        //     clearTimeout(timeout)
-        // }
-
     }, [])
 
 
@@ -270,12 +254,7 @@ function Dashboard(props) {
 
     const userSubCounty = user?.user_sub_counties[0]?.sub_county_name
 
-
-
-
-    // console.log({wards: drillDown?.wards})
-    // console.log({county: filters?.county.find(ft => ft.id == drillDown?.county), filters, drillDown, counties})
-
+    
     if (isClient) {
         return (
             <div className="">
@@ -420,34 +399,7 @@ function Dashboard(props) {
                                                         }
 
                                                         router.push('/dashboard' + parameters)
-                                                        // alert(JSON.stringify(drillDown)) 
-                                                        // if (sl && sl !== null ) { 
-                                                        //     let fcounty
-                                                        //     if(props?.query?.county){
-                                                        //         fcounty=props?.query.county
-                                                        //     }
-                                                        //     else
-                                                        //     {
-                                                        //         fcounty='national'
-                                                        //     }
-                                                        //     if (sl.value === '' ) { 
-                                                        //         if(fcounty==='national'){
-                                                        //             router.push('/dashboard')
-                                                        //         }
-                                                        //         else{
-                                                        //             router.push('/dashboard?county=' + fcounty)
-                                                        //         }
-                                                        //     } 
-                                                        //     else { 
-                                                        //         if(fcounty==='national'){
-                                                        //             router.push('/dashboard?datefrom=' +sl.value)
-                                                        //         }
-                                                        //         else{
-                                                        //             router.push('/dashboard?county=' + fcounty+"&datefrom="+sl.value)
-                                                        //         }
-
-                                                        //     }
-                                                        // }   
+                                                          
 
                                                     }}
                                                 />
@@ -1196,8 +1148,6 @@ function Dashboard(props) {
         return null
     }
 }
-
-//  filters: { ...ft }, path: ctx.asPath || '/dashboard', current_url: url, api_url: `${process.env.NEXT_PUBLIC_API_URL}`
 
 
 Dashboard.propTypes = {

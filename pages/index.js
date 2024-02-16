@@ -141,7 +141,7 @@ function Home(props) {
                 </div>
 
                 {/* Login Button */}
-                <div className='text-lg group hover:bg-blue-800 hover:text-gray-100 max-h-min px-3 flex gap-x-2 items-center text-blue-800 capitalize font-semibold'>
+                <div className='text-lg group duration-200 ease-in-out hover:bg-blue-800 hover:text-gray-100 max-h-min px-3 flex gap-x-2 items-center text-blue-800 capitalize font-semibold'>
                   <Login className='w-6 h-6 text-blue-800 group-hover:text-gray-100' />
                   <Link href="/auth/login">
                     log in

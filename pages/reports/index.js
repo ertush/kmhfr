@@ -5,7 +5,6 @@ import { checkToken } from '../../controllers/auth/auth';
 import MainLayout from '../../components/MainLayout';
 import * as Tabs from "@radix-ui/react-tabs";
 import { darken, styled } from '@mui/material/styles';
-
 import {
     DataGrid,
     GridToolbar
@@ -25,7 +24,6 @@ const StyledDataGrid = styled(DataGrid)(() => ({
 
     }
 }))
-
 
 
 function Reports(props) {
@@ -752,6 +750,7 @@ function Reports(props) {
     }
 }
 
+
 Reports.getInitialProps = async (ctx) => {
 
     ctx?.res?.setHeader(
@@ -775,23 +774,37 @@ Reports.getInitialProps = async (ctx) => {
         'facility_human_resource_category_report_all_hierachies'
     ];
 
-    const allReports = {};
+    const allReports = {
+        'beds_and_cots_by_all_hierachies': [],
+        'facility_keph_level_report_all_hierachies': [],
+        'facility_owner_report_all_hierachies': [],
+        'facility_type_report_all_hierachies': [],
+        'facility_regulatory_body_report_all_hierachies': [],
+        'facility_services_report_all_hierachies': [],
+        'facility_infrastructure_report_all_hierachies': [],
+        'chul_status_all_hierachies': [],
+        'gis': [],
+        'chul_services_all_hierachies': [],
+        'chul_count_all_hierachies': [],
+        'facility_human_resource_category_report_all_hierachies': []
+    }
 
-    return checkToken(ctx.req, ctx.res).then(async (t) => {
-        if (t.error) {
-            throw new Error('Error checking token')
-        } else {
-            let token = t.token;
+    // return checkToken(ctx.req, ctx.res).then(async (t) => {
+    //     if (t.error) {
+    //          throw new Error('Error checking token')
+
+    //     } else {
+            const token = (await checkToken(ctx.req, ctx.res))?.token;
             let url = '';
 
             // return fetchData(token).then(t => t);
 
             for (let i = 0; i < reports.length; i++) {
                 const report = reports[i];
+               
                 switch (report) {
                     case 'beds_and_cots_by_all_hierachies':
                         url = `${process.env.NEXT_PUBLIC_API_URL}/reporting/?report_type=${report}`;
-
 
                         try {
 
@@ -802,18 +815,17 @@ Reports.getInitialProps = async (ctx) => {
                                 },
                             })
 
-
                             allReports["beds_and_cots_by_all_hierachies"] = (await _data.json()).results
 
                         }
                         catch (err) {
                             console.log(`Error fetching ${report}: `, err);
-                            allReports.push({
-                                error: true,
-                                err: err,
-                                beds_and_cots_by_all_hierachies: [],
-                                url
-                            });
+                            // allReports.push({
+                            //     error: true,
+                            //     err: err,
+                            //     beds_and_cots_by_all_hierachies: [],
+                            //     url
+                            // });
                         }
 
                         break;
@@ -835,11 +847,11 @@ Reports.getInitialProps = async (ctx) => {
                         }
                         catch (err) {
                             console.log(`Error fetching ${report}: `, err);
-                            allReports.push({
-                                error: true,
-                                err: err,
-                                facility_keph_level_report_all_hierachies: [],
-                            });
+                            // allReports.push({
+                            //     error: true,
+                            //     err: err,
+                            //     facility_keph_level_report_all_hierachies: [],
+                            // });
                         }
                         break;
                     case 'facility_owner_report_all_hierachies':
@@ -860,11 +872,11 @@ Reports.getInitialProps = async (ctx) => {
                         }
                         catch (err) {
                             console.log(`Error fetching ${report}: `, err);
-                            allReports.push({
-                                error: true,
-                                err: err,
-                                facility_owner_report_all_hierachies: [],
-                            });
+                            // allReports.push({
+                            //     error: true,
+                            //     err: err,
+                            //     facility_owner_report_all_hierachies: [],
+                            // });
                         }
 
                         break;
@@ -886,11 +898,11 @@ Reports.getInitialProps = async (ctx) => {
                         }
                         catch (err) {
                             console.log(`Error fetching ${report}: `, err);
-                            allReports.push({
-                                error: true,
-                                err: err,
-                                facility_type_report_all_hierachies: [],
-                            })
+                            // allReports.push({
+                            //     error: true,
+                            //     err: err,
+                            //     facility_type_report_all_hierachies: [],
+                            // })
                         }
 
                         break;
@@ -912,11 +924,11 @@ Reports.getInitialProps = async (ctx) => {
                         }
                         catch (err) {
                             console.log(`Error fetching ${report}: `, err);
-                            allReports.push({
-                                error: true,
-                                err: err,
-                                facility_regulatory_body_report_all_hierachies: [],
-                            })
+                            // allReports.push({
+                            //     error: true,
+                            //     err: err,
+                            //     facility_regulatory_body_report_all_hierachies: [],
+                            // })
                         }
 
                         break;
@@ -938,11 +950,11 @@ Reports.getInitialProps = async (ctx) => {
                             }
                             catch (err) {
                                 console.log(`Error fetching ${report}: `, err);
-                                allReports.push({
-                                    error: true,
-                                    err: err,
-                                    facility_services_report_all_hierachies: [],
-                                })
+                                // allReports.push({
+                                //     error: true,
+                                //     err: err,
+                                //     facility_services_report_all_hierachies: [],
+                                // })
                             }
     
                             break;
@@ -964,11 +976,11 @@ Reports.getInitialProps = async (ctx) => {
                                 }
                                 catch (err) {
                                     console.log(`Error fetching ${report}: `, err);
-                                    allReports.push({
-                                        error: true,
-                                        err: err,
-                                        facility_human_resource_category_report_all_hierachies: [],
-                                    })
+                                    // allReports.push({
+                                    //     error: true,
+                                    //     err: err,
+                                    //     facility_human_resource_category_report_all_hierachies: [],
+                                    // })
                                 }
         
                                 break;
@@ -990,11 +1002,11 @@ Reports.getInitialProps = async (ctx) => {
                                 }
                                 catch (err) {
                                     console.log(`Error fetching ${report}: `, err);
-                                    allReports.push({
-                                        error: true,
-                                        err: err,
-                                        facility_infrastructure_report_all_hierachies: [],
-                                    })
+                                    // allReports.push({
+                                    //     error: true,
+                                    //     err: err,
+                                    //     facility_infrastructure_report_all_hierachies: [],
+                                    // })
                                 }
         
                                 break;
@@ -1016,11 +1028,11 @@ Reports.getInitialProps = async (ctx) => {
                         }
                         catch (err) {
                             console.log(`Error fetching ${report}: `, err);
-                            allReports.push({
-                                error: true,
-                                err: err,
-                                chul_status_all_hierachies: [],
-                            })
+                            // allReports.push({
+                            //     error: true,
+                            //     err: err,
+                            //     chul_status_all_hierachies: [],
+                            // })
                         }
                         break;
                     case 'chul_services_all_hierachies':
@@ -1102,11 +1114,11 @@ Reports.getInitialProps = async (ctx) => {
                         catch (err) {
                             console.log(`Error fetching ${report}: `, err);
 
-                            allReports.push({
-                                error: true,
-                                err: err,
-                                chul_services_all_hierachies: [],
-                            })
+                            // allReports.push({
+                            //     error: true,
+                            //     err: err,
+                            //     chul_services_all_hierachies: [],
+                            // })
                         }
                         break;
 
@@ -1128,11 +1140,11 @@ Reports.getInitialProps = async (ctx) => {
                         }
                         catch (err) {
                             console.log(`Error fetching ${report}: `, err);
-                            allReports.push({
-                                error: true,
-                                err: err,
-                                gis: [],
-                            })
+                            // allReports.push({
+                            //     error: true,
+                            //     err: err,
+                            //     gis: [],
+                            // })
                         }
                         break;
                     
@@ -1155,11 +1167,11 @@ Reports.getInitialProps = async (ctx) => {
                         }
                         catch (err) {
                             console.log(`Error fetching ${report}: `, err);
-                            allReports.push({
-                                error: true,
-                                err: err,
-                                chul_status_all_hierachies: [],
-                            })
+                            // allReports.push({
+                            //     error: true,
+                            //     err: err,
+                            //     chul_status_all_hierachies: [],
+                            // })
                         }
                         break;
                     case 'chul_count_all_hierachies':
@@ -1180,11 +1192,11 @@ Reports.getInitialProps = async (ctx) => {
                         }
                         catch (err) {
                             console.log(`Error fetching ${report}: `, err);
-                            allReports.push({
-                                error: true,
-                                err: err,
-                                chul_count_all_hierachies: [],
-                            })
+                            // allReports.push({
+                            //     error: true,
+                            //     err: err,
+                            //     chul_count_all_hierachies: [],
+                            // })
                         }
                         break;
 
@@ -1193,25 +1205,25 @@ Reports.getInitialProps = async (ctx) => {
             }
 
             return allReports
-        }
-    })
-        .catch((err) => {
-            console.log('Error checking token: ', err);
-            if (typeof window !== 'undefined' && window) {
-                if (ctx?.asPath) {
-                    window.location.href = ctx?.asPath;
-                } else {
-                    window.location.href = '/reports';
-                }
-            }
-            setTimeout(() => {
-                return {
-                    error: true,
-                    err: err,
-                    data: [],
-                };
-            }, 1000);
-        }); 
+        // }
+    // })
+    // .catch((err) => {
+    //     console.log('Error checking token: ', err);
+    //     if (typeof window !== 'undefined' && window) {
+    //         if (ctx?.asPath) {
+    //             window.location.href = ctx?.asPath;
+    //         } else {
+    //             window.location.href = '/reports';
+    //         }
+    //     }
+    //     setTimeout(() => {
+    //         return {
+    //             error: true,
+    //             err: err,
+    //             data: [],
+    //         };
+    //     }, 1000);
+    // }); 
 
 }
 
