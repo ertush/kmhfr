@@ -40,9 +40,7 @@ function Users (props) {
 
     LicenseManager.setLicenseKey("test");
 
-
     const userPermissions = useContext(PermissionContext)
-
 
     const userCtx = useContext(UserContext)
 
@@ -59,7 +57,7 @@ function Users (props) {
             last_login: user.last_login !==null? moment(user.last_login).format('MMM Do YYYY, h:mm a') : "",
             is_active:user.is_active == true ? "Yes" : "No"
         }
-    ))
+    )) ?? []
     
     const columns = [
         {headerName: "Name", field: "name",  renderCell: (params) => {
@@ -164,7 +162,7 @@ function Users (props) {
                             
                             >	
                                 <ListItemButton className='border-b border-gray-300' sx={{
-                                backgroundColor: usersTheme && '#2563eb',
+                                                backgroundColor: usersTheme && '#2563eb',
                                                 color: usersTheme && '#ffff',
                                                 borderBottom: 'solid 1px rgba(107, 114, 128, 1)', 
                                                 "&:hover": {
@@ -228,6 +226,7 @@ function Users (props) {
                             </List>
 
                         </div>
+                        
                         <main className="col-span-6 md:col-span-6 flex flex-col gap-4 order-last md:order-none"> {/* CHANGED colspan */}
                             
                             
@@ -285,7 +284,7 @@ Users.getInitialProps = async (ctx) => {
     const API_URL = process.env.NEXT_PUBLIC_API_URL 
 // console.log(ctx.query.is_active);
 
-    const fetchData = (token) => {
+    function fetchData(token) {
         let url = API_URL + '/users/?fields=id,first_name,last_name,email,last_login,is_active,employee_number,county_name,job_title_name,sub_county_name&is_active=true&page=1&page_size=1000'
         let query = { 'searchTerm': ''}
         if (ctx?.query?.qf) {
@@ -347,7 +346,7 @@ Users.getInitialProps = async (ctx) => {
             return fetchData(token).then(t => t)
         }
     }).catch(err => {
-        console.log('Error checking token: ', err)
+        // console.log('Error checking token: ', err)
         if (typeof window !== 'undefined' && window) {
             if (ctx?.asPath) {
                 window.location.href = ctx?.asPath

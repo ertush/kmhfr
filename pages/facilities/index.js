@@ -2,7 +2,6 @@ import Head from 'next/head'
 import Link from 'next/link'
 import MainLayout from '../../components/MainLayout'
 import { DotsHorizontalIcon, DownloadIcon, PlusIcon } from '@heroicons/react/solid'
-
 import { checkToken } from '../../controllers/auth/auth'
 import React, { useState, useEffect, useContext } from 'react'
 import { useRouter } from 'next/router'
@@ -16,8 +15,6 @@ import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import Alert from '@mui/material/Alert';
-// import NativePickers from '../../components/date-picker'
-// import { PermissionContext } from '../../providers/permissions'
 import FacilitySideMenu from '../../components/FacilitySideMenu'
 import { UserContext } from '../../providers/user'
 import {Formik, Form, Field} from 'formik';
@@ -218,12 +215,10 @@ function FacilityHome (props){
                                     
                                 </div>  
                             </div>
-
-                            
-                            
                       
 
                         </div>
+
                         <div className="flex flex-wrap items-center justify-between gap-2 text-sm md:text-base ">
                   
 
@@ -238,7 +233,7 @@ function FacilityHome (props){
                                                 
                                                 <h2 className='my-2 font-semibold text-xl text-blue-900 flex items-center space-x-2'>
                                                 <FilterIcon className='w-6 h-6 text-blue-900'/>
-                                                    <p> Filter Facilities By ...</p></h2>
+                                                    <p>Filter Facilities By ...</p></h2>
                                             </AccordionSummary>
                                             <AccordionDetails sx={{width:'100%', padding:4, height:'auto' }}>
                                             <div className="flex flex-col gap-2">
@@ -538,7 +533,8 @@ function FacilityHome (props){
                                     <div className="flex-grow w-full flex flex-col items-center gap-1 order-last md:order-none">
                                         <div className="flex flex-col justify-center items-center  w-full">
                                             {/* Facilities View */}
-                                            {facilities && facilities.length > 0 && facilityFeedBack.length === 0 && !khisSynched &&
+                                            
+                                            {facilities && facilities.length > 0 && facilityFeedBack.length === 0 && !khisSynched ?
                                             facilities.map((facility, index) => (
                                                 <div key={index} 
                                                 title={`Incomplete Details : ${facility?.is_complete ? 'none' : facility?.in_complete_details}`}
@@ -592,6 +588,17 @@ function FacilityHome (props){
                                                     </div>
                                                 </div>
                                             ))
+                                            :
+                                            <div className='w-[98%] flex my-4  rounded border border-yellow-600 items-center justify-start gap-2 bg-yellow-100  font-medium p-3'>
+												<span className='text-base text-gray-700'>
+													No Facilities found
+												</span>
+												<Link href={props.path || '/'}>
+													<a className='text-blue-700 hover:text-blue-800 group-focus:text-blue-800 active:text-blue-800'>
+														Refresh.
+													</a>
+												</Link>
+											</div>
                                             }
 
                                             {/* Feedback Facilities View */}
@@ -719,11 +726,10 @@ FacilityHome.getInitialProps = async (ctx) => {
         'public, s-maxage=10, stale-while-revalidate=59'
       )
 
-    
 
     const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
-    const fetchFilters = token => {
+    function fetchFilters(token) {
         let filters_url = API_URL + '/common/filtering_summaries/?fields=county%2Cfacility_type%2Cconstituency%2Cward%2Coperation_status%2Cservice_category%2Cowner_type%2Cowner%2Cservice%2Ckeph_level%2Csub_county'
 
         return fetch(filters_url, {
@@ -744,7 +750,7 @@ FacilityHome.getInitialProps = async (ctx) => {
             })
     }
 
-    const fetchData = (token) => {
+    function fetchData(token) {
 
         let url = API_URL + '/facilities/facilities/?fields=id,code,official_name,facility_type_name,owner_name,county,sub_county,constituency_name,ward_name,updated,operation_status_name,sub_county_name,name,is_complete,in_complete_details,approved_national_level,has_edits,approved,rejected,keph_level'
      
@@ -797,10 +803,6 @@ FacilityHome.getInitialProps = async (ctx) => {
             }
 
 
-            // Remove approved field if fetching for Facilities pending approval
-            // if (flt === 'to_publish') url = url.replace('approved,', '')
-
-          
         })
 
 
@@ -859,6 +861,7 @@ FacilityHome.getInitialProps = async (ctx) => {
                 window.location.href = '/facilities'
             }
         }
+        
         setTimeout(() => {
             return {
                 error: true,

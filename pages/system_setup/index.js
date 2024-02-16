@@ -121,7 +121,7 @@ function SystemSetup(props) {
             </button>
         ) ,flex: 1}
       ]);
-    const [rows, setRows] = useState(Array.from(props?.data?.results, ({id, name, code}) => ({name, code, id})))
+    const [rows, setRows] = useState(Array.from(props?.data?.results ?? [], ({id, name, code}) => ({name, code, id})))
 
     const [logsColumns] = useState([
         { field: 'updated_on', headerName: 'Date', flex: 1 },
@@ -4261,8 +4261,7 @@ SystemSetup.getInitialProps = async (ctx) => {
         'public, s-maxage=10, stale-while-revalidate=59'
       )
 
-    const fetchData = (token) => {
-        
+    function fetchData(token) {
 
         let url = process.env.NEXT_PUBLIC_API_URL + '/common/counties/?fields=id,code,name'
         let query = { 'searchTerm': '' }
@@ -4315,7 +4314,8 @@ SystemSetup.getInitialProps = async (ctx) => {
             return fetchData(token).then(t => t)
         }
     }).catch(err => {
-        console.log('Error checking token: ', err)
+
+        // console.log('Error checking token: ', err)
         if (typeof window !== 'undefined' && window) {
             if (ctx?.asPath) {
                 window.location.href = ctx?.asPath
@@ -4323,7 +4323,8 @@ SystemSetup.getInitialProps = async (ctx) => {
                 window.location.href = '/system_setup'
             }
         }
-        setTimeout(() => {
+
+        // setTimeout(() => {  
             return {
                 error: true,
                 err: err,
@@ -4332,7 +4333,7 @@ SystemSetup.getInitialProps = async (ctx) => {
                 path: ctx.asPath || '/system_setup',
                 current_url: ''
             }
-        }, 1000);
+        // }, 1000);
     })
 
 }

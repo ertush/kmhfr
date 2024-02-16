@@ -351,7 +351,7 @@ function CommunityUnit (props) {
 										
 										))
 										) : (
-											<div className='w-full flex items-center justify-start gap-2 bg-yellow-100 border font-medium  border-yellow-300 p-3'>
+											<div className='w-[98%] flex my-4  rounded border border-yellow-600 items-center justify-start gap-2 bg-yellow-100  font-medium p-3'>
 												<span className='text-base text-gray-700'>
 													No community units found
 												</span>
@@ -434,6 +434,7 @@ function CommunityUnit (props) {
 	}
 };
 
+
 CommunityUnit.getInitialProps = async (ctx) => {
 	
 	ctx?.res?.setHeader(
@@ -441,9 +442,9 @@ CommunityUnit.getInitialProps = async (ctx) => {
         'public, s-maxage=10, stale-while-revalidate=59'
       )
 
-
 	const API_URL = process.env.NEXT_PUBLIC_API_URL;
-	const fetchFilters = async (token) => {
+
+	async function fetchFilters(token){
 		let filters_url =
 			API_URL +
 			'/common/filtering_summaries/?fields=county,constituency,ward,chu_status,sub_county';
@@ -468,7 +469,8 @@ CommunityUnit.getInitialProps = async (ctx) => {
 		}
 	};
 
-	const fetchData = async (token) => {
+
+	async function fetchData(token) {
 		let filterQuery = JSON.parse(JSON.stringify(ctx.query));
 		let qry = ''
 		let url
@@ -542,11 +544,15 @@ CommunityUnit.getInitialProps = async (ctx) => {
 				err: err,
 				data: [],
 				query: {},
+				token: null,
+				filters: {},
 				path: ctx.asPath || '/community-units',
 				current_url: '',
 			};
 		}
 	};
+
+
 	return checkToken(ctx.req, ctx.res)
 		.then((t) => {
 			if (t.error) {

@@ -48,7 +48,7 @@ function AdminOffices(props) {
     const userCtx = useContext(UserContext)
     const [isClient, setIsClient] = useState(false)
 
-    const rows = props?.data?.results?.map(({ id, county_name, sub_county_name, name, is_national, phone_number, email }) => ({ id, county_name, sub_county_name, name, is_national: is_national == true ? 'Yes' : 'No', phone_number, email }))
+    const rows = props?.data?.results?.map(({ id, county_name, sub_county_name, name, is_national, phone_number, email }) => ({ id, county_name, sub_county_name, name, is_national: is_national == true ? 'Yes' : 'No', phone_number, email })) ?? []
     const columns = [
         { headerName: "County", field: "county_name", flex:1},
         { headerName: "Sub County", field: "sub_county_name", flex:1 },
@@ -213,7 +213,8 @@ AdminOffices.getInitialProps = async (ctx) => {
 
     const API_URL = process.env.NEXT_PUBLIC_API_URL
 
-    const fetchFilters = async token => {
+
+   async function fetchFilters(token){
         let filters_url = API_URL + '/common/filtering_summaries/?fields=county,sub_county,ward'
         try {
             const r = await fetch(filters_url, {
@@ -234,7 +235,8 @@ AdminOffices.getInitialProps = async (ctx) => {
             }
         }
     }
-    const fetchData = async (token) => {
+
+   async function fetchData (token) {
         let url = API_URL + `/admin_offices/`
         let query = { 'searchTerm': '' }
         if (ctx?.query?.qf) {
@@ -259,11 +261,13 @@ AdminOffices.getInitialProps = async (ctx) => {
                 }
             })
             const json = await r.json()
+
             return fetchFilters(token).then(ft => {
                 return {
                     data: json, query, filters: { ...ft }, token, path: ctx.asPath, tok: token || '/admin_office', current_url: url, api_url: API_URL
                 }
             })
+
         } catch (err) {
             console.log('Error fetching facilities: ', err)
             return {
