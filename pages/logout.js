@@ -46,8 +46,8 @@ const Logout = props => {
                 <MainLayout>
                     <div className="w-full flex py-60 overflow-hidden flex-col items-center justify-center">
                         <div className="flex flex-col items-center">
-                            <h1 className="text-2xl text-black">Logout</h1>
-                            <p>You have been logged out.</p>
+                            <h1 className="text-2xl text-black">Logging out...</h1>
+                            {/* <p>You have been logged out.</p> */}
                         </div>
                     </div>
                 </MainLayout>
