@@ -2,29 +2,51 @@ import 'tailwindcss/tailwind.css'
 import '/assets/css/style.css';
 import '../public/assets/css/global.css';
 
-import NProgress from 'nprogress';
-import { Router } from 'next/router';
+import { useRouter } from 'next/router';
 import { positions, Provider } from "react-alert";
 import { PermissionContext } from '../providers/permissions';
 import { UserGroupContext } from '../providers/userGroup';
 import { UserContext } from '../providers/user';
 import AlertTemplate from "react-alert-template-basic";
+import Backdrop from '@mui/material/Backdrop';
+import CircularProgress from '@mui/material/CircularProgress';
+import { useEffect, useState } from 'react';
 
 
 
-import 'nprogress/nprogress.css';
+function LoadAnimation({open}) {
+  return (
+      <Backdrop
+        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={open}
+        role="bar"  
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
+  )
+}
 
-Router.events.on('routeChangeStart', () => NProgress.start()); Router.events.on('routeChangeComplete', () => NProgress.done()); Router.events.on('routeChangeError', () => NProgress.done());  
 
 const options = {
   timeout: 5000,
   position: positions.TOP_RIGHT
 };
 
+
+
 export default function App(props) {
  
-
+  const router = useRouter()
+  const [isNavigating, setIsNavigating] = useState(false)
   const  { Component, pageProps, ctx } = props
+
+
+  useEffect(() => {
+    router.events.on('routeChangeStart', () => {setIsNavigating(true)}); 
+    router.events.on('routeChangeComplete', () => {setIsNavigating(false)}); 
+    router.events.on('routeChangeError', () => {setIsNavigating(false)});  
+
+  }, [])
 
 //  console.log({pageProps, ctx})
   return (
@@ -33,10 +55,10 @@ export default function App(props) {
       <UserContext.Provider value={(() => {
           let user
           if (typeof window !== "undefined") {
-                // user = JSON.parse(window.sessionStorage.getItem('user'))
+                
                 user = JSON.parse(window.localStorage.getItem('user'))
           }
-          // console.log({'_app_user':user})
+          
         return user
         
         })()}>
@@ -57,6 +79,9 @@ export default function App(props) {
         return userPermissions
         
         })()}>
+          {
+            isNavigating && <LoadAnimation open={true} />
+          }
           <Component {...pageProps} />
         </PermissionContext.Provider>
         </UserGroupContext.Provider>
