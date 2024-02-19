@@ -175,7 +175,7 @@ export default function HeaderLayout({
 
                   {/* Title */}
 
-                  <h2 /*style={{ color: '#1651b6' }}*/ className=' leading-4 font-semibold text-2xl uppercase'>Kenya Master Health Facility Registry</h2>
+                  <h2 className=' leading-4 font-semibold text-2xl uppercase'>Kenya Master Health Facility Registry</h2>
                 </div>
 
                    {/* Login / Logout button */}
@@ -199,7 +199,7 @@ export default function HeaderLayout({
             <Menu.Items
               as="ul"
               style={{backgroundColor:"#eff6ff", color: "black", outline:'none'}}
-              className="list-none  outline-none text-black bg-gray-100 shadow-md flex flex-col items-center justify-start gap-2 p-3 absolute mt-3 bg-black right-0 text-white w-40 "
+              className="list-none  outline-none text-black bg-gray-100 shadow-md flex flex-col items-center justify-start gap-2 p-3 absolute mt-3  right-0  w-40 "
             >
 
               <Menu.Item as="li" className="flex items-center w-full gap-1">
@@ -323,12 +323,17 @@ export default function HeaderLayout({
                           q: formData.search
                         }})
                       }
-                      else
+                      else if(searchOption == "Community Health Units")
                       {
                          router.push({pathname:"/community-units", query:{
                             q: formData.search
                          }})
                       
+                      }
+                      else {
+                        router.push({pathname: '/facilities', query:{
+                          q: formData.search
+                        }})
                       }
                     }
                   }>
