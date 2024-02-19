@@ -9,6 +9,12 @@ import { Login } from '@mui/icons-material'
 import { NorthEast } from '@mui/icons-material'
 import propTypes from 'prop-types'
 import Select from 'react-select'
+import Backdrop from '@mui/material/Backdrop';
+import { CancelRounded } from '@mui/icons-material'
+import { Phone } from '@mui/icons-material'
+import { Mail } from '@mui/icons-material'
+import { Web } from '@mui/icons-material'
+
 
 function Home(props) {
 
@@ -18,6 +24,9 @@ function Home(props) {
   const [_, setUser] = useState(null);
   const [isClient, setIsClient] = useState(null);
   const [searchOption, setSearchOption] = useState('Facilities');
+  const [isFAQ, setIsFAQ] = useState(false)
+  const [isContacts, setIsContacts] = useState(false)
+
 
   
 
@@ -117,6 +126,7 @@ function Home(props) {
           <title>KMHFR - Home</title>
           <link rel="icon" href="/favicon.ico" />
         </Head>
+
         <div className="w-full h-screen overflow-y-scroll flex flex-col">
           {/* Logo And Title */}
           <div className='w-full fixed z-10 max-h-min bg-gray-100 flex'>
@@ -168,14 +178,94 @@ function Home(props) {
                   <Link href='/public/chu'>Community Units</Link>
                 </li>
                 <li className='text-lg h-[65px] flex items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 hover:border-b-2 hover:border-gray-100'>
-                  <Link href='/public/faq'>FAQs</Link>
+                  <button onClick={() => setIsFAQ(true)}>FAQs</button>
                 </li>
                 <li className='text-lg h-[65px] flex items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 hover:border-b-2 hover:border-gray-100'>
-                  <Link href='/public/contacts'>Contacts</Link>
+                  <button onClick={() => setIsContacts(true)}>Contacts</button>
                 </li>
               </ul>
             </nav>
           </div>
+
+          {/* FAQ */}
+          {
+            isFAQ && 
+           <Backdrop
+            sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'start', paddingTop:'170px' }}
+            open={isFAQ}
+              
+            >
+                <div className="p-6 w-[600px] bg-gray-100 max-h-min shadow-sm rounded flex flex-col gap-y-6 ">
+                    <div className='flex flex-col gap-2'>
+
+                      <button className="text-black self-end">
+                        <CancelRounded onClick={() => setIsFAQ(false)} className='w-7 aspect-square text-red-400'/>
+                      </button>
+
+                        <h2 className='text-3xl text-blue-500 font-semibold'>
+                            WHAT'S A HEALTH FACILITY? 
+                        </h2>
+                        <p className='text-lg text-justify text-black'>
+                          This is a defined health service delivery structure that provides services and has one or more departments operating within it e.g. Outpatient, pharmacy, laboratory . In KMHFL, a facility is described by it’s unique code, ownership, type, administrative and geographical location, and services provided.
+                         </p>
+                    </div>
+
+                    <div className='flex flex-col gap-2'>
+                        <h2 className='text-3xl text-blue-500 font-semibold'>
+                         WHAT'S A STAND-ALONE HEALTH FACILITY? 
+                        </h2>
+                        <p className='text-lg text-justify text-black'>
+                        A stand-alone health facility is a type of facility that offers services to complement the facilities offering consultative and curative services 
+                         </p>
+                    </div>
+
+                    <div className='flex flex-col gap-2'>
+                        <h2 className='text-3xl text-blue-500 font-semibold'>
+                        WHAT'S A COMMUNITY HEALTH UNIT?
+                        </h2>
+                        <p className='text-lg text-justify text-black'>
+                        This is a health service delivery structure within a defined geographical area covering a population of approximately 5,000 people. Each unit is assigned 5 Community Health Extension Workers (CHEWs) and community health volunteers who offer promotive, preventative and basic curative health services. These are governed by a Community Health Committee (CHC) and each Community Health unit is linked to a specific Health facility.  
+                         </p>
+                    </div>
+                </div>
+           </Backdrop>
+          }
+
+          {/* Contacts */}
+          {
+            isContacts && 
+           <Backdrop
+            sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'start', paddingTop:'170px' }}
+            open={isContacts}
+              
+            >
+                <div className="p-6 w-[500px] bg-gray-100 max-h-min shadow-sm rounded flex ">
+                  <div className="flex flex-col text-gray-900 w-full gap-2">
+                      <button className="text-black self-end">
+                        <CancelRounded onClick={() => setIsContacts(false)} className='w-7 aspect-square text-red-400'/>
+                      </button>
+
+                    <h2 className='text-3xl text-blue-500 font-semibold mb-2 '>Contacts</h2>
+                    <div className="flex items-center gap-3">
+                      <Phone className='text-gray-900 w-6 aspect-square'/>
+                      <Link href="tel:+254 20 2717077">+254-20-2717077</Link>
+                    </div>
+
+                    <div className="flex items-center gap-3">
+                      <Mail className='text-gray-900 w-6 aspect-square'/>
+                      <Link href="mailto:kmhfl@health.go.ke">kmhfl@health.go.ke</Link>
+                    </div>
+
+                    <div className="flex items-center gap-3">
+                      <Web className='text-gray-900 w-6 aspect-square'/>
+                      <Link href="https://servicedesk.health.go.ke/portal" className="text-gray-200"> servicedesk.health.go.ke/portal</Link>
+                    </div>
+                  </div>
+                </div>
+
+            </Backdrop>
+          }
+          
           {/* Hero Section */}
           <div className='h-[100vh] w-full mb-24'>
             <div className='w-full  relative' style={{
@@ -314,32 +404,32 @@ function Home(props) {
           {/* Body */}
           <div className='h-[1200px] items-start w-[60%] mx-auto flex-col mt-12 gap-3 '>
 
-            <p className="text-md">Kenya Master Health Facility Registry (KMHFR) is an application with all health facilities and community units in Kenya. Each health facility and community unit is identified with unique code and their details describing the geographical location, administrative location, ownership, type and the services offered. </p>
+            <p className="text-lg">Kenya Master Health Facility Registry (KMHFR) is an application with all health facilities and community units in Kenya. Each health facility and community unit is identified with unique code and their details describing the geographical location, administrative location, ownership, type and the services offered. </p>
 
            <div className="h-auto w-full flex items-start mt-8 gap-8">      
               <Image src="/assets/css/images/distribution_map.png" objectFit="contain" width="1200" height="1200" />
               <div className="flex flex-col justify-start mt-8 h-full gap-y-24">
-                <p className="text-md text-justify relative">
+                <p className="text-lg text-justify relative">
                   <h1 className="text-8xl absolute text-blue-600 font-extrabold opacity-30 -top-[40px] -left-[10px]">1</h1>
                   Users can view administrative units (counties, constituencies, wards) and their facilities and Community Health Units. Users can also rate Facilities and Community Health Units.
                 </p>
 
-                <p className="text-md text-justify relative">
+                <p className="text-lg text-justify relative">
                   <h1 className="text-8xl absolute text-blue-600 font-extrabold opacity-30 -top-[40px] -left-[10px]">2</h1>
                   KMHFR provides a list of all health facilities which comes with an advanced search where you can refine your search.
                 </p>
 
-                <p className="text-md text-justify relative">
+                <p className="text-lg text-justify relative">
                   <h1 className="text-8xl absolute text-blue-600 font-extrabold opacity-30 -top-[40px] -left-[10px]">3</h1>
                   The system provides a list of all community health units along side an advance search where you can refine your search by using administrative units.
                 </p>
 
-                <p className="text-md text-justify relative">
+                <p className="text-lg text-justify relative">
                   <h1 className="text-8xl absolute text-blue-600 font-extrabold opacity-30 -top-[40px] -left-[10px]">4</h1>
                   KMHFR provides a RESTful API for developers to use. The documentation is available at <br /> <a className="text-blue-700 group-hover:underline group-hover:text-gray-50 focus:underline active:underline" href="https://mfl-api-docs.readthedocs.io/en/latest/" target="_blank" rel="noopener noreferrer">https://mfl-api-docs.readthedocs.io/en/latest</a>
                 </p>
 
-                <p className="text-md text-justify relative">
+                <p className="text-lg text-justify relative">
                   <h1 className="text-8xl absolute text-blue-600 font-extrabold opacity-30 -top-[40px] -left-[10px]">5</h1>
                   To learn all about KMHFR, its implementation and how to use it here (<a className="text-blue-700 group-hover:underline group-hover:text-white focus:underline active:underline" target="_blank" rel="noopener noreferrer" href="https://elearning.health.go.ke">https://elearning.health.go.ke</a>). Enrol and start learning.
                 </p>
