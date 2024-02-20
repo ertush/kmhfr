@@ -198,7 +198,7 @@ function Home(props) {
                 <div className="p-6 w-[600px] bg-gray-100 max-h-min shadow-sm rounded flex flex-col gap-y-6 ">
                     <div className='flex flex-col gap-2'>
 
-                      <button className="text-black self-center">
+                      <button className="text-black self-end">
                         <CancelRounded onClick={() => setIsFAQ(false)} className='w-7 aspect-square text-red-400'/>
                       </button>
 
@@ -241,7 +241,7 @@ function Home(props) {
             >
                 <div className="p-6 w-[500px] bg-gray-100 max-h-min shadow-sm rounded flex ">
                   <div className="flex flex-col text-gray-900 w-full gap-2">
-                      <button className="text-black self-center">
+                      <button className="text-black self-end">
                         <CancelRounded onClick={() => setIsContacts(false)} className='w-7 aspect-square text-red-400'/>
                       </button>
 
