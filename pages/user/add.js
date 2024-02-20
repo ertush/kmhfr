@@ -15,19 +15,19 @@ import { UserContext } from '../../providers/user';
 import { hasPermission } from '../../utils/checkPermissions';
 import Alert from '@mui/material/Alert';
 import Link from 'next/link'
+import Spinner from '../../components/Spinner'
 
-const User = (props) => {
-
+function User(props){
 
 	const [subCountyOptions, setSubCountyOptions] = useState([])
 	const [editMode, setEditMode] = useState(false)
 	const alert = useAlert()
-	let groups = props[0]?.groups
-	let contact_types = props[1]?.contact_type
-	let counties = props[2]?.counties
-	let regbodies = props[3]?.regulating_bodies
-	let jobs = props[4]?.job_titles
-	let person_details = props[5]?.person_details
+	let groups = props?.groups
+	let contact_types = props?.contact_type
+	let counties = props?.counties
+	let regbodies = props?.regulating_bodies
+	let jobs = props?.job_titles
+	let person_details = props?.person_details
 	const userCtx = useContext(UserContext);
 	const [contactList, setContactList] = useState([{}])
 	const [status, setStatus] = useState(null)
@@ -37,10 +37,7 @@ const User = (props) => {
 	const [delete_user, setDeleteUserPermission] = useState(false);
 	const [isCPasswordDirty, setIsCPasswordDirty] = useState(false);
 	const [isClient, setIsClient] = useState(false);
-
-
-
-
+	const [isSubmitting, setIsSubmitting] = useState(false)
 
 
 	const [userData, setUserData] = useState({
@@ -102,14 +99,17 @@ const User = (props) => {
 
 
 	const handleBasicDetailsSubmit = async (event) => {
+		
+		setIsSubmitting(true)
 		event.preventDefault()
 		let url = ''
-		editMode ? url = `/api/common/submit_form_data/?path=edit_user&id=${person_details.id}` : url = '/api/common/submit_form_data/?path=users'
+		editMode ? url = `${process.env.NEXT_PUBLIC_API_URL}/users/${person_details.id}` : url = `${process.env.NEXT_PUBLIC_API_URL}/users/`
 		try {
 			fetch(url, {
 				headers: {
 					'Accept': 'application/json, text/plain, */*',
-					'Content-Type': 'application/json;charset=utf-8'
+					'Content-Type': 'application/json;charset=utf-8',
+					'Authorization': `Bearer ${props?.token}`
 
 				},
 				method: (editMode ? 'PUT' : 'POST'),
@@ -119,29 +119,33 @@ const User = (props) => {
 				.then(res => {
 
 					if (res.id !== undefined) {
-
+						setIsSubmitting(false)
 						router.push({ pathname: '/user' })
 						alert.success(editMode ? 'User updated successfully' : 'User added successfully')
 
 					} else {
-						setStatus({ status: 'error', message: res })
+						setIsSubmitting(false)
+						setStatus({ status: 'error', message: Object.values(res)[0][0] })
 					}
 				})
-				.catch(e => {
+				.catch(e => {		
 					setStatus({ status: 'error', message: e.message })
 				})
 		} catch (e) {
-
+			setIsSubmitting(false)
 			setStatus({ status: 'error', message: e.message })
 		}
 	}
 
 	const deleteUser = (event) => {
+
 		event.preventDefault()
 		try {
-			fetch(`/api/common/submit_form_data/?path=delete_user&id=${person_details.id}`, {
+			fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/${person_details.id}`, {
 				headers: {
-					'Content-Type': 'application/json;charset=utf-8'
+					'Content-Type': 'application/json;charset=utf-8',
+					'Accept': 'application/json',
+					'Authorization': `Bearer ${props?.token}`
 				},
 				method: 'DELETE',
 			})
@@ -278,7 +282,7 @@ const User = (props) => {
 								status?.status.includes("error") &&
 								<Alert severity={status?.status} sx={{ width: '100%' }}>
 
-									{status.message?.__all__[0]}
+									{Array.isArray(status?.message) ? status?.message?.__all__[0] : status?.message }
 
 								</Alert>
 							}
@@ -761,6 +765,9 @@ const User = (props) => {
 																			className='flex-none w-full  flex-grow  placeholder-gray-500 border border-blue-600 outline-none'
 
 																		/>
+																		
+																		{
+																			userData?.groups[0]?.id !== 1 &&
 																		<Select
 																			styles={{
 																				control: (baseStyles) => ({
@@ -790,6 +797,7 @@ const User = (props) => {
 																			name='sub_county'
 																			className='flex-none w-full  flex-grow  placeholder-gray-500 border border-blue-600 outline-none'
 																		/>
+																		}
 																	</div>
 
 																</div>
@@ -858,11 +866,27 @@ const User = (props) => {
 											</span>
 										</button>
 										<button
-											disabled={!add_user}
+											disabled={!add_user && isSubmitting }
 											type='submit'
 											className=' bg-blue-600 p-2 text-white flex text-md font-semibold '>
 											<span className='text-medium font-semibold text-white'>
-												{editMode ? 'Update' : ' Save'}
+												{editMode ? 
+												isSubmitting ?
+												<div className='flex items-center gap-2'>
+												  <span className='text-white'>Updating.. </span>
+												  <Spinner />
+												</div>
+												:
+												'Update'
+												: 
+												isSubmitting ?
+												<div className='flex items-center gap-2'>
+												  <span className='text-white'>Saving... </span>
+												  <Spinner />
+												</div>
+												:
+												'Save'
+												}
 											</span>
 										</button>
 									</div>
@@ -896,7 +920,17 @@ const User = (props) => {
 User.getInitialProps = async (ctx) => {
 	const API_URL = process.env.NEXT_PUBLIC_API_URL
 	const person_id = ctx.query.id
-	const allOptions = []
+
+	const allOptions = {
+		groups:[],
+		contact_type: [],
+		counties: [],
+		regulating_bodies:[],
+		job_titles:[],
+		individual_details:[]
+
+	}
+	
 	const options = [
 		'groups',
 		'contact_type',
@@ -906,11 +940,10 @@ User.getInitialProps = async (ctx) => {
 		'individual_details'
 	]
 
-	return checkToken(ctx.req, ctx.res).then(async t => {
-		if (t.error) {
-			throw new Error('Error checking token')
-		} else {
-			let token = t.token
+	const token = (await checkToken(ctx.req, ctx.res))?.token
+
+	if(token) {
+		
 			let url = ''
 			for (let i = 0; i < options.length; i++) {
 				const option = options[i]
@@ -928,16 +961,12 @@ User.getInitialProps = async (ctx) => {
 
 							let results = (await _data.json()).results.map(({ id, name }) => { return { value: id, label: name } })
 
-							allOptions.push({ groups: results })
+							allOptions["groups"] = results 
 
 						}
 						catch (err) {
 							console.log(`Error fetching ${option}: `, err);
-							allOptions.push({
-								error: true,
-								err: err,
-								groups: [],
-							});
+							
 						}
 						break;
 					case 'contact_type':
@@ -953,16 +982,12 @@ User.getInitialProps = async (ctx) => {
 
 							let results = (await _data.json()).results.map(({ id, name }) => { return { value: id, label: name } })
 
-							allOptions.push({ contact_type: results })
+							allOptions["contact_type"] = results
 
 						}
 						catch (err) {
 							console.log(`Error fetching ${option}: `, err);
-							allOptions.push({
-								error: true,
-								err: err,
-								contact_type: [],
-							});
+							
 						}
 						break;
 					case 'counties':
@@ -978,16 +1003,12 @@ User.getInitialProps = async (ctx) => {
 
 							let results = (await _data.json()).results.map(({ id, name }) => { return { value: id, label: name } })
 
-							allOptions.push({ counties: results })
+							allOptions["counties"] = results
 
 						}
 						catch (err) {
 							console.log(`Error fetching ${option}: `, err);
-							allOptions.push({
-								error: true,
-								err: err,
-								counties: [],
-							});
+							
 						}
 						break;
 					case 'regulating_bodies':
@@ -1003,16 +1024,12 @@ User.getInitialProps = async (ctx) => {
 
 							let results = (await _data.json()).results.map(({ id, name }) => { return { value: id, label: name } })
 
-							allOptions.push({ regulating_bodies: results })
+							allOptions["regulating_bodies"] = results
 
 						}
 						catch (err) {
 							console.log(`Error fetching ${option}: `, err);
-							allOptions.push({
-								error: true,
-								err: err,
-								regulating_bodies: [],
-							});
+							
 						}
 						break;
 					case 'job_titles':
@@ -1026,16 +1043,12 @@ User.getInitialProps = async (ctx) => {
 								},
 							})
 							let results = (await _data.json()).results.map(({ id, name }) => { return { value: id, label: name } })
-							allOptions.push({ job_titles: results })
+							allOptions["job_titles"] = results 
 
 						}
 						catch (err) {
 							console.log(`Error fetching ${option}: `, err);
-							allOptions.push({
-								error: true,
-								err: err,
-								job_titles: [],
-							});
+							
 						}
 						break;
 					case 'individual_details':
@@ -1050,43 +1063,24 @@ User.getInitialProps = async (ctx) => {
 									},
 								}).then(r => r.json()).then(resp => { return resp })
 
-								allOptions.push({ person_details: _data })
+								allOptions["person_details"] =  _data
 							}
 							catch (err) {
 								console.log(`Error fetching ${option}: `, err);
-								allOptions.push({
-									error: true,
-									err: err,
-									job_titles: [],
-								});
+								
 							}
 						}
 						break;
 
 				}
+
+				allOptions['token'] = token
 			}
 			return allOptions
-		}
-	}).catch(err => {
-		console.log('Error checking token: ', err)
-		if (typeof window !== 'undefined' && window) {
-			if (ctx?.asPath) {
-				window.location.href = ctx?.asPath
-			} else {
-				window.location.href = '/add_user'
-			}
-		}
-		setTimeout(() => {
-			return {
-				error: true,
-				err: err,
-				data: [],
-				query: {},
-				path: ctx.asPath || '/add_user',
-				current_url: ''
-			}
-		}, 1000);
-	})
+		
+	} else {
+		return allOptions
+	}
 
 }
 

@@ -18,7 +18,8 @@ import Image from 'next/image';
 import Head from 'next/head'
 import { Login, Logout } from '@mui/icons-material'
 import Select from 'react-select'
-
+import Backdrop from '@mui/material/Backdrop';
+import { CancelRounded } from '@mui/icons-material'
 
 
 export const DelayedLoginButton = () => {
@@ -65,6 +66,7 @@ export default function HeaderLayout({
 
   const userPermissions = useContext(PermissionContext)
   const userCtx = useContext(UserContext)
+  const [isFAQ, setIsFAQ] = useState(false)
 
 
   const router = useRouter();
@@ -156,6 +158,7 @@ export default function HeaderLayout({
         </Head>
 
         <div className="w-full overflow-y-scroll flex flex-col">
+
           {/* Logo And Title */}
           <div className='w-full fixed z-30 max-h-min bg-gray-100 flex'>
             {/* Heading */}
@@ -169,13 +172,13 @@ export default function HeaderLayout({
                     className="leading-none tracking-tight flex justify-center items-center text-black font-bold relative"
                   >
 
-                    <Image src="/moh_court_of_arms.png" alt="logo" height="56" width="85" />
+                    <Image src="/moh-logo-alt.png" alt="logo" height="65" width="350" />
 
                   </Link>
 
                   {/* Title */}
 
-                  <h2 className=' leading-4 font-semibold text-2xl uppercase'>Kenya Master Health Facility Registry</h2>
+                  {/* <h2 className=' leading-4 font-semibold text-2xl uppercase'>Kenya Master Health Facility Registry</h2> */}
                 </div>
 
                    {/* Login / Logout button */}
@@ -266,18 +269,31 @@ export default function HeaderLayout({
           <div style={{ backgroundColor: '#1651b6' }} className='w-full top-[88px] fixed z-10  max-h-min flex'>
             {/* Menu Heading */}
             <nav className="max-h-min w-[90%] container flex justify-between items-center mx-auto ">
-              <ul className='list-none w-8/12 flex items-center justify-between '>
-                
+              <ul className='list-none w-full flex items-center justify-between '>
+                {
+                  groupID == 6 &&
                 <li className={`text-lg h-[80px] flex items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/dashboard" && 'border-b-2 border-b-gray-50 bg-blue-500/85' }`}>
                   <Link href='/dashboard'>Dashboard</Link>
                 </li>
+                }
+
+                
+                <li className={`text-lg h-[80px] flex items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/dashboard" && 'border-b-2 border-b-gray-50 bg-blue-500/85' }`}>
+                  <Link href='/#about'>About</Link>
+                </li>
+               
 
                 <li className={`text-lg h-[80px] flex items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/facilities" && 'border-b-2 border-b-gray-50 bg-blue-500/85' }`}>
-                  <Link href='/facilities'>Facilities</Link>
+                  <Link href='/public/facilities'>Facilities</Link>
                 </li>
 
                 <li className={`text-lg h-[80px] flex items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/community-units" && 'border-b-2 border-b-gray-50 bg-blue-500/85' }`}>
-                  <Link href='/community-units'>Community Units</Link>
+                  <Link href='/public/chu'>Community Units</Link>
+                </li>
+
+                <li className={`text-lg h-[80px] flex items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/community-units" && 'border-b-2 border-b-gray-50 bg-blue-500/85' }`}>
+                  <button onClick={() => setIsFAQ(true)}>FAQs</button>
+                 
                 </li>
                 {
                   (groupID == 7 ||
@@ -291,113 +307,163 @@ export default function HeaderLayout({
                  {
                   hasPermission(/^common.add_county$/, userPermissions) &&
                   hasPermission(/^common.delete_county$/, userPermissions) &&
+                  groupID == 6 &&
                   <li className={`text-lg h-[80px] flex items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/system_setup" && 'border-b-2 border-b-gray-50 bg-blue-500/85' }`}>
                      <Link href='/system_setup'>System Setup</Link>
                    </li> 
                  }
                
+               {
+                groupID == 6 &&
                 <li className={`text-lg h-[80px] flex items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/reports" && 'border-b-2 border-b-gray-50 bg-blue-500/85' }`}>
                   <Link href='/reports'>Reports</Link>
                 </li>
+                }
 
                  {
                   hasPermission(/^admin_offices.view_adminoffice.*$/, userPermissions) && 
+                  groupId == 6 &&
                   <li className={`text-lg h-[80px] flex items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/admin_offices" && 'border-b-2 border-b-gray-50 bg-blue-500/85' }`}>
                     <Link href='/admin_offices'>Admin Offices</Link>
                   </li>
                   }
 
               </ul>
+                  {
+                    groupID == 6 &&
+                  <form className='w-3/12 py-4 flex' onSubmit={
+                        (e) => {
+                          e.preventDefault();
 
-               <form className='w-3/12 py-4 flex' onSubmit={
-                    (e) => {
-                      e.preventDefault();
+                          setTouchSearch(false);
 
-                      setTouchSearch(false);
+                          const formDataEntries = new FormData(e.target)
+                          const formData = Object.fromEntries(formDataEntries)
 
-                      const formDataEntries = new FormData(e.target)
-                      const formData = Object.fromEntries(formDataEntries)
+                          if(searchOption == "Facilities"){
+                            router.push({pathname: '/facilities', query:{
+                              q: formData.search
+                            }})
+                          }
+                          else if(searchOption == "Community Health Units")
+                          {
+                            router.push({pathname:"/community-units", query:{
+                                q: formData.search
+                            }})
+                          
+                          }
+                          else {
+                            router.push({pathname: '/facilities', query:{
+                              q: formData.search
+                            }})
+                          }
+                        }
+                      }>
 
-                      if(searchOption == "Facilities"){
-                        router.push({pathname: '/facilities', query:{
-                          q: formData.search
-                        }})
-                      }
-                      else if(searchOption == "Community Health Units")
-                      {
-                         router.push({pathname:"/community-units", query:{
-                            q: formData.search
-                         }})
-                      
-                      }
-                      else {
-                        router.push({pathname: '/facilities', query:{
-                          q: formData.search
-                        }})
-                      }
-                    }
-                  }>
+                      <input placeholder={`Search ... `} onChange={(e) => {e.target.value.length > 0 ? setTouchSearch(true): setTouchSearch(false)}} name="search" type="text" className=' w-full border-none h-12 p-3 outline-none placeholder-gray-500' />
 
-                  <input placeholder={`Search ... `} onChange={(e) => {e.target.value.length > 0 ? setTouchSearch(true): setTouchSearch(false)}} name="search" type="text" className=' w-full border-none h-12 p-3 outline-none placeholder-gray-500' />
-
-                  <Select
-                  readOnly 
-                  styles={{
-                    control: (_) => {
-                      // console.log({baseStyles})
-                      return {
-                        // background: "inherit",
-                        boxSizing: "border-box",
-                        cursor: "default",
-                        display: "flex",
-                        flexWrap: "wrap",
-                        justifyContent: "space-between",
-                        label: "control",
+                      <Select
+                      readOnly 
+                      styles={{
+                        control: (_) => {
+                          // console.log({baseStyles})
+                          return {
+                            // background: "inherit",
+                            boxSizing: "border-box",
+                            cursor: "default",
+                            display: "flex",
+                            flexWrap: "wrap",
+                            justifyContent: "space-between",
+                            label: "control",
+                            
+                            outline: "0 !important",
+                            position: "relative",
+                            transition: "all 100ms",                      
+                            outLine: 'none',
+                            borderTop: 'none',
+                            borderBottom: 'none',
+                            borderLeft: 'none',
+                            margin: 0
+                          }
                         
-                        outline: "0 !important",
-                        position: "relative",
-                        transition: "all 100ms",                      
-                        outLine: 'none',
-                        borderTop: 'none',
-                        borderBottom: 'none',
-                        borderLeft: 'none',
-                        margin: 0
-                      }
-                     
-                
-                    },
-                  }}
+                    
+                        },
+                      }}
 
-                  options={
-                    [
-                      {
+                      options={
+                        [
+                          {
+                            label:'Facilities',
+                            value: 'facilities'
+                          },
+                          {
+                            label:'Community Health Units',
+                            value: 'chus'
+                          },
+                          
+                        ]
+                      }
+                      defaultValue={{
                         label:'Facilities',
                         value: 'facilities'
-                      },
-                      {
-                        label:'Community Health Units',
-                        value: 'chus'
-                      },
-                      
-                    ]
-                  }
-                  defaultValue={{
-                    label:'Facilities',
-                    value: 'facilities'
-                  }}
-                  placeholder="Select Category"
-                  name="facility_name"
-                  onChange={(e) => setSearchOption(e.label)}
-                  id="facility_name"
-                  className={`flex-none ${touchSearch && 'hidden'} bg-white focus:ring-0 p-1 max-h-min focus:outline-none rounded-none  w-[200px] text-gray-600 placeholder-gray-500  flex-grow border-l border-gray-400 outline-none`}
+                      }}
+                      placeholder="Select Category"
+                      name="facility_name"
+                      onChange={(e) => setSearchOption(e.label)}
+                      id="facility_name"
+                      className={`flex-none ${touchSearch && 'hidden'} bg-white focus:ring-0 p-1 max-h-min focus:outline-none rounded-none  w-[200px] text-gray-600 placeholder-gray-500  flex-grow border-l border-gray-400 outline-none`}
 
 
-                  />
-                  <button type="submit" className='py-2 px-3 bg-blue-600 text-gray-100 font-semibold '>search</button>
-                </form> 
+                      />
+                      <button type="submit" className='py-2 px-3 bg-blue-600 text-gray-100 font-semibold '>search</button>
+                  </form>
+                  } 
 
             </nav>
           </div>
+           {/* FAQ */}
+           {
+            isFAQ && 
+           <Backdrop
+            sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'start', paddingTop:'170px' }}
+            open={isFAQ}
+              
+            >
+                <div className="p-6 w-[600px] bg-gray-100 max-h-min shadow-sm rounded flex flex-col gap-y-6 ">
+                    <div className='flex flex-col gap-2'>
+
+                      <button className="text-black self-end">
+                        <CancelRounded onClick={() => setIsFAQ(false)} className='w-7 aspect-square text-red-400'/>
+                      </button>
+
+                        <h2 className='text-3xl text-blue-500 font-semibold'>
+                            WHAT'S A HEALTH FACILITY? 
+                        </h2>
+                        <p className='text-lg text-justify text-black'>
+                          This is a defined health service delivery structure that provides services and has one or more departments operating within it e.g. Outpatient, pharmacy, laboratory . In KMHFL, a facility is described by it’s unique code, ownership, type, administrative and geographical location, and services provided.
+                         </p>
+                    </div>
+
+                    <div className='flex flex-col gap-2'>
+                        <h2 className='text-3xl text-blue-500 font-semibold'>
+                         WHAT'S A STAND-ALONE HEALTH FACILITY? 
+                        </h2>
+                        <p className='text-lg text-justify text-black'>
+                        A stand-alone health facility is a type of facility that offers services to complement the facilities offering consultative and curative services 
+                         </p>
+                    </div>
+
+                    <div className='flex flex-col gap-2'>
+                        <h2 className='text-3xl text-blue-500 font-semibold'>
+                        WHAT'S A COMMUNITY HEALTH UNIT?
+                        </h2>
+                        <p className='text-lg text-justify text-black'>
+                        This is a health service delivery structure within a defined geographical area covering a population of approximately 5,000 people. Each unit is assigned 5 Community Health Extension Workers (CHEWs) and community health volunteers who offer promotive, preventative and basic curative health services. These are governed by a Community Health Committee (CHC) and each Community Health unit is linked to a specific Health facility.  
+                         </p>
+                    </div>
+                </div>
+           </Backdrop>
+          }
         </div>
 
     </header>    

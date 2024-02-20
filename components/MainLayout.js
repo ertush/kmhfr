@@ -136,7 +136,7 @@ export default function MainLayout({ children, isLoading, searchTerm, isFullWidt
                   </div>
                 </div>
 
-                <div className="flex w-[60%] mx-auto justify-between gap-5 items-center">
+                {/* <div className="flex w-[60%] mx-auto justify-between gap-5 items-center">
                   <Link href="https://healthit.uonbi.ac.ke">
                     <Image className="cursor-pointer" src="/healthit.png" alt="HealthIT" objectFit='contain' width="290" height="100" />
                   </Link>
@@ -154,7 +154,7 @@ export default function MainLayout({ children, isLoading, searchTerm, isFullWidt
                   <Link href="https://health.go.ke">
                     <Image className="cursor-pointer" src="/moh-logo.png" alt="Ministry Of Health" objectFit='contain' width="290" height="100" />
                   </Link>
-                </div>
+                </div> */}
               </div>
 
             </div>

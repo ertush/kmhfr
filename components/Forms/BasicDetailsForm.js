@@ -1607,7 +1607,7 @@ export function BasicDeatilsForm({ editMode }) {
                   {
                     submitting ?
                       <div className='flex items-center gap-2'>
-                        <span className='text-white'>Saving </span>
+                        <span className='text-white'>Saving.. </span>
                         <Spinner />
                       </div>
                       :
