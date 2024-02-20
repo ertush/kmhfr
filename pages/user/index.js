@@ -38,6 +38,8 @@ const StyledDataGrid = styled(DataGrid)(() => ({
 
 function Users (props) {
 
+  
+
     LicenseManager.setLicenseKey("test");
 
     const userPermissions = useContext(PermissionContext)
