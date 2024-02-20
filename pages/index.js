@@ -27,7 +27,6 @@ function Home(props) {
   const [isFAQ, setIsFAQ] = useState(false)
   const [isContacts, setIsContacts] = useState(false)
 
-
   
 
   let API_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -131,24 +130,24 @@ function Home(props) {
           {/* Logo And Title */}
           <div className='w-full fixed z-10 max-h-min bg-gray-100 flex'>
             {/* Heading */}
-            <div className="max-h-min w-[60%] container flex   mx-auto ">
+            <div className="max-h-min w-[60%] container flex  mx-auto">
               {/* Heading */}
               <div className='w-full flex justify-between py-4 max-h-min '>
-                <div className='flex gap-6 items-center'>
+                {/* <div className='flex gap-6 items-center'> */}
                   {/* Logo */}
                   <Link
                     href="/"
                     className="leading-none tracking-tight flex justify-center items-center text-black font-bold relative"
                   >
 
-                    <Image src="/moh_court_of_arms.png" alt="logo" height="56" width="85" />
+                    <Image src="/moh-logo-alt.png" alt="logo" height="65" width="350" />
 
                   </Link>
 
                   {/* Title */}
 
-                  <h2 /*style={{ color: '#1651b6' }}*/ className=' leading-4 font-semibold text-2xl uppercase'>Kenya Master Health Facility Registry</h2>
-                </div>
+                  {/* <h2 className=' leading-4 font-semibold text-2xl uppercase'>Kenya Master Health Facility Registry</h2> */}
+                {/* </div> */}
 
                 {/* Login Button */}
                 <div className='text-lg group duration-200 ease-in-out hover:bg-blue-800 hover:text-gray-100 max-h-min px-3 flex gap-x-2 items-center text-blue-800 capitalize font-semibold'>
@@ -167,22 +166,23 @@ function Home(props) {
 
           </div>
           {/* Menu Heading */}
-          <div style={{ backgroundColor: '#1651b6' }} className='w-full top-[88px] fixed z-10 max-h-min flex'>
+          <div /*style={{ backgroundColor: '#1651b6' }}*/ className='w-full bg-gray-300 top-[95px] fixed z-10 max-h-min flex'>
             {/* Menu Heading */}
             <nav style={{ width: "60%" }} className="max-h-min container flex  mx-auto ">
               <ul className='list-none w-full flex items-center  justify-between '>
-                <li className='text-lg h-[65px] flex items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 hover:border-b-2 hover:border-gray-100'>
+               <li className='text-lg h-[65px] flex items-center  hover:text-gray-100  duration-200 ease-out hover:bg-blue-800 px-4 font-semibold capitalize text-blue-900 '>
+                  <Link href="#about">About</Link>
+                </li>
+                <li className='text-lg h-[65px] flex items-center  hover:text-gray-100  duration-200 ease-out hover:bg-blue-800 px-4 font-semibold capitalize text-blue-900 '>
                   <Link href='/public/facilities'>Facilities</Link>
                 </li>
-                <li className='text-lg h-[65px] flex items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 hover:border-b-2 hover:border-gray-100'>
+                <li className='text-lg h-[65px] flex items-center  hover:text-gray-100  duration-200 ease-out hover:bg-blue-800 px-4 font-semibold capitalize text-blue-900 '>
                   <Link href='/public/chu'>Community Units</Link>
                 </li>
-                <li className='text-lg h-[65px] flex items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 hover:border-b-2 hover:border-gray-100'>
+                <li className='text-lg h-[65px] flex items-center  hover:text-gray-100  duration-200 ease-out hover:bg-blue-800 px-4 font-semibold capitalize text-blue-900 '>
                   <button onClick={() => setIsFAQ(true)}>FAQs</button>
                 </li>
-                <li className='text-lg h-[65px] flex items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 hover:border-b-2 hover:border-gray-100'>
-                  <button onClick={() => setIsContacts(true)}>Contacts</button>
-                </li>
+                
               </ul>
             </nav>
           </div>
@@ -198,7 +198,7 @@ function Home(props) {
                 <div className="p-6 w-[600px] bg-gray-100 max-h-min shadow-sm rounded flex flex-col gap-y-6 ">
                     <div className='flex flex-col gap-2'>
 
-                      <button className="text-black self-end">
+                      <button className="text-black self-center">
                         <CancelRounded onClick={() => setIsFAQ(false)} className='w-7 aspect-square text-red-400'/>
                       </button>
 
@@ -241,7 +241,7 @@ function Home(props) {
             >
                 <div className="p-6 w-[500px] bg-gray-100 max-h-min shadow-sm rounded flex ">
                   <div className="flex flex-col text-gray-900 w-full gap-2">
-                      <button className="text-black self-end">
+                      <button className="text-black self-center">
                         <CancelRounded onClick={() => setIsContacts(false)} className='w-7 aspect-square text-red-400'/>
                       </button>
 
@@ -267,22 +267,21 @@ function Home(props) {
           }
           
           {/* Hero Section */}
-          <div className='h-[100vh] w-full mb-24'>
-            <div className='w-full  relative' style={{
-              height: '85vh',
-              backgroundImage: "url('/assets/css/images/moh_lab.jpg')",
-              backgroundBlendMode: "darken",
+          <div className='w-full mb-24 '>
+            <div className='w-full h-[60vh]  flex flex-col items-center justify-center gap-y-6' style={{
+              // height: '85vh',
+              backgroundColor: "#1651b6",
               backgroundSize: "cover",
 
             }}>
-              <div className='w-full h-full bg-gray-900 opacity-60 absolute inset-0'></div>
-              <div className='absolute left-[20%] w-[70%] top-[30%] h-auto flex-col items-start'>
-                <h1 className="text-6xl text-wrap text-gray-100 font-extrabold">Discover <span className='text-blue-500'>Health Facilities</span> and <span className='text-blue-500'>Community Health Units</span> Near You</h1>
-                <h4 className='text-lg mt-4 text-gray-100 capitalize'>the Official registry of health facilities and Community units in kenya</h4>
+              {/* <div className='w-full h-full bg-gray-900 opacity-60 absolute inset-0'></div> */}
+              <div className='w-[60%] mt-[10%] h-auto flex-col items-start'>
+                <h1 className="text-6xl text-wrap text-gray-100 font-extrabold">Welcome to Kenya Master Health Facility Registry</h1>
+                <h4 className='text-xl mt-4 text-gray-100 capitalize'>Search for a facility or community health unit</h4>
               </div>
 
 
-              <div className='w-[60%] left-[20%] bottom-[26%] absolute h-auto bg-gray-200 bg-opacity-40 p-5 flex place-content-center'>
+              <div className='w-[60%] my-4 h-auto bg-gray-200 bg-opacity-40 p-5 flex place-content-center'>
                 <form className='w-full bg-gray-100 flex' onSubmit={
                     (e) => {
                       e.preventDefault();
@@ -364,7 +363,7 @@ function Home(props) {
               </div>
 
 
-              <div className="absolute -bottom-[9%] left-[20%] w-[60%] h-auto grid grid-cols-4 place-content-center gap-6">
+              {/* <div className="absolute -bottom-[9%] left-[20%] w-[60%] h-auto grid grid-cols-4 place-content-center gap-6">
                 <div style={{ backgroundColor: '#1651b6' }} className='h-36 w-full  rounded py-4 shadow-md flex flex-col justify-start items-center gap-5'>
                   <h2 className="text-lg font-semibold  flex place-content-center flex-wrap text-gray-100">Ministy of Health Facilities</h2>
                   <h1 type="moh_owner_counter" onMouseOver={e => animateValue(e, 0, props?.data?.moh, 1000)} className="text-5xl font-bold text-gray-100">{ props?.data?.moh }</h1>
@@ -385,7 +384,7 @@ function Home(props) {
                   <h1 type="non_gov_owner_counter" onMouseOver={e => animateValue(e, 0, props?.data?.ngo, 1000)} className="text-5xl font-bold text-gray-100">{props?.data?.ngo}</h1>
                 </div>
 
-              </div>
+              </div> */}
 
 
 
@@ -396,8 +395,114 @@ function Home(props) {
           </div>
 
 
-          <div className='w-[60%] mx-auto flex flex-col items-start gap-2 mt-8'>
-            <h1 className='text-blue-600 opacity-80 font-semibold text-4xl'>About</h1>
+          {/* facilities */}
+
+          <div className='w-[60%] mx-auto flex flex-col items-start gap-2 mt-4'>
+            <h1 className='text-blue-600 opacity-80 font-semibold text-4xl'>Facilities</h1>
+            <hr className='w-[50px] h-2 opacity-80 bg-blue-600'></hr>
+          </div>
+          
+          <div class="w-[60%] mx-auto flex justify-between flex-wrap gap-8 h-auto mt-6 ">
+            
+            <div class="w-[200px] h-[200px] rounded flex flex-col bg-gray-100 shadow-sm p-2">
+              <div className='flex w-full h-full justify-center items-center'>
+                <h1 className='text-5xl text-blue-600 font-bold'>{props?.data?.moh}</h1>
+              </div>
+
+              <div className='flex self-start'>
+                <h1 className='text-lg text-blue-600 font-semibold capitalize'>ministry of health</h1>
+              </div>
+            </div>
+
+            <div class="w-[200px] h-[200px] rounded flex flex-col bg-gray-100 shadow-sm p-2">
+              <div className='flex w-full h-full justify-center items-center'>
+                <h1 className='text-5xl text-blue-600 font-bold'>{props?.data?.faith_based}</h1>
+              </div>
+
+              <div className='flex self-start'>
+                <h1 className='text-lg text-blue-600 font-semibold capitalize'>faith based</h1>
+              </div>
+            </div>
+
+            <div class="w-[200px] h-[200px] rounded flex flex-col bg-gray-100 shadow-sm p-2">
+              <div className='flex w-full h-full justify-center items-center'>
+                <h1 className='text-5xl text-blue-600 font-bold'>{props?.data?.private_facilities}</h1>
+              </div>
+
+              <div className='flex self-start'>
+                <h1 className='text-lg text-blue-600 font-semibold capitalize'>private</h1>
+              </div>
+            </div>
+
+            <div class="w-[200px] h-[200px] rounded flex flex-col bg-gray-100 shadow-sm p-2">
+              <div className='flex w-full h-full justify-center items-center'>
+                <h1 className='text-5xl text-blue-600 font-bold'>{props?.data?.ngo}</h1>
+              </div>
+
+              <div className='flex self-start'>
+                <h1 className='text-lg text-blue-600 font-semibold capitalize'>non-govermental</h1>
+              </div>
+            </div>
+
+          </div> 
+
+
+          {/* Community Units  */}
+          <div className='w-[60%] mx-auto flex flex-col items-start gap-2 mt-[100px]'>
+            <h1 className='text-blue-600 opacity-80 font-semibold text-4xl'>Community Health Units</h1>
+            <hr className='w-[50px] h-2 opacity-80 bg-blue-600'></hr>
+          </div>
+          
+          <div class="w-[60%] mx-auto flex justify-between flex-wrap gap-8 h-auto mt-6 ">
+            
+            <div class="w-[200px] h-[200px] rounded flex flex-col bg-gray-100 shadow-sm p-2">
+              <div className='flex w-full h-full justify-center items-center'>
+                <h1 className='text-5xl text-blue-600 font-bold'>{props?.data?.chu_fully_functional}</h1>
+              </div>
+
+              <div className='flex self-start'>
+                <h1 className='text-lg text-blue-600 font-semibold capitalize'>full functional</h1>
+              </div>
+            </div>
+
+            <div class="w-[200px] h-[200px] rounded flex flex-col bg-gray-100 shadow-sm p-2">
+              <div className='flex w-full h-full justify-center items-center'>
+                <h1 className='text-5xl text-blue-600 font-bold'>{props?.data?.chu_semi_functional}</h1>
+              </div>
+
+              <div className='flex self-start'>
+                <h1 className='text-lg text-blue-600 font-semibold capitalize'>semi functional</h1>
+              </div>
+            </div>
+
+            <div class="w-[200px] h-[200px] rounded flex flex-col bg-gray-100 shadow-sm p-2">
+              <div className='flex w-full h-full justify-center items-center'>
+                <h1 className='text-5xl text-blue-600 font-bold'>{props?.data?.chu_non_functional}</h1>
+              </div>
+
+              <div className='flex self-start'>
+                <h1 className='text-lg text-blue-600 font-semibold capitalize'>Non functional</h1>
+              </div>
+            </div>
+
+            <div class="w-[200px] h-[200px] rounded flex flex-col bg-gray-100 shadow-sm p-2">
+              <div className='flex w-full h-full justify-center items-center'>
+                <h1 className='text-5xl text-blue-600 font-bold'>{props?.data?.chu_closed}</h1>
+              </div>
+
+              <div className='flex self-start'>
+                <h1 className='text-lg text-blue-600 font-semibold capitalize'>closed</h1>
+              </div>
+            </div>
+
+          </div>
+
+
+           <div id="about"></div>
+
+
+          <div  className='w-[60%] mx-auto flex flex-col items-start gap-2 mt-[100px]'>
+            <h1 className='text-blue-600 opacity-80 duration-200 ease-in-out font-semibold text-4xl'>About</h1>
             <hr className='w-[50px] h-2 opacity-80 bg-blue-600'></hr>
           </div>
 
@@ -406,9 +511,12 @@ function Home(props) {
 
             <p className="text-lg">Kenya Master Health Facility Registry (KMHFR) is an application with all health facilities and community units in Kenya. Each health facility and community unit is identified with unique code and their details describing the geographical location, administrative location, ownership, type and the services offered. </p>
 
-           <div className="h-auto w-full flex items-start mt-8 gap-8">      
-              <Image src="/assets/css/images/distribution_map.png" objectFit="contain" width="1200" height="1200" />
-              <div className="flex flex-col justify-start mt-8 h-full gap-y-24">
+           <div className="h-auto w-full flex flex-col items-start mt-8 gap-8"> 
+           <div className="flex gap-3">
+            <Image src="/assets/css/images/distribution_map.png" objectFit="contain" width="400" height="400" />
+            <Image src="/kenya_geo_map.png" objectFit="contain" width="600" height="400" />
+           </div>     
+              <div className="grid grid-cols-2 gap-x-8 mt-8 h-full gap-y-24">
                 <p className="text-lg text-justify relative">
                   <h1 className="text-8xl absolute text-blue-600 font-extrabold opacity-30 -top-[40px] -left-[10px]">1</h1>
                   Users can view administrative units (counties, constituencies, wards) and their facilities and Community Health Units. Users can also rate Facilities and Community Health Units.
@@ -441,7 +549,7 @@ function Home(props) {
 
           </div>
 
-          <div className='w-[60%] mx-auto flex flex-col items-start gap-2 mt-8'>
+          <div className='w-[60%] mx-auto flex flex-col items-start gap-2 mt-[100px]'>
             <h1 className='text-blue-600 opacity-80 font-semibold text-4xl'>Partners</h1>
             <hr className='w-[50px] h-2 opacity-80 bg-blue-600'></hr>
 
@@ -462,10 +570,6 @@ function Home(props) {
                 className="cursor-pointer"
                 objectFit='contain'
                 width="290" height="120" />
-            </Link>
-
-            <Link href="https://health.go.ke">
-              <Image className="cursor-pointer" src="/moh-logo.png" alt="Ministry Of Health" objectFit='contain' width="290" height="100" />
             </Link>
 
 
@@ -518,7 +622,7 @@ function Home(props) {
                   </div>
                 </div>
 
-                <div className="flex w-[60%] mx-auto justify-between gap-5 items-center">
+                {/* <div className="flex w-[60%] mx-auto justify-between gap-5 items-center">
                   <Link href="https://healthit.uonbi.ac.ke">
                     <Image className="cursor-pointer" src="/healthit.png" alt="HealthIT" objectFit='contain' width="290" height="100" />
                   </Link>
@@ -533,10 +637,8 @@ function Home(props) {
                       width="290" height="120" />
                   </Link>
 
-                  <Link href="https://health.go.ke">
-                    <Image className="cursor-pointer" src="/moh-logo.png" alt="Ministry Of Health" objectFit='contain' width="290" height="100" />
-                  </Link>
-                </div>
+               
+                </div> */}
               </div>
 
             </div>
@@ -586,7 +688,11 @@ export async function getServerSideProps(ctx) {
     {moh:"6a833136-5f50-46d9-b1f9-5f961a42249f"},
     {faith_based:"ca268e6b-7e45-4264-97bf-43b6c68fb21e"},
     {private_facilities:"d9a0ce65-baeb-4f3b-81e3-083a24403e92"},
-    {ngo:"ffad4810-0bfb-4434-84cb-d2ab9b911c41"}
+    {ngo:"ffad4810-0bfb-4434-84cb-d2ab9b911c41"},
+    {chu_fully_functional: "50ef43f0-887c-44e2-9b09-cfa7a7090deb"},
+    {chu_semi_functional: "fbc7fce5-3328-4dad-af70-0ec3d8f5ad80"},
+    {chu_non_functional: "bac8ab50-1dad-4f96-ab96-a18a4e420871"},
+    {chu_closed: "2943e6c1-a581-461e-85a4-b9f25a2674ab"}
   ]
 
   if(token) {
@@ -594,6 +700,7 @@ export async function getServerSideProps(ctx) {
     for(let [idx, type] of Object.entries([...Object.values(ownerTypes)])) {
       // console.log("id", idx, "type", type.moh)
       
+      try{
         switch(idx) {
           case '0':
             const moh = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/?owner_type=${type.moh}`, {
@@ -642,11 +749,61 @@ export async function getServerSideProps(ctx) {
             data["ngo"] = (await ngo.json())?.count
 
           break;
+
+          case '4':
+            const chu_fully_functional = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/chul/units/?status=${type.chu_fully_functional}`, {
+              headers : {
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${token}`
+              }
+            }) 
+           
+            data["chu_fully_functional"] = (await chu_fully_functional.json())?.count
+
+          break;
+
+          case '5':
+            const chu_semi_functional = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/chul/units/?status=${type.chu_semi_functional}`, {
+              headers : {
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${token}`
+              }
+            }) 
+           
+            data["chu_semi_functional"] = (await chu_semi_functional.json())?.count
+
+          break;
+
+          case '6':
+            const chu_non_functional = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/chul/units/?status=${type.chu_non_functional}`, {
+              headers : {
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${token}`
+              }
+            }) 
+           
+            data["chu_non_functional"] = (await chu_non_functional.json())?.count
+
+          break;
+
+          case '7':
+            const chu_closed = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/chul/units/?status=${type.chu_closed}`, {
+              headers : {
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${token}`
+              }
+            }) 
+           
+            data["chu_closed"] = (await chu_closed.json())?.count
+
+          break;
         }
+      } catch (e) {
+        console.error(e.message)
+      }  
       }
          
     
-
 
   return {
     props: {
