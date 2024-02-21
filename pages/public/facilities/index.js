@@ -259,6 +259,7 @@ function Home(props) {
 			}
 
 			console.log({url})
+			
 			fetch(url, {
 				headers: {
 					Authorization: 'Bearer ' + props?.token,

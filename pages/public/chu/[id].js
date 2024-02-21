@@ -11,7 +11,7 @@ import dynamic from "next/dynamic";
 import Link from 'next/link';
 import StarRatingComponent from 'react-star-rating-component';
 
-const CommunityUnit = (props) => {
+function CommunityUnit(props) {
   const Map = dynamic(
     () => import("../../../components/Map"),
     {
@@ -23,8 +23,10 @@ const CommunityUnit = (props) => {
       ssr: false,
     } // This line is important. It's what prevents server-side render
   );
-  let cu = props['0']?.data;
-  const center = props['1'].center
+  let cu = props?.data;
+
+  const center = props?.center
+
   useEffect(() => {
     if (typeof window !== 'undefined') { //auth.add_group
       // let usr = JSON.parse(window.sessionStorage.getItem('user'))
@@ -37,15 +39,18 @@ const CommunityUnit = (props) => {
   
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState('')
-  const url = `${process.env.NEXT_PUBLIC_API_URL}/chul/units_detail_report/${cu.id}/?access_token=${props['2'].access_token}&format=pdf`
+  const url = `${process.env.NEXT_PUBLIC_API_URL}/chul/units_detail_report/${cu.id}/?access_token=${props?.access_token}&format=pdf`
 
   const handleRating = async (event) => {
+
     event.preventDefault();
+
     let rate = {
         chu: cu.id,
         rating: rating,
         comment: comment
     }
+
     let url = `/api/common/submit_form_data/?path=rate_chu`
     try {
         await fetch(url, {
@@ -75,7 +80,7 @@ const CommunityUnit = (props) => {
   return (
     <>
       <Head>
-        <title> `KMHFR - ${cu?.name || cu?.official_name}`</title>
+        <title> KMHFR - {cu?.name || cu?.official_name}</title>
         <link rel="icon" href="/favicon.ico" />
   
       </Head>
@@ -105,7 +110,7 @@ const CommunityUnit = (props) => {
 
             <div
               className={
-                "md:col-span-7 grid grid-cols-6 gap-5 md:gap-8 py-6 w-full bg-gray-50 drop-shadow  text-black p-4 md:divide-x md:divide-gray-200z shadow-md items-center border-l-8 " +
+                "md:col-span-7 grid grid-cols-6 gap-5 md:gap-8 py-6 w-full bg-gray-50 drop-shadow  text-black p-4 md:divide-x md:divide-gray-200z shadow-sm items-center border-l-8 " +
                 (cu.active ? "border-blue-600" : "border-red-600")
               }
             >
@@ -128,12 +133,12 @@ const CommunityUnit = (props) => {
                 </div>
               </div>
 
-              <button
+                {/* <button
                     className=" bg-indigo-500 col-span-1 col-start-6 min-w-0 p-2 text-white text-lg font-semibold"
                     onClick={() => { window.location.href = url}}
                   >
                     Print
-                  </button>
+                  </button> */}
             </div>
 
           </div>
@@ -143,7 +148,7 @@ const CommunityUnit = (props) => {
           <div className="col-span-1 md:col-span-7 flex flex-row gap-3 mt-4">
 
               {/* CHU Details Tab section */}
-              <div className="bg-gray-50 shadow-md flex flex-col gap-3 m-4 w-2/3">
+              <div className="bg-gray-50 shadow-sm flex flex-col gap-3 m-4 w-2/3">
                 {/* Approve/Reject, Edit Buttons */}
               
 
@@ -160,20 +165,20 @@ const CommunityUnit = (props) => {
                     >
                       Overview
                     </Tabs.Tab>
-                    <Tabs.Tab
+                    {/* <Tabs.Tab
                       id={2}
                       value="services"
                       className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-400 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
                     >
                       Services
-                    </Tabs.Tab>
-                    <Tabs.Tab
+                    </Tabs.Tab> */}
+                    {/* <Tabs.Tab
                       id={3}
                       value="hr_staffing"
                       className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-400 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
                     >
                       HR &amp; Staffing
-                    </Tabs.Tab>
+                    </Tabs.Tab> */}
                     <Tabs.Tab
                       id={3}
                       value="chu_ratings"
@@ -181,7 +186,7 @@ const CommunityUnit = (props) => {
                     >
                     Chu Ratings
                     </Tabs.Tab>
-                  </Tabs.List>
+                    </Tabs.List>
                   {/*End of the vertical tabs  */}
 
                   <Tabs.Panel
@@ -341,7 +346,7 @@ const CommunityUnit = (props) => {
                             </p>
                           </div>
                         )}
-                        {cu.officer_in_charge && cu.officer_in_charge.contacts.length > 0 &&
+                        {/* {cu.officer_in_charge && cu.officer_in_charge.contacts.length > 0 &&
                           cu.officer_in_charge.contacts.map((contact, i) => (
                             <div
                               key={i}
@@ -358,7 +363,7 @@ const CommunityUnit = (props) => {
                                 {contact.contact || " - "}
                               </p>
                             </div>
-                          ))}
+                          ))} */}
                       </div>
                       {/* <div> */}
 
@@ -366,7 +371,8 @@ const CommunityUnit = (props) => {
                       
                     </div>
                   </Tabs.Panel>
-                  <Tabs.Panel
+
+                  {/* <Tabs.Panel
                     value="services"
                     className="grow-1 p-4 tab-panel"
                   >
@@ -399,9 +405,9 @@ const CommunityUnit = (props) => {
                         </ul>
                       </div>
                     </div>
-                  </Tabs.Panel>
+                  </Tabs.Panel> */}
 
-                  <Tabs.Panel
+                  {/* <Tabs.Panel
                     value="hr_staffing"
                     className="grow-1 p-4 tab-panel"
                   >
@@ -436,7 +442,7 @@ const CommunityUnit = (props) => {
                       </div>
 
                     </div>
-                  </Tabs.Panel>
+                  </Tabs.Panel> */}
 
                   {/* chu ratings */}
 
@@ -538,7 +544,8 @@ const CommunityUnit = (props) => {
 };
 
 CommunityUnit.getInitialProps = async (ctx) => {
-  const alldata =[]
+
+  const alldata = {}
   let _data;
   if (ctx.query.q) {
     const query = ctx.query.q;
@@ -593,13 +600,11 @@ CommunityUnit.getInitialProps = async (ctx) => {
                   const [lng, lat] =
                     _data?.properties.center.coordinates;
   
-                alldata.push({
-                  center: [lat, lng],
-                });
+                alldata["center"] = [lat, lng];
+               
 
-                alldata.push({
-                  access_token: token,
-                });
+                alldata["access_token"] = token;
+                
               } catch (e) {
                 console.error("Error in fetching ward boundaries", e.message);
               }

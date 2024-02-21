@@ -68,14 +68,14 @@ const FacilityDetails = (props) => {
                 {facility?.official_name ?? ""} ( #
                 <i className="text-black">{facility?.code || "NO_CODE"}</i> )
               </span>
-              <div className="flex flex-row gap-2 items-center ml-auto">
+              {/* <div className="flex flex-row gap-2 items-center ml-auto">
                 <button
                  onClick={()=>handlePrint(props['4'].token, facility.id)}
                   className="p-2 text-center -md font-semibold text-base  text-white bg-indigo-500 justify-end mr-2"
                 >
                  Print
                 </button>
-                </div>
+                </div> */}
             </div>
             {/* Header Bunner  */}
             <div
