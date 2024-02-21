@@ -271,66 +271,84 @@ export default function HeaderLayout({
             <nav className="max-h-min w-[90%] container flex justify-between items-center mx-auto ">
               <ul className='list-none w-full flex items-center justify-between '>
                 {
-                  groupID == 6 &&
+                  groupID !== 6 &&
+                  isLoggedIn &&
+
                 <li className={`text-lg h-[80px] flex items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/dashboard" && 'border-b-2 border-b-gray-50 bg-blue-500/85' }`}>
                   <Link href='/dashboard'>Dashboard</Link>
                 </li>
                 }
 
-                
+                {
+                  groupID == 6 &&
                 <li className={`text-lg h-[80px] flex items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/dashboard" && 'border-b-2 border-b-gray-50 bg-blue-500/85' }`}>
                   <Link href='/#about'>About</Link>
                 </li>
+                }
                
-
-                <li className={`text-lg h-[80px] flex items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/facilities" && 'border-b-2 border-b-gray-50 bg-blue-500/85' }`}>
-                  <Link href='/public/facilities'>Facilities</Link>
-                </li>
-
-                <li className={`text-lg h-[80px] flex items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/community-units" && 'border-b-2 border-b-gray-50 bg-blue-500/85' }`}>
-                  <Link href='/public/chu'>Community Units</Link>
-                </li>
-
+                 <li className={`text-lg h-[80px] flex items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/facilities" && 'border-b-2 border-b-gray-50 bg-blue-500/85' }`}>
+                   <Link href={`${groupID !== 6 && isLoggedIn ? '/facilities' : '/public/facilities'}`}>Facilities</Link>
+                 </li>
+                
+               
+               
+                 <li className={`text-lg h-[80px] flex items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/community-units" && 'border-b-2 border-b-gray-50 bg-blue-500/85' }`}>
+                   <Link href={`${groupID !== 6 && isLoggedIn ? '/community-units' :  '/public/chu'}`}>Community Units</Link>
+                 </li>
+ 
+                
+               
+               {
+                groupID == 6 &&
                 <li className={`text-lg h-[80px] flex items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/community-units" && 'border-b-2 border-b-gray-50 bg-blue-500/85' }`}>
                   <button onClick={() => setIsFAQ(true)}>FAQs</button>
                  
                 </li>
+              }
                 {
                   (groupID == 7 ||
                    groupID == 2 ||
                    groupID == 3 ) &&
+                   groupID !== 6 &&
+                   isLoggedIn &&
                   <li className={`text-lg h-[80px] flex items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/user" && 'border-b-2 border-b-gray-50 bg-blue-500/85' }`}>
                     <Link href='/user'>Users</Link>
                   </li> 
                  }
 
                  {
-                  hasPermission(/^common.add_county$/, userPermissions) &&
-                  hasPermission(/^common.delete_county$/, userPermissions) &&
-                  groupID == 6 &&
+                  // hasPermission(/^common.add_county$/, userPermissions) &&
+                  // hasPermission(/^common.delete_county$/, userPermissions) &&
+                  groupID !== 6 &&
+                  groupID == 7 &&
+                  isLoggedIn &&
                   <li className={`text-lg h-[80px] flex items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/system_setup" && 'border-b-2 border-b-gray-50 bg-blue-500/85' }`}>
                      <Link href='/system_setup'>System Setup</Link>
                    </li> 
                  }
                
                {
-                groupID == 6 &&
+                groupID !== 6 &&
+                isLoggedIn &&
                 <li className={`text-lg h-[80px] flex items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/reports" && 'border-b-2 border-b-gray-50 bg-blue-500/85' }`}>
                   <Link href='/reports'>Reports</Link>
                 </li>
                 }
 
                  {
-                  hasPermission(/^admin_offices.view_adminoffice.*$/, userPermissions) && 
-                  groupId == 6 &&
+                  // hasPermission(/^admin_offices.view_adminoffice.*$/, userPermissions) && 
+                  groupID !== 6 &&
+                  groupID == 7 &&
+                  isLoggedIn &&
                   <li className={`text-lg h-[80px] flex items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/admin_offices" && 'border-b-2 border-b-gray-50 bg-blue-500/85' }`}>
                     <Link href='/admin_offices'>Admin Offices</Link>
                   </li>
                   }
 
               </ul>
-                  {
-                    groupID == 6 &&
+                  {/* {
+                    groupID !== 6 &&
+                    isLoggedIn &&
                   <form className='w-3/12 py-4 flex' onSubmit={
                         (e) => {
                           e.preventDefault();
@@ -417,7 +435,7 @@ export default function HeaderLayout({
                       />
                       <button type="submit" className='py-2 px-3 bg-blue-600 text-gray-100 font-semibold '>search</button>
                   </form>
-                  } 
+                  }  */}
 
             </nav>
           </div>
