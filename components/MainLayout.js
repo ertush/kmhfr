@@ -65,8 +65,13 @@ export default function MainLayout({ children, isLoading, searchTerm, isFullWidt
             setIsLoggedIn(false)
             setUser(null)
           } else {
-            setIsLoggedIn(true)
-            setUser(usr)
+            if(usr?.full_name == "public public public"){
+              setIsLoggedIn(false)
+              setUser(null)
+            }else {
+              setIsLoggedIn(true)
+              setUser(usr)
+            }
           }
         })
       } else {
@@ -81,12 +86,7 @@ export default function MainLayout({ children, isLoading, searchTerm, isFullWidt
   return (
     <div className="flex flex-col items-center justify-start w-full bg-gray-200 min-h-screen">
       {/* memoize the navbar */}
-      <NavBar pages={[
-        { name: 'About', link: '/about' },
-        { name: 'Facilities', link: '/facilities' },
-        { name: 'Community Units', link: '/community-units' },
-        { name: 'Contact us', link: '/about#contacts' }
-      ]} loggedIn={isLoggedIn} user={user} />
+      <NavBar loggedIn={isLoggedIn} user={user} />
 
       <div className={"h-full w-full flex flex-col items-center " + (isFullWidth ? "" : "max-w-screen-2xl") + (classes && classes.length > 0 ? classes.join(" ") : "")}>
         {children}

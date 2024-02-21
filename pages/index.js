@@ -128,7 +128,7 @@ function Home(props) {
                 </Head>
 
                 <MainLayout isLoading={false} searchTerm={''}>
-                    <div className="w-full flex flex-col">
+                    <div className="w-full flex flex-col px-1 md:px-2">
 
                         {/* Hero Section */}
                         <div className='w-full mb-24 '>
@@ -139,13 +139,13 @@ function Home(props) {
 
                             }}>
                                 {/* <div className='w-full h-full bg-gray-900 opacity-60 absolute inset-0'></div> */}
-                                <div className='w-[60%] mt-[10%] h-auto flex-col items-start'>
-                                    <h1 className="text-6xl text-wrap text-gray-100 font-extrabold">Welcome to Kenya Master Health Facility Registry</h1>
+                                <div className='w-full md:w-[60%] mt-[10%] h-auto flex-col items-start'>
+                                    <h1 className="text-2xl md:text-5xl xl:text-6xl text-wrap text-gray-100 font-extrabold">Welcome to Kenya Master Health Facility Registry</h1>
                                     <h4 className='text-xl mt-4 text-gray-100 capitalize'>Search for a facility or community health unit</h4>
                                 </div>
 
 
-                                <div className='w-[60%] my-4 h-auto bg-gray-200 bg-opacity-40 p-5 flex place-content-center'>
+                                <div className='w-full md:w-[60%] my-4 h-auto bg-gray-200 bg-opacity-40 p-5 flex place-content-center'>
                                     <form className='w-full bg-gray-100 flex' onSubmit={
                                         (e) => {
                                             e.preventDefault();
@@ -264,12 +264,12 @@ function Home(props) {
 
                         {/* facilities */}
 
-                        <div className='w-[60%] mx-auto flex flex-col items-start gap-2 mt-4'>
+                        <div className='w-full md:w-[60%] mx-auto flex flex-col items-start gap-2 mt-4'>
                             <h1 className='text-blue-600 opacity-80 font-semibold text-4xl'>Facilities</h1>
                             <hr className='w-[50px] h-2 opacity-80 bg-blue-600'></hr>
                         </div>
 
-                        <div class="w-[60%] mx-auto flex justify-between flex-wrap gap-8 h-auto mt-6 ">
+                        <div class="w-full md:w-[60%] mx-auto flex justify-between flex-wrap gap-8 h-auto mt-6 ">
 
                             <div class="w-[200px] h-[200px] rounded flex flex-col bg-gray-300/45 shadow-sm p-2">
                                 <div className='flex w-full h-full justify-center items-center'>
@@ -315,12 +315,12 @@ function Home(props) {
 
 
                         {/* Community Units  */}
-                        <div className='w-[60%] mx-auto flex flex-col items-start gap-2 mt-[100px]'>
+                        <div className='w-full md:w-[60%] mx-auto flex flex-col items-start gap-2 mt-[100px]'>
                             <h1 className='text-blue-600 opacity-80 font-semibold text-4xl'>Community Health Units</h1>
                             <hr className='w-[50px] h-2 opacity-80 bg-blue-600'></hr>
                         </div>
 
-                        <div class="w-[60%] mx-auto flex justify-between flex-wrap gap-8 h-auto mt-6 ">
+                        <div class="w-full md:w-[60%] mx-auto flex justify-between flex-wrap gap-8 h-auto mt-6 ">
 
                             <div class="w-[200px] h-[200px] rounded flex flex-col bg-gray-300/45 shadow-sm p-2">
                                 <div className='flex w-full h-full justify-center items-center'>
@@ -364,65 +364,13 @@ function Home(props) {
 
                         </div>
 
-
-                        <div id="about"></div>
-
-
-                        <div className='w-[60%] mx-auto flex flex-col items-start gap-2 mt-[100px]'>
-                            <h1 className='text-blue-600 opacity-80 duration-200 ease-in-out font-semibold text-4xl'>About</h1>
-                            <hr className='w-[50px] h-2 opacity-80 bg-blue-600'></hr>
-                        </div>
-
-                        {/* Body */}
-                        <div className='h-[1200px] items-start w-[60%] mx-auto flex-col mt-12 gap-3 '>
-
-                            <p className="text-lg">Kenya Master Health Facility Registry (KMHFR) is an application with all health facilities and community units in Kenya. Each health facility and community unit is identified with unique code and their details describing the geographical location, administrative location, ownership, type and the services offered. </p>
-
-                            <div className="h-auto w-full flex flex-col items-start mt-8 gap-8">
-                                <div className="flex gap-3">
-                                    <Image src="/assets/css/images/distribution_map.png" objectFit="contain" width="400" height="400" />
-                                    <Image src="/kenya_geo_map.png" objectFit="contain" width="600" height="400" />
-                                </div>
-                                <div className="grid grid-cols-2 gap-x-8 mt-8 h-full gap-y-24">
-                                    <p className="text-lg text-justify relative">
-                                        <h1 className="text-8xl absolute text-blue-600 font-extrabold opacity-30 -top-[40px] -left-[10px]">1</h1>
-                                        Users can view administrative units (counties, constituencies, wards) and their facilities and Community Health Units. Users can also rate Facilities and Community Health Units.
-                                    </p>
-
-                                    <p className="text-lg text-justify relative">
-                                        <h1 className="text-8xl absolute text-blue-600 font-extrabold opacity-30 -top-[40px] -left-[10px]">2</h1>
-                                        KMHFR provides a list of all health facilities which comes with an advanced search where you can refine your search.
-                                    </p>
-
-                                    <p className="text-lg text-justify relative">
-                                        <h1 className="text-8xl absolute text-blue-600 font-extrabold opacity-30 -top-[40px] -left-[10px]">3</h1>
-                                        The system provides a list of all community health units along side an advance search where you can refine your search by using administrative units.
-                                    </p>
-
-                                    <p className="text-lg text-justify relative">
-                                        <h1 className="text-8xl absolute text-blue-600 font-extrabold opacity-30 -top-[40px] -left-[10px]">4</h1>
-                                        KMHFR provides a RESTful API for developers to use. The documentation is available at <br /> <a className="text-blue-700 group-hover:underline group-hover:text-gray-50 focus:underline active:underline" href="https://mfl-api-docs.readthedocs.io/en/latest/" target="_blank" rel="noopener noreferrer">https://mfl-api-docs.readthedocs.io/en/latest</a>
-                                    </p>
-
-                                    <p className="text-lg text-justify relative">
-                                        <h1 className="text-8xl absolute text-blue-600 font-extrabold opacity-30 -top-[40px] -left-[10px]">5</h1>
-                                        To learn all about KMHFR, its implementation and how to use it here (<a className="text-blue-700 group-hover:underline group-hover:text-white focus:underline active:underline" target="_blank" rel="noopener noreferrer" href="https://elearning.health.go.ke">https://elearning.health.go.ke</a>). Enrol and start learning.
-                                    </p>
-                                </div>
-                            </div>
-
-
-
-
-                        </div>
-
-                        <div className='w-[60%] mx-auto flex flex-col items-start gap-2 mt-[100px]'>
+                        <div className='w-full md:w-[60%] mx-auto flex flex-col items-start gap-2 mt-[100px]'>
                             <h1 className='text-blue-600 opacity-80 font-semibold text-4xl'>Partners</h1>
                             <hr className='w-[50px] h-2 opacity-80 bg-blue-600'></hr>
 
                         </div>
 
-                        <div className="w-[60%] mx-auto mt-12 h-auto mb-8 flex items-center flex-wrap gap-5 justify-between">
+                        <div className="w-full md:w-[60%] mx-auto mt-12 h-auto mb-8 flex items-center flex-wrap gap-5 justify-between">
                             <Link href="https://healthit.uonbi.ac.ke">
                                 <Image className="cursor-pointer" src="/healthit.png" alt="HealthIT" objectFit='contain' width="290" height="100" />
                             </Link>
@@ -444,7 +392,7 @@ function Home(props) {
                         <div className="w-full flex flex-col mt-12 h-auto">
                             <div className="w-full max-h-min py-8  bg-gray-500">
                                 <div className="flex flex-col gap-4 items-between">
-                                    <div className="w-[60%] mx-auto flex justify-between">
+                                    <div className="w-full md:w-[60%] mx-auto flex justify-between">
                                         <div className="flex flex-col text-gray-200 gap-2">
                                             <h2 className='text-blue-50 font-semibold mb-2 '>Contacts</h2>
                                             <Link href="tel:+254 20 2717077" className="t">+254-20-2717077</Link>
@@ -503,7 +451,7 @@ function Home(props) {
                             </div>
 
                             <div className="w-full max-h-min py-5  bg-gray-700">
-                                <div className='w-[60%] mx-auto max-h-min flex justify-between items-center py-4'>
+                                <div className='w-full md:w-[60%] mx-auto max-h-min flex justify-between items-center py-4'>
                                     <p className='text-gray-400'>&copy; Copyright {new Date().getFullYear()}. All Rights Reserved. Republic of Kenya, Ministry of Health</p>
                                     <p className='text-gray-400'>Version 3.0.1</p>
                                 </div>
