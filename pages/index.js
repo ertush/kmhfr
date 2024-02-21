@@ -404,7 +404,7 @@ function Home(props) {
           
           <div class="w-[60%] mx-auto flex justify-between flex-wrap gap-8 h-auto mt-6 ">
             
-            <div class="w-[200px] h-[200px] rounded flex flex-col bg-gray-100 shadow-sm p-2">
+            <div class="w-[200px] h-[200px] rounded flex flex-col bg-gray-300/45 shadow-sm p-2">
               <div className='flex w-full h-full justify-center items-center'>
                 <h1 className='text-5xl text-blue-600 font-bold'>{props?.data?.moh}</h1>
               </div>
@@ -414,7 +414,7 @@ function Home(props) {
               </div>
             </div>
 
-            <div class="w-[200px] h-[200px] rounded flex flex-col bg-gray-100 shadow-sm p-2">
+            <div class="w-[200px] h-[200px] rounded flex flex-col bg-gray-300/45 shadow-sm p-2">
               <div className='flex w-full h-full justify-center items-center'>
                 <h1 className='text-5xl text-blue-600 font-bold'>{props?.data?.faith_based}</h1>
               </div>
@@ -424,7 +424,7 @@ function Home(props) {
               </div>
             </div>
 
-            <div class="w-[200px] h-[200px] rounded flex flex-col bg-gray-100 shadow-sm p-2">
+            <div class="w-[200px] h-[200px] rounded flex flex-col bg-gray-300/45 shadow-sm p-2">
               <div className='flex w-full h-full justify-center items-center'>
                 <h1 className='text-5xl text-blue-600 font-bold'>{props?.data?.private_facilities}</h1>
               </div>
@@ -434,7 +434,7 @@ function Home(props) {
               </div>
             </div>
 
-            <div class="w-[200px] h-[200px] rounded flex flex-col bg-gray-100 shadow-sm p-2">
+            <div class="w-[200px] h-[200px] rounded flex flex-col bg-gray-300/45 shadow-sm p-2">
               <div className='flex w-full h-full justify-center items-center'>
                 <h1 className='text-5xl text-blue-600 font-bold'>{props?.data?.ngo}</h1>
               </div>
@@ -455,7 +455,7 @@ function Home(props) {
           
           <div class="w-[60%] mx-auto flex justify-between flex-wrap gap-8 h-auto mt-6 ">
             
-            <div class="w-[200px] h-[200px] rounded flex flex-col bg-gray-100 shadow-sm p-2">
+            <div class="w-[200px] h-[200px] rounded flex flex-col bg-gray-300/45 shadow-sm p-2">
               <div className='flex w-full h-full justify-center items-center'>
                 <h1 className='text-5xl text-blue-600 font-bold'>{props?.data?.chu_fully_functional}</h1>
               </div>
@@ -465,7 +465,7 @@ function Home(props) {
               </div>
             </div>
 
-            <div class="w-[200px] h-[200px] rounded flex flex-col bg-gray-100 shadow-sm p-2">
+            <div class="w-[200px] h-[200px] rounded flex flex-col bg-gray-300/45 shadow-sm p-2">
               <div className='flex w-full h-full justify-center items-center'>
                 <h1 className='text-5xl text-blue-600 font-bold'>{props?.data?.chu_semi_functional}</h1>
               </div>
@@ -475,7 +475,7 @@ function Home(props) {
               </div>
             </div>
 
-            <div class="w-[200px] h-[200px] rounded flex flex-col bg-gray-100 shadow-sm p-2">
+            <div class="w-[200px] h-[200px] rounded flex flex-col bg-gray-300/45 shadow-sm p-2">
               <div className='flex w-full h-full justify-center items-center'>
                 <h1 className='text-5xl text-blue-600 font-bold'>{props?.data?.chu_non_functional}</h1>
               </div>
@@ -485,7 +485,7 @@ function Home(props) {
               </div>
             </div>
 
-            <div class="w-[200px] h-[200px] rounded flex flex-col bg-gray-100 shadow-sm p-2">
+            <div class="w-[200px] h-[200px] rounded flex flex-col bg-gray-300/45 shadow-sm p-2">
               <div className='flex w-full h-full justify-center items-center'>
                 <h1 className='text-5xl text-blue-600 font-bold'>{props?.data?.chu_closed}</h1>
               </div>
