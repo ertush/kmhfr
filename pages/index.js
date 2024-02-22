@@ -127,7 +127,7 @@ function Home(props) {
                     <link rel="icon" href="/favicon.ico" />
                 </Head>
 
-                <MainLayout isLoading={false} searchTerm={''}>
+                <MainLayout isLoading={false} searchTerm={''} isFullWidth={true}>
                     <div className="w-full flex flex-col px-1 md:px-2">
 
                         {/* Hero Section */}
