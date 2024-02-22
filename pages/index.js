@@ -145,7 +145,7 @@ function Home(props) {
                                 </div>
 
                                 {/* Search */}
-                                <div className='w-full md:w-[75%] lg:w-[60%] my-4 h-auto bg-gray-200 bg-opacity-40 p-5 flex place-content-center'>
+                                <div className='w-full md:w-[75%] lg:w-[60%] my-4 h-auto md:bg-gray-200 md:bg-opacity-40 p-5 flex place-content-center'>
                                     <form className='w-full bg-gray-100 flex flex-col md:flex-row' onSubmit={
                                         (e) => {
                                             e.preventDefault();
@@ -234,12 +234,12 @@ function Home(props) {
                         {/* facilities */}
 
                         <div className='w-full md:w-[75%] lg:w-[60%] mx-auto flex flex-col items-start gap-2 mt-4'>
-                            <h1 className='text-stone-700 opacity-80 font-semibold text-4xl'>Facilities</h1>
+                            <h1 className='text-stone-700 opacity-80 font-semibold text-2xl md:text-4xl'>Facilities</h1>
                             <hr className='w-[50px] h-2 opacity-80 bg-blue-600'></hr>
                         </div>
 
-                        <div class="w-full md:w-[75%] lg:w-[60%] mx-auto items-center justify-center grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mt-6 ">
-                            <div class="aspect-[2/1] rounded flex flex-col justify-between bg-gray-300/45 shadow-sm p-1">
+                        <div class="w-full md:w-[75%] lg:w-[60%] mx-auto items-center justify-center grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mt-6 px-1">
+                            <div class="md:aspect-[2/1] flex flex-col justify-between bg-gray-300/45 shadow-sm p-1">
 
                                 <div className='flex self-start w-full justify-center'>
                                     <h3 className='text-center sm:text-lg md:text-xl text-sky-800 font-semibold capitalize'>ministry of health</h3>
@@ -249,7 +249,7 @@ function Home(props) {
                                 </div>
                             </div>
 
-                            <div class="aspect-[2/1] rounded flex flex-col justify-between bg-gray-300/45 shadow-sm p-1">
+                            <div class="md:aspect-[2/1] flex flex-col justify-between bg-gray-300/45 shadow-sm p-1">
 
                                 <div className='flex self-start w-full justify-center'>
                                     <h3 className='text-center sm:text-lg md:text-xl text-sky-800 font-semibold capitalize'>faith based</h3>
@@ -259,7 +259,7 @@ function Home(props) {
                                 </div>
                             </div>
 
-                            <div class="aspect-[2/1] rounded flex flex-col justify-between bg-gray-300/45 shadow-sm p-1">
+                            <div class="md:aspect-[2/1] flex flex-col justify-between bg-gray-300/45 shadow-sm p-1">
 
                                 <div className='flex self-start w-full justify-center'>
                                     <h3 className='text-center sm:text-lg md:text-xl text-sky-800 font-semibold capitalize'>private</h3>
@@ -269,7 +269,7 @@ function Home(props) {
                                 </div>
                             </div>
 
-                            <div class="aspect-[2/1] rounded flex flex-col justify-between bg-gray-300/45 shadow-sm p-1">
+                            <div class="md:aspect-[2/1] flex flex-col justify-between bg-gray-300/45 shadow-sm p-1">
 
                                 <div className='flex self-start w-full justify-center'>
                                     <h3 className='text-center sm:text-lg md:text-xl text-sky-800 font-semibold capitalize'>non-govermental</h3>
@@ -283,12 +283,12 @@ function Home(props) {
 
                         {/* Community Units  */}
                         <div className='w-full md:w-[75%] lg:w-[60%] mx-auto flex flex-col items-start gap-2 mt-14'>
-                            <h1 className='text-stone-700 opacity-80 font-semibold text-4xl'>Community Health Units</h1>
+                            <h1 className='text-stone-700 opacity-80 font-semibold text-2xl md:text-4xl'>Community Health Units</h1>
                             <hr className='w-[50px] h-2 opacity-80 bg-blue-600'></hr>
                         </div>
 
-                        <div class="w-full md:w-[75%] lg:w-[60%] mx-auto items-center justify-center grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 h-auto mt-6 ">
-                            <div class="aspect-[2/1] rounded flex flex-col justify-between bg-gray-300/45 shadow-sm p-1">
+                        <div class="w-full md:w-[75%] lg:w-[60%] mx-auto items-center justify-center grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 h-auto mt-6 px-1">
+                            <div class="md:aspect-[2/1] flex flex-col justify-between bg-gray-300/45 shadow-sm p-1">
 
                                 <div className='flex self-start w-full justify-center'>
                                     <h3 className='text-center sm:text-lg md:text-xl text-sky-800 font-semibold capitalize'>full functional</h3>
@@ -298,7 +298,7 @@ function Home(props) {
                                 </div>
                             </div>
 
-                            <div class="aspect-[2/1] rounded flex flex-col justify-between bg-gray-300/45 shadow-sm p-1">
+                            <div class="md:aspect-[2/1] flex flex-col justify-between bg-gray-300/45 shadow-sm p-1">
 
                                 <div className='flex self-start w-full justify-center'>
                                     <h3 className='text-center sm:text-lg md:text-xl text-sky-800 font-semibold capitalize'>semi functional</h3>
@@ -308,7 +308,7 @@ function Home(props) {
                                 </div>
                             </div>
 
-                            <div class="aspect-[2/1] rounded flex flex-col justify-between bg-gray-300/45 shadow-sm p-1">
+                            <div class="md:aspect-[2/1] flex flex-col justify-between bg-gray-300/45 shadow-sm p-1">
 
                                 <div className='flex self-start w-full justify-center'>
                                     <h3 className='text-center sm:text-lg md:text-xl text-sky-800 font-semibold capitalize'>Non functional</h3>
@@ -318,7 +318,7 @@ function Home(props) {
                                 </div>
                             </div>
 
-                            <div class="aspect-[2/1] rounded flex flex-col justify-between bg-gray-300/45 shadow-sm p-1">
+                            <div class="md:aspect-[2/1] flex flex-col justify-between bg-gray-300/45 shadow-sm p-1">
 
                                 <div className='flex self-start w-full justify-center'>
                                     <h3 className='text-center sm:text-lg md:text-xl text-sky-800 font-semibold capitalize'>closed</h3>
@@ -333,7 +333,7 @@ function Home(props) {
                         <hr/>
 
                         <div className='w-full md:w-[75%] lg:w-[60%] mx-auto flex flex-col items-start gap-2 mt-14'>
-                            <h1 className='text-stone-700 opacity-80 font-semibold text-4xl'>Partners</h1>
+                            <h1 className='text-stone-700 opacity-80 font-semibold text-2xl md:text-4xl'>Partners</h1>
                             <hr className='w-[50px] h-2 opacity-80 bg-blue-600'></hr>
                         </div>
 
