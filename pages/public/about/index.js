@@ -32,27 +32,36 @@ export default function About() {
        </div>     
           <div className="grid grid-cols-2 gap-x-8 mt-8 h-full gap-y-24">
             <p className="text-lg text-justify relative">
-              <h1 className="text-8xl absolute text-blue-600 font-extrabold opacity-30 -top-[40px] -left-[10px]">1</h1>
+              <h1>1.</h1>
+              {/* <h1 className="text-8xl absolute text-blue-600 font-extrabold opacity-30 -top-[40px] -left-[10px]">1</h1> */}
               Users can view administrative units (counties, constituencies, wards) and their facilities and Community Health Units. Users can also rate Facilities and Community Health Units.
             </p>
 
             <p className="text-lg text-justify relative">
-              <h1 className="text-8xl absolute text-blue-600 font-extrabold opacity-30 -top-[40px] -left-[10px]">2</h1>
+              <h1>2.</h1>
+
+              {/* <h1 className="text-8xl absolute text-blue-600 font-extrabold opacity-30 -top-[40px] -left-[10px]">2</h1> */}
               KMHFR provides a list of all health facilities which comes with an advanced search where you can refine your search.
             </p>
 
             <p className="text-lg text-justify relative">
-              <h1 className="text-8xl absolute text-blue-600 font-extrabold opacity-30 -top-[40px] -left-[10px]">3</h1>
+             <h1>3.</h1>
+
+              {/* <h1 className="text-8xl absolute text-blue-600 font-extrabold opacity-30 -top-[40px] -left-[10px]">3</h1> */}
               The system provides a list of all community health units along side an advance search where you can refine your search by using administrative units.
             </p>
 
             <p className="text-lg text-justify relative">
-              <h1 className="text-8xl absolute text-blue-600 font-extrabold opacity-30 -top-[40px] -left-[10px]">4</h1>
+            <h1>4.</h1>
+
+              {/* <h1 className="text-8xl absolute text-blue-600 font-extrabold opacity-30 -top-[40px] -left-[10px]">4</h1> */}
               KMHFR provides a RESTful API for developers to use. The documentation is available at <br /> <a className="text-blue-700 group-hover:underline group-hover:text-gray-50 focus:underline active:underline" href="https://mfl-api-docs.readthedocs.io/en/latest/" target="_blank" rel="noopener noreferrer">https://mfl-api-docs.readthedocs.io/en/latest</a>
             </p>
 
             <p className="text-lg text-justify relative">
-              <h1 className="text-8xl absolute text-blue-600 font-extrabold opacity-30 -top-[40px] -left-[10px]">5</h1>
+            <h1>5.</h1>
+
+              {/* <h1 className="text-8xl absolute text-blue-600 font-extrabold opacity-30 -top-[40px] -left-[10px]">5</h1> */}
               To learn all about KMHFR, its implementation and how to use it here (<a className="text-blue-700 group-hover:underline group-hover:text-white focus:underline active:underline" target="_blank" rel="noopener noreferrer" href="https://elearning.health.go.ke">https://elearning.health.go.ke</a>). Enrol and start learning.
             </p>
           </div>

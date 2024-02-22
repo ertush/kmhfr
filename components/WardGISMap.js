@@ -105,8 +105,8 @@ const WardGISMap = ({ markerCoordinates, geoJSON, center, ward, from }) => {
                 <MapContainer 
                     className='w-full' 
                     center={center ?? [-0.818389, 37.477222]} 
-                    zoom={13.899} 
-                    maxZoom={15.70} 
+                    zoom={9.899} 
+                    maxZoom={12.70} 
                     scrollWheelZoom={false} 
                     touchZoom={false} 
                     style={{ height: '400px', position: 'relative', backgroundColor: '#e7eae8', padding: '15px', 'overflow': 'hidden'}}>
@@ -125,7 +125,7 @@ const WardGISMap = ({ markerCoordinates, geoJSON, center, ward, from }) => {
 
                 </MapContainer>
                 :
-                <Alert severity='info' className='capitalize text-lg ' style={{width: '100%'}}> Please enter  Latitude and Longitude to see {ward.toLowerCase()} map ...</Alert>
+                <Alert severity='info' className='capitalize text-lg ' style={{width: '100%'}}> Please enter  Latitude and Longitude to see {ward?.toLowerCase()} map ...</Alert>
            } 
         </>
 

@@ -393,7 +393,7 @@ function Home(props) {
           {/* facilities */}
 
           <div className='w-[80%] mx-auto flex flex-col items-start gap-2 mt-2'>
-            <h1 className='text-blue-600 opacity-80 font-semibold text-4xl'>Facilities</h1>
+            <h1 className='text-gray-800 opacity-80 font-semibold text-4xl'>Facilities</h1>
             <hr className='w-[50px] h-2 opacity-80 bg-blue-600'></hr>
           </div>
           
@@ -405,7 +405,7 @@ function Home(props) {
               </div>
 
               <div className='flex self-start'>
-                <h1 className='text-lg text-blue-600 font-semibold capitalize'>ministry of health</h1>
+                <h1 className='text-lg text-gray-900 font-semibold capitalize'>ministry of health</h1>
               </div>
             </div>
 
@@ -415,7 +415,7 @@ function Home(props) {
               </div>
 
               <div className='flex self-start'>
-                <h1 className='text-lg text-blue-600 font-semibold capitalize'>faith based</h1>
+                <h1 className='text-lg text-gray-900 font-semibold capitalize'>faith based</h1>
               </div>
             </div>
 
@@ -425,7 +425,7 @@ function Home(props) {
               </div>
 
               <div className='flex self-start'>
-                <h1 className='text-lg text-blue-600 font-semibold capitalize'>private</h1>
+                <h1 className='text-lg text-gray-900 font-semibold capitalize'>private</h1>
               </div>
             </div>
 
@@ -435,7 +435,7 @@ function Home(props) {
               </div>
 
               <div className='flex self-start'>
-                <h1 className='text-lg text-blue-600 font-semibold capitalize'>non-govermental</h1>
+                <h1 className='text-lg text-gray-900 font-semibold capitalize'>non-govermental</h1>
               </div>
             </div>
 
@@ -443,7 +443,7 @@ function Home(props) {
 
           {/* Community Units  */}
           <div className='w-[80%] mx-auto flex flex-col items-start gap-2 mt-[50px]'>
-            <h1 className='text-blue-600 opacity-80 font-semibold text-4xl'>Community Health Units</h1>
+            <h1 className='text-gray-800 opacity-80 font-semibold text-4xl'>Community Health Units</h1>
             <hr className='w-[50px] h-2 opacity-80 bg-blue-600'></hr>
           </div>
           
@@ -455,7 +455,7 @@ function Home(props) {
               </div>
 
               <div className='flex self-start'>
-                <h1 className='text-lg text-blue-600 font-semibold capitalize'>full functional</h1>
+                <h1 className='text-lg text-gray-900 font-semibold capitalize'>full functional</h1>
               </div>
             </div>
 
@@ -465,7 +465,7 @@ function Home(props) {
               </div>
 
               <div className='flex self-start'>
-                <h1 className='text-lg text-blue-600 font-semibold capitalize'>semi functional</h1>
+                <h1 className='text-lg text-gray-900 font-semibold capitalize'>semi functional</h1>
               </div>
             </div>
 
@@ -475,7 +475,7 @@ function Home(props) {
               </div>
 
               <div className='flex self-start'>
-                <h1 className='text-lg text-blue-600 font-semibold capitalize'>Non functional</h1>
+                <h1 className='text-lg text-gray-900 font-semibold capitalize'>Non functional</h1>
               </div>
             </div>
 
@@ -485,7 +485,7 @@ function Home(props) {
               </div>
 
               <div className='flex self-start'>
-                <h1 className='text-lg text-blue-600 font-semibold capitalize'>closed</h1>
+                <h1 className='text-lg text-gray-900 font-semibold capitalize'>closed</h1>
               </div>
             </div>
 
@@ -494,7 +494,7 @@ function Home(props) {
          
 
           <div className='w-[80%] mx-auto flex flex-col items-start gap-2 mt-[50px]'>
-            <h1 className='text-blue-600 opacity-80 font-semibold text-4xl'>Partners</h1>
+            <h1 className='text-gray-800 opacity-80 font-semibold text-4xl'>Partners</h1>
             <hr className='w-[50px] h-2 opacity-80 bg-blue-600'></hr>
 
           </div>

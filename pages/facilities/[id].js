@@ -457,7 +457,7 @@ const Facility = (props) => {
                 {
               
                   !facility?.closed &&
-                  <div className="bg-transparent bg-gray-50 w-full p-3  flex flex-col gap-3 shadow-md mt-4">
+                  <div className=" bg-gray-50 w-full p-3  flex flex-col gap-3 shadow-md mt-4">
                     <div className="flex flex-row justify-start items-center space-x-3 p-3">
 
                    
