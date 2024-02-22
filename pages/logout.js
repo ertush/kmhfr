@@ -19,15 +19,16 @@ const Logout = props => {
                     window.sessionStorage.removeItem('user')
                     window.localStorage.removeItem('user')
                     window.document.cookie = 'access_token=; expires=Thu, 01 Jan 1970 00:00:00 GMT;'
-                    router.push('/')
-
+                    // router.push('/')
+                    window.location.href = '/'
                 } else {
                     const cookieCutter = require('cookie-cutter')
                     cookieCutter.set('access_token', '', "{}", { expires: new Date(0), httpOnly: false })
                 }
             } else {
                 if (typeof window !== 'undefined') {
-                    router.push('/')
+                    // router.push('/')
+                    window.location.href = '/'
                 } else {
                     router.push('/')
                 }
