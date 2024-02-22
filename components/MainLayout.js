@@ -99,21 +99,21 @@ export default function MainLayout({ children, isLoading, searchTerm, isFullWidt
                     <div className="flex flex-col gap-2 md:gap-4 items-between">
                         <div className="w-full md:w-[75%] lg:w-[60%] mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 md:gap-3 p-2">
                             <div className="flex flex-col text-gray-200 gap-2 mb-2">
-                                <h2 className='text-blue-50 font-semibold mt-4 md:mt-2 border-b border-gray-400'>Contacts</h2>
+                                <h2 className='text-blue-50 font-semibold mt-4 md:mt-2 border-b md:border-none border-gray-400'>Contacts</h2>
                                 <Link href="tel:+254 20 2717077" className="t">+254-20-2717077</Link>
                                 <Link href="mailto:kmhfl@health.go.ke" className="text-gray-200">kmhfl@health.go.ke</Link>
                                 <Link href="https://servicedesk.health.go.ke/portal" className="text-gray-200">MOH Service Desk</Link>
                             </div>
 
                             <div className="flex flex-col gap-2 mb-2">
-                                <h2 className='text-blue-50 font-semibold mt-4 md:mt-2 border-b border-gray-400'>Partners</h2>
+                                <h2 className='text-blue-50 font-semibold mt-4 md:mt-2 border-b md:border-none border-gray-400'>Partners</h2>
                                 <p className="text-gray-200">HealthIT</p>
                                 <p className="text-gray-200">USAID</p>
                                 <p className="text-gray-200">Ministry of Health</p>
                             </div>
 
                             <div className="flex flex-col text-gray-200 gap-2 mb-2">
-                                <h2 className='text-blue-50 font-semibold mt-4 md:mt-2 border-b border-gray-400'>Quick Links</h2>
+                                <h2 className='text-blue-50 font-semibold mt-4 md:mt-2 border-b md:border-none border-gray-400'>Quick Links</h2>
                                 <div className='flex items-center gap-2'>
                                     <Link href="https://healthit.uonbi.ac.ke" className="text-gray-200 hover:underline">HealthIT</Link>
                                     <NorthEast className="text-gray-200 w-1 md:w-3 aspect-square" />
