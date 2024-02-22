@@ -890,8 +890,7 @@ export function BasicDeatilsForm({ editMode }) {
             name='keph_level'
             defaultValue={options?.data?.keph_level ?? ''}
             onFocus={handleFocus}
-            disabled={options?.data ? true : false}
-
+            disabled={true}
           />
         </div>
 

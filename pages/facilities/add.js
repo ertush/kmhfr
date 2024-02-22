@@ -40,7 +40,7 @@ export default function AddFacility(props) {
 				</Head>
 
 				<MainLayout isLoading={false} searchTerm={props?.query?.searchTerm}>
-					<div className="w-full grid grid-cols-5 h-full mb-12 gap-4">
+					<div className="w-full grid grid-cols-5 h-full my-12 gap-4">
 						<div className="col-span-5 flex flex-col gap-3 md:gap-5 mb-4">
 							<div className="flex flex-wrap items-center justify-between gap-2 text-sm md:text-base py-3">
 								<div className="flex flex-row items-center justify-between gap-2 text-sm md:text-base py-3">

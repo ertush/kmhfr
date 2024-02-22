@@ -199,6 +199,7 @@ export default function HeaderLayout({
                 <ChevronDownIcon className="h-4 w-5" />
               </span>
             </Menu.Button>
+
             <Menu.Items
               as="ul"
               style={{backgroundColor:"#eff6ff", color: "black", outline:'none'}}
@@ -269,7 +270,7 @@ export default function HeaderLayout({
           <div style={{ backgroundColor: '#1651b6' }} className='w-full top-[88px] fixed z-10  max-h-min flex'>
             {/* Menu Heading */}
             <nav className="max-h-min w-[90%] container flex justify-between items-center mx-auto ">
-              <ul className='list-none w-full flex items-center justify-between '>
+              <ul className='list-none w-full flex items-center gap-3 '>
                 {
                   groupID !== 6 &&
                   isLoggedIn &&
@@ -281,6 +282,7 @@ export default function HeaderLayout({
 
                 {
                   groupID == 6 &&
+                  !isLoggedIn &&
                 <li className={`text-lg h-[80px] flex items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/dashboard" && 'border-b-2 border-b-gray-50 bg-blue-500/85' }`}>
                   <Link href='/#about'>About</Link>
                 </li>
