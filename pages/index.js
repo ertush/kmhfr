@@ -140,7 +140,7 @@ function Home(props) {
                             }}>
                                 {/* <div className='w-full h-full bg-gray-900 opacity-60 absolute inset-0'></div> */}
                                 <div className='w-full md:w-[75%] lg:w-[60%] mt-6 h-auto flex-col items-start px-2 md:px-4'>
-                                    <h1 className="text-3xl md:text-5xl xl:text-6xl text-wrap text-gray-100 font-extrabold">Welcome to Kenya Master Health Facility Registry</h1>
+                                    <h1 className="text-3xl md:text-4xl xl:text-5xl text-wrap text-gray-100 font-extrabold">Welcome to Kenya Master Health Facility Registry</h1>
                                     <h4 className='text-xl mt-4 text-gray-100 capitalize'>Search for a facility or community health unit</h4>
                                 </div>
 
@@ -238,44 +238,44 @@ function Home(props) {
                             <hr className='w-[50px] h-2 opacity-80 bg-blue-600'></hr>
                         </div>
 
-                        <div class="w-full md:w-[75%] lg:w-[60%] mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 mt-6 ">
-                            <div class="max-w-[250px] max-h-[250px] aspect-square rounded flex flex-col bg-gray-300/45 shadow-sm p-2">
-                                <div className='flex w-full h-full justify-center items-center'>
-                                    <h1 className='text-5xl text-blue-600 font-bold'>{props?.data?.moh}</h1>
-                                </div>
+                        <div class="w-full md:w-[75%] lg:w-[60%] mx-auto items-center justify-center grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mt-6 ">
+                            <div class="aspect-[2/1] rounded flex flex-col justify-between bg-gray-300/45 shadow-sm p-1">
 
-                                <div className='flex self-start'>
-                                    <h1 className='sm:text-lg md:text-xl text-sky-800 font-semibold capitalize'>ministry of health</h1>
+                                <div className='flex self-start w-full justify-center'>
+                                    <h3 className='text-center sm:text-lg md:text-xl text-sky-800 font-semibold capitalize'>ministry of health</h3>
                                 </div>
-                            </div>
-
-                            <div class="max-w-[250px] max-h-[250px] aspect-square rounded flex flex-col bg-gray-300/45 shadow-sm p-2">
-                                <div className='flex w-full h-full justify-center items-center'>
-                                    <h1 className='text-5xl text-blue-600 font-bold'>{props?.data?.faith_based}</h1>
-                                </div>
-
-                                <div className='flex self-start'>
-                                    <h1 className='sm:text-lg md:text-xl text-sky-800 font-semibold capitalize'>faith based</h1>
+                                <div className='flex justify-center items-center mb-1'>
+                                    <h1 className='text-3xl text-blue-600 font-bold'>{props?.data?.moh}</h1>
                                 </div>
                             </div>
 
-                            <div class="max-w-[250px] max-h-[250px] aspect-square rounded flex flex-col bg-gray-300/45 shadow-sm p-2">
-                                <div className='flex w-full h-full justify-center items-center'>
-                                    <h1 className='text-5xl text-blue-600 font-bold'>{props?.data?.private_facilities}</h1>
-                                </div>
+                            <div class="aspect-[2/1] rounded flex flex-col justify-between bg-gray-300/45 shadow-sm p-1">
 
-                                <div className='flex self-start'>
-                                    <h1 className='sm:text-lg md:text-xl text-sky-800 font-semibold capitalize'>private</h1>
+                                <div className='flex self-start w-full justify-center'>
+                                    <h3 className='text-center sm:text-lg md:text-xl text-sky-800 font-semibold capitalize'>faith based</h3>
+                                </div>
+                                <div className='flex justify-center items-center mb-1'>
+                                    <h1 className='text-3xl text-blue-600 font-bold'>{props?.data?.faith_based}</h1>
                                 </div>
                             </div>
 
-                            <div class="max-w-[250px] max-h-[250px] aspect-square rounded flex flex-col bg-gray-300/45 shadow-sm p-2">
-                                <div className='flex w-full h-full justify-center items-center'>
-                                    <h1 className='text-5xl text-blue-600 font-bold'>{props?.data?.ngo}</h1>
-                                </div>
+                            <div class="aspect-[2/1] rounded flex flex-col justify-between bg-gray-300/45 shadow-sm p-1">
 
-                                <div className='flex self-start'>
-                                    <h1 className='sm:text-lg md:text-xl text-sky-800 font-semibold capitalize'>non-govermental</h1>
+                                <div className='flex self-start w-full justify-center'>
+                                    <h3 className='text-center sm:text-lg md:text-xl text-sky-800 font-semibold capitalize'>private</h3>
+                                </div>
+                                <div className='flex justify-center items-center mb-1'>
+                                    <h1 className='text-3xl text-blue-600 font-bold'>{props?.data?.private_facilities}</h1>
+                                </div>
+                            </div>
+
+                            <div class="aspect-[2/1] rounded flex flex-col justify-between bg-gray-300/45 shadow-sm p-1">
+
+                                <div className='flex self-start w-full justify-center'>
+                                    <h3 className='text-center sm:text-lg md:text-xl text-sky-800 font-semibold capitalize'>non-govermental</h3>
+                                </div>
+                                <div className='flex justify-center items-center mb-1'>
+                                    <h1 className='text-3xl text-blue-600 font-bold'>{props?.data?.ngo}</h1>
                                 </div>
                             </div>
                         </div>
@@ -287,44 +287,44 @@ function Home(props) {
                             <hr className='w-[50px] h-2 opacity-80 bg-blue-600'></hr>
                         </div>
 
-                        <div class="w-full md:w-[75%] lg:w-[60%] mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 h-auto mt-6 ">
-                            <div class="max-w-[250px] max-h-[250px] aspect-square rounded flex flex-col bg-gray-300/45 shadow-sm p-2">
-                                <div className='flex w-full h-full justify-center items-center'>
-                                    <h1 className='text-5xl text-blue-600 font-bold'>{props?.data?.chu_fully_functional}</h1>
-                                </div>
+                        <div class="w-full md:w-[75%] lg:w-[60%] mx-auto items-center justify-center grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 h-auto mt-6 ">
+                            <div class="aspect-[2/1] rounded flex flex-col justify-between bg-gray-300/45 shadow-sm p-1">
 
-                                <div className='flex self-start'>
-                                    <h1 className='sm:text-lg md:text-xl text-sky-800 font-semibold capitalize'>full functional</h1>
+                                <div className='flex self-start w-full justify-center'>
+                                    <h3 className='text-center sm:text-lg md:text-xl text-sky-800 font-semibold capitalize'>full functional</h3>
                                 </div>
-                            </div>
-
-                            <div class="max-w-[250px] max-h-[250px] aspect-square rounded flex flex-col bg-gray-300/45 shadow-sm p-2">
-                                <div className='flex w-full h-full justify-center items-center'>
-                                    <h1 className='text-5xl text-blue-600 font-bold'>{props?.data?.chu_semi_functional}</h1>
-                                </div>
-
-                                <div className='flex self-start'>
-                                    <h1 className='sm:text-lg md:text-xl text-sky-800 font-semibold capitalize'>semi functional</h1>
+                                <div className='flex justify-center items-center mb-1'>
+                                    <h1 className='text-3xl text-blue-600 font-bold'>{props?.data?.chu_fully_functional}</h1>
                                 </div>
                             </div>
 
-                            <div class="max-w-[250px] max-h-[250px] aspect-square rounded flex flex-col bg-gray-300/45 shadow-sm p-2">
-                                <div className='flex w-full h-full justify-center items-center'>
-                                    <h1 className='text-5xl text-blue-600 font-bold'>{props?.data?.chu_non_functional}</h1>
-                                </div>
+                            <div class="aspect-[2/1] rounded flex flex-col justify-between bg-gray-300/45 shadow-sm p-1">
 
-                                <div className='flex self-start'>
-                                    <h1 className='sm:text-lg md:text-xl text-sky-800 font-semibold capitalize'>Non functional</h1>
+                                <div className='flex self-start w-full justify-center'>
+                                    <h3 className='text-center sm:text-lg md:text-xl text-sky-800 font-semibold capitalize'>semi functional</h3>
+                                </div>
+                                <div className='flex justify-center items-center mb-1'>
+                                    <h1 className='text-3xl text-blue-600 font-bold'>{props?.data?.chu_semi_functional}</h1>
                                 </div>
                             </div>
 
-                            <div class="max-w-[250px] max-h-[250px] aspect-square rounded flex flex-col bg-gray-300/45 shadow-sm p-2">
-                                <div className='flex w-full h-full justify-center items-center'>
-                                    <h1 className='text-5xl text-blue-600 font-bold'>{props?.data?.chu_closed}</h1>
-                                </div>
+                            <div class="aspect-[2/1] rounded flex flex-col justify-between bg-gray-300/45 shadow-sm p-1">
 
-                                <div className='flex self-start'>
-                                    <h1 className='sm:text-lg md:text-xl text-sky-800 font-semibold capitalize'>closed</h1>
+                                <div className='flex self-start w-full justify-center'>
+                                    <h3 className='text-center sm:text-lg md:text-xl text-sky-800 font-semibold capitalize'>Non functional</h3>
+                                </div>
+                                <div className='flex justify-center items-center mb-1'>
+                                    <h1 className='text-3xl text-blue-600 font-bold'>{props?.data?.chu_non_functional}</h1>
+                                </div>
+                            </div>
+
+                            <div class="aspect-[2/1] rounded flex flex-col justify-between bg-gray-300/45 shadow-sm p-1">
+
+                                <div className='flex self-start w-full justify-center'>
+                                    <h3 className='text-center sm:text-lg md:text-xl text-sky-800 font-semibold capitalize'>closed</h3>
+                                </div>
+                                <div className='flex justify-center items-center mb-1'>
+                                    <h1 className='text-3xl text-blue-600 font-bold'>{props?.data?.chu_closed}</h1>
                                 </div>
                             </div>
 
