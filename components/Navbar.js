@@ -68,7 +68,7 @@ function NavBar({ session, loggedIn, user, searchQ = '' }) {
             console.log('NavBar: ', user)
         }
         return () => { mounted = false }
-    }, [])
+    }, [groupID, loggedIn, user])
 
     return (
         <AppBar position="static" color="default" variant="outlined" elevation={0}>
