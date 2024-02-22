@@ -71,7 +71,7 @@ function NavBar({ session, loggedIn, user, searchQ = '' }) {
     }, [groupID, loggedIn, user])
 
     return (
-        <AppBar position="static" color="default" variant="outlined" elevation={0}>
+        <AppBar position="fixed" color="default" variant="outlined" elevation={0}>
             <Container maxWidth="2xl">
                 <Toolbar disableGutters>
                     <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, mr: 1 }}>

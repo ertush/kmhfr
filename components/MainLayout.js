@@ -88,7 +88,7 @@ export default function MainLayout({ children, isLoading, searchTerm, isFullWidt
             {/* memoize the navbar */}
             <NavBar loggedIn={isLoggedIn} user={user} />
 
-            <div className={"h-full w-full flex flex-col items-center " + (isFullWidth ? "" : "max-w-screen-2xl") + (classes && classes.length > 0 ? classes.join(" ") : "")}>
+            <div className={"h-full w-full flex flex-col items-center mt-11 " + (isFullWidth ? "" : "max-w-screen-2xl") + (classes && classes.length > 0 ? classes.join(" ") : "")}>
                 {children}
             </div>
 
