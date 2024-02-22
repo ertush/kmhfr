@@ -132,7 +132,7 @@ function Home(props) {
 
                         {/* Hero Section */}
                         <div className='w-full mb-10 '>
-                            <div className='w-full  flex flex-col items-center justify-center gap-y-2 md:gap-y-4' style={{
+                            <div className='w-full flex flex-col items-center justify-center pb-2 gap-y-2 md:gap-y-4' style={{
                                 // height: '85vh',
                                 backgroundColor: "#1651b6",
                                 backgroundSize: "cover",
