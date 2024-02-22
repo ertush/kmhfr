@@ -259,7 +259,7 @@ function Dashboard(props) {
         return (
             <div className="">
                 <Head>
-                    <title>KMHFR - Dashboardboard</title>
+                    <title>KMHFR - Dashboard</title>
                     <link rel="icon" href="/favicon.ico" />
                 </Head>
 
@@ -271,7 +271,7 @@ function Dashboard(props) {
                         
                             <div className="no-print flex flex-row gap-2 text-sm md:text-base py-3">
                                 <Link className="text-blue-700" href="/" >Home</Link> {'/'}
-                                <span className="text-gray-600">Dashboardboard</span>
+                                <span className="text-gray-600">Dashboard</span>
 
                             </div>
                             <div className="flex flex-col w-full md:flex-wrap lg:flex-row xl:flex-row gap-1 text-sm md:text-base items-center justify-between">
