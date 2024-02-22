@@ -127,12 +127,12 @@ function Home(props) {
                     <link rel="icon" href="/favicon.ico" />
                 </Head>
 
-                <MainLayout isLoading={false} searchTerm={''}>
+                <MainLayout isLoading={false} searchTerm={''} isFullWidth={true}>
                     <div className="w-full flex flex-col px-1 md:px-2">
 
                         {/* Hero Section */}
                         <div className='w-full mb-10 '>
-                            <div className='w-full  flex flex-col items-center justify-center gap-y-2 md:gap-y-4' style={{
+                            <div className='w-full flex flex-col items-center justify-center pb-2 gap-y-2 md:gap-y-4' style={{
                                 // height: '85vh',
                                 backgroundColor: "#1651b6",
                                 backgroundSize: "cover",
