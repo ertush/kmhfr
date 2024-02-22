@@ -132,21 +132,21 @@ function Home(props) {
 
                         {/* Hero Section */}
                         <div className='w-full mb-10 '>
-                            <div className='w-full h-[60vh]  flex flex-col items-center justify-center gap-y-6' style={{
+                            <div className='w-full  flex flex-col items-center justify-center gap-y-2 md:gap-y-4' style={{
                                 // height: '85vh',
                                 backgroundColor: "#1651b6",
                                 backgroundSize: "cover",
 
                             }}>
                                 {/* <div className='w-full h-full bg-gray-900 opacity-60 absolute inset-0'></div> */}
-                                <div className='w-full md:w-[60%] mt-6 h-auto flex-col items-start'>
-                                    <h1 className="text-2xl md:text-5xl xl:text-6xl text-wrap text-gray-100 font-extrabold">Welcome to Kenya Master Health Facility Registry</h1>
+                                <div className='w-full md:w-[75%] lg:w-[60%] mt-6 h-auto flex-col items-start px-2 md:px-4'>
+                                    <h1 className="text-3xl md:text-5xl xl:text-6xl text-wrap text-gray-100 font-extrabold">Welcome to Kenya Master Health Facility Registry</h1>
                                     <h4 className='text-xl mt-4 text-gray-100 capitalize'>Search for a facility or community health unit</h4>
                                 </div>
 
-
-                                <div className='w-full md:w-[60%] my-4 h-auto bg-gray-200 bg-opacity-40 p-5 flex place-content-center'>
-                                    <form className='w-full bg-gray-100 flex' onSubmit={
+                                {/* Search */}
+                                <div className='w-full md:w-[75%] lg:w-[60%] my-4 h-auto bg-gray-200 bg-opacity-40 p-5 flex place-content-center'>
+                                    <form className='w-full bg-gray-100 flex flex-col md:flex-row' onSubmit={
                                         (e) => {
                                             e.preventDefault();
 
@@ -170,8 +170,7 @@ function Home(props) {
                                             }
                                         }
                                     }>
-                                        <input placeholder={`Search for a ${searchOption == 'Facilities' ? 'facility' : 'community health unit'}`} name="search" type="text" className=' w-full border-none h-12 p-3 outline-none placeholder-gray-500' />
-
+                                        <input placeholder={`Search for a ${searchOption == 'Facilities' ? 'facility' : 'community health unit'}`} name="search" type="text" className=' w-full border md:border-none h-12 p-3 outline-none placeholder-gray-500' />
                                         <Select
                                             readOnly
                                             styles={{
@@ -234,115 +233,113 @@ function Home(props) {
 
                         {/* facilities */}
 
-                        <div className='w-full md:w-[60%] mx-auto flex flex-col items-start gap-2 mt-4'>
+                        <div className='w-full md:w-[75%] lg:w-[60%] mx-auto flex flex-col items-start gap-2 mt-4'>
                             <h1 className='text-stone-700 opacity-80 font-semibold text-4xl'>Facilities</h1>
                             <hr className='w-[50px] h-2 opacity-80 bg-blue-600'></hr>
                         </div>
 
-                        <div class="w-full md:w-[60%] mx-auto flex justify-between flex-wrap gap-8 h-auto mt-6 ">
-
-                            <div class="w-[200px] h-[200px] rounded flex flex-col bg-gray-300/45 shadow-sm p-2">
+                        <div class="w-full md:w-[75%] lg:w-[60%] mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 mt-6 ">
+                            <div class="max-w-[250px] max-h-[250px] aspect-square rounded flex flex-col bg-gray-300/45 shadow-sm p-2">
                                 <div className='flex w-full h-full justify-center items-center'>
                                     <h1 className='text-5xl text-blue-600 font-bold'>{props?.data?.moh}</h1>
                                 </div>
 
                                 <div className='flex self-start'>
-                                    <h1 className='text-lg text-sky-800 font-semibold capitalize'>ministry of health</h1>
+                                    <h1 className='sm:text-lg md:text-xl text-sky-800 font-semibold capitalize'>ministry of health</h1>
                                 </div>
                             </div>
 
-                            <div class="w-[200px] h-[200px] rounded flex flex-col bg-gray-300/45 shadow-sm p-2">
+                            <div class="max-w-[250px] max-h-[250px] aspect-square rounded flex flex-col bg-gray-300/45 shadow-sm p-2">
                                 <div className='flex w-full h-full justify-center items-center'>
                                     <h1 className='text-5xl text-blue-600 font-bold'>{props?.data?.faith_based}</h1>
                                 </div>
 
                                 <div className='flex self-start'>
-                                    <h1 className='text-lg text-sky-800 font-semibold capitalize'>faith based</h1>
+                                    <h1 className='sm:text-lg md:text-xl text-sky-800 font-semibold capitalize'>faith based</h1>
                                 </div>
                             </div>
 
-                            <div class="w-[200px] h-[200px] rounded flex flex-col bg-gray-300/45 shadow-sm p-2">
+                            <div class="max-w-[250px] max-h-[250px] aspect-square rounded flex flex-col bg-gray-300/45 shadow-sm p-2">
                                 <div className='flex w-full h-full justify-center items-center'>
                                     <h1 className='text-5xl text-blue-600 font-bold'>{props?.data?.private_facilities}</h1>
                                 </div>
 
                                 <div className='flex self-start'>
-                                    <h1 className='text-lg text-sky-800 font-semibold capitalize'>private</h1>
+                                    <h1 className='sm:text-lg md:text-xl text-sky-800 font-semibold capitalize'>private</h1>
                                 </div>
                             </div>
 
-                            <div class="w-[200px] h-[200px] rounded flex flex-col bg-gray-300/45 shadow-sm p-2">
+                            <div class="max-w-[250px] max-h-[250px] aspect-square rounded flex flex-col bg-gray-300/45 shadow-sm p-2">
                                 <div className='flex w-full h-full justify-center items-center'>
                                     <h1 className='text-5xl text-blue-600 font-bold'>{props?.data?.ngo}</h1>
                                 </div>
 
                                 <div className='flex self-start'>
-                                    <h1 className='text-lg text-sky-800 font-semibold capitalize'>non-govermental</h1>
+                                    <h1 className='sm:text-lg md:text-xl text-sky-800 font-semibold capitalize'>non-govermental</h1>
                                 </div>
                             </div>
-
                         </div>
 
 
                         {/* Community Units  */}
-                        <div className='w-full md:w-[60%] mx-auto flex flex-col items-start gap-2 mt-14'>
+                        <div className='w-full md:w-[75%] lg:w-[60%] mx-auto flex flex-col items-start gap-2 mt-14'>
                             <h1 className='text-stone-700 opacity-80 font-semibold text-4xl'>Community Health Units</h1>
                             <hr className='w-[50px] h-2 opacity-80 bg-blue-600'></hr>
                         </div>
 
-                        <div class="w-full md:w-[60%] mx-auto flex justify-between flex-wrap gap-8 h-auto mt-6 ">
-
-                            <div class="w-[200px] h-[200px] rounded flex flex-col bg-gray-300/45 shadow-sm p-2">
+                        <div class="w-full md:w-[75%] lg:w-[60%] mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 h-auto mt-6 ">
+                            <div class="max-w-[250px] max-h-[250px] aspect-square rounded flex flex-col bg-gray-300/45 shadow-sm p-2">
                                 <div className='flex w-full h-full justify-center items-center'>
                                     <h1 className='text-5xl text-blue-600 font-bold'>{props?.data?.chu_fully_functional}</h1>
                                 </div>
 
                                 <div className='flex self-start'>
-                                    <h1 className='text-lg text-sky-800 font-semibold capitalize'>full functional</h1>
+                                    <h1 className='sm:text-lg md:text-xl text-sky-800 font-semibold capitalize'>full functional</h1>
                                 </div>
                             </div>
 
-                            <div class="w-[200px] h-[200px] rounded flex flex-col bg-gray-300/45 shadow-sm p-2">
+                            <div class="max-w-[250px] max-h-[250px] aspect-square rounded flex flex-col bg-gray-300/45 shadow-sm p-2">
                                 <div className='flex w-full h-full justify-center items-center'>
                                     <h1 className='text-5xl text-blue-600 font-bold'>{props?.data?.chu_semi_functional}</h1>
                                 </div>
 
                                 <div className='flex self-start'>
-                                    <h1 className='text-lg text-sky-800 font-semibold capitalize'>semi functional</h1>
+                                    <h1 className='sm:text-lg md:text-xl text-sky-800 font-semibold capitalize'>semi functional</h1>
                                 </div>
                             </div>
 
-                            <div class="w-[200px] h-[200px] rounded flex flex-col bg-gray-300/45 shadow-sm p-2">
+                            <div class="max-w-[250px] max-h-[250px] aspect-square rounded flex flex-col bg-gray-300/45 shadow-sm p-2">
                                 <div className='flex w-full h-full justify-center items-center'>
                                     <h1 className='text-5xl text-blue-600 font-bold'>{props?.data?.chu_non_functional}</h1>
                                 </div>
 
                                 <div className='flex self-start'>
-                                    <h1 className='text-lg text-sky-800 font-semibold capitalize'>Non functional</h1>
+                                    <h1 className='sm:text-lg md:text-xl text-sky-800 font-semibold capitalize'>Non functional</h1>
                                 </div>
                             </div>
 
-                            <div class="w-[200px] h-[200px] rounded flex flex-col bg-gray-300/45 shadow-sm p-2">
+                            <div class="max-w-[250px] max-h-[250px] aspect-square rounded flex flex-col bg-gray-300/45 shadow-sm p-2">
                                 <div className='flex w-full h-full justify-center items-center'>
                                     <h1 className='text-5xl text-blue-600 font-bold'>{props?.data?.chu_closed}</h1>
                                 </div>
 
                                 <div className='flex self-start'>
-                                    <h1 className='text-lg text-sky-800 font-semibold capitalize'>closed</h1>
+                                    <h1 className='sm:text-lg md:text-xl text-sky-800 font-semibold capitalize'>closed</h1>
                                 </div>
                             </div>
 
                         </div>
 
-                        <div className='w-full md:w-[60%] mx-auto flex flex-col items-start gap-2 mt-14'>
+                        <hr/>
+
+                        <div className='w-full md:w-[75%] lg:w-[60%] mx-auto flex flex-col items-start gap-2 mt-14'>
                             <h1 className='text-stone-700 opacity-80 font-semibold text-4xl'>Partners</h1>
                             <hr className='w-[50px] h-2 opacity-80 bg-blue-600'></hr>
-
                         </div>
 
-                        <div className="w-full md:w-[60%] mx-auto mt-6 h-auto mb-8 flex items-center flex-wrap gap-2 md:gap-3 lg:gap-5 justify-between">
+                        <div className="w-full md:w-[75%] lg:w-[60%] mx-auto mt-6 h-auto mb-8 flex items-center flex-wrap gap-2 md:gap-3 lg:gap-5 justify-between">
                             <Link href="https://healthit.uonbi.ac.ke">
-                                <Image className="cursor-pointer" src="/healthit.png" alt="HealthIT" objectFit='contain' width="290" height="100" />
+                                <Image className="cursor-pointer" src="/healthit.png" alt="HealthIT" objectFit='contain' width="188" height="65" />
                             </Link>
                             <Link href="https://www.usaid.gov/kenya">
                                 <Image
@@ -350,7 +347,7 @@ function Home(props) {
                                     alt="USAID"
                                     className="cursor-pointer"
                                     objectFit='contain'
-                                    width="290" height="120" />
+                                    width="188" height="78" />
                             </Link>
                         </div>
 
