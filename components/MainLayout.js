@@ -65,7 +65,7 @@ export default function MainLayout({ children, isLoading, searchTerm, isFullWidt
                         setIsLoggedIn(false)
                         setUser(null)
                     } else {
-                        if (usr?.full_name == "public public public") {
+                        if (usr?.id === 6) {
                             setIsLoggedIn(false)
                             setUser(null)
                         } else {

@@ -13,14 +13,18 @@ const Logout = props => {
 
         setIsClient(true)
 
-        // setTimeout(() => {
             if (!props?.error && !props?.detail) {
                 if (typeof window !== 'undefined') {
-                    window.sessionStorage.removeItem('user')
-                    window.localStorage.removeItem('user')
-                    window.document.cookie = 'access_token=; expires=Thu, 01 Jan 1970 00:00:00 GMT;'
-                    // router.push('/')
-                    window.location.href = '/'
+                    window.localStorage.setItem('user', JSON.stringify({}))
+                    sessionStorage.setItem('user', JSON.stringify({}))
+
+                    setTimeout(() => {
+                        window.sessionStorage.removeItem('user')
+                        window.localStorage.removeItem('user')
+                        window.document.cookie = 'access_token=; expires=Thu, 01 Jan 1970 00:00:00 GMT;'
+                        // router.push('/')
+                        window.location.href = '/'
+                    }, 1000)
                 } else {
                     const cookieCutter = require('cookie-cutter')
                     cookieCutter.set('access_token', '', "{}", { expires: new Date(0), httpOnly: false })
@@ -33,7 +37,6 @@ const Logout = props => {
                     router.push('/')
                 }
             }
-        // }, 1000);
 
     }, [])
 

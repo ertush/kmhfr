@@ -32,7 +32,7 @@ function NavBar({ session, loggedIn, user, searchQ = '' }) {
     const [searchQuery, setSearchQuery] = React.useState(searchQ);
     const pathname = router.pathname;
     const userCtx = React.useContext(UserContext)
-    const groupID = userCtx?.groups[0]?.id
+    let groupID = userCtx?.groups[0]?.id
     const pages = [
         { name: 'Home', link: '/', protected: false },
         { name: 'Dashboard', link: '/dashboard', protected: true, allowedGroups: [1,2,3,4,5,6,7,10,11,12] },
@@ -66,9 +66,18 @@ function NavBar({ session, loggedIn, user, searchQ = '' }) {
         let mounted = true;
         if (mounted) {
             // setPages(pgs)
+            if(typeof window !== undefined) {
+                let user = JSON.parse(window.localStorage.getItem('user'))
+                if (user) {
+                    let gid = user.groups[0].id
+                    if (gid) {
+                        groupID = gid
+                    }
+                }
+            }
         }
         return () => { mounted = false }
-    }, [groupID, loggedIn, user, pages])
+    }, [])
 
     return (
         <AppBar position="fixed" color="default" variant="outlined" elevation={0}>
