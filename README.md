@@ -24,6 +24,6 @@ An on-premise test server is needed. Currently, you can preview the example live
 - cd into the folder ```cd mfl3```
 - Make a copy of the ```.env``` file and add your environment variables as detailed ```cp .env.local.example .env.local && nano .env.local```
 - Install dependencies ```npm install``` or ```yarn``` or ```pnpm install```
-- For local development, run ```npm run dev``` or ```yarn dev```
+- For local development, run ```npm run dev``` or ```yarn dev``` or ```pnpm dev```
 
 
