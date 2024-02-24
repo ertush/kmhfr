@@ -68,7 +68,6 @@ Logout.getInitialProps = async () => {
             'Content-Type': 'application/json'
         }
     })
-        // .then(re => re.json())
         .then((response) => {
            
             if (response.error || response.detail) {

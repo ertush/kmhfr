@@ -144,7 +144,10 @@ function SystemSetup(props) {
         { field: 'user', headerName: 'User', width: 100 },
         
     ]);
+
+    
    
+    const groupID = userCtx?.groups[0]?.id
 
 
     // Refs
@@ -161,7 +164,11 @@ function SystemSetup(props) {
             router.push('/auth/login')
         }
 
-        if(!hasPermission(/^common.add_county$/, userPermissions)){
+        if(
+            /*!hasPermission(/^common.add_county$/, userPermissions)*/
+            groupID !== 7 || 
+            groupID !== 5
+         ){
             router.push('/unauthorized')
         }
 

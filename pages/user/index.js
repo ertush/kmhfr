@@ -47,6 +47,8 @@ function Users (props) {
     const userCtx = useContext(UserContext)
 
     const router = useRouter()
+
+    const groupID = userCtx?.groups[0]?.id
    
  
     const rows =  props.data?.results?.map((user) => ( 
@@ -99,9 +101,8 @@ function Users (props) {
             router.push('/unauthorized')
         }
         
-       
         
-        if( Object.keys(router.query).length > 0 && router.query.status !== undefined){
+        if(Object.keys(router.query).length > 0 && router.query.status !== undefined){
             setShow(true)
         }
 
@@ -114,6 +115,13 @@ function Users (props) {
     else {
         router.push('/auth/login')
     }
+
+    if( groupID !== 7 ||
+        groupID !== 5 ||
+        groupID !== 1 
+        ) {
+            router.push('/unauthorized')
+        }
     
     setIsClient(true)
         

@@ -271,12 +271,12 @@ function Dashboard(props) {
                         
                             <div className="no-print flex flex-row gap-2 text-sm md:text-base py-3">
                                 <Link className="text-blue-700" href="/" >Home</Link> {'/'}
-                                <span className="text-gray-600">Dashboardboard</span>
+                                <span className="text-gray-600">Dashboard</span>
 
                             </div>
                             <div className="flex flex-col w-full md:flex-wrap lg:flex-row xl:flex-row gap-1 text-sm md:text-base items-center justify-between">
                                 <h1 className="w-full md:w-auto text-4xl tracking-tight font-bold leading-3 flex items-start justify-center gap-x-1 gap-y-2 flex-grow mb-4 md:mb-2 flex-col">
-                                    <span className='no-print' id="dashboard-title">Overview</span>
+                                    {/* <span className='no-print' id="dashboard-title">Overview</span> */}
                                     <div className='flex items-center gap-x-2 mt-3'>
                                         {drillDown && drillDown?.county && groupID !== 1 &&
                                             <small className="text-blue-900 text-base font-semibold ml-1">
@@ -877,10 +877,10 @@ function Dashboard(props) {
 
                                 </div>
 
-                                <button className="flex items-center bg-blue-600 ml-6 text-white text-center font-medium active:bg-gray-200 p-2" onClick={exportToPdf}>
+                                {/* <button className="flex items-center bg-blue-600 ml-6 text-white text-center font-medium active:bg-gray-200 p-2" onClick={exportToPdf}>
                                     <DownloadIcon className="w-4 h-4 mr-1" />
                                     <span>Export</span>
-                                </button>
+                                </button> */}
 
 
                             </div>

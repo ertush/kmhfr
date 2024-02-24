@@ -15,13 +15,13 @@ export default function About() {
     return (
         
       <MainLayout>
-        <div  className='w-[60%] mx-auto flex flex-col items-start gap-2 mt-[100px]'>
+        <div  className='w-[80%] mx-auto  flex flex-col items-start gap-2 mt-8 md:mt-[100px]'>
         <h1 className='text-blue-600 opacity-80 duration-200 ease-in-out font-semibold text-4xl'>About</h1>
         <hr className='w-[50px] h-2 opacity-80 bg-blue-600'></hr>
       </div>
 
       {/* Body */}
-      <div className='h-[1200px] items-start w-[60%] mx-auto flex-col mt-12 gap-3 '>
+      <div className='h-[1200px] items-start w-[80%] mx-auto flex-col mt-12 gap-3 '>
 
         <p className="text-lg">Kenya Master Health Facility Registry (KMHFR) is an application with all health facilities and community units in Kenya. Each health facility and community unit is identified with unique code and their details describing the geographical location, administrative location, ownership, type and the services offered. </p>
 
@@ -30,7 +30,7 @@ export default function About() {
         <Image src="/assets/css/images/distribution_map.png" objectFit="contain" width="400" height="400" />
         <Image src="/kenya_geo_map.png" objectFit="contain" width="600" height="400" />
        </div>     
-          <div className="grid grid-cols-2 gap-x-8 mt-8 h-full gap-y-24">
+          <div className="md:grid md:grid-cols-2 md:gap-x-8 flex flex-col gap-y-4 mt-8 h-full md:gap-y-24">
             <p className="text-lg text-justify relative">
               <h1>1.</h1>
               {/* <h1 className="text-8xl absolute text-blue-600 font-extrabold opacity-30 -top-[40px] -left-[10px]">1</h1> */}

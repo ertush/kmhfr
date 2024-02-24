@@ -11,7 +11,6 @@ import ListItemText from '@mui/material/ListItemText';
 import { UserContext } from '../../providers/user';
 
 
-
 import {
     DataGrid,
     GridToolbar
@@ -47,6 +46,8 @@ function AdminOffices(props) {
     const userPermissions = useContext(PermissionContext)
     const userCtx = useContext(UserContext)
     const [isClient, setIsClient] = useState(false)
+    
+    const groupID = userCtx?.groups[0]?.id
 
     const rows = props?.data?.results?.map(({ id, county_name, sub_county_name, name, is_national, phone_number, email }) => ({ id, county_name, sub_county_name, name, is_national: is_national == true ? 'Yes' : 'No', phone_number, email })) ?? []
     const columns = [
@@ -88,7 +89,10 @@ function AdminOffices(props) {
             router.push('/auth/login')
         }
         
-        if (hasPermission(/^admin_office.view_.*$/, userPermissions)) { // hasPermission should be negated with !
+        if (/*hasPermission(/^admin_office.view_.*$/, userPermissions)*/
+        groupID !== 7 ||
+        groupID !== 5
+            ) { // hasPermission should be negated with !
             router.push('/unauthorized')
         }
     }, [])
