@@ -89,12 +89,12 @@ function AdminOffices(props) {
             router.push('/auth/login')
         }
         
-        if (/*hasPermission(/^admin_office.view_.*$/, userPermissions)*/
-        groupID !== 7 ||
-        groupID !== 5
-            ) { // hasPermission should be negated with !
-            router.push('/unauthorized')
-        }
+        // if (/*hasPermission(/^admin_office.view_.*$/, userPermissions)*/
+        // groupID !== 7 ||
+        // groupID !== 5
+        //     ) { // hasPermission should be negated with !
+        //     router.push('/unauthorized')
+        // }
     }, [])
  
     const [officeTheme, setOfficeTheme] = useState([]);

@@ -116,12 +116,12 @@ function Users (props) {
         router.push('/auth/login')
     }
 
-    if( groupID !== 7 ||
-        groupID !== 5 ||
-        groupID !== 1 
-        ) {
-            router.push('/unauthorized')
-        }
+    // if( groupID !== 7 ||
+    //     groupID !== 5 ||
+    //     groupID !== 1 
+    //     ) {
+    //         router.push('/unauthorized')
+    //     }
     
     setIsClient(true)
         

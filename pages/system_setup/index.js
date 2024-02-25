@@ -164,13 +164,13 @@ function SystemSetup(props) {
             router.push('/auth/login')
         }
 
-        if(
-            /*!hasPermission(/^common.add_county$/, userPermissions)*/
-            groupID !== 7 || 
-            groupID !== 5
-         ){
-            router.push('/unauthorized')
-        }
+        // if(
+        //     /*!hasPermission(/^common.add_county$/, userPermissions)*/
+        //     groupID !== 7 || 
+        //     groupID !== 5
+        //  ){
+        //     router.push('/unauthorized')
+        // }
 
 	  setIsClient(true)
 	}, [])
