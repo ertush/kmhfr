@@ -7,6 +7,7 @@ import HeaderLayout from './HeaderLayout';
 import Link from 'next/link'
 import { NorthEast } from '@mui/icons-material';
 import Image from 'next/image'
+import { Analytics } from '@vercel/analytics/react';
 
 const DelayedLoginButton = () => {
     const [delayed, setDelayed] = useState(false)
@@ -86,12 +87,9 @@ export default function MainLayout({ children, isLoading, searchTerm, isFullWidt
             <HeaderLayout {...searchTerm} />
 
             <div className={"h-full w-full flex flex-col items-center " + (isFullWidth ? "" : "max-w-screen-2xl") + (classes && classes.length > 0 ? classes.join(" ") : "")}>
-                {/* <>
-                    {isLoading ? <div className="absolute inset-0 overflow-hidden bg-white opacity-90 z-20 flex items-center justify-center h-full">
-                        <h3 className="text-2xl text-gray-800 font-bold">Loading...</h3>
-                    </div> : children}
-                </> */}
+               
                 { children }
+                <Analytics />
             </div>
 
           {/* Footer */}

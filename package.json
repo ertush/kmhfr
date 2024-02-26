@@ -31,6 +31,7 @@
     "@radix-ui/react-radio-group": "^0.0.19",
     "@radix-ui/react-tabs": "0.0.5",
     "@turf/turf": "^6.5.0",
+    "@vercel/analytics": "^1.2.2",
     "ag-grid-community": "^26.2.1",
     "ag-grid-enterprise": "^26.2.1",
     "ag-grid-react": "^26.2.0",

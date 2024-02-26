@@ -58,7 +58,7 @@ jobs:
         password: ${{ secrets.SERVER_KEY }}
         script: |
           set -e
-          cd /var/www/kmhflv3
+          cd /var/www/kmhfr
           export NVM_DIR=~/.nvm
           source ~/.nvm/nvm.sh
           if ! [[ -d './.git' ]]; then git init; fi
