@@ -6,8 +6,8 @@ import LoadingAnimation from './LoadingAnimation';
 import HeaderLayout from './HeaderLayout';
 import Link from 'next/link'
 import { NorthEast } from '@mui/icons-material';
-import Image from 'next/image'
-import { Analytics } from '@vercel/analytics/react';
+// import Image from 'next/image'
+
 
 const DelayedLoginButton = () => {
     const [delayed, setDelayed] = useState(false)
@@ -89,7 +89,7 @@ export default function MainLayout({ children, isLoading, searchTerm, isFullWidt
             <div className={"h-full w-full flex flex-col items-center " + (isFullWidth ? "" : "max-w-screen-2xl") + (classes && classes.length > 0 ? classes.join(" ") : "")}>
                
                 { children }
-                <Analytics />
+                
             </div>
 
           {/* Footer */}

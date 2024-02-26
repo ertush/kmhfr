@@ -11,6 +11,8 @@ import AlertTemplate from "react-alert-template-basic";
 import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
 import { useEffect, useState } from 'react';
+import { Analytics } from '@vercel/analytics/react';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 
 
 
@@ -82,6 +84,8 @@ export default function App(props) {
             isNavigating && <LoadAnimation open={true} />
           }
           <Component {...pageProps} />
+          <Analytics />
+          <SpeedInsights />
         </PermissionContext.Provider>
         </UserGroupContext.Provider>
       </UserContext.Provider>
