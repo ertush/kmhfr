@@ -7,25 +7,27 @@ import HeaderLayout from './HeaderLayout';
 import Link from 'next/link'
 import { NorthEast } from '@mui/icons-material';
 // import Image from 'next/image'
+import { Analytics } from '@vercel/analytics/react';
 
 
-const DelayedLoginButton = () => {
-    const [delayed, setDelayed] = useState(false)
-    useEffect(() => {
-        let mtd = true
-        setTimeout(() => {
-            if (mtd === true) {
-                setDelayed(true)
-            }
-        }, 1000)
-        return () => { mtd = false }
-    }, [])
-    if (delayed) {
-        return <a href="/auth/login" className="bg-black hover:bg-blue-700 focus:bg-blue-700 active:bg-blue-700 focus:outline-none focus:ring-1 focus:ring-indigo-500 text-white px-4 md:px-8 whitespace-nowrap py-2 rounded text-base font-semibold">Log in</a>
-    } else {
-        return <div className="p-3 w-16"> <LoadingAnimation size={6} isLight={true} /> </div>
-    }
-}
+
+// const DelayedLoginButton = () => {
+//     const [delayed, setDelayed] = useState(false)
+//     useEffect(() => {
+//         let mtd = true
+//         setTimeout(() => {
+//             if (mtd === true) {
+//                 setDelayed(true)
+//             }
+//         }, 1000)
+//         return () => { mtd = false }
+//     }, [])
+//     if (delayed) {
+//         return <a href="/auth/login" className="bg-black hover:bg-blue-700 focus:bg-blue-700 active:bg-blue-700 focus:outline-none focus:ring-1 focus:ring-indigo-500 text-white px-4 md:px-8 whitespace-nowrap py-2 rounded text-base font-semibold">Log in</a>
+//     } else {
+//         return <div className="p-3 w-16"> <LoadingAnimation size={6} isLight={true} /> </div>
+//     }
+// }
 
 export default function MainLayout({ children, isLoading, searchTerm, isFullWidth, classes }) {
     const router = useRouter()
@@ -89,7 +91,7 @@ export default function MainLayout({ children, isLoading, searchTerm, isFullWidt
             <div className={"h-full w-full flex flex-col items-center " + (isFullWidth ? "" : "max-w-screen-2xl") + (classes && classes.length > 0 ? classes.join(" ") : "")}>
                
                 { children }
-                
+                <Analytics />
             </div>
 
           {/* Footer */}
