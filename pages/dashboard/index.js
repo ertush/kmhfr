@@ -268,13 +268,13 @@ function Dashboard(props) {
 
                 <MainLayout isLoading={false} searchTerm={props?.query?.searchTerm}>
 
-                    <div className="w-full grid grid-cols-6 gap-4 px-1 md:px-4 py-2 my-4 main" ref={dwn}>
-                        <div className="col-span-6 flex flex-col gap-3 md:gap-5 mb-8 px-2">
+                    <div className="md:w-[85%] md:mx-auto grid grid-cols-6 gap-4 px-4 py-2 my-4 main" ref={dwn}>
+                        <div className="col-span-6 flex flex-col gap-3 md:gap-5 mb-8 ">
                             {/* Debug */}
                         
-                            <div className="no-print flex flex-row gap-2 text-sm md:text-base py-3">
-                                <Link className="text-blue-700" href="/" >Home</Link> {'/'}
-                                <span className="text-gray-600">Dashboard</span>
+                            <div className="no-print flex flex-row gap-2 md:text-base py-3">
+                                {/* <Link className="text-blue-700" href="/" >Home</Link>  */}
+                                <span className="text-gray-600 text-2xl">Dashboard</span> 
 
                             </div>
                             <div className="flex flex-col w-full md:flex-wrap lg:flex-row xl:flex-row gap-1 text-sm md:text-base items-center justify-between">
@@ -305,7 +305,7 @@ function Dashboard(props) {
                                             </>
                                             :
                                             <>
-                                                {groupID !== 7 && groupID !== 5 && <span className='text-gray-500 text-base text-center'> / </span>}
+                                                {groupID !== 7 || groupID !== 5 && <span className='text-gray-500 text-base text-center'> / </span>}
                                                 <small className="text-blue-900 text-base font-semibold">
                                                     {subcounties && subcounties?.subcounties && subcounties?.subcounties.find(ft => ft.id == drillDown?.subcounties)?.name != undefined ? subcounties.subcounties.find(ft => ft.id == drillDown?.subcounties)?.name + " Sub county" : !drillDown?.county && "" || ""}
 
@@ -332,7 +332,7 @@ function Dashboard(props) {
                                         <div className="w-full flex  items-center justify-end space-x-3 ">
                                             <div className="w-full max-w-xs flex flex-col items-start justify-start">
                                                 {/* <label htmlFor='Yearselector' className="text-gray-600 capitalize font-semibold text-sm ml-1">Filter by Year</label> */}
-                                                <Select id="Yearselector" className="w-full max-w-xs border border-blue-600"
+                                                <Select id="Yearselector" className="w-full max-w-xs rounded border border-gray-400"
                                                     options={Years}
                                                     placeholder='Filter by Year'
                                                     data-modal-target="defaultModal" data-modal-toggle="defaultModal"
@@ -484,10 +484,9 @@ function Dashboard(props) {
                                         </div>
 
                                     }
-                                    {user && isquarterOpen &&
+                                    {/* {user && isquarterOpen &&
                                         <div id="quarterdiv" visibility="collapsed" className="w-full flex  items-center justify-end space-x-3">
                                             <div id={quarters} className="w-full max-w-xs flex flex-col items-start justify-start">
-                                                {/* <label htmlFor={quarters} className="text-gray-600 capitalize font-semibold text-sm ml-1">Filter by Quarter</label> */}
 
                                                 <Select id="quarterselector" name={quarters} className="w-full max-w-xs  bg-django-blue border border-blue-600"
                                                     options={quarters}
@@ -595,9 +594,8 @@ function Dashboard(props) {
                                                 />
 
                                             </div>
-                                            {/* ~~~F L T R S~~~ */}
                                         </div>
-                                    }
+                                    } */}
 
                                     {/* filter by organizational units  */}
                                     {/* national */}
@@ -606,7 +604,7 @@ function Dashboard(props) {
                                             Object.keys(filters)?.map(ft => (
                                                 <div key={ft} className="w-full max-w-xs flex flex-col items-start justify-start" id='first'>
                                                     {/* <label htmlFor={ft} className="text-gray-600 capitalize font-semibold text-sm ml-1">{ft.split('_').join(' ')}</label> */}
-                                                    <Select name={ft} defaultValue={drillDown[ft] || "national"} id={ft} className="w-full max-w-xs bg-django-blue border border-blue-600"
+                                                    <Select name={ft} defaultValue={drillDown[ft] || "national"} id={ft} className="w-full max-w-xs rounded border border-gray-400"
                                                         styles={{
                                                             control: (baseStyles) => ({
                                                                 ...baseStyles,
@@ -692,7 +690,7 @@ function Dashboard(props) {
                                             Object.keys(subcounties)?.map(ft => (
                                                 <div key={ft} className="w-full max-w-xs flex flex-col items-start justify-start" id="second">
                                                     {/* <label htmlFor={ft} className="text-gray-600 capitalize font-semibold text-sm ml-1">{ft.split('_').join(' ').replace('ies', 'y')}</label> */}
-                                                    <Select name={ft} id={ft} className="w-full max-w-xs border border-blue-600"
+                                                    <Select name={ft} id={ft} className="w-full max-w-xs border rounded border-gray-400"
                                                         styles={{
                                                             control: (baseStyles) => ({
                                                                 ...baseStyles,
@@ -784,7 +782,7 @@ function Dashboard(props) {
                                                 Object.keys(wards)?.map(ft => (
                                                     <div key={ft} className="w-full max-w-xs flex flex-col items-start justify-start" id="third">
                                                         {/* <label htmlFor={ft} className="text-gray-600 capitalize font-semibold text-sm ml-1">{ft.split('_').join(' ').replace('s', '')}</label> */}
-                                                        <Select name={ft} defaultValue={drillDown[ft] || "Subcounty"} id={ft} className="w-full max-w-xs  bg-django-gree border border-blue-600"
+                                                        <Select name={ft} defaultValue={drillDown[ft] || "Subcounty"} id={ft} className="w-full max-w-xs  rounded border border-gray-400"
                                                             styles={{
                                                                 control: (baseStyles) => ({
                                                                     ...baseStyles,

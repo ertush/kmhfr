@@ -174,19 +174,19 @@ function Home(props) {
             {/* Menu Heading */}
             <nav className="hidden max-h-min w-[60%] container md:flex mx-auto ">
               <ul className='list-none w-full flex items-center  justify-between '>
-               <li className={`text-lg h-[65px] flex items-center  hover:text-gray-100  duration-200 ease-out hover:bg-blue-800 px-4 ${router.asPath == "/" && 'border-b-2 text-gray-100 border-b-gray-50 bg-blue-800/85'} font-semibold capitalize text-blue-900 `}>
+               <li className={`text-lg h-[60px] flex items-center  hover:text-gray-100  duration-200 ease-out hover:bg-blue-800 px-4 ${router.asPath == "/" && 'border-b-2 text-gray-100 border-b-gray-50 bg-blue-800/85'} font-semibold capitalize text-blue-900 `}>
                   <Link href="/">Home</Link>
                 </li>
-                <li className='text-lg h-[65px] flex items-center  hover:text-gray-100  duration-200 ease-out hover:bg-blue-800 px-4 font-semibold capitalize text-blue-900 '>
+                <li className='text-lg h-[60px] flex items-center  hover:text-gray-100  duration-200 ease-out hover:bg-blue-800 px-4 font-semibold capitalize text-blue-900 '>
                   <Link href='/public/facilities'>Facilities</Link>
                 </li>
-                <li className='text-lg h-[65px] flex items-center  hover:text-gray-100  duration-200 ease-out hover:bg-blue-800 px-4 font-semibold capitalize text-blue-900 '>
+                <li className='text-lg h-[60px] flex items-center  hover:text-gray-100  duration-200 ease-out hover:bg-blue-800 px-4 font-semibold capitalize text-blue-900 '>
                   <Link href='/public/chu'>Community Units</Link>
                 </li>
-                <li className='text-lg h-[65px] flex items-center  hover:text-gray-100  duration-200 ease-out hover:bg-blue-800 px-4 font-semibold capitalize text-blue-900 '>
+                <li className='text-lg h-[60px] flex items-center  hover:text-gray-100  duration-200 ease-out hover:bg-blue-800 px-4 font-semibold capitalize text-blue-900 '>
                   <Link href="/public/about">About</Link>
                 </li>
-                <li className='text-lg h-[65px] flex items-center  hover:text-gray-100  duration-200 ease-out hover:bg-blue-800 px-4 font-semibold capitalize text-blue-900 '>
+                <li className='text-lg h-[60px] flex items-center  hover:text-gray-100  duration-200 ease-out hover:bg-blue-800 px-4 font-semibold capitalize text-blue-900 '>
                   <Link href="/public/faqs">FAQs</Link>
                 </li>
                 

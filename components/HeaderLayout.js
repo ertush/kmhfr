@@ -189,7 +189,7 @@ export default function HeaderLayout({
         {/* Logo And Title */}
         <div className='w-full fixed z-20 max-h-min bg-gray-100 flex'>
           {/* Heading */}
-          <div className="max-h-min md:w-[80%] w-full container flex md:mx-auto">
+          <div className="max-h-min md:w-[90%] w-full container flex md:mx-auto">
             {/* Heading */}
             <div className='w-full flex md:justify-between md:items-center justify-center py-4 max-h-min '>
               {/* Logo */}
@@ -208,16 +208,16 @@ export default function HeaderLayout({
 
               {/* Login / Logout button */}
               {isLoggedIn ? (
-                <div className="text-lg group hidden  duration-200 hover:rounded ease-in-out hover:border hover:border-blue-800 hover:text-blue-800 md:h-[40px] max-h-min px-3 md:flex gap-x-2 items-center text-blue-800 capitalize font-semibold">
+                <div className="text-lg group hidden  duration-200 hover:rounded ease-in-out hover:border hover:border-gray-800 hover:text-gray-800 md:h-[40px] max-h-min px-3 md:flex gap-x-2 items-center text-blue-800 capitalize font-semibold">
                   <Menu as="div" className="relative p-2" >
                     <Menu.Button
                       as="div"
                       className="flex items-center justify-center gap-1 cursor-pointer"
                     >
                       <span className="leading-none p-0 inline sm:hidden">
-                        <UserCircleIcon className="h-6 w-6 text-blue-800" />
+                        <UserCircleIcon className="h-6 w-6 text-gray-800" />
                       </span>
-                      <span className="leading-none p-0 hidden sm:inline">
+                      <span className="leading-none text-gray-800 p-0 hidden sm:inline">
                         {user.full_name || "My account"}
                       </span>
                       <span className="leading-none p-0">
@@ -234,7 +234,7 @@ export default function HeaderLayout({
                       <Menu.Item as="li" className="flex items-center w-full gap-1">
                         {({ active }) => (
                           <button
-                            className={`w-full text-blue-800 font-medium cursor-pointer flex items-center ${active && "text-blue-400"
+                            className={`w-full text-gray-800 font-medium cursor-pointer flex items-center ${active && "text-blue-400"
                               }`}
                             onClick={() => router.push('/account')}
                           >
@@ -253,7 +253,7 @@ export default function HeaderLayout({
                           <button
                             onClick={() => router.push('/logout')}
                             data-testid="logout"
-                            className={`w-full cursor-pointer flex text-blue-800 font-medium ${active && "text-blue-400"
+                            className={`w-full cursor-pointer flex items-center text-gray-800 font-medium ${active && "text-blue-400"
                               }`}
 
                           >
@@ -411,10 +411,10 @@ export default function HeaderLayout({
                       className="list-none rounded outline-none text-black bg-gray-100 shadow-md flex flex-col items-center justify-start gap-2 md:p-3 py-3 absolute mt-3  right-0  w-40 "
                     >
 
-                      <Menu.Item as="li" className="flex items-center w-full gap-1">
+                      <Menu.Item as="li" className="flex items-center px-3 w-full gap-1">
                         {({ active }) => (
                           <button
-                            className={`w-full text-blue-600 font-medium cursor-pointer flex items-center ${active && "text-blue-400"
+                            className={`w-full text-gray-800 font-medium cursor-pointer flex items-center ${active && "text-blue-400"
                               }`}
                             onClick={() => router.push('/account')}
                           >
@@ -427,13 +427,13 @@ export default function HeaderLayout({
                       
                       <Menu.Item
                         as="li"
-                        className={"flex items-center w-full gap-1 mt-2 border-t border-gray-300 py-2"}
+                        className={"flex items-center w-full px-3 gap-1 mt-2 border-t border-gray-300 py-2"}
                       >
                         {({ active }) => (
                           <button
                             onClick={() => router.push('/logout')}
                             data-testid="logout"
-                            className={`w-full cursor-pointer flex text-blue-600 font-medium ${active && "text-blue-400"
+                            className={`w-full cursor-pointer flex items-center text-gray-800 font-medium ${active && "text-blue-400"
                               }`}
 
                           >
@@ -467,12 +467,12 @@ export default function HeaderLayout({
           currentPath !== '/logout' &&
           <div style={{ backgroundColor: '#1651b6' }} className='w-full hidden top-[97px] fixed z-10  max-h-min md:flex justify-center'>
             {/* Wide view Port Nav bar */}
-            <nav className="hidden max-h-min md:w-full lg:w-[60%] container md:flex mx-auto ">
+            <nav className="hidden max-h-min md:w-full lg:w-[90%] container md:flex mx-auto ">
               <ul className='list-none w-full flex items-center  justify-between '>
               {
                   userID == 6 &&
                   !isLoggedIn &&
-                  <li className={`text-lg h-[80px] flex text-center justify-center items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 `}>
+                  <li className={`text-lg h-[60px] flex text-center justify-center items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 `}>
                     <Link href='/'>Home</Link>
                   </li>
                 }
@@ -481,21 +481,21 @@ export default function HeaderLayout({
                   userID !== 6 &&
                   isLoggedIn &&
 
-                  <li className={`text-lg h-[80px] flex text-center justify-center items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/dashboard" && 'border-b-2 border-b-gray-50 bg-blue-500/85'} `}>
+                  <li className={`text-lg h-[60px] flex text-center justify-center items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/dashboard" && 'border-b-2 border-b-gray-50 bg-blue-500/85'} `}>
                     <Link href='/dashboard'>Dashboard</Link>
                   </li>
                 }
 
                 {
                   userID &&
-                <li className={`text-lg h-[80px] flex text-center justify-center items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/facilities" && 'border-b-2 border-b-gray-50 bg-blue-500/85'} ${currentPath == "/public/facilities" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
+                <li className={`text-lg h-[60px] flex text-center justify-center items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/facilities" && 'border-b-2 border-b-gray-50 bg-blue-500/85'} ${currentPath == "/public/facilities" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
                   <Link href={`${userID !== 6 && isLoggedIn ? '/facilities' : '/public/facilities'}`}>Facilities</Link>
                 </li>
                 }
 
                 {
                   userID &&
-                <li className={`text-lg h-[80px]  flex text-center justify-center items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/community-units" && 'border-b-2 border-b-gray-50 bg-blue-500/85'} ${currentPath == "/public/chu" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
+                <li className={`text-lg h-[60px]  flex text-center justify-center items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/community-units" && 'border-b-2 border-b-gray-50 bg-blue-500/85'} ${currentPath == "/public/chu" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
                   <Link href={`${userID !== 6 && isLoggedIn ? '/community-units' : '/public/chu'}`}>Community Units</Link>
                 </li>
                 }
@@ -503,7 +503,7 @@ export default function HeaderLayout({
                 {
                   userID == 6 &&
                   !isLoggedIn &&
-                  <li className={`text-lg h-[80px] flex text-center justify-center items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/public/about" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
+                  <li className={`text-lg h-[60px] flex text-center justify-center items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/public/about" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
                     <Link href='/public/about'>About</Link>
                   </li>
                 }
@@ -511,7 +511,7 @@ export default function HeaderLayout({
 
                 {
                   userID == 6 &&
-                  <li className={`text-lg h-[80px] flex text-center justify-center items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/public/faqs" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
+                  <li className={`text-lg h-[60px] flex text-center justify-center items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/public/faqs" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
                   <Link href='/public/faqs'>FAQs</Link>
 
                   </li>
@@ -522,7 +522,7 @@ export default function HeaderLayout({
                     groupID == 1) &&
                   userID !== 6 &&
                   isLoggedIn &&
-                  <li className={`text-lg h-[80px] flex text-center justify-center items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/user" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
+                  <li className={`text-lg h-[60px] flex text-center justify-center items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/user" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
                     <Link href='/user'>Users</Link>
                   </li>
                 }
@@ -536,7 +536,7 @@ export default function HeaderLayout({
                       groupID == 5)
                   ) &&
                   isLoggedIn &&
-                  <li className={`text-lg h-[80px] flex text-center justify-center items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/system_setup" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
+                  <li className={`text-lg h-[60px] flex text-center justify-center items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/system_setup" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
                     <Link href='/system_setup'>System Setup</Link>
                   </li>
                 }
@@ -545,7 +545,7 @@ export default function HeaderLayout({
                   userID !== 6 &&
                   groupID !== 3 &&
                   isLoggedIn &&
-                  <li className={`text-lg h-[80px] flex text-center justify-center items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/reports" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
+                  <li className={`text-lg h-[60px] flex text-center justify-center items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/reports" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
                     <Link href='/reports'>Reports</Link>
                   </li>
                 }
@@ -556,7 +556,7 @@ export default function HeaderLayout({
                   (groupID == 7 ||
                     groupID == 5) &&
                   isLoggedIn &&
-                  <li className={`text-lg h-[80px] flex text-center justify-center items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/admin_offices" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
+                  <li className={`text-lg h-[60px] flex text-center justify-center items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/admin_offices" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
                     <Link href='/admin_offices'>Admin Offices</Link>
                   </li>
                 }
