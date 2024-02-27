@@ -88,28 +88,28 @@ export function BasicDeatilsForm({ editMode }) {
 
       if (facilityTypeLabel.includes('DISPENSARY')) {
 
-        keph[0]?.value = options?.keph.find(({ label }) => label == 'Level 2')?.value;
+        keph[0]['value'] = options?.keph.find(({ label }) => label == 'Level 2')?.value;
 
       } else if (facilityTypeLabel.includes('MEDICAL CENTER')) {
-        keph[0]?.value = options?.keph.find(({ label }) => label == 'Level 3')?.value;
+        keph[0]['value'] = options?.keph.find(({ label }) => label == 'Level 3')?.value;
 
       }
       else if (facilityTypeLabel.includes('HEALTH CENTRE')) {
 
-        keph[0]?.value = options?.keph.find(({ label }) => label == 'Level 3')?.value;
+        keph[0]['value'] = options?.keph.find(({ label }) => label == 'Level 3')?.value;
 
       }
       else if (facilityTypeLabel.includes('MEDICAL CLINIC')) {
 
-        keph[0]?.value = options?.keph.find(({ label }) => label == 'Level 2')?.value;
+        keph[0]['value'] = options?.keph.find(({ label }) => label == 'Level 2')?.value;
 
       }
       else if (facilityTypeLabel.includes('NURSING HOME')) {
-        keph[0]?.value = options?.keph.find(({ label }) => label == 'Level 3')?.value;
+        keph[0]['value'] = options?.keph.find(({ label }) => label == 'Level 3')?.value;
 
       }
       else if (facilityTypeLabel.includes('STAND ALONE')) {
-        keph[0]?.value = options?.keph.find(({ label }) => label == 'Level 2')?.value;
+        keph[0]['value'] = options?.keph.find(({ label }) => label == 'Level 2')?.value;
 
       }
 
@@ -154,17 +154,17 @@ export function BasicDeatilsForm({ editMode }) {
 
       if (facilityTypeLabel.trim().toLowerCase() == 'Comprehensive Teaching & Tertiary Referral Hospital'.trim().toLowerCase()) {
 
-        keph[0]?.value = options?.keph.find(({ label }) => label == 'Level 6')?.value;
+        keph[0]['value'] = options?.keph.find(({ label }) => label == 'Level 6')?.value;
 
       } else if (facilityTypeLabel.trim().toLowerCase() == 'Specialized & Tertiary Referral hospitals'.trim().toLowerCase()) {
-        keph[0]?.value = options?.keph.find(({ label }) => label == 'Level 6')?.value;
+        keph[0]['value'] = options?.keph.find(({ label }) => label == 'Level 6')?.value;
 
       } else if (facilityTypeLabel.trim().toLowerCase() == 'Secondary care hospitals'.trim().toLowerCase()) {
-        keph[0]?.value = options?.keph.find(({ label }) => label == 'Level 5')?.value;
+        keph[0]['value'] = options?.keph.find(({ label }) => label == 'Level 5')?.value;
 
       }
       else if (facilityTypeLabel.trim().toLowerCase() == 'Primary care hospitals'.trim().toLowerCase()) {
-        keph[0]?.value = options?.keph.find(({ label }) => label == 'Level 4')?.value;
+        keph[0]['value'] = options?.keph.find(({ label }) => label == 'Level 4')?.value;
 
       }
 
