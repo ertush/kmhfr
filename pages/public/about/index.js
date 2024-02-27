@@ -21,14 +21,14 @@ export default function About() {
       </div>
 
       {/* Body */}
-      <div className='h-[1200px] items-start w-[80%] mx-auto flex-col mt-12 gap-3 '>
+      <div className='h-auto items-start w-[80%] mx-auto flex-col mt-12 gap-3 '>
 
         <p className="text-lg">Kenya Master Health Facility Registry (KMHFR) is an application with all health facilities and community units in Kenya. Each health facility and community unit is identified with unique code and their details describing the geographical location, administrative location, ownership, type and the services offered. </p>
 
        <div className="h-auto w-full flex flex-col items-start mt-8 gap-8"> 
-       <div className="flex gap-3">
+       <div className="flex flex-col gap-4 md:flex-row md:justify-between w-full">
         <Image src="/assets/css/images/distribution_map.png" objectFit="contain" width="400" height="400" />
-        <Image src="/kenya_geo_map.png" objectFit="contain" width="600" height="400" />
+        <Image src="/kenya_geo_map.png" objectFit="contain" width="400" height="400" />
        </div>     
           <div className="md:grid md:grid-cols-2 md:gap-x-8 flex flex-col gap-y-4 mt-8 h-full md:gap-y-24">
             <p className="text-lg text-justify relative">

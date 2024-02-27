@@ -22,7 +22,7 @@ import Backdrop from '@mui/material/Backdrop';
 import { CancelRounded } from '@mui/icons-material'
 import { Menu as MenuIcon } from '@mui/icons-material'
 
-export const DelayedLoginButton = () => {
+export function DelayedLoginButton() {
 
 
   const [delayed, setDelayed] = useState(false);
@@ -42,7 +42,7 @@ export const DelayedLoginButton = () => {
 
   if (delayed) {
     return (
-      <div className='text-lg group hover:bg-blue-800 hover:text-gray-100 max-h-min px-3 flex gap-x-2 items-center text-gray-100 md:text-blue-800 capitalize font-semibold'>
+      <div className='text-lg group hover:border hover:border-blue-800 hover:text-gray-100 rounded max-h-min px-3 flex gap-x-2 items-center text-gray-100 md:text-blue-800 capitalize font-semibold'>
         <Login className='w-6 h-6 text-gray-100 md:text-blue-800 group-hover:text-gray-100' />
         <Link href="/auth/login">
           log in
@@ -64,26 +64,27 @@ export default function HeaderLayout({
   searchTerm,
 }) {
 
-  const userPermissions = useContext(PermissionContext)
+  
   const userCtx = useContext(UserContext)
   const [isFAQ, setIsFAQ] = useState(false)
 
 
   const router = useRouter();
-  const activeClasses =
-    "text-black hover:text-gray-700 focus:text-gray-700 active:text-gray-700 font-medium border-b-4  border-blue-600";
-  const inactiveClasses =
-    "text-gray-700 hover:text-black focus:text-black active:text-black";
+  
+  
+  
+  
   const currentPath = router.asPath.split("?", 1)[0];
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [searchOption, setSearchOption] = useState('');
+  
   const [user, setUser] = useState(null);
-  const [touchSearch, setTouchSearch] = useState(false)
+  
   const [isMobileMenu, setIsMobileMenu] = useState(false)
 
 
-  const userID = userCtx?.id
-  const groupID = userCtx?.groups[0]?.id
+  const [userID, setUserID] = useState(userCtx?.id)
+
+  const [groupID, setGroupID] = useState(userCtx?.groups[0]?.id)
 
   let API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -91,10 +92,10 @@ export default function HeaderLayout({
     typeof window !== "undefined" &&
     window.location.hostname === "127.0.0.1"
   ) {
-    API_URL = "http://localhost:8000/api";
+    
   }
 
-  //check if a session cookie is set
+  
   let path = router.asPath;
   if (path.includes("facilities") || path.includes("facility")) {
     path = "/facilities";
@@ -134,7 +135,8 @@ export default function HeaderLayout({
               setIsLoggedIn(false);
               setUser(null);
             } else {
-              usr.id == 6 ? setIsLoggedIn(false) : setIsLoggedIn(true); setUser(usr);
+              usr.id == 6 ? setIsLoggedIn(false) : setIsLoggedIn(true); 
+              setUser(usr);
 
 
             }
@@ -142,7 +144,7 @@ export default function HeaderLayout({
         );
       } else {
         console.log("no session. Refreshing...");
-        // router.push('/auth/login')
+        
       }
     }
 
@@ -151,8 +153,30 @@ export default function HeaderLayout({
     };
   }, []);
 
+  useEffect(() => {
+    if(userID == 6) {
+      if(window){
+        const timeOut = setTimeout(() => {  
+        setUserID(JSON.parse(window.localStorage.getItem('user'))?.id)
+        setGroupID(JSON.parse(window.localStorage.getItem('user'))?.groups[0]?.id)
+
+        }, 1000)
+
+        return () => {
+          clearTimeout(timeOut)
+        }
+
+      }
+
+    }
+
+   
+  }, [])
+
+
 
   return (
+    
 
     <header className='w-full max-h-min flex'>
       <Head>
@@ -160,17 +184,17 @@ export default function HeaderLayout({
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <div className="w-full overflow-y-scroll flex flex-col">
+      <div className="w-full overflow-y-scroll flex flex-col ">
 
         {/* Logo And Title */}
         <div className='w-full fixed z-20 max-h-min bg-gray-100 flex'>
           {/* Heading */}
           <div className="max-h-min md:w-[80%] w-full container flex md:mx-auto">
             {/* Heading */}
-            <div className='w-full flex md:justify-between justify-center py-4 max-h-min '>
+            <div className='w-full flex md:justify-between md:items-center justify-center py-4 max-h-min '>
               {/* Logo */}
               <Link
-                href="/"
+                href={`${userID !== 6 ? '/dashboard' : '/'}`}
                 className="leading-none tracking-tight flex justify-center items-center text-black font-bold relative"
               >
 
@@ -184,7 +208,7 @@ export default function HeaderLayout({
 
               {/* Login / Logout button */}
               {isLoggedIn ? (
-                <div className="text-lg group hidden  duration-200 hover:rounded ease-in-out hover:bg-blue-800 hover:text-gray-100 max-h-min px-3 md:flex gap-x-2 items-center text-blue-800 capitalize font-semibold">
+                <div className="text-lg group hidden  duration-200 hover:rounded ease-in-out hover:border hover:border-blue-800 hover:text-blue-800 md:h-[40px] max-h-min px-3 md:flex gap-x-2 items-center text-blue-800 capitalize font-semibold">
                   <Menu as="div" className="relative p-2" >
                     <Menu.Button
                       as="div"
@@ -324,8 +348,8 @@ export default function HeaderLayout({
                     }
 
                     {
-                      // hasPermission(/^common.add_county$/, userPermissions) &&
-                      // hasPermission(/^common.delete_county$/, userPermissions) &&
+                      
+                      
                       userID !== 6 &&
                       (
                         (groupID == 7 ||
@@ -347,7 +371,7 @@ export default function HeaderLayout({
                     }
 
                     {
-                      // hasPermission(/^admin_offices.view_adminoffice.*$/, userPermissions) && 
+                      
                       userID !== 6 &&
                       (groupID == 7 ||
                         groupID == 5) &&
@@ -439,198 +463,201 @@ export default function HeaderLayout({
         </div>
 
         {/* Menu Heading */}
-        <div style={{ backgroundColor: '#1651b6' }} className='w-full hidden top-[88px] fixed z-10  max-h-min md:flex justify-center'>
-          {/* Wide view Port Nav bar */}
-          <nav className="hidden max-h-min md:w-full lg:w-[60%] container md:flex mx-auto ">
-            <ul className='list-none w-full flex items-center  justify-between '>
-            {
-                userID == 6 &&
-                !isLoggedIn &&
-                <li className={`text-lg h-[80px] flex text-center justify-center items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 `}>
-                  <Link href='/'>Home</Link>
+        {
+          currentPath !== '/logout' &&
+          <div style={{ backgroundColor: '#1651b6' }} className='w-full hidden top-[97px] fixed z-10  max-h-min md:flex justify-center'>
+            {/* Wide view Port Nav bar */}
+            <nav className="hidden max-h-min md:w-full lg:w-[60%] container md:flex mx-auto ">
+              <ul className='list-none w-full flex items-center  justify-between '>
+              {
+                  userID == 6 &&
+                  !isLoggedIn &&
+                  <li className={`text-lg h-[80px] flex text-center justify-center items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 `}>
+                    <Link href='/'>Home</Link>
+                  </li>
+                }
+                
+                {
+                  userID !== 6 &&
+                  isLoggedIn &&
+
+                  <li className={`text-lg h-[80px] flex text-center justify-center items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/dashboard" && 'border-b-2 border-b-gray-50 bg-blue-500/85'} `}>
+                    <Link href='/dashboard'>Dashboard</Link>
+                  </li>
+                }
+
+                {
+                  userID &&
+                <li className={`text-lg h-[80px] flex text-center justify-center items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/facilities" && 'border-b-2 border-b-gray-50 bg-blue-500/85'} ${currentPath == "/public/facilities" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
+                  <Link href={`${userID !== 6 && isLoggedIn ? '/facilities' : '/public/facilities'}`}>Facilities</Link>
                 </li>
-              }
-              
-              {
-                userID !== 6 &&
-                isLoggedIn &&
+                }
 
-                <li className={`text-lg h-[80px] flex text-center justify-center items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/dashboard" && 'border-b-2 border-b-gray-50 bg-blue-500/85'} `}>
-                  <Link href='/dashboard'>Dashboard</Link>
+                {
+                  userID &&
+                <li className={`text-lg h-[80px]  flex text-center justify-center items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/community-units" && 'border-b-2 border-b-gray-50 bg-blue-500/85'} ${currentPath == "/public/chu" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
+                  <Link href={`${userID !== 6 && isLoggedIn ? '/community-units' : '/public/chu'}`}>Community Units</Link>
                 </li>
-              }
+                }
 
-              {
-                userID &&
-              <li className={`text-lg h-[80px] flex text-center justify-center items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/facilities" && 'border-b-2 border-b-gray-50 bg-blue-500/85'} ${currentPath == "/public/facilities" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
-                <Link href={`${userID !== 6 && isLoggedIn ? '/facilities' : '/public/facilities'}`}>Facilities</Link>
-              </li>
-              }
-
-              {
-                userID &&
-              <li className={`text-lg h-[80px]  flex text-center justify-center items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/community-units" && 'border-b-2 border-b-gray-50 bg-blue-500/85'} ${currentPath == "/public/chu" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
-                <Link href={`${userID !== 6 && isLoggedIn ? '/community-units' : '/public/chu'}`}>Community Units</Link>
-              </li>
-              }
-
-              {
-                userID == 6 &&
-                !isLoggedIn &&
-                <li className={`text-lg h-[80px] flex text-center justify-center items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/public/about" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
-                  <Link href='/public/about'>About</Link>
-                </li>
-              }
+                {
+                  userID == 6 &&
+                  !isLoggedIn &&
+                  <li className={`text-lg h-[80px] flex text-center justify-center items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/public/about" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
+                    <Link href='/public/about'>About</Link>
+                  </li>
+                }
 
 
-              {
-                userID == 6 &&
-                <li className={`text-lg h-[80px] flex text-center justify-center items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/public/faqs" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
-                <Link href='/public/faqs'>FAQs</Link>
+                {
+                  userID == 6 &&
+                  <li className={`text-lg h-[80px] flex text-center justify-center items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/public/faqs" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
+                  <Link href='/public/faqs'>FAQs</Link>
 
-                </li>
-              }
-              {
-                (groupID == 7 ||
-                  groupID == 5 ||
-                  groupID == 1) &&
-                userID !== 6 &&
-                isLoggedIn &&
-                <li className={`text-lg h-[80px] flex text-center justify-center items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/user" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
-                  <Link href='/user'>Users</Link>
-                </li>
-              }
-
-              {
-                // hasPermission(/^common.add_county$/, userPermissions) &&
-                // hasPermission(/^common.delete_county$/, userPermissions) &&
-                userID !== 6 &&
-                (
+                  </li>
+                }
+                {
                   (groupID == 7 ||
-                    groupID == 5)
-                ) &&
-                isLoggedIn &&
-                <li className={`text-lg h-[80px] flex text-center justify-center items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/system_setup" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
-                  <Link href='/system_setup'>System Setup</Link>
-                </li>
-              }
+                    groupID == 5 ||
+                    groupID == 1) &&
+                  userID !== 6 &&
+                  isLoggedIn &&
+                  <li className={`text-lg h-[80px] flex text-center justify-center items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/user" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
+                    <Link href='/user'>Users</Link>
+                  </li>
+                }
 
-              {
-                userID !== 6 &&
-                groupID !== 3 &&
-                isLoggedIn &&
-                <li className={`text-lg h-[80px] flex text-center justify-center items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/reports" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
-                  <Link href='/reports'>Reports</Link>
-                </li>
-              }
+                {
+                  
+                  
+                  userID !== 6 &&
+                  (
+                    (groupID == 7 ||
+                      groupID == 5)
+                  ) &&
+                  isLoggedIn &&
+                  <li className={`text-lg h-[80px] flex text-center justify-center items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/system_setup" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
+                    <Link href='/system_setup'>System Setup</Link>
+                  </li>
+                }
 
-              {
-                // hasPermission(/^admin_offices.view_adminoffice.*$/, userPermissions) && 
-                userID !== 6 &&
-                (groupID == 7 ||
-                  groupID == 5) &&
-                isLoggedIn &&
-                <li className={`text-lg h-[80px] flex text-center justify-center items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/admin_offices" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
-                  <Link href='/admin_offices'>Admin Offices</Link>
-                </li>
-              }
+                {
+                  userID !== 6 &&
+                  groupID !== 3 &&
+                  isLoggedIn &&
+                  <li className={`text-lg h-[80px] flex text-center justify-center items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/reports" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
+                    <Link href='/reports'>Reports</Link>
+                  </li>
+                }
+
+                {
+                  
+                  userID !== 6 &&
+                  (groupID == 7 ||
+                    groupID == 5) &&
+                  isLoggedIn &&
+                  <li className={`text-lg h-[80px] flex text-center justify-center items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/admin_offices" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
+                    <Link href='/admin_offices'>Admin Offices</Link>
+                  </li>
+                }
 
 
 
-            </ul>
-            {/* {
-                    userID !== 6 &&
-                    isLoggedIn &&
-                  <form className='w-3/12 py-4 flex' onSubmit={
-                        (e) => {
-                          e.preventDefault();
+              </ul>
+              {/* {
+                      userID !== 6 &&
+                      isLoggedIn &&
+                    <form className='w-3/12 py-4 flex' onSubmit={
+                          (e) => {
+                            e.preventDefault();
 
-                          setTouchSearch(false);
+                            setTouchSearch(false);
 
-                          const formDataEntries = new FormData(e.target)
-                          const formData = Object.fromEntries(formDataEntries)
+                            const formDataEntries = new FormData(e.target)
+                            const formData = Object.fromEntries(formDataEntries)
 
-                          if(searchOption == "Facilities"){
-                            router.push({pathname: '/facilities', query:{
-                              q: formData.search
-                            }})
-                          }
-                          else if(searchOption == "Community Health Units")
-                          {
-                            router.push({pathname:"/community-units", query:{
+                            if(searchOption == "Facilities"){
+                              router.push({pathname: '/facilities', query:{
                                 q: formData.search
-                            }})
-                          
-                          }
-                          else {
-                            router.push({pathname: '/facilities', query:{
-                              q: formData.search
-                            }})
-                          }
-                        }
-                      }>
-
-                      <input placeholder={`Search ... `} onChange={(e) => {e.target.value.length > 0 ? setTouchSearch(true): setTouchSearch(false)}} name="search" type="text" className=' w-full border-none h-12 p-3 outline-none placeholder-gray-500' />
-
-                      <Select
-                      readOnly 
-                      styles={{
-                        control: (_) => {
-                          // console.log({baseStyles})
-                          return {
-                            // background: "inherit",
-                            boxSizing: "border-box",
-                            cursor: "default",
-                            display: "flex",
-                            flexWrap: "wrap",
-                            justifyContent: "space-between",
-                            label: "control",
+                              }})
+                            }
+                            else if(searchOption == "Community Health Units")
+                            {
+                              router.push({pathname:"/community-units", query:{
+                                  q: formData.search
+                              }})
                             
-                            outline: "0 !important",
-                            position: "relative",
-                            transition: "all 100ms",                      
-                            outLine: 'none',
-                            borderTop: 'none',
-                            borderBottom: 'none',
-                            borderLeft: 'none',
-                            margin: 0
+                            }
+                            else {
+                              router.push({pathname: '/facilities', query:{
+                                q: formData.search
+                              }})
+                            }
                           }
-                        
-                    
-                        },
-                      }}
+                        }>
 
-                      options={
-                        [
-                          {
-                            label:'Facilities',
-                            value: 'facilities'
-                          },
-                          {
-                            label:'Community Health Units',
-                            value: 'chus'
-                          },
+                        <input placeholder={`Search ... `} onChange={(e) => {e.target.value.length > 0 ? setTouchSearch(true): setTouchSearch(false)}} name="search" type="text" className=' w-full border-none h-12 p-3 outline-none placeholder-gray-500' />
+
+                        <Select
+                        readOnly 
+                        styles={{
+                          control: (_) => {
+                            
+                            return {
+                              
+                              boxSizing: "border-box",
+                              cursor: "default",
+                              display: "flex",
+                              flexWrap: "wrap",
+                              justifyContent: "space-between",
+                              label: "control",
+                              
+                              outline: "0 !important",
+                              position: "relative",
+                              transition: "all 100ms",                      
+                              outLine: 'none',
+                              borderTop: 'none',
+                              borderBottom: 'none',
+                              borderLeft: 'none',
+                              margin: 0
+                            }
                           
-                        ]
-                      }
-                      defaultValue={{
-                        label:'Facilities',
-                        value: 'facilities'
-                      }}
-                      placeholder="Select Category"
-                      name="facility_name"
-                      onChange={(e) => setSearchOption(e.label)}
-                      id="facility_name"
-                      className={`flex-none ${touchSearch && 'hidden'} bg-white focus:ring-0 p-1 max-h-min focus:outline-none rounded-none  w-[200px] text-gray-600 placeholder-gray-500  flex-grow border-l border-gray-400 outline-none`}
+                      
+                          },
+                        }}
+
+                        options={
+                          [
+                            {
+                              label:'Facilities',
+                              value: 'facilities'
+                            },
+                            {
+                              label:'Community Health Units',
+                              value: 'chus'
+                            },
+                            
+                          ]
+                        }
+                        defaultValue={{
+                          label:'Facilities',
+                          value: 'facilities'
+                        }}
+                        placeholder="Select Category"
+                        name="facility_name"
+                        onChange={(e) => setSearchOption(e.label)}
+                        id="facility_name"
+                        className={`flex-none ${touchSearch && 'hidden'} bg-white focus:ring-0 p-1 max-h-min focus:outline-none rounded-none  w-[200px] text-gray-600 placeholder-gray-500  flex-grow border-l border-gray-400 outline-none`}
 
 
-                      />
-                      <button type="submit" className='py-2 px-3 bg-blue-600 text-gray-100 font-semibold '>search</button>
-                  </form>
-                  }  */}
+                        />
+                        <button type="submit" className='py-2 px-3 bg-blue-600 text-gray-100 font-semibold '>search</button>
+                    </form>
+                    }  */}
 
-          </nav>
-        </div>
+            </nav>
+          </div>
+        }
         {/* FAQ */}
         {
           isFAQ &&

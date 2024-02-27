@@ -93,7 +93,7 @@ const Login = (props) => {
                         {error && error.length > 0 && <p className="text-red-900 bg-red-200 rounded drop-shadow py-2 font-medium normal-case text-base px-3">{error}</p>}
                         {msg && msg.length > 0 && <p className="text-blue-900 bg-blue-200 rounded drop-shadow py-2 font-medium normal-case text-base px-3">{msg}</p>}
                     </div>
-                    <div className="flex flex-col gap-0 w-full">
+                    <div className="flex flex-col gap-1 w-full">
                         <label className="text-gray-800">Email / Personal Number</label>
                         <input type="text"
                             data-testid="email_input"
@@ -103,10 +103,10 @@ const Login = (props) => {
                                 setError('')
                                 setUsername(ev.target.value)
                             }}
-                            className="border w-full py-3 px-3 leading-none border-blue-600 bg-transparent focus:outline-none focus:border-indigo-700 focus:bg-white text-gray-700" placeholder="user@domain.com" />
+                            className="border w-full py-3 px-3 leading-none rounded border-gray-400 bg-transparent focus:outline-none focus:border-indigo-700 focus:bg-white text-gray-700" placeholder="user@domain.com" />
                     </div>
                     
-                    <div className="flex-col gap-0 items-start w-full">
+                    <div className="flex-col gap-1 items-start w-full">
                     <label className="text-gray-800" htmlFor='password'>Password</label>
                     <div className="relative w-full">
                         <div className="absolute inset-y-0 right-0 flex items-center px-2" onChange={e => {
@@ -139,13 +139,13 @@ const Login = (props) => {
                         autoComplete='current-password'
                         aria-autocomplete='inline'
                         placeholder='**********'
-                        className="border w-full py-3 px-3 leading-none border-blue-600 bg-transparent focus:outline-none focus:border-indigo-700 focus:bg-white text-gray-700 pr-16" name="password" type={hidePassword ? 'password' : 'text'} 
+                        className="border w-full py-3 px-3 leading-none rounded border-gray-400 bg-transparent focus:outline-none focus:border-indigo-700 focus:bg-white text-gray-700 pr-16" name="password" type={hidePassword ? 'password' : 'text'} 
                         />
                     </div>
                     </div>
                     
                     <div className="flex flex-col gap-4 w-full text-center">
-                        <button type="submit" data-testid="login_btn" disabled={loading} className={"focus:outline-none focus:ring-1 focus:ring-yellow-500 text-white px-4 md:px-8 whitespace-nowrap py-3 text-xl font-semibold hover:bg-blue-800 focus:bg-blue-600 active:bg-blue-800 " + (loading ? "bg-gray-900 cursor-not-allowed" : "bg-blue-700")}
+                        <button type="submit" data-testid="login_btn" disabled={loading} className={"focus:outline-none focus:ring-1 focus:ring-yellow-500 text-white px-4 md:px-8 rounded whitespace-nowrap py-3 text-xl font-semibold hover:bg-blue-800 focus:bg-blue-600 active:bg-blue-800 " + (loading ? "bg-gray-900 cursor-not-allowed" : "bg-blue-700")}
                         >{loading ? "Loading..." : "Log in"}</button>
                         <div className="flex justify-end items-center w-full px-2">
                             <span data-testid="forgot_password_link" onClick={()=>router.push('/auth/reset_password')} className="text-base text-gray-700 hover:text-blue-700 focus:text-blue-700 active:text-blue-700 hover:underline focus:underline active:underline">Forgot password?</span>

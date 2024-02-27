@@ -21,7 +21,7 @@ export default function FAQs() {
       </div>
 
       {/* Body */}
-      <div className="w-[80%] mx-auto md:mt-6 mt-8 max-h-min flex flex-col gap-y-5 md:gap-y-12 ">
+      <div className="w-[80%] mx-auto md:mt-6 mt-8 h-full flex flex-col gap-y-5 md:gap-y-12 ">
                     <div className='flex  w-full flex-col gap-2'>
 
                         <h2 className='md:text-3xl text-2xl text-blue-500 font-semibold'>
