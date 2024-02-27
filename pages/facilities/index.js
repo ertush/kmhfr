@@ -27,14 +27,12 @@ function FacilityHome (props){
     
     const router = useRouter()
 
-
    
     const facilities = props?.data?.results
     const filters = props?.filters
     let fltrs = filters
     const [drillDown, setDrillDown] = useState({})
     const userCtx = useContext(UserContext);
-    // console.log({userCtx})
 
     // const qf = props?.query?.qf ?? null
     if (filters && typeof filters === "object")
@@ -123,27 +121,26 @@ function FacilityHome (props){
             </Head>
 
             <MainLayout isLoading={false} searchTerm={props?.query?.searchTerm}>
-                <div className="w-full grid grid-cols-5 gap-3 md:mt-3 mb-12">
+                <div className="w-full md:w-[85%] md:mx-auto grid grid-cols-1 md:grid-cols-5 gap-3 md:mt-3 md:mb-12 mb-6 px-4 md:px-0">
 
                     {/* Header Matters */}
-                    <div className="col-span-5 flex flex-col gap-3 ">
+                    <div className="col-sapn-1 md:col-span-5 flex flex-col gap-3 ">
 
                           {/* Buttons section */}
 
                           <div className="flex flex-wrap gap-2 text-sm md:text-base py-3 items-center justify-between">
                           
 
-                            <div className="flex w-full flex-wrap items-center justify-between gap-2 text-sm md:text-base py-1">
+                            <div className="flex w-full flex-wrap items-start md:items-center justify-between gap-2 text-sm md:text-base py-1">
                             {/* Bread Crumbs */}
 
-                            <div className="flex flex-row items-center justify-between gap-2 text-sm md:text-base py-3">
-                                <Link className="text-blue-800" href="/">Home</Link> {'/'}
-                                <span className="text-gray-500">Facilities</span>
-                            </div>
+                            {/* <div className="flex flex-row items-center justify-between gap-2 text-sm md:text-base py-3">
+                                <span className="text-gray-600 text-2xl">Facilities</span> 
+                            </div> */}
 
 
-                                <div className={"col-span-5 flex justify-between w-full bg-django-blue border drop-shadow  text-black p-4 md:divide-x md:divide-gray-200 items-center border-l-8 " + (true ? "border-blue-700" : "border-red-600")}>
-                                    <h2 className='flex items-center text-xl font-bold text-blue-900 capitalize gap-2'>
+                                <div className={"col-span-1 md:col-span-5 flex justify-between w-full bg-django-blue border drop-shadow  text-black p-4 md:divide-x md:divide-gray-200 items-start md:items-center border-l-8 " + (true ? "border-blue-700" : "border-red-600")}>
+                                    <h2 className='flex items-center text-2xl font-bold text-blue-900 capitalize gap-2'>
                                         {title}
                                      </h2>
                                      {/* dropdown options to download data */}
@@ -156,12 +153,12 @@ function FacilityHome (props){
                                     userCtx?.groups[0]?.id == 2 || // SCHRIO
                                     userCtx?.groups[0]?.id == 7    // SuperAdmin
                                     /*allFctsSelected || pathId === 'all'*/) &&
-                                <div className='flex items-center space-x-6 w-auto'>
+                                <div className='flex flex-col gap-5 md:flex-row md:items-center md:space-x-6 w-auto'>
                                     {/* Facility Button */}
                                     {
                                        
                                          // Display add facility button if  user belong to SCHRIO group
-                                   <Menu.Item as="div"  className="px-4 py-2 bg-blue-700 text-white text-md tracking-tighter font-semibold whitespace-nowrap  hover:bg-black focus:bg-black active:bg-black uppercase">
+                                   <Menu.Item as="div"  className="px-3 py-2 bg-gray-600 rounded text-white text-md tracking-tighter font-semibold whitespace-nowrap  hover:bg-black focus:bg-black active:bg-black uppercase">
                                         <button  onClick={() => {router.push('/facilities/add?formId=0')}} className='flex items-center justify-center'>
 
                                             <span className='text-base uppercase font-semibold'>Add Facility</span>
@@ -171,7 +168,7 @@ function FacilityHome (props){
                                     }
 
                                      {/* Export Button */}
-                                     <Menu.Button as="button" className="px-4 py-2 bg-blue-700 text-white text-md tracking-tighter font-semibold flex items-center justify-center whitespace-nowrap  hover:bg-black focus:bg-black active:bg-black uppercase">
+                                     <Menu.Button as="button" className="px-3 py-2 bg-gray-600 rounded text-white text-md tracking-tighter font-semibold flex items-center justify-center whitespace-nowrap  hover:bg-black focus:bg-black active:bg-black uppercase">
                                         <DownloadIcon className="w-5 h-5 mr-1" />
                                         <span className='text-base uppercase font-semibold'>Export</span>
                                         <ChevronDownIcon className="w-4 h-4 ml-2" />
@@ -219,7 +216,8 @@ function FacilityHome (props){
 
                         </div>
 
-                        <div className="flex flex-wrap items-center justify-between gap-2 text-sm md:text-base ">
+                         {/* Hidden */}
+                        <div className="hidden flex-wrap items-center justify-between gap-2 text-sm md:text-base ">
                   
 
                             {/* Accordion Filter */}
@@ -442,9 +440,9 @@ function FacilityHome (props){
                    
                     
                     {/* Main Body */}
-                    <div className="w-full md:col-span-4 mr-24 md:col-start-2 col-span-5 md:h-auto bg-gray-50 shadow-md">
+                    <div className="w-full col-span-1 md:col-span-4 mr-24 md:col-start-2  md:h-auto bg-gray-50 shadow-md">
                                     {/* Data Indicator section */}
-                                    <div className='w-full p-2 flex justify-between border-b border-blue-600'>
+                                    <div className='w-full p-2 flex justify-between items-center border-b border-gray-400'>
                                         {/* search input */}
                                     
                                         <Formik
@@ -508,22 +506,22 @@ function FacilityHome (props){
                                         <Field
                                         name="q"
                                         id="search-input"
-                                        className="flex-none bg-transparent p-2 w-3/5 md:flex-grow-0 flex-grow shadow-sm border border-blue-600 placeholder-gray-600  focus:shadow-none focus:ring-black focus:border-black outline-none"
+                                        className="flex-none bg-transparent p-2 w-3/5 md:flex-grow-0 flex-grow shadow-sm rounded-tl rounded-bl border border-gray-400 placeholder-gray-600  focus:shadow-none focus:ring-black focus:border-black outline-none"
                                         type="search"
                                         
                                         placeholder="Search a facility"
                                         />
                                         <button
                                         type="submit"
-                                        className="bg-transparent border-t border-r border-b border-blue-600 text-black flex items-center justify-center px-4 py-1"
+                                        className="bg-transparent border-t border-r border-b rounded-tr rounded-br border-gray-400 text-black flex items-center justify-center px-4 py-1"
                                         
                                         >
-                                        <SearchIcon className="w-5 h-5 text-blue-600" />
+                                        <SearchIcon className="w-5 h-5 text-gray-600" />
                                         </button>
                                     </Form>
-                                    </Formik>
+                                         </Formik>
 
-                                        <h5 className="text-lg font-medium text-gray-800 pr-2">      
+                                        <h5 className="text-lg font-medium text-gray-800 md:pr-2">      
                                             {props?.data?.count && props?.data?.count > 0 && <small className="text-gray-500 text-base">{props?.data?.start_index ?? ''} - {props?.data?.end_index ?? ''} of {props?.data?.count ?? ''} </small>}
                                         </h5>
                                     </div>
@@ -579,6 +577,7 @@ function FacilityHome (props){
                                                             </div>
                                                         </div>
                                                     </div>
+
                                                     <div className="col-span-8 md:col-span-8 lg:col-span-2 grid grid-cols-2 grid-rows-4 gap-x-2 gap-y-1 text-lg">
                                                         {/* {console.log({facility})} */}
                                                         {/* {(facility?.operational || facility?.operation_status_name) ? <span className={"shadow-sm col-start-2 leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 font-semibold text-blue-900"}>Operational</span> : ""} */}

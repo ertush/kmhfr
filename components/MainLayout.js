@@ -87,8 +87,10 @@ export default function MainLayout({ children, isLoading, searchTerm, isFullWidt
 
             </div> */}
             <HeaderLayout {...searchTerm} />
+            {/* 
+            + (isFullWidth ? "" : "max-w-screen-2xl") + (classes && classes.length > 0 ? classes.join(" ") : "") */}
 
-            <div className={"h-full w-full flex flex-col py-5 items-center " + (isFullWidth ? "" : "max-w-screen-2xl") + (classes && classes.length > 0 ? classes.join(" ") : "")}>
+            <div className={"h-full w-full flex flex-col py-5 items-center " }>
                
                 { children }
                 <Analytics />
@@ -99,7 +101,7 @@ export default function MainLayout({ children, isLoading, searchTerm, isFullWidt
           <div className="w-full flex flex-col mt-12 h-auto">
             <div className="w-full max-h-min py-8  bg-gray-500">
               <div className="flex flex-col gap-4 items-between">
-                <div className="md:w-[60%] w-full md:mx-auto flex justify-between p-4 md:p-0">
+                <div className="md:w-[90%] w-full md:mx-auto flex justify-between p-4 md:p-0">
                   <div className="flex flex-col text-gray-200 md:gap-2 gap-1">
                     <h2 className='text-blue-50 font-semibold mb-2 '>Contacts</h2>
                     <Link href="tel:+254 20 2717077" className="t">+254-20-2717077</Link>
@@ -159,10 +161,10 @@ export default function MainLayout({ children, isLoading, searchTerm, isFullWidt
 
             </div>
 
-            <div className="w-full max-h-min py-5  bg-gray-700">
-              <div className='md:w-[60%] w-full md:mx-auto max-h-min flex flex-col justify-center md:flex md:justify-between items-center md:py-4 md:px-0 text-center p-2'>
+            <div className="w-full max-h-min py-5 md:py-2  bg-gray-700">
+              <div className='md:w-[90%] w-full md:mx-auto max-h-min flex flex-col justify-center md:flex md:justify-between items-center md:py-4 md:px-0 text-center p-2'>
                 <p className='text-gray-400'>&copy; Copyright {new Date().getFullYear()}. All Rights Reserved. Republic of Kenya, Ministry of Health</p>
-                <p className='text-gray-400'>Version 3.0.1</p>
+                <p className='text-gray-400'>Version 3.0.0</p>
               </div>
             </div>
           </div>
