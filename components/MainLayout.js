@@ -88,7 +88,7 @@ export default function MainLayout({ children, isLoading, searchTerm, isFullWidt
             </div> */}
             <HeaderLayout {...searchTerm} />
 
-            <div className={"h-full w-full flex flex-col items-center " + (isFullWidth ? "" : "max-w-screen-2xl") + (classes && classes.length > 0 ? classes.join(" ") : "")}>
+            <div className={"h-full w-full flex flex-col py-5 items-center " + (isFullWidth ? "" : "max-w-screen-2xl") + (classes && classes.length > 0 ? classes.join(" ") : "")}>
                
                 { children }
                 <Analytics />

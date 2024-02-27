@@ -120,7 +120,7 @@ const checkToken = async (req, res, isProtected, creds) => {
     } else if (isServer) {
         // console.log('running checkToken in the SERVER')
         ct = cookies?.get('access_token')
-        if (typeof ct == "string") {
+        if (typeof ct == "string" && ct.length > 0) {
             ct = JSON.parse(ct)
         }
         // // console.log("S checkToken ct == ", ct)

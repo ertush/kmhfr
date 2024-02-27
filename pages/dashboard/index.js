@@ -187,12 +187,15 @@ function Dashboard(props) {
     // Check for user authentication
     useEffect(() => {
         setIsClient(true)
+       
 
         if (userCtx?.groups[0].id == 2) fetchWards(user?.user_sub_counties[0]?.sub_county ?? null)
         if (userCtx?.groups[0].id == 1) fetchSubCounties(userCtx?.county)
         if (userCtx?.groups[0].id == 7) fetchCounties();
 
         setUser(userCtx)
+
+     
 
     }, [])
 
@@ -1237,13 +1240,13 @@ export async function getServerSideProps(ctx) {
 
      const ft = await fetchFilters(token)
     
-     const {data} = await fetchDashboardData(token)
+     const dashboard = await fetchDashboardData(token)
       
           
-    if(data) {      // console.log({ft, query})
+    if(dashboard?.data) {      // console.log({ft, query})
     return {
         props: {
-            data,
+            data: dashboard?.data,
             query,
             filters: { ...ft }, 
     

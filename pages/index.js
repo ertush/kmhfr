@@ -1,7 +1,7 @@
 import Head from 'next/head'
 import Link from 'next/link'
 import Image from 'next/image'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useContext } from 'react'
 import { useRouter } from 'next/router'
 import { getUserDetails } from "../controllers/auth/public_auth";
 import { checkToken } from '../controllers/auth/public_auth';
@@ -16,6 +16,7 @@ import { Mail } from '@mui/icons-material'
 import { Web } from '@mui/icons-material'
 import { Menu } from '@mui/icons-material'
 import Alert from '@mui/material/Alert'
+import { UserContext } from '../providers/user'
 
 function Home(props) {
 
@@ -29,12 +30,22 @@ function Home(props) {
   const [isMobileMenu, setIsMobileMenu] = useState(false)
   const [isOffline, setIsOffline] = useState(props?.offline)
   const currentPath = router.asPath.split("?", 1)[0];
+
+  const userCtx = useContext(UserContext)
+
+  const userID = userCtx?.id
   
 
   let API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 
   useEffect(() => {
+
+    setIsClient(true)
+
+    // if(userID !== 6) {
+    //   router.replace('/dashboard')
+    // }
 
     let mtd = true;
     if (mtd) {
@@ -79,7 +90,6 @@ function Home(props) {
       }
     }
 
-    setIsClient(true)
 
     return () => {
       mtd = false;
@@ -132,11 +142,11 @@ function Home(props) {
             {/* Heading */}
             <div className="max-h-min w-[80%] container flex  mx-auto">
               {/* Heading */}
-              <div className='w-full flex md:justify-between justify-center py-4 max-h-min '>
+              <div className='w-full flex md:justify-between md:items-center justify-center py-4 max-h-min '>
                 {/* <div className='flex gap-6 items-center'> */}
                   {/* Logo */}
                   <Link
-                    href="/"
+                    href={`${userID !== 6 ? '/dashboard' : '/'}`}
                     className="leading-none tracking-tight flex justify-center items-center text-black font-bold relative"
                   >
                     <Image src="/moh-logo-alt.png" className="w-auto h-auto" alt="logo" height="65" width="350" />
@@ -146,8 +156,8 @@ function Home(props) {
 
 
                 {/* Login Button */}
-                <div className='text-lg group hidden  duration-200 hover:rounded ease-in-out rounded hover:bg-blue-800 hover:text-gray-100  h-auto px-3 md:flex gap-x-2 items-center text-blue-800 capitalize font-semibold'>
-                  <Login className='w-6 h-6 text-blue-800 group-hover:text-gray-100' />
+                <div className='text-lg group hidden  duration-200 hover:rounded ease-in-out rounded hover:border hover:border-blue-800 hover:text-blue-800  h-auto md:h-[40px] px-3 md:flex gap-x-2 items-center text-blue-800 capitalize font-semibold'>
+                  <Login className='w-6 h-6 text-blue-800 group-hover:text-blue-800' />
                   <Link href="/auth/login">
                     log in
                   </Link>
@@ -159,7 +169,7 @@ function Home(props) {
 
           </div>
           {/* Menu Heading */}
-          <div className='w-full bg-gray-300 top-[80px] md:top-[95px] fixed z-10 max-h-min flex items-center justify-between md:items-start md:items-between p-3 md:p-0'>
+          <div className='w-full bg-gray-300 top-[80px] md:top-[104px] fixed z-10 max-h-min flex items-center justify-between md:items-start md:items-between p-3 md:p-0'>
             
             {/* Menu Heading */}
             <nav className="hidden max-h-min w-[60%] container md:flex mx-auto ">
@@ -612,7 +622,7 @@ export async function getServerSideProps(ctx) {
     'public, s-maxage=10, stale-while-revalidate=59'
   )
 
-  const token = (await checkToken(ctx.req, ctx.res, { username: process.env.NEXT_PUBLIC_CLIENT_USERNAME, password: process.env.NEXT_PUBLIC_CLIENT_PASSWORD }))?.token
+  const token = (await checkToken(ctx.req, ctx.res, { username: process.env.NEXT_PUBLIC_CLIENT_USERNAME, password: process.env.NEXT_PUBLIC_CLIENT_PASSWORD }))?.token ?? null
   
   const data = {}
 
@@ -762,38 +772,42 @@ export async function getServerSideProps(ctx) {
       }  
       }
          
+      // console.log({data})
         
- 
-      return {
+     return !Object.values(data).includes(undefined) ?  
+        {
         props: {
           loggedIn: false,
-          token, 
+          token,  
           offline: false,
           data
         }
       }
+      :
+      {
+        props : {
+        loggedIn: false,
+        token,
+        offline: true,
+        data: {
+          moh:"-",
+          faith_based:"-",
+          private_facilities:"-",
+          ngo:"-",
+          chu_fully_functional: "-",
+          chu_semi_functional: "-",
+          chu_non_functional: "-",
+          chu_closed: "-",
+          facilities: "-",
+          chus: "-"
+        } 
+        }
+      }
+      
   
    } 
 
-   return {
-    props : {
-    loggedIn: false,
-    token,
-    offline: true,
-    data: {
-      moh:"-",
-      faith_based:"-",
-      private_facilities:"-",
-      ngo:"-",
-      chu_fully_functional: "-",
-      chu_semi_functional: "-",
-      chu_non_functional: "-",
-      chu_closed: "-",
-      facilities: "-",
-      chus: "-"
-    }
-    }
-  }
+    
 
 
 }

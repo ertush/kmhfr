@@ -15,7 +15,7 @@ const getToken = (req, res, refresh_token, creds) => {
         // console.log('running getToken in the BROWSER')
         ct = cookieCutter.get('access_token')
         // console.log("B getToken ct == ", ct)
-        if (typeof ct == "string") {
+        if (typeof ct == "string" && ct.length > 0) {
             ct = JSON.parse(ct)
         }
         if (ct && ct.expires && ct.expires > Date.now()) {
@@ -28,7 +28,7 @@ const getToken = (req, res, refresh_token, creds) => {
         // console.log('running getToken in the SERVER')
         ct = cookies.get('access_token')
         // console.log("S getToken ct == ", ct)
-        if (typeof ct == "string") {
+        if (typeof ct == "string" && ct.length > 0) {
             ct = JSON.parse(ct)
         }
         if (ct && ct.expires && ct.expires > Date.now()) {
@@ -120,7 +120,7 @@ const checkToken = async (req, res, isProtected, creds) => {
         // console.log('running checkToken in the SERVER')
         ct = cookies.get('access_token')
         // // console.log('ct: ', ct)
-        if (typeof ct == "string") {
+        if (typeof ct == "string" && ct.length > 0) {
             ct = JSON.parse(ct)
         }
         // // console.log("S checkToken ct == ", ct)
