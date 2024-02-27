@@ -346,13 +346,13 @@ function Home(props) {
 
 							<div className="card col-span-6 md:col-span-2 flex flex-col gap-4 items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '50px' }}>
 								<h2>Administrative Unit</h2>
-								<div className="w-full max-w-xs flex flex-col gap-4 items-start justify-start mb-3" id='first'>
+								<div className="w-full md:max-w-xs flex flex-col gap-4 items-start justify-start mb-3" id='first'>
 									{administrative_units?.map((ct, i) => (
 										<div className="w-full" key={i}>
 
 											<Select
 
-												className="w-full max-w-xs  border border-gray-400"
+												className="w-full md:max-w-xs  border border-gray-400"
 												ref={ct.ref}
 												styles={{
 													control: (baseStyles) => ({
@@ -404,14 +404,14 @@ function Home(props) {
 
 							<div className="card col-span-6 md:col-span-2 flex flex-col gap-4 items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '50px' }}>
 								<h2>Services</h2>
-								<div className="w-full max-w-xs flex flex-col gap-4 items-start justify-start mb-3" id='first'>
+								<div className="w-full md:max-w-xs flex flex-col gap-4 items-start justify-start mb-3" id='first'>
 									{service_units.map((ct, i) => (
 										<React.Fragment key={i}>
 
 											<Select
 												key={i}
 												ref={ct.ref}
-												className="w-full max-w-xs  border border-gray-400"
+												className="w-full md:max-w-xs  border border-gray-400"
 												styles={{
 													control: (baseStyles) => ({
 														...baseStyles,
@@ -461,13 +461,13 @@ function Home(props) {
 
 							<div className="card col-span-6 md:col-span-2 flex flex-col gap-4 items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '50px' }}>
 								<h2>Facility Details</h2>
-								<div className="w-full max-w-xs flex flex-col gap-4 items-start justify-start mb-3" id='first'>
+								<div className="w-full md:max-w-xs flex flex-col gap-4 items-start justify-start mb-3" id='first'>
 									{facility_details.map((ct, i) => (
 										<React.Fragment key={i}>
 
 											<Select
 												key={i}
-												className="w-full max-w-xs  border border-gray-400"
+												className="w-full md:max-w-xs  border border-gray-400"
 												ref={ct.ref}
 												styles={{
 													control: (baseStyles) => ({

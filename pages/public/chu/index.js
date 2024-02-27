@@ -157,7 +157,7 @@ function Home(props) {
 				</Head>
 
 				<MainLayout isLoading={false} searchTerm={props?.query?.searchTerm}>
-					<div className='w-full grid grid-cols-1 md:grid-cols-5 gap-4 px-1 md:px-4 p-3 md:p-0 py-2 my-4'>
+					<div className='w-full px-4 md:px-0 grid grid-cols-1 gap-y-8 md:grid-cols-5 md:gap-4 py-2 my-4'>
 						<div className='col-span-1 md:col-span-5 flex flex-col gap-3 md:gap-5'>
 							<div className='flex flex-wrap items-center justify-between gap-2 text-sm md:text-base py-3'>
 								{/* Bread Crumbs */}
@@ -169,12 +169,12 @@ function Home(props) {
 									{'/'}
 									<span className='text-gray-500'>Community Units</span>
 								</div>
-								<div className={" col-span-1 md:col-span-5 flex shadow-md justify-between w-full bg-gray-50  text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-blue-600" : "border-red-600")}>
+								<div className={" col-span-1 md:col-span-5 flex flex-col md:gap-0 gap-y-2 items-start  md:flex-row shadow-md md:justify-between w-full bg-gray-50  text-black p-4 md:divide-x md:divide-gray-200z md:items-center border-l-8 " + (true ? "border-blue-600" : "border-red-600")}>
 									<h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
 										{'Community Units'}
 									</h2>
 									<p>Use the form on the left to filter CHUs or &nbsp;
-										<button className='text-lg text-blue-500 font-semibold'
+										<button className='text-lg capitalize text-blue-500 font-semibold'
 											onClick={() => {
 												setViewAll(true)
 												filterCHUs()
@@ -250,7 +250,7 @@ function Home(props) {
 								/>
 
 								{/* <label className=" text-gray-600">Status</label> */}
-								<Select name={'status'} ref={st} id={'status'} className="w-full max-w-xs  border border-gray-400"
+								<Select name={'status'} ref={st} id={'status'} className="w-full md:max-w-xs  border border-gray-400"
 									styles={{
 										control: (baseStyles) => ({
 											...baseStyles,
@@ -284,11 +284,11 @@ function Home(props) {
 
 							<div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '50px' }}>
 								<h2>Administrative Units</h2> &nbsp;
-								<div className="w-full max-w-xs flex flex-col gap-3 items-start justify-start mb-3" id='first'>
+								<div className="w-full md:max-w-xs flex flex-col gap-3 items-start justify-start mb-3" id='first'>
 									{administrative_units?.map(ct => (
 										<>
 											{/* <label htmlFor={ct.label} className="text-gray-600 capitalize text-sm ml-1">{ct.label}:</label> */}
-											<Select name={ct.label} ref={ct.ref} defaultValue={drillDown[ct.label] || "national"} id={ct.label} className="w-full max-w-xs border border-gray-400"
+											<Select name={ct.label} ref={ct.ref} defaultValue={drillDown[ct.label] || "national"} id={ct.label} className="w-full md:max-w-xs border border-gray-400"
 												styles={{
 													control: (baseStyles) => ({
 														...baseStyles,
@@ -297,11 +297,13 @@ function Home(props) {
 														border: 'none',
 														outLine: 'none',
 														textColor: 'transparent',
-														padding: 0,
-														height: '4px'
+														padding: 0,	
+														height: '4px',
+														
 													}),
 
 												}}
+												
 												options={
 													(() => {
 														let opts = [...Array.from(ct.array || [],
@@ -340,7 +342,7 @@ function Home(props) {
 
 
 						{/* Main body */}
-						<div className="col-span-1 md:col-span-4 flex max-h-min overflow-scroll bg-gray-50 shadow-md flex-col gap-4 order-last md:order-none"> {/* CHANGED colspan */}
+						<div className="col-span-1 md:col-span-4 px-4 md:px-0 flex max-h-min overflow-scroll bg-gray-50 shadow-md flex-col gap-4 order-last md:order-none"> {/* CHANGED colspan */}
 							<div className="w-full flex justify-end	pt-2 px-4">
 								<p className='text-end text-gray-500 font-semibold'>{props?.chuCount > 0 ? '30': '0'} of {props?.chuCount}</p>
 							</div>
@@ -415,7 +417,7 @@ function Home(props) {
 												</div>
 											</div>
 
-											<div className='col-start-7 flex flex-wrap items-center gap-3 text-lg'>
+											<div className='col-start-7 flex flex-wrap items-center md:gap-3 text-lg'>
 												{comm_unit.status_name ? (
 													<span
 														className={
@@ -464,7 +466,7 @@ function Home(props) {
 									<ul className='list-none flex p-2 flex-row gap-2 w-full items-center my-2'>
 										<li className='text-base text-gray-600'>
 
-											<a
+											<Link
 												href={
 													(() =>
 														props.path.includes('?page') ?
@@ -481,13 +483,13 @@ function Home(props) {
 												}
 												className='text-gray-400 font-semibold p-2 hover:underline active:underline focus:underline'>
 												{cus?.current_page}
-											</a>
+											</Link>
 										</li>
 										{cus?.near_pages &&
 											cus?.near_pages.map((page) => (
 												<li key={page} className='text-base text-gray-600'>
 
-													<a
+													<Link
 														href={
 															(() =>
 																props.path.includes('?page') ?
@@ -505,7 +507,7 @@ function Home(props) {
 														}
 														className='text-blue-800 p-2 hover:underline active:underline focus:underline'>
 														{page}
-													</a>
+													</Link>
 												</li>
 											))}
 										<li className='text-sm text-gray-400 flex'>

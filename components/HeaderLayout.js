@@ -22,7 +22,7 @@ import Backdrop from '@mui/material/Backdrop';
 import { CancelRounded } from '@mui/icons-material'
 import { Menu as MenuIcon } from '@mui/icons-material'
 
-export const DelayedLoginButton = () => {
+export function DelayedLoginButton() {
 
 
   const [delayed, setDelayed] = useState(false);
@@ -42,7 +42,7 @@ export const DelayedLoginButton = () => {
 
   if (delayed) {
     return (
-      <div className='text-lg group hover:bg-blue-800 hover:text-gray-100 max-h-min px-3 flex gap-x-2 items-center text-gray-100 md:text-blue-800 capitalize font-semibold'>
+      <div className='text-lg group hover:bg-blue-800 hover:text-gray-100 rounded max-h-min px-3 flex gap-x-2 items-center text-gray-100 md:text-blue-800 capitalize font-semibold'>
         <Login className='w-6 h-6 text-gray-100 md:text-blue-800 group-hover:text-gray-100' />
         <Link href="/auth/login">
           log in

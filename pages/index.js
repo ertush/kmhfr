@@ -146,7 +146,7 @@ function Home(props) {
 
 
                 {/* Login Button */}
-                <div className='text-lg group hidden  duration-200 hover:rounded ease-in-out hover:bg-blue-800 hover:text-gray-100 max-h-min px-3 md:flex gap-x-2 items-center text-blue-800 capitalize font-semibold'>
+                <div className='text-lg group hidden  duration-200 hover:rounded ease-in-out rounded hover:bg-blue-800 hover:text-gray-100  h-auto px-3 md:flex gap-x-2 items-center text-blue-800 capitalize font-semibold'>
                   <Login className='w-6 h-6 text-blue-800 group-hover:text-gray-100' />
                   <Link href="/auth/login">
                     log in
@@ -758,11 +758,12 @@ export async function getServerSideProps(ctx) {
         }
       } catch (e) {
         console.error(e.message)
+        
       }  
       }
          
         
-    if(Object.keys(data).length > 0) {
+ 
       return {
         props: {
           loggedIn: false,
@@ -771,34 +772,28 @@ export async function getServerSideProps(ctx) {
           data
         }
       }
-    } else {
-      
-      return {
-        props : {
-        loggedIn: false,
-        token,
-        offline: true,
-        data: {
-          moh:"-",
-          faith_based:"-",
-          private_facilities:"-",
-          ngo:"-",
-          chu_fully_functional: "-",
-          chu_semi_functional: "-",
-          chu_non_functional: "-",
-          chu_closed: "-",
-          facilities: "-",
-          chus: "-"
-        }
-        }
-      }
-    }
-    
   
-
    } 
 
- 
+   return {
+    props : {
+    loggedIn: false,
+    token,
+    offline: true,
+    data: {
+      moh:"-",
+      faith_based:"-",
+      private_facilities:"-",
+      ngo:"-",
+      chu_fully_functional: "-",
+      chu_semi_functional: "-",
+      chu_non_functional: "-",
+      chu_closed: "-",
+      facilities: "-",
+      chus: "-"
+    }
+    }
+  }
 
 
 }
