@@ -807,6 +807,26 @@ export async function getServerSideProps(ctx) {
   
    } 
 
+
+   return { 
+   props : {
+   loggedIn: false,
+   token,
+   offline: true,
+   data: {
+     moh:"-",
+     faith_based:"-",
+     private_facilities:"-",
+     ngo:"-",
+     chu_fully_functional: "-",
+     chu_semi_functional: "-",
+     chu_non_functional: "-",
+     chu_closed: "-",
+     facilities: "-",
+     chus: "-"
+   } 
+   }
+ }
     
 
 
