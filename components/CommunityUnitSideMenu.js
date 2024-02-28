@@ -118,7 +118,7 @@ export default function CommunityUnitSideMenu({ _pathId, filters, qf }) {
 	}, [])
 
 	return (
-		<div className='col-span-1 flex flex-col gap-3 md:col-start-1  md:mb-12 py-0 h-full bg-gray-50 shadow-md'>
+		<div className='col-span-1 flex rounded flex-col gap-3 md:col-start-1  md:mb-12 py-0 h-full bg-gray-50 shadow-md'>
 			<List
 				className='p-0 m-0'
 				component="nav"

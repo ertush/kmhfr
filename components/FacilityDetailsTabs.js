@@ -4,10 +4,10 @@ import { CheckCircleIcon, XCircleIcon } from "@heroicons/react/solid";
 
 function FacilityDetailsTabs({ facility }) {
   return (
-    <div className="col-span-5 md:col-span-3 flex bg-gray-50 shadow-md flex-col gap-3 mt-4">
+    <div className="col-span-5 rounded md:col-span-3 flex bg-gray-50 shadow-md flex-col gap-3 mt-4">
       <Tabs.Root
         orientation="horizontal"
-        className="w-full flex flex-col tab-root"
+        className="w-full flex flex-col flex-wrap tab-root"
         defaultValue="overview"
       >
         <Tabs.List className="list-none flex justify-evenly flex-wrap gap-2 md:gap-3 px-4 uppercase leading-none tab-list font-semibold border-b border-blue-600">
