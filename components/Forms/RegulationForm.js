@@ -58,6 +58,17 @@ export function RegulationForm() {
         ))()
     ]);
 
+   
+
+    // State
+   
+    const [hideLicenseNumber, setHideLicenseNumber] = useState(false);
+    const [hideRegistrationNumber, setHideRegistrationNumber] = useState(false);
+
+    const [initialValues, handleFormUpdate] = useState(options?.data ? facilityRegulationData :  formFields)
+ 
+    const [formValues, setFormValues] = useState(options?.data ? facilityRegulationData :  initialValues && initialValues.length > 1 ? JSON.parse(initialValues) : formFields)
+
     const formFields = useMemo(() => {
         let vals = {}
 
@@ -105,16 +116,6 @@ export function RegulationForm() {
     }
         return vals
     }, [facilityDepts])
-
-    // State
-   
-    const [hideLicenseNumber, setHideLicenseNumber] = useState(false);
-    const [hideRegistrationNumber, setHideRegistrationNumber] = useState(false);
-
-    const [initialValues, handleFormUpdate] = useState(options?.data ? facilityRegulationData :  formFields)
- 
-    const [formValues, setFormValues] = useState(options?.data ? facilityRegulationData :  initialValues && initialValues.length > 1 ? JSON.parse(initialValues) : formFields)
-
     
     delete formValues['license_document'];
 
@@ -242,7 +243,7 @@ export function RegulationForm() {
                               
                   return (
                    <>
-                        <h4 className="text-lg uppercase mt-4 pb-2 border-b border-blue-600 w-full mb-4 font-semibold text-blue-900">Facility Regulation</h4>
+                        <h4 className="text-lg uppercase mt-4 pb-2 border-b border-gray-400 rounded w-full mb-4 font-semibold text-blue-900">Facility Regulation</h4>
                         <Form ref={formRef} name="facility_regulation_form" className='flex flex-col w-full items-start bg-gray-50 p-4 justify-start gap-3' >
 
                             {formError && <Alert severity='error' className={'w-full'}>{formError}</Alert>}
@@ -298,7 +299,7 @@ export function RegulationForm() {
                              !hideLicenseNumber &&
                             <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
                                 <label htmlFor="license_number" className="text-gray-600 bg-transparent capitalize text-sm">License Number</label>
-                                <Field type="text" name="license_number" className="flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none" />
+                                <Field type="text" name="license_number" className="flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:border-black outline-none" />
                             </div>
                             }
 
@@ -308,7 +309,7 @@ export function RegulationForm() {
                               !hideRegistrationNumber &&
                             <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
                                 <label htmlFor="registration_number" className="text-gray-600 bg-transparent capitalize text-sm">Registration Number</label>
-                                <Field type="text" name="registration_number" className="flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none" />
+                                <Field type="text" name="registration_number" className="flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:border-black outline-none" />
                             </div>
                             }       
 
@@ -316,13 +317,13 @@ export function RegulationForm() {
                             <div className=" w-full flex flex-col items-start justify-start py-3  h-auto">
                                 <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
                                     <label htmlFor="license_document" className="text-gray-600 capitalize text-sm">Upload license document</label>
-                                    <Field type="file" onChange={handleLicenseFileChange} name="license_document" innerRef={fileRef} className="flex-none w-full   p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none" />
+                                    <Field type="file" onChange={handleLicenseFileChange} name="license_document" innerRef={fileRef} className="flex-none w-full   p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:border-black outline-none" />
                                 </div>
                             </div>
 
                             {/* Facility Departments Regulation  */}
-                            <h5 className="text-lg uppercase pb-2 border-b border-blue-600 w-full mb-4 font-semibold text-blue-900">Facility Departments Regulation</h5>
-                            <div className='grid grid-cols-4 place-content-start gap-3 w-full border border-blue-600  p-3'>
+                            <h5 className="text-lg uppercase pb-2 border-b border-gray-400 rounded w-full mb-4 font-semibold text-blue-900">Facility Departments Regulation</h5>
+                            <div className='grid grid-cols-4 place-content-start gap-3 w-full border border-gray-400 rounded  p-3'>
 
                                 {/* Contact Headers */}
                                 <h3 className='text-medium font-semibold text-blue-900'>Name</h3>

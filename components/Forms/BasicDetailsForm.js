@@ -672,7 +672,7 @@ export function BasicDeatilsForm({ editMode }) {
             name='official_name'
             defaultValue={options?.data?.official_name ?? ''}
             onFocus={handleFocus}
-            className='flex-none w-full bg-gray-50 p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+            className='flex-none w-full bg-gray-50 p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:border-black outline-none'
           />
         </div>
 
@@ -693,7 +693,7 @@ export function BasicDeatilsForm({ editMode }) {
             name='name'
             defaultValue={options?.data?.name ?? ''}
             onFocus={handleFocus}
-            className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+            className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:border-black outline-none'
           />
 
         </div>
@@ -792,7 +792,7 @@ export function BasicDeatilsForm({ editMode }) {
             name="date_established"
             onFocus={handleFocus}
             defaultValue={options?.data?.date_established ?? ''}
-            className='flex-none w-full bg-transparent p-2 flex-grow placeholder-gray-500 border border-blue-600 focus:shadow-none  focus:border-black outline-none'
+            className='flex-none w-full bg-transparent p-2 flex-grow placeholder-gray-500 border border-gray-400 rounded focus:shadow-none  focus:border-black outline-none'
 
           />
         </div>
@@ -911,7 +911,7 @@ export function BasicDeatilsForm({ editMode }) {
             min={0}
             name='number_of_beds'
             value={totalFunctionalBeds}
-            className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+            className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:border-black outline-none'
           />
 
 
@@ -936,7 +936,7 @@ export function BasicDeatilsForm({ editMode }) {
             name='number_of_inpatient_beds'
             onFocus={handleNumberInputChange}
             defaultValue={options?.data?.number_of_inpatient_beds ?? 0}
-            className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+            className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:border-black outline-none'
           />
 
         </div>
@@ -959,7 +959,7 @@ export function BasicDeatilsForm({ editMode }) {
             name='number_of_cots'
             onFocus={handleFocus}
             defaultValue={options?.data?.number_of_cots ?? ''}
-            className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+            className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:border-black outline-none'
           />
 
         </div>
@@ -982,7 +982,7 @@ export function BasicDeatilsForm({ editMode }) {
             name='number_of_emergency_casualty_beds'
             onFocus={handleNumberInputChange}
             defaultValue={options?.data?.number_of_emergency_casualty_beds ?? ''}
-            className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+            className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:border-black outline-none'
           />
 
 
@@ -1006,7 +1006,7 @@ export function BasicDeatilsForm({ editMode }) {
             name='number_of_icu_beds'
             onFocus={handleNumberInputChange}
             defaultValue={options?.data?.number_of_icu_beds ?? ''}
-            className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+            className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:border-black outline-none'
           />
 
 
@@ -1030,7 +1030,7 @@ export function BasicDeatilsForm({ editMode }) {
             name='number_of_hdu_beds'
             onFocus={handleNumberInputChange}
             defaultValue={options?.data?.number_of_hdu_beds ?? ''}
-            className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+            className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:border-black outline-none'
           />
 
 
@@ -1054,7 +1054,7 @@ export function BasicDeatilsForm({ editMode }) {
             name='number_of_maternity_beds'
             onFocus={handleNumberInputChange}
             defaultValue={options?.data?.number_of_maternity_beds ?? ''}
-            className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+            className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:border-black outline-none'
           />
 
 
@@ -1078,7 +1078,7 @@ export function BasicDeatilsForm({ editMode }) {
             name='number_of_isolation_beds'
             onFocus={handleFocus}
             defaultValue={options?.data?.number_of_isolation_beds ?? ''}
-            className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+            className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:border-black outline-none'
           />
 
 
@@ -1104,7 +1104,7 @@ export function BasicDeatilsForm({ editMode }) {
             onFocus={handleFocus}
             defaultValue={options?.data?.number_of_general_theatres ?? ''}
 
-            className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+            className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:border-black outline-none'
           />
 
 
@@ -1128,7 +1128,7 @@ export function BasicDeatilsForm({ editMode }) {
             name='number_of_maternity_theatres'
             onFocus={handleFocus}
             defaultValue={options?.data?.number_of_maternity_theatres ?? ''}
-            className='flex-none w-full  bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+            className='flex-none w-full  bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:border-black outline-none'
           />
 
         </div>
@@ -1150,7 +1150,7 @@ export function BasicDeatilsForm({ editMode }) {
             name='facility_catchment_population'
             onFocus={handleFocus}
             defaultValue={options?.data?.facility_catchment_population ?? ''}
-            className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+            className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:border-black outline-none'
           />
 
         </div>
@@ -1252,8 +1252,8 @@ export function BasicDeatilsForm({ editMode }) {
         </div>
 
         {/* Armed Forces Facilities */}
-        <div className=' w-full flex flex-col items-start justify-start p-3  border border-blue-600 bg-transaprent h-auto'>
-          <h4 className='text-lg uppercase pb-2 border-b border-blue-600 w-full mb-4 font-semibold text-blue-900'>
+        <div className=' w-full flex flex-col items-start justify-start p-3  border border-gray-400 rounded bg-transaprent h-auto'>
+          <h4 className='text-lg uppercase pb-2 border-b border-gray-400 rounded w-full mb-4 font-semibold text-blue-900'>
             Armed Forces Facilities
           </h4>
           <div className='w-full flex flex-row items-center px-2 justify-start gap-1 gap-x-3 mb-3'>
@@ -1274,8 +1274,8 @@ export function BasicDeatilsForm({ editMode }) {
         </div>
 
         {/* Hours/Days of Operation */}
-        <div className=' w-full flex flex-col items-start justify-start p-3  border border-blue-600 bg-transaprent h-auto'>
-          <h4 className='text-lg uppercase pb-2 border-b border-blue-600 w-full mb-4 font-semibold text-blue-900'>
+        <div className=' w-full flex flex-col items-start justify-start p-3  border border-gray-400 rounded bg-transaprent h-auto'>
+          <h4 className='text-lg uppercase pb-2 border-b border-gray-400 rounded w-full mb-4 font-semibold text-blue-900'>
             Hours/Days of Operation
           </h4>
           <div className='w-full flex flex-row items-center px-2 gap-1 gap-x-3 mb-3'>
@@ -1362,13 +1362,13 @@ export function BasicDeatilsForm({ editMode }) {
 
 
         {/* Location Details */}
-        <div className=' w-full flex flex-col items-start justify-start p-3  border border-blue-600 bg-transaprent h-auto'>
-          <h4 className='text-lg uppercase pb-2 border-b border-blue-600 w-full mb-4 font-semibold text-blue-900'>
+        <div className=' w-full flex flex-col items-start justify-start p-3  border border-gray-400 rounded bg-transaprent h-auto'>
+          <h4 className='text-lg uppercase pb-2 border-b border-gray-400 w-full mb-4 font-semibold text-blue-900'>
             Location Details
           </h4>
-          <div className='grid grid-cols-4 place-content-start gap-3 w-full'>
+          <div className='grid md:grid-cols-4 grid-cols-1 place-content-start gap-3 w-full'>
             {/* County  */}
-            <div className='col-start-1 col-span-1'>
+            <div className='md:col-start-1 col-span-1 '>
               <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
 
 
@@ -1398,7 +1398,7 @@ export function BasicDeatilsForm({ editMode }) {
             </div>
 
             {/* Sub-county */}
-            <div className='col-start-2 col-span-1'>
+            <div className='md:col-start-2 col-span-1 '>
               <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
                 <label
                   htmlFor='sub_county_id'
@@ -1426,7 +1426,7 @@ export function BasicDeatilsForm({ editMode }) {
             </div>
 
             {/* Constituency */}
-            <div className='col-start-3 col-span-1'>
+            <div className='md:col-start-3 col-span-1 '>
               <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
                 <label
                   htmlFor='constituency_id'
@@ -1454,7 +1454,7 @@ export function BasicDeatilsForm({ editMode }) {
             </div>
 
             {/* Ward */}
-            <div className='col-start-4 col-span-1'>
+            <div className='md:col-start-4 col-span-1'>
               <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
                 <label
                   htmlFor='ward'
@@ -1504,7 +1504,7 @@ export function BasicDeatilsForm({ editMode }) {
             name='town_name'
             defaultValue={options?.data?.town_name ?? ''}
             onFocus={handleFocus}
-            className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+            className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:border-black outline-none'
           />
         </div>
 
@@ -1525,7 +1525,7 @@ export function BasicDeatilsForm({ editMode }) {
             name='plot_number'
             defaultValue={options?.data?.plot_number ?? ''}
             onFocus={handleFocus}
-            className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+            className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:border-black outline-none'
           />
         </div>
 
@@ -1546,7 +1546,7 @@ export function BasicDeatilsForm({ editMode }) {
             name='nearest_landmark'
             defaultValue={options?.data?.nearest_landmark ?? ''}
             onFocus={handleFocus}
-            className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+            className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:border-black outline-none'
           />
         </div>
 
@@ -1567,7 +1567,7 @@ export function BasicDeatilsForm({ editMode }) {
             name='location_desc'
             defaultValue={options?.data?.location_desc ?? ''}
             onFocus={handleFocus}
-            className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+            className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:border-black outline-none'
           />
         </div>
 
@@ -1585,7 +1585,7 @@ export function BasicDeatilsForm({ editMode }) {
             type='file'
             name='facility_checklist_document'
             defaultValue={options?.data?.facility_checklist_document ?? ''}
-            className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+            className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:border-black outline-none'
           />
 
 

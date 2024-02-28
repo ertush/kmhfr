@@ -193,7 +193,7 @@ function FacilitySideMenu({ states, stateSetters, filters }) {
 
     return (
 
-        <div className='col-span-1 flex flex-col gap-3 md:col-start-1 md:mb-12 pt-0 h-full rounded bg-gray-50 shadow-md'>
+        <div className='col-span-1 w-full flex flex-col gap-3 md:col-start-1 md:mb-12 pt-0 h-full rounded bg-gray-50 shadow-md'>
             <List
                 className='p-0 m-0'
                 component="nav"

@@ -4,14 +4,14 @@ import MainLayout from '../../components/MainLayout';
 import Link from "next/link";
 import Head from "next/head";
 import FacilitySideMenu from "../../components/FacilitySideMenu";
-import {useState, useEffect, createContext, useContext} from 'react';
+import { useState, useEffect, createContext, useContext } from 'react';
 import { UserContext } from "../../providers/user";
-
+import { KeyboardArrowRight, KeyboardArrowDown } from "@mui/icons-material";
 
 export const FormOptionsContext = createContext({});
 
 export default function AddFacility(props) {
-	
+
 	const userCtx = useContext(UserContext);
 
 	const filters = [];
@@ -22,16 +22,17 @@ export default function AddFacility(props) {
 	const [title, setTitle] = useState('');
 	const [isClient, setIsClient] = useState(false)
 	const [user, setUser] = useState(userCtx)
- 
+	const [isMenuOpen, setIsMenuOpen] = useState(false)
+
 	useEffect(() => {
 		setUser(userCtx)
-		if(user && user.id === 6){
+		if (user && user.id === 6) {
 			router.push('/auth/login')
 		}
-	  setIsClient(true)
+		setIsClient(true)
 	}, [])
 
-	if(isClient) {
+	if (isClient) {
 		return (
 			<>
 				<Head>
@@ -40,19 +41,20 @@ export default function AddFacility(props) {
 				</Head>
 
 				<MainLayout isLoading={false} searchTerm={props?.query?.searchTerm}>
-					<div className="w-full grid grid-cols-5 h-full my-12 gap-4">
-						<div className="col-span-5 flex flex-col gap-3 md:gap-5 mb-4">
+					<div className="w-full md:w-[85%] md:mx-auto md:grid flex flex-col  md:grid-cols-5 gap-3 md:mt-3 mb-4 px-4 md:px-0">
+
+						<div className="col-sapn-1 md:col-span-5 flex flex-col gap-3 ">
 							<div className="flex flex-wrap items-center justify-between gap-2 text-sm md:text-base py-3">
 								<div className="flex flex-row items-center justify-between gap-2 text-sm md:text-base py-3">
-									<Link className="text-blue-800" href="/">Home</Link> {'/'}
+									<Link className="text-blue-800" href="/dashboard">Home</Link> {'/'}
 									<Link className="text-blue-800" href="/facilities/">Facilities</Link> {'/'}
 									<span className="text-gray-500">Add Facility</span>
 								</div>
 							</div>
 
-							<div className={"col-span-5 flex justify-between w-full  border border-blue-600  text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-blue-600" : "border-red-600")}>
+							<div className={"md:col-span-5 col-span-1 flex justify-between w-full  border border-blue-600  text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-blue-600" : "border-red-600")}>
 								<h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
-									{'New Facility'}
+									New Facility
 								</h2>
 							</div>
 
@@ -60,12 +62,35 @@ export default function AddFacility(props) {
 
 
 						{/* Facility Side Menu Filters */}
-						<div className="md:col-span-1">
+						<div className="hidden md:flex col-span-1">
+
 							<FacilitySideMenu
 								filters={filters}
 								states={[khisSynched, facilityFeedBack, pathId, allFctsSelected, title]}
 								stateSetters={[setKhisSynched, setFacilityFeedBack, setPathId, setAllFctsSelected, setTitle]} />
 						</div>
+
+						<button className='md:hidden relative p-2 border border-gray-800 rounded w-full self-start my-4' onClick={() => setIsMenuOpen(!isMenuOpen)}>
+							Facility Menu
+							{
+								!isMenuOpen &&
+								<KeyboardArrowRight className='w-8 aspect-square text-gray-800' />
+							}
+
+							{
+								isMenuOpen &&
+								<KeyboardArrowDown className='w-8 aspect-square text-gray-800' />
+							}
+
+							{
+								isMenuOpen &&
+								<FacilitySideMenu
+									filters={filters}
+									states={[khisSynched, facilityFeedBack, pathId, allFctsSelected, title]}
+									stateSetters={[setKhisSynched, setFacilityFeedBack, setPathId, setAllFctsSelected, setTitle]} />
+							}
+						</button>
+
 
 
 						<FormOptionsContext.Provider value={props}>
@@ -83,7 +108,7 @@ export default function AddFacility(props) {
 }
 
 
-export async function getServerSideProps (ctx) {
+export async function getServerSideProps(ctx) {
 
 
 	const options = [
@@ -134,28 +159,28 @@ export async function getServerSideProps (ctx) {
 									},
 								})
 
-								if(!_facilityTypeData) throw Error('Unable facility type data')
+								if (!_facilityTypeData) throw Error('Unable facility type data')
 
 
 								let facilityTypeData = (await _facilityTypeData.json())
 
-								facilityTypeData = Array.from(facilityTypeData?.results, ({id, name}) => {
-								return {
-									label: name,
-									value: id
-								}
-									
+								facilityTypeData = Array.from(facilityTypeData?.results, ({ id, name }) => {
+									return {
+										label: name,
+										value: id
+									}
+
 								})
 
-							
+
 
 								allOptions['facility_types'] = facilityTypeData;
-								
+
 
 							}
 							catch (err) {
 								console.error(`Error fetching ${option}: `, err);
-								
+
 							}
 
 							break;
@@ -170,7 +195,7 @@ export async function getServerSideProps (ctx) {
 										Accept: 'application/json',
 									},
 								})
-								
+
 								if (!_facilityTypeDetails) throw Error("Unable to fetch facility type details")
 
 
@@ -183,7 +208,7 @@ export async function getServerSideProps (ctx) {
 							}
 							catch (err) {
 								console.error(`Error fetching ${option}: `, err);
-								
+
 							}
 							break;
 						case 'owners':
@@ -199,16 +224,16 @@ export async function getServerSideProps (ctx) {
 									},
 								})
 
-								if(!_owners) throw new Error('Unable to fetch owners')
+								if (!_owners) throw new Error('Unable to fetch owners')
 
-								const owners = (await _owners.json())?.results.map(({ id, name }) => ({ value: id, label: name })) 
+								const owners = (await _owners.json())?.results.map(({ id, name }) => ({ value: id, label: name }))
 
 								allOptions['owners'] = owners
 
 							}
 							catch (err) {
 								console.error(`Error fetching ${option}: `, err);
-								
+
 							}
 
 							break;
@@ -225,8 +250,8 @@ export async function getServerSideProps (ctx) {
 									},
 								})
 
-								if(!_owner_types) throw Error('Unable to fetch owner types')
-								
+								if (!_owner_types) throw Error('Unable to fetch owner types')
+
 								const owner_types = await _owner_types.json()
 
 
@@ -236,7 +261,7 @@ export async function getServerSideProps (ctx) {
 							}
 							catch (err) {
 								console.error(`Error fetching ${option}: `, err);
-								
+
 							}
 
 							break;
@@ -252,9 +277,9 @@ export async function getServerSideProps (ctx) {
 									},
 								})
 
-								if(!_keph) throw Error('Unable to fetch keph')
+								if (!_keph) throw Error('Unable to fetch keph')
 
-								const keph = (await _keph.json()).results.map(({ id, name }) => ({ value: id, label: name })) 
+								const keph = (await _keph.json()).results.map(({ id, name }) => ({ value: id, label: name }))
 
 
 								allOptions["keph"] = keph
@@ -262,7 +287,7 @@ export async function getServerSideProps (ctx) {
 							}
 							catch (err) {
 								console.error(`Error fetching ${option}: `, err);
-							
+
 							}
 
 							break;
@@ -279,17 +304,17 @@ export async function getServerSideProps (ctx) {
 									},
 								})
 
-								if(!_facility_admission_status) throw Error('Unabe to fetch Faility type details')
+								if (!_facility_admission_status) throw Error('Unabe to fetch Faility type details')
 
 								const facility_admission_status = (await _facility_admission_status.json()).results.map(({ id, name }) => ({ value: id, label: name }))
 
 
-								allOptions["facility_admission_status"] =  facility_admission_status
+								allOptions["facility_admission_status"] = facility_admission_status
 
 							}
 							catch (err) {
 								console.error(`Error fetching ${option}: `, err);
-								
+
 							}
 							break;
 						case 'job_titles':
@@ -305,9 +330,9 @@ export async function getServerSideProps (ctx) {
 									},
 								})
 
-								if(!_job_titles) throw Error('Unable to fetch job titles')
+								if (!_job_titles) throw Error('Unable to fetch job titles')
 
-								const job_titles = (await _job_titles.json()).results.map(({ id, name }) => ({ value: id, label: name })) 
+								const job_titles = (await _job_titles.json()).results.map(({ id, name }) => ({ value: id, label: name }))
 
 
 								allOptions["job_titles"] = job_titles
@@ -315,7 +340,7 @@ export async function getServerSideProps (ctx) {
 							}
 							catch (err) {
 								console.error(`Error fetching ${option}: `, err);
-								
+
 							}
 							break;
 						case 'contact_types':
@@ -331,16 +356,16 @@ export async function getServerSideProps (ctx) {
 									},
 								})
 
-								if(!_contact_types) Error("Unable to Contact Types")
+								if (!_contact_types) Error("Unable to Contact Types")
 
-								const contact_types = (await _contact_types.json()).results.map(({ id, name }) => ({ value: id, label: name })) 
+								const contact_types = (await _contact_types.json()).results.map(({ id, name }) => ({ value: id, label: name }))
 
 								allOptions["contact_types"] = contact_types
 
 							}
 							catch (err) {
 								console.error(`Error fetching ${option}: `, err);
-								
+
 							}
 							break;
 						case 'facility_depts':
@@ -356,7 +381,7 @@ export async function getServerSideProps (ctx) {
 									},
 								})
 
-							    if(!_faciilty_depts) throw Error("Unable to fetch facility Departments")
+								if (!_faciilty_depts) throw Error("Unable to fetch facility Departments")
 
 								const facility_depts = (await _faciilty_depts.json()).results.map(({ id, name, regulatory_body_name }) => ({ value: id, label: name, reg_body_name: regulatory_body_name }))
 
@@ -365,7 +390,7 @@ export async function getServerSideProps (ctx) {
 							}
 							catch (err) {
 								console.error(`Error fetching ${option}: `, err);
-								
+
 							}
 							break;
 						case 'regulating_bodies':
@@ -382,7 +407,7 @@ export async function getServerSideProps (ctx) {
 									},
 								})
 
-								if(!_regulating_bodies) throw Error("Unable to fetch reguating bodies")
+								if (!_regulating_bodies) throw Error("Unable to fetch reguating bodies")
 
 								const regulating_bodies = (await _regulating_bodies.json()).results.map(({ id, name }) => ({ value: id, label: name }))
 
@@ -391,7 +416,7 @@ export async function getServerSideProps (ctx) {
 							}
 							catch (err) {
 								console.log(`Error fetching ${option}: `, err);
-								
+
 							}
 							break;
 						case 'regulation_status':
@@ -407,7 +432,7 @@ export async function getServerSideProps (ctx) {
 									},
 								})
 
-								if(!_regulation_status) throw Error("Unable to fetch Regulation Status")
+								if (!_regulation_status) throw Error("Unable to fetch Regulation Status")
 
 								const regulation_status = (await _regulation_status.json()).results.map(({ id, name }) => ({ value: id, label: name }))
 
@@ -416,7 +441,7 @@ export async function getServerSideProps (ctx) {
 							}
 							catch (err) {
 								console.error(`Error fetching ${option}: `, err);
-								
+
 							}
 							break;
 						case 'services':
@@ -432,7 +457,7 @@ export async function getServerSideProps (ctx) {
 									}
 								})
 
-								if(!_services) throw Error("Unable to fetch services") 
+								if (!_services) throw Error("Unable to fetch services")
 
 								const services = (await _services.json()).results.map(({ id, name, category, category_name }) => ({ id, name, category, category_name }))
 
@@ -441,7 +466,7 @@ export async function getServerSideProps (ctx) {
 							}
 							catch (err) {
 								console.error(`Error fetching ${option}: `, err);
-								
+
 							}
 
 							break;
@@ -458,7 +483,7 @@ export async function getServerSideProps (ctx) {
 									}
 								})
 
-								if(!_infrastructure) throw Error("Unable to fetch infrstructure")
+								if (!_infrastructure) throw Error("Unable to fetch infrstructure")
 
 								const infrastructure = (await _infrastructure.json()).results.map(({ id, name, category_name, category }) => ({ id, name, category_name, category }))
 
@@ -467,7 +492,7 @@ export async function getServerSideProps (ctx) {
 							}
 							catch (err) {
 								console.log(`Error fetching ${option}: `, err);
-							
+
 							}
 
 							break;
@@ -483,7 +508,7 @@ export async function getServerSideProps (ctx) {
 									}
 								})
 
-								if(!_specialities) throw Error("Unable to fetch specialities")
+								if (!_specialities) throw Error("Unable to fetch specialities")
 
 								const specialities = (await _specialities.json()).results.map(({ id, name, category_name, category }) => ({ id, name, category_name, category }))
 
@@ -492,7 +517,7 @@ export async function getServerSideProps (ctx) {
 							}
 							catch (err) {
 								console.log(`Error fetching ${option}: `, err);
-								
+
 							}
 
 							break;
@@ -510,20 +535,20 @@ export async function getServerSideProps (ctx) {
 
 
 								const [_result] = (await _collection_date.json()).results;
-								if(_result && _result["collection_date"]){
+								if (_result && _result["collection_date"]) {
 									allOptions["collection_date"] = _result["collection_date"];
-								}else{
+								} else {
 									allOptions["collection_date"] = null;
 								}
-								
+
 
 							} catch (err) {
 								console.log(`Error fetching ${option}: `, err);
 								console.error(`Error fetching ${option}: `, err);
-								
+
 							}
 							break;
-						
+
 						default:
 							let fields = ''
 
@@ -549,7 +574,7 @@ export async function getServerSideProps (ctx) {
 							}
 							catch (err) {
 								console.log(`Error fetching ${option}: `, err);
-								
+
 							}
 							break;
 
@@ -558,10 +583,10 @@ export async function getServerSideProps (ctx) {
 
 
 				allOptions["token"] = token
-		
-				
+
+
 				// console.log("allOptions Log", allOptions)
-				return  { props: allOptions }
+				return { props: allOptions }
 
 
 			}
