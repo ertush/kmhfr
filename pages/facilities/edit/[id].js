@@ -11,6 +11,7 @@ import { useRouter } from "next/router";
 import { useAlert } from "react-alert";
 // import { all } from "underscore";
 import { UserContext } from "../../../providers/user";
+import { KeyboardArrowRight, KeyboardArrowDown } from "@mui/icons-material"
 
 
 export const FacilityUpdatesContext = createContext(null)
@@ -29,6 +30,7 @@ export default function EditFacility(props) {
 
 	const [facilityUpdateData, setFacilityUpdateData] = useState(null);
 	const [isSavedChanges, setIsSavedChanges] = useState(false);
+	const [isMenuOpen, setIsMenuOpen] = useState(false)
 
 
 	const router = useRouter();
@@ -70,19 +72,19 @@ export default function EditFacility(props) {
 				</Head>
 
 				<MainLayout isLoading={false} searchTerm={props?.query?.searchTerm}>
-					<div className="w-full grid grid-cols-5 h-full gap-4">
-						<div className="col-span-5 flex flex-col gap-3 md:gap-5 mb-4">
+					<div className="w-full md:w-[85%] md:mx-auto px-4 md:px-0 grid grid-cols-1 md:grid-cols-5 h-full gap-4">
+						<div className="md:col-span-5 col-span-1 flex flex-col gap-3 md:gap-5 mb-4">
 							<div className="flex flex-wrap items-center  justify-between gap-2 text-sm md:text-base py-3">
 								<div className="flex flex-row mt-8 items-center justify-between gap-2 text-sm md:text-base py-3">
-									<Link className="text-blue-800" href="/">Home</Link> {'/'}
-									<Link className="text-blue-800" href="/facilities/">Facilities</Link> {'/'}
+									<Link className="text-blue-800" href="/dashboard">Home</Link> {'/'}
+									<Link className="text-blue-800" href="/facilities">Facilities</Link> {'/'}
 									<span className="text-gray-500">Edit Facility</span>
 								</div>
 							</div>
 
-							<div className={"col-span-5 flex flex-col items-start w-full  border border-blue-600  text-black p-4 md:divide-x md:divide-gray-200z border-l-8 " + (true ? "border-blue-600" : "border-red-600")}>
-								<h2  className='flex items-center text-xl font-bold text-black capitalize gap-2'>
-									Editing <span className="cursor-pointer hover:text-blue-800" onClick={() => router.push(`/facilities/${props?.data?.id}`)}>{props?.data?.official_name}</span> 
+							<div className={"col-span-1 md:col-span-5 flex flex-col items-start w-full  border border-blue-600  text-black p-4 md:divide-x md:divide-gray-200z border-l-8 " + (true ? "border-blue-600" : "border-red-600")}>
+								<h2  className='flex items-center text-xl text-start font-bold text-black capitalize gap-2'>
+									 <span className="cursor-pointer hover:text-blue-800" onClick={() => router.push(`/facilities/${props?.data?.id}`)}>Editing  {props?.data?.official_name}</span> 
 								</h2>
 								<h3 className='text-blue-900 font-semibold '>{props?.data?.facility_type_name ?? ''}</h3>
 								<h4 className='text-gray-700'>{`# ${props?.data?.code ?? 'NO_CODE'}`}</h4>
@@ -91,20 +93,44 @@ export default function EditFacility(props) {
 						</div>
 
 
+						
 						{/* Facility Side Menu Filters */}
-						<div className="md:col-span-1">
+						<div className="hidden md:flex col-span-1">
+
 							<FacilitySideMenu
 								filters={filters}
 								states={[khisSynched, facilityFeedBack, pathId, allFctsSelected, title]}
 								stateSetters={[setKhisSynched, setFacilityFeedBack, setPathId, setAllFctsSelected, setTitle]} />
 						</div>
 
+						<button className='md:hidden relative p-2 border border-gray-800 rounded w-full self-start my-4' onClick={() => setIsMenuOpen(!isMenuOpen)}>
+							Facility Menu
+							{
+								!isMenuOpen &&
+								<KeyboardArrowRight className='w-8 aspect-square text-gray-800' />
+							}
+
+							{
+								isMenuOpen &&
+								<KeyboardArrowDown className='w-8 aspect-square text-gray-800' />
+							}
+
+							{
+								isMenuOpen &&
+								<FacilitySideMenu
+									filters={filters}
+									states={[khisSynched, facilityFeedBack, pathId, allFctsSelected, title]}
+									stateSetters={[setKhisSynched, setFacilityFeedBack, setPathId, setAllFctsSelected, setTitle]} />
+							}
+						</button>
+
+
 
 
 
 						{isSavedChanges && facilityUpdateData ? (
 							// Display Changes to be updated
-						<div className="md:col-span-4 bg-gray-50 p-3 shadow-md flex flex-col items-center md:gap-3 gap-y-3"> 
+						<div className="col-span-1 md:col-span-4 bg-gray-50 p-3 shadow-md flex flex-col items-center md:gap-3 gap-y-3"> 
 
 							<div className="flex flex-col justify-start w-full space-y-3">
 								<h2 className="text-2xl font-bold justify-center items-center md:ml-0 ml-4">

@@ -18,10 +18,9 @@ import Alert from '@mui/material/Alert';
 import FacilitySideMenu from '../../components/FacilitySideMenu'
 import { UserContext } from '../../providers/user'
 import {Formik, Form, Field} from 'formik';
+import { KeyboardArrowRight, KeyboardArrowDown } from "@mui/icons-material";
 
-function handleFacilityFilter() {
 
-}
 
 function FacilityHome (props){
     
@@ -71,6 +70,8 @@ function FacilityHome (props){
     const [allFctsSelected, setAllFctsSelected] = useState(true);
     const [isClient, setIsClient] = useState(false);
     const [user, setUser] = useState(userCtx)
+	const [isMenuOpen, setIsMenuOpen] = useState(false)
+
  
 
 
@@ -432,12 +433,36 @@ function FacilityHome (props){
                     </div>
 
                   
-                    {/* Side Menu Filters*/}
-                    <FacilitySideMenu 
-                    filters={filters ?? {}}
-                    states={[khisSynched, facilityFeedBack, pathId, allFctsSelected, title]}
-                    stateSetters={[setKhisSynched, setFacilityFeedBack, setPathId, setAllFctsSelected, setTitle]} />
-                   
+                    {/* Side Menu Filters Wide View port*/}
+                    <div className="hidden md:flex col-span-1">
+                        <FacilitySideMenu 
+                        filters={filters ?? {}}
+                        states={[khisSynched, facilityFeedBack, pathId, allFctsSelected, title]}
+                        stateSetters={[setKhisSynched, setFacilityFeedBack, setPathId, setAllFctsSelected, setTitle]} />
+                   </div>
+
+                    {/* Side Menu Filters Small View port*/}
+
+                   <button className='md:hidden relative p-2 border border-gray-800 rounded w-full self-start my-4' onClick={() => setIsMenuOpen(!isMenuOpen)}>
+							Facility Menu
+							{
+								!isMenuOpen &&
+								<KeyboardArrowRight className='w-8 aspect-square text-gray-800' />
+							}
+
+							{
+								isMenuOpen &&
+								<KeyboardArrowDown className='w-8 aspect-square text-gray-800' />
+							}
+
+							{
+								isMenuOpen &&
+								<FacilitySideMenu
+									filters={filters}
+									states={[khisSynched, facilityFeedBack, pathId, allFctsSelected, title]}
+									stateSetters={[setKhisSynched, setFacilityFeedBack, setPathId, setAllFctsSelected, setTitle]} />
+							}
+				   </button>
                     
                     {/* Main Body */}
                     <div className="w-full col-span-1 md:col-span-4 mr-24 md:col-start-2  md:h-auto bg-gray-50 shadow-md">
@@ -521,7 +546,7 @@ function FacilityHome (props){
                                     </Form>
                                          </Formik>
 
-                                        <h5 className="text-lg font-medium text-gray-800 md:pr-2">      
+                                        <h5 className="text-lg text-end font-medium text-gray-800 md:pr-2">      
                                             {props?.data?.count && props?.data?.count > 0 && <small className="text-gray-500 text-base">{props?.data?.start_index ?? ''} - {props?.data?.end_index ?? ''} of {props?.data?.count ?? ''} </small>}
                                         </h5>
                                     </div>

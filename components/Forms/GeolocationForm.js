@@ -360,7 +360,7 @@ export function GeolocationForm({ editMode }) {
           name='collection_date'
           onChange={handleInput}
           defaultValue={options?.collection_date?.split('T')[0] ?? ''}
-          className='flex-none w-full  p-2 flex-grow border placeholder-gray-500 bg-transparent border-blue-600 focus:shadow-none focus:border-black outline-none'
+          className='flex-none w-full  p-2 flex-grow border placeholder-gray-500 bg-transparent border-gray-400 rounded focus:shadow-none focus:border-black outline-none'
         />
 
 
@@ -386,7 +386,7 @@ export function GeolocationForm({ editMode }) {
             defaultValue={(options?.data?.lat_long && options?.data?.lat_long?.length == 2 && options?.data?.lat_long[1]) ?? ''}
             onChange={handleInput}
             placeholder='Enter longitude'
-            className='flex-none w-full  p-2 flex-grow border bg-transparent placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+            className='flex-none w-full  p-2 flex-grow border bg-transparent placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:border-black outline-none'
           />
 
 
@@ -410,7 +410,7 @@ export function GeolocationForm({ editMode }) {
             onChange={handleInput}
             placeholder='Enter latitude'
             defaultValue={(options?.data?.lat_long && options?.data?.lat_long?.length == 2 && options?.data?.lat_long[0]) ?? ''}
-            className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+            className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:border-black outline-none'
           />
 
         </div>

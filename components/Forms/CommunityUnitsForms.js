@@ -199,7 +199,7 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
           onChange={handleFieldChange}
           id="name"
           defaultValue={props?.name}
-          className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:bg-white focus:border-black outline-none"
+          className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:bg-white focus:border-black outline-none"
         />
       </div>
 
@@ -238,7 +238,7 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
           name="facility_name"
           onChange={handleFieldChange}
           id="facility_name"
-          className='flex-none w-full  flex-grow  placeholder-gray-500 border border-blue-600 outline-none'
+          className='flex-none w-full  flex-grow  placeholder-gray-500 border border-gray-400 rounded outline-none'
 
 
         />
@@ -274,7 +274,7 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
           name="status"
           onChange={handleFieldChange}
           id="status"
-          className='flex-none w-full  flex-grow  placeholder-gray-500 border border-blue-600 outline-none'
+          className='flex-none w-full  flex-grow  placeholder-gray-500 border border-gray-400 rounded outline-none'
 
         />
       </div>
@@ -302,7 +302,7 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
                 id="date_established"
                 defaultValue={props?.date_established}
                 placeholder={'mm/dd/yyyy'}
-                className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:bg-white focus:border-black outline-none"
+                className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:bg-white focus:border-black outline-none"
               />
 
               {validationError?.date_established && <span className='text-red-500 text-sm'>{validationError?.date_established}</span>}
@@ -332,7 +332,7 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
                 defaultValue={props?.date_operational}
 
                 placeholder={'mm/dd/yyyy'}
-                className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:bg-white focus:border-black outline-none"
+                className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:bg-white focus:border-black outline-none"
               />
 
               {validationError?.date_operational && <span className='text-red-500 text-sm'>{validationError?.date_operational}</span>}
@@ -363,7 +363,7 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
           defaultValue={props?.households_monitored}
 
           min={0}
-          className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:bg-white focus:border-black outline-none"
+          className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:bg-white focus:border-black outline-none"
         />
       </div>
 
@@ -387,7 +387,7 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
           defaultValue={props?.number_of_chvs}
 
           min={0}
-          className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:bg-white focus:border-black outline-none"
+          className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:bg-white focus:border-black outline-none"
         />
       </div>
 
@@ -416,7 +416,7 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
                 name="facility_county"
                 onChange={handleFieldChange}
                 id="facility_county"
-                className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:bg-white focus:border-black outline-none"
+                className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:bg-white focus:border-black outline-none"
               />
             </div>
           </div>
@@ -443,7 +443,7 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
                 name="facility_subcounty"
                 onChange={handleFieldChange}
                 id="facility_subcounty"
-                className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:bg-white focus:border-black outline-none"
+                className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:bg-white focus:border-black outline-none"
               />
             </div>
           </div>
@@ -468,7 +468,7 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
                 name="facility_constituency"
                 onChange={handleFieldChange}
                 id="facility_constituency"
-                className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:bg-white focus:border-black outline-none"
+                className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:bg-white focus:border-black outline-none"
               />
             </div>
           </div>
@@ -493,7 +493,7 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
                 name="facility_ward"
                 onChange={handleFieldChange}
                 id="facility_ward"
-                className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:bg-white focus:border-black outline-none"
+                className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:bg-white focus:border-black outline-none"
               />
             </div>
           </div>
@@ -516,12 +516,12 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
             placeholder="Description of the area of coverage"
             defaultValue={props?.location}
             min={0}
-            className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:bg-white focus:border-black outline-none"
+            className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:bg-white focus:border-black outline-none"
           />
         </div>
 
         <div className=" w-full flex flex-col items-start justify-start bg-transparent h-auto">
-          <h4 className="text-lg uppercase pb-2 border-b border-blue-600 w-full mb-4 font-semibold text-blue-900">
+          <h4 className="text-lg uppercase pb-2 border-b border-gray-400 rounded w-full mb-4 font-semibold text-blue-900">
             Community Health Unit Contacts
           </h4>
 
@@ -553,7 +553,7 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
                     options={options?.contactTypes}
                     defaultValue={options?.contactTypes?.find(({ label }) => label == contact_type_name)?.value}
                     placeholder="Select Contact.."
-                    className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:bg-white focus:border-black outline-none"
+                    className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:bg-white focus:border-black outline-none"
                   />
 
                 </div>
@@ -578,7 +578,7 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
                     onChange={handleFieldChange}
                     id={`contact_${i}`}
                     defaultValue={contact}
-                    className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:bg-white focus:border-black outline-none"
+                    className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:bg-white focus:border-black outline-none"
                   />
                 </div>
               </div>
@@ -807,7 +807,7 @@ function EditCommunityUnitsCHEWSForm(props) {
                     id={`first_name_${index}`}
                     name={`first_name_${index}`}
                     defaultValue={first_name}
-                    className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:bg-white focus:border-black outline-none"
+                    className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:bg-white focus:border-black outline-none"
                   />
                 </div>
                 {/* Second Name */}
@@ -825,7 +825,7 @@ function EditCommunityUnitsCHEWSForm(props) {
                     name={`last_name_${index}`}
                     defaultValue={last_name}
                    
-                    className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:bg-white focus:border-black outline-none"
+                    className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:bg-white focus:border-black outline-none"
                   />
                 </div>
                 {/* In charge */}
@@ -1037,7 +1037,7 @@ function EditCommunityUnitsServicesForm(props) {
 
     return (
       <>
-        <h4 className='text-lg uppercase pb-2 border-b border-blue-600 w-full mb-4 font-semibold text-blue-900'>
+        <h4 className='text-lg uppercase pb-2 border-b border-gray-400 rounded w-full mb-4 font-semibold text-blue-900'>
           Services Offered
         </h4>
   
@@ -1122,8 +1122,8 @@ export function CommunityUnitEditForm(props) {
             {/* Header snippet */}
             <div
               className={
-                `md:col-span-7 grid grid-cols-6 gap-5 md:gap-8 py-6 w-full border ${props?.active ? "border-blue-600" : "border-red-600"} bg-transparent drop-shadow  text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " +
-              ${props?.active ? "border-blue-600" : "border-yellow-700"}
+                `md:col-span-7 grid grid-cols-6 gap-5 md:gap-8 py-6 w-full border ${props?.active ? "border-gray-400 rounded" : "border-red-600"} bg-transparent drop-shadow  text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " +
+              ${props?.active ? "border-gray-400 rounded" : "border-yellow-700"}
             `}
             >
               <div className="col-span-6 md:col-span-3">
@@ -1208,7 +1208,7 @@ export function CommunityUnitEditForm(props) {
               defaultValue="basic_details"
             >
               {/* Tabs List */}
-              <Tabs.List className="list-none  border-b border-blue-600 md:grid md:grid-cols-3 flex flex-wrap gap-2 md:gap-3 px-4 uppercase leading-none tab-list font-semibold">
+              <Tabs.List className="list-none  border-b border-gray-400 rounded md:grid md:grid-cols-3 flex flex-wrap gap-2 md:gap-3 px-4 uppercase leading-none tab-list font-semibold">
                 <Tabs.Tab
                   value="basic_details"
                   className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"

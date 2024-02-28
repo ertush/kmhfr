@@ -382,7 +382,7 @@ export function FacilityContactsForm() {
                     return (
                         <>
                            
-                            <h4 className='text-lg uppercase pb-2 mt-4 border-b border-blue-600 w-full mb-4 font-semibold text-blue-900'>
+                            <h4 className='text-lg uppercase pb-2 mt-4 border-b border-gray-400 rounded w-full mb-4 font-semibold text-blue-900'>
                                 Facility Contact
                             </h4>
                             <Form
@@ -397,7 +397,7 @@ export function FacilityContactsForm() {
                                 {/* Contacts */}
 
                                 <div
-                                    className='grid grid-cols-2 bg-gray-50 border border-blue-600 p-3 place-content-start gap-3 w-full bg-light-grey '
+                                    className='grid grid-cols-2 bg-gray-50 border border-gray-400 rounded p-3 place-content-start gap-3 w-full bg-light-grey '
                                 >
                                     {/* Contact Headers */}
                                     <h3 className='text-medium font-semibold text-blue-900'>
@@ -406,7 +406,7 @@ export function FacilityContactsForm() {
                                     <h3 className='text-medium font-semibold text-blue-900'>
                                         Contact Details {" *"}
                                     </h3>
-                                    <hr className='col-span-2 border-xs border-blue-600' />
+                                    <hr className='col-span-2 border-xs border-gray-400 rounded' />
 
                                     {/* Contact Type / Contact Details */}
 
@@ -469,7 +469,7 @@ export function FacilityContactsForm() {
 
                                 {/* Facility Officer In-charge Details */}
 
-                                <h5 className='text-lg uppercase pb-2 border-b border-blue-600 w-full mb-4 font-semibold text-blue-900'>
+                                <h5 className='text-lg uppercase pb-2 border-b border-gray-400 rounded w-full mb-4 font-semibold text-blue-900'>
                                     Facility Officer In-Charge Details
                                 </h5>
                                 <div className='flex flex-col items-start bg-light-grey bg-gray-50 p-3 justify-start gap-1 w-full  h-auto'>
@@ -488,7 +488,7 @@ export function FacilityContactsForm() {
                                             required
                                             type='text'
                                             name='officer_name'
-                                            className='flex-none w-full  bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+                                            className='flex-none w-full  bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:border-black outline-none'
                                         />
                                     </div>
 
@@ -502,7 +502,7 @@ export function FacilityContactsForm() {
                                         <Field
                                             type='text'
                                             name='officer_reg_no'
-                                            className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+                                            className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:border-black outline-none'
                                         />
                                     </div>
 
@@ -530,7 +530,7 @@ export function FacilityContactsForm() {
                                     {/* Facility Officer Contact Type / Contact Details */}
 
                                     <div
-                                        className='grid grid-cols-2 place-content-start gap-3 w-full border border-blue-600 p-3'
+                                        className='grid grid-cols-2 place-content-start gap-3 w-full border border-gray-400 rounded p-3'
                                     >
                                         {/* Contact Headers */}
                                         <h3 className='text-medium font-semibold text-blue-900'>
@@ -539,7 +539,7 @@ export function FacilityContactsForm() {
                                         <h3 className='text-medium font-semibold text-blue-900'>
                                             Contact Details {" *"}
                                         </h3>
-                                        <hr className='col-span-2 border-xs border-blue-600' />
+                                        <hr className='col-span-2 border-xs border-gray-400 rounded' />
 
                                         {/* Contact Type / Contact Details */}
 

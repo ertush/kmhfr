@@ -65,11 +65,11 @@ export function EditForm() {
 
 
   return (
-    <div className='bg-gray-50 col-span-4 shadow-md flex flex-col justify-center items-center w-full'>
+    <div className='bg-gray-50 col-span-1 md:col-span-4 shadow-md flex flex-col justify-center items-center w-full'>
       {/* Stepper Header */}
       <Tabs.Root
         orientation="horizontal"
-        className="w-full flex flex-col py-2 tab-root"
+        className="w-full flex flex-wrap flex-col py-2 tab-root"
         defaultValue="basic_details"
 
       >

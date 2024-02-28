@@ -268,7 +268,7 @@ function Dashboard(props) {
 
                 <MainLayout isLoading={false} searchTerm={props?.query?.searchTerm}>
 
-                    <div className="md:w-[85%] md:mx-auto grid grid-cols-6 gap-4 px-4 py-2 my-4 main" ref={dwn}>
+                    <div className="w-full md:w-[85%] md:mx-auto grid grid-cols-1 md:grid-cols-5 gap-3 md:mt-3 md:mb-12 mb-6 px-4 md:px-0">
                         <div className="col-span-6 flex flex-col gap-3 md:gap-5 mb-8 ">
                             {/* Debug */}
                         
