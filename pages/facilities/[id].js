@@ -32,12 +32,14 @@ import { Table, TableBody, TableCell, TableRow } from "@mui/material";
 import { PermissionContext } from "../../providers/permissions";
 import { UserGroupContext } from "../../providers/userGroup";
 import { useAlert } from "react-alert";
+import { KeyboardArrowRight, KeyboardArrowDown } from "@mui/icons-material";
+
 
 
 const Facility = (props) => {
 
-  const userPermissions = useContext(PermissionContext)
-  const userGroup = useContext(UserGroupContext)
+  // const userPermissions = useContext(PermissionContext)
+  // const userGroup = useContext(UserGroupContext)
   const userCtx = useContext(UserContext)
 
 
@@ -66,6 +68,7 @@ const Facility = (props) => {
   const [user, setUser] = useState(userCtx);
 
   const [open, setOpen] = useState(true);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [openCloseModal, setOpenCloseModal] = useState(true)
   const [isReasonRejected, setIsReasonRejected] = useState(false)
   const handleClose = () => setOpen(false);
@@ -118,7 +121,8 @@ const Facility = (props) => {
           </Head>
 
           <MainLayout>
-            <div className="w-full grid grid-cols-1 md:grid-cols-7 gap-3 my-4 place-content-center">
+
+            <div className="w-full md:w-[85%] grid grid-cols-1 md:grid-cols-7 px-4 md:px-0 gap-3 my-4 place-content-center">
               {/* Closed Facility Modal */}
 
               {
@@ -259,7 +263,7 @@ const Facility = (props) => {
                       className="bg-gray-50 shadow-md"
 
                   >
-                      <span className="grid grid-cols-4 gap-2">
+                      <span className="grid grid-cols-1 md:grid-cols-4 gap-2">
                         <InformationCircleIcon className="w-12 h-12 text-red-500 col-start-1"/>
                         <Typography id="transition-modal-title" variant="h6" component="h2" className="col-start-2 col-span-3">      
                           Are you sure you want to close <strong>{facility?.official_name}</strong>
@@ -344,7 +348,7 @@ const Facility = (props) => {
               }
 
               {/* Header */}
-              <div className="col-span-1 md:col-span-7 flex-1 flex-col items-start justify-start gap-3">
+              <div className="col-span-1 md:col-span-7 flex-1 flex-col items-start justify-start md:mb-6 gap-3">
                 {/* Breadcramps */}
                 <div className="flex flex-row gap-2 text-sm md:text-base md:my-3">
                   <Link className="text-blue-700" href="/">
@@ -363,7 +367,7 @@ const Facility = (props) => {
                 {/* Header Bunner  */}
                 <div
                   className={
-                    `col-span-5 grid grid-cols-6 gap-5  md:gap-8 py-6 w-full bg-transparent border ${facility?.is_approved ? "border-blue-600" : "border-yellow-600"} drop-shadow  text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 
+                    `col-span-5 grid grid-cols-6 gap-5 mt-4 md:mt-0 md:gap-8 py-6 w-full bg-transparent border ${facility?.is_approved ? "border-blue-600" : "border-yellow-600"} drop-shadow  text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 
                     ${facility?.is_approved ? "border-blue-600" : "border-yellow-600"}
                   `}
                 >
@@ -442,23 +446,45 @@ const Facility = (props) => {
               </div>
 
               {/* Facility Side Menu Filters */}
-              <div className="hidden md:col-span-1 md:flex md:mt-8">
-                    <FacilitySideMenu 
-                        filters={filters}
-                        states={[khisSynched, facilityFeedBack, pathId, allFctsSelected, title]}
-                        stateSetters={[setKhisSynched, setFacilityFeedBack, setPathId, setAllFctsSelected, setTitle]}/>
-              </div>
+             <div className="hidden md:flex col-span-1">
+
+							<FacilitySideMenu
+								filters={filters}
+								states={[khisSynched, facilityFeedBack, pathId, allFctsSelected, title]}
+								stateSetters={[setKhisSynched, setFacilityFeedBack, setPathId, setAllFctsSelected, setTitle]} />
+						</div>
+
+						<button className='md:hidden relative p-2 border border-gray-800 rounded w-full self-start my-4' onClick={() => setIsMenuOpen(!isMenuOpen)}>
+							Facility Menu
+							{
+								!isMenuOpen &&
+								<KeyboardArrowRight className='w-8 aspect-square text-gray-800' />
+							}
+
+							{
+								isMenuOpen &&
+								<KeyboardArrowDown className='w-8 aspect-square text-gray-800' />
+							}
+
+							{
+								isMenuOpen &&
+								<FacilitySideMenu
+									filters={filters}
+									states={[khisSynched, facilityFeedBack, pathId, allFctsSelected, title]}
+									stateSetters={[setKhisSynched, setFacilityFeedBack, setPathId, setAllFctsSelected, setTitle]} />
+							}
+						</button>
               
 
-              <div className={`col-span-1 ${isViewChangeLog ? 'md:col-span-3':'md:col-span-4'} md:w-full flex flex-col gap-3 mt-4`}>
+              <div className={`col-span-1 ${isViewChangeLog ? 'md:col-span-3':'md:col-span-4'} md:w-full  flex flex-col md:gap-3 gap-5 `}>
 
                 {/* Action Buttons e.g (Approve/Reject, Edit, Regulate, Upgrade, Close) */}
 
                 {
               
                   !facility?.closed &&
-                  <div className=" bg-gray-50 w-full p-3  flex flex-col gap-3 shadow-md mt-4">
-                    <div className="flex flex-row justify-start items-center space-x-3 p-3">
+                  <div className=" bg-gray-50 rounded w-full p-1 flex flex-col gap-3 shadow-md md:mt-0 mt-4">
+                    <div className="flex  justify-start items-center flex-wrap gap-3 p-3">
 
                    
                       {/* Render button conditionally for both facility approval and validation*/}
@@ -476,7 +502,7 @@ const Facility = (props) => {
                         <button
                           onClick={() => router.push(`/facilities/approve_reject/${facility?.id}`)}
                           className={
-                            "p-2 text-center -md font-semibold text-base text-white bg-blue-600"
+                            "p-2 text-center -md font-semibold text-base text-white bg-gray-600  rounded"
                               
                           }
                         >
@@ -496,7 +522,7 @@ const Facility = (props) => {
                         <button
                         onClick={() => router.push(`/facilities/approve_reject/${facility?.id}`)}
                         className={
-                          "p-2 text-center -md font-semibold text-base text-white bg-blue-600"
+                          "p-2 text-center -md font-semibold text-base text-white bg-gray-600  rounded"
                             
                         }
                       >
@@ -519,7 +545,7 @@ const Facility = (props) => {
                       <button
                         onClick={() => router.push(`/facilities/approve_reject/${facility?.id}`)}
                         className={
-                          "p-2 text-center -md font-semibold text-base text-white bg-blue-600"
+                          "p-2 text-center -md font-semibold text-base text-white bg-gray-600  rounded"
                             
                         }
                       >
@@ -538,7 +564,7 @@ const Facility = (props) => {
                           // Edit
                               <button
                               onClick={() => router.push(`edit/${facility?.id}`)}
-                              className="p-2 text-center -md font-semibold text-base  text-white bg-black"
+                              className="p-2 text-center -md font-semibold text-base  text-white bg-gray-600  rounded"
                             >
                               Edit
                             </button>
@@ -553,7 +579,7 @@ const Facility = (props) => {
   
                       <button
                         onClick={() => router.push(`/facilities/regulate/${facility?.id}`)}
-                        className="p-2 text-center -md font-semibold text-base  text-white bg-black"
+                        className="p-2 text-center -md font-semibold text-base  text-white bg-gray-600  rounded"
                       >
                         Regulate
                       </button>
@@ -568,7 +594,7 @@ const Facility = (props) => {
 
                       <button
                         onClick={() => router.push(`/facilities/upgrade/${facility?.id}`)}
-                        className="p-2 text-center -md font-semibold text-base  text-white bg-black"
+                        className="p-2 text-center -md font-semibold text-base  text-white bg-gray-600  rounded"
                       >
                         Upgrade/Downgrade
                       </button>
@@ -582,7 +608,7 @@ const Facility = (props) => {
 
                       <button
                         onClick={() => setIsClosingFacility(true)}
-                        className="p-2 text-center -md font-semibold text-base  text-white bg-black"
+                        className="p-2 text-center -md font-semibold text-base  text-white bg-gray-600  rounded"
                       >
                         Close
                       </button>
@@ -606,7 +632,7 @@ const Facility = (props) => {
                           
                             router.push(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facility_detail_report/${facility?.id}/?access_token=${props['3']?.token}`)
                         }}
-                        className="p-2 text-center -md font-semibold text-base  text-white bg-black"
+                        className="p-2 text-center -md font-semibold text-base  text-white bg-gray-600  rounded"
                       >
                         Print
                       </button>
@@ -621,7 +647,7 @@ const Facility = (props) => {
 
               {/* end facility approval */}
                   
-              <aside className={`flex flex-col col-span-1 ${isViewChangeLog ? 'md:col-span-3': 'md:col-span-2'}  gap-4 md:mt-7`}>
+              <aside className={`flex flex-col col-span-1 ${isViewChangeLog ? 'md:col-span-3': 'md:col-span-2'}  gap-4 rounded `}>
                 {/* <h3 className="text-2xl tracking-tight font-semibold leading-5">
                   Map
                 </h3> */}
@@ -667,7 +693,7 @@ const Facility = (props) => {
                     }
 
                   }}
-                  className="bg-blue-600 w-auto p-2 text-white text-lg font-semibold flex items-center justify-between">
+                  className="bg-gray-600 rounded w-auto p-2 text-white text-lg font-semibold flex items-center justify-between">
                   <span>{isViewChangeLog ? 'Hide Change Log' : 'View Change Log'}</span>
                   {
                     isViewChangeLog ?
@@ -682,8 +708,8 @@ const Facility = (props) => {
                   isViewChangeLog &&
                   
                   <Table>
-                  <TableBody className="w-full border border-blue-600">
-                    <TableRow>
+                  <TableBody className="w-full h-auto border border-gray-600">
+                    <TableRow classes="border-b border-gray-400">
                       <TableCell className="font-semibold">Date</TableCell>
                       <TableCell className="font-semibold">User</TableCell>
                       <TableCell className="font-semibold">Updates</TableCell>
