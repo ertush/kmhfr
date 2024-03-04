@@ -13,6 +13,7 @@ export default function CommunityUnitEdit (props){
   useEffect(() => {
     setIsClient(true)
   }, [])
+  
 
   if(isClient){
     return (

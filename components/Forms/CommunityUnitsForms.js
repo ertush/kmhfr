@@ -19,9 +19,11 @@ import { useAlert } from 'react-alert'
 import Alert from '@mui/material/Alert';
 import Spinner from '../../components/Spinner'
 import EditListItem from '../../components/Forms/formComponents/EditListItem'
+import { KeyboardArrowRight, KeyboardArrowDown } from "@mui/icons-material";
+  
+
 
 function EditCommunityUnitsBasicDeatilsForm(props) {
-
 
   const options = useContext(ChuOptionsContext)
   const [touchedFields, setTouchedFields] = useState(new Set())
@@ -393,7 +395,7 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
 
       {/* CHU, Linked Facility Location */}
       <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-        <div className="grid grid-cols-4 place-content-start gap-3 w-full">
+        <div className="flex flex-col md:grid md:grid-cols-4 place-content-start gap-3 w-full">
           {/* County  */}
           <div className="col-start-1 col-span-1">
             <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
@@ -521,7 +523,7 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
         </div>
 
         <div className=" w-full flex flex-col items-start justify-start bg-transparent h-auto">
-          <h4 className="text-lg uppercase pb-2 border-b border-gray-400 rounded w-full mb-4 font-semibold text-blue-900">
+          <h4 className="text-lg uppercase pb-2 border-b border-gray-400 w-full mb-4 font-semibold text-blue-900">
             Community Health Unit Contacts
           </h4>
 
@@ -587,7 +589,7 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
         </div>
         <div className="sticky top-0 right-10 w-full flex justify-end">
           <button
-            className=" bg-blue-600 p-2 text-white flex text-md font-semibold mt-3"
+            className=" bg-gray-500 rounded p-2 text-white flex text-md font-semibold mt-3"
             onClick={handleAddContact}
           >
             {`Add Contact`}
@@ -601,7 +603,7 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
 
           <button
             type="submit"
-            className="flex items-center justify-end space-x-2 bg-blue-600  p-1 px-2"
+            className="flex items-center justify-end space-x-2 bg-gray-500 rounded  p-1 px-2"
           >
             <span className="text-medium font-semibold text-white">
               {
@@ -853,7 +855,7 @@ function EditCommunityUnitsCHEWSForm(props) {
                     {/* insert red button for deleting */}
                     <button
                       onClick={(e) => handleDelete(e, index, id)}
-                      className="flex items-center justify-start space-x-2 bg-red-600  p-1 px-2"
+                      className="flex items-center justify-start space-x-2 bg-red-600 rounded  p-1 px-2"
                       data-id={props?.health_unit_workers[index]?.id}
 
                     >
@@ -886,7 +888,7 @@ function EditCommunityUnitsCHEWSForm(props) {
 
         <div className="sticky top-0 right-10 w-full flex justify-end">
           <button
-            className=" bg-blue-600 p-2 text-white flex text-md font-semibold "
+            className=" bg-gray-500 rounded p-2 text-white flex text-md font-semibold "
             onClick={(e) => {
               e.preventDefault()
               setHealthUnitWorkers(prev => [...prev, {first_name: "", last_name:"", is_incharge:""}])
@@ -903,7 +905,7 @@ function EditCommunityUnitsCHEWSForm(props) {
 
         <button
           type="submit"
-          className="flex items-center justify-end space-x-2 bg-blue-600  p-1 px-2"
+          className="flex items-center justify-end space-x-2 bg-gray-500 rounded  p-1 px-2"
         >
           <span className="text-medium font-semibold text-white">
             {
@@ -1079,21 +1081,18 @@ function EditCommunityUnitsServicesForm(props) {
   
   
   
-  }
+}
   
 
 
 export function CommunityUnitEditForm(props) {
 
-
-
   const [isClient, setIsClient] = useState(false)
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
 
 
   useEffect(() => {
-
     setIsClient(true)
-    
   }, []);
 
 
@@ -1101,8 +1100,9 @@ export function CommunityUnitEditForm(props) {
     return (
 
       <MainLayout>
-        <div className="w-full grid grid-cols-1 md:grid-cols-7 place-content-center md:grid gap-4 md:p-2 my-6">
+        <div className="w-full md:w-[85%] px-4 grid grid-cols-1 md:grid-cols-7 place-content-center md:grid gap-4 md:p-2 my-6">
           <div className="md:col-span-7 flex flex-col items-start justify-start gap-3">
+           
             {/* Breadcrumb */}
             <div className="flex flex-row gap-2 text-sm md:text-base">
               <Link className="text-blue-700" href="/">
@@ -1191,6 +1191,7 @@ export function CommunityUnitEditForm(props) {
           </div>
 
           {/* Community Unit Side Menu */}
+      
           <div className="hidden md:col-span-1 md:flex md:mt-8">
             <CommunityUnitSideMenu
               qf={'all'}
@@ -1200,15 +1201,42 @@ export function CommunityUnitEditForm(props) {
             />
           </div>
 
+          <button className='md:hidden relative p-2 border border-gray-800 rounded w-full self-start my-4' onClick={() => setIsMenuOpen(!isMenuOpen)}>
+          Community Health Unit Menu
+          {
+            !isMenuOpen &&
+            <KeyboardArrowRight className='w-8 aspect-square text-gray-800' />
+          }
+
+          {
+            isMenuOpen &&
+            <KeyboardArrowDown className='w-8 aspect-square text-gray-800' />
+          }
+
+          {
+            isMenuOpen &&
+            <CommunityUnitSideMenu
+              qf={'all'}
+              filters={[]}
+              _pathId={''}
+
+            />
+          }
+          </button>
+          
+           
+
+
+
           {/* Form */}
-          <div className="col-span-1 md:col-span-6 flex flex-col md:gap-3 mt-8 bg-gray-50 shadow-md pt-2">
+          <div className="col-span-1 md:col-span-6 flex flex-col md:gap-3 mt-2 md:mt-8 bg-gray-50 rounded shadow-md pt-2">
             <Tabs.Root
               orientation="horizontal"
               className="w-full flex flex-col tab-root"
               defaultValue="basic_details"
             >
               {/* Tabs List */}
-              <Tabs.List className="list-none  border-b border-gray-400 rounded md:grid md:grid-cols-3 flex flex-wrap gap-2 md:gap-3 px-4 uppercase leading-none tab-list font-semibold">
+              <Tabs.List className="list-none w-full flex justify-between md:justify-start border-b border-gray-400 rounded md:grid md:grid-cols-3  flex-wrap gap-2 md:gap-3 px-4 uppercase leading-none tab-list font-semibold">
                 <Tabs.Tab
                   value="basic_details"
                   className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
