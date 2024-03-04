@@ -14,7 +14,6 @@ const approveRejectCHU = async (isApproved, setState, id) => {
           method: "PATCH",
           headers: {
             Accept: "application/json",
-
             Authorization: "Bearer " + token,
           },
 
@@ -39,7 +38,7 @@ const rejectCHU = (e, ctx, state, comment) => {
 
 };
 
-const approveCHUUpdates = async (e, id, status, router) => {
+const approveCHUUpdates = async (e, id, status, router, token) => {
   e.preventDefault();
   let payload = ''
   if (status == true) {
@@ -47,12 +46,14 @@ const approveCHUUpdates = async (e, id, status, router) => {
   } else {
     payload = { is_rejected: true }
   }
-  let url = `/api/common/submit_form_data/?path=approve_chul_updates&latest_updates=${id}`
+  let url = `${process.env.NEXT_PUBLIC_API_URL}/chul/updates/${id}/` //`/api/common/submit_form_data/?path=approve_chul_updates&latest_updates=${id}`
+  
   try {
     await fetch(url, {
       headers: {
         'Accept': 'application/json, text/plain, */*',
-        'Content-Type': 'application/json;charset=utf-8'
+        'Content-Type': 'application/json;charset=utf-8',
+        'Authorization': `Bearer ${token}`
 
       },
       method: 'PATCH',
@@ -75,7 +76,8 @@ const approveCHUUpdates = async (e, id, status, router) => {
     console.error(e)
   }
 }
-const approveCHU = (e, id, comment, state, router) => {
+
+const approveCHU = (e, id, comment, state, router, token) => {
   e.preventDefault();
   let payload = {}
   if (state == true) {
@@ -92,12 +94,14 @@ const approveCHU = (e, id, comment, state, router) => {
     }
   }
 
-  let url = `/api/common/submit_form_data/?path=approve_chul&id=${id}`
+  let url = `${process.env.NEXT_PUBLIC_API_URL}/chul/units/${id}/` // `/api/common/submit_form_data/?path=approve_chul&id=${id}`
+  
   try {
     fetch(url, {
       headers: {
         'Accept': 'application/json, text/plain, */*',
-        'Content-Type': 'application/json;charset=utf-8'
+        'Content-Type': 'application/json;charset=utf-8',
+        'Authorization': `Bearer ${token}`
 
       },
       method: 'PATCH',
@@ -117,8 +121,8 @@ const approveCHU = (e, id, comment, state, router) => {
       })
   } catch (e) {
 
-    setStatus({ status: 'error', message: e })
-    console.error(e)
+    // setStatus({ status: 'error', message: e })
+    console.error(e.message)
   }
 }
 

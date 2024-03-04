@@ -38,13 +38,9 @@ function EditListItem({
   const [selectedItems, setSelectedItems] = useState([])
   const [showItemCategory, setShowItemCategory] = useState(false)
 
-
   const [formError, setFormError] = useState(null)
 
-
   // Refs
-
-
   const [categoryOptions, setCategoryItems] = useState(() => {
 
     let newarray = [];
@@ -77,6 +73,7 @@ function EditListItem({
   }
 
   const handleCheckboxChange = (id, name, category, category_name) => {
+    
     setSelectedItems((prevSelectedRows) => {
       if (prevSelectedRows?.filter((row) => row.rowid == id).length > 0) {
         return prevSelectedRows?.filter((row) => row.rowid !== id);
@@ -140,6 +137,7 @@ function EditListItem({
 
   }, [])
 
+
   function handleSearchItemFocus(e) {
     e.preventDefault()
 
@@ -147,6 +145,7 @@ function EditListItem({
       setShowItemCategory(true)
     }
   }
+
 
   function handleSubmit(e) {
 
@@ -158,6 +157,8 @@ function EditListItem({
 
       const newSelectedItems = selectedItems.filter(({ rowId }, i) => rowId == itemData[i]?.service_id)
 
+      console.log({selectedItems})
+      
       if (itemName == 'facility_services') {
         handleItemsUpdate(token, [newSelectedItems, itemId])
           .then(resp => {
@@ -192,6 +193,8 @@ function EditListItem({
           })
           .catch(e => console.error('unable to update facility services. Error:', e.message))
       } else {
+        
+        
         handleItemsUpdate(newSelectedItems, itemId)
           .then(resp => {
             if (resp.status == 200 || resp.status == 204 || resp.status == 201) {
@@ -301,6 +304,9 @@ function EditListItem({
           })
           .catch(e => console.error('unable to submit item data. Error:', e.message))
       } else {
+        
+        // console.log({selectedItems})
+
         handleItemsSubmit(selectedItems, itemId)
           .then(resp => {
             if (resp.status == 200 || resp.status == 201) {
@@ -552,7 +558,7 @@ function EditListItem({
           itemName == "facility_services" && editMode &&
           <button
             type="submit"
-            className="flex items-center justify-end space-x-2 bg-blue-600  p-1 px-2"
+            className="flex items-center justify-end space-x-2 bg-gray-500 rounded  p-1 px-2"
           >
             <span className="text-medium font-semibold text-white">
               {
@@ -586,7 +592,7 @@ function EditListItem({
 
             <button
               type='submit'
-              className='flex items-center justify-start space-x-2 bg-blue-700  p-1 px-2'>
+              className='flex items-center justify-start space-x-2 bg-gray-500 rounded p-1 px-2'>
               <span className='text-medium font-semibold text-white'>
                 {
                   submitting ?
@@ -612,7 +618,7 @@ function EditListItem({
           itemName == "chul_services" && editMode &&
           <button
             type="submit"
-            className="flex items-center justify-end space-x-2 bg-blue-600  p-1 px-2"
+            className="flex items-center justify-end space-x-2 bg-gray-500 rounded p-1 px-2"
           >
             <span className="text-medium font-semibold text-white">
               {

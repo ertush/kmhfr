@@ -105,11 +105,12 @@ const EditCommunityUnit = (props) => {
       </Head>
 
       <MainLayout>
-        <div className="w-full grid grid-cols-1 md:grid-cols-7 gap-3 my-4 place-content-center">
-          <div className="md:col-span-7 flex flex-col items-start justify-start gap-3">
+        <div className="w-full md:w-[85%] grid grid-cols-1 px-4 md:grid-cols-7 gap-3 my-4 place-content-center">
+         
+          <div className="md:col-span-7 col-span-1 flex flex-col items-start justify-start gap-3">
 
             {/* Header */}
-            <div className="flex flex-row items-center justify-between gap-2 text-sm md:text-base py-3">
+            <div className="flex text-start items-start md:items-center md:w-full  md:justify-start justify-between gap-2 text-sm md:text-base py-3">
               <Link className="text-blue-700" href="/">
                 Home
               </Link>
@@ -127,7 +128,7 @@ const EditCommunityUnit = (props) => {
 
             <div
               className={
-                `md:col-span-7 grid grid-cols-6 gap-5 md:gap-8 py-6 w-full border ${cu.active ? "border-blue-600" : "border-yellow-700"} bg-transparent drop-shadow  text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 
+                `md:col-span-7 col-span-1 grid grid-cols-6 gap-5 md:gap-8 py-6 w-full border ${cu.active ? "border-blue-600" : "border-yellow-700"} bgcenter-transparent drop-shadow  text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 
                 ${cu.active ? "border-blue-600" : "border-yellow-700"}
               `}
             >
@@ -194,7 +195,7 @@ const EditCommunityUnit = (props) => {
           </div>
 
           {/* Community Unit Side Menu */}
-          <div className="hidden md:col-span-1 md:flex md:mt-8">
+          <div className="hidden rounded md:col-span-1 md:flex md:mt-8">
             <CommunityUnitSideMenu
               qf={'all'}
               filters={[]}
@@ -205,7 +206,7 @@ const EditCommunityUnit = (props) => {
           {/* Left side */}
           <div className="col-span-5 md:col-span-6 flex flex-col gap-3 mt-4">
             {/* Approve/Reject, Edit Buttons */}
-            <div className="bg-transparent border border-blue-600 w-full p-3  flex flex-col gap-3 shadow-sm mt-4">
+            <div className="bg-gray-50 shadow-sm rounded w-full p-3  flex flex-col gap-3 mt-4">
          
            <div className="flex flex-row justify-start items-center space-x-3 p-3">
                 { 
@@ -217,14 +218,14 @@ const EditCommunityUnit = (props) => {
                     router.push(`/community-units/approve/${cu.id}`)
                    
                   }}
-                  className={"p-2 text-center -md font-semibold text-base text-white bg-blue-600"}
+                  className={"p-2 text-center -md font-semibold rounded text-base text-white bg-gray-400"}
                 >
                   {/* Dynamic Button Rendering */}
                   {"Approve/Reject"}
                 </button>}
                 <button
                   onClick={() => null}
-                  className="p-2 text-center -md font-semibold text-base text-white bg-black"
+                  className="p-2 text-center -md font-semibold rounded text-base text-white bg-black"
                 >
                   Print
                 </button>
@@ -234,7 +235,7 @@ const EditCommunityUnit = (props) => {
                       "/community-units/edit/" + cu.id
                     )
                   }
-                  className="p-2 text-center -md font-semibold text-base  text-white bg-black"
+                  className="p-2 text-center -md font-semibold rounded text-base  text-white bg-black"
                 >
                   Edit
                 </button>
@@ -276,7 +277,7 @@ const EditCommunityUnit = (props) => {
                 className="grow-1 py-1 px-4 tab-panel"
               >
                 <div className="col-span-4 md:col-span-4 flex flex-col gap-y-2 group items-center justify-start text-left">
-                  <div className="bg-gray-50 shadow-md w-full p-3  grid grid-cols-2 gap-3  mt-4">
+                  <div className="bg-gray-50 shadow-md rounded w-full p-3  grid grid-cols-2 gap-3  mt-4">
                     <h3 className="text-lg leading-tight underline col-span-2 text-gray-700 font-medium">
                       Status:
                     </h3>
@@ -399,7 +400,8 @@ const EditCommunityUnit = (props) => {
                       </div>
                     )}
                   </div>
-                  <div className="bg-gray-50 shadow-md w-full p-3  flex flex-col gap-3  mt-4">
+
+                  <div className="bg-gray-50 shadow-md rounded w-full p-3  flex flex-col gap-3  mt-4">
                     <h3 className="text-lg leading-tight underline text-gray-700 font-medium">
                       Coverage:
                     </h3>
@@ -420,7 +422,8 @@ const EditCommunityUnit = (props) => {
                       </p>
                     </div>
                   </div>
-                  <div className="bg-gray-50 shadow-md w-full p-3  flex flex-col gap-3  mt-4">
+
+                  <div className="bg-gray-50 shadow-md rounded w-full p-3  flex flex-col gap-3  mt-4">
                     <h3 className="text-lg leading-tight underline text-gray-700 font-medium">
                       Location:
                     </h3>
@@ -463,7 +466,8 @@ const EditCommunityUnit = (props) => {
                       </p>
                     </div>
                   </div>
-                  <div className="bg-gray-50 shadow-md w-full p-3  flex flex-col gap-3  mt-4">
+
+                  <div className="bg-gray-50 shadow-md rounded w-full p-3  flex flex-col gap-3  mt-4">
                     <h3 className="text-lg leading-tight underline text-gray-700 font-medium">
                       Regulation:
                     </h3>
@@ -520,7 +524,8 @@ const EditCommunityUnit = (props) => {
                       </p>
                     </div>
                   </div>
-                  <div className="bg-gray-50 shadow-md w-full p-3  flex flex-col gap-3  mt-4">
+
+                  <div className="bg-gray-50 shadow-md rounded w-full p-3  flex flex-col gap-3  mt-4">
                     <h3 className="text-lg leading-tight underline text-gray-700 font-medium">
                       Contacts:
                     </h3>

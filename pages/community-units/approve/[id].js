@@ -17,7 +17,8 @@ import CommunityUnitSideMenu from '../../../components/CommunityUnitSideMenu';
 
 
 
-const ApproveCommunityUnit = (props) => {
+
+function ApproveCommunityUnit (props) {
 
   const router = useRouter();
   const userCtx = useContext(UserContext);
@@ -35,13 +36,15 @@ const ApproveCommunityUnit = (props) => {
     {  label: 'Old Value', minWidth: 100},
     {  label: 'New Value',minWidth: 100, }
   ];
+
  const CHULDetails =[
   { value: `${cu.facility_subcounty}`, label: 'Sub County ' },
   { value: `${cu.facility_constituency}`, label: 'Constituency'},
   { value: `${cu.facility_constituency}`, label: 'Constituency'},
   { value: `${cu.facility_ward}`, label: 'Ward'},
   {value: `${cu.households_monitored}`, label: 'Households Monitored'},
- ]
+ ];
+
  const CHU_MainDetails =[
   { value: `${cu.status_name}`, label: 'Functional Status' },
   { value: `${cu.code}`, label: 'CHU Code'},
@@ -52,16 +55,15 @@ const ApproveCommunityUnit = (props) => {
 
 
   let reject = ''
+
   useEffect(() =>
   {
-    
-    
    if (userCtx) setUser(userCtx);
       
-    
     return () => {};
     
   }, [cu, reject]);
+
 
   useEffect(() => {
     setUser(userCtx);
@@ -71,6 +73,7 @@ const ApproveCommunityUnit = (props) => {
 
     setIsClient(true)
   },[])
+
  
   if(isClient){
     return (
@@ -82,7 +85,7 @@ const ApproveCommunityUnit = (props) => {
         </Head>
 
         <MainLayout>
-          <div className='w-full grid md:grid-cols-7 gap-4 p-2 my-6'>
+          <div className='w-full md:w-[85%] grid md:grid-cols-7 gap-4 p-2 my-6'>
             <div className='col-span-5 flex flex-col md:col-span-7 items-start justify-start gap-3'>
 
               {/* Breadcrumb */}
@@ -247,7 +250,7 @@ const ApproveCommunityUnit = (props) => {
                                       Object.keys(cu.pending_updates).reverse().map((key, index) => {
                                         if(key == 'basic'){
                                           return ( 
-                                            <>
+                                            <React.Fragment key={index}>
                                             
                                             <h5 className='col-span-1 text-gray-900 pb-2 font-semibold leading-16 text-medium mt-5'>{'Basic :'}</h5>
                                             <TableContainer sx={{ maxHeight: 440 }}>
@@ -374,13 +377,13 @@ const ApproveCommunityUnit = (props) => {
                                             </TableBody>
                                             </Table>
                                             </TableContainer> 
-                                            </>
+                                            </React.Fragment>
                                           )
                                         }
                                         if(key == 'services'){
                                   
-                                          const services = cu.pending_updates['services'].map((item)=> {
-                                          return <div className='col-span-4 w-full h-auto ml-7 mt-2' >
+                                          const services = cu.pending_updates['services'].map((item, i)=> {
+                                          return <div className='col-span-4 w-full h-auto ml-7 mt-2' key={i} >
                                             <div className='grid grid-cols-2 w-full'>
                                             <p className='col-span-2 text-gray-600 font-medium text-base'>{item.name}</p>
                                             </div>
@@ -390,8 +393,8 @@ const ApproveCommunityUnit = (props) => {
                                             
                                         }
                                         if(key == 'workers'){
-                                          const workers = cu.pending_updates['workers'].map((item)=> {
-                                            return <div className='col-span-4 w-full h-auto ml-7 mt-2' >
+                                          const workers = cu.pending_updates['workers'].map((item, i)=> {
+                                            return <div className='col-span-4 w-full h-auto ml-7 mt-2' key={i}>
                                               <div className='grid grid-cols-2 w-full'>
                                               <p className='col-span-2 text-gray-600 font-medium text-base'>{item.first_name} {' '} {item.last_name} {'(In Charge)'}</p>
                                               </div>
@@ -410,14 +413,14 @@ const ApproveCommunityUnit = (props) => {
                         <button
                           type="submit"
                           className={"p-2 text-center -md font-semibold text-base text-white bg-blue-700"}
-                          onClick={(e) => approveCHUUpdates(e,cu.latest_update,true, router) }
+                          onClick={(e) => approveCHUUpdates(e,cu.latest_update,true, router, props?.token) }
                         >
                           {"Approve CHU Updates"}
                         </button>
                         <button
                           type="submit"
                           className={"p-2 text-center -md font-semibold text-base text-white bg-black" }
-                          onClick={(e) => approveCHUUpdates(e,cu.latest_update,false, router) }
+                          onClick={(e) => approveCHUUpdates(e,cu.latest_update,false, router, props?.token) }
                         >
                           {"Reject CHU Updates"}
                         </button>
@@ -434,7 +437,7 @@ const ApproveCommunityUnit = (props) => {
                     {cu.is_approved}
                     <form
                       className="space-y-3"
-                      onSubmit = { (e) => approveCHU(e,cu.id, appRejReason, isApproveReject, router) }
+                      onSubmit = { (e) => approveCHU(e,cu.id, appRejReason, isApproveReject, router, props?.token) }
                     >
                       <label htmlFor="comment-text-area"></label>
                       <textarea
@@ -476,6 +479,7 @@ const ApproveCommunityUnit = (props) => {
     return null;
   }
 };
+
 
 ApproveCommunityUnit.getInitialProps = async (ctx) => {
   if (ctx.query.q)
@@ -572,7 +576,7 @@ ApproveCommunityUnit.getInitialProps = async (ctx) => {
     })
     .catch((err) =>
     {
-      console.log('Error checking token: ', err);
+      // console.log('Error checking token: ', err);
       if (typeof window !== 'undefined' && window)
       {
         if (ctx?.asPath){
@@ -593,6 +597,7 @@ ApproveCommunityUnit.getInitialProps = async (ctx) => {
               console.log(json);
               return {
                 data: json,
+                token,
               };
             })
             .catch((err) =>

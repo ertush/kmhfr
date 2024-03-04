@@ -8,16 +8,16 @@ import React, { useState, useEffect, useContext } from "react";
 import { Menu } from "@headlessui/react";
 import { getUserDetails } from "../controllers/auth/auth";
 import LoadingAnimation from "./LoadingAnimation";
-import { PermissionContext } from "../providers/permissions";
-import {
-  hasPermission
-} from "../utils/checkPermissions"
+// import { PermissionContext } from "../providers/permissions";
+// import {
+//   hasPermission
+// } from "../utils/checkPermissions"
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
 import { UserContext } from "../providers/user";
 import Image from 'next/image';
 import Head from 'next/head'
 import { CloseOutlined, Login, Logout } from '@mui/icons-material'
-import Select from 'react-select'
+// import Select from 'react-select'
 import Backdrop from '@mui/material/Backdrop';
 import { CancelRounded } from '@mui/icons-material'
 import { Menu as MenuIcon } from '@mui/icons-material'
@@ -66,15 +66,13 @@ export default function HeaderLayout({
 
   
   const userCtx = useContext(UserContext)
-  const [isFAQ, setIsFAQ] = useState(false)
 
+  const [isFAQ, setIsFAQ] = useState(false)
 
   const router = useRouter();
   
-  
-  
-  
   const currentPath = router.asPath.split("?", 1)[0];
+
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   
   const [user, setUser] = useState(null);
@@ -153,6 +151,7 @@ export default function HeaderLayout({
     };
   }, []);
 
+
   useEffect(() => {
     if(userID == 6) {
       if(window){
@@ -203,8 +202,6 @@ export default function HeaderLayout({
               </Link>
 
               {/* Title */}
-
-              {/* <h2 className=' leading-4 font-semibold text-2xl uppercase'>Kenya Master Health Facility Registry</h2> */}
 
               {/* Login / Logout button */}
               {isLoggedIn ? (
@@ -296,7 +293,7 @@ export default function HeaderLayout({
                     {
                       userID == 6 &&
                       !isLoggedIn &&
-                      <li className={`text-lg h-[50px] w-full border-b border-b-gray-300 flex items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-blue-600 ${currentPath == "/" && 'border-r-2 border-r-gray-50 bg-blue-700/85 text-gray-100'}`}>
+                      <li className={`text-lg h-[50px] w-full border-b border-b-gray-300 flex items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-600 ${currentPath == "/" && 'border-r-2 border-r-gray-50 bg-blue-700/85 text-gray-100'}`}>
                         <Link href='/'>Home</Link>
                       </li>
                     }
@@ -304,26 +301,26 @@ export default function HeaderLayout({
                       userID !== 6 &&
                       isLoggedIn &&
 
-                      <li className={`text-lg  h-[50px] w-full border-b border-b-gray3500 flex items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-blue-600 ${currentPath == "/dashboard" && 'border-r-2 border-r-gray-50 bg-blue-700/85 text-gray-100'}`}>
+                      <li className={`text-lg  h-[50px] w-full border-b border-b-gray3500 flex items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-600 ${currentPath == "/dashboard" && 'border-r-2 border-r-gray-50 bg-blue-700/85 text-gray-100'}`}>
                         <Link href='/dashboard'>Dashboard</Link>
                       </li>
                     }
 
 
-                    <li className={`text-lg h-[50px] w-full border-b border-b-gray-300 flex items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-blue-600 ${currentPath == "/facilities" && 'border-r-2 border-r-gray-50 bg-blue-700/85 text-gray-100 '}  ${currentPath == "/public/facilities" && 'border-r-2 border-r-gray-50 bg-blue-700/85 text-gray-100 '}`}>
+                    <li className={`text-lg h-[50px] w-full border-b border-b-gray-300 flex items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-600 ${currentPath == "/facilities" && 'border-r-2 border-r-gray-50 bg-blue-700/85 text-gray-100 '}  ${currentPath == "/public/facilities" && 'border-r-2 border-r-gray-50 bg-blue-700/85 text-gray-100 '}`}>
                       <Link href={`${userID !== 6 && isLoggedIn ? '/facilities' : '/public/facilities'}`}>Facilities</Link>
                     </li>
 
 
 
-                    <li className={`text-lg h-[50px] w-full border-b border-b-gray-300 flex items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-blue-600 ${currentPath == "/community-units" && 'border-r-2 border-r-gray-50 bg-blue-700/85 text-gray-100'}  ${currentPath == "/public/chu" && 'border-r-2 border-r-gray-50 bg-blue-700/85 text-gray-100'}`}>
+                    <li className={`text-lg h-[50px] w-full border-b border-b-gray-300 flex items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-600 ${currentPath == "/community-units" && 'border-r-2 border-r-gray-50 bg-blue-700/85 text-gray-100'}  ${currentPath == "/public/chu" && 'border-r-2 border-r-gray-50 bg-blue-700/85 text-gray-100'}`}>
                       <Link href={`${userID !== 6 && isLoggedIn ? '/community-units' : '/public/chu'}`}>Community Units</Link>
                     </li>
 
                     {
                       userID == 6 &&
                       !isLoggedIn &&
-                      <li className={`text-lg h-[50px] w-full border-b border-b-gray-300 flex items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-blue-600 ${currentPath == "/public/about" && 'border-r-2 border-r-gray-50 bg-blue-700/85 text-gray-100'}`}>
+                      <li className={`text-lg h-[50px] w-full border-b border-b-gray-300 flex items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-600 ${currentPath == "/public/about" && 'border-r-2 border-r-gray-50 bg-blue-700/85 text-gray-100'}`}>
                         <Link href='/public/about'>About</Link>
                       </li>
                     }
@@ -331,7 +328,7 @@ export default function HeaderLayout({
 
                     {
                       userID == 6 &&
-                      <li className={`text-lg h-[50px] w-full border-b border-b-gray-300 flex items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-blue-600 ${currentPath == "/public/faqs" && 'border-r-2 border-r-gray-50 bg-blue-700/85 text-gray-100'}`}>
+                      <li className={`text-lg h-[50px] w-full border-b border-b-gray-300 flex items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-600 ${currentPath == "/public/faqs" && 'border-r-2 border-r-gray-50 bg-blue-700/85 text-gray-100'}`}>
                         <Link href="/public/faqs">FAQs</Link>
 
                       </li>
@@ -342,7 +339,7 @@ export default function HeaderLayout({
                         groupID == 1) &&
                       userID !== 6 &&
                       isLoggedIn &&
-                      <li className={`text-lg h-[50px] w-full border-b border-b-gray-300 flex items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-blue-600 ${currentPath == "/user" && 'border-r-2 border-r-gray-50 bg-blue-700/85 text-gray-100'}`}>
+                      <li className={`text-lg h-[50px] w-full border-b border-b-gray-300 flex items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-600 ${currentPath == "/user" && 'border-r-2 border-r-gray-50 bg-blue-700/85 text-gray-100'}`}>
                         <Link href='/user'>Users</Link>
                       </li>
                     }
@@ -356,7 +353,7 @@ export default function HeaderLayout({
                           groupID == 5)
                       ) &&
                       isLoggedIn &&
-                      <li className={`text-lg h-[50px] w-full border-b border-b-gray-300 flex items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-blue-600 ${currentPath == "/system_setup" && 'border-r-2 border-r-gray-50 bg-blue-700/85 text-gray-100'}`}>
+                      <li className={`text-lg h-[50px] w-full border-b border-b-gray-300 flex items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-600 ${currentPath == "/system_setup" && 'border-r-2 border-r-gray-50 bg-blue-700/85 text-gray-100'}`}>
                         <Link href='/system_setup'>System Setup</Link>
                       </li>
                     }
@@ -365,7 +362,7 @@ export default function HeaderLayout({
                       userID !== 6 &&
                       groupID !== 3 &&
                       isLoggedIn &&
-                      <li className={`text-lg h-[50px] w-full border-b border-b-gray-300 flex items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-blue-600 ${currentPath == "/reports" && 'border-r-2 border-r-gray-50 bg-blue-700/85 text-gray-100'}`}>
+                      <li className={`text-lg h-[50px] w-full border-b border-b-gray-300 flex items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-600 ${currentPath == "/reports" && 'border-r-2 border-r-gray-50 bg-blue-700/85 text-gray-100'}`}>
                         <Link href='/reports'>Reports</Link>
                       </li>
                     }
@@ -376,7 +373,7 @@ export default function HeaderLayout({
                       (groupID == 7 ||
                         groupID == 5) &&
                       isLoggedIn &&
-                      <li className={`text-lg h-[50px] w-full border-b border-b-gray-300 flex items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-blue-600 ${currentPath == "/admin_offices" && 'border-r-2 border-r-gray-50 bg-blue-700/85 text-gray-100'}`}>
+                      <li className={`text-lg h-[50px] w-full border-b border-b-gray-300 flex items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-600 ${currentPath == "/admin_offices" && 'border-r-2 border-r-gray-50 bg-blue-700/85 text-gray-100'}`}>
                         <Link href='/admin_offices'>Admin Offices</Link>
                       </li>
                     }
@@ -455,17 +452,14 @@ export default function HeaderLayout({
 
             </div>
 
-           
-
-
-          </div>
+         </div>
 
         </div>
 
         {/* Menu Heading */}
         {
           currentPath !== '/logout' &&
-          <div style={{ backgroundColor: '#1651b6' }} className='w-full hidden top-[97px] fixed z-10  max-h-min md:flex justify-center'>
+          <div style={{ backgroundColor: '#1651b6'}} className='w-full hidden top-[97px] fixed z-10  max-h-min md:flex justify-center'>
             {/* Wide view Port Nav bar */}
             <nav className="hidden max-h-min md:w-full lg:w-[90%] container md:flex mx-auto ">
               <ul className='list-none w-full flex items-center  justify-between '>
@@ -528,8 +522,6 @@ export default function HeaderLayout({
                 }
 
                 {
-                  
-                  
                   userID !== 6 &&
                   (
                     (groupID == 7 ||
@@ -658,6 +650,7 @@ export default function HeaderLayout({
             </nav>
           </div>
         }
+
         {/* FAQ */}
         {
           isFAQ &&
@@ -666,7 +659,7 @@ export default function HeaderLayout({
             open={isFAQ}
 
           >
-            <div className="p-6 w-[600px] bg-gray-100 max-h-min shadow-sm rounded flex flex-col gap-y-6 ">
+            <div className="p-6 w-[600px] bg-gray-100 max-h-min shadow-sm rounded flex flex-col gap-y-6">
               <div className='flex flex-col gap-2'>
 
                 <button className="text-black self-end">
