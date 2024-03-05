@@ -776,7 +776,7 @@ FacilityHome.getInitialProps = async (ctx) => {
 
     function fetchData(token) {
 
-        let url = API_URL + '/facilities/facilities/?fields=id,code,official_name,facility_type_name,owner_name,county,sub_county,constituency_name,ward_name,updated,operation_status_name,sub_county_name,name,is_complete,in_complete_details,approved_national_level,has_edits,approved,rejected,keph_level'
+        let url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/material/ `// ?fields=id,code,official_name,facility_type_name,owner_name,county,sub_county,constituency_name,ward_name,updated,operation_status_name,sub_county_name,name,is_complete,in_complete_details,approved_national_level,has_edits,approved,rejected,keph_level`
      
         let query = { 'searchTerm': '' }
         if (ctx?.query?.qf) {
@@ -836,8 +836,6 @@ FacilityHome.getInitialProps = async (ctx) => {
         }
 
     
-
-        console.log({url});
 
         return fetch(url, {
             headers: {

@@ -188,7 +188,7 @@ export default function HeaderLayout({
         {/* Logo And Title */}
         <div className='w-full fixed z-20 max-h-min bg-gray-100 flex'>
           {/* Heading */}
-          <div className="max-h-min md:w-[90%] w-full container flex md:mx-auto">
+          <div className="max-h-min md:w-[80%] w-full container flex md:mx-auto">
             {/* Heading */}
             <div className='w-full flex md:justify-between md:items-center justify-center py-4 max-h-min '>
               {/* Logo */}
@@ -456,12 +456,13 @@ export default function HeaderLayout({
 
         </div>
 
-        {/* Menu Heading */}
+          {/* Menu Heading */}
         {
           currentPath !== '/logout' &&
-          <div style={{ backgroundColor: '#1651b6'}} className='w-full hidden top-[97px] fixed z-10  max-h-min md:flex justify-center'>
+          <div style={{ backgroundColor: '#1651b6'}} className='w-full hidden top-[97px] fixed z-10  max-h-min md:flex md:items-center justify-center'>
             {/* Wide view Port Nav bar */}
-            <nav className="hidden max-h-min md:w-full lg:w-[90%] container md:flex mx-auto ">
+            <nav className="hidden max-h-min w-[60%] lg:w-[80%] container md:flex mx-auto ">
+            
               <ul className='list-none w-full flex items-center  justify-between '>
               {
                   userID == 6 &&
