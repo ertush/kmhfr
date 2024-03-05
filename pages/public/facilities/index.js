@@ -239,20 +239,20 @@ function Home(props) {
 				</Head>
 
 				<MainLayout isLoading={false} searchTerm={props?.query?.searchTerm}>
-					<div className='w-full px-4 md:px-0 grid grid-cols-1 gap-y-8 md:grid-cols-5 md:gap-4 py-2 my-4'>
+					<div className='w-full md:w-[80%] md:mx-auto px-4 md:px-0 grid grid-cols-1 gap-y-8 md:grid-cols-5 md:gap-4 py-2 md:max-h-min my-4'>
 						
 						<div className='col-span-1 md:col-span-5 flex flex-col gap-4 md:gap-5 '>
 							<div className='flex flex-wrap items-center justify-between gap-2 text-sm md:text-base py-3'>
 								{/* Bread Crumbs */}
 
-								<div className='flex flex-row gap-2 text-sm md:text-base py-3'>
+								{/* <div className='flex flex-row gap-2 text-sm md:text-base py-3'>
 									<Link className='text-blue-700' href='/'>
 										Home
 									</Link>
 									{'/'}
 									<span className='text-gray-500'>Facilities</span>
-								</div>
-								<div className={"col-span-5 flex justify-between w-full bg-gray-50  text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-blue-600" : "border-red-600")}>
+								</div> */}
+								<div className={"col-span-5 rounded flex justify-between w-full bg-gray-50  text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-blue-600" : "border-red-600")}>
 									<h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
 										{'Facilities'}
 									</h2>
@@ -270,7 +270,7 @@ function Home(props) {
 						</div>
 
 						{/* Side Menu Filters*/}
-						<form className='col-span-1 w-full flex flex-col item-center justify-start md:col-start-1 gap-8'
+						<form className='col-span-1 max-h-min w-full flex flex-col item-center justify-start md:col-start-1 gap-8'
 							onSubmit={handleSubmit}>
 
 							<div className='flex flex-row gap-4'>
@@ -306,45 +306,45 @@ function Home(props) {
 
 
 							{/* <div className='card flex flex-wrap'> */}
-							<div className="card col-span-6 md:col-span-2 flex flex-col items-start gap-4 justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '50px' }}>
+							<div className="card col-span-6 md:col-span-2 flex flex-col items-start gap-4 justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50 rounded" style={{ minHeight: '50px' }}>
 								<h2>Search for a Facility</h2>
 
 
 								<input
 									name="facility"
-									className="flex-none bg-gray-50  p-2 flex-grow shadow-sm border placeholder-gray-500 w-full border-gray-400 focus:shadow-none focus:bg-white focus:border-black outline-none"
+									className="flex-none bg-gray-50  p-2 flex-grow shadow-sm border placeholder-gray-500 w-full border-gray-400 rounded focus:shadow-none focus:bg-white focus:border-black outline-none"
 									type="search"
 									placeholder="Search all facilities"
 								/>
 
 								<input
 									name="service"
-									className="flex-none bg-gray-50  p-2 flex-grow shadow-sm border placeholder-gray-500 w-full border-gray-400 focus:shadow-none focus:bg-white focus:border-black outline-none"
+									className="flex-none bg-gray-50  p-2 flex-grow shadow-sm border placeholder-gray-500 w-full border-gray-400 rounded focus:shadow-none focus:bg-white focus:border-black outline-none"
 									type="search"
 									placeholder="Search services"
 								/>
 							</div>
 
-							<div className="card col-span-6 md:col-span-2 flex flex-col gap-4 items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '50px' }}>
+							<div className="card col-span-6 md:col-span-2 flex flex-col gap-4 items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50 rounded" style={{ minHeight: '50px' }}>
 								<h2>Facility Info</h2>
 
 								<input
 									name="name"
-									className="flex-none bg-gray-50  p-2 flex-grow shadow-sm border placeholder-gray-500 w-full border-gray-400 focus:shadow-none focus:bg-white focus:border-black outline-none"
+									className="flex-none bg-gray-50  p-2 flex-grow shadow-sm border placeholder-gray-500 w-full border-gray-400 rounded focus:shadow-none focus:bg-white focus:border-black outline-none"
 									type="search"
 									placeholder="Facility Name"
 								/>
 
 								<input
 									name="code"
-									className="flex-none bg-gray-50  p-2 flex-grow shadow-sm border placeholder-gray-500 w-full border-gray-400 focus:shadow-none focus:bg-white focus:border-black outline-none"
+									className="flex-none bg-gray-50  p-2 flex-grow shadow-sm border placeholder-gray-500 w-full border-gray-400 rounded focus:shadow-none focus:bg-white focus:border-black outline-none"
 									type="search"
 									placeholder="Facility Code"
 								/>
 
 							</div>
 
-							<div className="card col-span-6 md:col-span-2 flex flex-col gap-4 items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '50px' }}>
+							<div className="card col-span-6 md:col-span-2 flex flex-col gap-4 items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50 rounded" style={{ minHeight: '50px' }}>
 								<h2>Administrative Unit</h2>
 								<div className="w-full md:max-w-xs flex flex-col gap-4 items-start justify-start mb-3" id='first'>
 									{administrative_units?.map((ct, i) => (
@@ -352,7 +352,7 @@ function Home(props) {
 
 											<Select
 
-												className="w-full md:max-w-xs  border border-gray-400"
+												className="w-full md:max-w-xs rounded border border-gray-400"
 												ref={ct.ref}
 												styles={{
 													control: (baseStyles) => ({
@@ -402,7 +402,7 @@ function Home(props) {
 							</div>
 
 
-							<div className="card col-span-6 md:col-span-2 flex flex-col gap-4 items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '50px' }}>
+							<div className="card col-span-6 md:col-span-2 flex flex-col gap-4 items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50 rounded" style={{ minHeight: '50px' }}>
 								<h2>Services</h2>
 								<div className="w-full md:max-w-xs flex flex-col gap-4 items-start justify-start mb-3" id='first'>
 									{service_units.map((ct, i) => (
@@ -411,7 +411,7 @@ function Home(props) {
 											<Select
 												key={i}
 												ref={ct.ref}
-												className="w-full md:max-w-xs  border border-gray-400"
+												className="w-full md:max-w-xs rounded border border-gray-400"
 												styles={{
 													control: (baseStyles) => ({
 														...baseStyles,
@@ -459,7 +459,7 @@ function Home(props) {
 							</div>
 
 
-							<div className="card col-span-6 md:col-span-2 flex flex-col gap-4 items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '50px' }}>
+							<div className="card col-span-6 md:col-span-2 flex flex-col gap-4 items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50 rounded" style={{ minHeight: '50px' }}>
 								<h2>Facility Details</h2>
 								<div className="w-full md:max-w-xs flex flex-col gap-4 items-start justify-start mb-3" id='first'>
 									{facility_details.map((ct, i) => (
@@ -467,7 +467,7 @@ function Home(props) {
 
 											<Select
 												key={i}
-												className="w-full md:max-w-xs  border border-gray-400"
+												className="w-full md:max-w-xs rounded border border-gray-400"
 												ref={ct.ref}
 												styles={{
 													control: (baseStyles) => ({
@@ -544,7 +544,7 @@ function Home(props) {
 							</div>
 
 
-							<div className="card col-span-6 md:col-span-2 flex flex-col gap-4 items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '50px' }}>
+							<div className="card col-span-6 md:col-span-2 flex flex-col gap-4 items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50 rounded" style={{ minHeight: '50px' }}>
 								<h2>Availability</h2>
 								<div className="w-full max-w-xs flex flex-col gap-3 items-start justify-start mb-3" id='first'>
 									<div className="w-full max-w-xs  flex-col items-start justify-start mb-3" id='first'>
@@ -596,7 +596,7 @@ function Home(props) {
 
 						{/* Main body */}
 						{/* <div className='col-span-5 md:col-span-4 flex flex-col items-center gap-4 mt-2 order-last md:order-none'> */}
-						<div className={`${(Array.isArray(facilities) && facilities?.length == 0) || (!formError || !submitting) && 'p-4'} col-span-1 bg-gray-50 h-auto shadow-md md:col-span-4 flex flex-col md:gap-4 order-last md:order-none`}> {/* CHANGED colspan */}
+						<div className={`${(Array.isArray(facilities) && facilities?.length == 0) || (!formError || !submitting) && 'p-4'} col-span-1 rounded bg-gray-50 md:h-[1670px] md:px-0 overflow-y-scroll shadow-md md:col-span-4 flex flex-col md:gap-4 order-last md:order-none`}> {/* CHANGED colspan */}
 
 							{
 								formError && <Alert severity='error' className='w-full border-2 border-red-500 rounded-none'>{formError}</Alert>
@@ -607,18 +607,20 @@ function Home(props) {
 								submitting && <Alert severity='info' className='w-full border-2 border-blue-500 rounded-none'>Loading...</Alert>
 							}
 
-							<div className="w-full flex justify-end	pt-2 px-1">
-								<p className='text-end text-gray-500 font-semibold'>{props?.facilityCount > 0 ? '30': '0'} of {props?.facilityCount}</p>
-							</div>
+							
 
 							<div className='flex flex-col justify-center items-center md:col-span-4 w-full '>
+
+							<div className="w-full flex justify-end	pt-2 px-1 border-b border-gray-500">
+								<p className='text-end text-gray-500 font-semibold'>{props?.facilityCount > 0 ? '30': '0'} of {props?.facilityCount}</p>
+							</div>
 								{/* <pre>{JSON.stringify(facilities[0], null, 2)}</pre> */}
 
 								{viewAll && facilities?.results && facilities?.results.length > 0 ? (
 									facilities?.results.map((hf, index) => (
 										<div
 											key={index}
-											className='px-1 md:px-3 grid grid-cols-8 gap-3 border-b border-gray-400 py-4 hover:bg-gray-50 w-full'>
+											className='px-1 md:px-3 grid grid-cols-8 gap-3 border-b border-gray-400  py-4 hover:bg-gray-50 w-full'>
 											<div className='col-span-8 flex flex-col gap-1 group items-start justify-center  text-left'>
 												<h3 className='text-2xl w-full'>
 													<Link

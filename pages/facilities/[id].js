@@ -29,8 +29,7 @@ import {Formik, Form, Field} from 'formik'
 import Typography from '@mui/material/Typography';
 import FacilitySideMenu from "../../components/FacilitySideMenu";
 import { Table, TableBody, TableCell, TableRow } from "@mui/material";
-import { PermissionContext } from "../../providers/permissions";
-import { UserGroupContext } from "../../providers/userGroup";
+
 import { useAlert } from "react-alert";
 import { KeyboardArrowRight, KeyboardArrowDown } from "@mui/icons-material";
 
