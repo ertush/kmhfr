@@ -65,10 +65,7 @@ export function RegulationForm() {
     const [hideLicenseNumber, setHideLicenseNumber] = useState(false);
     const [hideRegistrationNumber, setHideRegistrationNumber] = useState(false);
 
-    const [initialValues, handleFormUpdate] = useState(options?.data ? facilityRegulationData :  formFields)
  
-    const [formValues, setFormValues] = useState(options?.data ? facilityRegulationData :  initialValues && initialValues.length > 1 ? JSON.parse(initialValues) : formFields)
-
     const formFields = useMemo(() => {
         let vals = {}
 
@@ -116,6 +113,12 @@ export function RegulationForm() {
     }
         return vals
     }, [facilityDepts])
+
+    const [initialValues, handleFormUpdate] = useState(options?.data ? facilityRegulationData :  formFields)
+
+
+    const [formValues, setFormValues] = useState(options?.data ? facilityRegulationData :  initialValues && initialValues.length > 1 ? JSON.parse(initialValues) : formFields)
+
     
     delete formValues['license_document'];
 
@@ -243,7 +246,7 @@ export function RegulationForm() {
                               
                   return (
                    <>
-                        <h4 className="text-lg uppercase mt-4 pb-2 border-b border-gray-400 rounded w-full mb-4 font-semibold text-blue-900">Facility Regulation</h4>
+                        <h4 className="text-lg uppercase mt-4 pb-2 border-b border-gray-400  w-full mb-4 font-semibold text-gray-900">Facility Regulation</h4>
                         <Form ref={formRef} name="facility_regulation_form" className='flex flex-col w-full items-start bg-gray-50 p-4 justify-start gap-3' >
 
                             {formError && <Alert severity='error' className={'w-full'}>{formError}</Alert>}
@@ -322,14 +325,14 @@ export function RegulationForm() {
                             </div>
 
                             {/* Facility Departments Regulation  */}
-                            <h5 className="text-lg uppercase pb-2 border-b border-gray-400 rounded w-full mb-4 font-semibold text-blue-900">Facility Departments Regulation</h5>
+                            <h5 className="text-lg uppercase pb-2 border-b border-gray-400  w-full mb-4 font-semibold text-gray-900">Facility Departments Regulation</h5>
                             <div className='grid grid-cols-4 place-content-start gap-3 w-full border border-gray-400 rounded  p-3'>
 
                                 {/* Contact Headers */}
-                                <h3 className='text-medium font-semibold text-blue-900'>Name</h3>
-                                <h3 className='text-medium font-semibold  text-blue-900'>Regulatory Body</h3>
-                                <h3 className='text-medium font-semibold  text-blue-900'>License Number</h3>
-                                <h3 className='text-medium font-semibold  text-blue-900'>Reg. Number</h3>
+                                <h3 className='text-medium font-semibold text-gray-900'>Name</h3>
+                                <h3 className='text-medium font-semibold  text-gray-900'>Regulatory Body</h3>
+                                <h3 className='text-medium font-semibold  text-gray-900'>License Number</h3>
+                                <h3 className='text-medium font-semibold  text-gray-900'>Reg. Number</h3>
 
                                 <hr className='col-span-4' />
 
@@ -406,9 +409,9 @@ export function RegulationForm() {
 
                                       <div className='flex justify-between items-center w-full'>
                                           <button onClick={handleRegulationPrevious}
-                                              className='flex items-center justify-start space-x-2 p-1 group hover:bg-blue-700 border border-blue-700 px-2'>
-                                              <ChevronDoubleLeftIcon className='w-4 h-4 group-hover:text-white text-blue-900' />
-                                              <span className='text-medium font-semibold group-hover:text-white text-blue-900'>Facility Contacts</span>
+                                              className='flex items-center justify-start space-x-2 p-1 group hover:bg-blue-700 border border-gray-700 px-2'>
+                                              <ChevronDoubleLeftIcon className='w-4 h-4 group-hover:text-white text-gray-900' />
+                                              <span className='text-medium font-semibold group-hover:text-white text-gray-900'>Facility Contacts</span>
                                           </button>
                                           <button type="submit"  disabled={submitting} className={`${submitting ? 'cursor-not-allowed' : 'cursor-pointer'} flex items-center justify-start gap-2 text-white bg-blue-700  p-1 px-2`}>
                                                 <span className='text-medium font-semibold text-white'>

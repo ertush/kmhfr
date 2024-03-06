@@ -156,8 +156,8 @@ function Home(props) {
 
 
                 {/* Login Button */}
-                <div className='text-lg group hidden  duration-200 hover:rounded ease-in-out rounded hover:border hover:border-blue-800 hover:text-blue-800  h-auto md:h-[40px] px-3 md:flex gap-x-2 items-center text-blue-800 capitalize font-semibold'>
-                  <Login className='w-6 h-6 text-blue-800 group-hover:text-blue-800' />
+                <div className='text-lg group hidden  duration-200 hover:rounded ease-in-out rounded hover:border hover:border-gray-800 hover:text-gray-800  h-auto md:h-[40px] px-3 md:flex gap-x-2 items-center text-gray-800 capitalize font-semibold'>
+                  <Login className='w-6 h-6 text-gray-800 group-hover:text-gray-800' />
                   <Link href="/auth/login">
                     log in
                   </Link>
@@ -174,19 +174,19 @@ function Home(props) {
             {/* Menu Heading */}
             <nav className="hidden max-h-min w-[60%] container md:flex mx-auto ">
               <ul className='list-none w-full flex items-center  justify-between '>
-               <li className={`text-lg h-[60px] flex items-center  hover:text-gray-100  duration-200 ease-out hover:bg-blue-800 px-4 ${router.asPath == "/" && 'border-b-2 text-gray-100 border-b-gray-50 bg-blue-800/85'} font-semibold capitalize text-blue-900 `}>
+               <li className={`text-lg h-[60px] flex items-center  hover:text-gray-100  duration-200 ease-out hover:bg-blue-800 px-4 ${router.asPath == "/" && 'border-b-2 text-gray-100 border-b-gray-50 bg-blue-800/85'} font-semibold capitalize text-gray-900 `}>
                   <Link href="/">Home</Link>
                 </li>
-                <li className='text-lg h-[60px] flex items-center  hover:text-gray-100  duration-200 ease-out hover:bg-blue-800 px-4 font-semibold capitalize text-blue-900 '>
+                <li className='text-lg h-[60px] flex items-center  hover:text-gray-100  duration-200 ease-out hover:bg-blue-800 px-4 font-semibold capitalize text-gray-900 '>
                   <Link href='/public/facilities'>Facilities</Link>
                 </li>
-                <li className='text-lg h-[60px] flex items-center  hover:text-gray-100  duration-200 ease-out hover:bg-blue-800 px-4 font-semibold capitalize text-blue-900 '>
+                <li className='text-lg h-[60px] flex items-center  hover:text-gray-100  duration-200 ease-out hover:bg-blue-800 px-4 font-semibold capitalize text-gray-900 '>
                   <Link href='/public/chu'>Community Units</Link>
                 </li>
-                <li className='text-lg h-[60px] flex items-center  hover:text-gray-100  duration-200 ease-out hover:bg-blue-800 px-4 font-semibold capitalize text-blue-900 '>
+                <li className='text-lg h-[60px] flex items-center  hover:text-gray-100  duration-200 ease-out hover:bg-blue-800 px-4 font-semibold capitalize text-gray-900 '>
                   <Link href="/public/about">About</Link>
                 </li>
-                <li className='text-lg h-[60px] flex items-center  hover:text-gray-100  duration-200 ease-out hover:bg-blue-800 px-4 font-semibold capitalize text-blue-900 '>
+                <li className='text-lg h-[60px] flex items-center  hover:text-gray-100  duration-200 ease-out hover:bg-blue-800 px-4 font-semibold capitalize text-gray-900 '>
                   <Link href="/public/faqs">FAQs</Link>
                 </li>
                 
@@ -196,33 +196,33 @@ function Home(props) {
             <button className='md:hidden relative' onClick={() => setIsMobileMenu(!isMobileMenu)}>
               {
                 !isMobileMenu &&
-                 <Menu className='w-6 aspect-square text-blue-800'/>
+                 <Menu className='w-6 aspect-square text-gray-800'/>
               }
 
               {
                 isMobileMenu &&
-                <CloseOutlined className='w-6 aspect-square text-blue-800'/>
+                <CloseOutlined className='w-6 aspect-square text-gray-800'/>
               }
 
               {
               isMobileMenu &&
               <nav className="flex max-h-min w-auto container md:hidden mx-auto absolute top-[120%]">
                <ul className='list-none w-[200px] flex flex-col text-start items-start  bg-gray-50 shadow-sm rounded'>
-                 <li className={`text-lg h-[50px] w-full border-b border-b-gray-300 flex items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-blue-600 ${currentPath == "/" && 'border-r-2 border-r-gray-50 bg-blue-700/85 text-gray-100'}`}>
+                 <li className={`text-lg h-[50px] w-full border-b border-b-gray-300 flex items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-600 ${currentPath == "/" && 'border-r-2 border-r-gray-50 bg-blue-700/85 text-gray-100'}`}>
                   <Link href="/">Home</Link>
                 </li>
-                <li className={`text-lg h-[50px] w-full border-b border-b-gray-300 flex items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-blue-600 ${currentPath == "/public/facilities" && 'border-r-2 border-r-gray-50 bg-blue-700/85 text-gray-100 '}`}>
+                <li className={`text-lg h-[50px] w-full border-b border-b-gray-300 flex items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-600 ${currentPath == "/public/facilities" && 'border-r-2 border-r-gray-50 bg-blue-700/85 text-gray-100 '}`}>
                   <Link href='/public/facilities'>Facilities</Link>
                 </li>
-                <li className={`text-lg h-[50px] w-full border-b border-b-gray-300 flex items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-blue-600 ${currentPath == "/public/chu" && 'border-r-2 border-r-gray-50 bg-blue-700/85 text-gray-100'}`}>
+                <li className={`text-lg h-[50px] w-full border-b border-b-gray-300 flex items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-600 ${currentPath == "/public/chu" && 'border-r-2 border-r-gray-50 bg-blue-700/85 text-gray-100'}`}>
                   <Link href='/public/chu'>Community</Link>
                   <>Units</>
 
                 </li>
-                <li className={`text-lg h-[50px] w-full border-b border-b-gray-300 flex items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-blue-600 ${currentPath == "/public/about" && 'border-r-2 border-r-gray-50 bg-blue-700/85 text-gray-100'}`}>
+                <li className={`text-lg h-[50px] w-full border-b border-b-gray-300 flex items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-600 ${currentPath == "/public/about" && 'border-r-2 border-r-gray-50 bg-blue-700/85 text-gray-100'}`}>
                   <Link href="/public/about">About</Link>
                 </li>
-                <li className={`text-lg h-[50px] w-full border-b border-b-gray-300 flex items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-blue-600 ${currentPath == "/public/faqs" && 'border-r-2 border-r-gray-50 bg-blue-700/85 text-gray-100'}`}>
+                <li className={`text-lg h-[50px] w-full border-b border-b-gray-300 flex items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-600 ${currentPath == "/public/faqs" && 'border-r-2 border-r-gray-50 bg-blue-700/85 text-gray-100'}`}>
                   <Link href="/public/faqs">FAQs</Link>
                 </li>
                 
@@ -231,8 +231,8 @@ function Home(props) {
              }
             </button>
 
-            <div className='text-lg md:hidden max-h-min flex gap-2 items-center justify-center text-blue-800 capitalize font-semibold'>
-                  <Login className='w-6 aspect-square text-blue-800 group-hover:text-gray-100' />
+            <div className='text-lg md:hidden max-h-min flex gap-2 items-center justify-center text-gray-800 capitalize font-semibold'>
+                  <Login className='w-6 aspect-square text-gray-800 group-hover:text-gray-100' />
                   <Link href="/auth/login">
                     log in
                   </Link>
@@ -257,7 +257,7 @@ function Home(props) {
                         <CancelRounded onClick={() => setIsContacts(false)} className='w-7 aspect-square text-red-400'/>
                       </button>
 
-                    <h2 className='text-3xl text-blue-500 font-semibold mb-2 '>Contacts</h2>
+                    <h2 className='text-3xl text-gray-500 font-semibold mb-2 '>Contacts</h2>
                     <div className="flex items-center gap-3">
                       <Phone className='text-gray-900 w-6 aspect-square'/>
                       <Link href="tel:+254 20 2717077">+254-20-2717077</Link>
@@ -400,7 +400,7 @@ function Home(props) {
 
             <div className="p-4 w-[250px] h-[150px] rounded flex flex-col bg-gray-300/45 shadow-sm ">
               <div className='flex w-full h-full justify-center items-center'>
-                <h1 className='text-5xl text-blue-600 font-bold'>{props?.data?.facilities }</h1>
+                <h1 className='text-5xl text-gray-600 font-bold'>{props?.data?.facilities }</h1>
               </div>
 
               <div className='flex self-start'>
@@ -410,7 +410,7 @@ function Home(props) {
             
             <div className="p-4 w-[250px] h-[150px] rounded flex flex-col bg-gray-300/45 shadow-sm ">
               <div className='flex w-full h-full justify-center items-center'>
-                <h1 className='text-5xl text-blue-600 font-bold'>{props?.data?.moh }</h1>
+                <h1 className='text-5xl text-gray-600 font-bold'>{props?.data?.moh }</h1>
               </div>
 
               <div className='flex self-start'>
@@ -420,7 +420,7 @@ function Home(props) {
 
             <div className="p-4 w-[250px] h-[150px] rounded flex flex-col bg-gray-300/45 shadow-sm ">
               <div className='flex w-full h-full justify-center items-center'>
-                <h1 className='text-5xl text-blue-600 font-bold'>{props?.data?.faith_based }</h1>
+                <h1 className='text-5xl text-gray-600 font-bold'>{props?.data?.faith_based }</h1>
               </div>
 
               <div className='flex self-start'>
@@ -430,7 +430,7 @@ function Home(props) {
 
             <div className="p-4 w-[250px] h-[150px] rounded flex flex-col bg-gray-300/45 shadow-sm ">
               <div className='flex w-full h-full justify-center items-center'>
-                <h1 className='text-5xl text-blue-600 font-bold'>{props?.data?.private_facilities }</h1>
+                <h1 className='text-5xl text-gray-600 font-bold'>{props?.data?.private_facilities }</h1>
               </div>
 
               <div className='flex self-start'>
@@ -440,7 +440,7 @@ function Home(props) {
 
             <div className="p-4 w-[250px] h-[150px] rounded flex flex-col bg-gray-300/45 shadow-sm ">
               <div className='flex w-full h-full justify-center items-center'>
-                <h1 className='text-5xl text-blue-600 font-bold'>{props?.data?.ngo }</h1>
+                <h1 className='text-5xl text-gray-600 font-bold'>{props?.data?.ngo }</h1>
               </div>
 
               <div className='flex self-start'>
@@ -460,7 +460,7 @@ function Home(props) {
 
             <div className="p-4 w-[250px] h-[150px] rounded flex flex-col bg-gray-300/45 shadow-sm ">
               <div className='flex w-full h-full justify-center items-center'>
-                <h1 className='text-5xl text-blue-600 font-bold'>{props?.data?.chus }</h1>
+                <h1 className='text-5xl text-gray-600 font-bold'>{props?.data?.chus }</h1>
               </div>
 
               <div className='flex self-start'>
@@ -470,7 +470,7 @@ function Home(props) {
               
               <div className="p-4 w-[250px] h-[150px] rounded flex flex-col bg-gray-300/45 shadow-sm ">
               <div className='flex w-full h-full justify-center items-center'>
-                <h1 className='text-5xl text-blue-600 font-bold'>{props?.data?.chu_fully_functional }</h1>
+                <h1 className='text-5xl text-gray-600 font-bold'>{props?.data?.chu_fully_functional }</h1>
               </div>
 
               <div className='flex self-start'>
@@ -480,7 +480,7 @@ function Home(props) {
 
             <div className="p-4 w-[250px] h-[150px] rounded flex flex-col bg-gray-300/45 shadow-sm ">
               <div className='flex w-full h-full justify-center items-center'>
-                <h1 className='text-5xl text-blue-600 font-bold'>{props?.data?.chu_semi_functional }</h1>
+                <h1 className='text-5xl text-gray-600 font-bold'>{props?.data?.chu_semi_functional }</h1>
               </div>
 
               <div className='flex self-start'>
@@ -490,7 +490,7 @@ function Home(props) {
 
             <div className="p-4 w-[250px] h-[150px] rounded flex flex-col bg-gray-300/45 shadow-sm ">
               <div className='flex w-full h-full justify-center items-center'>
-                <h1 className='text-5xl text-blue-600 font-bold'>{props?.data?.chu_non_functional }</h1>
+                <h1 className='text-5xl text-gray-600 font-bold'>{props?.data?.chu_non_functional }</h1>
               </div>
 
               <div className='flex self-start'>
@@ -542,7 +542,7 @@ function Home(props) {
               <div className="flex flex-col gap-4 md:items-between items-center">
                 <div className=" w-full px-4 md:w-[80%] md:mx-auto gap-x-3 md:gap-x-0 flex justify-between">
                   <div className="flex flex-col text-gray-200 gap-2">
-                    <h2 className='text-blue-50 font-semibold mb-2 '>Contacts</h2>
+                    <h2 className='text-gray-50 font-semibold mb-2 '>Contacts</h2>
                     <Link href="tel:+254 20 2717077" className="t">+254-20-2717077</Link>
                     <Link href="mailto:kmhfl@health.go.ke" className="text-gray-200">kmhfl@health.go.ke</Link>
                     <Link href="https://servicedesk.health.go.ke/portal" className="text-gray-200"> servicedesk.health.go.ke/portal</Link>
@@ -550,14 +550,14 @@ function Home(props) {
                   </div>
 
                   <div className="md:flex flex-col hidden  gap-2">
-                    <h2 className='text-blue-50 font-semibold mb-2'>Partners</h2>
+                    <h2 className='text-gray-50 font-semibold mb-2'>Partners</h2>
                     <p className="text-gray-200">HealthIT</p>
                     <p className="text-gray-200">USAID</p>
                     <p className="text-gray-200">Ministry of Health</p>
                   </div>
 
                   <div className="flex flex-col text-gray-200 gap-1 md:gap-2">
-                    <h2 className='text-blue-50 font-semibold mb-2'>Quick Links</h2>
+                    <h2 className='text-gray-50 font-semibold mb-2'>Quick Links</h2>
                     <div className='flex items-center gap-2'>
                     <Link href="https://healthit.uonbi.ac.ke" className="text-gray-200 hover:underline">HealthIT</Link>
                     <NorthEast className="text-gray-200 md:w-3 w-2 aspect-square"/>

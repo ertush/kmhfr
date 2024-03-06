@@ -47,7 +47,8 @@ const WardGISMap = ({ markerCoordinates, geoJSON, center, ward, from }) => {
         color: '#000',
         weight: 1,
         fillColor: '#46f',
-        fillOpacity: 0.3
+        fillOpacity: 0.3,
+        zIndex: '0px'
     }
  
 
@@ -96,20 +97,20 @@ const WardGISMap = ({ markerCoordinates, geoJSON, center, ward, from }) => {
         <>
             {/* Map title */}
 
-            <h3 className='mb-1 px-2 text-blue-900 font-normal float-left text-lg bg-gray-300 w-full  capitalize'>{String(ward).toLowerCase()}{" ward"}</h3>
+            <h3 className='mb-1 px-2 text-gray-900 font-normal float-left text-lg bg-gray-300 w-full  capitalize'>{String(ward).toLowerCase()}{" ward"}</h3>
             {isValidGeoCoordinates && isOutOfBound && <Alert severity="error" sx={{ width: '100%' }}>The coordinates are outside the ward boundary</Alert>}
     
             {/* Ward Map */}
             {
                  markerCoordinates && center  ?
                 <MapContainer 
-                    className='w-full' 
+                    className='w-full z-0' 
                     center={center ?? [-0.818389, 37.477222]} 
                     zoom={9.899} 
                     maxZoom={12.70} 
                     scrollWheelZoom={false} 
                     touchZoom={false} 
-                    style={{ height: '400px', position: 'relative', backgroundColor: '#e7eae8', padding: '15px', 'overflow': 'hidden'}}>
+                    style={{ height: '400px', position: 'relative', backgroundColor: '#e7eae8', padding: '15px', zIndex: '0px', 'overflow': 'hidden'}}>
 
                         {
                             geoJSON && 

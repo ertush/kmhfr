@@ -91,7 +91,7 @@ const AddGroup = (props)=> {
                                 <span className="text-gray-500">Add group</span>
                             </div>
                         </div>
-                        <div className={"col-span-5 flex justify-between p-6 w-full -50 drop-shadow  text-black  md:divide-x md:divide-gray-200z items-center border border-l-8 border-blue-600"}>
+                        <div className={"col-span-5 flex justify-between p-6 w-full -50 drop-shadow  text-black  md:divide-x md:divide-gray-200z items-center border border-l-8 border-gray-600"}>
                                 <h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
                                    <UserGroupIcon className='text-black ml-2 h-5 w-5'/>
                                     {'New Group'}
@@ -105,7 +105,7 @@ const AddGroup = (props)=> {
 								style={{ minHeight: '250px' }}>
 							
 												<>
-													<h4 className='text-lg uppercase pb-2w-full mb-4 font-semibold text-blue-900'>
+													<h4 className='text-lg uppercase pb-2w-full mb-4 font-semibold text-gray-900'>
 														{/* Bio Details */}
 													</h4>
 													<form
@@ -134,7 +134,7 @@ const AddGroup = (props)=> {
 																	)
 																}}
 																// value={userData['first_name']?.value || ''}
-																className='flex-none w-full bg-transparent p-2 flex-grow border-2 placeholder-gray-500 border-blue-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
+																className='flex-none w-full bg-transparent p-2 flex-grow border-2 placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
 															/>
 														</div>
                                                         <div className='w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3'>
@@ -276,8 +276,8 @@ const AddGroup = (props)=> {
 														
 
 														{/* Permissions Details */}
-														<div className=' w-full flex flex-col items-start justify-start p-3  border border-blue-600 h-auto'>
-															<h4 className='text-lg uppercase pb-2 border-b border-blue-600 border-blue-600-100 w-full mb-4 font-semibold text-blue-900'>
+														<div className=' w-full flex flex-col items-start justify-start p-3  border border-gray-600 h-auto'>
+															<h4 className='text-lg uppercase pb-2 border-b border-gray-600 border-gray-600-100 w-full mb-4 font-semibold text-gray-900'>
 																Permissions
 															</h4>
 															 <div className='w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3'>

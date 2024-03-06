@@ -21,8 +21,6 @@ export default function CommunityUnitSideMenu({ _pathId, filters, qf }) {
 	const [currentQuickFilter, setCurrentQuickFilter] = useState(qf);
 
 
-
-
 	const [chuPendingApproval, setCHUPendingApproval] = useState(false);
 
 
@@ -141,6 +139,8 @@ export default function CommunityUnitSideMenu({ _pathId, filters, qf }) {
 											backgroundColor: (allCHUSelected || pathId === 'all') && '#1d4ed8',
 											color: (allCHUSelected || pathId === 'all') && '#ffff',
 											borderBottom: 'solid 1px  rgba(156, 163, 175, 1)', 
+											borderTopLeftRadius: '4px',
+											borderTopRightRadius: '4px',
 											"&:hover": {
 											backgroundColor: "rgba(37, 99, 235, 1)",
 											color: "white"
@@ -161,7 +161,7 @@ export default function CommunityUnitSideMenu({ _pathId, filters, qf }) {
 										return { 
 											backgroundColor: (newCHUSelected || pathId === 'new_pending_approval') && '#1d4ed8',
 											color: (newCHUSelected || pathId === 'new_pending_approval') && '#ffff',
-											borderBottom: 'solid 1px  rgba(156, 163, 175, 1)', 
+											borderBottom: 'solid 1px  rgba(156, 163, 175, 1)',
 											"&:hover": {
 											backgroundColor: "rgba(37, 99, 235, 1)",
 											color: "white"
@@ -186,12 +186,14 @@ export default function CommunityUnitSideMenu({ _pathId, filters, qf }) {
 											"&:hover": {
 											backgroundColor: "rgba(37, 99, 235, 1)",
 											color: "white"
+
 										 }
 									}
 
 								}
 							})()}
 							name="rt"
+							
 							onClick={(evt) => {
 								switch (qf.name) {
 									case 'All Community Health Units':
@@ -279,6 +281,8 @@ export default function CommunityUnitSideMenu({ _pathId, filters, qf }) {
 										});
 									}
 								});
+
+								console.log({robj})
 
 								router.push(robj);
 							}}

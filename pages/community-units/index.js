@@ -75,7 +75,7 @@ function CommunityUnit(props) {
 								{/* Bread Crumbs */}
 
 								{/* <div className='flex flex-row gap-2 text-sm md:text-base py-3'>
-								<Link className='text-blue-700' href='/'>
+								<Link className='text-gray-700' href='/'>
 									Home
 								</Link>
 								{'/'}
@@ -83,7 +83,7 @@ function CommunityUnit(props) {
 							</div> */}
 
 
-								<div className={"col-sapn-1 md:col-span-5 flex flex-col items-start md:flex-row md:justify-between w-full bg-django-blue border drop-shadow  text-black p-4 md:divide-x md:divide-gray-200 md:items-center border-l-8 " + (true ? "border-blue-700" : "border-red-600")}>
+								<div className={"col-sapn-1 md:col-span-5 flex flex-col items-start md:flex-row md:justify-between w-full bg-django-blue border drop-shadow  text-black p-4 md:divide-x md:divide-gray-200 md:items-center border-l-8 " + (true ? "border-gray-700" : "border-red-600")}>
 									<h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
 										{'Community Health Units'}
 									</h2>
@@ -242,7 +242,7 @@ function CommunityUnit(props) {
 
 						{/* Main body */}
 
-						<div className="w-full md:col-span-4 mr-24 md:col-start-2 col-span-5 md:h-auto bg-gray-50 shadow-md">
+						<div className="w-full md:col-span-4 mr-24 md:col-start-2 col-span-5 md:h-auto rounded bg-gray-50 shadow-md">
 							{/* Data Indicator section */}
 							{/* Data Indicator section */}
 							<div className='w-full p-2 flex justify-between border-b border-gray-600'>
@@ -322,14 +322,14 @@ function CommunityUnit(props) {
 												className='grid grid-cols-8 gap-2 border-b border-gray-400 py-4 hover:bg-gray-50 w-full'>
 												<div className='px-2 col-span-8 md:col-span-8 lg:col-span-6 flex flex-col group items-center justify-start text-left'>
 													<h3 className='text-2xl  font-semibold w-full'>
-														<a
+														<Link
 															href={'/community-units/' + comm_unit.id}
-															className='cursor-pointer hover:text-blue-600 group-focus:text-blue-800 active:text-blue-800 '>
+															className='cursor-pointer hover:text-gray-600 group-focus:text-gray-800 active:text-gray-800 '>
 
 															{comm_unit.official_name ||
 																comm_unit.official_name ||
 																comm_unit.name}
-														</a>
+														</Link>
 													</h3>
 
 													<div className="w-full grid grid-cols-4 gap-1">
@@ -387,17 +387,17 @@ function CommunityUnit(props) {
 												No community units found
 											</span>
 											<Link href={props.path || '/'}>
-												<a className='text-blue-700 hover:text-blue-800 group-focus:text-blue-800 active:text-blue-800'>
+												<span className='text-gray-700 hover:text-gray-800 group-focus:text-gray-800 active:text-gray-800'>
 													Refresh.
-												</a>
+												</span>
 											</Link>
 										</div>
 									)}
 									{cus && cus.length >= 30 && (
 										<ul className='list-none flex p-2 flex-row justify-end gap-2 w-full items-center my-2'>
-											<li className='text-base text-blue-500 cursor-pointer'>
+											<li className='text-base text-gray-500 cursor-pointer'>
 
-												<a
+												<Link
 													href={
 														(() =>
 															props.path.includes('?page') ?
@@ -414,13 +414,13 @@ function CommunityUnit(props) {
 													}
 													className='text-white  bg-blue-600 cursor-pointer font-semibold px-2 py-1 underline'>
 													{props?.data?.current_page}
-												</a>
+												</Link>
 											</li>
 											{props?.data?.near_pages &&
 												props?.data?.near_pages.map((page) => (
-													<li key={page} className='text-base group text-blue-500'>
+													<li key={page} className='text-base group text-gray-500'>
 
-														<a
+														<Link
 															href={
 																(() =>
 																	props.path.includes('?page') ?
@@ -436,9 +436,9 @@ function CommunityUnit(props) {
 
 																)()
 															}
-															className='text-blue-800 p-2 hover:underline active:underline focus:underline'>
+															className='text-gray-800 p-2 hover:underline active:underline focus:underline'>
 															{page}
-														</a>
+														</Link>
 													</li>
 												))}
 											<li className='text-sm text-gray-400 flex'>
@@ -472,13 +472,9 @@ CommunityUnit.getInitialProps = async (ctx) => {
 		'Cache-Control',
 		'public, s-maxage=10, stale-while-revalidate=59'
 	)
-
-	const API_URL = process.env.NEXT_PUBLIC_API_URL;
-
+	
 	async function fetchFilters(token) {
-		let filters_url =
-			API_URL +
-			'/common/filtering_summaries/?fields=county,constituency,ward,chu_status,sub_county';
+		let filters_url = `${process.env.NEXT_PUBLIC_API_URL}/common/filtering_summaries/?fields=county,constituency,ward,chu_status,sub_county`;
 
 		try {
 			const r = await fetch(filters_url, {
@@ -507,14 +503,14 @@ CommunityUnit.getInitialProps = async (ctx) => {
 		let url
 		if (ctx.query !== null) {
 			qry = Object.keys(filterQuery).map(function (key) {
-				let er = (key) + '=' + (filterQuery[key]);
+				const er = `${key}=${filterQuery[key]}`
 				return er
 			}).join('&')
 
-			console.log(qry);
-			url = API_URL + `/chul/units/?${qry}&fields=id,code,name,status_name,date_established,facility,facility_name,facility_county,facility_subcounty,facility_ward,facility_constituency`;
+			// console.log(qry);
+			url = `${process.env.NEXT_PUBLIC_API_URL}/chul/units/?${qry}&fields=id,code,name,status_name,facility_name,has_edits,facility_county,facility_subcounty,facility_ward,date_established`;
 		} else {
-			url = API_URL + `/chul/units/?fields=id,code,name,status_name,date_established,facility,facility_name,facility_county,facility_subcounty,facility_ward,facility_constituency`;
+			url = `${process.env.NEXT_PUBLIC_API_URL}/chul/units/?fields=id,code,name,status_name,date_established,facility,facility_name,facility_county,facility_subcounty,facility_ward,facility_constituency`;
 		}
 		let query = { searchTerm: '' };
 		if (ctx?.query?.q) {

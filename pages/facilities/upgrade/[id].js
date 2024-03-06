@@ -158,22 +158,22 @@ function UpgradeFacility(props) {
                         <div className="md:col-span-7 flex flex-col gap-3 md:gap-5 bg-transparent">
                             <div className="flex flex-wrap items-center justify-between gap-2 text-sm md:text-base">
                                 <div className="flex flex-row items-center justify-between gap-2 text-sm md:text-base py-3">
-                                    <Link className="text-blue-700 cursor-pointer" href='/'>Home</Link>{'/'}
-                                    <Link className="text-blue-700 cursor-pointer" href='/facilities'>Facilities</Link> {'/'}
+                                    <Link className="text-gray-700 cursor-pointer" href='/'>Home</Link>{'/'}
+                                    <Link className="text-gray-700 cursor-pointer" href='/facilities'>Facilities</Link> {'/'}
                                     <span className="text-gray-500">Upgrade</span>
                                 </div>
                             </div>
-                            <div className={"col-span-5 gap-2 flex-col  justify-between p-6 w-full bg-transparent border border-blue-600 drop-shadow  text-black  md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-blue-600" : "border-red-600")}>
+                            <div className={"col-span-5 gap-2 flex-col  justify-between p-6 w-full bg-transparent border border-gray-600 drop-shadow  text-black  md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-gray-600" : "border-red-600")}>
                                 {/* <div className="col-span-6 md:col-span-3"> */}
                                 <h2 className='flex items-center ml-1 text-xl font-bold text-black capitalize '>
                                     Upgrade Facility
                                 </h2>
-                                <span onClick={() => router.push(`/facilities/${facility_id}`)} className="text-4xl tracking-tight hover:text-blue-600 font-bold cursor-pointer leading-tight">{official_name}</span>
+                                <span onClick={() => router.push(`/facilities/${facility_id}`)} className="text-4xl tracking-tight hover:text-gray-600 font-bold cursor-pointer leading-tight">{official_name}</span>
                                 <div className="flex items-center w-full justify-between">
                                     <span
                                         className={
                                             "font-bold text-2xl " +
-                                            (code ? "text-blue-900" : "text-gray-400")
+                                            (code ? "text-gray-900" : "text-gray-400")
                                         }
                                     >
                                         #{code ?? "NO_CODE"}
@@ -222,7 +222,7 @@ function UpgradeFacility(props) {
                                         name='previous_keph'
                                         disabled={true}
                                         defaultValue={formValues?.previous_keph}
-                                        className='flex-none w-full bg-transparent border-blue-600 p-2 flex-grow border placeholder-gray-500  focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                        className='flex-none w-full bg-transparent border-gray-600 p-2 flex-grow border placeholder-gray-500  focus:shadow-none focus:bg-white focus:border-black outline-none'
                                     />
                                 </div>
 
@@ -247,7 +247,7 @@ function UpgradeFacility(props) {
                                         placeholder="Select a KEPH Level.."
                                         defaultValue={formValues?.previous_keph}
                                         name="keph_level"
-                                        className='flex-none w-full flex-grow placeholder-gray-500 border border-blue-600 outline-none' />
+                                        className='flex-none w-full flex-grow placeholder-gray-500 border border-gray-600 outline-none' />
                                 </div>
 
 
@@ -267,7 +267,7 @@ function UpgradeFacility(props) {
                                         name='previous_facility_type'
                                         disabled={true}
                                         defaultValue={formValues?.previous_facility_type}
-                                        className='flex-none w-full bg-transparent border-blue-600 p-2 flex-grow border placeholder-gray-500 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                        className='flex-none w-full bg-transparent border-gray-600 p-2 flex-grow border placeholder-gray-500 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                     />
                                 </div>
 
@@ -292,7 +292,7 @@ function UpgradeFacility(props) {
                                         required
                                         placeholder="Select a facility type..."
                                         name="facility_type"
-                                        className="flex-none w-full bg-transparent border border-blue-600 flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
+                                        className="flex-none w-full bg-transparent border border-gray-600 flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
                                 </div>
 
 
@@ -318,7 +318,7 @@ function UpgradeFacility(props) {
                                         required
                                         placeholder="Select a reason"
                                         name="reason_upgrade"
-                                        className="flex-none w-full bg-transparent border border-blue-600 flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
+                                        className="flex-none w-full bg-transparent border border-gray-600 flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
 
                                 </div>
 

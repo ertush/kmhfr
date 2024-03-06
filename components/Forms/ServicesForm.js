@@ -119,7 +119,7 @@ export function ServicesForm() {
   } 
 
     return <>
-                <h4 className="text-lg uppercase pb-2 mt-4 border-b border-gray-400 rounded w-full mb-4 font-semibold text-blue-900">Services</h4>
+                <h4 className="text-lg uppercase pb-2 mt-4 border-b border-gray-400  w-full mb-4 font-semibold text-gray-900">Services</h4>
                 <div className='flex flex-col w-full items-start justify-start gap-3 mt-6'>
 
                 

@@ -57,7 +57,7 @@ const ReportsSideMenu = () => {
 
     return (
 
-        <div className='col-span-2 w-full col-start-1 border bg-django-blue h-screen border-blue-600'>
+        <div className='col-span-2 w-full col-start-1 border bg-django-blue h-screen border-gray-600'>
 
 
             {/* Health Facility Reports*/}
@@ -65,7 +65,7 @@ const ReportsSideMenu = () => {
             <List
                 component="div"
                 aria-labelledby="nested-list-subheader"
-                className='border-b border-blue-600 p-0'
+                className='border-b border-gray-600 p-0'
                 sx={{
                     paddingTop:0, 
                     paddingBottom:0
@@ -156,7 +156,7 @@ const ReportsSideMenu = () => {
             <List
                 component="div"
                 aria-labelledby="nested-list-subheader"
-                className='border-b border-blue-600 p-0'
+                className='border-b border-gray-600 p-0'
                 subheader={
                     <ListItemButton
                         onClick={() => setMenu({ type: 'admin_offices', value: !menu.openAdminOfficesReports })}
@@ -188,7 +188,7 @@ const ReportsSideMenu = () => {
             <List
                 component="div"
                 aria-labelledby="nested-list-subheader"
-                className={`${menu.openCUReports && 'border-b border-blue-600'} p-0`}
+                className={`${menu.openCUReports && 'border-b border-gray-600'} p-0`}
                 subheader={
                     <ListItemButton
                         onClick={() => setMenu({ type: 'community_health_units', value: !menu.openCUReports })}

@@ -93,11 +93,11 @@ function CommunityUnit(props) {
 
             {/* Header */}
             <div className="flex flex-row items-center justify-between gap-2 text-sm md:text-base py-3">
-              <Link className="text-blue-700" href="/">
+              <Link className="text-gray-700" href="/">
                 Home
               </Link>
               {"/"}
-              <Link className="text-blue-700" href="/public/chu/community_units">
+              <Link className="text-gray-700" href="/public/chu/community_units">
                 Community units
               </Link>
               {"/"}
@@ -111,7 +111,7 @@ function CommunityUnit(props) {
             <div
               className={
                 "md:col-span-7 grid grid-cols-6 gap-5 md:gap-8 py-6 w-full bg-gray-50 drop-shadow  text-black p-4 md:divide-x md:divide-gray-200z shadow-sm items-center border-l-8 " +
-                (cu.active ? "border-blue-600" : "border-red-600")
+                (cu.active ? "border-gray-600" : "border-red-600")
               }
             >
               <div className="col-span-6 md:col-span-3">
@@ -122,7 +122,7 @@ function CommunityUnit(props) {
                   <span
                     className={
                       "font-bold text-2xl " +
-                      (cu.code ? "text-blue-900" : "text-gray-400")
+                      (cu.code ? "text-gray-900" : "text-gray-400")
                     }
                   >
                     #{cu.code || "NO_CODE"}
@@ -157,7 +157,7 @@ function CommunityUnit(props) {
                   className="w-full flex flex-col tab-root"
                   defaultValue="overview"
                 >
-                  <Tabs.List className="list-none flex justify-around border-b border-blue-600 flex-wrap gap-2 md:gap-3 px-4 uppercase leading-none tab-list font-semibold">
+                  <Tabs.List className="list-none flex justify-around border-b border-gray-600 flex-wrap gap-2 md:gap-3 px-4 uppercase leading-none tab-list font-semibold">
                     <Tabs.Tab
                       id={1}
                       value="overview"
@@ -207,14 +207,14 @@ function CommunityUnit(props) {
                             {cu.status_name
                               ?.toLocaleLowerCase()
                               .includes("fully-") ? (
-                              <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 text-blue-900 flex gap-x-1 items-center cursor-default">
+                              <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 text-gray-900 flex gap-x-1 items-center cursor-default">
                                 <CheckCircleIcon className="h-4 w-4" />
                                 {cu?.status_name || "Yes"}
                               </span>
                             ) : cu.status_name
                               ?.toLocaleLowerCase()
                               .includes("semi") ? (
-                              <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 text-blue-900 flex gap-x-1 items-center cursor-default">
+                              <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 text-gray-900 flex gap-x-1 items-center cursor-default">
                                 <CheckCircleIcon className="h-4 w-4" />
                                 {cu?.status_name || "Yes"}
                               </span>
@@ -251,7 +251,7 @@ function CommunityUnit(props) {
                             Linked facility
                           </label>
                           <Link   href={`/public/facility/`+ cu.facility}>
-                            <span className="text-blue-700 col-start-3 underline underline-offset-1">{cu.facility_name || " - "}</span>
+                            <span className="text-gray-700 col-start-3 underline underline-offset-1">{cu.facility_name || " - "}</span>
                           </Link>
                         </div>
                         <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">

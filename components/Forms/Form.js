@@ -58,7 +58,7 @@ export function Form() {
   ];
 
   return (
-    <div className='md:col-span-4 col-span-1 p-3 pb-4 flex flex-col bg-gray-50 shadow-md justify-center items-center w-full'>
+    <div className='md:col-span-4 col-span-1 p-3 pb-4 flex flex-col bg-gray-50 shadow-md justify-start items-center w-full'>
       {/* Stepper Header */}
       <div className='flex flex-col justify-center overflow-x-scroll items-center px-1 md:px-4 w-full m-6'>
         <Box sx={{ width: '100%' }}>

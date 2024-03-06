@@ -116,8 +116,8 @@ function SystemSetup(props) {
               onClick={() => {setEditID(params.row.id); setEditMode(true); setIsAddForm(true);}}
               
             >
-              <p className="text-blue-900 font-semibold">Edit</p>
-              <PencilAltIcon className="h-5 w-5 text-blue-900"/>
+              <p className="text-gray-900 font-semibold">Edit</p>
+              <PencilAltIcon className="h-5 w-5 text-gray-900"/>
             </button>
         ) ,flex: 1}
       ]);
@@ -210,8 +210,8 @@ function SystemSetup(props) {
                                           
                                         >
                                             {console.log({countiesParams: params})}
-                                          <p className="text-blue-900 font-semibold">Edit</p>
-                                          <PencilAltIcon className="h-5 w-5 text-blue-900"/>
+                                          <p className="text-gray-900 font-semibold">Edit</p>
+                                          <PencilAltIcon className="h-5 w-5 text-gray-900"/>
                                         </button>
                                     ) ,flex: 1}
                                   ])
@@ -233,8 +233,8 @@ function SystemSetup(props) {
                                             onClick={() => {setEditID(params.row.id); setEditMode(true); setIsAddForm(true);}}
                                             
                                           >
-                                            <p className="text-blue-900 font-semibold">Edit</p>
-                                            <PencilAltIcon className="h-5 w-5 text-blue-900"/>
+                                            <p className="text-gray-900 font-semibold">Edit</p>
+                                            <PencilAltIcon className="h-5 w-5 text-gray-900"/>
                                           </button>
                                       ) ,flex: 1}
                                     ])
@@ -256,8 +256,8 @@ function SystemSetup(props) {
                                               onClick={() => {setEditID(params.row.id); setEditMode(true); setIsAddForm(true);}}
                                               
                                             >
-                                              <p className="text-blue-900 font-semibold">Edit</p>
-                                              <PencilAltIcon className="h-5 w-5 text-blue-900"/>
+                                              <p className="text-gray-900 font-semibold">Edit</p>
+                                              <PencilAltIcon className="h-5 w-5 text-gray-900"/>
                                             </button>
                                         ) ,flex: 1}
                                       ])
@@ -282,9 +282,9 @@ function SystemSetup(props) {
                                           onClick={() => {setEditID(params.row.id); setEditMode(true); setIsAddForm(true);}}
                                           
                                         >
-                                          <p className="text-blue-900 font-semibold">Edit</p>
+                                          <p className="text-gray-900 font-semibold">Edit</p>
                                           { console.log({params})}
-                                          <PencilAltIcon className="h-5 w-5 text-blue-900"/>
+                                          <PencilAltIcon className="h-5 w-5 text-gray-900"/>
                                         </button>
                                     )}
                                   ])
@@ -305,9 +305,9 @@ function SystemSetup(props) {
                                           onClick={() => {setEditID(params.row.id); setEditMode(true); setIsAddForm(true);}}
                                           
                                         >
-                                          <p className="text-blue-900 font-semibold">Edit</p>
+                                          <p className="text-gray-900 font-semibold">Edit</p>
                                           { console.log({params})}
-                                          <PencilAltIcon className="h-5 w-5 text-blue-900"/>
+                                          <PencilAltIcon className="h-5 w-5 text-gray-900"/>
                                         </button>
                                     )}
                                   ])
@@ -339,9 +339,9 @@ function SystemSetup(props) {
                                           onClick={() => {setEditID(params.row.id); setEditMode(true); setIsAddForm(true);}}
                                           
                                         >
-                                          <p className="text-blue-900 font-semibold">Edit</p>
+                                          <p className="text-gray-900 font-semibold">Edit</p>
                                           { console.log({params})}
-                                          <PencilAltIcon className="h-5 w-5 text-blue-900"/>
+                                          <PencilAltIcon className="h-5 w-5 text-gray-900"/>
                                         </button>
                                     )}
                       ])
@@ -364,9 +364,9 @@ function SystemSetup(props) {
                                           onClick={() => {setEditID(params.row.id); setEditMode(true); setIsAddForm(true);}}
                                           
                                         >
-                                          <p className="text-blue-900 font-semibold">Edit</p>
+                                          <p className="text-gray-900 font-semibold">Edit</p>
                                           { console.log({params})}
-                                          <PencilAltIcon className="h-5 w-5 text-blue-900"/>
+                                          <PencilAltIcon className="h-5 w-5 text-gray-900"/>
                                         </button>
                                     )}
                         ])
@@ -386,9 +386,9 @@ function SystemSetup(props) {
                                           onClick={() => {setEditID(params.row.id); setEditMode(true); setIsAddForm(true);}}
                                           
                                         >
-                                          <p className="text-blue-900 font-semibold">Edit</p>
+                                          <p className="text-gray-900 font-semibold">Edit</p>
                                           { console.log({params})}
-                                          <PencilAltIcon className="h-5 w-5 text-blue-900"/>
+                                          <PencilAltIcon className="h-5 w-5 text-gray-900"/>
                                         </button>
                                     )}
                         ])
@@ -409,9 +409,9 @@ function SystemSetup(props) {
                                           onClick={() => {setEditID(params.row.id); setEditMode(true); setIsAddForm(true);}}
                                           
                                         >
-                                          <p className="text-blue-900 font-semibold">Edit</p>
+                                          <p className="text-gray-900 font-semibold">Edit</p>
                                           { console.log({params})}
-                                          <PencilAltIcon className="h-5 w-5 text-blue-900"/>
+                                          <PencilAltIcon className="h-5 w-5 text-gray-900"/>
                                         </button>
                                     )}
                       ])
@@ -432,9 +432,9 @@ function SystemSetup(props) {
                                           onClick={() => {setEditID(params.row.id); setEditMode(true); setIsAddForm(true);}}
                                           
                                         >
-                                          <p className="text-blue-900 font-semibold">Edit</p>
+                                          <p className="text-gray-900 font-semibold">Edit</p>
                                           { console.log({params})}
-                                          <PencilAltIcon className="h-5 w-5 text-blue-900"/>
+                                          <PencilAltIcon className="h-5 w-5 text-gray-900"/>
                                         </button>
                                     )}
                       ])
@@ -457,9 +457,9 @@ function SystemSetup(props) {
                                           onClick={() => {setEditID(params.row.id); setEditMode(true); setIsAddForm(true);}}
                                           
                                         >
-                                          <p className="text-blue-900 font-semibold">Edit</p>
+                                          <p className="text-gray-900 font-semibold">Edit</p>
                                           { console.log({params})}
-                                          <PencilAltIcon className="h-5 w-5 text-blue-900"/>
+                                          <PencilAltIcon className="h-5 w-5 text-gray-900"/>
                                         </button>
                                     )}
                                 ])
@@ -485,9 +485,9 @@ function SystemSetup(props) {
                                           onClick={() => {setEditID(params.row.id); setEditMode(true); setIsAddForm(true);}}
                                           
                                         >
-                                          <p className="text-blue-900 font-semibold">Edit</p>
+                                          <p className="text-gray-900 font-semibold">Edit</p>
                                           { console.log({params})}
-                                          <PencilAltIcon className="h-5 w-5 text-blue-900"/>
+                                          <PencilAltIcon className="h-5 w-5 text-gray-900"/>
                                         </button>
                                     )}
                                         ])
@@ -509,9 +509,9 @@ function SystemSetup(props) {
                                           onClick={() => {setEditID(params.row.id); setEditMode(true); setIsAddForm(true);}}
                                           
                                         >
-                                          <p className="text-blue-900 font-semibold">Edit</p>
+                                          <p className="text-gray-900 font-semibold">Edit</p>
                                           { console.log({params})}
-                                          <PencilAltIcon className="h-5 w-5 text-blue-900"/>
+                                          <PencilAltIcon className="h-5 w-5 text-gray-900"/>
                                         </button>
                                     )}
                                         ])
@@ -537,9 +537,9 @@ function SystemSetup(props) {
                                           onClick={() => {setEditID(params.row.id); setEditMode(true); setIsAddForm(true);}}
                                           
                                         >
-                                          <p className="text-blue-900 font-semibold">Edit</p>
+                                          <p className="text-gray-900 font-semibold">Edit</p>
                                           { console.log({params})}
-                                          <PencilAltIcon className="h-5 w-5 text-blue-900"/>
+                                          <PencilAltIcon className="h-5 w-5 text-gray-900"/>
                                         </button>
                                     )}
                                 ])
@@ -562,9 +562,9 @@ function SystemSetup(props) {
                                           onClick={() => {setEditID(params.row.id); setEditMode(true); setIsAddForm(true);}}
                                           
                                         >
-                                          <p className="text-blue-900 font-semibold">Edit</p>
+                                          <p className="text-gray-900 font-semibold">Edit</p>
                                           { console.log({params})}
-                                          <PencilAltIcon className="h-5 w-5 text-blue-900"/>
+                                          <PencilAltIcon className="h-5 w-5 text-gray-900"/>
                                         </button>
                                     )}
                                 ])
@@ -601,9 +601,9 @@ function SystemSetup(props) {
                                           onClick={() => {setEditID(params.row.id); setEditMode(true); setIsAddForm(true);}}
                                           
                                         >
-                                          <p className="text-blue-900 font-semibold">Edit</p>
+                                          <p className="text-gray-900 font-semibold">Edit</p>
                                           { console.log({params})}
-                                          <PencilAltIcon className="h-5 w-5 text-blue-900"/>
+                                          <PencilAltIcon className="h-5 w-5 text-gray-900"/>
                                         </button>
                                     )}
                                 ])
@@ -628,9 +628,9 @@ function SystemSetup(props) {
                                           onClick={() => {setEditID(params.row.id); setEditMode(true); setIsAddForm(true);}}
                                           
                                         >
-                                          <p className="text-blue-900 font-semibold">Edit</p>
+                                          <p className="text-gray-900 font-semibold">Edit</p>
                                           { console.log({params})}
-                                          <PencilAltIcon className="h-5 w-5 text-blue-900"/>
+                                          <PencilAltIcon className="h-5 w-5 text-gray-900"/>
                                         </button>
                                     )}
                                 ])
@@ -653,9 +653,9 @@ function SystemSetup(props) {
                                           onClick={() => {setEditID(params.row.id); setEditMode(true); setIsAddForm(true);}}
                                           
                                         >
-                                          <p className="text-blue-900 font-semibold">Edit</p>
+                                          <p className="text-gray-900 font-semibold">Edit</p>
                                           { console.log({params})}
-                                          <PencilAltIcon className="h-5 w-5 text-blue-900"/>
+                                          <PencilAltIcon className="h-5 w-5 text-gray-900"/>
                                         </button>
                                     )}
                                 ])
@@ -678,9 +678,9 @@ function SystemSetup(props) {
                                           onClick={() => {setEditID(params.row.id); setEditMode(true); setIsAddForm(true);}}
                                           
                                         >
-                                          <p className="text-blue-900 font-semibold">Edit</p>
+                                          <p className="text-gray-900 font-semibold">Edit</p>
                                           { console.log({params})}
-                                          <PencilAltIcon className="h-5 w-5 text-blue-900"/>
+                                          <PencilAltIcon className="h-5 w-5 text-gray-900"/>
                                         </button>
                                     )}
                                 ])
@@ -702,9 +702,9 @@ function SystemSetup(props) {
                                           onClick={() => {setEditID(params.row.id); setEditMode(true); setIsAddForm(true);}}
                                           
                                         >
-                                          <p className="text-blue-900 font-semibold">Edit</p>
+                                          <p className="text-gray-900 font-semibold">Edit</p>
                                           { console.log({params})}
-                                          <PencilAltIcon className="h-5 w-5 text-blue-900"/>
+                                          <PencilAltIcon className="h-5 w-5 text-gray-900"/>
                                         </button>
                                     )}
                                 ])
@@ -726,9 +726,9 @@ function SystemSetup(props) {
                                           onClick={() => {setEditID(params.row.id); setEditMode(true); setIsAddForm(true);}}
                                           
                                         >
-                                          <p className="text-blue-900 font-semibold">Edit</p>
+                                          <p className="text-gray-900 font-semibold">Edit</p>
                                           { console.log({params})}
-                                          <PencilAltIcon className="h-5 w-5 text-blue-900"/>
+                                          <PencilAltIcon className="h-5 w-5 text-gray-900"/>
                                         </button>
                                     )},
                                     { field: 'action',headerName: 'Action',flex: 1, renderCell:  (params) => (
@@ -740,9 +740,9 @@ function SystemSetup(props) {
                                           onClick={() => {setEditID(params.row.id); setEditMode(true); setIsAddForm(true);}}
                                           
                                         >
-                                          <p className="text-blue-900 font-semibold">Edit</p>
+                                          <p className="text-gray-900 font-semibold">Edit</p>
                                           { console.log({params})}
-                                          <PencilAltIcon className="h-5 w-5 text-blue-900"/>
+                                          <PencilAltIcon className="h-5 w-5 text-gray-900"/>
                                         </button>
                                     )}
     
@@ -774,9 +774,9 @@ function SystemSetup(props) {
                                           onClick={() => {setEditID(params.row.id); setEditMode(true); setIsAddForm(true);}}
                                           
                                         >
-                                          <p className="text-blue-900 font-semibold">Edit</p>
+                                          <p className="text-gray-900 font-semibold">Edit</p>
                                           { console.log({params})}
-                                          <PencilAltIcon className="h-5 w-5 text-blue-900"/>
+                                          <PencilAltIcon className="h-5 w-5 text-gray-900"/>
                                         </button>
                                     )}
                       ])
@@ -799,9 +799,9 @@ function SystemSetup(props) {
                                           onClick={() => {setEditID(params.row.id); setEditMode(true); setIsAddForm(true);}}
                                           
                                         >
-                                          <p className="text-blue-900 font-semibold">Edit</p>
+                                          <p className="text-gray-900 font-semibold">Edit</p>
                                           { console.log({params})}
-                                          <PencilAltIcon className="h-5 w-5 text-blue-900"/>
+                                          <PencilAltIcon className="h-5 w-5 text-gray-900"/>
                                         </button>
                                     )}
                       ])
@@ -955,7 +955,7 @@ function SystemSetup(props) {
               updated_by: item.updated_by,
               updates: (item.updates.map((item, i)=> (
                 <div className={"self-start"}>
-                <span className={"font-bold text-2x self-start"} key={item.name} >{item.name}</span>:  &nbsp;<span className={'text-red-600 self-start'} key={item.old}>{item.old + ''} </span>{'>>'}  &nbsp;<span className={'text-blue-600 self-start'} key={item.new}>{item.new + ''}</span>
+                <span className={"font-bold text-2x self-start"} key={item.name} >{item.name}</span>:  &nbsp;<span className={'text-red-600 self-start'} key={item.old}>{item.old + ''} </span>{'>>'}  &nbsp;<span className={'text-gray-600 self-start'} key={item.new}>{item.new + ''}</span>
                </div>
           )))
             }
@@ -1224,11 +1224,11 @@ function SystemSetup(props) {
                             </Modal>}
                         {/* Bread Cumbs  */}
                         <div className="flex flex-row gap-2 text-sm md:text-base">
-                                <Link className="text-blue-700" href="/">Home</Link> {'/'}
+                                <Link className="text-gray-700" href="/">Home</Link> {'/'}
                                 <span className="text-gray-500" >System setup</span>   
                         </div>
                         {/* Header Bunner */}
-                        <div className={"col-span-5 flex justify-between w-full bg-transparent drop-shadow border border-blue-600 text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-blue-600" : "border-red-600")}>
+                        <div className={"col-span-5 flex justify-between w-full bg-transparent drop-shadow border border-gray-600 text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-gray-600" : "border-red-600")}>
                             <h2 className='text-xl font-bold text-black capitalize'>{title}</h2>
                             {
                             !isAddForm && addBtnLabel !== 'feedback' && addBtnLabel !== 'CHU Rating Comment' &&
@@ -1720,7 +1720,7 @@ function SystemSetup(props) {
                                                                                 id={`add_${addBtnLabel}`}
                                                                                 name='name'
                                                                                 defaultValue={editMode ? editData[0]?.name : ''}
-                                                                                className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+                                                                                className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
                                                                             />
                                                                         
                                                                         </div>
@@ -1742,7 +1742,7 @@ function SystemSetup(props) {
                                                                                 id={`add_${addBtnLabel}`}
                                                                                 name='county_code'
                                                                                 defaultValue={editMode ? editData[0]?.code : ''}
-                                                                                className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+                                                                                className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
                                                                             />
                                                                         
                                                                         </div>}
@@ -1881,7 +1881,7 @@ function SystemSetup(props) {
                                                                                     id={`add_${addBtnLabel}_sub_county_field`}
                                                                                     name='name'
                                                                                     defaultValue={editData[0]?.name}
-                                                                                    className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+                                                                                    className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
                                                                                 />
                                                                         </div>
 
@@ -1903,7 +1903,7 @@ function SystemSetup(props) {
                                                                                 id={`add_${addBtnLabel}`}
                                                                                 name='code'
                                                                                 defaultValue={editData[0]?.code}
-                                                                                className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+                                                                                className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
                                                                             />
                                                                         
                                                                         </div>}
@@ -1941,7 +1941,7 @@ function SystemSetup(props) {
                                                                                 name='county'
                                                                                 key={editData[0]?.county}
                                                                                 defaultValue={{value:editData[0]?.county, headerName:editData[0]?.county_name}}
-                                                                                className='flex-none w-full bg-transparent flex-grow  placeholder-gray-500 focus:border-blue-600 outline-none'
+                                                                                className='flex-none w-full bg-transparent flex-grow  placeholder-gray-500 focus:border-gray-600 outline-none'
                                                                             />
 
                                             
@@ -2029,7 +2029,7 @@ function SystemSetup(props) {
                                                                                     id={`add_${addBtnLabel}_constituency_field`}
                                                                                     name='name'
                                                                                     defaultValue={editData[0]?.name}
-                                                                                    className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+                                                                                    className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
                                                                                 />
                                                                         </div>
 
@@ -2051,7 +2051,7 @@ function SystemSetup(props) {
                                                                                 id={`add_${addBtnLabel}`}
                                                                                 name='code'
                                                                                 defaultValue={editData[0]?.code}
-                                                                                className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+                                                                                className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
                                                                             />
                                                                         
                                                                         </div>}
@@ -2089,7 +2089,7 @@ function SystemSetup(props) {
                                                                                 name='county'
                                                                                 key={editData[0]?.county}
                                                                                 defaultValue={{value:editData[0]?.county, headerName:editData[0]?.county_name}}
-                                                                                className='flex-none w-full bg-transparent flex-grow  placeholder-gray-500 focus:border-blue-600 outline-none'
+                                                                                className='flex-none w-full bg-transparent flex-grow  placeholder-gray-500 focus:border-gray-600 outline-none'
                                                                             />
 
                                             
@@ -2177,7 +2177,7 @@ function SystemSetup(props) {
                                                                                     id={`add_${addBtnLabel}_field`}
                                                                                     name='name'
                                                                                     defaultValue={editData?.name}
-                                                                                    className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none  focus:border-black outline-none'
+                                                                                    className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none  focus:border-black outline-none'
                                                                                 />
                                                                         </div>
 
@@ -2215,7 +2215,7 @@ function SystemSetup(props) {
                                                                                 id={`add_${addBtnLabel}_county_field`}
                                                                                 name='county'
                                                                                 defaultValue={{value:editData?.county?.id, headerName:editData?.county_name}}
-                                                                                className='flex-none w-full  flex-grow  placeholder-gray-500 border border-blue-600 outline-none'
+                                                                                className='flex-none w-full  flex-grow  placeholder-gray-500 border border-gray-600 outline-none'
                                                                             />
                                                                         </div>
                                                                         {sbcty_constituency.length > 0 && <>
@@ -2253,7 +2253,7 @@ function SystemSetup(props) {
                                                                                 id={`add_${addBtnLabel}_sub_county_field`}
                                                                                 name='sub_county'
                                                                                 defaultValue={{value:editData?.sub_county, headerName:editData?.sub_county_name}}
-                                                                                className='flex-none w-full  flex-grow  placeholder-gray-500 border border-blue-600 outline-none'
+                                                                                className='flex-none w-full  flex-grow  placeholder-gray-500 border border-gray-600 outline-none'
                                                                             />
                                                                         </div>
 
@@ -2290,7 +2290,7 @@ function SystemSetup(props) {
                                                                                 id={`add_${addBtnLabel}_constituency_field`}
                                                                                 name='constituency'
                                                                                 defaultValue={{value:editData?.constituency, headerName:editData?.constituency_name}}
-                                                                                className='flex-none w-full  flex-grow  placeholder-gray-500 border border-blue-600 outline-none'
+                                                                                className='flex-none w-full  flex-grow  placeholder-gray-500 border border-gray-600 outline-none'
                                                                             />
 
                                                                         
@@ -2328,7 +2328,7 @@ function SystemSetup(props) {
                                                                                 id={`add_${addBtnLabel}_town_field`}
                                                                                 name="name"
                                                                                 defaultValue={editData.name}
-                                                                                className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+                                                                                className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
                                                                             />
                                                                         
                                                                         </div>
@@ -2366,7 +2366,7 @@ function SystemSetup(props) {
                                                                                             id={`add_${addBtnLabel}_constituency_field`}
                                                                                             name='name'
                                                                                             defaultValue={editData.name}
-                                                                                            className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+                                                                                            className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
                                                                                         />
                                                                                 </div>
 
@@ -2402,7 +2402,7 @@ function SystemSetup(props) {
                                                                                         name='parent'
                                                                                         key={editData.parent}
                                                                                         defaultValue={{value: editData?.parent, headerName: selectOptionss?.find(so=> so.value === editData?.parent)?.label}}
-                                                                                        className='flex-none w-full  flex-grow  placeholder-gray-500 border border-blue-600 outline-none'
+                                                                                        className='flex-none w-full  flex-grow  placeholder-gray-500 border border-gray-600 outline-none'
                                                                                     />
 
                                                                                 </div>
@@ -2426,7 +2426,7 @@ function SystemSetup(props) {
                                                                                             id={`add_${addBtnLabel}_constituency_field`}
                                                                                             name='abbreviation'
                                                                                             defaultValue={editData?.abbreviation}
-                                                                                            className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+                                                                                            className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
                                                                                         />
                                                                                 </div>
 
@@ -2449,7 +2449,7 @@ function SystemSetup(props) {
                                                                                         id={`add_${addBtnLabel}_constituency_field`}
                                                                                         name='description'
                                                                                         defaultValue={editData?.description}
-                                                                                        className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+                                                                                        className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
                                                                                     />
                                                                                 
                                                                                 </div>
@@ -2487,7 +2487,7 @@ function SystemSetup(props) {
                                                                                 id={`add_${addBtnLabel}_name`}
                                                                                 name='name'
                                                                                 defaultValue={editData.name}
-                                                                                className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+                                                                                className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
                                                                             />
                                                                     </div>
 
@@ -2510,7 +2510,7 @@ function SystemSetup(props) {
                                                                                 id={`add_${addBtnLabel}_desc`}
                                                                                 name='description'
                                                                                 defaultValue={editData.description}
-                                                                                className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+                                                                                className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
                                                                             />
                                                                     </div>
 
@@ -2610,7 +2610,7 @@ function SystemSetup(props) {
                                                                                 id={`add_${addBtnLabel}_option_group`}
                                                                                 name='name'
                                                                                 defaultValue={editData?.name}
-                                                                                className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+                                                                                className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
                                                                             />
                                                                         </div>
                                                                         {editMode && (
@@ -2652,7 +2652,7 @@ function SystemSetup(props) {
                                                                                     id={index}
                                                                                     name='option_type'
                                                                                     defaultValue={option.option_type}
-                                                                                    className='flex-none w-full bg-transparent flex-grow placeholder-gray-500 focus:border-blue-600 outline-none'
+                                                                                    className='flex-none w-full bg-transparent flex-grow placeholder-gray-500 focus:border-gray-600 outline-none'
                                                                                 >
                                                                                         <option value='BOOLEAN'>BOOLEAN</option>
                                                                                         <option value='INTEGER'>INTEGER</option>
@@ -2667,7 +2667,7 @@ function SystemSetup(props) {
                                                                                         id={index}
                                                                                         name='display_text'
                                                                                         defaultValue={option.display_text}
-                                                                                        className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+                                                                                        className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
                                                                                     />
 
                                                                                 {/* Option Value */}
@@ -2679,7 +2679,7 @@ function SystemSetup(props) {
                                                                                         id={index}
                                                                                         name='value'
                                                                                         defaultValue={option.value}
-                                                                                        className='flex-none w-full bg-transparentcol-span-3  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+                                                                                        className='flex-none w-full bg-transparentcol-span-3  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
                                                                                     />
                                                                                 </div>
                                                                             
@@ -2748,7 +2748,7 @@ function SystemSetup(props) {
                                                                                 id={`add_${addBtnLabel}_field`}
                                                                                 name='name'
                                                                                 defaultValue={editData.name}
-                                                                                className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+                                                                                className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
                                                                             />
                                                                     </div>
 
@@ -2771,7 +2771,7 @@ function SystemSetup(props) {
                                                                                 id={`add_${addBtnLabel}_field`}
                                                                                 name='abbreviation'
                                                                                 defaultValue={editData.abbreviation}
-                                                                                className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+                                                                                className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
                                                                             />
                                                                     </div>
 
@@ -2808,7 +2808,7 @@ function SystemSetup(props) {
                                                                             id={`add_${addBtnLabel}_category_field`}
                                                                             name='category'
                                                                             defaultValue={{value:editData.category, headerName:editData.category_name}}
-                                                                            className='flex-none w-full  flex-grow  placeholder-gray-500 border border-blue-600 outline-none'
+                                                                            className='flex-none w-full  flex-grow  placeholder-gray-500 border border-gray-600 outline-none'
                                                                         />
                                                                     </div>
 
@@ -2845,7 +2845,7 @@ function SystemSetup(props) {
                                                                             id={`add_${addBtnLabel}_sub_county_field`}
                                                                             name='group'
                                                                             defaultValue={{value:editData.group, headerName:(selectOptionss[0])?.find(i=> i.value ==editData.group)?.label}}
-                                                                            className='flex-none w-full  flex-grow  placeholder-gray-500 border border-blue-600 outline-none'
+                                                                            className='flex-none w-full  flex-grow  placeholder-gray-500 border border-gray-600 outline-none'
                                                                         />
                                                                     </div>
 
@@ -2868,7 +2868,7 @@ function SystemSetup(props) {
                                                                                 id={`add_${addBtnLabel}_desc`}
                                                                                 name='description'
                                                                                 defaultValue={editData.description}
-                                                                                className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+                                                                                className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
                                                                             />
                                                                     </div>
 
@@ -2945,7 +2945,7 @@ function SystemSetup(props) {
                                                                             id={`add_${addBtnLabel}_name`}
                                                                             name='name'
                                                                             defaultValue={editData.name}
-                                                                            className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+                                                                            className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
                                                                         />
                                                                         </div>                                                            
 
@@ -2981,7 +2981,7 @@ function SystemSetup(props) {
                                                                             name='category'
                                                                             key={editData.category} 
                                                                             defaultValue={{value: editData.category, headerName: editData.category_name}}
-                                                                            className='flex-none w-full  flex-grow  placeholder-gray-500 border border-blue-600 outline-none'
+                                                                            className='flex-none w-full  flex-grow  placeholder-gray-500 border border-gray-600 outline-none'
                                                                         />
                                                                     </div>
 
@@ -3021,7 +3021,7 @@ function SystemSetup(props) {
                                                                                 id={`add_${addBtnLabel}_desc`}
                                                                                 name='description'
                                                                                 defaultValue={editData.description}
-                                                                                className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+                                                                                className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
                                                                             />
                                                                     </div>
 
@@ -3059,7 +3059,7 @@ function SystemSetup(props) {
                                                                                 id={`add_${addBtnLabel}_name`}
                                                                                 name='name'
                                                                                 defaultValue={editData.name}
-                                                                                className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+                                                                                className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
                                                                             />
                                                                     </div>
 
@@ -3082,7 +3082,7 @@ function SystemSetup(props) {
                                                                                 id={`add_${addBtnLabel}_desc`}
                                                                                 name='description'
                                                                                 defaultValue={editData.description}
-                                                                                className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+                                                                                className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
                                                                             />
                                                                     </div>
 
@@ -3119,7 +3119,7 @@ function SystemSetup(props) {
                                                                             id={`add_${addBtnLabel}_name`}
                                                                             name='name'
                                                                             defaultValue={editData.name}
-                                                                            className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+                                                                            className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
                                                                         />
                                                                         </div>                                                            
 
@@ -3156,7 +3156,7 @@ function SystemSetup(props) {
                                                                             id={`add_${addBtnLabel}_category_field`}
                                                                             name='category'
                                                                             defaultValue={{value: editData.category, headerName: editData.category_name}} 
-                                                                            className='flex-none w-full  flex-grow  placeholder-gray-500 border border-blue-600 outline-none'
+                                                                            className='flex-none w-full  flex-grow  placeholder-gray-500 border border-gray-600 outline-none'
                                                                         />
                                                                     </div>
 
@@ -3179,7 +3179,7 @@ function SystemSetup(props) {
                                                                                 id={`add_${addBtnLabel}_desc`}
                                                                                 name='description'
                                                                                 defaultValue={editData.description}
-                                                                                className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+                                                                                className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
                                                                             />
                                                                     </div>
 
@@ -3217,7 +3217,7 @@ function SystemSetup(props) {
                                                                                 id={`add_${addBtnLabel}_name`}
                                                                                 name='name'
                                                                                 defaultValue={editData.name}
-                                                                                className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+                                                                                className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
                                                                             />
                                                                     </div>
 
@@ -3241,7 +3241,7 @@ function SystemSetup(props) {
                                                                                 id={`add_${addBtnLabel}_desc`}
                                                                                 name='description'
                                                                                 defaultValue={editData.description}
-                                                                                className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+                                                                                className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
                                                                             />
                                                                     </div>
                                                                     {/* Active */} 
@@ -3303,7 +3303,7 @@ function SystemSetup(props) {
                                                                             id={`add_${addBtnLabel}_name`}
                                                                             name='name'
                                                                             defaultValue={editData.name}
-                                                                            className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+                                                                            className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
                                                                         />
                                                                 </div>
 
@@ -3327,7 +3327,7 @@ function SystemSetup(props) {
                                                                             id={`add_${addBtnLabel}_desc`}
                                                                             name='description'
                                                                             defaultValue={editData.description}
-                                                                            className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+                                                                            className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
                                                                         />
                                                                 </div>
 
@@ -3365,7 +3365,7 @@ function SystemSetup(props) {
                                                                             name='regulatory_body'
                                                                             key={editData.regulatory_body}
                                                                             defaultValue={{value:editData.regulatory_body, headerName: editData.regulatory_body_name}}
-                                                                            className='flex-none w-full  flex-grow  placeholder-gray-500 border border-blue-600 outline-none'
+                                                                            className='flex-none w-full  flex-grow  placeholder-gray-500 border border-gray-600 outline-none'
                                                                         />
                                                                     
                                                                 </div>
@@ -3404,7 +3404,7 @@ function SystemSetup(props) {
                                                                                 id={`add_${addBtnLabel}_name`}
                                                                                 name='name'
                                                                                 defaultValue={editData.name}
-                                                                                className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none' />
+                                                                                className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none' />
                                                                         </div>
 
 
@@ -3465,7 +3465,7 @@ function SystemSetup(props) {
                                                                             name='sub_division'
                                                                             key={editData.parent}
                                                                             defaultValue={{value:editData.sub_division, headerName: editData.sub_division}}
-                                                                            className='flex-none w-full  flex-grow  placeholder-gray-500 border border-blue-600 outline-none'
+                                                                            className='flex-none w-full  flex-grow  placeholder-gray-500 border border-gray-600 outline-none'
                                                                         />
                                                                 </div>
 
@@ -3488,7 +3488,7 @@ function SystemSetup(props) {
                                                                             id={`add_${addBtnLabel}_type_detail`}
                                                                             name='name'
                                                                             defaultValue={editData.name}
-                                                                            className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+                                                                            className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
                                                                         />
                                                                 </div>
 
@@ -3524,7 +3524,7 @@ function SystemSetup(props) {
                                                                             id={`add_${addBtnLabel}_status`}
                                                                             name='name'
                                                                             defaultValue={editData.name}
-                                                                            className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+                                                                            className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
                                                                         />
                                                                 </div>
 
@@ -3586,7 +3586,7 @@ function SystemSetup(props) {
                                                                             id={`add_${addBtnLabel}_status`}
                                                                             name='name'
                                                                             defaultValue={editData.name}
-                                                                            className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+                                                                            className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
                                                                         />
                                                                 </div>
 
@@ -3625,7 +3625,7 @@ function SystemSetup(props) {
                                                                             id={`add_${addBtnLabel}_name`}
                                                                             name='name'
                                                                             defaultValue={editData.name}
-                                                                            className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+                                                                            className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
                                                                         />
                                                                 </div>
 
@@ -3648,7 +3648,7 @@ function SystemSetup(props) {
                                                                             id={`add_${addBtnLabel}_desc`}
                                                                             name='description'
                                                                             defaultValue={editData.description}
-                                                                            className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+                                                                            className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
                                                                         />
                                                                 </div>
                                                                 {editMode && (
@@ -3709,7 +3709,7 @@ function SystemSetup(props) {
                                                                                 id={`add_${addBtnLabel}_name`}
                                                                                 name='name'
                                                                                 defaultValue={editData.name}
-                                                                                className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+                                                                                className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
                                                                             />
                                                                     </div>
 
@@ -3749,7 +3749,7 @@ function SystemSetup(props) {
                                                                                 id={`add_${addBtnLabel}_owner_type`}
                                                                                 name='owner_type'
                                                                                 defaultValue={{value:editData.owner_type, headerName:editData.owner_type_name}}
-                                                                                className='flex-none w-full  flex-grow  placeholder-gray-500 border border-blue-600 outline-none'
+                                                                                className='flex-none w-full  flex-grow  placeholder-gray-500 border border-gray-600 outline-none'
                                                                             />
                                                                         
                                                                     </div>
@@ -3773,7 +3773,7 @@ function SystemSetup(props) {
                                                                                         id={`add_${addBtnLabel}_constituency_field`}
                                                                                         name='abbreviation'
                                                                                         defaultValue={editData.abbreviation}
-                                                                                        className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+                                                                                        className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
                                                                                     />
                                                                         </div>
 
@@ -3798,7 +3798,7 @@ function SystemSetup(props) {
                                                                                 id={`add_${addBtnLabel}_desc`}
                                                                                 name='description'
                                                                                 defaultValue={editData.description}
-                                                                                className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+                                                                                className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
                                                                             />
                                                                     </div>
                                                                     {editMode && (
@@ -3858,7 +3858,7 @@ function SystemSetup(props) {
                                                                             id={`add_${addBtnLabel}_name`}
                                                                             name='name'
                                                                             defaultValue={editData.name}
-                                                                            className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+                                                                            className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
                                                                         />
                                                                 </div>
 
@@ -3881,7 +3881,7 @@ function SystemSetup(props) {
                                                                             id={`add_${addBtnLabel}_desc`}
                                                                             name='description'
                                                                             defaultValue={editData.description}
-                                                                            className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+                                                                            className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
                                                                         />
                                                                 </div>
 
@@ -3947,7 +3947,7 @@ function SystemSetup(props) {
                                                                             id={`add_${addBtnLabel}_name`}
                                                                             name="name"
                                                                             defaultValue={editData.name}
-                                                                            className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+                                                                            className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
                                                                         />
                                                                 </div>
 
@@ -3970,7 +3970,7 @@ function SystemSetup(props) {
                                                                             id={`add_${addBtnLabel}_abbr`}
                                                                             name="abbreviation"
                                                                             defaultValue={editData.abbreviation}
-                                                                            className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+                                                                            className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
                                                                         />
                                                                 </div>
                                                                 {editMode && (
@@ -4011,7 +4011,7 @@ function SystemSetup(props) {
                                                                                     id={`${index}`}
                                                                                     name='contact_type'
                                                                                     defaultValue={contact?.contact_type}
-                                                                                    className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+                                                                                    className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
 
                                                                                 >
 
@@ -4029,7 +4029,7 @@ function SystemSetup(props) {
                                                                                         id={index}
                                                                                         name="contact"
                                                                                         defaultValue={contact?.contact}
-                                                                                        className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+                                                                                        className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
                                                                                     />
                                                                             
                                                                             </>
@@ -4079,7 +4079,7 @@ function SystemSetup(props) {
                                                                             id={`add_${addBtnLabel}_status`}
                                                                             name='name'
                                                                             defaultValue={editData.name}
-                                                                            className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+                                                                            className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
                                                                         />
                                                                 </div>
 
@@ -4117,7 +4117,7 @@ function SystemSetup(props) {
                                                                                 id={`add_${addBtnLabel}_reason`}
                                                                                 name='reason'
                                                                                 defaultValue={editData.reason}
-                                                                                className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+                                                                                className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
                                                                             />
                                                                     </div>
 
@@ -4140,7 +4140,7 @@ function SystemSetup(props) {
                                                                                 id={`add_${addBtnLabel}_desc`}
                                                                                 name='description'
                                                                                 defaultValue={editData.description}
-                                                                                className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+                                                                                className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
                                                                             />
                                                                     </div>
 
@@ -4176,7 +4176,7 @@ function SystemSetup(props) {
                                                                                 type='text'
                                                                                 placeholder=''
                                                                                 name={`add_${addBtnLabel}_reason`}
-                                                                                className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+                                                                                className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
                                                                             />
                                                                     </div>
 
@@ -4197,7 +4197,7 @@ function SystemSetup(props) {
                                                                                 type='text'
                                                                                 placeholder='Description'
                                                                                 name={`add_${addBtnLabel}_desc`}
-                                                                                className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+                                                                                className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
                                                                             />
                                                                     </div>
 
@@ -4218,7 +4218,7 @@ function SystemSetup(props) {
                                                                                 type='file'
                                                                                 placeholder=''
                                                                                 name={`add_${addBtnLabel}_file`}
-                                                                                className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+                                                                                className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
                                                                             />
                                                                     </div>
 

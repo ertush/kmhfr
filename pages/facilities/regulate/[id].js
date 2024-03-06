@@ -100,11 +100,11 @@ const RegulateFacility = props => {
                     <div className="md:col-span-7 flex flex-col items-start px-4 justify-start gap-3">
                         {/* Breadcramps */}
                         <div className="flex flex-row items-center justify-between gap-2 text-sm md:text-base py-3">
-                            <Link className="text-blue-700" href="/">
+                            <Link className="text-gray-700" href="/">
                                 Home
                             </Link>
                             {"/"}
-                            <Link className="text-blue-700" href="/facilities">
+                            <Link className="text-gray-700" href="/facilities">
                                 Facilities
                             </Link>
                             {"/"}
@@ -117,16 +117,16 @@ const RegulateFacility = props => {
                         <div
                             className={
                                 "md:col-span-7 grid grid-cols-6 gap-5 md:gap-8 py-6 w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " +
-                                (facility?.regulation_status? "border-blue-600" : "border-red-600")
+                                (facility?.regulation_status? "border-gray-600" : "border-red-600")
                             }
                         >
                             <div className="col-span-6 md:col-span-3">
-                                <span onClick={() => router.push(`/facilities/${facility?.id}`)} className="text-4xl tracking-tight hover:text-blue-600 font-bold cursor-pointer leading-tight">{facility?.official_name}</span>
+                                <span onClick={() => router.push(`/facilities/${facility?.id}`)} className="text-4xl tracking-tight hover:text-gray-600 font-bold cursor-pointer leading-tight">{facility?.official_name}</span>
                                 <div className="flex gap-2 items-center w-full justify-between">
                                     <span
                                         className={
                                             "font-bold text-2xl " +
-                                            (facility?.code ? "text-blue-900" : "text-gray-400")
+                                            (facility?.code ? "text-gray-900" : "text-gray-400")
                                         }
                                     >
                                         #{facility?.code ?? "NO_CODE"}
@@ -250,7 +250,7 @@ const RegulateFacility = props => {
                                                                     Closed {facility?.closed_date || ""}
                                                                 </span>
                                                                      ) : (
-                                                                <span className="bg-blue-200 text-blue-900 p-1 px-2 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1">
+                                                                <span className="bg-blue-200 text-gray-900 p-1 px-2 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1">
                                                                      Not closed
                                                                 </span>
                                                             )}
@@ -270,7 +270,7 @@ const RegulateFacility = props => {
                                                         </label>
                                                         <p className="text-black font-medium text-base flex">
                                                             {facility?.open_weekends ? (
-                                                                <span className="leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-blue-200 text-blue-900 flex gap-x-1 items-center cursor-default">
+                                                                <span className="leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-blue-200 text-gray-900 flex gap-x-1 items-center cursor-default">
                                                                     <CheckCircleIcon className="h-4 w-4" />
                                                                       Yes
                                                                 </span>
@@ -296,7 +296,7 @@ const RegulateFacility = props => {
                                                         </label>
                                                         <p className="text-black font-medium text-base flex">
                                                             {facility?.open_public_holidays ? (
-                                                                <span className="leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-blue-200 text-blue-900 flex gap-x-1 items-center cursor-default">
+                                                                <span className="leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-blue-200 text-gray-900 flex gap-x-1 items-center cursor-default">
                                                                     <CheckCircleIcon className="h-4 w-4" />
                                                                     Yes
                                                                   </span>
@@ -322,7 +322,7 @@ const RegulateFacility = props => {
                                                         </label>
                                                         <p className="text-black font-medium text-base flex">
                                                             {facility?.open_whole_day ? (
-                                                                <span className="leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-blue-200 text-blue-900 flex gap-x-1 items-center cursor-default">
+                                                                <span className="leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-blue-200 text-gray-900 flex gap-x-1 items-center cursor-default">
                                                                     <CheckCircleIcon className="h-4 w-4" />
                                                                     Yes
                                                                   </span>
@@ -361,7 +361,7 @@ const RegulateFacility = props => {
                                                         </label>
                                                         <p className="text-black font-medium text-base flex">
                                                             {facility?.reporting_in_dhis ? (
-                                                                <span className="leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-blue-200 text-blue-900 flex gap-x-1 items-center cursor-default">
+                                                                <span className="leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-blue-200 text-gray-900 flex gap-x-1 items-center cursor-default">
                                                                     <CheckCircleIcon className="h-4 w-4" />
                                                                     Yes
                                                                   </span>
@@ -387,7 +387,7 @@ const RegulateFacility = props => {
                                                         </label>
                                                         <p className="text-black font-medium text-base flex">
                                                             {facility?.nhif_accreditation ? (
-                                                                <span className="leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-blue-200 text-blue-900 flex gap-x-1 items-center cursor-default">
+                                                                <span className="leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-blue-200 text-gray-900 flex gap-x-1 items-center cursor-default">
                                                                     <CheckCircleIcon className="h-4 w-4" />
                                                                     Yes
                                                                   </span>
@@ -413,7 +413,7 @@ const RegulateFacility = props => {
                                                         </label>
                                                         <p className="text-black font-medium text-base flex">
                                                             {facility?.open_normal_day ? (
-                                                                <span className="leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-blue-200 text-blue-900 flex gap-x-1 items-center cursor-default">
+                                                                <span className="leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-blue-200 text-gray-900 flex gap-x-1 items-center cursor-default">
                                                                     <CheckCircleIcon className="h-4 w-4" />
                                                                     Yes
                                                                   </span>
@@ -471,7 +471,7 @@ const RegulateFacility = props => {
                                                         </label>
                                                         <p className="text-black font-medium text-base flex">
                                                             {facility?.open_late_night ? (
-                                                                <span className="leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-blue-200 text-blue-900 flex gap-x-1 items-center cursor-default">
+                                                                <span className="leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-blue-200 text-gray-900 flex gap-x-1 items-center cursor-default">
                                                                     <CheckCircleIcon className="h-4 w-4" />
                                                                     Yes
                                                                   </span>
@@ -497,7 +497,7 @@ const RegulateFacility = props => {
                                                         </label>
                                                         <p className="text-black font-medium text-base flex">
                                                             {facility?.accredited_lab_iso_15189 ? (
-                                                                <span className="leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-blue-200 text-blue-900 flex gap-x-1 items-center cursor-default">
+                                                                <span className="leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-blue-200 text-gray-900 flex gap-x-1 items-center cursor-default">
                                                                     <CheckCircleIcon className="h-4 w-4" />
                                                                     Yes
                                                                 </span>
@@ -625,7 +625,7 @@ const RegulateFacility = props => {
                                                 <div className="bg-white w-full p-4 rounded">
                                                     <h3 className="text-2xl w-full flex flex-wrap justify-between items-center leading-tight tracking-tight">
                                                         <span className="font-semibold">Services</span>
-                                                        {/* {user && user?.id ? <a href={"/facility/edit/"+facility?.id+"#services"} className="text-base text-blue-700 font-medium hover:text-black focus:text-black active:text-black">Edit services</a> : ""} */}
+                                                        {/* {user && user?.id ? <a href={"/facility/edit/"+facility?.id+"#services"} className="text-base text-gray-700 font-medium hover:text-black focus:text-black active:text-black">Edit services</a> : ""} */}
                                                     </h3>
                                                     <ul>
                                                         {facility?.facility_services &&
@@ -655,7 +655,7 @@ const RegulateFacility = props => {
                                                                         </small>
                                                                     </div>
                                                                     <label className="text-sm text-gray-600 flex gap-1 items-center">
-                                                                        <CheckCircleIcon className="h-6 w-6 text-blue-500" />
+                                                                        <CheckCircleIcon className="h-6 w-6 text-gray-500" />
                                                                         <span>Active</span>
                                                                     </label>
                                                                 </li>

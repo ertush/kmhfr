@@ -27,7 +27,7 @@ const EditCommunityUnit = (props) => {
     () => import("../../components/Map"),
     {
       loading: () => (
-        <div className="text-gray-800 text-lg  bg-transparent border-blue-600 py-2 px-5 shadow w-auto mx-2 my-3">
+        <div className="text-gray-800 text-lg  bg-transparent border-gray-600 py-2 px-5 shadow w-auto mx-2 my-3">
           Loading&hellip;
         </div>
       ),
@@ -69,7 +69,7 @@ const EditCommunityUnit = (props) => {
           updated_by: item.updated_by,
           updates: (item.updates.map((item, i) => (
             <div className={"self-start"}>
-              <span className={"font-bold text-2x self-start"} key={item.name} >{item.name}</span>:  &nbsp;<span className={'text-red-600 self-start'} key={item.old}>{item.old + ''} </span>{'>>'}  &nbsp;<span className={'text-blue-600 self-start'} key={item.new}>{item.new + ''}</span>
+              <span className={"font-bold text-2x self-start"} key={item.name} >{item.name}</span>:  &nbsp;<span className={'text-red-600 self-start'} key={item.old}>{item.old + ''} </span>{'>>'}  &nbsp;<span className={'text-gray-600 self-start'} key={item.new}>{item.new + ''}</span>
             </div>
           )))
         }
@@ -111,11 +111,11 @@ const EditCommunityUnit = (props) => {
 
             {/* Header */}
             <div className="flex text-start items-start md:items-center md:w-full  md:justify-start justify-between gap-2 text-sm md:text-base py-3">
-              <Link className="text-blue-700" href="/">
+              <Link className="text-gray-700" href="/">
                 Home
               </Link>
               {"/"}
-              <Link className="text-blue-700" href="/community-units">
+              <Link className="text-gray-700" href="/community-units">
                 Community units
               </Link>
               {"/"}
@@ -128,8 +128,8 @@ const EditCommunityUnit = (props) => {
 
             <div
               className={
-                `md:col-span-7 col-span-1 grid grid-cols-6 gap-5 md:gap-8 py-6 w-full border ${cu.active ? "border-blue-600" : "border-yellow-700"} bgcenter-transparent drop-shadow  text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 
-                ${cu.active ? "border-blue-600" : "border-yellow-700"}
+                `md:col-span-7 col-span-1 grid grid-cols-6 gap-5 md:gap-8 py-6 w-full border ${cu.active ? "border-gray-600" : "border-yellow-700"} bgcenter-transparent drop-shadow  text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 
+                ${cu.active ? "border-gray-600" : "border-yellow-700"}
               `}
             >
               <div className="col-span-6 md:col-span-3">
@@ -140,7 +140,7 @@ const EditCommunityUnit = (props) => {
                   <span
                     className={
                       "font-bold text-2xl " +
-                      (cu.code ? "text-blue-900" : "text-gray-500")
+                      (cu.code ? "text-gray-900" : "text-gray-500")
                     }
                   >
                     #{cu.code || "NO_CODE"}
@@ -153,7 +153,7 @@ const EditCommunityUnit = (props) => {
               <div className="flex flex-wrap gap-3 items-center justify-end col-span-6 md:col-span-2">
                 <div className="flex flex-wrap gap-3 w-full items-center justify-start md:justify-center">
                   {cu.is_approved ? (
-                    <span className="bg-blue-200 text-blue-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
+                    <span className="bg-blue-200 text-gray-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
                       <CheckCircleIcon className="h-4 w-4" />
                       CHU Approved
                     </span>
@@ -176,13 +176,13 @@ const EditCommunityUnit = (props) => {
                     </span>
                   )}
                   {cu.active && (
-                    <span className="bg-blue-200 text-blue-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
+                    <span className="bg-blue-200 text-gray-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
                       <CheckCircleIcon className="h-4 w-4" />
                       CHU Active
                     </span>
                   )}
                   {cu.has_edits && (
-                    <span className="bg-blue-200 text-blue-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
+                    <span className="bg-blue-200 text-gray-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
                       <InformationCircleIcon className="h-4 w-4" />
                       Has changes
                     </span>
@@ -244,10 +244,10 @@ const EditCommunityUnit = (props) => {
 
             <Tabs.Root
               orientation="horizontal"
-              className="w-full flex flex-col border border-blue-600 tab-root"
+              className="w-full flex flex-col border border-gray-600 tab-root"
               defaultValue="overview"
             >
-              <Tabs.List className="list-non border-b border-blue-600 flex justify-evenly flex-wrap gap-2 md:gap-3 uppercase leading-none tab-list font-semibold ">
+              <Tabs.List className="list-non border-b border-gray-600 flex justify-evenly flex-wrap gap-2 md:gap-3 uppercase leading-none tab-list font-semibold ">
                 <Tabs.Tab
                   id={1}
                   value="overview"
@@ -289,14 +289,14 @@ const EditCommunityUnit = (props) => {
                         {cu.status_name
                           ?.toLocaleLowerCase()
                           .includes("fully-") ? (
-                          <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 text-blue-900 flex gap-x-1 items-center cursor-default">
+                          <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 text-gray-900 flex gap-x-1 items-center cursor-default">
                             <CheckCircleIcon className="h-4 w-4" />
                             {cu?.status_name || "Yes"}
                           </span>
                         ) : cu.status_name
                           ?.toLocaleLowerCase()
                           .includes("semi") ? (
-                          <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 text-blue-900 flex gap-x-1 items-center cursor-default">
+                          <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 text-gray-900 flex gap-x-1 items-center cursor-default">
                             <CheckCircleIcon className="h-4 w-4" />
                             {cu?.status_name || "Yes"}
                           </span>
@@ -312,7 +312,7 @@ const EditCommunityUnit = (props) => {
                       <label className=" text-gray-600">CHU approved</label>
                       <p className="text-black font-medium text-base flex">
                         {cu.is_approved ? (
-                          <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 text-blue-900 flex gap-x-1 items-center cursor-default">
+                          <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 text-gray-900 flex gap-x-1 items-center cursor-default">
                             <CheckCircleIcon className="h-4 w-4" />
                             Yes
                           </span>
@@ -333,7 +333,7 @@ const EditCommunityUnit = (props) => {
                               Deleted
                             </span>
                           ) : (
-                            <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 text-blue-900 flex gap-x-1 items-center cursor-default">
+                            <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 text-gray-900 flex gap-x-1 items-center cursor-default">
                               Not Deleted
                             </span>
                           )}
@@ -349,7 +349,7 @@ const EditCommunityUnit = (props) => {
                               CHU Closed {cu.closed_date || ""}
                             </span>
                           ) : (
-                            <span className="bg-blue-200 text-blue-900 p-1 px-2 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
+                            <span className="bg-blue-200 text-gray-900 p-1 px-2 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
                               Not closed
                             </span>
                           )}
@@ -372,11 +372,11 @@ const EditCommunityUnit = (props) => {
                         <label className=" text-gray-600">Has edits</label>
                         <p className="text-black font-medium text-base flex">
                           {cu.has_edits ? (
-                            <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 text-blue-900 flex gap-x-1 items-center cursor-default">
+                            <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 text-gray-900 flex gap-x-1 items-center cursor-default">
                               Yes
                             </span>
                           ) : (
-                            <span className="bg-blue-200 text-blue-900 p-1 px-2 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
+                            <span className="bg-blue-200 text-gray-900 p-1 px-2 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
                               No edits
                             </span>
                           )}
@@ -392,7 +392,7 @@ const EditCommunityUnit = (props) => {
                               CHU rejected {cu.closed_date || ""}
                             </span>
                           ) : (
-                            <span className="bg-blue-200 text-blue-900 p-1 px-2 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
+                            <span className="bg-blue-200 text-gray-900 p-1 px-2 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
                               Not rejected
                             </span>
                           )}
@@ -511,7 +511,7 @@ const EditCommunityUnit = (props) => {
                       </label>
                       <p className="col-span-2 text-black font-medium text-base flex">
                         {cu.regulated ? (
-                          <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 text-blue-900 flex gap-x-1 items-center cursor-default">
+                          <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 text-gray-900 flex gap-x-1 items-center cursor-default">
                             <CheckCircleIcon className="h-4 w-4" />
                             Yes
                           </span>

@@ -76,17 +76,17 @@ export default function EditFacility(props) {
 						<div className="md:col-span-5 col-span-1 flex flex-col gap-3 md:gap-5 mb-4">
 							<div className="flex flex-wrap items-center  justify-between gap-2 text-sm md:text-base py-3">
 								<div className="flex flex-row mt-8 items-center justify-between gap-2 text-sm md:text-base py-3">
-									<Link className="text-blue-800" href="/dashboard">Home</Link> {'/'}
-									<Link className="text-blue-800" href="/facilities">Facilities</Link> {'/'}
+									<Link className="text-gray-800" href="/dashboard">Home</Link> {'/'}
+									<Link className="text-gray-800" href="/facilities">Facilities</Link> {'/'}
 									<span className="text-gray-500">Edit Facility</span>
 								</div>
 							</div>
 
-							<div className={"col-span-1 md:col-span-5 flex flex-col items-start w-full  border border-blue-600  text-black p-4 md:divide-x md:divide-gray-200z border-l-8 " + (true ? "border-blue-600" : "border-red-600")}>
+							<div className={"col-span-1 md:col-span-5 flex flex-col items-start w-full  border border-gray-600  text-black p-4 md:divide-x md:divide-gray-200z border-l-8 " + (true ? "border-gray-600" : "border-red-600")}>
 								<h2  className='flex items-center text-xl text-start font-bold text-black capitalize gap-2'>
-									 <span className="cursor-pointer hover:text-blue-800" onClick={() => router.push(`/facilities/${props?.data?.id}`)}>Editing  {props?.data?.official_name}</span> 
+									 <span className="cursor-pointer hover:text-gray-800" onClick={() => router.push(`/facilities/${props?.data?.id}`)}>Editing  {props?.data?.official_name}</span> 
 								</h2>
-								<h3 className='text-blue-900 font-semibold '>{props?.data?.facility_type_name ?? ''}</h3>
+								<h3 className='text-gray-900 font-semibold '>{props?.data?.facility_type_name ?? ''}</h3>
 								<h4 className='text-gray-700'>{`# ${props?.data?.code ?? 'NO_CODE'}`}</h4>
 							</div>
 
@@ -140,7 +140,7 @@ export default function EditFacility(props) {
 								<div className="grid grid-cols-1 gap-y-2 grid-rows-1 md:flex justify-between md:space-x-4 w-full md:mx-0 mx-4">
 									<p className="text-base font-normal flex items-center gap-x-1">
 										Updates were made on {" "}
-										<span className="text-blue-900 font-semibold text-base ">
+										<span className="text-gray-900 font-semibold text-base ">
 											{
 												new Date(facilityUpdateData?.updated)
 													.toLocaleString()
@@ -150,7 +150,7 @@ export default function EditFacility(props) {
 										{" "}
 										by
 										{" "}
-										<span className="text-blue-900 font-semibold text-base ">
+										<span className="text-gray-900 font-semibold text-base ">
 											{facilityUpdateData?.created_by_name}
 										</span>
 									</p>
@@ -160,7 +160,7 @@ export default function EditFacility(props) {
 									<p className="text-base font-normal flex gap-x-1 ">
 										Facility Code:
 										{" "}
-										<span className="text-blue-900 font-semibold text-base ">
+										<span className="text-gray-900 font-semibold text-base ">
 											{facilityUpdateData?.code}
 										</span>
 									</p>

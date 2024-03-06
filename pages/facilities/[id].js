@@ -32,6 +32,7 @@ import { Table, TableBody, TableCell, TableRow } from "@mui/material";
 
 import { useAlert } from "react-alert";
 import { KeyboardArrowRight, KeyboardArrowDown } from "@mui/icons-material";
+import { ChevronRight } from "@mui/icons-material";
 
 
 
@@ -343,18 +344,18 @@ const Facility = (props) => {
                       
                   </Box>
                   </Fade>
-                </Modal>
+                 </Modal>
               }
 
               {/* Header */}
               <div className="col-span-1 md:col-span-7 flex-1 flex-col items-start justify-start md:mb-6 gap-3">
                 {/* Breadcramps */}
                 <div className="flex flex-row gap-2 text-sm md:text-base md:my-3">
-                  <Link className="text-blue-700" href="/">
+                  <Link className="text-gray-700" href="/">
                     Home
                   </Link>
                   {"/"}
-                  <Link className="text-blue-700" href="/facilities">
+                  <Link className="text-gray-700" href="/facilities">
                     Facilities
                   </Link>
                   {"/"}
@@ -366,8 +367,8 @@ const Facility = (props) => {
                 {/* Header Bunner  */}
                 <div
                   className={
-                    `col-span-5 grid grid-cols-6 gap-5 mt-4 md:mt-0 md:gap-8 py-6 w-full bg-transparent border ${facility?.is_approved ? "border-blue-600" : "border-yellow-600"} drop-shadow  text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 
-                    ${facility?.is_approved ? "border-blue-600" : "border-yellow-600"}
+                    `col-span-5 grid grid-cols-6 gap-5 mt-4 md:mt-0 md:gap-8 py-6 w-full bg-transparent border ${facility?.is_approved ? "border-gray-600" : "border-gray-600"} drop-shadow  text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 
+                    ${facility?.is_approved ? "border-gray-600" : "border-gray-600"}
                   `}
                 >
                   <div className="col-span-6 md:col-span-3">
@@ -378,23 +379,23 @@ const Facility = (props) => {
                       <span
                         className={
                           "font-bold text-2xl " +
-                          (facility?.code ? "text-blue-900" : "text-gray-400")
+                          (facility?.code ? "text-gray-900" : "text-gray-400")
                         }
                       >
                         #{facility?.code || "NO_CODE"}
                       </span>
 
-                      <span className="font-semibold text-blue-900 text-base">{facility?.keph_level_name}</span>
+                      <span className="font-semibold text-gray-900 text-base">{facility?.keph_level_name}</span>
                       
                     </div>
                   </div>
 
-                  <div className="flex flex-wrap gap-3 items-center justify-end  md:col-span-2">
-                    <div className="flex flex-wrap gap-3 w-full items-center justify-start md:justify-center">
-                      {facility?.operational || facility?.operation_status_name ? (
+                  <div className="flex flex-wrap gap-3 items-start justify-end  md:col-span-2">
+                    <div className="flex flex-wrap gap-3 w-full items-start justify-start md:justify-center">
+                      {(facility?.operational || facility?.operation_status_name) && facility?.is_complete ? (
                         <span
                           className={
-                            "leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 text-blue-900 flex gap-x-1 items-center cursor-default"
+                            "leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 text-gray-900 flex gap-x-1 items-center cursor-default"
                           }
                         >
                           <CheckCircleIcon className="h-4 w-4" />
@@ -404,7 +405,7 @@ const Facility = (props) => {
                         ""
                       )}
                       {facility?.is_approved ?  (
-                        <span className="bg-blue-200 text-blue-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
+                        <span className="bg-blue-200 text-gray-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
                           <CheckCircleIcon className="h-4 w-4" />
                           {facility?.approved_national_level ? 'Approved': 'pending approval'}
                         </span>
@@ -415,20 +416,36 @@ const Facility = (props) => {
                         </span>
                       )}
                       {facility?.has_edits && (
-                        <span className="bg-blue-200 text-blue-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
+                        <span className="bg-blue-200 text-gray-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
                           <InformationCircleIcon className="h-4 w-4" />
                           Has changes
                         </span>
                       )}
                       {facility?.is_complete ? (
-                        <span className="bg-blue-200 text-blue-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
+                        <span className="bg-blue-200 text-gray-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
                           <CheckCircleIcon className="h-4 w-4" />
                           Completed{" "}
                         </span>
                       ) : (
-                        <span className="bg-yellow-200 text-yellow-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
-                          <CheckCircleIcon className="h-4 w-4" />
-                          Incomplete{" "}
+
+                        <span className="bg-yellow-200  flex flex-col justify-start h-auto text-yellow-900 p-2 leading-none text-sm  whitespace-nowrap cursor-default items-start gap-2 gap-x-1">
+                            
+                            <span class='flex gap-1'>
+                              <CheckCircleIcon className="h-4 w-4" />
+                              <h4>Incomplete Details</h4>
+                            </span>
+
+                          {
+                            facility?.in_complete_details?.split(',')?.map(name => (
+                              <span class='flex gap-1 capitalize'>
+                              <ChevronRightIcon className="h-4 w-4" />
+                              {name}
+                            </span>
+                              
+                            ))
+                          }
+                            
+
                         </span>
                       )}
                       {facility?.closed && (
@@ -472,7 +489,8 @@ const Facility = (props) => {
 									states={[khisSynched, facilityFeedBack, pathId, allFctsSelected, title]}
 									stateSetters={[setKhisSynched, setFacilityFeedBack, setPathId, setAllFctsSelected, setTitle]} />
 							}
-						</button>
+				
+        		</button>
               
 
               <div className={`col-span-1 ${isViewChangeLog ? 'md:col-span-3':'md:col-span-4'} md:w-full  flex flex-col md:gap-3 gap-5 `}>
@@ -667,13 +685,14 @@ const Facility = (props) => {
                     />
                   </div>
                 ) : (
-                  <div className="w-full bg-transparent p-2  bg-gray-50 shadow-md flex mt-1 flex-col items-center justify-center relative">
-                    <div className="w-full  bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base leading-none">
+                  <div className="w-full p-4 rounded bg-gray-50 shadow-md flex  flex-col items-center justify-center relative">
+                    <div className="w-full  bg-yellow-100 flex flex-row gap-2  p-3 border border-yellow-300 text-yellow-900 text-base leading-none">
                       <p>No location data found for this facility?.</p>
                     </div>
-                  </div>
+                    
+                   </div>
                 )}
-                <div className="flex flex-col items-start justify-center gap-2">
+                <div className="flex flex-col items-start mt-2 justify-center gap-2">
                   {/* View/Hide Change Log Btn*/}
                   <button 
                   onClick={async () => {
@@ -719,7 +738,7 @@ const Facility = (props) => {
                     {
                       changeLogData &&
                       changeLogData.map(({updated_on, updated_by, updates}, i) => (
-                        <TableRow className="border-b border-blue-600 " key={i}>
+                        <TableRow className="border-b border-gray-600 " key={i}>
                           <TableCell>
                             {new Date(updated_on).toLocaleString()}
                           </TableCell>
@@ -734,7 +753,7 @@ const Facility = (props) => {
                                   <span className="font-semibold text-base md:col-start-1">{name}{" :"}</span>
                                   <span className="text-red-400 md:col-start-2">{old}
                                   <span className="text-black">{" >> "}</span>
-                                  <span className="text-blue-400">{_new}</span>
+                                  <span className="text-gray-400">{_new}</span>
                                   </span>
                                   
                                 </span>

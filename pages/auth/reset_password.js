@@ -23,7 +23,7 @@ const ResetPassword = (props) => {
                         <span>KMHFR-v3</span>
                     </div>
                     <div className="flex items-center justify-start w-full py-3">
-                        <a className="text-blue-800 text-lg font-medium hover:underline focus:underline active:underline" href="/">&larr; Back home</a>
+                        <a className="text-gray-800 text-lg font-medium hover:underline focus:underline active:underline" href="/">&larr; Back home</a>
                     </div>
                 </div>
                 <form onSubmit={ev => {
@@ -78,7 +78,7 @@ const ResetPassword = (props) => {
                     <h3 className="text-center leading-tight text-xl font-bold tracking-wide text-gray-800 uppercase">Request Password Reset</h3>
                     <div className="flex flex-col gap-0 w-full">
                         {error && error.length > 0 && <p className="text-red-900 bg-red-200 drop-shadow rounded py-2 font-medium normal-case text-base px-3">{error}</p>}
-                        {msg && msg.length > 0 && <p className="text-blue-900 bg-blue-200 drop-shadow rounded py-2 font-medium normal-case text-base px-3">{msg}</p>}
+                        {msg && msg.length > 0 && <p className="text-gray-900 bg-blue-200 drop-shadow rounded py-2 font-medium normal-case text-base px-3">{msg}</p>}
                     </div>
                     <div className="flex flex-col gap-0 w-full">
                         <label className="text-gray-800">Email address</label>
