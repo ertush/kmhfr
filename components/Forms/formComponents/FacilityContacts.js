@@ -64,7 +64,7 @@ const FacilityContact = ({contactTypeOptions, setFacilityContacts, index, fieldN
                     id={`facility-contact-detail-${index}`} 
                     type="text" 
                     name={`${fieldNames[1]}_${index}`} 
-                    className="w-full flex-grow  flex-1 bg-transparent p-2 border placeholder-gray-500 border-blue-600 focus:shadow-none  focus:border-black outline-none" 
+                    className="w-full flex-grow  rounded flex-1 bg-transparent p-2 border placeholder-gray-500 border-gray-600 focus:shadow-none  focus:border-black outline-none" 
                     />
 
                     
@@ -133,7 +133,7 @@ const OfficerContactDetails = ({contactTypeOptions, setFacilityContacts, contact
                     type="text" 
                      
                     name={`${fieldNames[1]}_${index}`} 
-                    className="w-full flex-grow  flex-1 bg-transparent p-2 border placeholder-gray-500 border-blue-600 focus:shadow-none  focus:border-black outline-none" />
+                    className="w-full flex-grow rounded flex-1 bg-transparent p-2 border placeholder-gray-500 border-gray-600 focus:shadow-none  focus:border-black outline-none" />
 
                     
                     {/* Delete Btn */}

@@ -55,7 +55,7 @@ export default function FacilityChanges({ facility }) {
                             <div className="flex justify-between items-center gap-3 w-full md:mx-0 mx-4">
                                 <p className="text-base font-normal flex items-center gap-x-1">
                                     Updated at {": "}
-                                    <span className="text-blue-900 font-semibold text-base ">
+                                    <span className="text-gray-900 font-semibold text-base ">
                                         {
                                             facility?.changes?.updated ?
                                             new Date(facility?.changes?.updated)
@@ -91,7 +91,7 @@ export default function FacilityChanges({ facility }) {
                             <div className="flex justify-start items-center gap-3 w-full md:mx-0 mx-4">
                             <p className="text-base font-normal flex items-center gap-x-1">
                                     Updated by {": "}
-                                    <span className="text-blue-900 font-semibold text-base ">
+                                    <span className="text-gray-900 font-semibold text-base ">
                                         {facility?.changes?.created_by_name}
                                     </span>
                             </p>
@@ -103,7 +103,7 @@ export default function FacilityChanges({ facility }) {
                                 <p className="text-base font-normal flex gap-x-1 ">
                                     Facility :
                                     {" "}
-                                    <span className="text-blue-900 font-semibold text-base ">
+                                    <span className="text-gray-900 font-semibold text-base ">
                                         {facility?.data?.name}
                                     </span>
                                 </p>
@@ -115,7 +115,7 @@ export default function FacilityChanges({ facility }) {
                             <p className="text-base font-normal flex gap-x-1 ">
                                     Facility Code:
                                     {" "}
-                                    <span className="text-blue-900 font-semibold text-base ">
+                                    <span className="text-gray-900 font-semibold text-base ">
                                         {facility?.data?.code ?? '-'}
                                     </span>
                                 </p>

@@ -107,7 +107,7 @@ export function InfrastructureForm() {
 
 
        return ( <>
-            <h4 className="text-lg uppercase mt-4 pb-2 border-b border-gray-400 rounded w-full mb-4 font-semibold text-blue-900">Infrastracture</h4>
+            <h4 className="text-lg uppercase mt-4 pb-2 border-b border-gray-400  w-full mb-4 font-semibold text-gray-900">Infrastracture</h4>
             
             <div className='flex flex-col w-full items-start justify-start gap-3 mt-6'>
           

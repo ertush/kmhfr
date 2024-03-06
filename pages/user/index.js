@@ -71,7 +71,7 @@ function Users (props) {
                   }} /* query: { id:  } */
                 className="cursor-pointer"
         
-                ><span className="cursor-pointer text-blue-600">{params.row.name}</span></Link>
+                ><span className="cursor-pointer text-gray-600">{params.row.name}</span></Link>
                 
               
             )} ,flex: 1},   
@@ -140,14 +140,14 @@ function Users (props) {
                         <div className="col-span-7 flex flex-col gap-x-1 ">
                             <div className="flex flex-wrap items-center justify-between gap-2 text-sm md:text-base py-1">
                                 <div className="flex flex-row items-center justify-between gap-2 text-sm md:text-base py-3">
-                                    <Link className="text-blue-700" href="/">Home</Link> {'/'}
+                                    <Link className="text-gray-700" href="/">Home</Link> {'/'}
                                     <span className="text-gray-500">Users</span> 
                                 </div>
                             </div>
                                 
                                 <Collapse in={show}>{Object.keys(router.query).length > 0 ? <div><Alert severity={router?.query.status} sx={{width:'100%'}} onClose={()=> setShow(false)}>{router?.query.message}</Alert></div>: null}</Collapse>
                                 
-                                <div className={`col-span-5 flex justify-between w-full bg-transparent drop-shadow  text-black p-4 md:divide-x md:divide-gray-200 items-center border border-blue-600 border-l-8  ${'border-blue-600'} `}>
+                                <div className={`col-span-5 flex justify-between w-full bg-transparent drop-shadow  text-black p-4 md:divide-x md:divide-gray-200 items-center border border-gray-600 border-l-8  ${'border-gray-600'} `}>
                                     <h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
                                         <UsersIcon className='ml-2 h-5 w-5'/> 
                                         {'Manage Users'}

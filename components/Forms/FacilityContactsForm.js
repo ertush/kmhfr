@@ -382,7 +382,7 @@ export function FacilityContactsForm() {
                     return (
                         <>
                            
-                            <h4 className='text-lg uppercase pb-2 mt-4 border-b border-gray-400 rounded w-full mb-4 font-semibold text-blue-900'>
+                            <h4 className='text-lg uppercase pb-2 mt-4 border-b border-gray-400  w-full mb-4 font-semibold text-gray-900'>
                                 Facility Contact
                             </h4>
                             <Form
@@ -400,10 +400,10 @@ export function FacilityContactsForm() {
                                     className='grid grid-cols-2 bg-gray-50 border border-gray-400 rounded p-3 place-content-start gap-3 w-full bg-light-grey '
                                 >
                                     {/* Contact Headers */}
-                                    <h3 className='text-medium font-semibold text-blue-900'>
+                                    <h3 className='text-medium font-semibold text-gray-900'>
                                         Contact Type {" *"}
                                     </h3>
-                                    <h3 className='text-medium font-semibold text-blue-900'>
+                                    <h3 className='text-medium font-semibold text-gray-900'>
                                         Contact Details {" *"}
                                     </h3>
                                     <hr className='col-span-2 border-xs border-gray-400 rounded' />
@@ -469,7 +469,7 @@ export function FacilityContactsForm() {
 
                                 {/* Facility Officer In-charge Details */}
 
-                                <h5 className='text-lg uppercase pb-2 border-b border-gray-400 rounded w-full mb-4 font-semibold text-blue-900'>
+                                <h5 className='text-lg uppercase pb-2 border-b border-gray-400  w-full mb-4 font-semibold text-gray-900'>
                                     Facility Officer In-Charge Details
                                 </h5>
                                 <div className='flex flex-col items-start bg-light-grey bg-gray-50 p-3 justify-start gap-1 w-full  h-auto'>
@@ -533,10 +533,10 @@ export function FacilityContactsForm() {
                                         className='grid grid-cols-2 place-content-start gap-3 w-full border border-gray-400 rounded p-3'
                                     >
                                         {/* Contact Headers */}
-                                        <h3 className='text-medium font-semibold text-blue-900'>
+                                        <h3 className='text-medium font-semibold text-gray-900'>
                                             Contact Type {" *"}
                                         </h3>
-                                        <h3 className='text-medium font-semibold text-blue-900'>
+                                        <h3 className='text-medium font-semibold text-gray-900'>
                                             Contact Details {" *"}
                                         </h3>
                                         <hr className='col-span-2 border-xs border-gray-400 rounded' />
@@ -624,9 +624,9 @@ export function FacilityContactsForm() {
                                         <div className='flex justify-between items-center w-full'>
                                             <button
                                                 onClick={handleGeolocationPrevious}
-                                                className='flex items-center justify-start space-x-2 p-1 group hover:bg-blue-700 border border-blue-700 px-2'>
-                                                <ChevronDoubleLeftIcon className='w-4 h-4 group-hover:text-white text-blue-900' />
-                                                <span className='text-medium font-semibold group-hover:text-white text-blue-900 '>
+                                                className='flex items-center justify-start space-x-2 p-1 group hover:bg-blue-700 border border-gray-700 px-2'>
+                                                <ChevronDoubleLeftIcon className='w-4 h-4 group-hover:text-white text-gray-900' />
+                                                <span className='text-medium font-semibold group-hover:text-white text-gray-900 '>
                                                     Geolocation
                                                 </span>
                                             </button>

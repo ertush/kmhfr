@@ -270,8 +270,8 @@ const User = (props) => {
 					<div className="col-span-5 flex flex-col gap-3 md:gap-5 px-4">
 						<div className="flex flex-wrap items-center justify-between gap-2 text-sm md:text-base pb-3">
 							<div className="flex flex-row items-center justify-between gap-2 text-sm md:text-base py-3">
-								<Link className="text-blue-800" href='/'>Home</Link>{'/'}
-								<Link className="text-blue-800" href='/user'>Users</Link>{'/'}
+								<Link className="text-gray-800" href='/'>Home</Link>{'/'}
+								<Link className="text-gray-800" href='/user'>Users</Link>{'/'}
 								<span className="text-gray-500">{editMode ? 'Edit user' : 'Add user'}</span>
 							</div>
 						</div>
@@ -289,7 +289,7 @@ const User = (props) => {
 							{/* {status.message?.email || status.message?.contacts || status.message?.county|| status.message?.password} */}
 
 						</div>
-						<div className={"col-span-5 flex bg-transparent items-center border border-blue-600 justify-between p-6 w-full drop-shadow  text-black mb-3 md:divide-x md:divide-gray-200 border-l-8 " + (true ? "border-blue-600" : "border-red-600")}>
+						<div className={"col-span-5 flex bg-transparent items-center border border-gray-600 justify-between p-6 w-full drop-shadow  text-black mb-3 md:divide-x md:divide-gray-200 border-l-8 " + (true ? "border-gray-600" : "border-red-600")}>
 							<h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
 
 								{editMode ? <><PencilAltIcon className='ml-2 h-5 w-5' /> Edit user</> : <><UserAddIcon className='text-black ml-2 h-5 w-5' /> Add user </>}
@@ -314,7 +314,7 @@ const User = (props) => {
 							style={{ minHeight: '250px', backgroundColor: '#eff6ff' }}>
 
 							<>
-								<h4 className='text-lg uppercase pb-2 border-b border-blue-600 w-full mb-4 font-semibold text-blue-900'>
+								<h4 className='text-lg uppercase pb-2 border-b border-gray-600 w-full mb-4 font-semibold text-gray-900'>
 									Bio Details
 								</h4>
 								<form
@@ -343,7 +343,7 @@ const User = (props) => {
 												)
 											}}
 											value={userData.first_name || ''}
-											className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
+											className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
 										/>
 									</div>
 									{/* Last name */}
@@ -367,7 +367,7 @@ const User = (props) => {
 												)
 											}}
 											value={userData.last_name || ''}
-											className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
+											className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
 										/>
 									</div>
 									{/* Other names */}
@@ -387,7 +387,7 @@ const User = (props) => {
 												)
 											}}
 											value={userData.other_names || ''}
-											className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
+											className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
 										/>
 									</div>
 
@@ -412,7 +412,7 @@ const User = (props) => {
 												)
 											}}
 											value={userData.email || ''}
-											className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
+											className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
 										/>
 									</div>
 
@@ -437,7 +437,7 @@ const User = (props) => {
 												)
 											}}
 											value={userData.employee_number || ''}
-											className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
+											className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
 										/>
 									</div>
 
@@ -478,7 +478,7 @@ const User = (props) => {
 												label: jobs?.find(r => r.value == userData?.job_title)?.label
 											} || ''}
 											name='job_title'
-											className='flex-none w-full  flex-grow  placeholder-gray-500 border border-blue-600 outline-none'
+											className='flex-none w-full  flex-grow  placeholder-gray-500 border border-gray-600 outline-none'
 
 
 										/>
@@ -506,7 +506,7 @@ const User = (props) => {
 												setIsCPasswordDirty(true);
 											}}
 											value={userData.password || ''}
-											className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
+											className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
 										/>
 									</div>
 									{/* confirm password */}
@@ -530,7 +530,7 @@ const User = (props) => {
 												)
 											}}
 											value={userData.conf_password || ''}
-											className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
+											className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
 										/>
 										{showErrorMessage && isCPasswordDirty ? <div> <p className='text-red-600'>Passwords did not match</p> </div> : ''}
 
@@ -559,7 +559,7 @@ const User = (props) => {
 									{/* Contacts */}
 
 									<div className=' w-full flex flex-col items-start justify-start py-3  border border-gray-300/70 bg-transparent h-auto'>
-										<h4 className='text-lg uppercase pb-2 border-b border-blue-600 w-full mb-4 font-semibold text-blue-900'>
+										<h4 className='text-lg uppercase pb-2 border-b border-gray-600 w-full mb-4 font-semibold text-gray-900'>
 											Contacts
 										</h4>
 
@@ -612,7 +612,7 @@ const User = (props) => {
 																}
 															}
 															name='contact_type'
-															className='flex-none w-full  flex-grow  placeholder-gray-500 border border-blue-600 outline-none'
+															className='flex-none w-full  flex-grow  placeholder-gray-500 border border-gray-600 outline-none'
 
 														/>
 													</div>
@@ -642,7 +642,7 @@ const User = (props) => {
 															value={
 																(userData.contacts[i])?.contact_text || ''
 															}
-															className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
+															className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
 														/>
 													</div>
 
@@ -664,7 +664,7 @@ const User = (props) => {
 
 									{/* Group Details */}
 									<div className=' w-full flex flex-col items-start justify-start py-3  border border-gray-300/70 bg-transparent h-auto'>
-										<h4 className='text-lg uppercase pb-2 border-b border-blue-600 w-full mb-4 font-semibold text-blue-900'>
+										<h4 className='text-lg uppercase pb-2 border-b border-gray-600 w-full mb-4 font-semibold text-gray-900'>
 											Group
 										</h4>
 										<div className='w-full flex flex-row items-center gap-1 gap-x-3 mb-3'>
@@ -696,7 +696,7 @@ const User = (props) => {
 														value: value.id || '',
 														label: value.name || ''
 													})) || ''}
-													className='flex-none w-full  flex-grow  placeholder-gray-500 border border-blue-600 outline-none'
+													className='flex-none w-full  flex-grow  placeholder-gray-500 border border-gray-600 outline-none'
 
 												/>
 											</div>
@@ -713,7 +713,7 @@ const User = (props) => {
 														return (
 															// Administrative area 
 															<div key={i} className=' w-full flex flex-col items-start justify-start py-3  border border-gray-300/70 bg-transparent h-auto'>
-																<h4 className='text-lg uppercase pb-2 border-b border-blue-600 w-full mb-4 font-semibold text-blue-900'>
+																<h4 className='text-lg uppercase pb-2 border-b border-gray-600 w-full mb-4 font-semibold text-gray-900'>
 																	Administrative Areas
 																</h4>
 																<div className='w-full flex flex-row items-center gap-1 gap-x-3 mb-3'>
@@ -762,7 +762,7 @@ const User = (props) => {
 																				label: value.county_name || value.name || ''
 																			})) || ''}
 																			name='county'
-																			className='flex-none w-full  flex-grow  placeholder-gray-500 border border-blue-600 outline-none'
+																			className='flex-none w-full  flex-grow  placeholder-gray-500 border border-gray-600 outline-none'
 
 																		/>
 																		{
@@ -796,7 +796,7 @@ const User = (props) => {
 																			})) || ''}
 
 																			name='sub_county'
-																			className='flex-none w-full  flex-grow  placeholder-gray-500 border border-blue-600 outline-none'
+																			className='flex-none w-full  flex-grow  placeholder-gray-500 border border-gray-600 outline-none'
 																		/>
 																		}
 																	</div>
@@ -809,7 +809,7 @@ const User = (props) => {
 														return (
 															//  Regulatory body 
 															<div className=' w-full flex flex-col items-start justify-start p-3  border border-gray-300/70 bg-transparent h-auto'>
-																<h4 className='text-lg uppercase pb-2 border-b border-blue-600 w-full mb-4 font-semibold text-blue-900'>
+																<h4 className='text-lg uppercase pb-2 border-b border-gray-600 w-full mb-4 font-semibold text-gray-900'>
 																	Regulatory Body
 																</h4>
 																<div className='w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3'>
@@ -841,7 +841,7 @@ const User = (props) => {
 																				label: value.name
 																			})) || ''}
 																			name='regulatory_body'
-																			className='flex-none w-full bg-transparent  flex-grow  placeholder-gray-5 focus:bg-white focus:border-blue-600 outline-none'
+																			className='flex-none w-full bg-transparent  flex-grow  placeholder-gray-5 focus:bg-white focus:border-gray-600 outline-none'
 																		/>
 																	</div>
 

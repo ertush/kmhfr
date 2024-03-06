@@ -349,14 +349,14 @@ function EditListItem({
 
       <div className='w-full grid grid-cols-12 gap-4'>
         <div className={`${itemName == "chul_services" ? 'col-span-12' : 'col-span-5'}`} >
-          <h4 className="text-lg uppercase mt-4 pb-2 border-b border-blue-600 w-full mb-4 font-semibold text-blue-900">{itemName == 'chul_services' ? 'Services' : 'Categories'}</h4>
-          <input name="searchItem" type="text" onFocus={handleSearchItemFocus} onChange={(e) => onSearch(e, true, false)} className="col-span-12 border border-blue-600 p-2 placeholder-gray-500  focus:shadow-none focus:bg-white focus:border-black outline-none w-full" placeholder="Search" />
-          {!showItemCategory && <div className="text-center border-l border-blue-500 border-r border-b w-full">Search for services</div>}
+          <h4 className="text-lg uppercase mt-4 pb-2 border-b border-gray-600 w-full mb-4 font-semibold text-gray-900">{itemName == 'chul_services' ? 'Services' : 'Categories'}</h4>
+          <input name="searchItem" type="text" onFocus={handleSearchItemFocus} onChange={(e) => onSearch(e, true, false)} className="col-span-12 border border-gray-600 p-2 placeholder-gray-500  focus:shadow-none focus:bg-white focus:border-black outline-none w-full" placeholder="Search" />
+          {!showItemCategory && <div className="text-center border-l border-gray-500 border-r border-b w-full">Search for services</div>}
 
           <br />
           {
             showItemCategory &&
-            <ul className='max-h-96 overflow-auto border-r border-l border-b border-blue-500'>
+            <ul className='max-h-96 overflow-auto border-r border-l border-b border-gray-500'>
 
               {
                 categoryOptions.map(({ label, value }, i) => (
@@ -371,7 +371,7 @@ function EditListItem({
                           filterSpecialities(value)
                         }}
                       >{label}</li>
-                      <hr className='border-xs boredr-gray-200 group-hover:border-blue-500'></hr>
+                      <hr className='border-xs boredr-gray-200 group-hover:border-gray-500'></hr>
                     </div>
                   </>
                 ))
@@ -383,10 +383,10 @@ function EditListItem({
         {
           itemName == "facility_services" &&
           <div className="col-span-7" >
-            <h4 className="text-lg uppercase mt-4 pb-2 border-b border-blue-600 w-full mb-4 font-semibold text-blue-900">{itemName == 'chul_services' ? 'Selected Services' : 'Services'}</h4>
-            <input type="text" onChange={(e) => onSearch(e, false, true)} className="col-span-12 border border-blue-600 p-2 placeholder-gray-500  focus:shadow-none focus:bg-white focus:border-black outline-none w-full" placeholder="Search" />
+            <h4 className="text-lg uppercase mt-4 pb-2 border-b border-gray-600 w-full mb-4 font-semibold text-gray-900">{itemName == 'chul_services' ? 'Selected Services' : 'Services'}</h4>
+            <input type="text" onChange={(e) => onSearch(e, false, true)} className="col-span-12 border border-gray-600 p-2 placeholder-gray-500  focus:shadow-none focus:bg-white focus:border-black outline-none w-full" placeholder="Search" />
             <br />
-            <div className='max-h-96 overflow-auto border-r border-l border-b border-blue-500'>
+            <div className='max-h-96 overflow-auto border-r border-l border-b border-gray-500'>
 
               <table className="table-auto w-full">
                 <thead>
@@ -522,9 +522,9 @@ function EditListItem({
           // Add
           itemName == "facility_services" && !editMode &&
           <Fragment>
-            <button onClick={handleItemPrevious} className='flex items-center justify-start space-x-2 p-1 border border-blue-900  px-2'>
-              <ChevronDoubleLeftIcon className='w-4 h-4 text-blue-900' />
-              <span className='text-medium font-semibold text-blue-900 '>
+            <button onClick={handleItemPrevious} className='flex items-center justify-start space-x-2 p-1 border border-gray-900  px-2'>
+              <ChevronDoubleLeftIcon className='w-4 h-4 text-gray-900' />
+              <span className='text-medium font-semibold text-gray-900 '>
                 Regulation
               </span>
             </button>
@@ -558,7 +558,7 @@ function EditListItem({
           itemName == "facility_services" && editMode &&
           <button
             type="submit"
-            className="flex items-center justify-end space-x-2 bg-gray-500 rounded  p-1 px-2"
+            className="flex items-center justify-end space-x-2 bg-blue-500   p-1 px-2"
           >
             <span className="text-medium font-semibold text-white">
               {
@@ -583,16 +583,16 @@ function EditListItem({
           // Add 
           itemName == "chul_services" && !editMode &&
           <Fragment>
-            <button onClick={handleItemPrevious} className='flex items-center justify-start space-x-2 p-1 border border-blue-900  px-2'>
-              <ChevronDoubleLeftIcon className='w-4 h-4 text-blue-900' />
-              <span className='text-medium font-semibold text-blue-900 '>
+            <button onClick={handleItemPrevious} className='flex items-center justify-start space-x-2 p-1 border border-gray-900  px-2'>
+              <ChevronDoubleLeftIcon className='w-4 h-4 text-gray-900' />
+              <span className='text-medium font-semibold text-gray-900 '>
                 CHEWS
               </span>
             </button>
 
             <button
               type='submit'
-              className='flex items-center justify-start space-x-2 bg-gray-500 rounded p-1 px-2'>
+              className='flex items-center justify-start space-x-2 bg-blue-500  p-1 px-2'>
               <span className='text-medium font-semibold text-white'>
                 {
                   submitting ?
@@ -618,7 +618,7 @@ function EditListItem({
           itemName == "chul_services" && editMode &&
           <button
             type="submit"
-            className="flex items-center justify-end space-x-2 bg-gray-500 rounded p-1 px-2"
+            className="flex items-center justify-end space-x-2 bg-blue-500  p-1 px-2"
           >
             <span className="text-medium font-semibold text-white">
               {

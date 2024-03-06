@@ -465,9 +465,9 @@ export function GeolocationForm({ editMode }) {
           :
 
           <div className='flex justify-between items-center w-full'>
-            <button onClick={handleGeolocationPrevious} className='flex items-center justify-start space-x-2 p-1 border border-blue-900  px-2'>
-              <ChevronDoubleLeftIcon className='w-4 h-4 text-blue-900' />
-              <span className='text-medium font-semibold text-blue-900 '>
+            <button onClick={handleGeolocationPrevious} className='flex items-center justify-start space-x-2 p-1 border border-gray-900  px-2'>
+              <ChevronDoubleLeftIcon className='w-4 h-4 text-gray-900' />
+              <span className='text-medium font-semibold text-gray-900 '>
                 Basic Details
               </span>
             </button>

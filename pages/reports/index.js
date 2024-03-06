@@ -89,11 +89,11 @@ function Reports(props) {
                         <div className="col-span-1 md:col-span-7 flex-1 flex-col items-start justify-start gap-4">
                             {/* Breadcramps */}
                             <div className="flex flex-row gap-2 text-sm md:text-base md:my-3">
-                                <Link className="text-blue-700" href="/">
+                                <Link className="text-gray-700" href="/">
                                     Home
                                 </Link>
                                 {"/"}
-                                <Link className="text-blue-700" href="/reports">
+                                <Link className="text-gray-700" href="/reports">
                                     Reports
                                 </Link>
                                 {"/"}
@@ -106,8 +106,8 @@ function Reports(props) {
                             {/* Header Bunner  */}
                             <div
                                 className={
-                                    `col-span-5 mt-4 grid grid-cols-6 gap-5  md:gap-8 py-6 w-full bg-transparent border ${"border-blue-600"} drop-shadow  text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 
-                    ${"border-blue-600"}
+                                    `col-span-5 mt-4 grid grid-cols-6 gap-5  md:gap-8 py-6 w-full bg-transparent border ${"border-gray-600"} drop-shadow  text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 
+                    ${"border-gray-600"}
                 `}
                             >
                                 <div className="col-span-6 md:col-span-3">
@@ -601,7 +601,7 @@ function Reports(props) {
                                     defaultValue="chu_services"
                                 >
                                     
-                                    <Tabs.List className="list-none w-full flex justify-evenly flex-wrap gap-2 md:gap-3 px-4 uppercase leading-none tab-list font-semibold border-b border-blue-600">
+                                    <Tabs.List className="list-none w-full flex justify-evenly flex-wrap gap-2 md:gap-3 px-4 uppercase leading-none tab-list font-semibold border-b border-gray-600">
                                         <Tabs.Tab
                                         id={1}
                                         value="chu_services"

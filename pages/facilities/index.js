@@ -140,8 +140,8 @@ function FacilityHome (props){
                             </div> */}
 
 
-                                <div className={"col-span-1 md:col-span-5 flex justify-between w-full bg-django-blue border drop-shadow  text-black p-4 md:divide-x md:divide-gray-200 items-start md:items-center border-l-8 " + (true ? "border-blue-700" : "border-red-600")}>
-                                    <h2 className='flex items-center text-2xl font-bold text-blue-900 capitalize gap-2'>
+                                <div className={"col-span-1 md:col-span-5 flex justify-between w-full bg-django-blue border drop-shadow  text-black p-4 md:divide-x md:divide-gray-200 items-start md:items-center border-l-8 " + (true ? "border-gray-700" : "border-red-600")}>
+                                    <h2 className='flex items-center text-2xl font-bold text-gray-900 capitalize gap-2'>
                                         {title}
                                      </h2>
                                      {/* dropdown options to download data */}
@@ -223,15 +223,15 @@ function FacilityHome (props){
 
                             {/* Accordion Filter */}
 
-                            <Accordion sx={{borderRadius:'none', backgroundColor:'transparent', boxShadow:'none', borderBottomLeftRadius:'0px', borderBottomRightRadius:'0px'}} className='border border-blue-600 mb-4 w-full shadow-none' expanded={isAccordionExpanded} onChange={handleAccordionExpand}>
+                            <Accordion sx={{borderRadius:'none', backgroundColor:'transparent', boxShadow:'none', borderBottomLeftRadius:'0px', borderBottomRightRadius:'0px'}} className='border border-gray-600 mb-4 w-full shadow-none' expanded={isAccordionExpanded} onChange={handleAccordionExpand}>
                                             <AccordionSummary
                                                 expandIcon={<ExpandMoreIcon />}
                                                 aria-controls="panel1a-content"
                                                 id="panel1a-header"
                                                 >
                                                 
-                                                <h2 className='my-2 font-semibold text-xl text-blue-900 flex items-center space-x-2'>
-                                                <FilterIcon className='w-6 h-6 text-blue-900'/>
+                                                <h2 className='my-2 font-semibold text-xl text-gray-900 flex items-center space-x-2'>
+                                                <FilterIcon className='w-6 h-6 text-gray-900'/>
                                                     <p>Filter Facilities By ...</p></h2>
                                             </AccordionSummary>
                                             <AccordionDetails sx={{width:'100%', padding:4, height:'auto' }}>
@@ -307,7 +307,7 @@ function FacilityHome (props){
                                                                     <div className="w-full col-span-3 gap-x-3 grid grid-cols-4 mb-3">
                                                                         <div className='flex flex-col items-start justify-center gap-1'>
                                                                             <span className='inline-flex gap-2'>
-                                                                                <input type="checkbox" className="justify-self-end border border-blue-600 bg-django-blue" value={false} defaultChecked={props?.query?.has_edits === "true"} name="has_edits" id="has_edits" onChange={ev => {
+                                                                                <input type="checkbox" className="justify-self-end border border-gray-600 bg-django-blue" value={false} defaultChecked={props?.query?.has_edits === "true"} name="has_edits" id="has_edits" onChange={ev => {
                                                                                     setDrillDown({ ...drillDown, 'has_edits': true })
                                                                                 }} />
                                                                                 <label htmlFor="has_edits" className="text-gray-700 capitalize text-sm">Has edits</label>
@@ -316,7 +316,7 @@ function FacilityHome (props){
                                                                             
 
                                                                             <span className='inline-flex gap-2'>
-                                                                                <input type="checkbox" className="justify-self-end border border-blue-600 bg-django-blue" value={true} defaultChecked={props?.query?.is_approved === "true"} name="is_approved" id="is_approved" onChange={ev => {
+                                                                                <input type="checkbox" className="justify-self-end border border-gray-600 bg-django-blue" value={true} defaultChecked={props?.query?.is_approved === "true"} name="is_approved" id="is_approved" onChange={ev => {
                                                                                     setDrillDown({ ...drillDown, 'is_approved': true })
                                                                                 }} />   
                                                                                 <label htmlFor="is_approved" className="text-gray-700 capitalize text-sm">Approved</label>
@@ -328,7 +328,7 @@ function FacilityHome (props){
                                                                         <div className='flex flex-col items-start justify-center gap-1'>
                                                                                 <span className='inline-flex gap-2'>
                                                                                 
-                                                                                    <input type="checkbox" className="justify-self-end border border-blue-600 bg-django-blue" value={true} defaultChecked={props?.query?.is_complete === "true"} name="is_complete" id="is_complete" onChange={ev => {
+                                                                                    <input type="checkbox" className="justify-self-end border border-gray-600 bg-django-blue" value={true} defaultChecked={props?.query?.is_complete === "true"} name="is_complete" id="is_complete" onChange={ev => {
                                                                                         setDrillDown({ ...drillDown, 'is_complete': true })
                                                                                     }} />
                                                                                 <label htmlFor="is_complete" className="text-gray-700 capitalize text-sm">Complete</label>
@@ -338,7 +338,7 @@ function FacilityHome (props){
                                                                         
                                                                                 <span className='inline-flex gap-2'>
                                                                         
-                                                                            <input type="checkbox" className="justify-self-end border border-blue-600 bg-django-blue" value={true} defaultChecked={props?.query?.number_of_beds === "true"} name="number_of_beds" id="number_of_beds" onChange={ev => {
+                                                                            <input type="checkbox" className="justify-self-end border border-gray-600 bg-django-blue" value={true} defaultChecked={props?.query?.number_of_beds === "true"} name="number_of_beds" id="number_of_beds" onChange={ev => {
                                                                                 setDrillDown({ ...drillDown, 'number_of_beds': true })
                                                                             }} />
                                                                             <label htmlFor="number_of_beds" className="text-gray-700 capitalize text-sm">Has beds</label>
@@ -350,7 +350,7 @@ function FacilityHome (props){
                                                                         <div className='flex flex-col items-start justify-center gap-1'>
                                                                                     <span className='inline-flex gap-2'>
                                                                         
-                                                                            <input type="checkbox" className="justify-self-end border border-blue-600 bg-django-blue" value={true} defaultChecked={props?.query?.number_of_cots === "true"} name="number_of_cots" id="number_of_cots" onChange={ev => {
+                                                                            <input type="checkbox" className="justify-self-end border border-gray-600 bg-django-blue" value={true} defaultChecked={props?.query?.number_of_cots === "true"} name="number_of_cots" id="number_of_cots" onChange={ev => {
                                                                                 setDrillDown({ ...drillDown, 'number_of_cots': true })
                                                                             }} />
                                                                             <label htmlFor="number_of_cots" className="text-gray-700 capitalize text-sm">Has cots</label>
@@ -359,7 +359,7 @@ function FacilityHome (props){
                                                                         
                                                                             <span className='inline-flex gap-2'>
                                                                         
-                                                                            <input type="checkbox" className="justify-self-end border border-blue-600 bg-django-blue" value={true} defaultChecked={props?.query?.open_whole_day === "true"} name="open_whole_day" id="open_whole_day" onChange={ev => {
+                                                                            <input type="checkbox" className="justify-self-end border border-gray-600 bg-django-blue" value={true} defaultChecked={props?.query?.open_whole_day === "true"} name="open_whole_day" id="open_whole_day" onChange={ev => {
                                                                                 setDrillDown({ ...drillDown, 'open_whole_day': true })
                                                                             }} />
                                                                             <label htmlFor="open_whole_day" className="text-gray-700 capitalize text-sm">Open 24 hours</label>
@@ -370,7 +370,7 @@ function FacilityHome (props){
                                                                         <div className='flex flex-col items-start justify-center gap-1'>
                                                                                     <span className='inline-flex gap-2'>
                                                                         
-                                                                        <input type="checkbox" className="justify-self-end border border-blue-600 bg-django-blue" value={true} defaultChecked={props?.query?.open_weekends === "true"} name="open_weekends" id="open_weekends" onChange={ev => {
+                                                                        <input type="checkbox" className="justify-self-end border border-gray-600 bg-django-blue" value={true} defaultChecked={props?.query?.open_weekends === "true"} name="open_weekends" id="open_weekends" onChange={ev => {
                                                                             setDrillDown({ ...drillDown, 'open_weekends': true })
                                                                         }} />
                                                                         <label htmlFor="open_weekends" className="text-gray-700 capitalize text-sm">Open weekends</label>
@@ -379,7 +379,7 @@ function FacilityHome (props){
                                                                         
                                                                         <span className='inline-flex gap-2'>
                                                                     
-                                                                    <input type="checkbox" className="justify-self-end border border-blue-600 bg-django-blue" value={true} defaultChecked={props?.query?.open_public_holidays === "true"} name="open_public_holidays" id="open_public_holidays" onChange={ev => {
+                                                                    <input type="checkbox" className="justify-self-end border border-gray-600 bg-django-blue" value={true} defaultChecked={props?.query?.open_public_holidays === "true"} name="open_public_holidays" id="open_public_holidays" onChange={ev => {
                                                                         setDrillDown({ ...drillDown, 'open_public_holidays': true })
                                                                     }} />
                                                                         <label htmlFor="open_public_holidays" className="text-gray-700 capitalize text-sm">Open holidays</label>
@@ -414,9 +414,9 @@ function FacilityHome (props){
 
                                                                         }
                                                                         setIsAccordionExpanded(false)
-                                                                    }} className="bg-django-blue col-start-1  border border-blue-600  text-blue-600 hover:bg-black hover:text-white hover:border-black font-semibold px-5 py-1 text-base  w-full whitespace-nowrap text-center">Filter</button>
+                                                                    }} className="bg-django-blue col-start-1  border border-gray-600  text-gray-600 hover:bg-black hover:text-white hover:border-black font-semibold px-5 py-1 text-base  w-full whitespace-nowrap text-center">Filter</button>
                                                                     
-                                                                    <button className="bg-blue-700 boder border-blue-700 text-white hover:bg-black hover:border-black font-semibold px-5 py-1 text-base  w-full whitespace-nowrap text-center" onClick={ev => {
+                                                                    <button className="bg-blue-700 boder border-gray-700 text-white hover:bg-black hover:border-black font-semibold px-5 py-1 text-base  w-full whitespace-nowrap text-center" onClick={ev => {
                                                                         router.push('/facilities')
                                                                     }}>Clear filters</button>
                                                                     
@@ -564,7 +564,7 @@ function FacilityHome (props){
                                                 className={`grid grid-cols-8 gap-2 border-b py-4 w-full ${!facility?.is_complete ? 'bg-yellow-50 border-yellow-500 hover:bg-gray-50' : 'bg-transparent border-gray-400 hover:border-yellow-100' }`}>
                                                     <div className="px-2 col-span-8 md:col-span-8 lg:col-span-6 flex flex-col group items-center justify-start text-left">
                                                         <h3 className="text-2xl font-semibold w-full">
-                                                            <span onClick={() => router.push({pathname: `/facilities/${facility?.id}`, query: {qf: router.query.qf}})} className={`cursor-pointer ${facility?.is_complete ? 'hover:text-blue-600' : 'hover:text-yellow-600'} group-focus:text-blue-800 active:text-blue-800`} >
+                                                            <span onClick={() => router.push({pathname: `/facilities/${facility?.id}`, query: {qf: router.query.qf}})} className={`cursor-pointer ${facility?.is_complete ? 'hover:text-gray-600' : 'hover:text-yellow-600'} group-focus:text-gray-800 active:text-gray-800`} >
                                                                 {facility?.official_name || facility?.official_name || facility?.name} 
                                                             </span>
                                                         </h3>
@@ -605,7 +605,7 @@ function FacilityHome (props){
 
                                                     <div className="col-span-8 md:col-span-8 lg:col-span-2 grid grid-cols-2 grid-rows-4 gap-x-2 gap-y-1 text-lg">
                                                         {/* {console.log({facility})} */}
-                                                        {/* {(facility?.operational || facility?.operation_status_name) ? <span className={"shadow-sm col-start-2 leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 font-semibold text-blue-900"}>Operational</span> : ""} */}
+                                                        {/* {(facility?.operational || facility?.operation_status_name) ? <span className={"shadow-sm col-start-2 leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 font-semibold text-gray-900"}>Operational</span> : ""} */}
                                                         {!facility?.rejected ? <span className={"shadow-sm leading-none whitespace-nowrap text-sm col-start-2  py-1 px-2 " + (facility?.approved_national_level ? "bg-green-200 font-semibold text-green-900" : "bg-gray-500 font-semibold p-1 text-gray-50")}>{facility?.approved_national_level ? "Approved" : "Not approved"}</span> : <span className={"shadow-sm  col-start-2 leading-none whitespace-nowrap text-sm font-semibold py-1 px-2 bg-red-200 text-red-900"}>{facility?.rejected ? "Rejected" : ""}</span>}
                                                         {facility?.has_edits ? <span className={"shadow-sm leading-none whitespace-nowrap text-sm col-start-2 py-1 px-2 bg-yellow-200 font-semibold text-yellow-900"}>Has edits</span> : ""}
                                                         {!facility?.is_complete ? <span className={"shadow-sm leading-none whitespace-nowrap text-sm col-start-2 py-1 px-2 bg-pink-200 font-semibold text-pink-900"}>Incomplete</span> : ""}
@@ -618,9 +618,9 @@ function FacilityHome (props){
 													No Facilities found
 												</span>
 												<Link href={props.path || '/'}>
-													<a className='text-blue-700 hover:text-blue-800 group-focus:text-blue-800 active:text-blue-800'>
+													<span className='text-gray-700 hover:text-gray-800 group-focus:text-gray-800 active:text-gray-800'>
 														Refresh.
-													</a>
+													</span>
 												</Link>
 											</div>
                                             }
@@ -631,9 +631,9 @@ function FacilityHome (props){
                                                     <div key={index} className="grid grid-cols-8 gap-2 border-b py-4 hover:bg-gray-50 w-full">
                                                     <div className="col-span-8 md:col-span-8 lg:col-span-6 flex flex-col gap-1 group items-center justify-start text-left">
                                                         <h3 className="text-2xl w-full">
-                                                            <a href={'/facilities/' + facility?.id} className="hover:text-blue-800 group-focus:text-blue-800 active:text-blue-800 ">
+                                                            <Link href={'/facilities/' + facility?.id} className="hover:text-gray-800 group-focus:text-gray-800 active:text-gray-800 ">
                                                                 <small className="text-gray-500">{index + props?.data?.start_index}.</small>{' '}{facility?.facility_name}
-                                                            </a>
+                                                            </Link>
                                                         </h3>
                                                      
                                                         <div className="text-base grid grid-cols-2 md:grid-cols-4 items-center justify-start gap-3 w-full">
@@ -678,7 +678,7 @@ function FacilityHome (props){
                                             {facilities && facilities?.length >= 30 && !khisSynched && 
                                             <div className='self-end mx-2'>
                                             <ul className="list-none flex flex-row gap-2 w-full  items-center my-2">
-                                                <li className="text-base text-blue-500 cursor-pointer">
+                                                <li className="text-base text-gray-500 cursor-pointer">
                                                     <Link 
                                                     href={
                                                         (() => 
@@ -698,7 +698,7 @@ function FacilityHome (props){
                                                     </Link>
                                                 </li>
                                                 {props?.path && props?.data?.near_pages && props?.data?.near_pages.map((page, i) => (
-                                                    <li key={i} className="text-base group text-blue-500">
+                                                    <li key={i} className="text-base group text-gray-500">
                                                         <Link href={(() => 
                                                             props?.path.includes('?page') ?
                                                             props?.path.replace(/\?page=\d+/,`?page=${page}`)
@@ -712,7 +712,7 @@ function FacilityHome (props){
                                                             `${props?.path}?page=${page}`
                    
                                                         )()}>
-                                                            <span className="text-blue-800 cursor-pointer  px-2 py-1 hover:underline">{page}</span>
+                                                            <span className="text-gray-800 cursor-pointer  px-2 py-1 hover:underline">{page}</span>
                                                         </Link>
                                                     </li>
                                                 ))}
@@ -776,7 +776,7 @@ FacilityHome.getInitialProps = async (ctx) => {
 
     function fetchData(token) {
 
-        let url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/material/ `// ?fields=id,code,official_name,facility_type_name,owner_name,county,sub_county,constituency_name,ward_name,updated,operation_status_name,sub_county_name,name,is_complete,in_complete_details,approved_national_level,has_edits,approved,rejected,keph_level`
+        let url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/material/?fields=id,code,official_name,facility_type_name,owner_name,county,sub_county,constituency_name,ward_name,updated,operation_status_name,sub_county_name,name,is_complete,in_complete_details,approved_national_level,has_edits,approved,rejected,keph_level` // ?fields=id,code,official_name,facility_type_name,owner_name,county,sub_county,constituency_name,ward_name,updated,operation_status_name,sub_county_name,name,is_complete,in_complete_details,approved_national_level,has_edits,approved,rejected,keph_level`
      
         let query = { 'searchTerm': '' }
         if (ctx?.query?.qf) {

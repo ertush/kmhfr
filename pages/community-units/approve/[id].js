@@ -90,11 +90,11 @@ function ApproveCommunityUnit (props) {
 
               {/* Breadcrumb */}
               <div className='flex flex-row gap-2 text-sm md:text-base'>
-                <a className='text-blue-700' href='/'>
+                <a className='text-gray-700' href='/'>
                   Home
                 </a>
                 {'/'}
-                <a className='text-blue-700' href='/community-units'>
+                <a className='text-gray-700' href='/community-units'>
                   Community units
                 </a>
                 {'/'}
@@ -106,12 +106,12 @@ function ApproveCommunityUnit (props) {
 
               {/* Header snippet */}
               <div
-                className={`col-span-5 grid grid-cols-6 gap-5 md:gap-8 py-6 w-full border ${cu.active ? 'border-blue-600' : 'border-yellow-600'} bg-transparent drop-shadow text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 ${cu.active ? 'border-blue-600' : 'border-yellow-600'}`}   
+                className={`col-span-5 grid grid-cols-6 gap-5 md:gap-8 py-6 w-full border ${cu.active ? 'border-gray-600' : 'border-yellow-600'} bg-transparent drop-shadow text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 ${cu.active ? 'border-gray-600' : 'border-yellow-600'}`}   
               >
                 <div className='col-span-6 md:col-span-3'>
                   <h1 className='text-4xl tracking-tight font-bold leading-tight'> {cu.name} </h1>
                   <div className='flex gap-2 items-center w-full justify-between'>
-                    <span className={'font-bold text-2xl ' + (cu.code ? 'text-blue-900' : 'text-gray-400')}> #{cu.code || 'NO_CODE'} </span>
+                    <span className={'font-bold text-2xl ' + (cu.code ? 'text-gray-900' : 'text-gray-400')}> #{cu.code || 'NO_CODE'} </span>
                     <p className='text-gray-600 leading-tight'>
                       {cu.keph_level_name && 'KEPH ' + cu.keph_level_name}
                     </p>
@@ -122,7 +122,7 @@ function ApproveCommunityUnit (props) {
                 <div className='flex flex-wrap gap-3 items-center justify-end col-span-6 md:col-span-2'>
                   <div className='flex flex-wrap gap-3 w-full items-center justify-start md:justify-center'>
                     {cu.is_approved && (
-                      <span className={'p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1' +' '+ (cu.is_approved ? 'bg-blue-200 text-blue-900' : 'bg-red-200 text-red-900')}>
+                      <span className={'p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1' +' '+ (cu.is_approved ? 'bg-blue-200 text-gray-900' : 'bg-red-200 text-red-900')}>
                         {cu.is_approved ? <>  <CheckCircleIcon className='h-4 w-4' />CHU Approved</>: <><XCircleIcon className='h-4 w-4' />Not approved </>}
                       </span>
                     )}
@@ -139,13 +139,13 @@ function ApproveCommunityUnit (props) {
                       </span>
                     )}
                     {cu.active && (
-                      <span className='bg-blue-200 text-blue-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1'>
+                      <span className='bg-blue-200 text-gray-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1'>
                         <CheckCircleIcon className='h-4 w-4' />
                         CHU Active
                       </span>
                     )}
                     {cu.has_fffedits && (
-                      <span className='bg-blue-200 text-blue-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1'>
+                      <span className='bg-blue-200 text-gray-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1'>
                         <InformationCircleIcon className='h-4 w-4' />
                         Has changes
                       </span>

@@ -153,12 +153,12 @@ function EditAdminOffice(props) {
                 <div className="col-span-5 flex flex-col gap-3 md:gap-5 px-4">
                     <div className="flex flex-wrap items-center justify-between gap-2 text-sm md:text-base py-3">
                         <div className="flex flex-row items-center justify-between gap-2 text-sm md:text-base py-3">
-                            <Link href='/' className="text-blue-500">Home</Link>{'/'}
-                            <Link href='/admin_offices' className="text-blue-500">Admin Offices</Link> {'/'}
+                            <Link href='/' className="text-gray-500">Home</Link>{'/'}
+                            <Link href='/admin_offices' className="text-gray-500">Admin Offices</Link> {'/'}
                             <span className="text-gray-500">Edit Admin Office</span>
                         </div>
                     </div>
-                    <div className={"col-span-5 flex items-center justify-between p-6 w-full bg-transparent border border-blue-600 drop-shadow  text-black  md:divide-x md:divide-gray-200 border-l-8 " + (true && "border-blue-600" )}>
+                    <div className={"col-span-5 flex items-center justify-between p-6 w-full bg-transparent border border-gray-600 drop-shadow  text-black  md:divide-x md:divide-gray-200 border-l-8 " + (true && "border-gray-600" )}>
                         <h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
                             Edit Admin Office
                         </h2>
@@ -217,7 +217,7 @@ function EditAdminOffice(props) {
                                         required
                                         type='text'
                                         name='name'
-                                        className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                        className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                     />
                                 </div>
 
@@ -293,7 +293,7 @@ function EditAdminOffice(props) {
                                         }}
                                         name='county'
 
-                                        className='flex-none w-full bg-transparent border border-blue-600 flex-grow  placehold-gray-500 focus:border-gray-200 outline-none'
+                                        className='flex-none w-full bg-transparent border border-gray-600 flex-grow  placehold-gray-500 focus:border-gray-200 outline-none'
                                     />
                                 </div>
 
@@ -328,7 +328,7 @@ function EditAdminOffice(props) {
                                         name='sub_county'
 
 
-                                        className='flex-none w-full bg-transparent border border-blue-600 flex-grow  placehold-gray-500  focus:eenr6er-gray-200 outline-none'
+                                        className='flex-none w-full bg-transparent border border-gray-600 flex-grow  placehold-gray-500  focus:eenr6er-gray-200 outline-none'
                                     />
                                 </div>
                                     </>
@@ -348,7 +348,7 @@ function EditAdminOffice(props) {
                                         required
                                         type='email'
                                         name='email'
-                                        className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                        className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                     />
                                 </div>
 
@@ -366,7 +366,7 @@ function EditAdminOffice(props) {
                                         required
                                         type='number'
                                         name='phone_number'
-                                        className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                        className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                     />
                                 </div>
 

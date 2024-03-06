@@ -46,13 +46,13 @@ export default function AddFacility(props) {
 						<div className="col-sapn-1 md:col-span-5 flex flex-col gap-3 ">
 							<div className="flex flex-wrap items-center justify-between gap-2 text-sm md:text-base py-3">
 								<div className="flex flex-row items-center justify-between gap-2 text-sm md:text-base py-3">
-									<Link className="text-blue-800" href="/dashboard">Home</Link> {'/'}
-									<Link className="text-blue-800" href="/facilities/">Facilities</Link> {'/'}
+									<Link className="text-gray-800" href="/dashboard">Home</Link> {'/'}
+									<Link className="text-gray-800" href="/facilities/">Facilities</Link> {'/'}
 									<span className="text-gray-500">Add Facility</span>
 								</div>
 							</div>
 
-							<div className={"md:col-span-5 col-span-1 flex justify-between w-full  border border-blue-600  text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-blue-600" : "border-red-600")}>
+							<div className={"md:col-span-5 col-span-1 flex justify-between w-full  border border-gray-600  text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-gray-600" : "border-red-600")}>
 								<h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
 									New Facility
 								</h2>

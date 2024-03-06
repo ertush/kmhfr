@@ -103,7 +103,7 @@ export default function MainLayout({ children, isLoading, searchTerm, isFullWidt
               <div className="flex flex-col gap-4 items-between">
                 <div className="md:w-[90%] w-full md:mx-auto flex justify-between p-4 md:p-0">
                   <div className="flex flex-col text-gray-200 md:gap-2 gap-1">
-                    <h2 className='text-blue-50 font-semibold mb-2 '>Contacts</h2>
+                    <h2 className='text-gray-50 font-semibold mb-2 '>Contacts</h2>
                     <Link href="tel:+254 20 2717077" className="t">+254-20-2717077</Link>
                     <Link href="mailto:kmhfl@health.go.ke" className="text-gray-200">kmhfl@health.go.ke</Link>
                     <Link href="https://servicedesk.health.go.ke/portal" className="text-gray-200"> servicedesk.health.go.ke/portal</Link>
@@ -111,14 +111,14 @@ export default function MainLayout({ children, isLoading, searchTerm, isFullWidt
                   </div>
 
                   <div className="flex-col md:flex hidden gap-2">
-                    <h2 className='text-blue-50 font-semibold mb-2'>Partners</h2>
+                    <h2 className='text-gray-50 font-semibold mb-2'>Partners</h2>
                     <p className="text-gray-200">HealthIT</p>
                     <p className="text-gray-200">USAID</p>
                     <p className="text-gray-200">Ministry of Health</p>
                   </div>
 
                   <div className="flex flex-col text-gray-200 md:gap-2 gap-1">
-                    <h2 className='text-blue-50 font-semibold mb-2'>Quick Links</h2>
+                    <h2 className='text-gray-50 font-semibold mb-2'>Quick Links</h2>
                     <div className='flex items-center gap-2'>
                     <NorthEast className="text-gray-200 w-3 aspect-square"/>
                     <Link href="https://healthit.uonbi.ac.ke" className="text-gray-200 hover:underline">HealthIT</Link>
@@ -172,15 +172,15 @@ export default function MainLayout({ children, isLoading, searchTerm, isFullWidt
             {/* <footer className="bg-gray-50 mt-8 py-5 items-center justify-evenly flex flex-wrap gap-y-3 gap-x-4 text-gray-300 text-sm w-full">
             
             
-                <a className="text-blue-300 hover:underline focus:underline active:underline hover:text-white focus:text-white active:text-white" href="https://www.usaid.gov/kenya" target="_blank" rel="noreferrer noopener">
+                <a className="text-gray-300 hover:underline focus:underline active:underline hover:text-white focus:text-white active:text-white" href="https://www.usaid.gov/kenya" target="_blank" rel="noreferrer noopener">
                 <img src="/USAID.png" alt="" className="h-14" />   
                 </a>
                 <span className="text-lg text-gray-400">&middot;</span>
-                <a className="text-blue-300 hover:underline focus:underline active:underline hover:text-white focus:text-white active:text-white" href="https://health.go.ke" target="_blank" rel="noreferrer noopener">
+                <a className="text-gray-300 hover:underline focus:underline active:underline hover:text-white focus:text-white active:text-white" href="https://health.go.ke" target="_blank" rel="noreferrer noopener">
                     <img src="/moh-logo.png" alt="" className="h-14" />
                 </a>
                 <span className="text-lg text-gray-400">&middot;</span>
-                <a className="text-blue-300 hover:underline focus:underline active:underline hover:text-white focus:text-white active:text-white" href="http://healthit.uonbi.ac.ke/" target="_blank" rel="noreferrer noopener">
+                <a className="text-gray-300 hover:underline focus:underline active:underline hover:text-white focus:text-white active:text-white" href="http://healthit.uonbi.ac.ke/" target="_blank" rel="noreferrer noopener">
                 <img src="/healthit.png" alt="" className="h-14" />
                 </a>
             </footer> */}

@@ -16,7 +16,7 @@ export default function FAQs() {
         
       <MainLayout>
        <div  className='w-[80%] mx-auto flex flex-col items-start gap-2 mt-8 md:mt-[100px]'>
-        <h1 className='text-blue-600 opacity-80 duration-200 ease-in-out font-semibold text-4xl'>FAQs</h1>
+        <h1 className='text-gray-600 opacity-80 duration-200 ease-in-out font-semibold text-4xl'>FAQs</h1>
         <hr className='w-[50px] h-2 opacity-80 bg-blue-600'></hr>
       </div>
 
@@ -24,7 +24,7 @@ export default function FAQs() {
       <div className="w-[80%] mx-auto md:mt-6 mt-8 h-full flex flex-col gap-y-5 md:gap-y-12 ">
                     <div className='flex  w-full flex-col gap-2'>
 
-                        <h2 className='md:text-3xl text-2xl text-blue-500 font-semibold'>
+                        <h2 className='md:text-3xl text-2xl text-gray-500 font-semibold'>
                             WHAT'S A HEALTH FACILITY? 
                         </h2>
                         <p className='text-lg text-justify text-black'>
@@ -33,7 +33,7 @@ export default function FAQs() {
                     </div>
 
                     <div className='flex flex-col w-full gap-2'>
-                        <h2 className='md:text-3xl text-2xl w-full text-blue-500 font-semibold'>
+                        <h2 className='md:text-3xl text-2xl w-full text-gray-500 font-semibold'>
                          WHAT'S A STAND-ALONE HEALTH FACILITY? 
                         </h2>
                         <p className='text-lg text-justify text-black'>
@@ -42,7 +42,7 @@ export default function FAQs() {
                     </div>
 
                     <div className='flex flex-col w-full gap-2'>
-                        <h2 className='md:text-3xl text-2xl text-blue-500 font-semibold'>
+                        <h2 className='md:text-3xl text-2xl text-gray-500 font-semibold'>
                         WHAT'S A COMMUNITY HEALTH UNIT?
                         </h2>
                         <p className='text-lg text-justify text-black'>

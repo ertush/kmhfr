@@ -523,7 +523,7 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
         </div>
 
         <div className=" w-full flex flex-col items-start justify-start bg-transparent h-auto">
-          <h4 className="text-lg uppercase pb-2 border-b border-gray-400 w-full mb-4 font-semibold text-blue-900">
+          <h4 className="text-lg uppercase pb-2 border-b border-gray-400 w-full mb-4 font-semibold text-gray-900">
             Community Health Unit Contacts
           </h4>
 
@@ -1039,7 +1039,7 @@ function EditCommunityUnitsServicesForm(props) {
 
     return (
       <>
-        <h4 className='text-lg uppercase pb-2 border-b border-gray-400 rounded w-full mb-4 font-semibold text-blue-900'>
+        <h4 className='text-lg uppercase pb-2 border-b border-gray-400  w-full mb-4 font-semibold text-gray-900'>
           Services Offered
         </h4>
   
@@ -1105,11 +1105,11 @@ export function CommunityUnitEditForm(props) {
            
             {/* Breadcrumb */}
             <div className="flex flex-row gap-2 text-sm md:text-base">
-              <Link className="text-blue-700" href="/">
+              <Link className="text-gray-700" href="/">
                 Home
               </Link>
               {"  >  "}
-              <Link className="text-blue-700" href="/community-units">
+              <Link className="text-gray-700" href="/community-units">
                 Community units
               </Link>
               {"  >  "}
@@ -1134,7 +1134,7 @@ export function CommunityUnitEditForm(props) {
                   <span
                     className={
                       "font-bold text-2xl " +
-                      (props?.code ? "text-blue-900" : "text-gray-500")
+                      (props?.code ? "text-gray-900" : "text-gray-500")
                     }
                   >
                     #{props?.code || "NO_CODE"}
@@ -1147,7 +1147,7 @@ export function CommunityUnitEditForm(props) {
               <div className="flex flex-wrap gap-3 items-center justify-end col-span-6 md:col-span-2">
                 <div className="flex flex-wrap gap-3 w-full items-center justify-start md:justify-center">
                   {props?.is_approved ? (
-                    <span className="bg-blue-200 text-blue-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
+                    <span className="bg-blue-200 text-gray-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
                       <CheckCircleIcon className="h-4 w-4" />
                       CHU Approved
                     </span>
@@ -1170,13 +1170,13 @@ export function CommunityUnitEditForm(props) {
                     </span>
                   )}
                   {props?.active && (
-                    <span className="bg-blue-200 text-blue-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
+                    <span className="bg-blue-200 text-gray-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
                       <CheckCircleIcon className="h-4 w-4" />
                       CHU Active
                     </span>
                   )}
                   {props?.has_edits && (
-                    <span className="bg-blue-200 text-blue-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
+                    <span className="bg-blue-200 text-gray-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
                       <InformationCircleIcon className="h-4 w-4" />
                       Has changes
                     </span>
@@ -1236,7 +1236,7 @@ export function CommunityUnitEditForm(props) {
               defaultValue="basic_details"
             >
               {/* Tabs List */}
-              <Tabs.List className="list-none w-full flex justify-between md:justify-start border-b border-gray-400 rounded md:grid md:grid-cols-3  flex-wrap gap-2 md:gap-3 px-4 uppercase leading-none tab-list font-semibold">
+              <Tabs.List className="list-none w-full flex justify-between md:justify-start border-b border-gray-400  md:grid md:grid-cols-3  flex-wrap gap-2 md:gap-3 px-4 uppercase leading-none tab-list font-semibold">
                 <Tabs.Tab
                   value="basic_details"
                   className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"

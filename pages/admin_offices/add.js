@@ -92,12 +92,12 @@ function AddAdminOffice(props) {
                 <div className="col-span-5 flex flex-col gap-3 md:gap-5 px-4">
                     <div className="flex flex-wrap items-center justify-between gap-2 text-sm md:text-base py-3">
                         <div className="flex flex-row items-center justify-between gap-2 text-sm md:text-base py-3">
-                            <Link href='/' className="text-blue-500">Home</Link>{'/'}
-                            <Link href='/admin_offices' className="text-blue-500">Admin Offices</Link> {'/'}
+                            <Link href='/' className="text-gray-500">Home</Link>{'/'}
+                            <Link href='/admin_offices' className="text-gray-500">Admin Offices</Link> {'/'}
                             <span className="text-gray-500">Add Admin Office</span>
                         </div>
                     </div>
-                    <div className={"col-span-5 flex items-center justify-between  w-full bg-transparent border border-blue-600 drop-shadow text-blue text-black p-4 md:divide-x md:divide-gray-200z  border-l-8 " + (true ? "border-blue-600" : "border-red-600")}>
+                    <div className={"col-span-5 flex items-center justify-between  w-full bg-transparent border border-gray-600 drop-shadow text-gray text-black p-4 md:divide-x md:divide-gray-200z  border-l-8 " + (true ? "border-gray-600" : "border-red-600")}>
                         <h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
                             {'New Admin Office'}
                         </h2>
@@ -107,7 +107,7 @@ function AddAdminOffice(props) {
                 </div>
 
                 <div className='col-span-5 flex flex-col justify-center items-start px-1 md:px-4 w-full '>
-                    <div className=' w-full flex flex-col bg-gray-50 mt-4 items-start p-3 text-blue shadow-md'
+                    <div className=' w-full flex flex-col bg-gray-50 mt-4 items-start p-3 text-gray shadow-md'
                         style={{ minHeight: '250px' }}>
 
                         <>
@@ -132,7 +132,7 @@ function AddAdminOffice(props) {
                                         required
                                         type='text'
                                         name='name'
-                                        className='flex-none w-full bg-transparent text-blue p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                        className='flex-none w-full bg-transparent text-gray p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                     />
                                 </div>
 
@@ -204,7 +204,7 @@ function AddAdminOffice(props) {
                                                     }
                                                 }}
                                                 name='county'
-                                                className='flex-none w-full flex-grow  placeholder-gray-500 border border-blue-600 outline-none'
+                                                className='flex-none w-full flex-grow  placeholder-gray-500 border border-gray-600 outline-none'
                                             />
                                         </div>
 
@@ -240,7 +240,7 @@ function AddAdminOffice(props) {
                                                 placeholder='Select Sub County'
                                                 name='sub_county'
                                                 id='sub_county'
-                                                className='flex-none w-full flex-grow  placeholder-gray-500 border border-blue-600 outline-none'
+                                                className='flex-none w-full flex-grow  placeholder-gray-500 border border-gray-600 outline-none'
                                             />
                                         </div>
                                     </>
@@ -262,7 +262,7 @@ function AddAdminOffice(props) {
                                         required
                                         type='email'
                                         name='email'
-                                        className='flex-none w-full bg-transparent text-blue p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                        className='flex-none w-full bg-transparent text-gray p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                     />
                                 </div>
 
@@ -278,19 +278,19 @@ function AddAdminOffice(props) {
                                         required
                                         type='number'
                                         name='phone_number'
-                                        className='flex-none w-full bg-transparent text-blue p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                        className='flex-none w-full bg-transparent text-gray p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                     />
                                 </div>
 
                                 {/* Cancel & Save */}
                                 <div className='flex justify-between items-center w-full'>
-                                    <button type='submit' className='text-blue bg-blue-600 p-2 text-white flex text-md font-semibold'
+                                    <button type='submit' className='text-gray bg-blue-600 p-2 text-white flex text-md font-semibold'
                                     >
                                         <span className='text-medium font-semibold text-white'>
                                             Save
                                         </span>
                                     </button>
-                                    <button className='flex items-center justify-start space-x-2 p-1 border-2 border-black text-blue px-2'>
+                                    <button className='flex items-center justify-start space-x-2 p-1 border-2 border-black text-gray px-2'>
                                         <ChevronDoubleLeftIcon className='w-4 h-4 text-black' />
                                         <span className='text-medium font-semibold text-black ' onClick={() => { router.push('admin_offices') }}>
                                             Cancel

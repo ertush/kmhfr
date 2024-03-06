@@ -163,18 +163,18 @@ function Home(props) {
 								{/* Bread Crumbs */}
 
 								{/* <div className='flex flex-row gap-2 text-sm md:text-base py-3'>
-									<Link className='text-blue-700' href='/'>
+									<Link className='text-gray-700' href='/'>
 										Home
 									</Link>
 									{'/'}
 									<span className='text-gray-500'>Community Units</span>
 								</div> */}
-								<div className={" col-span-1 md:col-span-5 flex flex-col rounded md:gap-0 gap-y-2 items-start  md:flex-row shadow-md md:justify-between w-full bg-gray-50  text-black p-4 md:divide-x md:divide-gray-200z md:items-center border-l-8 " + (true ? "border-blue-600" : "border-red-600")}>
+								<div className={" col-span-1 md:col-span-5 flex flex-col rounded md:gap-0 gap-y-2 items-start  md:flex-row shadow-md md:justify-between w-full bg-gray-50  text-black p-4 md:divide-x md:divide-gray-200z md:items-center border-l-8 " + (true ? "border-gray-600" : "border-red-600")}>
 									<h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
 										{'Community Units'}
 									</h2>
 									<p>Use the form on the left to filter CHUs or &nbsp;
-										<button className='text-lg capitalize text-blue-500 font-semibold'
+										<button className='text-lg capitalize text-gray-500 font-semibold'
 											onClick={() => {
 												setViewAll(true)
 												filterCHUs()
@@ -363,7 +363,7 @@ function Home(props) {
 												<h3 className='text-2xl w-full'>
 													<Link
 														href={'/public/chu/' + comm_unit.id}
-														className='hover:text-blue-800 group-focus:text-blue-800 active:text-blue-800'>
+														className='hover:text-gray-800 group-focus:text-gray-800 active:text-gray-800'>
 															
 														{		
 															comm_unit.official_name ||
@@ -429,7 +429,7 @@ function Home(props) {
 																: comm_unit.status_name
 																	.toLocaleLowerCase()
 																	.includes('fully')
-																	? ' bg-blue-200 border-blue-300/60'
+																	? ' bg-blue-200 border-gray-300/60'
 																	: ' bg-yellow-200 border-yellow-300/60')
 														}>
 														{comm_unit.status_name[0].toLocaleUpperCase()}
@@ -505,7 +505,7 @@ function Home(props) {
 
 															)()
 														}
-														className='text-blue-800 p-2 hover:underline active:underline focus:underline'>
+														className='text-gray-800 p-2 hover:underline active:underline focus:underline'>
 														{page}
 													</Link>
 												</li>

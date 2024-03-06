@@ -68,7 +68,7 @@ const BarChart = props => {
             <div className="flex flex-col items-center justify-center w-full p-2  bg-transparent" style={{ minHeight: '350px' }}>
                 <div className="w-full p-0">
                     {props.data.length <= 0 ? (
-                        <div className="p-2 bg-blue-200 border rounded border-blue-600 shadow-sm">
+                        <div className="p-2 bg-blue-200 border rounded border-gray-600 shadow-sm">
                             <p className="text-gray-800 text-base font-medium">Loading&hellip;</p>
                         </div>
                     ) : (

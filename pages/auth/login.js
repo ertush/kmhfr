@@ -34,7 +34,7 @@ const Login = (props) => {
                        
                     </div>
                     <div className="flex items-center hover:underline justify-start w-full py-3">
-                        <Link className="text-blue-800 text-lg font-medium  focus:underline active:underline" href="/">&larr; Back home</Link>
+                        <Link className="text-gray-800 text-lg font-medium  focus:underline active:underline" href="/">&larr; Back home</Link>
                     </div>
                 </div>
                 <form onSubmit={ev => {
@@ -86,12 +86,12 @@ const Login = (props) => {
                     }
                 }}
 
-                    className="bg-gray-50 w-full max-w-screen-sm p-4 md:p-6 drop-shadow backdrop-filter flex flex-col items-center gap-4 md:gap-6 shadow-lg border border-blue-50">
+                    className="bg-gray-50 w-full max-w-screen-sm p-4 md:p-6 drop-shadow backdrop-filter flex flex-col items-center gap-4 md:gap-6 shadow-lg border border-gray-50">
 
                     <h3 className="text-center leading-tight text-xl font-bold tracking-wide text-gray-800 uppercase">Log in</h3>
                     <div className="flex flex-col gap-0 w-full">
                         {error && error.length > 0 && <p className="text-red-900 bg-red-200 rounded drop-shadow py-2 font-medium normal-case text-base px-3">{error}</p>}
-                        {msg && msg.length > 0 && <p className="text-blue-900 bg-blue-200 rounded drop-shadow py-2 font-medium normal-case text-base px-3">{msg}</p>}
+                        {msg && msg.length > 0 && <p className="text-gray-900 bg-blue-200 rounded drop-shadow py-2 font-medium normal-case text-base px-3">{msg}</p>}
                     </div>
                     <div className="flex flex-col gap-1 w-full">
                         <label className="text-gray-800">Email / Personal Number</label>
@@ -148,7 +148,7 @@ const Login = (props) => {
                         <button type="submit" data-testid="login_btn" disabled={loading} className={"focus:outline-none focus:ring-1 focus:ring-yellow-500 text-white px-4 md:px-8 rounded whitespace-nowrap py-3 text-xl font-semibold hover:bg-blue-800 focus:bg-blue-600 active:bg-blue-800 " + (loading ? "bg-gray-900 cursor-not-allowed" : "bg-blue-700")}
                         >{loading ? "Loading..." : "Log in"}</button>
                         <div className="flex justify-end items-center w-full px-2">
-                            <span data-testid="forgot_password_link" onClick={()=>router.push('/auth/reset_password')} className="text-base text-gray-700 hover:text-blue-700 focus:text-blue-700 active:text-blue-700 hover:underline focus:underline active:underline">Forgot password?</span>
+                            <span data-testid="forgot_password_link" onClick={()=>router.push('/auth/reset_password')} className="text-base text-gray-700 hover:text-gray-700 focus:text-gray-700 active:text-gray-700 hover:underline focus:underline active:underline">Forgot password?</span>
                         </div>
                     </div>
                 </form>

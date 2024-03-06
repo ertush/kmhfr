@@ -246,13 +246,13 @@ function Home(props) {
 								{/* Bread Crumbs */}
 
 								{/* <div className='flex flex-row gap-2 text-sm md:text-base py-3'>
-									<Link className='text-blue-700' href='/'>
+									<Link className='text-gray-700' href='/'>
 										Home
 									</Link>
 									{'/'}
 									<span className='text-gray-500'>Facilities</span>
 								</div> */}
-								<div className={"col-span-5 rounded flex justify-between w-full bg-gray-50  text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-blue-600" : "border-red-600")}>
+								<div className={"col-span-5 rounded flex justify-between w-full bg-gray-50  text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-gray-600" : "border-red-600")}>
 									<h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
 										{'Facilities'}
 									</h2>
@@ -604,7 +604,7 @@ function Home(props) {
 
 
 							{
-								submitting && <Alert severity='info' className='w-full border-2 border-blue-500 rounded-none'>Loading...</Alert>
+								submitting && <Alert severity='info' className='w-full border-2 border-gray-500 rounded-none'>Loading...</Alert>
 							}
 
 							
@@ -625,7 +625,7 @@ function Home(props) {
 												<h3 className='text-2xl w-full'>
 													<Link
 														href={'/public/facilities/' + hf?.id}
-														className='hover:text-blue-800 group-focus:text-blue-800 active:text-blue-800'>
+														className='hover:text-gray-800 group-focus:text-gray-800 active:text-gray-800'>
 
 														{
 															hf?.official_name ||
@@ -760,7 +760,7 @@ function Home(props) {
 
 															)()
 														}
-														className='text-blue-800 p-2 hover:underline active:underline focus:underline'>
+														className='text-gray-800 p-2 hover:underline active:underline focus:underline'>
 														{page}
 													</a>
 												</li>

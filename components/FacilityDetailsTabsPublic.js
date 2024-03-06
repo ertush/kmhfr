@@ -89,7 +89,7 @@ function FacilityDetailsTabsPulic({ facility }) {
         className="w-full flex flex-col tab-root"
         defaultValue="overview"
       >
-        <Tabs.List className="list-none w-full flex justify-around border-b border-blue-600 flex-wrap gap-2 md:gap-3 px-4 uppercase leading-none tab-list font-semibold ">
+        <Tabs.List className="list-none w-full flex justify-around border-b border-gray-600 flex-wrap gap-2 md:gap-3 px-4 uppercase leading-none tab-list font-semibold ">
           <Tabs.Tab
             id={1}
             value="overview"
@@ -153,7 +153,7 @@ function FacilityDetailsTabsPulic({ facility }) {
 
                         <p className="text-black col-start-4 font-medium text-base flex">
                       {facility?.open_normal_day ? (
-                        <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 text-blue-900 flex gap-x-1 items-center cursor-default">
+                        <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 text-gray-900 flex gap-x-1 items-center cursor-default">
                           <CheckCircleIcon className="h-4 w-4" />
                           Yes
                         </span>
@@ -178,7 +178,7 @@ function FacilityDetailsTabsPulic({ facility }) {
 
                     <p className="col-start-4 text-black font-medium text-base flex">
                       {facility?.regulated ? (
-                        <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 text-blue-900 flex gap-x-1 items-center cursor-default">
+                        <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 text-gray-900 flex gap-x-1 items-center cursor-default">
                           <CheckCircleIcon className="h-4 w-4" />
                           Yes
                         </span>
@@ -461,7 +461,7 @@ function FacilityDetailsTabsPulic({ facility }) {
                           <span><b>Category: </b></span>{service.category_name || ""}
                         </small>
                         <label className="text-sm text-gray-600 flex gap-1 items-center">
-                          <CheckCircleIcon className="h-6 w-6 text-blue-500" />
+                          <CheckCircleIcon className="h-6 w-6 text-gray-500" />
                           <span>Active</span>
                         </label>
                         <div className="flex justify-between">
@@ -562,7 +562,7 @@ function FacilityDetailsTabsPulic({ facility }) {
             <div className="w-full p-4 ">
               <h3 className="text-2xl w-full flex flex-wrap justify-between items-center leading-tight tracking-tight">
                 <span className="font-semibold">Facility units</span>
-                {/* {user && user?.id ? <a href={"/facility/edit/"+facility?.id+"#units"} className="text-base text-blue-700 font-medium hover:text-black focus:text-black active:text-black">Edit facility units</a> : ""} */}
+                {/* {user && user?.id ? <a href={"/facility/edit/"+facility?.id+"#units"} className="text-base text-gray-700 font-medium hover:text-black focus:text-black active:text-black">Edit facility units</a> : ""} */}
               </h3>
               <ul>
                 {facility?.facility_units &&
@@ -581,7 +581,7 @@ function FacilityDetailsTabsPulic({ facility }) {
                         </small>
                       </div>
                       <div className="flex flex-row gap-1 items-center">
-                        <CheckCircleIcon className="h-6 w-6 text-blue-500" />
+                        <CheckCircleIcon className="h-6 w-6 text-gray-500" />
                         <label className="text-sm text-gray-600">
                           Active
                         </label>

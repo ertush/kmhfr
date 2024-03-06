@@ -276,7 +276,7 @@ if(filters){
               <div className="col-span-5 flex flex-wrap gap-3 md:gap-5 px-4 pt-2 justify-between items-center w-full bg-transparent">
                 {/* BREADCRUMB */}
                 <div className="flex flex-row items-center justify-between gap-2 md:ml-6 text-sm md:text-base py-3">
-                  <Link className="text-blue-700" href="/">
+                  <Link className="text-gray-700" href="/">
                     Home
                   </Link>
                   {"/"}
@@ -572,7 +572,7 @@ if(filters){
                 
                               }}
                               
-                              className='flex w-full   placeholder-gray-500 border border-blue-600 outline-none'
+                              className='flex w-full   placeholder-gray-500 border border-gray-600 outline-none'
                                                     options={Array.from(
                                                       filters[ft] || [],
                                                       (fltopt) => {
@@ -618,7 +618,7 @@ if(filters){
                                       
                                                     }}
                                                     
-                                                    className='flex w-full   placeholder-gray-500 border border-blue-600 outline-none'
+                                                    className='flex w-full   placeholder-gray-500 border border-gray-600 outline-none'
                                                     options={serviceOptions}
                                                     placeholder={
                                                       ft
@@ -781,7 +781,7 @@ if(filters){
                                       
                                                     }}
                                                     
-                                                    className='flex w-full   placeholder-gray-500 border border-blue-600 outline-none'
+                                                    className='flex w-full   placeholder-gray-500 border border-gray-600 outline-none'
                                                     options={Array.from(
                                                       filters[ft] || [],
                                                       (fltopt) => {
@@ -892,7 +892,7 @@ if(filters){
                                       
                                                     }}
                                                     
-                                                    className='flex w-full   placeholder-gray-500 border border-blue-600 outline-none'
+                                                    className='flex w-full   placeholder-gray-500 border border-gray-600 outline-none'
                                                     options={subCountyOptions}
                                                     placeholder={
                                                       ft
@@ -930,7 +930,7 @@ if(filters){
                                       
                                                     }}
                                                     
-                                                    className='flex w-full   placeholder-gray-500 border border-blue-600 outline-none'
+                                                    className='flex w-full   placeholder-gray-500 border border-gray-600 outline-none'
                                                     options={wardOptions}
                                                     placeholder={
                                                       ft
@@ -1002,7 +1002,7 @@ if(filters){
                                       
                                                     }}
                                                     
-                                                    className='flex w-full   placeholder-gray-500 border border-blue-600 outline-none'
+                                                    className='flex w-full   placeholder-gray-500 border border-gray-600 outline-none'
                                                     options={Array.from(
                                                       filters[ft] || [],
                                                       (fltopt) => {
@@ -1268,7 +1268,7 @@ if(filters){
                                     </button>
                                     <div className="w-full flex items-center py-2 justify-center">
                                       <button
-                                        className="cursor-pointer text-sm bg-transparent text-blue-700 hover:text-black hover:underline focus:text-black focus:underline active:text-black active:underline"
+                                        className="cursor-pointer text-sm bg-transparent text-gray-700 hover:text-black hover:underline focus:text-black focus:underline active:text-black active:underline"
                                         onClick={(ev) => {
                                           router.push("/gis");
                                         }}
@@ -1527,7 +1527,7 @@ if(filters){
                                       
                                                     }}
                                                     
-                                                    className='flex w-full   placeholder-gray-500 border border-blue-600 outline-none'
+                                                    className='flex w-full   placeholder-gray-500 border border-gray-600 outline-none'
                                                     options={Array.from(
                                                       filters[ft] || [],
                                                       (fltopt) => {
@@ -1573,7 +1573,7 @@ if(filters){
                                       
                                                     }}
                                                     
-                                                    className='flex w-full   placeholder-gray-500 border border-blue-600 outline-none'
+                                                    className='flex w-full   placeholder-gray-500 border border-gray-600 outline-none'
                                                     options={serviceOptions}
                                                     placeholder={
                                                       ft
@@ -1736,7 +1736,7 @@ if(filters){
                                       
                                                     }}
                                                     
-                                                    className='flex w-full   placeholder-gray-500 border border-blue-600 outline-none'
+                                                    className='flex w-full   placeholder-gray-500 border border-gray-600 outline-none'
                                                     options={Array.from(
                                                       filters[ft] || [],
                                                       (fltopt) => {
@@ -1782,7 +1782,7 @@ if(filters){
                                       
                                                     }}
                                                     
-                                                    className='flex w-full   placeholder-gray-500 border border-blue-600 outline-none'
+                                                    className='flex w-full   placeholder-gray-500 border border-gray-600 outline-none'
                                                     options={subCountyOptions}
                                                     placeholder={
                                                       ft
@@ -1939,7 +1939,7 @@ if(filters){
                                       
                                                     }}
                                                     
-                                                    className='flex w-full   placeholder-gray-500 border border-blue-600 outline-none'
+                                                    className='flex w-full   placeholder-gray-500 border border-gray-600 outline-none'
                                                     options={wardOptions}
                                                     placeholder={
                                                       ft
@@ -2012,7 +2012,7 @@ if(filters){
                 
                               }}
                               
-                              className='flex w-full   placeholder-gray-500 border border-blue-600 outline-none'
+                              className='flex w-full   placeholder-gray-500 border border-gray-600 outline-none'
                                                     options={Array.from(
                                                       filters[ft] || [],
                                                       (fltopt) => {

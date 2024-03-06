@@ -42,8 +42,8 @@ export function DelayedLoginButton() {
 
   if (delayed) {
     return (
-      <div className='text-lg group hover:border hover:border-blue-800 hover:text-gray-100 rounded max-h-min px-3 flex gap-x-2 items-center text-gray-100 md:text-blue-800 capitalize font-semibold'>
-        <Login className='w-6 h-6 text-gray-100 md:text-blue-800 group-hover:text-gray-100' />
+      <div className='text-lg group hover:border hover:border-gray-800 hover:text-gray-100 rounded max-h-min px-3 flex gap-x-2 items-center text-gray-100 md:text-gray-800 capitalize font-semibold'>
+        <Login className='w-6 h-6 text-gray-100 md:text-gray-800 group-hover:text-gray-100' />
         <Link href="/auth/login">
           log in
         </Link>
@@ -205,7 +205,7 @@ export default function HeaderLayout({
 
               {/* Login / Logout button */}
               {isLoggedIn ? (
-                <div className="text-lg group hidden  duration-200 hover:rounded ease-in-out hover:border hover:border-gray-800 hover:text-gray-800 md:h-[40px] max-h-min px-3 md:flex gap-x-2 items-center text-blue-800 capitalize font-semibold">
+                <div className="text-lg group hidden  duration-200 hover:rounded ease-in-out hover:border hover:border-gray-800 hover:text-gray-800 md:h-[40px] max-h-min px-3 md:flex gap-x-2 items-center text-gray-800 capitalize font-semibold">
                   <Menu as="div" className="relative p-2" >
                     <Menu.Button
                       as="div"
@@ -231,7 +231,7 @@ export default function HeaderLayout({
                       <Menu.Item as="li" className="flex items-center w-full gap-1">
                         {({ active }) => (
                           <button
-                            className={`w-full text-gray-800 font-medium cursor-pointer flex items-center ${active && "text-blue-400"
+                            className={`w-full text-gray-800 font-medium cursor-pointer flex items-center ${active && "text-gray-400"
                               }`}
                             onClick={() => router.push('/account')}
                           >
@@ -250,7 +250,7 @@ export default function HeaderLayout({
                           <button
                             onClick={() => router.push('/logout')}
                             data-testid="logout"
-                            className={`w-full cursor-pointer flex items-center text-gray-800 font-medium ${active && "text-blue-400"
+                            className={`w-full cursor-pointer flex items-center text-gray-800 font-medium ${active && "text-gray-400"
                               }`}
 
                           >
@@ -411,7 +411,7 @@ export default function HeaderLayout({
                       <Menu.Item as="li" className="flex items-center px-3 w-full gap-1">
                         {({ active }) => (
                           <button
-                            className={`w-full text-gray-800 font-medium cursor-pointer flex items-center ${active && "text-blue-400"
+                            className={`w-full text-gray-800 font-medium cursor-pointer flex items-center ${active && "text-gray-400"
                               }`}
                             onClick={() => router.push('/account')}
                           >
@@ -430,7 +430,7 @@ export default function HeaderLayout({
                           <button
                             onClick={() => router.push('/logout')}
                             data-testid="logout"
-                            className={`w-full cursor-pointer flex items-center text-gray-800 font-medium ${active && "text-blue-400"
+                            className={`w-full cursor-pointer flex items-center text-gray-800 font-medium ${active && "text-gray-400"
                               }`}
 
                           >
@@ -667,7 +667,7 @@ export default function HeaderLayout({
                   <CancelRounded onClick={() => setIsFAQ(false)} className='w-7 aspect-square text-red-400' />
                 </button>
 
-                <h2 className='text-3xl text-blue-500 font-semibold'>
+                <h2 className='text-3xl text-gray-500 font-semibold'>
                   WHAT'S A HEALTH FACILITY?
                 </h2>
                 <p className='text-lg text-justify text-black'>
@@ -676,7 +676,7 @@ export default function HeaderLayout({
               </div>
 
               <div className='flex flex-col gap-2'>
-                <h2 className='text-3xl text-blue-500 font-semibold'>
+                <h2 className='text-3xl text-gray-500 font-semibold'>
                   WHAT'S A STAND-ALONE HEALTH FACILITY?
                 </h2>
                 <p className='text-lg text-justify text-black'>
@@ -685,7 +685,7 @@ export default function HeaderLayout({
               </div>
 
               <div className='flex flex-col gap-2'>
-                <h2 className='text-3xl text-blue-500 font-semibold'>
+                <h2 className='text-3xl text-gray-500 font-semibold'>
                   WHAT'S A COMMUNITY HEALTH UNIT?
                 </h2>
                 <p className='text-lg text-justify text-black'>

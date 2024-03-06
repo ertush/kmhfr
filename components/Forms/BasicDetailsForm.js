@@ -1253,7 +1253,7 @@ export function BasicDeatilsForm({ editMode }) {
 
         {/* Armed Forces Facilities */}
         <div className=' w-full flex flex-col items-start justify-start p-3  border border-gray-400 rounded bg-transaprent h-auto'>
-          <h4 className='text-lg uppercase pb-2 border-b border-gray-400 rounded w-full mb-4 font-semibold text-blue-900'>
+          <h4 className='text-lg uppercase pb-2 border-b border-gray-400  w-full mb-4 font-semibold text-gray-900'>
             Armed Forces Facilities
           </h4>
           <div className='w-full flex flex-row items-center px-2 justify-start gap-1 gap-x-3 mb-3'>
@@ -1275,7 +1275,7 @@ export function BasicDeatilsForm({ editMode }) {
 
         {/* Hours/Days of Operation */}
         <div className=' w-full flex flex-col items-start justify-start p-3  border border-gray-400 rounded bg-transaprent h-auto'>
-          <h4 className='text-lg uppercase pb-2 border-b border-gray-400 rounded w-full mb-4 font-semibold text-blue-900'>
+          <h4 className='text-lg uppercase pb-2 border-b border-gray-400  w-full mb-4 font-semibold text-gray-900'>
             Hours/Days of Operation
           </h4>
           <div className='w-full flex flex-row items-center px-2 gap-1 gap-x-3 mb-3'>
@@ -1363,7 +1363,7 @@ export function BasicDeatilsForm({ editMode }) {
 
         {/* Location Details */}
         <div className=' w-full flex flex-col items-start justify-start p-3  border border-gray-400 rounded bg-transaprent h-auto'>
-          <h4 className='text-lg uppercase pb-2 border-b border-gray-400 w-full mb-4 font-semibold text-blue-900'>
+          <h4 className='text-lg uppercase pb-2 border-b border-gray-400 w-full mb-4 font-semibold text-gray-900'>
             Location Details
           </h4>
           <div className='grid md:grid-cols-4 grid-cols-1 place-content-start gap-3 w-full'>
@@ -1621,9 +1621,9 @@ export function BasicDeatilsForm({ editMode }) {
             :
 
             <div className='flex justify-between items-center w-full'>
-              <button className='flex items-center justify-start space-x-2 p-1 border border-blue-900  px-2'>
-                <ChevronDoubleLeftIcon className='w-4 h-4 text-blue-900' />
-                <span className='text-medium font-semibold text-blue-900 '>
+              <button className='flex items-center justify-start space-x-2 p-1 border border-gray-900  px-2'>
+                <ChevronDoubleLeftIcon className='w-4 h-4 text-gray-900' />
+                <span className='text-medium font-semibold text-gray-900 '>
                   Cancel
                 </span>
               </button>

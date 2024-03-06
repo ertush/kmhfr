@@ -65,7 +65,7 @@ export function EditForm() {
 
 
   return (
-    <div className='bg-gray-50 col-span-1 md:col-span-4 shadow-md flex flex-col justify-center items-center w-full'>
+    <div className='bg-gray-50 col-span-1 md:col-span-4 shadow-md flex flex-col justify-start max-h-min items-center w-full'>
       {/* Stepper Header */}
       <Tabs.Root
         orientation="horizontal"
@@ -73,7 +73,7 @@ export function EditForm() {
         defaultValue="basic_details"
 
       >
-        <Tabs.List className="list-none md:grid border-b border-blue-600 md:grid-cols-7 grid grid-cols-2 gap-2  px-2  uppercase leading-none tab-list font-semibold">
+        <Tabs.List className="list-none md:flex border-b border-gray-600 md:justify-between grid grid-cols-2  gap-2  px-2  uppercase leading-none tab-list font-semibold">
           <Tabs.Tab
             value="basic_details"
             className="px-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
@@ -191,7 +191,7 @@ export function EditForm() {
           {/* Infrastructure */}
           <Tabs.Panel
             value="infrastructure"
-            className="grow-1 py-1 px-4 tab-panel"
+            className="grow-1 py-1 px-4 "
           >
             <InfrastructureForm />
           </Tabs.Panel >
