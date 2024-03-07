@@ -266,7 +266,7 @@ const User = (props) => {
 						</Fade>
 					</Modal>
 				}
-				<div className="w-full grid grid-cols-5 gap-4 px-1 md:px-4 py-2 my-4">
+				<div className="w-full  md:w-[85%] md:mx-auto grid grid-cols-5 gap-4 px-1 md:px-4 py-2 my-4">
 					<div className="col-span-5 flex flex-col gap-3 md:gap-5 px-4">
 						<div className="flex flex-wrap items-center justify-between gap-2 text-sm md:text-base pb-3">
 							<div className="flex flex-row items-center justify-between gap-2 text-sm md:text-base py-3">

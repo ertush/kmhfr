@@ -12,213 +12,252 @@ import { useAlert } from "react-alert";
 // import { all } from "underscore";
 import { UserContext } from "../../../providers/user";
 import { KeyboardArrowRight, KeyboardArrowDown } from "@mui/icons-material"
+import { withErrorBoundary } from 'react-error-boundary'
+import Backdrop from '@mui/material/Backdrop';
+import Alert from '@mui/material/Alert'
+
 
 
 export const FacilityUpdatesContext = createContext(null)
 
-export default function EditFacility(props) {
-	const userCtx = React.useContext(UserContext);
-	const [user, setUser] = useState(userCtx);
+function FallBack() {
 
-	const filters = [];
-	const [khisSynched, setKhisSynched] = useState(false);
-	const [facilityFeedBack, setFacilityFeedBack] = useState([])
-	const [pathId, setPathId] = useState('')
-	const [allFctsSelected, setAllFctsSelected] = useState(false);
-	const [title, setTitle] = useState('');
-	const [isClient, setIsClient] = useState(false)
+	const [isOpen, setIsOpen] = useState(false)
 
-	const [facilityUpdateData, setFacilityUpdateData] = useState(null);
-	const [isSavedChanges, setIsSavedChanges] = useState(false);
-	const [isMenuOpen, setIsMenuOpen] = useState(false)
+	return (
+		<Backdrop
+			sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'start', paddingTop: '170px' }}
+			open={isOpen}
+			onClick={() => {
+				setIsOpen(!isOpen)
+			}}
+		>
+			<Alert className="w-auto h-auto md:mx-0 mx-5" severity="error">An Error Occured When Loading Page</Alert>
+		</Backdrop>
+	)
+}
+
+const EditFacility = withErrorBoundary(
+	(props) => {
+		const userCtx = React.useContext(UserContext);
+		const [user, setUser] = useState(userCtx);
+
+		const filters = [];
+		const [khisSynched, setKhisSynched] = useState(false);
+		const [facilityFeedBack, setFacilityFeedBack] = useState([])
+		const [pathId, setPathId] = useState('')
+		const [allFctsSelected, setAllFctsSelected] = useState(false);
+		const [title, setTitle] = useState('');
+		const [isClient, setIsClient] = useState(false)
+
+		const [facilityUpdateData, setFacilityUpdateData] = useState(null);
+		const [isSavedChanges, setIsSavedChanges] = useState(false);
+		const [isMenuOpen, setIsMenuOpen] = useState(false)
 
 
-	const router = useRouter();
-	const alert = useAlert();
+		const router = useRouter();
+		const alert = useAlert();
 
-	const { facility_updated_json } = facilityUpdateData ?? {
-		updated: new Date(),
-		updated_by: "",
-		facility_updated_json: [],
-		created_by_name: "",
-		code:null,
-		facilityId:null
-	  };
-
-
+		const { facility_updated_json } = facilityUpdateData ?? {
+			updated: new Date(),
+			updated_by: "",
+			facility_updated_json: [],
+			created_by_name: "",
+			code: null,
+			facilityId: null
+		};
 
 
-	useEffect(() => {
 
-		// console.log({allOptions: props})
 
-		setUser(userCtx)
-		if(user?.id === 6){
-			router.push('/auth/login')
-		}
-		
-		setIsClient(true)
+		useEffect(() => {
 
-	}, [])
+			// console.log({allOptions: props})
 
-	if (isClient) {
-		return (
-			<>
-				<Head>
-					<title>KMHFR - Edit Facility</title>
-					<link rel="icon" href="/favicon.ico" />
-					<link rel="stylesheet" href="/assets/css/leaflet.css" />
+			setUser(userCtx)
+			if (user?.id === 6) {
+				router.push('/auth/login')
+			}
 
-				</Head>
+			setIsClient(true)
 
-				<MainLayout isLoading={false} searchTerm={props?.query?.searchTerm}>
-					<div className="w-full md:w-[85%] md:mx-auto px-4 md:px-0 grid grid-cols-1 md:grid-cols-5 h-full gap-4">
-						<div className="md:col-span-5 col-span-1 flex flex-col gap-3 md:gap-5 mb-4">
-							<div className="flex flex-wrap items-center  justify-between gap-2 text-sm md:text-base py-3">
-								<div className="flex flex-row mt-8 items-center justify-between gap-2 text-sm md:text-base py-3">
-									<Link className="text-gray-800" href="/dashboard">Home</Link> {'/'}
-									<Link className="text-gray-800" href="/facilities">Facilities</Link> {'/'}
-									<span className="text-gray-500">Edit Facility</span>
+		}, [])
+
+		if (isClient) {
+
+			// return <pre className='font-semibold'>
+			// 		{
+			// 			JSON.stringify(props?.data?.facility_checklist_document, null, 2)
+			// 		}
+			// 		</pre>
+			return (
+				<>
+					<Head>
+						<title>KMHFR - Edit Facility</title>
+						<link rel="icon" href="/favicon.ico" />
+						<link rel="stylesheet" href="/assets/css/leaflet.css" />
+
+					</Head>
+
+					<MainLayout isLoading={false} searchTerm={props?.query?.searchTerm}>
+						<div className="w-full md:w-[85%] md:mx-auto px-4 md:px-0 grid grid-cols-1 md:grid-cols-5 h-full gap-4">
+							<div className="md:col-span-5 col-span-1 flex flex-col gap-3 md:gap-5 mb-4">
+								<div className="flex flex-wrap items-center  justify-between gap-2 text-sm md:text-base py-3">
+									<div className="flex flex-row mt-8 items-center justify-between gap-2 text-sm md:text-base py-3">
+										<Link className="text-gray-800" href="/dashboard">Home</Link> {'/'}
+										<Link className="text-gray-800" href="/facilities">Facilities</Link> {'/'}
+										<span className="text-gray-500">Edit Facility</span>
+									</div>
 								</div>
+
+								<div className={"col-span-1 md:col-span-5 flex flex-col items-start w-full  border border-gray-600  text-black p-4 md:divide-x md:divide-gray-200z border-l-8 " + (true ? "border-gray-600" : "border-red-600")}>
+									<h2 className='flex items-center text-xl text-start font-bold text-black capitalize gap-2'>
+										<span className="cursor-pointer hover:text-gray-800" onClick={() => router.push(`/facilities/${props?.data?.id}`)}>Editing  {props?.data?.official_name}</span>
+									</h2>
+									<h3 className='text-gray-900 font-semibold '>{props?.data?.facility_type_name ?? ''}</h3>
+									<h4 className='text-gray-700'>{`# ${props?.data?.code ?? 'NO_CODE'}`}</h4>
+								</div>
+
 							</div>
 
-							<div className={"col-span-1 md:col-span-5 flex flex-col items-start w-full  border border-gray-600  text-black p-4 md:divide-x md:divide-gray-200z border-l-8 " + (true ? "border-gray-600" : "border-red-600")}>
-								<h2  className='flex items-center text-xl text-start font-bold text-black capitalize gap-2'>
-									 <span className="cursor-pointer hover:text-gray-800" onClick={() => router.push(`/facilities/${props?.data?.id}`)}>Editing  {props?.data?.official_name}</span> 
-								</h2>
-								<h3 className='text-gray-900 font-semibold '>{props?.data?.facility_type_name ?? ''}</h3>
-								<h4 className='text-gray-700'>{`# ${props?.data?.code ?? 'NO_CODE'}`}</h4>
-							</div>
-
-						</div>
 
 
-						
-						{/* Facility Side Menu Filters */}
-						<div className="hidden md:flex col-span-1">
+							{/* Facility Side Menu Filters */}
+							<div className="hidden md:flex col-span-1">
 
-							<FacilitySideMenu
-								filters={filters}
-								states={[khisSynched, facilityFeedBack, pathId, allFctsSelected, title]}
-								stateSetters={[setKhisSynched, setFacilityFeedBack, setPathId, setAllFctsSelected, setTitle]} />
-						</div>
-
-						<button className='md:hidden relative p-2 border border-gray-800 rounded w-full self-start my-4' onClick={() => setIsMenuOpen(!isMenuOpen)}>
-							Facility Menu
-							{
-								!isMenuOpen &&
-								<KeyboardArrowRight className='w-8 aspect-square text-gray-800' />
-							}
-
-							{
-								isMenuOpen &&
-								<KeyboardArrowDown className='w-8 aspect-square text-gray-800' />
-							}
-
-							{
-								isMenuOpen &&
 								<FacilitySideMenu
 									filters={filters}
 									states={[khisSynched, facilityFeedBack, pathId, allFctsSelected, title]}
 									stateSetters={[setKhisSynched, setFacilityFeedBack, setPathId, setAllFctsSelected, setTitle]} />
-							}
-						</button>
+							</div>
 
+							<button className='md:hidden relative p-2 border border-gray-800 rounded w-full self-start my-4' onClick={() => setIsMenuOpen(!isMenuOpen)}>
+								Facility Menu
+								{
+									!isMenuOpen &&
+									<KeyboardArrowRight className='w-8 aspect-square text-gray-800' />
+								}
 
+								{
+									isMenuOpen &&
+									<KeyboardArrowDown className='w-8 aspect-square text-gray-800' />
+								}
 
+								{
+									isMenuOpen &&
+									<FacilitySideMenu
+										filters={filters}
+										states={[khisSynched, facilityFeedBack, pathId, allFctsSelected, title]}
+										stateSetters={[setKhisSynched, setFacilityFeedBack, setPathId, setAllFctsSelected, setTitle]} />
+								}
+							</button>
 
+							{isSavedChanges && facilityUpdateData ? (
+								// Display Changes to be updated
+								<div className="col-span-1 md:col-span-4 bg-gray-50 p-3 shadow-md flex flex-col items-center md:gap-3 gap-y-3">
 
-						{isSavedChanges && facilityUpdateData ? (
-							// Display Changes to be updated
-						<div className="col-span-1 md:col-span-4 bg-gray-50 p-3 shadow-md flex flex-col items-center md:gap-3 gap-y-3"> 
+									<div className="flex flex-col justify-start w-full space-y-3">
+										<h2 className="text-2xl font-bold justify-center items-center md:ml-0 ml-4">
+											Updated details
+										</h2>
+										{/* Update Metadata */}
+										<div className="grid grid-cols-1 gap-y-2 grid-rows-1 md:flex justify-between md:space-x-4 w-full md:mx-0 mx-4">
+											<p className="text-base font-normal flex items-center gap-x-1">
+												Updates were made on {" "}
+												<span className="text-gray-900 font-semibold text-base ">
+													{
+														new Date(facilityUpdateData?.updated)
+															.toLocaleString()
+															.split(",")[0]
+													}
+												</span>
+												{" "}
+												by
+												{" "}
+												<span className="text-gray-900 font-semibold text-base ">
+													{facilityUpdateData?.created_by_name}
+												</span>
+											</p>
 
-							<div className="flex flex-col justify-start w-full space-y-3">
-								<h2 className="text-2xl font-bold justify-center items-center md:ml-0 ml-4">
-									Updated details
-								</h2>
-								{/* Update Metadata */}
-								<div className="grid grid-cols-1 gap-y-2 grid-rows-1 md:flex justify-between md:space-x-4 w-full md:mx-0 mx-4">
-									<p className="text-base font-normal flex items-center gap-x-1">
-										Updates were made on {" "}
-										<span className="text-gray-900 font-semibold text-base ">
 											{
-												new Date(facilityUpdateData?.updated)
-													.toLocaleString()
-													.split(",")[0]
+												facilityUpdateData?.code &&
+												<p className="text-base font-normal flex gap-x-1 ">
+													Facility Code:
+													{" "}
+													<span className="text-gray-900 font-semibold text-base ">
+														{facilityUpdateData?.code}
+													</span>
+												</p>
 											}
-										</span>
-										{" "}
-										by
-										{" "}
-										<span className="text-gray-900 font-semibold text-base ">
-											{facilityUpdateData?.created_by_name}
-										</span>
-									</p>
 
-								    {
-										facilityUpdateData?.code &&
-									<p className="text-base font-normal flex gap-x-1 ">
-										Facility Code:
-										{" "}
-										<span className="text-gray-900 font-semibold text-base ">
-											{facilityUpdateData?.code}
-										</span>
-									</p>
-									}
+											<span className="flex space-x-2">
+												<button
+													className="flex justify-center text-base font-semibold text-white bg-gray-500  py-1 px-2"
+													onClick={() => router.push(`/facilities/edit/${facilityUpdateData?.id}`)}
+												>
+													Edit
+												</button>
+												<button
+													className="flex justify-center text-base font-semibold text-white bg-gray-500  py-1 px-2"
+													onClick={() => {
+														if (isSavedChanges) {
+															alert.success("Facility updates saved successfully")
+														} else {
+															alert.error("Unable to save facility updates")
+														}
+														router.push("/facilities")
+													}}
+												>
+													Confirm Updates
+												</button>
+											</span>
+										</div>
 
-									<span className="flex space-x-2">
-										<button
-											className="flex justify-center text-base font-semibold text-white bg-gray-500  py-1 px-2"
-											onClick={() => router.push(`/facilities/edit/${facilityUpdateData?.id}`)}
-										>
-											Edit
-										</button>
-										<button
-											className="flex justify-center text-base font-semibold text-white bg-gray-500  py-1 px-2"
-											onClick={() => {
-												if (isSavedChanges) {
-													alert.success("Facility updates saved successfully")
-												} else {
-													alert.error("Unable to save facility updates")
-												}
-												router.push("/facilities")
-											}}
-										>
-											Confirm Updates
-										</button>
-									</span>
+										{/* Update Details */}
+
+										<FacilityUpdatesTable
+											facilityUpdatedJson={facility_updated_json}
+											originalData={props?.data}
+										/>
+									</div>
 								</div>
+							) : (
 
-								{/* Update Details */}
+								<FacilityUpdatesContext.Provider value={{
+									updatedSavedChanges: setIsSavedChanges,
+									updateFacilityUpdateData: setFacilityUpdateData
+								}} >
+									<FormOptionsContext.Provider value={props}>
+										<EditForm />
+									</FormOptionsContext.Provider>
+								</FacilityUpdatesContext.Provider>
+							)
+							}
+						</div>
+					</MainLayout >
+				</>
 
-								<FacilityUpdatesTable
-									facilityUpdatedJson={facility_updated_json}
-									originalData={props?.data}
-								/>
-							</div>
-							</div>
-						) : (
+			)
+		}
+		else {
+			return null;
+		}
+	}, {
 
-							<FacilityUpdatesContext.Provider value={{
-								updatedSavedChanges:setIsSavedChanges,
-								updateFacilityUpdateData:setFacilityUpdateData
-							}} >
-								<FormOptionsContext.Provider value={props}>
-									<EditForm />
-								</FormOptionsContext.Provider>
-							</FacilityUpdatesContext.Provider>
-						)
-						}
-					</div>
-				</MainLayout >
-			</>
-
-		)
-	}
-	else {
-		return null;
+	fallback: <Backdrop
+		sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'start', paddingTop: '170px' }}
+		open={true}
+	>
+		<Alert className="w-auto h-auto md:mx-0 mx-5" severity="error">An Error occured when loading page. <Link className="text-blue-700 hover:underline" href={`/facilities/`}>Go back to facilities</Link></Alert>
+	</Backdrop>,
+	onError: error => {
+		console.log("\nError Boundary: \n", error?.message)
 	}
 }
+
+)
+
+export default EditFacility
 
 
 EditFacility.getInitialProps = async (ctx) => {
@@ -274,28 +313,28 @@ EditFacility.getInitialProps = async (ctx) => {
 									},
 								})
 
-								if(!_facilityTypeData) throw Error('Unable facility type data')
+								if (!_facilityTypeData) throw Error('Unable facility type data')
 
 
 								let facilityTypeData = (await _facilityTypeData.json())
 
-								facilityTypeData = Array.from(facilityTypeData?.results, ({id, name}) => {
-								return {
-									label: name,
-									value: id
-								}
-									
+								facilityTypeData = Array.from(facilityTypeData?.results, ({ id, name }) => {
+									return {
+										label: name,
+										value: id
+									}
+
 								})
 
-							
+
 
 								allOptions['facility_types'] = facilityTypeData;
-								
+
 
 							}
 							catch (err) {
 								console.error(`Error fetching ${option}: `, err);
-								
+
 							}
 
 							break;
@@ -310,7 +349,7 @@ EditFacility.getInitialProps = async (ctx) => {
 										Accept: 'application/json',
 									},
 								})
-								
+
 								if (!_facilityTypeDetails) throw Error("Unable to fetch facility type details")
 
 
@@ -323,7 +362,7 @@ EditFacility.getInitialProps = async (ctx) => {
 							}
 							catch (err) {
 								console.error(`Error fetching ${option}: `, err);
-								
+
 							}
 							break;
 						case 'owners':
@@ -339,16 +378,16 @@ EditFacility.getInitialProps = async (ctx) => {
 									},
 								})
 
-								if(!_owners) throw new Error('Unable to fetch owners')
+								if (!_owners) throw new Error('Unable to fetch owners')
 
-								const owners = (await _owners.json())?.results 
+								const owners = (await _owners.json())?.results
 
 								allOptions['owners'] = owners
 
 							}
 							catch (err) {
 								console.error(`Error fetching ${option}: `, err);
-								
+
 							}
 
 							break;
@@ -365,8 +404,8 @@ EditFacility.getInitialProps = async (ctx) => {
 									},
 								})
 
-								if(!_owner_types) throw Error('Unable to fetch owner types')
-								
+								if (!_owner_types) throw Error('Unable to fetch owner types')
+
 								const owner_types = await _owner_types.json()
 
 
@@ -376,7 +415,7 @@ EditFacility.getInitialProps = async (ctx) => {
 							}
 							catch (err) {
 								console.error(`Error fetching ${option}: `, err);
-								
+
 							}
 
 							break;
@@ -392,9 +431,9 @@ EditFacility.getInitialProps = async (ctx) => {
 									},
 								})
 
-								if(!_keph) throw Error('Unable to fetch keph')
+								if (!_keph) throw Error('Unable to fetch keph')
 
-								const keph = (await _keph.json()).results.map(({ id, name }) => ({ value: id, label: name })) 
+								const keph = (await _keph.json()).results.map(({ id, name }) => ({ value: id, label: name }))
 
 
 								allOptions["keph"] = keph
@@ -402,7 +441,7 @@ EditFacility.getInitialProps = async (ctx) => {
 							}
 							catch (err) {
 								console.error(`Error fetching ${option}: `, err);
-							
+
 							}
 
 							break;
@@ -419,17 +458,17 @@ EditFacility.getInitialProps = async (ctx) => {
 									},
 								})
 
-								if(!_facility_admission_status) throw Error('Unabe to fetch Faility type details')
+								if (!_facility_admission_status) throw Error('Unabe to fetch Faility type details')
 
 								const facility_admission_status = (await _facility_admission_status.json()).results.map(({ id, name }) => ({ value: id, label: name }))
 
 
-								allOptions["facility_admission_status"] =  facility_admission_status
+								allOptions["facility_admission_status"] = facility_admission_status
 
 							}
 							catch (err) {
 								console.error(`Error fetching ${option}: `, err);
-								
+
 							}
 							break;
 						case 'job_titles':
@@ -445,9 +484,9 @@ EditFacility.getInitialProps = async (ctx) => {
 									},
 								})
 
-								if(!_job_titles) throw Error('Unable to fetch job titles')
+								if (!_job_titles) throw Error('Unable to fetch job titles')
 
-								const job_titles = (await _job_titles.json()).results.map(({ id, name }) => ({ value: id, label: name })) 
+								const job_titles = (await _job_titles.json()).results.map(({ id, name }) => ({ value: id, label: name }))
 
 
 								allOptions["job_titles"] = job_titles
@@ -455,7 +494,7 @@ EditFacility.getInitialProps = async (ctx) => {
 							}
 							catch (err) {
 								console.error(`Error fetching ${option}: `, err);
-								
+
 							}
 							break;
 						case 'contact_types':
@@ -471,15 +510,15 @@ EditFacility.getInitialProps = async (ctx) => {
 									},
 								})
 
-								if(!_contact_types) Error("Unable to Contact Types")
+								if (!_contact_types) Error("Unable to Contact Types")
 
-								const contact_types = (await _contact_types.json()).results.map(({ id, name }) => ({ value: id, label: name })) 
+								const contact_types = (await _contact_types.json()).results.map(({ id, name }) => ({ value: id, label: name }))
 								allOptions["contact_types"] = contact_types
 
 							}
 							catch (err) {
 								console.error(`Error fetching ${option}: `, err);
-								
+
 							}
 							break;
 						case 'facility_depts':
@@ -495,7 +534,7 @@ EditFacility.getInitialProps = async (ctx) => {
 									},
 								})
 
-							    if(!_faciilty_depts) throw Error("Unable to fetch facility Departments")
+								if (!_faciilty_depts) throw Error("Unable to fetch facility Departments")
 
 								const facility_depts = (await _faciilty_depts.json()).results.map(({ id, name, regulatory_body_name }) => ({ value: id, label: name, reg_body_name: regulatory_body_name }))
 
@@ -504,7 +543,7 @@ EditFacility.getInitialProps = async (ctx) => {
 							}
 							catch (err) {
 								console.error(`Error fetching ${option}: `, err);
-								
+
 							}
 							break;
 						case 'regulating_bodies':
@@ -521,7 +560,7 @@ EditFacility.getInitialProps = async (ctx) => {
 									},
 								})
 
-								if(!_regulating_bodies) throw Error("Unable to fetch reguating bodies")
+								if (!_regulating_bodies) throw Error("Unable to fetch reguating bodies")
 
 								const regulating_bodies = (await _regulating_bodies.json()).results.map(({ id, name }) => ({ value: id, label: name }))
 
@@ -530,7 +569,7 @@ EditFacility.getInitialProps = async (ctx) => {
 							}
 							catch (err) {
 								console.log(`Error fetching ${option}: `, err);
-								
+
 							}
 							break;
 						case 'regulation_status':
@@ -546,7 +585,7 @@ EditFacility.getInitialProps = async (ctx) => {
 									},
 								})
 
-								if(!_regulation_status) throw Error("Unable to fetch Regulation Status")
+								if (!_regulation_status) throw Error("Unable to fetch Regulation Status")
 
 								const regulation_status = (await _regulation_status.json()).results.map(({ id, name }) => ({ value: id, label: name }))
 
@@ -555,7 +594,7 @@ EditFacility.getInitialProps = async (ctx) => {
 							}
 							catch (err) {
 								console.error(`Error fetching ${option}: `, err);
-								
+
 							}
 							break;
 						case 'services':
@@ -571,7 +610,7 @@ EditFacility.getInitialProps = async (ctx) => {
 									}
 								})
 
-								if(!_services) throw Error("Unable to fetch services") 
+								if (!_services) throw Error("Unable to fetch services")
 
 								const services = (await _services.json()).results.map(({ id, name, category, category_name }) => ({ id, name, category, category_name }))
 
@@ -580,7 +619,7 @@ EditFacility.getInitialProps = async (ctx) => {
 							}
 							catch (err) {
 								console.error(`Error fetching ${option}: `, err);
-								
+
 							}
 
 							break;
@@ -597,7 +636,7 @@ EditFacility.getInitialProps = async (ctx) => {
 									}
 								})
 
-								if(!_infrastructure) throw Error("Unable to fetch infrstructure")
+								if (!_infrastructure) throw Error("Unable to fetch infrstructure")
 
 								const infrastructure = (await _infrastructure.json()).results.map(({ id, name, category_name, category }) => ({ id, name, category_name, category }))
 
@@ -606,7 +645,7 @@ EditFacility.getInitialProps = async (ctx) => {
 							}
 							catch (err) {
 								console.log(`Error fetching ${option}: `, err);
-							
+
 							}
 
 							break;
@@ -622,7 +661,7 @@ EditFacility.getInitialProps = async (ctx) => {
 									}
 								})
 
-								if(!_specialities) throw Error("Unable to fetch specialities")
+								if (!_specialities) throw Error("Unable to fetch specialities")
 
 								const specialities = (await _specialities.json()).results.map(({ id, name, category_name, category }) => ({ id, name, category_name, category }))
 
@@ -631,7 +670,7 @@ EditFacility.getInitialProps = async (ctx) => {
 							}
 							catch (err) {
 								console.log(`Error fetching ${option}: `, err);
-								
+
 							}
 
 							break;
@@ -649,17 +688,17 @@ EditFacility.getInitialProps = async (ctx) => {
 
 
 								const [_result] = (await _collection_date.json()).results;
-								if(_result && _result["collection_date"]){
+								if (_result && _result["collection_date"]) {
 									allOptions["collection_date"] = _result["collection_date"];
-								}else{
+								} else {
 									allOptions["collection_date"] = null;
 								}
-								
+
 
 							} catch (err) {
 								console.log(`Error fetching ${option}: `, err);
 								console.error(`Error fetching ${option}: `, err);
-								
+
 							}
 							break;
 						case "facility_data":
@@ -674,11 +713,11 @@ EditFacility.getInitialProps = async (ctx) => {
 									}
 
 								);
-								
+
 								const facilityData = await _facility_data.json()
 
 								// console.log({facilityData: facilityData?.ward})
-							
+
 
 								if (facilityData) {
 
@@ -699,52 +738,52 @@ EditFacility.getInitialProps = async (ctx) => {
 										);
 
 										const wardData = await response.json();
-										
-										if(wardData){
 
-										const [lng, lat] =
-										wardData?.ward_boundary.properties.center.coordinates;
+										if (wardData) {
 
-										allOptions["geolocation"] = {
+											const [lng, lat] =
+												wardData?.ward_boundary.properties.center.coordinates;
+
+											allOptions["geolocation"] = {
 												geoJSON: JSON.parse(JSON.stringify(wardData?.ward_boundary)),
 												centerCoordinates: JSON.parse(
 													JSON.stringify([lat, lng])
 												)
 											}
-										
 
-									}
 
-										
-											try {
-												const response = await fetch(
-													`${process.env.NEXT_PUBLIC_API_URL}/facilities/facility_regulation_status/?facility=${facilityData?.id}/?format=json`,
-													{
-														headers: {
-															Authorization: 'Bearer ' + token,
-															Accept: 'application/json',
-														}
+										}
+
+
+										try {
+											const response = await fetch(
+												`${process.env.NEXT_PUBLIC_API_URL}/facilities/facility_regulation_status/?facility=${facilityData?.id}/?format=json`,
+												{
+													headers: {
+														Authorization: 'Bearer ' + token,
+														Accept: 'application/json',
 													}
-												);
-												const regulationData = await response.json();
-												
-												if (regulationData) {
+												}
+											);
+											const regulationData = await response.json();
+
+											if (regulationData) {
 												allOptions['facility_regulation_status'] = (await regulationData).results
-												
+
 											}
-											} catch (err) {
-												console.log(`Error fetching ${option}: `, err);
-											
-											}
-										
+										} catch (err) {
+											console.log(`Error fetching ${option}: `, err);
+
+										}
+
 									} catch (err) {
 										console.log(`Error fetching ${option}: `, err);
-										
+
 									}
 								}
 							} catch (err) {
 								console.log(`Error fetching ${option}: `, err);
-								
+
 							}
 
 							break;
@@ -773,7 +812,7 @@ EditFacility.getInitialProps = async (ctx) => {
 							}
 							catch (err) {
 								console.log(`Error fetching ${option}: `, err);
-								
+
 							}
 							break;
 
@@ -782,10 +821,10 @@ EditFacility.getInitialProps = async (ctx) => {
 
 
 				allOptions["token"] = token
-		
-				
+
+
 				// console.log("allOptions Log", allOptions)
-				return  allOptions
+				return allOptions
 
 
 			}

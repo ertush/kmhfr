@@ -17,7 +17,7 @@ import Alert from '@mui/material/Alert';
 import 'react-dual-listbox/lib/react-dual-listbox.css';
 
 
-const EditGroup=(props)=> {
+function EditGroup (props) {
     
 	const [selPermissions, setselPermissions] = useState(props?.data.permissions.map((pm)=>{return pm.id}))
 
@@ -109,7 +109,7 @@ const EditGroup=(props)=> {
 // console.log(delete_permission);
   return (
     <MainLayout isLoading={false} searchTerm={props?.query?.searchTerm}>
-        <div className="w-full grid grid-cols-5 gap-4 md:mx-4 my-4">
+        <div className="w-full  md:w-[85%] grid grid-cols-5 gap-4 md:mx-4 my-4">
 		{open && 
                        <Modal
                             aria-labelledby="transition-modal-title"

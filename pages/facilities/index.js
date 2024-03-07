@@ -114,6 +114,15 @@ function FacilityHome (props){
     }
 
     if(isClient){
+
+    // return (
+    //     <pre>
+    //         {
+    //             JSON.stringify(facilities, null , 2)// ({is_complete: facilities[0]?.is_complete, in_complete_details: facilities[0]?.in_complete_details}, null, 2)
+    //         }
+    //     </pre>
+    // )
+
     return (
         <>
             <Head>
@@ -561,7 +570,7 @@ function FacilityHome (props){
                                             facilities.map((facility, index) => (
                                                 <div key={index} 
                                                 title={`Incomplete Details : ${facility?.is_complete ? 'none' : facility?.in_complete_details}`}
-                                                className={`grid grid-cols-8 gap-2 border-b py-4 w-full ${!facility?.is_complete ? 'bg-yellow-50 border-yellow-500 hover:bg-gray-50' : 'bg-transparent border-gray-400 hover:border-yellow-100' }`}>
+                                                className={`grid grid-cols-8 gap-2 border-b py-4 w-full ${!facility?.is_complete && !facility?.in_complete_details ? 'bg-yellow-50 border-yellow-500 hover:bg-gray-50' : 'bg-transparent border-gray-400 hover:border-grat-400' }`}>
                                                     <div className="px-2 col-span-8 md:col-span-8 lg:col-span-6 flex flex-col group items-center justify-start text-left">
                                                         <h3 className="text-2xl font-semibold w-full">
                                                             <span onClick={() => router.push({pathname: `/facilities/${facility?.id}`, query: {qf: router.query.qf}})} className={`cursor-pointer ${facility?.is_complete ? 'hover:text-gray-600' : 'hover:text-yellow-600'} group-focus:text-gray-800 active:text-gray-800`} >
@@ -776,7 +785,7 @@ FacilityHome.getInitialProps = async (ctx) => {
 
     function fetchData(token) {
 
-        let url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/material/?fields=id,code,official_name,facility_type_name,owner_name,county,sub_county,constituency_name,ward_name,updated,operation_status_name,sub_county_name,name,is_complete,in_complete_details,approved_national_level,has_edits,approved,rejected,keph_level` // ?fields=id,code,official_name,facility_type_name,owner_name,county,sub_county,constituency_name,ward_name,updated,operation_status_name,sub_county_name,name,is_complete,in_complete_details,approved_national_level,has_edits,approved,rejected,keph_level`
+        let url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/?fields=id,code,official_name,facility_type_name,owner_name,county,sub_county,constituency_name,ward_name,updated,operation_status_name,sub_county_name,name,is_complete,in_complete_details,approved_national_level,has_edits,approved,rejected,keph_level` // ?fields=id,code,official_name,facility_type_name,owner_name,county,sub_county,constituency_name,ward_name,updated,operation_status_name,sub_county_name,name,is_complete,in_complete_details,approved_national_level,has_edits,approved,rejected,keph_level`
      
         let query = { 'searchTerm': '' }
         if (ctx?.query?.qf) {

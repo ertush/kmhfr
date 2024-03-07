@@ -17,7 +17,7 @@ import { UserContext } from "../../../providers/user";
 import FacilitySideMenu from '../../../components/FacilitySideMenu'
 
 
-const RegulateFacility = props => {
+function RegulateFacility (props) {
     const userCtx = useContext(UserContext)
     const facility = props["0"]?.data;
     const regulationStateOptions = props['1']?.regulation_status
@@ -95,9 +95,9 @@ const RegulateFacility = props => {
                 <link rel="icon" href="/favicon.ico" />
             </Head>
             <MainLayout isLoading={false} searchTerm={props?.query?.searchTerm}>
-                <div className="w-full grid md:grid-cols-7 gap-4 px-1 md:px-4 py-2 my-4">
+                <div className="w-full md:w-[85%] md:mx-auto grid md:grid-cols-7 gap-4 px-4 md:px-0 py-2 my-4">
                     {/* Header */}
-                    <div className="md:col-span-7 flex flex-col items-start px-4 justify-start gap-3">
+                    <div className="md:col-span-7 flex flex-col items-start md justify-start gap-3">
                         {/* Breadcramps */}
                         <div className="flex flex-row items-center justify-between gap-2 text-sm md:text-base py-3">
                             <Link className="text-gray-700" href="/">

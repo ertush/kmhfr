@@ -545,14 +545,15 @@ export function BasicDeatilsForm({ editMode }) {
   useEffect(() => {
 
     // console.log({facility: options?.data})
-    async function updateFacilityTypeDetailOptions() {
+    async function updateFacilityTypeDetailOptions(e) {
       try {
-        const facilityTypeDetails = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facility_types_details/?is_parent=false&parent=${e.target.value}`, {
+        const facilityTypeDetails = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facility_types_details/?is_parent=false`, {
           headers: {
             'Accept': 'application/json',
             'Authorization': `Bearer ${options?.token}`
           }
         })
+
 
         const filteredFacilityType = (await facilityTypeDetails.json())?.results
 
@@ -571,7 +572,7 @@ export function BasicDeatilsForm({ editMode }) {
 
       }
       catch (e) {
-        console.error(e.message)
+        console.error(e?.message)
       }
     }
 
@@ -1582,9 +1583,10 @@ export function BasicDeatilsForm({ editMode }) {
           </label>
 
           <input
-            type='file'
+            type={editMode ? 'text' : 'file' }
             name='facility_checklist_document'
-            defaultValue={options?.data?.facility_checklist_document ?? ''}
+            disabled={editMode}
+            defaultValue={`Checklist File ${options?.data?.facility_checklist_document?.url ?? 'missing'}`}
             className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:border-black outline-none'
           />
 

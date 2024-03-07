@@ -302,7 +302,7 @@ export function RegulationForm() {
                              !hideLicenseNumber &&
                             <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
                                 <label htmlFor="license_number" className="text-gray-600 bg-transparent capitalize text-sm">License Number</label>
-                                <Field type="text" name="license_number" className="flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:border-black outline-none" />
+                                <Field type="text" name="license_number" className="flex-none  w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:border-black outline-none" />
                             </div>
                             }
 

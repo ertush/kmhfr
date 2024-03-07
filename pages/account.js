@@ -163,7 +163,7 @@ const Account = () => {
                 <link rel="icon" href="/favicon.ico" />
             </Head>
 
-            <MainLayout className="w-full grid grid-cols-5 gap-3 md:mt-3 mb-12">
+            <MainLayout className="w-full  md:w-[85%] md:mx-auto  grid grid-cols-5 gap-3 md:mt-3 mb-12">
             {open && 
 			<Modal
 				aria-labelledby="transition-modal-title"
