@@ -455,8 +455,8 @@ function EditListWithCount(
                     {
                     showItemCategory &&
                     <ul className='max-h-96 overflow-auto border-r border-l border-b border-gray-500'>
-                        {categoryOptions.map(({ label, value, catcount }) => (
-                            <div key={value}
+                        {categoryOptions.map(({ label, value, catcount }, i) => (
+                            <div key={i}
                                 className='card bg-gray-50 shadow-md p-2 group hover:bg-gray-500 hover:text-gray-50 hover:cursor-pointer'
                             >
                                 <li
@@ -464,7 +464,7 @@ function EditListWithCount(
                                     onClick={() => {
                                         filterSpecialities(value)
                                     }}
-                                    key={value}>{label}</li>
+                                    >{label}</li>
                                 <span>({catcount} selected)</span>
                                 <hr className='border-xs boredr-gray-200 group-hover:border-gray-500'></hr>
                             </div>
@@ -489,9 +489,9 @@ function EditListWithCount(
                             <tbody className='bg-gray-50 shadow-md'>
                                 {specialities.length === 0 && <tr><td colSpan={3} className="text-center">{`No ${itemsCategoryName.includes('infrastructure') ? 'infrastructure' : 'specialities'} found`}</td></tr>}
 
-                                {specialities.map((row) => (
+                                {specialities.map((row, i) => (
 
-                                    <tr key={row?.id} >
+                                    <tr key={i} >
                                         <td className=" px-1 py-1">
                                             <label className="w-full p-2" >{row?.name}</label>
                                         </td>
@@ -549,9 +549,9 @@ function EditListWithCount(
                         <tbody className='bg-gray-50 shadow-md'>
                             {selectedRows.length === 0 && <tr><td colSpan={3} className="text-center">No specialities found</td></tr>}
                             {/* {selectedRows.pop()} */}
-                            {selectedRows.map((row) => {
+                            {selectedRows.map((row, i) => {
                                 // if(row.name !== "Vaccine Carriers" || row.name !== "Public Health Technician"){
-                                return ( <tr>
+                                return ( <tr key={i}>
                                         <td className="border border-gray-300 px-1 py-1">{row?.sname}</td>
                                        {row?.iscategoryvisible ? <td className="border border-gray-300 px-1 py-1">{row?.category_name}</td> :null }
                                         <td className="border border-gray-300 px-1 py-1">Yes</td>

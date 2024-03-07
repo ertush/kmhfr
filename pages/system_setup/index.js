@@ -1184,7 +1184,7 @@ function SystemSetup(props) {
 
                 <MainLayout>
 
-                    <div className="w-full grid grid-cols-5 gap-4 p-2 my-6">
+                    <div className="w-full  md:w-[85%] md:mx-auto grid grid-cols-5 gap-4 p-2 my-6">
                         {open && 
                         <Modal
                                 aria-labelledby="transition-modal-title"

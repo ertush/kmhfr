@@ -136,7 +136,7 @@ function Users (props) {
                 </Head>
                 <MainLayout isLoading={false} isFullWidth={false}>
                     {/* {console.log({rows})} */}
-                    <div className="w-full grid grid-cols-7 gap-4 p-1 md:mx-4 my-2">
+                    <div className="w-full  md:w-[85%] px-4 md:px-0 grid grid-cols-7 gap-4 p-1 md:mx-4 my-2">
                         <div className="col-span-7 flex flex-col gap-x-1 ">
                             <div className="flex flex-wrap items-center justify-between gap-2 text-sm md:text-base py-1">
                                 <div className="flex flex-row items-center justify-between gap-2 text-sm md:text-base py-3">

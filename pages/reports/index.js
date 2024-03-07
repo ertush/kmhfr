@@ -84,7 +84,7 @@ function Reports(props) {
 
 
                 <MainLayout isLoading={false} isFullWidth={false}>
-                    <div className="w-full grid grid-cols-7 gap-4 p-1  my-3">
+                    <div className="w-full md:w-[85%] md:mx-auto grid grid-cols-7 gap-4 p-1  my-3">
                         {/* Header */}
                         <div className="col-span-1 md:col-span-7 flex-1 flex-col items-start justify-start gap-4">
                             {/* Breadcramps */}
