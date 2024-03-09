@@ -109,7 +109,7 @@ export function GeolocationForm({ editMode }) {
   
       if (payload) {
 
-        fetch(`${process.env.NEXT_PUBLIC_API_URL}/gis/facility_coordinates${options?.data?.lat_long ? '/' + options?.data?.coordinates + '/' : '/'}`, {
+        fetch(`${process.env.NEXT_PUBLIC_API_URL}/gis/facility_coordinates${options?.data?.lat_long ? `/options?.data?.coordinates/` : '/'}`, {
           headers: {
             'Authorization': 'Bearer ' + options?.token,
             'Accept': 'application/json, text/plain, */*',
@@ -173,20 +173,34 @@ export function GeolocationForm({ editMode }) {
 
     const data = Object.fromEntries(formData)
 
+
     setSubmitting(true)
 
+    const payload = {
+      coordinates: {
+        coordinates: [Number(data?.longitude), Number(data?.latitude)],
+        type: "point",
+      },
+      
+      latitude: Number(data?.latitude),
+      longitude: Number(data?.longitude),
+      facility: facilityId
+    }
 
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${facilityId}/`, {
-      method: 'PATCH',
+    console.log({payload})
+
+
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/gis/facility_coordinates/`, {
+      method: 'POST',
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json;charset=UTF-8',
         'Authorization': `Bearer ${options?.token}`
       },
-      body: JSON.stringify(data)
+      body: JSON.stringify(payload)
     })
       .then(res => {
-        if (res.status == 204 || res.status == 200) {
+        if (res.ok) {
           alert.success('Facility Geolocation Details have been saved successfully')
 
           setSubmitting(false)
@@ -215,14 +229,7 @@ export function GeolocationForm({ editMode }) {
             if(navigated) setFormId(2)
           })
 
-          // const url = new URL(`${window.location.origin}/facilities/add?formData=${base64EncParams}`)
-
-          // url.searchParams.set('formId', '2')
-
-          // url.searchParams.set('facilityId', facilityId)
-
-          // window.location.href = url
-
+          
         } else {
           setSubmitting(false)
           alert.error('Unable to save to Geolocation details')

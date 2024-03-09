@@ -445,9 +445,9 @@ function EditListWithCount(
 
             {formError && <Alert severity='error' className={'w-full'}>{formError}</Alert>}
 
-            <div className='w-full grid md:grid-cols-12 grid-cols-1 gap-4'>
-                <div className="col-span-1 md:col-span-6" >
-                    <h4 className="text-lg uppercase mt-4 pb-2 border-b border-gray-600 w-full mb-4 font-semibold text-gray-900">Categories</h4>
+            <div className='w-full grid grid-cols-12 gap-4'>
+                <div className="col-span-5" >
+                    <h4 className="text-lg uppercase mt-4 pb-2 border-b border-gray-600 w-full mb-4 font-semibold text-blue-900">Categories</h4>
                     <input type="text" onFocus={handleSearchItemFocus} onChange={(e) => onSearch(e, true, false)} className="col-span-12 border border-gray-600 p-2 placeholder-gray-500  focus:shadow-none focus:bg-white focus:border-black outline-none w-full" placeholder="Search" />
                     {!showItemCategory && <div className="text-center border-l border-gray-500 border-r border-b w-full">{`Search for ${itemsCategoryName.includes('infrastructure') ? 'infrastructure' : 'a speciality' }`}</div>}
 
@@ -455,8 +455,8 @@ function EditListWithCount(
                     {
                     showItemCategory &&
                     <ul className='max-h-96 overflow-auto border-r border-l border-b border-gray-500'>
-                        {categoryOptions.map(({ label, value, catcount }, i) => (
-                            <div key={i}
+                        {categoryOptions.map(({ label, value, catcount }) => (
+                            <div key={value}
                                 className='card bg-gray-50 shadow-md p-2 group hover:bg-gray-500 hover:text-gray-50 hover:cursor-pointer'
                             >
                                 <li
@@ -464,7 +464,7 @@ function EditListWithCount(
                                     onClick={() => {
                                         filterSpecialities(value)
                                     }}
-                                    >{label}</li>
+                                    key={value}>{label}</li>
                                 <span>({catcount} selected)</span>
                                 <hr className='border-xs boredr-gray-200 group-hover:border-gray-500'></hr>
                             </div>
@@ -474,8 +474,8 @@ function EditListWithCount(
                     }
                 </div>
 
-                <div className="col-span-1 md:col-span-6" >
-                    <h4 className="text-lg uppercase mt-4 pb-2 border-b border-gray-600 w-full mb-4 font-semibold text-gray-900">{itemsCategoryName.includes('human resource') ? 'Specialities' : itemsCategoryName.includes('infrastructure') ? 'Infrastructure' : null}</h4>
+                <div className="col-span-7" >
+                    <h4 className="text-lg uppercase mt-4 pb-2 border-b border-gray-600 w-full mb-4 font-semibold text-blue-900">{itemsCategoryName.includes('human resource') ? 'Specialities' : itemsCategoryName.includes('infrastructure') ? 'Infrastructure' : null}</h4>
                     <input type="text" onChange={(e) => onSearch(e, false, true)} className="col-span-12 border border-gray-600 p-2 placeholder-gray-500  focus:shadow-none focus:bg-white focus:border-black outline-none w-full" placeholder="Search" />
                     <br />
                     <div className='max-h-96 overflow-auto border-r border-l border-b border-gray-500'>
@@ -489,18 +489,18 @@ function EditListWithCount(
                             <tbody className='bg-gray-50 shadow-md'>
                                 {specialities.length === 0 && <tr><td colSpan={3} className="text-center">{`No ${itemsCategoryName.includes('infrastructure') ? 'infrastructure' : 'specialities'} found`}</td></tr>}
 
-                                {specialities.map((row, i) => (
+                                {specialities.map((row) => (
 
-                                    <tr key={i} >
-                                        <td className=" px-1 py-1">
+                                    <tr key={row?.id} >
+                                        <td className="border px-1 py-1">
                                             <label className="w-full p-2" >{row?.name}</label>
                                         </td>
-                                        <td className="flex mt-2 items-center my-auto gap-1 h-full">
+                                        <td className="border px-1 py-1">
                                             <input
 
                                                 type="checkbox"
                                                 name="itemCheckBox"
-                                                className="p-1  w-5 h-5"
+                                                className="p-1 w-5 h-5"
                                                 checked={selectedRows.some(item => item?.rowid?.includes(row?.id))}
                                                 onChange={(e) => handleCheckboxChange(
                                                     itemsCategoryName?.includes('human resource') ? row?.id : itemsCategoryName.includes('infrastructure') ? row?.id : "",
@@ -510,10 +510,9 @@ function EditListWithCount(
                                                     row?.count ? row?.count : 0,
                                                     e.target.checked)
                                                 }
-                                            /> 
-                                            Yes
+                                            /> Yes
                                         </td>
-                                        <td className=" px-1 py-1">
+                                        <td className="border px-1 py-1">
                                             <input
                                                 type="number"
                                                 className="p-1"
@@ -536,7 +535,7 @@ function EditListWithCount(
                 </div>
 
                 {/* summary table */}
-                <div className="col-span-1 md:col-span-12 max-h-96 overflow-auto" >
+                <div className="col-span-12 max-h-96 overflow-auto" >
 
                     <table className="table-auto border border-gray-300 w-full">
                         <thead>
@@ -549,9 +548,9 @@ function EditListWithCount(
                         <tbody className='bg-gray-50 shadow-md'>
                             {selectedRows.length === 0 && <tr><td colSpan={3} className="text-center">No specialities found</td></tr>}
                             {/* {selectedRows.pop()} */}
-                            {selectedRows.map((row, i) => {
+                            {selectedRows.map((row) => {
                                 // if(row.name !== "Vaccine Carriers" || row.name !== "Public Health Technician"){
-                                return ( <tr key={i}>
+                                return ( <tr>
                                         <td className="border border-gray-300 px-1 py-1">{row?.sname}</td>
                                        {row?.iscategoryvisible ? <td className="border border-gray-300 px-1 py-1">{row?.category_name}</td> :null }
                                         <td className="border border-gray-300 px-1 py-1">Yes</td>
@@ -592,8 +591,8 @@ function EditListWithCount(
 
                 <div className='flex justify-between items-center w-full mt-4'>
                     <button onClick={handleItemPrevious} className='flex items-center justify-start space-x-2 p-1 border border-gray-900  px-2'>
-                        <ChevronDoubleLeftIcon className='w-4 h-4 text-gray-900' />
-                        <span className='text-medium font-semibold text-gray-900 '>
+                        <ChevronDoubleLeftIcon className='w-4 h-4 text-blue-900' />
+                        <span className='text-medium font-semibold text-blue-900 '>
                             {previousItemCategory}
                         </span>
                     </button>
