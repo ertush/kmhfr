@@ -1581,15 +1581,22 @@ export function BasicDeatilsForm({ editMode }) {
             checklist file upload
 
           </label>
-
-          <input
-            type={editMode ? 'text' : 'file' }
+          {
+            editMode ?
+            <input
+            type='text'
             name='facility_checklist_document'
             disabled={editMode}
-            defaultValue={`Checklist File ${options?.data?.facility_checklist_document?.url ?? 'missing'}`}
+            defaultValue={`Checklist File is ${options?.data?.facility_checklist_document?.url ?? 'missing'}`}
+            className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:border-black outline-none'
+          /> :
+          <input
+            type='file'
+            name='facility_checklist_document'
             className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:border-black outline-none'
           />
-
+          }
+          
 
 
         </div>
