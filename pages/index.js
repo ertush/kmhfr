@@ -174,7 +174,7 @@ function Home(props) {
             {/* Menu Heading */}
             <nav className="hidden max-h-min w-[60%] container md:flex mx-auto ">
               <ul className='list-none w-full flex items-center  justify-between '>
-               <li className={`text-lg h-[60px] flex items-center  hover:text-gray-100  duration-200 ease-out hover:bg-blue-800 px-4 ${router.asPath == "/" && 'border-b-2 text-blue-50 border-b-gray-50 bg-blue-800/85'} font-semibold capitalize text-gray-900 `}>
+               <li className={`text-lg h-[60px] flex items-center  hover:text-gray-100  duration-200 ease-out hover:bg-blue-800 px-4 ${router.asPath == "/" && 'border-b-2 text-gray-100 border-b-gray-50 bg-blue-800/85'} font-semibold capitalize `}>
                   <Link href="/">Home</Link>
                 </li>
                 <li className='text-lg h-[60px] flex items-center  hover:text-gray-100  duration-200 ease-out hover:bg-blue-800 px-4 font-semibold capitalize text-gray-900 '>
