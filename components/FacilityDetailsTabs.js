@@ -58,20 +58,18 @@ function FacilityDetailsTabs({ facility }) {
                 Status:
               </h3>
               <div className="grid grid-cols-3 w-full md:w-11/12 md:px-3 col-span-2 md:col-span-1 mx-auto leading-none items-center">
-                <label className=" text-gray-600">
-                  Facility closed
-                </label>
-                <p className="text-black font-medium col-start-3 text-base flex">
-                  {facility?.closed ? (
-                    <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-red-200 text-red-900 flex gap-x-1 items-center cursor-default">
-                      Closed on {new Date(facility?.closed_date).toLocaleDateString() || ""}
-                    </span>
-                  ) : (
-                    <span className="bg-blue-200 text-gray-900 p-1 px-2 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
-                      Not closed
-                    </span>
-                  )}
-                </p>
+                {facility?.closed && (
+                  <>
+                    <label className=" text-gray-600">
+                      Facility closed
+                    </label>
+                    <p className="text-black font-medium col-start-3 text-base flex">
+                      <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-red-200 text-red-900 flex gap-x-1 items-center cursor-default">
+                        Closed on {new Date(facility?.closed_date).toLocaleDateString() || ""}
+                      </span>
+                    </p>
+                  </>
+                )}
               </div>
               {facility?.closed && (
                 <div className="grid grid-cols-3 w-full md:w-11/12 md:px-3 col-span-2 md:col-span-1 mx-auto leading-none items-center">
@@ -79,134 +77,122 @@ function FacilityDetailsTabs({ facility }) {
                     Facility closure reason
                   </label>
                   <p className="text-black font-medium col-start-3 text-base">
-                    
+
                     {facility?.closing_reason || ""}
                   </p>
                 </div>
               )}
               <div className="grid grid-cols-3 w-full md:w-11/12 md:px-3 col-span-2 md:col-span-1 mx-auto leading-none items-center">
-                <label className=" text-gray-600">
-                  KHIS reporting
-                </label>
-                <p className="text-black font-medium col-start-3 text-base flex">
-                  {facility?.reporting_in_dhis ? (
-                    <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 text-gray-900 flex gap-x-1 items-center cursor-default">
-                      <CheckCircleIcon className="h-4 w-4" />
-                      Yes
-                    </span>
-                  ) : (
-                    <span className="bg-red-200 text-red-900 p-1 px-2 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
-                      <XCircleIcon className="h-4 w-4" />
-                      No
-                    </span>
-                  )}
-                </p>
+                {facility?.reporting_in_dhis && (
+                  <>
+                    <label className=" text-gray-600">
+                      KHIS reporting
+                    </label>
+                    <p className="text-black font-medium col-start-3 text-base flex">
+
+                      <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 text-gray-900 flex gap-x-1 items-center cursor-default">
+                        <CheckCircleIcon className="h-4 w-4" />
+                        Yes
+                      </span>
+                    </p>
+
+                  </>
+                )}
+
               </div>
               <div className="grid grid-cols-3 w-full md:w-11/12 md:px-3 col-span-2 md:col-span-1 mx-auto leading-none items-center">
-                <label className=" text-gray-600">
-                  NHIF accreditation
-                </label>
-                <p className="text-black font-medium col-start-3 text-base flex">
-                  {facility?.nhif_accreditation ? (
-                    <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 text-gray-900 flex gap-x-1 items-center cursor-default">
-                      <CheckCircleIcon className="h-4 w-4" />
-                      Yes
-                    </span>
-                  ) : (
-                    <span className="bg-red-200 text-red-900 p-1 px-2 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
-                      <XCircleIcon className="h-4 w-4" />
-                      No
-                    </span>
-                  )}
-                </p>
+                {facility?.nhif_accreditation && (
+                  <>
+                    <label className=" text-gray-600">
+                      NHIF accreditation
+                    </label>
+                    <p className="text-black font-medium col-start-3 text-base flex">
+                      <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 text-gray-900 flex gap-x-1 items-center cursor-default">
+                        <CheckCircleIcon className="h-4 w-4" />
+                        Yes
+                      </span>
+                    </p>
+                  </>
+                )}
               </div>
               <div className="grid grid-cols-3 w-full md:w-11/12 md:px-3 col-span-2 md:col-span-1 mx-auto leading-none items-center">
-                <label className=" text-gray-600">
-                  Open 24 hours
-                </label>
-                <p className="text-black font-medium col-start-3 text-base flex">
-                  {facility?.open_normal_day ? (
-                    <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 text-gray-900 flex gap-x-1 items-center cursor-default">
-                      <CheckCircleIcon className="h-4 w-4" />
-                      Yes
-                    </span>
-                  ) : (
-                    <span className="bg-red-200 text-red-900 p-1 px-2 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
-                      <XCircleIcon className="h-4 w-4" />
-                      No
-                    </span>
-                  )}
-                </p>
+                {facility?.open_normal_day && (
+
+                  <>
+                    <label className=" text-gray-600">
+                      Open 24 hours
+                    </label>
+                    <p className="text-black font-medium col-start-3 text-base flex">
+                      <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 text-gray-900 flex gap-x-1 items-center cursor-default">
+                        <CheckCircleIcon className="h-4 w-4" />
+                        Yes
+                      </span>
+
+                    </p>
+                  </>
+                )}
               </div>
               <div className="grid grid-cols-3 w-full md:w-11/12 md:px-3 col-span-2 md:col-span-1 mx-auto leading-none items-center">
-                <label className=" text-gray-600">
-                  Open weekends
-                </label>
-                <p className="text-black font-medium col-start-3 text-base flex">
-                  {facility?.open_weekends ? (
-                    <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 text-gray-900 flex gap-x-1 items-center cursor-default">
-                      <CheckCircleIcon className="h-4 w-4" />
-                      Yes
-                    </span>
-                  ) : (
-                    <span className="bg-red-200 text-red-900 p-1 px-2 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
-                      <XCircleIcon className="h-4 w-4" />
-                      No
-                    </span>
-                  )}
-                </p>
+                {facility?.open_weekends && (
+                  <>
+                    <label className=" text-gray-600">
+                      Open weekends
+                    </label>
+                    <p className="text-black font-medium col-start-3 text-base flex">
+                      <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 text-gray-900 flex gap-x-1 items-center cursor-default">
+                        <CheckCircleIcon className="h-4 w-4" />
+                        Yes
+                      </span>
+                    </p>
+                  </>
+                )}
+
               </div>
               <div className="grid grid-cols-3 w-full md:w-11/12 md:px-3 col-span-2 md:col-span-1 mx-auto leading-none items-center">
-                <label className=" text-gray-600">
-                  Open late night
-                </label>
-                <p className="text-black font-medium col-start-3 text-base flex">
-                  {facility?.open_late_night ? (
-                    <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 text-gray-900 flex gap-x-1 items-center cursor-default">
-                      <CheckCircleIcon className="h-4 w-4" />
-                      Yes
-                    </span>
-                  ) : (
-                    <span className="bg-red-200 text-red-900 p-1 px-2 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
-                      <XCircleIcon className="h-4 w-4" />
-                      No
-                    </span>
-                  )}
-                </p>
+                {facility?.open_late_night && (
+                  <>
+                    <label className=" text-gray-600">
+                      Open late night
+                    </label>
+                    <p className="text-black font-medium col-start-3 text-base flex">
+                      <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 text-gray-900 flex gap-x-1 items-center cursor-default">
+                        <CheckCircleIcon className="h-4 w-4" />
+                        Yes
+                      </span>
+                    </p>
+                  </>
+                )}
+
               </div>
               <div className="grid grid-cols-3 w-full md:w-11/12 md:px-3 col-span-2 md:col-span-1 mx-auto leading-none items-center">
-                <label className=" text-gray-600">
-                  Facility classified
-                </label>
-                <p className="text-black font-medium col-start-3 text-base flex">
-                  {facility?.is_classified ? (
-                    <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 text-gray-900 flex gap-x-1 items-center cursor-default">
-                      <CheckCircleIcon className="h-4 w-4" />
-                      Yes
-                    </span>
-                  ) : (
-                    <span className="bg-red-200 text-red-900 p-1 px-2 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
-                      <XCircleIcon className="h-4 w-4" />
-                      No
-                    </span>
-                  )}
-                </p>
+                {facility?.is_classified && (
+                  <>
+                    <label className=" text-gray-600">
+                      Facility classified
+                    </label>
+                    <p className="text-black font-medium col-start-3 text-base flex">
+                      <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 text-gray-900 flex gap-x-1 items-center cursor-default">
+                        <CheckCircleIcon className="h-4 w-4" />
+                        Yes
+                      </span>
+                    </p>
+                  </>
+                )}
+
               </div>
               <div className="grid grid-cols-3 w-full md:w-11/12 md:px-3 col-span-2 md:col-span-1 mx-auto leading-none items-center">
-                <label className=" text-gray-600">Published</label>
-                <p className="text-black font-medium col-start-3 text-base flex">
-                  {facility?.is_published ? (
-                    <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 text-gray-900 flex gap-x-1 items-center cursor-default">
-                      <CheckCircleIcon className="h-4 w-4" />
-                      Yes
-                    </span>
-                  ) : (
-                    <span className="bg-red-200 text-red-900 p-1 px-2 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
-                      <XCircleIcon className="h-4 w-4" />
-                      No
-                    </span>
-                  )}
-                </p>
+                {facility?.is_published && (
+                  <>
+                    <label className=" text-gray-600">Published</label>
+                    <p className="text-black font-medium col-start-3 text-base flex">
+                      <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 text-gray-900 flex gap-x-1 items-center cursor-default">
+                        <CheckCircleIcon className="h-4 w-4" />
+                        Yes
+                      </span>
+                    </p>
+                  </>
+                )}
+
               </div>
             </div>
             {/* Regulation */}
@@ -267,15 +253,10 @@ function FacilityDetailsTabs({ facility }) {
                   Regulated
                 </label>
                 <p className="text-black font-medium col-start-3 text-base flex">
-                  {facility?.regulated ? (
+                  {facility?.regulated && (
                     <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 text-gray-900 flex gap-x-1 items-center cursor-default">
                       <CheckCircleIcon className="h-4 w-4" />
                       Yes
-                    </span>
-                  ) : (
-                    <span className="bg-red-200 text-red-900 p-1 px-2 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
-                      <XCircleIcon className="h-4 w-4" />
-                      No
                     </span>
                   )}
                 </p>
@@ -378,7 +359,7 @@ function FacilityDetailsTabs({ facility }) {
                   Latitude
                 </label>
                 <p className="col-start-3 text-black font-medium text-base">
-                  {facility?.lat_long && facility?.lat_long.length > 0 ? facility?.lat_long[0] :  " - "}
+                  {facility?.lat_long && facility?.lat_long.length > 0 ? facility?.lat_long[0] : " - "}
                 </p>
               </div>
               <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
@@ -386,7 +367,7 @@ function FacilityDetailsTabs({ facility }) {
                   Longitude
                 </label>
                 <p className="col-start-3 text-black font-medium text-base">
-                { facility?.lat_long && facility?.lat_long.length > 0  ? facility?.lat_long[1] :  " - "}
+                  {facility?.lat_long && facility?.lat_long.length > 0 ? facility?.lat_long[1] : " - "}
                 </p>
               </div>
               <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
@@ -429,7 +410,7 @@ function FacilityDetailsTabs({ facility }) {
               </h3>
               <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
                 <label className="col-span-1 text-gray-600">
-                  Total In-patient beds 
+                  Total In-patient beds
                 </label>
                 <p className="col-start-3 text-black font-medium text-base">
                   {facility?.number_of_beds}
@@ -437,7 +418,7 @@ function FacilityDetailsTabs({ facility }) {
               </div>
               <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
                 <label className="col-span-1 text-gray-600">
-                   General In-patient beds
+                  General In-patient beds
                 </label>
                 <p className="col-start-3 text-black font-medium text-base">
                   {facility?.number_of_inpatient_beds}
@@ -491,7 +472,7 @@ function FacilityDetailsTabs({ facility }) {
                   {facility?.number_of_isolation_beds}
                 </p>
               </div>
-              
+
             </div>
             {/* Theaters */}
             <div className="bg-gray-50 w-full  flex flex-col gap-3 mt-4">
@@ -578,8 +559,8 @@ function FacilityDetailsTabs({ facility }) {
           <div className="col-span-4 md:col-span-4 flex flex-col gap-y-2 group items-center justify-start text-left">
             <div className="bg-gray-50 w-full px-2 my-4">
               {/* <h3 className="text-2xl w-full flex flex-wrap justify-between items-center leading-tight tracking-tight"> */}
-                {/* <span className="font-semibold">Services</span> */}
-                {/* {user && user?.id ? <a href={"/facility/edit/"+facility?.id+"#services"} className="text-base text-gray-700 font-medium hover:text-black focus:text-black active:text-black">Edit services</a> : ""} */}
+              {/* <span className="font-semibold">Services</span> */}
+              {/* {user && user?.id ? <a href={"/facility/edit/"+facility?.id+"#services"} className="text-base text-gray-700 font-medium hover:text-black focus:text-black active:text-black">Edit services</a> : ""} */}
               {/* </h3> */}
               <ul>
                 {facility?.facility_services &&
@@ -627,8 +608,8 @@ function FacilityDetailsTabs({ facility }) {
           value="infrastructure"
           className="grow-1 py-1 px-4 tab-panel"
         >
-         
-            <div className="col-span-4 md:col-span-4 flex flex-col gap-y-2 group items-center justify-start text-left">
+
+          <div className="col-span-4 md:col-span-4 flex flex-col gap-y-2 group items-center justify-start text-left">
             <div className="bg-gray-50 w-full px-2 my-4">
               <ul>
                 {facility?.facility_infrastructure &&
@@ -669,8 +650,8 @@ function FacilityDetailsTabs({ facility }) {
           className="grow-1 py-1 px-4 tab-panel"
         >
 
-              {/* </h3> */}
-            <div className="col-span-4 md:col-span-4 flex flex-col gap-y-2 group items-center justify-start text-left">
+          {/* </h3> */}
+          <div className="col-span-4 md:col-span-4 flex flex-col gap-y-2 group items-center justify-start text-left">
             <div className="bg-gray-50 w-full px-2 my-4">
               <ul>
                 {facility?.facility_specialists &&
@@ -708,7 +689,7 @@ function FacilityDetailsTabs({ facility }) {
           className="grow-1 py-1 px-4 tab-panel"
         >
 
-              {/* </h3> */}
+          {/* </h3> */}
           <div className="col-span-4 md:col-span-4 flex flex-col gap-y-2 group items-center justify-start text-left">
             <div className="bg-gray-50 w-full px-2 my-4">
               <ul>
