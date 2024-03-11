@@ -364,6 +364,7 @@ const Facility = (props) => {
                     <i className="text-black">{facility?.code || "NO_CODE"}</i> )
                   </span>
                 </div>
+
                 {/* Header Bunner  */}
                 <div
                   className={
@@ -630,9 +631,9 @@ const Facility = (props) => {
                         Close
                       </button>
                       }
-                      {
+                      {/* {
                         console.log({props})
-                      }
+                      } */}
                       
                       <button
                         onClick={() => {
@@ -649,7 +650,7 @@ const Facility = (props) => {
                 }
 
                 {/* Facility Details Tab Section */}
-                  <FacilityDetailsTabs facility={facility}/>
+                 <FacilityDetailsTabs facility={facility}/>
               </div>
 
               {/* end facility approval */}

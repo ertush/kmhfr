@@ -109,7 +109,7 @@ export function GeolocationForm({ editMode }) {
   
       if (payload) {
 
-        fetch(`${process.env.NEXT_PUBLIC_API_URL}/gis/facility_coordinates${options?.data?.lat_long ? `/options?.data?.coordinates/` : '/'}`, {
+        fetch(`${process.env.NEXT_PUBLIC_API_URL}/gis/facility_coordinates/${options?.data?.lat_long && options?.data?.coordinates + '/'}`, {
           headers: {
             'Authorization': 'Bearer ' + options?.token,
             'Accept': 'application/json, text/plain, */*',

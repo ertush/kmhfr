@@ -73,7 +73,7 @@ function ApproveReject(props) {
       <MainLayout>
 
 
-        <div className="w-full grid grid-cols-1 md:grid-cols-7 gap-3 my-4 place-content-center">
+        <div className="w-full md:w-[85%] md:mx-auto grid grid-cols-1 md:grid-cols-7 gap-3 my-4 place-content-center">
 
 
           {/* Breadcramps */}
@@ -119,6 +119,7 @@ function ApproveReject(props) {
 
                 </div>
               </div>
+
               <div className="flex flex-wrap gap-3 items-center justify-end col-span-6 md:col-span-2">
                 <div className="flex flex-wrap gap-3 w-full items-center justify-start md:justify-center">
                   {facility?.operational || facility?.operation_status_name ? (
@@ -194,7 +195,7 @@ function ApproveReject(props) {
 
 
             {/* Facility details */}
-            <div className="bg-gray-50 shadow-md w-full p-3  flex flex-col gap-3 mt-4">
+            <div className="bg-gray-50 rounded shadow-md w-full p-3  flex flex-col gap-3 mt-4">
               <div className="grid grid-cols-3 w-full md:w-11/12 leading-none items-center">
                 <label className="col-span-1 text-gray-600">
                   Functional Status
@@ -285,8 +286,8 @@ function ApproveReject(props) {
 
             {/* Comments and Updates Section  */}
 
-            <div className="bg-gray-50 shadow-md w-full p-3  flex flex-col gap-3 mt-6">
-              <h3 className="text-gray-900 font-semibold leading-16 text-medium">
+            <div className="bg-gray-50 rounded shadow-md w-full p-3  flex flex-col gap-1 mt-6">
+              <h3 className="text-gray-900 text-2xl font-semibold leading-16 text-medium">
                 {facility?.has_edits ? 'Approve Updates' : facility?.is_approved ? "Approval / Reject facility" : "Comment on the validation"}
               </h3>
               {facility?.is_approved}
@@ -324,10 +325,10 @@ function ApproveReject(props) {
                     !facility?.has_edits ?
                       <Field
                         as="textarea"
-                        cols="130"
+                        cols="135"
                         rows="auto"
                         name="comment"
-                        className="flex col-span-2 bg-transparent border focus:ring-1 focus:ring-blue-900 border-gray-600 text-gray-600 font-normal text-medium p-2"
+                        className="flex rounded col-span-2 bg-transparent border focus:ring-1 focus:ring-blue-900 border-gray-600 text-gray-600 font-normal text-medium p-2"
                         placeholder="Enter a comment"
 
                       ></Field>
@@ -341,7 +342,7 @@ function ApproveReject(props) {
 
                     <button
                       type="submit"
-                      className="bg-blue-600  text-gray-100 -md p-2 font-semibold"
+                      className="bg-blue-600 rounded text-gray-100 -md p-2 font-semibold"
                       onClick={() => {setSubmitting(true); setReject(facility?.has_edits ? true : facility?.is_approved ? true : false)}}
 
                     >
@@ -361,7 +362,7 @@ function ApproveReject(props) {
                     {!facility?.approved_national_level &&
                       <button
                         type="submit"
-                        className="bg-red-600  text-gray-100 -md p-2 font-semibold"
+                        className="bg-red-600 rounded text-gray-100 -md p-2 font-semibold"
                         onClick={() => { setRejecting(true);  setReject(facility?.has_edits ? false : facility?.is_approved ? false : true)}}
 
                       >

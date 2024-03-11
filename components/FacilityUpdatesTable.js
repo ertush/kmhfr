@@ -19,7 +19,11 @@ function FacilityUpdatesTable({ facilityUpdatedJson, originalData }) {
                             {
                             facilityUpdatedJson?.basic && facilityUpdatedJson?.basic.length > 0 &&
                                 <>
-                                    <TableRow className='w-full'><h2 className='text-lg font-bold'>Facility Basic Details</h2></TableRow>
+                                    <TableRow className='w-full'>
+                                        <TableCell>
+                                            <h2 className='text-lg font-bold'>Facility Basic Details</h2>
+                                        </TableCell>
+                                        </TableRow>
                                     <TableRow className='w-full'>
                                         <TableCell>
                                             <p className='text-base font-semibold'>Field</p>
@@ -68,7 +72,11 @@ function FacilityUpdatesTable({ facilityUpdatedJson, originalData }) {
                                {
                                 facilityUpdatedJson?.geo_codes && facilityUpdatedJson?.geo_codes?.coordinates?.coordinates.length > 0 &&
                                 <>
-                                    <TableRow className='w-full'><h2 className='text-lg font-bold mt-6'>Facility Geolocation</h2></TableRow>
+                                    <TableRow className='w-full'>
+                                        <TableCell>
+                                        <h2 className='text-lg font-bold mt-6'>Facility Geolocation</h2>
+                                        </TableCell>
+                                     </TableRow>
                                     <TableRow className='w-full'>
                                         <TableCell>
                                             <p className='text-base font-semibold'>Field</p>
@@ -112,7 +120,11 @@ function FacilityUpdatesTable({ facilityUpdatedJson, originalData }) {
                             {
                                 facilityUpdatedJson?.services && facilityUpdatedJson?.services.length > 0 &&
                                 <>
-                                    <TableRow className='w-full'><h2 className='text-lg font-bold mt-6'>Facility Services</h2></TableRow>
+                                    <TableRow className='w-full'>
+                                        <TableCell>
+                                            <h2 className='text-lg font-bold mt-6'>Facility Services</h2>
+                                            </TableCell>
+                                        </TableRow>
                                     <TableRow className='w-full'>
                                         <TableCell>
                                             <p className='text-base font-semibold'>Service Name</p>
@@ -146,31 +158,36 @@ function FacilityUpdatesTable({ facilityUpdatedJson, originalData }) {
                             {
                                 facilityUpdatedJson?.officer_in_charge &&
                                 <>
-                                    <TableRow className='w-full'><h2 className='text-lg font-bold mt-6'>Facility Officer In Charge</h2></TableRow>
+                                    <TableRow className='w-full'>
+                                        <TableCell sx={{padding: '0px !important'}}>
+                                            <h2 className='text-lg font-bold mt-6'>Facility Officer In Charge</h2>
+                                        </TableCell>
+                                      </TableRow>
+                                    <TableRow>  
+                                        <div className='grid md:mt-4 grid-cols-2 md:grid-cols-3 place-content-start gap-2 '>
 
-                                    <div className='grid  grid-cols-2 md:grid-cols-3 place-content-start gap-2 '>
+                                            <h3 className='font-semibold text-lg col-start-1'>Officer In-Charge</h3>
+                                            <div className='col-start-1 grid grid-cols-2 place-content-start gap-1'>
+                                                <p className='font-bold text-base col-start-1'>Name:</p>
+                                                <p className='font-normal text-base col-start-2'>{facilityUpdatedJson?.officer_in_charge?.name}</p>
 
-                                        <h3 className='font-semibold text-lg col-start-1'>Officer In-Charge</h3>
-                                        <div className='col-start-1 grid grid-cols-2 place-content-start gap-1'>
-                                            <p className='font-bold text-base col-start-1'>Name:</p>
-                                            <p className='font-normal text-base col-start-2'>{facilityUpdatedJson?.officer_in_charge?.name}</p>
+                                                <p className='font-bold text-base col-start-1'>Registration Number:</p>
+                                                <p className='font-normal text-base col-start-2'>{facilityUpdatedJson?.officer_in_charge?.reg_no}</p>
 
-                                            <p className='font-bold text-base col-start-1'>Registration Number:</p>
-                                            <p className='font-normal text-base col-start-2'>{facilityUpdatedJson?.officer_in_charge?.reg_no}</p>
+                                                <p className='font-bold text-base col-start-1'>Job Title:</p>
+                                                <p className='font-normal text-base col-start-2 col-span-2'>{facilityUpdatedJson?.officer_in_charge?.job_title_name}</p>
 
-                                            <p className='font-bold text-base col-start-1'>Job Title:</p>
-                                            <p className='font-normal text-base col-start-2 col-span-2'>{facilityUpdatedJson?.officer_in_charge?.job_title_name}</p>
+                                            </div>
+
+                                            <h3 className='font-semibold row-start-1 text-lg col-start-2'>Officer In-Charge Contacts</h3>
+                                            <div className='col-start-2  grid grid-cols-2 place-content-start gap-1'>
+                                                <p className='font-bold text-base col-start-1 lowercase '>{facilityUpdatedJson?.officer_in_charge?.contacts[0]?.contact_type_name}{':'}</p>
+                                                <p className='font-normal text-base col-start-2'>{facilityUpdatedJson?.officer_in_charge?.contacts[0]?.contact}</p>
+                                            </div>
+
 
                                         </div>
-
-                                        <h3 className='font-semibold row-start-1 text-lg col-start-2'>Officer In-Charge Contacts</h3>
-                                        <div className='col-start-2  grid grid-cols-2 place-content-start gap-1'>
-                                            <p className='font-bold text-base col-start-1 lowercase '>{facilityUpdatedJson?.officer_in_charge?.contacts[0]?.contact_type_name}{':'}</p>
-                                            <p className='font-normal text-base col-start-2'>{facilityUpdatedJson?.officer_in_charge?.contacts[0]?.contact}</p>
-                                        </div>
-
-
-                                    </div>
+                                    </TableRow>
                                 </>
 
                             }
@@ -180,7 +197,11 @@ function FacilityUpdatesTable({ facilityUpdatedJson, originalData }) {
                             {
                                 facilityUpdatedJson?.humanresources  && facilityUpdatedJson?.humanresources.length > 0 &&
                                 <>
-                                    <TableRow className='w-full'><h2 className='text-lg font-bold mt-6'>Facility HR</h2></TableRow>
+                                    <TableRow className='w-full'>
+                                        <TableCell>
+                                            <h2 className='text-lg font-bold mt-6'>Facility HR</h2>
+                                        </TableCell>
+                                        </TableRow>
                                     <TableRow className='w-full'>
                                         <TableCell>
                                             <p className='text-base font-semibold'>Speciality Name</p>
@@ -219,7 +240,11 @@ function FacilityUpdatesTable({ facilityUpdatedJson, originalData }) {
                             {
                                 facilityUpdatedJson?.infrastructure && facilityUpdatedJson?.infrastructure.length > 0 &&
                                 <>
-                                    <TableRow className='w-full'><h2 className='text-lg font-bold mt-6'>Facility Infrasructure</h2></TableRow>
+                                    <TableRow className='w-full'>
+                                        <TableCell>
+                                            <h2 className='text-lg font-bold mt-6'>Facility Infrasructure</h2>
+                                        </TableCell>
+                                      </TableRow>
                                     <TableRow className='w-full'>
                                         <TableCell>
                                             <p className='text-base font-semibold'>Name</p>
@@ -259,7 +284,11 @@ function FacilityUpdatesTable({ facilityUpdatedJson, originalData }) {
                             {
                                 facilityUpdatedJson?.units && facilityUpdatedJson?.units.length > 0 &&
                                 <>
-                                    <TableRow className='w-full'><h2 className='text-lg font-bold mt-6'>Facility Units</h2></TableRow>
+                                    <TableRow className='w-full'>
+                                        <TableCell>
+                                             <h2 className='text-lg font-bold mt-6'>Facility Units</h2>
+                                        </TableCell>
+                                     </TableRow>
                                     <TableRow className='w-full'>
                                         <TableCell>
                                             <p className='text-base font-semibold'>Department Name</p>

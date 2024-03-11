@@ -305,11 +305,11 @@ export function BasicDeatilsForm({ editMode }) {
 
     const data = Object.fromEntries(formData)
 
-    const payload = {}
+    // const payload = {}
 
-    for (let field of touchedFields) {
-      payload[field] = data[field] == undefined ? false : data[field] == "on" || data[field] == "true" ? true : data[field] == "false" ? false : (Number(data[field]) ?? data[field])
-    }
+    // for (let field of touchedFields) {
+    //   payload[field] = data[field] == undefined ? false : data[field] == "on" || data[field] == "true" ? true : data[field] == "false" ? false : (Number(data[field]) ?? data[field])
+    // }
 
     // console.log({payload})
 
@@ -324,7 +324,7 @@ export function BasicDeatilsForm({ editMode }) {
         'Content-Type': 'application/json;charset=UTF-8',
         'Authorization': `Bearer ${options?.token}`
       },
-      body: JSON.stringify(payload)
+      body: JSON.stringify(data/*payload*/)
     })
       .then(res => {
         if (res.status == 204 || res.status == 200) {
@@ -487,18 +487,6 @@ export function BasicDeatilsForm({ editMode }) {
                   .then((navigated) => {
                     if (navigated) setFormId(1)
                   })
-
-                // const url = new URL(`${window.location.origin}/facilities/add?formData=${base64EncParams}`)
-
-                // url.searchParams.set('formId', '1')
-
-                // url.searchParams.set('facilityId', `${facilityId}`)
-
-                // url.searchParams.set('from', 'submission')
-
-
-                // window.location.href = url
-
 
               }
 
@@ -1383,6 +1371,7 @@ export function BasicDeatilsForm({ editMode }) {
                     *
                   </span>
                 </label>
+
                 <CustomSelect
                   options={options?.counties} // 
                   required
