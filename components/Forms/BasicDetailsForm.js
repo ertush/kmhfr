@@ -566,7 +566,7 @@ export function BasicDeatilsForm({ editMode }) {
           }
         })
 
-
+        
         setFacilityTypeDetailOptions(facilityType ?? options?.facility_type_details)
 
       }
@@ -577,6 +577,19 @@ export function BasicDeatilsForm({ editMode }) {
 
     updateFacilityTypeDetailOptions()
 
+    function getFacilityTypeDetails_parent(facilityTypeId, token) {
+
+      return fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facility_types_details/?id=${facilityTypeId}`, {
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      })
+        .then(resp => resp.json())
+        .then(resp => resp?.results)
+        .catch(console.error)
+
+    }
     function getFacilityTypeDetails(facilityTypeId, token) {
 
       return fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facility_types_details/?is_parent=false&parent=${facilityTypeId}`, {
@@ -627,12 +640,22 @@ export function BasicDeatilsForm({ editMode }) {
 
     }
     else if (editMode) {
-      getFacilityTypeDetails(options?.data?.facility_type, options?.token)
+      var parent="";
+      getFacilityTypeDetails_parent(options?.data?.facility_type, options?.token)
         .then(facilityTypeDetails => {
 
-          console.log({ facilityTypeDetails })
+          parent=facilityTypeDetails[0]?.parent; 
+          if(parent)
+          {
+            document.getElementsByName('facility_type_parent')[0].value = parent.toString();
+           }
+         })
 
-          const _options = facilityTypeDetails?.map(({ id: value, name: label }) => ({ label, value }))
+        getFacilityTypeDetails(parent, options?.token)
+        .then(facilityTypeDetails => {
+
+           const _options = facilityTypeDetails?.map(({ id: value, name: label }) => ({ label, value }))
+
           setFacilityTypeDetailOptions(_options)
         })
     }
