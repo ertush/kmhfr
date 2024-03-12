@@ -55,6 +55,35 @@ function FacilityDetailsTabs({ facility }) {
             {/* Status */}
             <div className="bg-gray-50 w-full flex flex-col gap-3 mt-4">
               <h3 className="text-lg leading-tight underline col-span-2 text-gray-700 font-medium">
+                Basic Details:
+              </h3>
+              <div className="grid grid-cols-3 w-full md:w-11/12 md:px-3 col-span-2 md:col-span-1 mx-auto leading-none items-center">
+                
+                  <>
+                    <label className=" text-gray-600">
+                      Facility Type
+                    </label>
+                    <p className="text-black font-medium col-start-3 text-base">
+                        {facility?.facility_type_name}
+                     
+                    </p>
+                  </>
+              
+              </div>
+              <div className="grid grid-cols-3 w-full md:w-11/12 md:px-3 col-span-2 md:col-span-1 mx-auto leading-none items-center">
+                
+                  <>
+                    <label className=" text-gray-600">
+                      Keph Level
+                    </label>
+                    <p className="text-black font-medium col-start-3 text-base">
+                        {facility?.keph_level_name ?? '-'}
+                    </p>
+                  </>
+              
+              </div>
+
+              <h3 className="text-lg leading-tight underline col-span-2 text-gray-700 font-medium">
                 Status:
               </h3>
               <div className="grid grid-cols-3 w-full md:w-11/12 md:px-3 col-span-2 md:col-span-1 mx-auto leading-none items-center">
