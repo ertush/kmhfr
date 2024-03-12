@@ -15,14 +15,17 @@ import {
 import * as Tabs from "@radix-ui/react-tabs";
 import { UserContext } from "../../../providers/user";
 import FacilitySideMenu from '../../../components/FacilitySideMenu'
+import Spinner from '../../../components/Spinner'
+import { useAlert } from 'react-alert'
 
 
 function RegulateFacility (props) {
     const userCtx = useContext(UserContext)
-    const facility = props["0"]?.data;
-    const regulationStateOptions = props['1']?.regulation_status
+    const facility = props?.data;
+    const regulationStateOptions = props?.regulation_status
     const [isFacDetails, setIsFacDetails] = useState(true);
     const [user, setUser] = useState(userCtx);
+    const [submitting, setSubmitting] = useState(false)
     const formRef = useRef(null);
     const regulationRef = useRef(null)
 
@@ -33,6 +36,8 @@ function RegulateFacility (props) {
     const [allFctsSelected, setAllFctsSelected] = useState(false);
     const [title, setTitle] = useState('') 
     const filters = []
+
+    const alert = useAlert()
 
     let reject = ''
 
@@ -48,7 +53,7 @@ function RegulateFacility (props) {
         };
     }, []);
 
-    const handleSubmit = async (event,facility_id) => {
+    async function handleSubmit (event, facility_id, token) {
         // Stop the form from submitting and refreshing the page.
         event.preventDefault()
         let _payload = {}
@@ -58,27 +63,35 @@ function RegulateFacility (props) {
             _payload[k] = v
         })
 
-        let url='/api/common/submit_form_data/?path=regulation_status'
+        setSubmitting(true)
+
+        // let url='/api/common/submit_form_data/?path=regulation_status'/
         try{
-            fetch(url, {
+            fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facility_regulation_status/`, {
                 headers:{
                     'Accept': 'application/json, text/plain, */*',
-                    'Content-Type': 'application/json;charset=utf-8'
-
+                    'Content-Type': 'application/json;charset=utf-8',
+                    'Authorization': `Bearer ${token}`
                 },
                 method:'POST',
                 body: JSON.stringify(_payload)
             })
-                .then(resp =>resp)
-                .then(res =>{
+                .then(resp => resp)
+                .then(res => {
 
+                    alert.success('Facility regulation is successfully')
+
+                    setSubmitting(false)
                     // console.log(res.json)
-                    if(res.status==200){
+                    if(res.ok){
                         router.push('/facilities')
                     }
                 })
                 .catch(e=>{
-                    setStatus({status:'error', message: e})
+                    alert.error('Unable to regulate facility')
+                    setSubmitting(false)
+                    console.error(e.message)
+                    // setStatus({status:'error', message: e})
                 })
         }catch (e){
 
@@ -88,6 +101,8 @@ function RegulateFacility (props) {
         console.log(_payload)
     }
 
+
+ 
     return (
         <>
             <Head>
@@ -767,7 +782,7 @@ function RegulateFacility (props) {
                             
                                 <form
                                     className='flex flex-col w-full items-start justify-start gap-3 mt-4'
-                                    onSubmit = { (event) => handleSubmit(event, facility?.id)}
+                                    onSubmit = { (event) => handleSubmit(event, facility?.id, props?.token)}
                                     ref={formRef}
                                 >
                                     {/* Regulation Status */}
@@ -833,8 +848,17 @@ function RegulateFacility (props) {
                                             // onClick={() => {router.push('admin_offices')}}
                                         >
 											<span className='text-medium font-semibold text-white'>
-												Regulate
-											</span>
+                                            {
+                                                submitting ?
+                                                <div className='flex items-center gap-2'>
+                                                    <span className='text-white'>Saving.. </span>
+                                                    <Spinner />
+                                                </div>
+                                                :
+                                                'Regulate'
+
+                                            }
+                                                                        </span>
                                         </button>
                                         <button className='flex items-center justify-start space-x-2 p-1 border-2 border-black rounded px-2'>
                                             <ChevronDoubleLeftIcon className='w-4 h-4 text-black' />
@@ -857,12 +881,17 @@ function RegulateFacility (props) {
 
 RegulateFacility.getInitialProps = async (ctx) => {
 
-    const allOptions = []
+    const allOptions = {
+        data: [],
+        regulation_status: [],
+        token: null,
+    }
 
     const options = [
         'regulation_status',
 
     ]
+
     if (ctx.query.q) {
         const query = ctx.query.q;
         if (typeof window !== "undefined" && query.length > 2) {
@@ -883,11 +912,11 @@ RegulateFacility.getInitialProps = async (ctx) => {
             if (t.error) {
                 throw new Error("Error checking token");
             } else {
-                let token = t.token;
-                let _data;
-                let url =
-                    `${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${ctx.query.id}/`
-              
+                const token = t.token;
+                allOptions['token'] = token
+
+                // let _data;
+                let url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${ctx.query.id}/`
                 return fetch(url, {
                     headers: {
                         Authorization: "Bearer " + token,
@@ -896,9 +925,9 @@ RegulateFacility.getInitialProps = async (ctx) => {
                 })
                     .then((r) => r.json())
                     .then(async (json) => {
-                        allOptions.push({
-                            data: json,
-                        })
+
+                        allOptions['data'] = json
+                            
 
                         for(let i = 0; i < options.length; i++) {
                             const option = options[i]
@@ -916,16 +945,12 @@ RegulateFacility.getInitialProps = async (ctx) => {
                                             },
                                         })
 
-                                        allOptions.push({regulation_status: (await _data.json()).results.map(({id, name}) => ({value:id, label:name}))})
+                                        allOptions['regulation_status'] = (await _data.json()).results.map(({id, name}) => ({value:id, label:name}))
 
                                     }
                                     catch(err) {
                                         console.log(`Error fetching ${option}: `, err);
-                                        allOptions.push({
-                                            error: true,
-                                            err: err,
-                                            regulation_status: [],
-                                        })
+                                        
                                     }
                                     break;
                                 default:
@@ -939,14 +964,11 @@ RegulateFacility.getInitialProps = async (ctx) => {
                     })
                     .catch((err) => {
                         console.log("Error fetching facilities: ", err);
-                        return {
-                            error: true,
-                            err: err,
-                            data: [],
-                        };
+                        
                     });
             }
         })
+
         .catch((err) => {
             console.log("Error checking token: ", err);
             if (typeof window !== "undefined" && window) {
@@ -957,11 +979,7 @@ RegulateFacility.getInitialProps = async (ctx) => {
                 }
             }
             setTimeout(() => {
-                return {
-                    error: true,
-                    err: err,
-                    data: [],
-                };
+                return allOptions;
             }, 1000);
         });
 };

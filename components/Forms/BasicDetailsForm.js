@@ -76,39 +76,43 @@ export function BasicDeatilsForm({ editMode }) {
   async function handleSelectChange(e) {
 
     const keph = document.getElementsByName('keph_level');
+    const kephDisplay = document.getElementsByName('keph_level_display');
+
 
     // Handle facility Type Change
-    if (e.target.name == 'facility_type') {
+    if (e.target.name == 'facility_type_parent') {
 
       // Keph form validation
-
-
-
       const facilityTypeLabel = e.target.selectedOptions[0].innerText
 
       if (facilityTypeLabel.includes('DISPENSARY')) {
 
+        console.log(keph[0]?.textContent)
+        kephDisplay[0]['value'] = 'Level 2'
         keph[0]['value'] = options?.keph.find(({ label }) => label == 'Level 2')?.value;
 
       } else if (facilityTypeLabel.includes('MEDICAL CENTER')) {
+        kephDisplay[0]['value'] = 'Level 3'
         keph[0]['value'] = options?.keph.find(({ label }) => label == 'Level 3')?.value;
 
       }
       else if (facilityTypeLabel.includes('HEALTH CENTRE')) {
-
+        kephDisplay[0]['value'] = 'Level 3'
         keph[0]['value'] = options?.keph.find(({ label }) => label == 'Level 3')?.value;
 
       }
       else if (facilityTypeLabel.includes('MEDICAL CLINIC')) {
-
+        kephDisplay[0]['value'] = 'Level 2'
         keph[0]['value'] = options?.keph.find(({ label }) => label == 'Level 2')?.value;
 
       }
       else if (facilityTypeLabel.includes('NURSING HOME')) {
+        kephDisplay[0]['value'] = 'Level 3'
         keph[0]['value'] = options?.keph.find(({ label }) => label == 'Level 3')?.value;
 
       }
       else if (facilityTypeLabel.includes('STAND ALONE')) {
+        kephDisplay[0]['value'] = 'Level 2'
         keph[0]['value'] = options?.keph.find(({ label }) => label == 'Level 2')?.value;
 
       }
@@ -146,24 +150,27 @@ export function BasicDeatilsForm({ editMode }) {
       }
 
 
-    } else if (e.target.name == 'facility_type_details') {
+    } else if (e.target.name == 'facility_type') {
 
 
 
       const facilityTypeLabel = e.target.selectedOptions[0].innerText
 
       if (facilityTypeLabel.trim().toLowerCase() == 'Comprehensive Teaching & Tertiary Referral Hospital'.trim().toLowerCase()) {
-
+        kephDisplay[0]['value'] = 'Level 6'
         keph[0]['value'] = options?.keph.find(({ label }) => label == 'Level 6')?.value;
 
       } else if (facilityTypeLabel.trim().toLowerCase() == 'Specialized & Tertiary Referral hospitals'.trim().toLowerCase()) {
+        kephDisplay[0]['value'] = 'Level 6'
         keph[0]['value'] = options?.keph.find(({ label }) => label == 'Level 6')?.value;
 
       } else if (facilityTypeLabel.trim().toLowerCase() == 'Secondary care hospitals'.trim().toLowerCase()) {
+        kephDisplay[0]['value'] = 'Level 5'
         keph[0]['value'] = options?.keph.find(({ label }) => label == 'Level 5')?.value;
 
       }
       else if (facilityTypeLabel.trim().toLowerCase() == 'Primary care hospitals'.trim().toLowerCase()) {
+        kephDisplay[0]['value'] = 'Level 4'
         keph[0]['value'] = options?.keph.find(({ label }) => label == 'Level 4')?.value;
 
       }
@@ -378,6 +385,10 @@ export function BasicDeatilsForm({ editMode }) {
     const formData = new FormData(e.target)
 
     const data = Object.fromEntries(formData)
+
+    // if(data.hasOwnerProperty('facility_type')) {
+    //   data.facility_type = data.facility_type_details;
+    // }
 
     setSubmitting(true)
 
@@ -633,6 +644,14 @@ export function BasicDeatilsForm({ editMode }) {
 
   if (isClient) {
 
+    // return(
+    //   <pre>
+    //     {
+    //       JSON.stringify({facility_type_detail: options?.facility_type_details, facility_types: options?.facility_types}, null, 2)
+    //     }
+    //   </pre>
+    // )
+
     return (
       <form name='basic_details_form'
         onSubmit={editMode ? handleBasicDetailsUpdate : handeBasicDetailsCreate}
@@ -690,7 +709,7 @@ export function BasicDeatilsForm({ editMode }) {
         {/* Facility Type */}
         <div className={`w-full flex flex-col items-start justify-start gap-1 mb-3`}>
           <label
-            htmlFor='facility_type'
+            htmlFor='facility_type_parent' // facility_type
             className='text-gray-600 capitalize text-sm'>
             Facility Type{' '}
             <span className='text-medium leading-12 font-semibold'>
@@ -701,12 +720,12 @@ export function BasicDeatilsForm({ editMode }) {
 
           <CustomSelect
             options={options?.facility_types}
-            defaultValue={options?.facility_types?.map(({ value }) => value).includes(options?.data?.facility_type) ? options?.data?.facility_type : (() => {
+            defaultValue={options?.data?.facility_type_parent /*options?.facility_types?.map(({ value }) => value).includes(options?.data?.facility_type) ? options?.data?.facility_type : (() => {
               return options?.facility_types?.find(({ label }) => label == options?.data?.facility_type_parent)?.value
-            })()}
+            })()*/}
             placeholder="Select a facility type..."
             required
-            name='facility_type'
+            name='facility_type_parent' // facility_type
             onChange={handleSelectChange}
             onFocus={handleFocus}
 
@@ -717,7 +736,7 @@ export function BasicDeatilsForm({ editMode }) {
         {/* Facility Type Details */}
         <div className={`w-full flex flex-col items-start justify-start gap-1 mb-3`}>
           <label
-            htmlFor='facility_type_details'
+            htmlFor='facility_type' // facility_type_details
             className='text-gray-600 capitalize text-sm'>
             Facility Type Details
             <span className='text-medium leading-12 font-semibold'>
@@ -728,13 +747,13 @@ export function BasicDeatilsForm({ editMode }) {
 
 
           <CustomSelect
-            options={facilityTypeDetailOptions.length > 0 ? facilityTypeDetailOptions : options?.facility_type_details}
+            options={facilityTypeDetailOptions}
             placeholder="Select facility type details..."
             onChange={handleSelectChange}
             onFocus={handleFocus}
-            defaultValue={options?.facility_type_details?.find(({ label }) => label == options?.data?.facility_type_name)?.value}
+            defaultValue={options?.data?.facility_type/*options?.facility_type_details?.find(({ label }) => label == options?.data?.facility_type_name)?.value*/}
             required
-            name='facility_type_details'
+            name='facility_type' // facility_type_details
 
           />
 
@@ -856,7 +875,6 @@ export function BasicDeatilsForm({ editMode }) {
           </label>
           <CustomSelect
             options={ownerTypeDetailsOptions ?? []}
-            defaultChecked={options?.data?.owner ?? ''}
             onFocus={handleFocus}
             placeholder="Select owner..."
             required
@@ -869,18 +887,29 @@ export function BasicDeatilsForm({ editMode }) {
         {/* KEPH Level */}
         <div className={`${options?.data ? "cursor-not-allowed" : "cursor-default"} w-full flex flex-col items-start justify-start gap-1 mb-3`}>
           <label
-            htmlFor='keph_level'
+            htmlFor='keph_level_display'
             className='text-gray-600 capitalize text-sm'>
             KEPH Level
           </label>
+
+          <input
+            required
+            type='text'
+            name='keph_level_display'
+            readOnly
+            placeholder='Level #'
+            defaultValue={options?.data?.keph_level_name ?? ''}     
+            className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:border-black outline-none'
+          />
+          
           <CustomSelect
             options={options?.keph}
-            placeholder="Select a KEPH Level.."
             name='keph_level'
-            defaultValue={options?.data?.keph_level ?? ''}
-            onFocus={handleFocus}
-            disabled={true}
+            defaultValue={options?.data?.keph_level}
+            hidden={true}
           />
+
+          
         </div>
 
         {/* Total Functional In-patient Beds */}

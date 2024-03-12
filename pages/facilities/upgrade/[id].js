@@ -145,6 +145,14 @@ function UpgradeFacility(props) {
 
 
     if (isClient) {
+
+        // return (
+        //     <pre>
+        //         {
+        //             JSON.stringify(props, null, 2)
+        //         }
+        //     </pre>
+        // )
         return (
             <>
                 <Head>
@@ -152,7 +160,7 @@ function UpgradeFacility(props) {
                     <link rel="icon" href="/favicon.ico" />
                 </Head>
                 <MainLayout isLoading={false} searchTerm={props?.query?.searchTerm}>
-                    <div className="w-full grid md:grid-cols-7 gap-4 px-1 bg-transparent md:px-4 py-2 my-1">
+                    <div className="w-full md:w-[85%] md:mx-auto grid md:grid-cols-7 gap-4 px-1 bg-transparent md:px-4 py-2 my-1">
                         {/* Header */}
 
                         <div className="md:col-span-7 flex flex-col gap-3 md:gap-5 bg-transparent">
@@ -201,7 +209,7 @@ function UpgradeFacility(props) {
                           
                             <form 
                             onSubmit={handleSubmit}
-                            className='md:col-span-5 flex flex-col bg-gray-50 shadow-md p-3 w-full justify-start items-start gap-2 md:mt-1'>
+                            className='md:col-span-5 flex flex-col bg-gray-50 rounded shadow-md p-3 w-full justify-start items-start gap-2 md:mt-1'>
 
                                 {
                                     formError && <Alert severity='error' className='w-full my-4'>{formError}</Alert>
@@ -222,7 +230,7 @@ function UpgradeFacility(props) {
                                         name='previous_keph'
                                         disabled={true}
                                         defaultValue={formValues?.previous_keph}
-                                        className='flex-none w-full bg-transparent border-gray-600 p-2 flex-grow border placeholder-gray-500  focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                        className='rounded flex-none w-full bg-transparent border-gray-600 p-2 flex-grow border placeholder-gray-500  focus:shadow-none focus:bg-white focus:border-black outline-none'
                                     />
                                 </div>
 
@@ -267,7 +275,7 @@ function UpgradeFacility(props) {
                                         name='previous_facility_type'
                                         disabled={true}
                                         defaultValue={formValues?.previous_facility_type}
-                                        className='flex-none w-full bg-transparent border-gray-600 p-2 flex-grow border placeholder-gray-500 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                        className='rounded flex-none w-full bg-transparent border-gray-600 p-2 flex-grow border placeholder-gray-500 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                     />
                                 </div>
 
@@ -292,7 +300,7 @@ function UpgradeFacility(props) {
                                         required
                                         placeholder="Select a facility type..."
                                         name="facility_type"
-                                        className="flex-none w-full bg-transparent border border-gray-600 flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
+                                        className="flex-none w-full bg-transparent border border-gray-600 flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none rounded" />
                                 </div>
 
 
@@ -318,7 +326,7 @@ function UpgradeFacility(props) {
                                         required
                                         placeholder="Select a reason"
                                         name="reason_upgrade"
-                                        className="flex-none w-full bg-transparent border border-gray-600 flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
+                                        className="flex-none w-full bg-transparent border border-gray-600 flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none rounded" />
 
                                 </div>
 
@@ -380,7 +388,7 @@ function UpgradeFacility(props) {
                                 <div className='flex items-center justify-end w-full'>
                                     <button
                                         type="submit"
-                                        className="bg-blue-600  mt-3 font-semibold w-auto text-white flex text-left items-center p-2 h-auto -md">
+                                        className="bg-blue-600 rounded mt-3 font-semibold w-auto text-white flex text-left items-center p-2 h-auto -md">
 
 
 
