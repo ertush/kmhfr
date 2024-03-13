@@ -577,7 +577,7 @@ export function BasicDeatilsForm({ editMode }) {
 
     updateFacilityTypeDetailOptions()
 
-    function getFacilityTypeDetails_parent(facilityTypeId, token) {
+    function getFacilityTypeDetailsParent(facilityTypeId, token) {
 
       return fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facility_types_details/?id=${facilityTypeId}`, {
         headers: {
@@ -590,6 +590,8 @@ export function BasicDeatilsForm({ editMode }) {
         .catch(console.error)
 
     }
+
+    
     function getFacilityTypeDetails(facilityTypeId, token) {
 
       return fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facility_types_details/?is_parent=false&parent=${facilityTypeId}`, {
@@ -640,8 +642,8 @@ export function BasicDeatilsForm({ editMode }) {
 
     }
     else if (editMode) {
-      var parent="";
-      getFacilityTypeDetails_parent(options?.data?.facility_type, options?.token)
+      let parent = "";
+      getFacilityTypeDetailsParent(options?.data?.facility_type, options?.token)
         .then(facilityTypeDetails => {
 
           parent=facilityTypeDetails[0]?.parent; 
