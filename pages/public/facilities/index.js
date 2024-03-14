@@ -9,12 +9,16 @@ import { SearchIcon } from "@heroicons/react/solid";
 import Select from 'react-select'
 import { Alert } from '@mui/lab'
 import Spinner from '../../../components/Spinner'
+import { CheckBox } from '@mui/icons-material';
+import { Checkbox } from 'antd';
+import { filter } from 'underscore';
+import { boolean } from 'zod';
 
 function Home(props) {
-	// console.log(props)
+
 	const router = useRouter();
 	const [facilities, setFacilities] = useState(props?.data)
-	const filters = props?.filters;
+	const filters = props?.filters
 	const [drillDown, setDrillDown] = useState({});
 	const qf = props?.query?.qf || 'all';
 	const [viewAll, setViewAll] = useState(true);
@@ -27,13 +31,15 @@ function Home(props) {
 	const owner_type = props?.filters?.owner_type || [];
 	const service_ = props?.filters?.service || [];
 	const service_category = props?.filters?.service_category || [];
+	const infrastructue_ = props?.options?.results || [];
+	const speciality_ = props?.options1?.results || [];
+	const speciality_category = props?.options2?.results || [];
 
 
 	const [units, setUnits] = useState([])
 	const [reset, setReset] = useState(false)
 	const [submitting, setSubmitting] = useState(false)
 	const [formError, setFormError] = useState(null)
-
 
 	const county = useRef(null)
 	const subcounty = useRef(null)
@@ -46,9 +52,10 @@ function Home(props) {
 	const ownerType = useRef(null)
 	const facilityService = useRef(null)
 	const serviceCategory = useRef(null)
+	const infra = useRef(null)
+	const special = useRef(null)
+	const special_cat = useRef(null)
 	const [isClient, setIsClient] = useState(false)
-
-
 
 	useEffect(() => {
 
@@ -56,6 +63,7 @@ function Home(props) {
 		delete qry?.searchTerm;
 		delete qry?.qf
 		setDrillDown({ ...drillDown, ...qry });
+
 		if (filters && Object.keys(filters).length > 0) {
 			filters['status'] = filters['chu_status'];
 			delete filters['chu_status'];
@@ -66,9 +74,7 @@ function Home(props) {
 	useEffect(() => {
 
 		setIsClient(true)
-	}, [])
-
-
+	}, []);
 
 	//admin units
 	const administrative_units = [
@@ -80,8 +86,15 @@ function Home(props) {
 
 	//services
 	const service_units = [
-		{ label: 'service category', name: 'service_category', ref: serviceCategory, array: service_category },
-		{ label: 'service', name: 'service', ref: facilityService, array: service_ },
+		{ label: 'service category', name: 'categories', ref: serviceCategory, array: service_category },
+		{ label: 'service', name: 'services', ref: facilityService, array: service_ },
+	]
+
+	// facility Specialities
+	const specialities = [
+		{ label: 'Speciality categories', name: 'speciality_categories', ref: special_cat, array: speciality_category },
+		{ label: 'Speciality', name: 'speciality_names', ref: special, array: speciality_ }
+
 	]
 
 	//facility details
@@ -91,8 +104,10 @@ function Home(props) {
 		{ label: 'owner category', name: 'owner_type', ref: ownerType, array: owner_type },
 		{ label: 'facility owner', name: 'owner', ref: facilityOwner, array: owner },
 		{ label: 'operation status', name: 'operation_status', ref: operationStatus, array: operation_status },
+		{ label: 'Infrastructure', name: 'infrastructure', ref: infra, array: infrastructue_ },
 
 	]
+
 	const getUnits = async (path, id) => {
 		try {
 			let url = `/api/common/fetch_form_data/?path=${path}&id=${id}`
@@ -121,12 +136,7 @@ function Home(props) {
 
 		e.preventDefault()
 
-		//Should be /facilitie/material
-
-		// TODO: Fix the facility detials display list
-
-		let url = API_URL + `/facilities/facilities/?fields=id,code,name,regulatory_status_name,facility_type_name,owner_name,county,sub_county_name,constituency,ward_name,keph_level_name,operation_status_name`
-
+		let url = API_URL + `/facilities/material/?fields=id,code,name,regulatory_status_name,facility_type_name,owner_name,county,sub_county_name,constituency,ward_name,keph_level,operation_status,services,categories,service_names,infrastructure,infrastructure_names,speciality_categories,speciality_names`
 
 		const formData = new FormData(e.target)
 		const formDataObject = Object.fromEntries(formData)
@@ -155,7 +165,9 @@ function Home(props) {
 						ownerType?.current.clearValue()
 						facilityService?.current.clearValue()
 						serviceCategory?.current.clearValue()
-
+						infra?.current.clearValue()
+						special?.current.clearValue()
+						special_cat?.current.clearValue()
 
 					}
 
@@ -166,7 +178,6 @@ function Home(props) {
 				}
 
 			}
-
 
 		}
 
@@ -182,17 +193,18 @@ function Home(props) {
 				}
 			}).filter(Boolean).join('&')
 
+
 			if (qry !== '') {
 				url += `&${qry}`
 			}
 			if (!formDataObject?.facility?.includes('')) {
 				url += `&search={"query":{"query_string":{"default_field":"name","query":"${query.searchTerm}"}}}`
 			}
-			if (!formDataObject?.service?.includes('')) {
-				url += `&service_name={"query":{"query_string":{"default_field":"service_names","query":"${formDataObject?.service}"}}}`
+			if (!formDataObject?.services.includes([])) {
+				url += `&service_name={"query":{"query_string":{"default_field":"name","query":"${formDataObject?.services}"}}}`
 			}
 
-			console.log({ url })
+			console.log(url + `&${qry}`)
 
 			fetch(url, {
 				headers: {
@@ -239,20 +251,20 @@ function Home(props) {
 				</Head>
 
 				<MainLayout isLoading={false} searchTerm={props?.query?.searchTerm}>
-					<div className='w-full md:w-[80%] md:mx-auto px-4 md:px-0 grid grid-cols-1 gap-y-8 md:grid-cols-5 md:gap-4 py-2 md:max-h-min my-4'>
+					<div className='w-full px-4 md:px-0 grid grid-cols-1 gap-y-8 md:grid-cols-5 md:gap-4 py-2 my-4'>
 						
 						<div className='col-span-1 md:col-span-5 flex flex-col gap-4 md:gap-5 '>
 							<div className='flex flex-wrap items-center justify-between gap-2 text-sm md:text-base py-3'>
 								{/* Bread Crumbs */}
 
-								{/* <div className='flex flex-row gap-2 text-sm md:text-base py-3'>
-									<Link className='text-gray-700' href='/'>
+								<div className='flex flex-row gap-2 text-sm md:text-base py-3'>
+									<Link className='text-blue-700' href='/'>
 										Home
 									</Link>
 									{'/'}
 									<span className='text-gray-500'>Facilities</span>
-								</div> */}
-								<div className={"col-span-5 rounded flex justify-between w-full bg-gray-50  text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-gray-600" : "border-red-600")}>
+								</div>
+								<div className={"col-span-5 flex justify-between w-full bg-gray-50  text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-blue-600" : "border-red-600")}>
 									<h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
 										{'Facilities'}
 									</h2>
@@ -270,7 +282,7 @@ function Home(props) {
 						</div>
 
 						{/* Side Menu Filters*/}
-						<form className='col-span-1 max-h-min w-full flex flex-col item-center justify-start md:col-start-1 gap-8'
+						<form className='col-span-1 w-full flex flex-col item-center justify-start md:col-start-1 gap-8'
 							onSubmit={handleSubmit}>
 
 							<div className='flex flex-row gap-4'>
@@ -306,45 +318,45 @@ function Home(props) {
 
 
 							{/* <div className='card flex flex-wrap'> */}
-							<div className="card col-span-6 md:col-span-2 flex flex-col items-start gap-4 justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50 rounded" style={{ minHeight: '50px' }}>
+							<div className="card col-span-6 md:col-span-2 flex flex-col items-start gap-4 justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '50px' }}>
 								<h2>Search for a Facility</h2>
 
 
 								<input
 									name="facility"
-									className="flex-none bg-gray-50  p-2 flex-grow shadow-sm border placeholder-gray-500 w-full border-gray-400 rounded focus:shadow-none focus:bg-white focus:border-black outline-none"
+									className="flex-none bg-gray-50  p-2 flex-grow shadow-sm border placeholder-gray-500 w-full border-gray-400 focus:shadow-none focus:bg-white focus:border-black outline-none"
 									type="search"
 									placeholder="Search all facilities"
 								/>
 
 								<input
 									name="service"
-									className="flex-none bg-gray-50  p-2 flex-grow shadow-sm border placeholder-gray-500 w-full border-gray-400 rounded focus:shadow-none focus:bg-white focus:border-black outline-none"
+									className="flex-none bg-gray-50  p-2 flex-grow shadow-sm border placeholder-gray-500 w-full border-gray-400 focus:shadow-none focus:bg-white focus:border-black outline-none"
 									type="search"
 									placeholder="Search services"
 								/>
 							</div>
 
-							<div className="card col-span-6 md:col-span-2 flex flex-col gap-4 items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50 rounded" style={{ minHeight: '50px' }}>
+							<div className="card col-span-6 md:col-span-2 flex flex-col gap-4 items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '50px' }}>
 								<h2>Facility Info</h2>
 
 								<input
 									name="name"
-									className="flex-none bg-gray-50  p-2 flex-grow shadow-sm border placeholder-gray-500 w-full border-gray-400 rounded focus:shadow-none focus:bg-white focus:border-black outline-none"
+									className="flex-none bg-gray-50  p-2 flex-grow shadow-sm border placeholder-gray-500 w-full border-gray-400 focus:shadow-none focus:bg-white focus:border-black outline-none"
 									type="search"
 									placeholder="Facility Name"
 								/>
 
 								<input
 									name="code"
-									className="flex-none bg-gray-50  p-2 flex-grow shadow-sm border placeholder-gray-500 w-full border-gray-400 rounded focus:shadow-none focus:bg-white focus:border-black outline-none"
+									className="flex-none bg-gray-50  p-2 flex-grow shadow-sm border placeholder-gray-500 w-full border-gray-400 focus:shadow-none focus:bg-white focus:border-black outline-none"
 									type="search"
 									placeholder="Facility Code"
 								/>
 
 							</div>
 
-							<div className="card col-span-6 md:col-span-2 flex flex-col gap-4 items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50 rounded" style={{ minHeight: '50px' }}>
+							<div className="card col-span-6 md:col-span-2 flex flex-col gap-4 items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '50px' }}>
 								<h2>Administrative Unit</h2>
 								<div className="w-full md:max-w-xs flex flex-col gap-4 items-start justify-start mb-3" id='first'>
 									{administrative_units?.map((ct, i) => (
@@ -352,7 +364,7 @@ function Home(props) {
 
 											<Select
 
-												className="w-full md:max-w-xs rounded border border-gray-400"
+												className="w-full md:max-w-xs  border border-gray-400"
 												ref={ct.ref}
 												styles={{
 													control: (baseStyles) => ({
@@ -402,7 +414,7 @@ function Home(props) {
 							</div>
 
 
-							<div className="card col-span-6 md:col-span-2 flex flex-col gap-4 items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50 rounded" style={{ minHeight: '50px' }}>
+							<div className="card col-span-6 md:col-span-2 flex flex-col gap-4 items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '50px' }}>
 								<h2>Services</h2>
 								<div className="w-full md:max-w-xs flex flex-col gap-4 items-start justify-start mb-3" id='first'>
 									{service_units.map((ct, i) => (
@@ -411,7 +423,7 @@ function Home(props) {
 											<Select
 												key={i}
 												ref={ct.ref}
-												className="w-full md:max-w-xs rounded border border-gray-400"
+												className="w-full md:max-w-xs  border border-gray-400"
 												styles={{
 													control: (baseStyles) => ({
 														...baseStyles,
@@ -455,11 +467,66 @@ function Home(props) {
 										</React.Fragment>
 									))}
 								</div>
+							</div>
+
+							<div className="card col-span-6 md:col-span-2 flex flex-col gap-4 items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '50px' }}>
+								<h2>Speciality</h2>
+								<div className="w-full md:max-w-xs flex flex-col gap-4 items-start justify-start mb-3" id='first'>
+									{specialities.map((ct, i) => (
+										<React.Fragment key={i}>
+
+											<Select
+												key={i}
+												ref={ct.ref}
+												className="w-full md:max-w-xs  border border-gray-400"
+												styles={{
+													control: (baseStyles) => ({
+														...baseStyles,
+														backgroundColor: 'transparent',
+														outLine: 'none',
+														border: 'none',
+														outLine: 'none',
+														textColor: 'transparent',
+														padding: 0,
+														height: '4px'
+													}),
+
+												}}
+
+												name={ct.name}
+												options={
+													(() => {
+														let opts = [...Array.from(ct.array || [],
+															fltopt => {
+																if (fltopt.id != null && fltopt.id.length > 0) {
+																	return {
+																		value: fltopt.id, label: fltopt.name
+																	}
+																}
+															})]
+														return opts
+													})()
+												}
+												placeholder={`Select ${ct.label}`}
+												onChange={sl => {
+													let nf = {}
+													if (sl && sl !== null && typeof sl === 'object' && !Array.isArray(sl)) {
+														nf[ct.label] = sl.value
+													} else {
+														delete nf[ct.label]
+													}
+													ct.label == 'county' && sl?.value !== undefined && getUnits('sub_counties', sl?.value)
+													ct.label == 'subcounty' && sl?.value !== undefined && getUnits('wards', sl?.value)
+												}}
+											/>
+										</React.Fragment>
+									))}
+								</div>	
 
 							</div>
 
 
-							<div className="card col-span-6 md:col-span-2 flex flex-col gap-4 items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50 rounded" style={{ minHeight: '50px' }}>
+							<div className="card col-span-6 md:col-span-2 flex flex-col gap-4 items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '50px' }}>
 								<h2>Facility Details</h2>
 								<div className="w-full md:max-w-xs flex flex-col gap-4 items-start justify-start mb-3" id='first'>
 									{facility_details.map((ct, i) => (
@@ -467,7 +534,7 @@ function Home(props) {
 
 											<Select
 												key={i}
-												className="w-full md:max-w-xs rounded border border-gray-400"
+												className="w-full md:max-w-xs  border border-gray-400"
 												ref={ct.ref}
 												styles={{
 													control: (baseStyles) => ({
@@ -517,11 +584,15 @@ function Home(props) {
 											className='form-checkbox w-3 h-3'
 
 											type="checkbox"
-											name='number_of_beds'
-											id='number_of_beds'
+											value={" "}
+											defaultChecked= {props?.query?.beds !== 0}
+											name='beds'
+											id='beds'
+											onChange={()=>{setDrillDown({ ...drillDown, 'beds': "" }) }}
+
 										/>
 
-										<label htmlFor="number_of_beds" className="text-gray-600 capitalize text-sm ml-1">{'Has Beds'}</label>
+										<label htmlFor="beds" className="text-gray-600 capitalize text-sm ml-1">{'Has Beds'}</label>
 
 
 
@@ -531,11 +602,16 @@ function Home(props) {
 											className='form-checkbox w-3 h-3'
 
 											type="checkbox"
-											name='number_of_cots'
-											id='number_of_cots'
+											value={" "}
+											defaultChecked= {props?.query?.cots === " "}
+											name='cots'
+											id='cots'
+											onChange={()=>{setDrillDown({ ...drillDown, 'cots': " " }) }}
+
+
 										/>
 
-										<label htmlFor="number_of_cots" className="text-gray-600 capitalize text-sm ml-1">{'Has Cots'}</label>
+										<label htmlFor="cots" className="text-gray-600 capitalize text-sm ml-1">{'Has Cots'}</label>
 
 
 									</div>
@@ -544,7 +620,7 @@ function Home(props) {
 							</div>
 
 
-							<div className="card col-span-6 md:col-span-2 flex flex-col gap-4 items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50 rounded" style={{ minHeight: '50px' }}>
+							<div className="card col-span-6 md:col-span-2 flex flex-col gap-4 items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '50px' }}>
 								<h2>Availability</h2>
 								<div className="w-full max-w-xs flex flex-col gap-3 items-start justify-start mb-3" id='first'>
 									<div className="w-full max-w-xs  flex-col items-start justify-start mb-3" id='first'>
@@ -552,11 +628,14 @@ function Home(props) {
 											className='form-checkbox w-3 h-3'
 
 											type="checkbox"
-											name='available_holiday'
-											id='available_holiday'
+											value={true}
+											defaultChecked= {props?.query?.open_public_holidays === "true"}
+											name='open_public_holidays'
+											id='open_public_holidays'
+											onChange={()=>{setDrillDown({ ...drillDown, 'open_public_holidays': true }) }}
 										/>
 
-										<label htmlFor={'available_holiday'} className="text-gray-600 capitalize text-sm ml-1">{'Open Public Holidays'}</label>
+										<label htmlFor={'open_public_holidays'} className="text-gray-600 capitalize text-sm ml-1">{'Open Public Holidays'}</label>
 
 
 									</div>
@@ -565,11 +644,15 @@ function Home(props) {
 											className='form-checkbox w-3 h-3'
 
 											type="checkbox"
-											name='available_weekends'
-											id='available_weekends'
+											value={true}
+											defaultChecked= {props?.query?.open_weekends === "true"}
+											name='open_weekends'
+											id='open_weekends'
+											onChange={()=>{setDrillDown({ ...drillDown, 'open_weekends': true }) }}
+
 										/>
 
-										<label htmlFor={'available_weekends'} className="text-gray-600 capitalize text-sm ml-1">{'Open Weekends'}</label>
+										<label htmlFor={'open_weekends'} className="text-gray-600 capitalize text-sm ml-1">{'Open Weekends'}</label>
 
 									</div>
 									<div className="w-full max-w-xs  flex-col items-start justify-start mb-3" id='first'>
@@ -577,11 +660,14 @@ function Home(props) {
 											className='form-checkbox w-3 h-3'
 
 											type="checkbox"
-											name='available_24hrs'
-											id='available_24hrs'
+											value={true}
+											defaultChecked= {props?.query?.open_whole_day === "true"}
+											name='open_whole_day'
+											id='open_whole_day'
+											onChange={()=>{setDrillDown({ ...drillDown, 'open_whole_day': true }) }}
 										/>
 
-										<label htmlFor={'available_24hrs'} className="text-gray-600 capitalize text-sm ml-1">{'Open 24 Hours '}</label>
+										<label htmlFor={'open_whole_day'} className="text-gray-600 capitalize text-sm ml-1">{'Open 24 Hours '}</label>
 
 
 									</div>
@@ -596,7 +682,7 @@ function Home(props) {
 
 						{/* Main body */}
 						{/* <div className='col-span-5 md:col-span-4 flex flex-col items-center gap-4 mt-2 order-last md:order-none'> */}
-						<div className={`${(Array.isArray(facilities) && facilities?.length == 0) || (!formError || !submitting) && 'p-4'} col-span-1 rounded bg-gray-50 md:h-[1670px] md:px-0 overflow-y-scroll shadow-md md:col-span-4 flex flex-col md:gap-4 order-last md:order-none`}> {/* CHANGED colspan */}
+						<div className={`${(Array.isArray(facilities) && facilities?.length == 0) || (!formError || !submitting) && 'p-4'} col-span-1 bg-gray-50 h-auto shadow-md md:col-span-4 flex flex-col md:gap-4 order-last md:order-none`}> {/* CHANGED colspan */}
 
 							{
 								formError && <Alert severity='error' className='w-full border-2 border-red-500 rounded-none'>{formError}</Alert>
@@ -604,28 +690,26 @@ function Home(props) {
 
 
 							{
-								submitting && <Alert severity='info' className='w-full border-2 border-gray-500 rounded-none'>Loading...</Alert>
+								submitting && <Alert severity='info' className='w-full border-2 border-blue-500 rounded-none'>Loading...</Alert>
 							}
 
-							
-
-							<div className='flex flex-col justify-center items-center md:col-span-4 w-full '>
-
-							<div className="w-full flex justify-end	pt-2 px-1 border-b border-gray-500">
+							<div className="w-full flex justify-end	pt-2 px-1">
 								<p className='text-end text-gray-500 font-semibold'>{props?.facilityCount > 0 ? '30': '0'} of {props?.facilityCount}</p>
 							</div>
+
+							<div className='flex flex-col justify-center items-center md:col-span-4 w-full '>
 								{/* <pre>{JSON.stringify(facilities[0], null, 2)}</pre> */}
 
 								{viewAll && facilities?.results && facilities?.results.length > 0 ? (
 									facilities?.results.map((hf, index) => (
 										<div
 											key={index}
-											className='px-1 md:px-3 grid grid-cols-8 gap-3 border-b border-gray-400  py-4 hover:bg-gray-50 w-full'>
+											className='px-1 md:px-3 grid grid-cols-8 gap-3 border-b border-gray-400 py-4 hover:bg-gray-50 w-full'>
 											<div className='col-span-8 flex flex-col gap-1 group items-start justify-center  text-left'>
 												<h3 className='text-2xl w-full'>
 													<Link
 														href={'/public/facilities/' + hf?.id}
-														className='hover:text-gray-800 group-focus:text-gray-800 active:text-gray-800'>
+														className='hover:text-blue-800 group-focus:text-blue-800 active:text-blue-800'>
 
 														{
 															hf?.official_name ||
@@ -760,7 +844,7 @@ function Home(props) {
 
 															)()
 														}
-														className='text-gray-800 p-2 hover:underline active:underline focus:underline'>
+														className='text-blue-800 p-2 hover:underline active:underline focus:underline'>
 														{page}
 													</a>
 												</li>
@@ -795,7 +879,7 @@ export async function getServerSideProps(ctx) {
 	const token = (await checkToken(ctx.req, ctx.res, { username: process.env.NEXT_PUBLIC_CLIENT_USERNAME, password: process.env.NEXT_PUBLIC_CLIENT_PASSWORD }))?.token
 
 	async function fetchFilters(token) {
-		const filters_url = `${process.env.NEXT_PUBLIC_API_URL}/common/filtering_summaries/?fields=county,facility_type,operation_status,service_category,owner_type,owner,service,keph_level_name`;
+		const filters_url = `${process.env.NEXT_PUBLIC_API_URL}/common/filtering_summaries/?fields=county,facility_type,operation_status,service_category,owner_type,owner,service,keph_level`;
 		try {
 			const r = await fetch(filters_url, {
 				headers: {
@@ -816,9 +900,38 @@ export async function getServerSideProps(ctx) {
 		}
 	};
 
+	async function fetchFilterOptions(token, option) {
+		let options_url = ''
+
+		switch(option){
+			case 'infrastructure':
+				options_url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/infrastructure/`
+			break;
+			case 'specialities':
+				options_url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/specialities/`
+			break;
+			case 'speciality_categories':
+				options_url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/speciality_categories/`
+			break;
+		}
+		try {
+			const r = await fetch(options_url, {
+				headers: {
+					Authorization: 'Bearer ' + token,
+					Accept: 'application/json',
+				},
+			});
+			const json = await r.json();
+			return json;
+		} catch (err) {
+			console.log('Error fetching filters: ', err);
+
+		}
+	};
 
 
-	let url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/material/?fields=id,code,name,regulatory_status_name,facility_type_name,owner_name,county,constituency,ward_name,keph_level_name,operation_status_name`
+
+	let url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/material/?fields=id,code,name,regulatory_status_name,facility_type_name,owner_name,county,constituency,ward_name,keph_level,operation_status,services,categories,service_names,infrastructure,infrastructure_names,speciality_categories,speciality_names`
 	let query = { searchTerm: '' };
 
 	if (ctx?.query?.q) {
@@ -832,6 +945,14 @@ export async function getServerSideProps(ctx) {
 		'ward',
 		'status',
 		'sub_county',
+		'keph_level',
+		'services',
+		'categories',
+		'service_names',
+		'infrastructure',
+		'infrastructure_names',
+		'speciality_names',
+		'speciality_categories'
 	];
 
 	other_posssible_filters.map((flt) => {
@@ -858,12 +979,17 @@ export async function getServerSideProps(ctx) {
 
 		const ft = await fetchFilters(token);
 
+		const options = await fetchFilterOptions(token, 'infrastructure')
+		const options1 = await fetchFilterOptions(token, 'specialities')
+		const options2 = await fetchFilterOptions(token, 'speciality_categories')
+
 	
 		return {
 			props: {
 				data: json,
 				facilityCount: json?.count,
 				query,
+				options,options1,options2,
 				token,
 				filters: { ...ft },
 				path: ctx.asPath || '/facilities',
