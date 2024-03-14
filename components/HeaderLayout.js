@@ -378,6 +378,10 @@ export default function HeaderLayout({
                       </li>
                     }
 
+                      <li className={`text-lg h-[50px] w-full border-b border-b-gray-300 flex items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-600 ${currentPath == "/admin_offices" && 'border-r-2 border-r-gray-50 bg-blue-700/85 text-gray-100'}`}>
+                        <Link href='https://kmhfr-docs.github.io'>Documentation</Link>
+                      </li>
+
                   </ul>
                 </nav>
               }
@@ -554,6 +558,9 @@ export default function HeaderLayout({
                   </li>
                 }
 
+                  <li className={`text-lg h-[60px] flex text-center justify-center items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/admin_offices" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
+                    <Link href='https://kmhfr-docs.github.io'>Documentation</Link>
+                  </li>
 
 
               </ul>
