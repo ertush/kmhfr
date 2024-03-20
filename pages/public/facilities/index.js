@@ -27,6 +27,9 @@ function Home(props) {
 	const owner_type = props?.filters?.owner_type || [];
 	const service_ = props?.filters?.service || [];
 	const service_category = props?.filters?.service_category || [];
+	const infrastructue_ = props?.infrastructureOptions?.results || [];
+	const speciality_ = props?.specialitiesOptions?.results || [];
+	const speciality_category = props?.specialityCategoryOptions?.results || [];
 
 
 	const [units, setUnits] = useState([])
@@ -93,6 +96,7 @@ function Home(props) {
 		{ label: 'operation status', name: 'operation_status', ref: operationStatus, array: operation_status },
 
 	]
+
 	const getUnits = async (path, id) => {
 		try {
 			let url = `/api/common/fetch_form_data/?path=${path}&id=${id}`
@@ -231,10 +235,13 @@ function Home(props) {
 
 
 	if (isClient) {
+
+	
+
 		return (
 			<div className=''>
 				<Head>
-					<title>KMHFR - Facilities</title>
+					<title>KMHFR | Facilities</title>
 					<link rel='icon' href='/favicon.ico' />
 				</Head>
 
@@ -794,8 +801,9 @@ export async function getServerSideProps(ctx) {
 
 	const token = (await checkToken(ctx.req, ctx.res, { username: process.env.NEXT_PUBLIC_CLIENT_USERNAME, password: process.env.NEXT_PUBLIC_CLIENT_PASSWORD }))?.token
 
+
 	async function fetchFilters(token) {
-		const filters_url = `${process.env.NEXT_PUBLIC_API_URL}/common/filtering_summaries/?fields=county,facility_type,operation_status,service_category,owner_type,owner,service,keph_level_name`;
+		const filters_url = `${process.env.NEXT_PUBLIC_API_URL}/common/filtering_summaries/?fields=county,facility_type,operation_status,service_category,owner_type,owner,service,keph_level`;
 		try {
 			const r = await fetch(filters_url, {
 				headers: {
@@ -807,15 +815,38 @@ export async function getServerSideProps(ctx) {
 			return json;
 		} catch (err) {
 			console.log('Error fetching filters: ', err);
-			// return {
-			// 	error: true,
-			// 	err: err,
-			// 	filters: [],
-			// 	path: ctx.asPath || '/',
-			// };
+			
 		}
 	};
 
+	async function fetchFilterOptions(token, option) {
+		let options_url = ''
+
+		switch(option){
+			case 'infrastructure':
+				options_url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/infrastructure/`
+			break;
+			case 'specialities':
+				options_url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/specialities/`
+			break;
+			case 'speciality_categories':
+				options_url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/speciality_categories/`
+			break;
+		}
+		try {
+			const r = await fetch(options_url, {
+				headers: {
+					Authorization: 'Bearer ' + token,
+					Accept: 'application/json',
+				},
+			});
+			const json = await r.json();
+			return json;
+		} catch (err) {
+			console.log('Error fetching filters: ', err);
+
+		}
+	};
 
 
 	let url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/material/?fields=id,code,name,regulatory_status_name,facility_type_name,owner_name,county,constituency,ward_name,keph_level_name,operation_status_name`
@@ -858,6 +889,12 @@ export async function getServerSideProps(ctx) {
 
 		const ft = await fetchFilters(token);
 
+		const infrastructureOptions = await fetchFilterOptions(token, 'infrastructure')
+		const specialitiesOptions = await fetchFilterOptions(token, 'specialities')
+		const specialityCategoryOptions = await fetchFilterOptions(token, 'speciality_categories')
+
+
+
 	
 		return {
 			props: {
@@ -865,6 +902,9 @@ export async function getServerSideProps(ctx) {
 				facilityCount: json?.count,
 				query,
 				token,
+				infrastructureOptions,
+				specialitiesOptions,
+				specialityCategoryOptions,
 				filters: { ...ft },
 				path: ctx.asPath || '/facilities',
 				current_url

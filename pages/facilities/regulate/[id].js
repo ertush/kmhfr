@@ -106,7 +106,7 @@ function RegulateFacility (props) {
     return (
         <>
             <Head>
-                <title>KMHFR - Regulate Facility</title>
+                <title>KMHFR | Regulate Facility</title>
                 <link rel="icon" href="/favicon.ico" />
             </Head>
             <MainLayout isLoading={false} searchTerm={props?.query?.searchTerm}>

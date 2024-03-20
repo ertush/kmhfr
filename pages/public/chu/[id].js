@@ -80,7 +80,7 @@ function CommunityUnit(props) {
   return (
     <>
       <Head>
-        <title> KMHFR - {cu?.name || cu?.official_name}</title>
+        <title> KMHFR | {cu?.name || cu?.official_name}</title>
         <link rel="icon" href="/favicon.ico" />
   
       </Head>

@@ -104,7 +104,7 @@ function AdminOffices(props) {
     return (
         <>
             <Head>
-                <title>KMHFR - Admin Offices</title>
+                <title>KMHFR | Admin Offices</title>
                 <link rel="icon" href="/favicon.ico" />
             </Head>
             <MainLayout isLoading={false} isFullWidth={false}>

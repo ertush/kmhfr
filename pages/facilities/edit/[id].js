@@ -93,7 +93,7 @@ const EditFacility = withErrorBoundary(
 			return (
 				<>
 					<Head>
-						<title>KMHFR - Edit Facility</title>
+						<title>KMHFR | Edit Facility</title>
 						<link rel="icon" href="/favicon.ico" />
 						<link rel="stylesheet" href="/assets/css/leaflet.css" />
 

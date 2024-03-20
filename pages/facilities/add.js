@@ -36,7 +36,7 @@ export default function AddFacility(props) {
 		return (
 			<>
 				<Head>
-					<title>KMHFR - Add Facility</title>
+					<title>KMHFR | Add Facility</title>
 					<link rel="icon" href="/favicon.ico" />
 				</Head>
 

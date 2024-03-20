@@ -28,6 +28,7 @@ export default function About() {
        <div className="h-auto w-full flex flex-col items-start mt-8 gap-8"> 
        <div className="flex flex-col gap-4 md:flex-row md:justify-between w-full">
         <Image src="/assets/css/images/distribution_map.png" objectFit="contain" width="400" height="400" />
+        <Image src="/assets/css/images/public_health_facilities_map.png" objectFit="contain" width="400" height="400" />
         <Image src="/kenya_geo_map.png" objectFit="contain" width="400" height="400" />
        </div>     
           <div className="md:grid md:grid-cols-2 md:gap-x-8 flex flex-col gap-y-4 mt-8 h-full md:gap-y-24">

@@ -132,7 +132,7 @@ function Home(props) {
     return (
     <header className='w-full max-h-min block'>
         <Head>
-          <title>KMHFR - Home</title>
+          <title>KMHFR | Home</title>
           <link rel="icon" href="/favicon.ico" />
         </Head>
 
@@ -189,6 +189,10 @@ function Home(props) {
                 <li className='text-lg h-[60px] flex items-center  hover:text-gray-100  duration-200 ease-out hover:bg-blue-800 px-4 font-semibold capitalize text-gray-900 '>
                   <Link href="/public/faqs">FAQs</Link>
                 </li>
+
+                <li className='text-lg h-[60px] flex items-center  hover:text-gray-100  duration-200 ease-out hover:bg-blue-800 px-4 font-semibold capitalize text-gray-900 '>
+                  <Link href="https://kmhfr-docs.github.io">Documentation</Link>
+                </li>
                 
               </ul>
             </nav>
@@ -224,6 +228,10 @@ function Home(props) {
                 </li>
                 <li className={`text-lg h-[50px] w-full border-b border-b-gray-300 flex items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-600 ${currentPath == "/public/faqs" && 'border-r-2 border-r-gray-50 bg-blue-700/85 text-gray-100'}`}>
                   <Link href="/public/faqs">FAQs</Link>
+                </li>
+
+                <li className={`text-lg h-[50px] w-full border-b border-b-gray-300 flex items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-600 ${currentPath == "/public/faqs" && 'border-r-2 border-r-gray-50 bg-blue-700/85 text-gray-100'}`}>
+                  <Link href="https://kmhfr-docs.github.io">Documentation</Link>
                 </li>
                 
               </ul>
@@ -572,6 +580,12 @@ function Home(props) {
                     <div className='flex items-center gap-1 md:gap-2'>
                     <Link href="https://health.go.ke" className="text-gray-200 hover:underline">Ministry of Health</Link>
                     <NorthEast className="text-gray-200 md:w-3 w-2 aspect-square"/>
+                    
+                    </div>
+
+                    <div className='flex items-center gap-2'>
+                    <Link href="https://kmhfr-docs.github.io" className="text-gray-200 hover:underline">KMHFR Docs</Link>
+                    <NorthEast className="text-gray-200 w-3 aspect-square"/>
                     
                     </div>
                   </div>

@@ -64,7 +64,7 @@ function CommunityUnit(props) {
 		return (
 			<div className=''>
 				<Head>
-					<title>KMHFR - Community Units</title>
+					<title>KMHFR | Community Units</title>
 					<link rel='icon' href='/favicon.ico' />
 				</Head>
 
