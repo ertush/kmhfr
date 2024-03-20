@@ -156,7 +156,7 @@ function UpgradeFacility(props) {
         return (
             <>
                 <Head>
-                    <title>KMHFR - Upgrade Facility</title>
+                    <title>KMHFR | Upgrade Facility</title>
                     <link rel="icon" href="/favicon.ico" />
                 </Head>
                 <MainLayout isLoading={false} searchTerm={props?.query?.searchTerm}>

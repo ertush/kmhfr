@@ -241,7 +241,7 @@ function Home(props) {
 		return (
 			<div className=''>
 				<Head>
-					<title>KMHFR - Facilities</title>
+					<title>KMHFR | Facilities</title>
 					<link rel='icon' href='/favicon.ico' />
 				</Head>
 

@@ -159,7 +159,7 @@ const Account = () => {
     return (
         <>
             <Head>
-                <title>KMHFR - {user?.name || "My account"}</title>
+                <title>KMHFR | {user?.name || "My account"}</title>
                 <link rel="icon" href="/favicon.ico" />
             </Head>
 

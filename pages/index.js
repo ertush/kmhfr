@@ -132,7 +132,7 @@ function Home(props) {
     return (
     <header className='w-full max-h-min block'>
         <Head>
-          <title>KMHFR - Home</title>
+          <title>KMHFR | Home</title>
           <link rel="icon" href="/favicon.ico" />
         </Head>
 

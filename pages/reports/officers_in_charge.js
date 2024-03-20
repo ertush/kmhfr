@@ -66,7 +66,7 @@ const OfficersInCharge = (props) => {
     return (
         <div className="">
             <Head>
-                <title>KMHFR - Reports</title>
+                <title>KMHFR | Reports</title>
                 <link rel="icon" href="/favicon.ico" />
             </Head>
             <MainLayout isLoading={false} isFullWidth={false}>

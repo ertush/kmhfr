@@ -115,18 +115,11 @@ function FacilityHome (props){
 
     if(isClient){
 
-    // return (
-    //     <pre>
-    //         {
-    //             JSON.stringify(facilities, null , 2)// ({is_complete: facilities[0]?.is_complete, in_complete_details: facilities[0]?.in_complete_details}, null, 2)
-    //         }
-    //     </pre>
-    // )
 
     return (
         <>
             <Head>
-                <title>KMHFR - Facilities</title>
+                <title>KMHFR | Facilities</title>
                 <link rel="icon" href="/favicon.ico" />
             </Head>
 

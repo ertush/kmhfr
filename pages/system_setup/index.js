@@ -1176,7 +1176,7 @@ function SystemSetup(props) {
     return (
     <>
                 <Head>
-                    <title>KMHFR - System Setup</title>
+                    <title>KMHFR | System Setup</title>
                     <metadata zoomAndPan='100'></metadata>
                     <link rel="icon" href="/favicon.ico" />
                     {/* {console.log({columns, rows})} */}

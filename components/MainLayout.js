@@ -2,7 +2,7 @@
 import { useRouter } from 'next/router'
 import React, { useState, useEffect } from 'react';
 import { getUserDetails } from '../controllers/auth/auth'
-import LoadingAnimation from './LoadingAnimation';
+// import LoadingAnimation from './LoadingAnimation';
 import HeaderLayout from './HeaderLayout';
 import Link from 'next/link'
 import { NorthEast } from '@mui/icons-material';
@@ -15,6 +15,8 @@ export default function MainLayout({ children, isLoading, searchTerm, isFullWidt
     const router = useRouter()
     const [isLoggedIn, setIsLoggedIn] = useState(false)
     const [user, setUser] = useState(null)
+    const [isClient, setIsClient] = useState(false)
+
     let API_URL = process.env.NEXT_PUBLIC_API_URL
     if (typeof window !== 'undefined' && window.location.hostname === '127.0.0.1') {
         API_URL = 'http://localhost:8000/api'
@@ -32,6 +34,8 @@ export default function MainLayout({ children, isLoading, searchTerm, isFullWidt
   
 
     useEffect(() => {
+
+      setIsClient(true)
         let mtd = true
         if (mtd) {
             let is_user_logged_in = (typeof window !== 'undefined' && window.document.cookie.indexOf('access_token=') > -1) || false
@@ -61,7 +65,7 @@ export default function MainLayout({ children, isLoading, searchTerm, isFullWidt
         return () => { mtd = false }
     }, [])
 
-
+    if(isClient){
     return (
         <div className="flex flex-col items-center justify-start w-full bg-gray-200 min-h-screen gap-y-[150px]">
             
@@ -138,4 +142,7 @@ export default function MainLayout({ children, isLoading, searchTerm, isFullWidt
            
         </div>
     );
+    } else {
+      return null
+    }
 }

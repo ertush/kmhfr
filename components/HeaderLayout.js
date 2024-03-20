@@ -179,7 +179,7 @@ export default function HeaderLayout({
 
     <header className='w-full max-h-min flex'>
       <Head>
-        {/*   <title>KMHFR - Home</title> */}
+        {/*   <title>KMHFR | Home</title> */}
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
@@ -557,10 +557,21 @@ export default function HeaderLayout({
                     <Link href='/admin_offices'>Admin Offices</Link>
                   </li>
                 }
+                  
 
-                  <li className={`text-lg h-[60px] flex text-center justify-center items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/admin_offices" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
-                    <Link href='https://kmhfr-docs.github.io'>Documentation</Link>
-                  </li>
+                {
+
+              userID == 6 && !isLoggedIn?
+
+                <li className={`text-lg h-[60px] flex text-center justify-center items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 `}>
+                  <Link href='https://kmhfr-docs.github.io'>Documentation</Link>
+                </li>
+                :
+                <li className={`text-lg h-[60px] flex text-center justify-center items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/downloads" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
+                  <Link href='/downloads'>Downloads</Link>
+                </li>
+                }
+                
 
 
               </ul>

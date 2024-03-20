@@ -262,7 +262,7 @@ function Dashboard(props) {
         return (
             <div className="">
                 <Head>
-                    <title>KMHFR - Dashboardboard</title>
+                    <title>KMHFR | Dashboardboard</title>
                     <link rel="icon" href="/favicon.ico" />
                 </Head>
 

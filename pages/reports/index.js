@@ -78,7 +78,7 @@ function Reports(props) {
         return (
             <div className="w-full">
                 <Head>
-                    <title>KMHFR - Reports</title>
+                    <title>KMHFR | Reports</title>
                     <link rel="icon" href="/favicon.ico" />
                 </Head>
 

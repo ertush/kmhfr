@@ -253,7 +253,7 @@ if(filters){
   return (
     <>
       <Head>
-        <title>KMHFR - GIS Explorer</title>
+        <title>KMHFR | GIS Explorer</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <MainLayout isLoading={false} isFullWidth={true}>
