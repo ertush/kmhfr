@@ -84,7 +84,7 @@ function SystemSetup(props) {
     const [openCHU, setOpenCHU] = useState(false);    
     const [openDocuments, setOpenDocuments] = useState(false); 
     const [resourceCategory, setResourceCategory] = useState('AdminUnits');
-    const [selectOptionss, setSelectOptionss] = useState([]);
+    const [selectOptions, setSelectOptions] = useState([]);
     const [resource, setResource] = useState('counties'); 
     const [loading, setIsLoading] = useState(true);
     const [logsRows, setLogsRows] = useState([]);
@@ -106,9 +106,9 @@ function SystemSetup(props) {
 	  
     const [isClient, setIsClient] = useState(false)
     const [columns, setColumns] = useState([
-        { field: 'name', headerName: 'Name', flex: 1 },
-        { field: 'code', headerName: 'Code', flex: 1},
-        { field: 'action',headerName: 'Action', renderCell: (params) => (
+        { field: 'name', label: 'Name', flex: 1 },
+        { field: 'code', label: 'Code', flex: 1},
+        { field: 'action',label: 'Action', renderCell: (params) => (
             <button
               variant="contained"
               size="small"
@@ -124,24 +124,24 @@ function SystemSetup(props) {
     const [rows, setRows] = useState(Array.from(props?.data?.results ?? [], ({id, name, code}) => ({name, code, id})))
 
     const [logsColumns] = useState([
-        { field: 'updated_on', headerName: 'Date', flex: 1 },
-        { field: 'updated_by', headerName: 'User', flex: 1},
-        { field: 'updates',headerName: 'Updates',flex: 1, }
+        { field: 'updated_on', label: 'Date', flex: 1 },
+        { field: 'updated_by', label: 'User', flex: 1},
+        { field: 'updates',label: 'Updates',flex: 1, }
       ]);
     const [constituenciesColumns] = useState([
-        { field: 'name', headerName: 'Name', flex: 1 },
-        { field: 'code', headerName: 'Code', flex: 1},
+        { field: 'name', label: 'Name', flex: 1 },
+        { field: 'code', label: 'Code', flex: 1},
     ]);
     const [wardsColumns] = useState([
-        { field: 'name', headerName: 'Name', flex: 1 },
-        { field: 'code', headerName: 'Code', flex: 1},
+        { field: 'name', label: 'Name', flex: 1 },
+        { field: 'code', label: 'Code', flex: 1},
     ]);
     const [county_users] = useState([
-        { field: 'user_full_name', headerName: 'User', width: 200 },
-        { field: 'user_email', headerName: 'Email', width: 300 }, 
-        { field: 'county_name', headerName: 'County', width: 100 },
-        { field: 'county_code', headerName: 'Code', width: 100 },
-        { field: 'user', headerName: 'User', width: 100 },
+        { field: 'user_full_name', label: 'User', width: 200 },
+        { field: 'user_email', label: 'Email', width: 300 }, 
+        { field: 'county_name', label: 'County', width: 100 },
+        { field: 'county_code', label: 'Code', width: 100 },
+        { field: 'user', label: 'User', width: 100 },
         
     ]);
 
@@ -199,9 +199,9 @@ function SystemSetup(props) {
                             case 'counties':
                                
                                 setColumns([
-                                    { field: 'name', headerName: 'Name', flex: 1 },
-                                    { field: 'code', headerName: 'Code', flex: 1},
-                                    { field: 'action',headerName: 'Action', renderCell: (params) => (
+                                    { field: 'name', label: 'Name', flex: 1 },
+                                    { field: 'code', label: 'Code', flex: 1},
+                                    { field: 'action',label: 'Action', renderCell: (params) => (
                                         <button
                                           variant="contained"
                                           size="small"
@@ -223,9 +223,9 @@ function SystemSetup(props) {
                                 case 'sub_counties':
                                
                                   setColumns([
-                                      { field: 'name', headerName: 'Name', flex: 1 },
-                                      { field: 'code', headerName: 'Code', flex: 1},
-                                      { field: 'action',headerName: 'Action', renderCell: (params) => (
+                                      { field: 'name', label: 'Name', flex: 1 },
+                                      { field: 'code', label: 'Code', flex: 1},
+                                      { field: 'action',label: 'Action', renderCell: (params) => (
                                           <button
                                             variant="contained"
                                             size="small"
@@ -246,9 +246,9 @@ function SystemSetup(props) {
                                     case 'constituencies':
                                
                                     setColumns([
-                                        { field: 'name', headerName: 'Name', flex: 1 },
-                                        { field: 'code', headerName: 'Code', flex: 1},
-                                        { field: 'action',headerName: 'Action', renderCell: (params) => (
+                                        { field: 'name', label: 'Name', flex: 1 },
+                                        { field: 'code', label: 'Code', flex: 1},
+                                        { field: 'action',label: 'Action', renderCell: (params) => (
                                             <button
                                               variant="contained"
                                               size="small"
@@ -268,12 +268,12 @@ function SystemSetup(props) {
 
                             case 'wards':
                                 setColumns([
-                                    { field: 'name', headerName: 'Name', flex: 1 },
-                                    { field: 'code', headerName: 'Code', flex: 1},
-                                    { field: 'sub_county_name', headerName: 'Sub-county', flex: 1},
-                                    { field: 'constituency_name', headerName: 'Constituency', flex: 1},
-                                    { field: 'county_name', headerName: 'County', flex: 1},
-                                    { field: 'action', headerName: 'Action', flex: 1, renderCell: (params) => (
+                                    { field: 'name', label: 'Name', flex: 1 },
+                                    { field: 'code', label: 'Code', flex: 1},
+                                    { field: 'sub_county_name', label: 'Sub-county', flex: 1},
+                                    { field: 'constituency_name', label: 'Constituency', flex: 1},
+                                    { field: 'county_name', label: 'County', flex: 1},
+                                    { field: 'action', label: 'Action', flex: 1, renderCell: (params) => (
                                     
                                         <button
                                           variant="contained"
@@ -295,8 +295,8 @@ function SystemSetup(props) {
                             case 'towns':
                            
                                 setColumns([
-                                    { field: 'name', headerName: 'Name', flex: 1 },
-                                    { field: 'action',headerName: 'Action', flex: 1, renderCell:  (params) => (
+                                    { field: 'name', label: 'Name', flex: 1 },
+                                    { field: 'action',label: 'Action', flex: 1, renderCell:  (params) => (
                                     
                                         <button
                                           variant="contained"
@@ -317,9 +317,9 @@ function SystemSetup(props) {
                             default:
                                   
                                 setColumns([
-                                    { field: 'name', headerName: 'Name', flex: 1 },
-                                    { field: 'code', headerName: 'Code', flex: 1},
-                                    { field: 'action',headerName: 'Action',flex: 1}
+                                    { field: 'name', label: 'Name', flex: 1 },
+                                    { field: 'code', label: 'Code', flex: 1},
+                                    { field: 'action',label: 'Action',flex: 1}
                                   ])
                     
                                 setRows(Array.from(_data.results, ({id, name, code}) => ({id, name, code})))
@@ -329,8 +329,8 @@ function SystemSetup(props) {
                   case 'ServiceCatalogue':
                         
                       setColumns([
-                          { field: 'name', headerName: 'Name', flex: 1 },
-                          { field: 'action',headerName: 'Action',flex: 1, renderCell:  (params) => (
+                          { field: 'name', label: 'Name', flex: 1 },
+                          { field: 'action',label: 'Action',flex: 1, renderCell:  (params) => (
                                     
                                         <button
                                           variant="contained"
@@ -352,10 +352,10 @@ function SystemSetup(props) {
                   case 'HealthInfrastructure':
                       if(resource === 'infrastructure'){
                         setColumns([
-                            { field: 'name', headerName: 'Name', flex: 1 },
-                            { field: 'category_name', headerName: 'Category', flex: 1 },
-                            { field: 'numbers', headerName: 'Tracking numbers?', flex: 1, format: 'boolean' },
-                            { field: 'action',headerName: 'Action',flex: 1, renderCell:  (params) => (
+                            { field: 'name', label: 'Name', flex: 1 },
+                            { field: 'category_name', label: 'Category', flex: 1 },
+                            { field: 'numbers', label: 'Tracking numbers?', flex: 1, format: 'boolean' },
+                            { field: 'action',label: 'Action',flex: 1, renderCell:  (params) => (
                                     
                                         <button
                                           variant="contained"
@@ -376,8 +376,8 @@ function SystemSetup(props) {
                       }
                       else{
                         setColumns([
-                            { field: 'name', headerName: 'Name', flex: 1 },
-                            { field: 'action',headerName: 'Action',flex: 1, renderCell:  (params) => (
+                            { field: 'name', label: 'Name', flex: 1 },
+                            { field: 'action',label: 'Action',flex: 1, renderCell:  (params) => (
                                     
                                         <button
                                           variant="contained"
@@ -399,8 +399,8 @@ function SystemSetup(props) {
                       break;
                   case 'HR':
                       setColumns([
-                          { field: 'name', headerName: 'Name', flex: 1 },
-                          { field: 'action',headerName: 'Action',flex: 1, renderCell:  (params) => (
+                          { field: 'name', label: 'Name', flex: 1 },
+                          { field: 'action',label: 'Action',flex: 1, renderCell:  (params) => (
                                     
                                         <button
                                           variant="contained"
@@ -421,9 +421,9 @@ function SystemSetup(props) {
                       break;
                   case 'Contacts':
                       setColumns([
-                          { field: 'num', headerName: '#', flex: 1 },
-                          { field: 'name', headerName: 'Name', flex: 1 },
-                          { field: 'action',headerName: 'Action',flex: 1, renderCell:  (params) => (
+                          { field: 'num', label: '#', flex: 1 },
+                          { field: 'name', label: 'Name', flex: 1 },
+                          { field: 'action',label: 'Action',flex: 1, renderCell:  (params) => (
                                     
                                         <button
                                           variant="contained"
@@ -446,9 +446,9 @@ function SystemSetup(props) {
                       switch(resource){
                             case 'facility_depts':
                                 setColumns([
-                                    { field: 'name', headerName: 'Name', flex: 1 },
-                                    { field: 'description', headerName: 'Description', flex: 1 },
-                                    { field: 'action',headerName: 'Action',flex: 1, renderCell:  (params) => (
+                                    { field: 'name', label: 'Name', flex: 1 },
+                                    { field: 'description', label: 'Description', flex: 1 },
+                                    { field: 'action',label: 'Action',flex: 1, renderCell:  (params) => (
                                     
                                         <button
                                           variant="contained"
@@ -458,7 +458,7 @@ function SystemSetup(props) {
                                           
                                         >
                                           <p className="text-gray-900 font-semibold">Edit</p>
-                                          { console.log({params})}
+                                          {/* { console.log({params})} */}
                                           <PencilAltIcon className="h-5 w-5 text-gray-900"/>
                                         </button>
                                     )}
@@ -475,8 +475,8 @@ function SystemSetup(props) {
     
                                     case 'facility type detail':
                                         setColumns([    
-                                            { field: 'name', headerName: 'Facility Type', flex: 1 },
-                                            { field: 'action',headerName: 'Action',flex: 1, renderCell:  (params) => (
+                                            { field: 'name', label: 'Facility Type', flex: 1 },
+                                            { field: 'action',label: 'Action',flex: 1, renderCell:  (params) => (
                                     
                                         <button
                                           variant="contained"
@@ -498,9 +498,9 @@ function SystemSetup(props) {
     
                                     case 'facility type category':
                                         setColumns([
-                                            { field: 'name', headerName: 'Facility Type Details', flex: 1 },
-                                            { field: 'sub_division', headerName: 'Facility Type', flex: 1 },
-                                            { field: 'action',headerName: 'Action',flex: 1, renderCell:  (params) => (
+                                            { field: 'name', label: 'Facility Type Details', flex: 1 },
+                                            { field: 'sub_division', label: 'Facility Type', flex: 1 },
+                                            { field: 'action',label: 'Action',flex: 1, renderCell:  (params) => (
                                     
                                         <button
                                           variant="contained"
@@ -526,9 +526,9 @@ function SystemSetup(props) {
     
                             case 'facility_status':
                                 setColumns([    
-                                    { field: 'name', headerName: 'Facility Status', flex: 1 },
-                                    { field: 'is_public_visible', headerName: 'Public Visible', flex: 1 },
-                                    { field: 'action',headerName: 'Action',flex: 1, renderCell:  (params) => (
+                                    { field: 'name', label: 'Facility Status', flex: 1 },
+                                    { field: 'is_public_visible', label: 'Public Visible', flex: 1 },
+                                    { field: 'action',label: 'Action',flex: 1, renderCell:  (params) => (
                                     
                                         <button
                                           variant="contained"
@@ -552,8 +552,8 @@ function SystemSetup(props) {
                             
                             case 'facility_admission_status':
                                 setColumns([
-                                    { field: 'name', headerName: 'Facility Admission Status', flex: 1 },
-                                    { field: 'action',headerName: 'Action',flex: 1, renderCell:  (params) => (
+                                    { field: 'name', label: 'Facility Admission Status', flex: 1 },
+                                    { field: 'action',label: 'Action',flex: 1, renderCell:  (params) => (
                                     
                                         <button
                                           variant="contained"
@@ -576,11 +576,11 @@ function SystemSetup(props) {
     
                             case 'facility_service_ratings':
                                 setColumns([
-                                    { field: 'facility_name', headerName: 'Facility', flex: 1 },
-                                    { field: 'service_name', headerName: 'Service', flex: 1 },
-                                    { field: 'comment', headerName: 'Comment', flex: 1 },
-                                    { field: 'rating', headerName: 'Rating', flex: 1 },
-                                    { field: 'created', headerName: 'Date', flex: 1 },
+                                    { field: 'facility_name', label: 'Facility', flex: 1 },
+                                    { field: 'service_name', label: 'Service', flex: 1 },
+                                    { field: 'comment', label: 'Comment', flex: 1 },
+                                    { field: 'rating', label: 'Rating', flex: 1 },
+                                    { field: 'created', label: 'Date', flex: 1 },
                                     
                                 ])
                                
@@ -591,8 +591,8 @@ function SystemSetup(props) {
                             case 'owner_types':
         
                                 setColumns([
-                                    { field: 'name', headerName: 'Name', flex: 1 },
-                                    { field: 'action',headerName: 'Action',flex: 1, renderCell:  (params) => (
+                                    { field: 'name', label: 'Name', flex: 1 },
+                                    { field: 'action',label: 'Action',flex: 1, renderCell:  (params) => (
                                     
                                         <button
                                           variant="contained"
@@ -615,11 +615,11 @@ function SystemSetup(props) {
                             case 'owners':
     
                                 setColumns([
-                                    { field: 'code', headerName: 'Code', flex: 1 },
-                                    { field: 'name', headerName: 'Name', flex: 1 },
-                                    { field: 'abbreviation', headerName: 'Abbreviation', flex: 1 },
-                                    { field: 'owner_type_name',headerName: 'Owner Type',flex: 1},
-                                    { field: 'action',headerName: 'Action',flex: 1, renderCell:  (params) => (
+                                    { field: 'code', label: 'Code', flex: 1 },
+                                    { field: 'name', label: 'Name', flex: 1 },
+                                    { field: 'abbreviation', label: 'Abbreviation', flex: 1 },
+                                    { field: 'owner_type_name',label: 'Owner Type',flex: 1},
+                                    { field: 'action',label: 'Action',flex: 1, renderCell:  (params) => (
                                     
                                         <button
                                           variant="contained"
@@ -643,8 +643,8 @@ function SystemSetup(props) {
                             case 'job_titles':
     
                                 setColumns([
-                                    { field: 'name', headerName: 'Name', flex: 1 },
-                                    { field: 'action',headerName: 'Action',flex: 1, renderCell:  (params) => (
+                                    { field: 'name', label: 'Name', flex: 1 },
+                                    { field: 'action',label: 'Action',flex: 1, renderCell:  (params) => (
                                     
                                         <button
                                           variant="contained"
@@ -667,9 +667,9 @@ function SystemSetup(props) {
                             case 'regulating_bodies':
     
                                 setColumns([
-                                    { field: 'name', headerName: 'Name', flex: 1 },
-                                    { field: 'abbreviation', headerName: 'Abbreviation', flex: 1 },
-                                    { field: 'action',headerName: 'Action',flex: 1, renderCell:  (params) => (
+                                    { field: 'name', label: 'Name', flex: 1 },
+                                    { field: 'abbreviation', label: 'Abbreviation', flex: 1 },
+                                    { field: 'action',label: 'Action',flex: 1, renderCell:  (params) => (
                                     
                                         <button
                                           variant="contained"
@@ -692,8 +692,8 @@ function SystemSetup(props) {
                             case 'regulation_status':
     
                                 setColumns([
-                                    { field: 'name', headerName: 'Name', flex: 1 },
-                                    { field: 'action',headerName: 'Action',flex: 1, renderCell:  (params) => (
+                                    { field: 'name', label: 'Name', flex: 1 },
+                                    { field: 'action',label: 'Action',flex: 1, renderCell:  (params) => (
                                     
                                         <button
                                           variant="contained"
@@ -716,8 +716,8 @@ function SystemSetup(props) {
                             case 'level_change_reasons':
     
                                 setColumns([
-                                    { field: 'reason', headerName: 'Change Reason', flex: 1 },
-                                    { field: 'description',headerName: 'Description', flex: 1, renderCell:  (params) => (
+                                    { field: 'reason', label: 'Change Reason', flex: 1 },
+                                    { field: 'description',label: 'Description', flex: 1, renderCell:  (params) => (
                                     
                                         <button
                                           variant="contained"
@@ -731,7 +731,7 @@ function SystemSetup(props) {
                                           <PencilAltIcon className="h-5 w-5 text-gray-900"/>
                                         </button>
                                     )},
-                                    { field: 'action',headerName: 'Action',flex: 1, renderCell:  (params) => (
+                                    { field: 'action',label: 'Action',flex: 1, renderCell:  (params) => (
                                     
                                         <button
                                           variant="contained"
@@ -761,11 +761,11 @@ function SystemSetup(props) {
                      
                   case 'CHU':
                       setColumns([
-                          { field: 'facility_name', headerName: 'Facility', flex: 1 },
-                          { field: 'chu_name', headerName: 'CHU', flex: 1 },
-                          { field: 'comment', headerName: 'Comment', flex: 1 },
-                          { field: 'rating', headerName: 'Rating', flex: 1 },
-                          { field: 'created',headerName: 'Date',flex: 1, renderCell:  (params) => (
+                          { field: 'facility_name', label: 'Facility', flex: 1 },
+                          { field: 'chu_name', label: 'CHU', flex: 1 },
+                          { field: 'comment', label: 'Comment', flex: 1 },
+                          { field: 'rating', label: 'Rating', flex: 1 },
+                          { field: 'created',label: 'Date',flex: 1, renderCell:  (params) => (
                                     
                                         <button
                                           variant="contained"
@@ -787,10 +787,10 @@ function SystemSetup(props) {
                   case 'Documents':
           
                       setColumns([
-                          { field: 'name', headerName: 'Name', flex: 1 },
-                          { field: 'description', headerName: 'Description', flex: 1 },
-                          { field: 'fyl', headerName: 'Link', flex: 1,  link: true },
-                          { field: 'action',headerName: 'Action',flex: 1, renderCell:  (params) => (
+                          { field: 'name', label: 'Name', flex: 1 },
+                          { field: 'description', label: 'Description', flex: 1 },
+                          { field: 'fyl', label: 'Link', flex: 1,  link: true },
+                          { field: 'action',label: 'Action',flex: 1, renderCell:  (params) => (
                                     
                                         <button
                                           variant="contained"
@@ -1033,7 +1033,8 @@ function SystemSetup(props) {
         let url = ''
         if(addBtnLabel ==='infrastructure' || addBtnLabel ==='facility department' || addBtnLabel ==='facility owner category' || addBtnLabel === 'facility type category' || addBtnLabel === 'regulatory body' || addBtnLabel === 'specialty' || addBtnLabel === 'category' || addBtnLabel === 'constituency'|| addBtnLabel === 'ward'){
             if(addBtnLabel ==='facility department'){
-                url =`/api/system_setup/data/?resource=regulating_bodies&resourceCategory=Facilities&fields=id,name`                
+                url =`/api/system_setup/data/?resource=regulating_bodies&resourceCategory=Facilities&fields=id,name`  
+                              
             }
             if(addBtnLabel ==='infrastructure'){
                 url =`/api/system_setup/data/?resource=infrastructure_categories&resourceCategory=HealthInfrastructure&fields=id,name`                
@@ -1060,7 +1061,8 @@ function SystemSetup(props) {
              fetch(url)
              .then(res => res.json())
              .then(res => {
-                setSelectOptionss(res.results.map(({id, name}) => ({value:id, headerName:name})))
+                console.log({res: res?.results})
+                setSelectOptions(res.results.map(({id, name}) => ({value:id, label:name})))
             })
                 
         }
@@ -1071,9 +1073,9 @@ function SystemSetup(props) {
                 fetch(`/api/system_setup/data/?resource=${item}&resourceCategory=ServiceCatalogue&fields=id,name`)
                 .then(res => res.json())
                 .then(res => {
-                    const results = res.results.map(({id, name}) => ({value:id, headerName:name}));
+                    const results = res.results.map(({id, name}) => ({value:id, label:name}));
                     options.push(results)
-                    setSelectOptionss(options)
+                    setSelectOptions(options)
 
 
                 })
@@ -1084,7 +1086,7 @@ function SystemSetup(props) {
         isAddForm==false ?? setLogsRows([]); setViewLog(false); 
    
         // const results = _data.
-        // setSelectOptionss(results) 
+        // setSelectOptions(results) 
     }, [addBtnLabel, isAddForm])
 
     //editData
@@ -1439,7 +1441,7 @@ function SystemSetup(props) {
                                         </ListItemButton>
                                         <Collapse in={openContacts} timeout="auto" unmountOnExit>
                                             <List component="ul" disablePadding>
-                                                {/* HR Categories */}
+                                                
                                                 <ListItemButton componene="li"
                                                     sx={{
                                                         backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'contact type' ? '#2563eb' : 'none'}`, 
@@ -1720,7 +1722,7 @@ function SystemSetup(props) {
                                                                                 id={`add_${addBtnLabel}`}
                                                                                 name='name'
                                                                                 defaultValue={editMode ? editData[0]?.name : ''}
-                                                                                className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
+                                                                                className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
                                                                             />
                                                                         
                                                                         </div>
@@ -1742,7 +1744,7 @@ function SystemSetup(props) {
                                                                                 id={`add_${addBtnLabel}`}
                                                                                 name='county_code'
                                                                                 defaultValue={editMode ? editData[0]?.code : ''}
-                                                                                className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
+                                                                                className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
                                                                             />
                                                                         
                                                                         </div>}
@@ -1858,11 +1860,11 @@ function SystemSetup(props) {
                                                             </>
                                                         
                                                             )
-                                                            case 'sub_county':
+                                                            case 'sub county':
                                                                 return (
                                                                 <>
                                                                     <form className='w-full h-full flex-col gap-1' onSubmit={(e)=>handleFacilityOnChange(e, addBtnLabel)}>
-                                                                        {/* Constituency Name */}
+                                                                      {/* Constituency Name */}
                                                                         <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
                                                                             
                                                                                 <label
@@ -1881,7 +1883,7 @@ function SystemSetup(props) {
                                                                                     id={`add_${addBtnLabel}_sub_county_field`}
                                                                                     name='name'
                                                                                     defaultValue={editData[0]?.name}
-                                                                                    className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
+                                                                                    className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
                                                                                 />
                                                                         </div>
 
@@ -1903,7 +1905,7 @@ function SystemSetup(props) {
                                                                                 id={`add_${addBtnLabel}`}
                                                                                 name='code'
                                                                                 defaultValue={editData[0]?.code}
-                                                                                className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
+                                                                                className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
                                                                             />
                                                                         
                                                                         </div>}
@@ -1926,22 +1928,20 @@ function SystemSetup(props) {
                                                                             ...baseStyles,
                                                                             backgroundColor: 'transparent',
                                                                             outLine: 'none',
-                                                                            border: 'none',
-                                                                            outLine: 'none',
                                                                             textColor: 'transparent',
                                                                             padding: 0,
                                                                             height: '4px'
                                                                         }),
 
                                                                     }}
-                                                                                options={selectOptionss}
+                                                                                options={selectOptions}
                                                                                 required
                                                                                 placeholder='Select '
                                                                                 id={`add_${addBtnLabel}_county_field`}
                                                                                 name='county'
                                                                                 key={editData[0]?.county}
-                                                                                defaultValue={{value:editData[0]?.county, headerName:editData[0]?.county_name}}
-                                                                                className='flex-none w-full bg-transparent flex-grow  placeholder-gray-500 focus:border-gray-600 outline-none'
+                                                                                defaultValue={{value:editData[0]?.county, label:editData[0]?.county_name}}
+                                                                                className='flex-none w-full border border-gray-800 bg-transparent flex-grow  placeholder-gray-500 focus:border-gray-600 outline-none'
                                                                             />
 
                                             
@@ -2029,7 +2029,7 @@ function SystemSetup(props) {
                                                                                     id={`add_${addBtnLabel}_constituency_field`}
                                                                                     name='name'
                                                                                     defaultValue={editData[0]?.name}
-                                                                                    className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
+                                                                                    className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
                                                                                 />
                                                                         </div>
 
@@ -2051,7 +2051,7 @@ function SystemSetup(props) {
                                                                                 id={`add_${addBtnLabel}`}
                                                                                 name='code'
                                                                                 defaultValue={editData[0]?.code}
-                                                                                className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
+                                                                                className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
                                                                             />
                                                                         
                                                                         </div>}
@@ -2074,22 +2074,20 @@ function SystemSetup(props) {
                                                                             ...baseStyles,
                                                                             backgroundColor: 'transparent',
                                                                             outLine: 'none',
-                                                                            border: 'none',
-                                                                            outLine: 'none',
                                                                             textColor: 'transparent',
                                                                             padding: 0,
                                                                             height: '4px'
                                                                         }),
 
                                                                     }}
-                                                                                options={selectOptionss}
+                                                                                options={selectOptions}
                                                                                 required
                                                                                 placeholder='Select '
                                                                                 id={`add_${addBtnLabel}_county_field`}
                                                                                 name='county'
                                                                                 key={editData[0]?.county}
-                                                                                defaultValue={{value:editData[0]?.county, headerName:editData[0]?.county_name}}
-                                                                                className='flex-none w-full bg-transparent flex-grow  placeholder-gray-500 focus:border-gray-600 outline-none'
+                                                                                defaultValue={{value:editData[0]?.county, label:editData[0]?.county_name}}
+                                                                                className='flex-none w-full  border border-gray-600 bg-transparent rounded flex-grow  placeholder-gray-500 focus:border-gray-600 outline-none'
                                                                             />
 
                                             
@@ -2177,7 +2175,7 @@ function SystemSetup(props) {
                                                                                     id={`add_${addBtnLabel}_field`}
                                                                                     name='name'
                                                                                     defaultValue={editData?.name}
-                                                                                    className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none  focus:border-black outline-none'
+                                                                                    className='flex-none w-full bg-transparent rounded  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none  focus:border-black outline-none'
                                                                                 />
                                                                         </div>
 
@@ -2207,14 +2205,14 @@ function SystemSetup(props) {
                                                                         }),
 
                                                                     }}
-                                                                                options={selectOptionss}
+                                                                                options={selectOptions}
                                                                                 required
                                                                                 placeholder='Select county'
                                                                                 onChange={(e) => fetchSbctyConstituency(e.value)}
                                                                                 key={editData?.county?.id}
                                                                                 id={`add_${addBtnLabel}_county_field`}
                                                                                 name='county'
-                                                                                defaultValue={{value:editData?.county?.id, headerName:editData?.county_name}}
+                                                                                defaultValue={{value:editData?.county?.id, label:editData?.county_name}}
                                                                                 className='flex-none w-full  flex-grow  placeholder-gray-500 border border-gray-600 outline-none'
                                                                             />
                                                                         </div>
@@ -2246,13 +2244,13 @@ function SystemSetup(props) {
                                                                         }),
 
                                                                     }}
-                                                                                options={sbcty_constituency[1].results.map(({id, name}) => ({value:id, headerName:name}))}
+                                                                                options={sbcty_constituency[1].results.map(({id, name}) => ({value:id, label:name}))}
                                                                                 required
                                                                                 placeholder='Select Sub County'
                                                                                 key={editData?.sub_county}
                                                                                 id={`add_${addBtnLabel}_sub_county_field`}
                                                                                 name='sub_county'
-                                                                                defaultValue={{value:editData?.sub_county, headerName:editData?.sub_county_name}}
+                                                                                defaultValue={{value:editData?.sub_county, label:editData?.sub_county_name}}
                                                                                 className='flex-none w-full  flex-grow  placeholder-gray-500 border border-gray-600 outline-none'
                                                                             />
                                                                         </div>
@@ -2283,13 +2281,13 @@ function SystemSetup(props) {
                                                                         }),
 
                                                                     }}
-                                                                                options={sbcty_constituency[0].results.map(({id, name}) => ({value:id, headerName:name}))}
+                                                                                options={sbcty_constituency[0].results.map(({id, name}) => ({value:id, label:name}))}
                                                                                 required
                                                                                 placeholder='Select Constituency'
                                                                                 key={editData?.constituency}
                                                                                 id={`add_${addBtnLabel}_constituency_field`}
                                                                                 name='constituency'
-                                                                                defaultValue={{value:editData?.constituency, headerName:editData?.constituency_name}}
+                                                                                defaultValue={{value:editData?.constituency, label:editData?.constituency_name}}
                                                                                 className='flex-none w-full  flex-grow  placeholder-gray-500 border border-gray-600 outline-none'
                                                                             />
 
@@ -2328,7 +2326,7 @@ function SystemSetup(props) {
                                                                                 id={`add_${addBtnLabel}_town_field`}
                                                                                 name="name"
                                                                                 defaultValue={editData.name}
-                                                                                className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
+                                                                                className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
                                                                             />
                                                                         
                                                                         </div>
@@ -2366,7 +2364,7 @@ function SystemSetup(props) {
                                                                                             id={`add_${addBtnLabel}_constituency_field`}
                                                                                             name='name'
                                                                                             defaultValue={editData.name}
-                                                                                            className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
+                                                                                            className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
                                                                                         />
                                                                                 </div>
 
@@ -2396,12 +2394,12 @@ function SystemSetup(props) {
                                                                         }),
 
                                                                     }}
-                                                                                        options={selectOptionss}
+                                                                                        options={selectOptions}
                                                                                         placeholder='Select Parent'
                                                                                         id={`add_${addBtnLabel}_county_field`}
                                                                                         name='parent'
                                                                                         key={editData.parent}
-                                                                                        defaultValue={{value: editData?.parent, headerName: selectOptionss?.find(so=> so.value === editData?.parent)?.label}}
+                                                                                        defaultValue={{value: editData?.parent, label: selectOptions?.find(so=> so.value === editData?.parent)?.label}}
                                                                                         className='flex-none w-full  flex-grow  placeholder-gray-500 border border-gray-600 outline-none'
                                                                                     />
 
@@ -2426,7 +2424,7 @@ function SystemSetup(props) {
                                                                                             id={`add_${addBtnLabel}_constituency_field`}
                                                                                             name='abbreviation'
                                                                                             defaultValue={editData?.abbreviation}
-                                                                                            className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
+                                                                                            className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
                                                                                         />
                                                                                 </div>
 
@@ -2449,7 +2447,7 @@ function SystemSetup(props) {
                                                                                         id={`add_${addBtnLabel}_constituency_field`}
                                                                                         name='description'
                                                                                         defaultValue={editData?.description}
-                                                                                        className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
+                                                                                        className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
                                                                                     />
                                                                                 
                                                                                 </div>
@@ -2487,7 +2485,7 @@ function SystemSetup(props) {
                                                                                 id={`add_${addBtnLabel}_name`}
                                                                                 name='name'
                                                                                 defaultValue={editData.name}
-                                                                                className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
+                                                                                className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
                                                                             />
                                                                     </div>
 
@@ -2510,7 +2508,7 @@ function SystemSetup(props) {
                                                                                 id={`add_${addBtnLabel}_desc`}
                                                                                 name='description'
                                                                                 defaultValue={editData.description}
-                                                                                className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
+                                                                                className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
                                                                             />
                                                                     </div>
 
@@ -2610,7 +2608,7 @@ function SystemSetup(props) {
                                                                                 id={`add_${addBtnLabel}_option_group`}
                                                                                 name='name'
                                                                                 defaultValue={editData?.name}
-                                                                                className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
+                                                                                className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
                                                                             />
                                                                         </div>
                                                                         {editMode && (
@@ -2652,7 +2650,7 @@ function SystemSetup(props) {
                                                                                     id={index}
                                                                                     name='option_type'
                                                                                     defaultValue={option.option_type}
-                                                                                    className='flex-none w-full bg-transparent flex-grow placeholder-gray-500 focus:border-gray-600 outline-none'
+                                                                                    className='flex-none w-full bg-transparent rounded flex-grow placeholder-gray-500 focus:border-gray-600 outline-none'
                                                                                 >
                                                                                         <option value='BOOLEAN'>BOOLEAN</option>
                                                                                         <option value='INTEGER'>INTEGER</option>
@@ -2667,7 +2665,7 @@ function SystemSetup(props) {
                                                                                         id={index}
                                                                                         name='display_text'
                                                                                         defaultValue={option.display_text}
-                                                                                        className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
+                                                                                        className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
                                                                                     />
 
                                                                                 {/* Option Value */}
@@ -2679,7 +2677,7 @@ function SystemSetup(props) {
                                                                                         id={index}
                                                                                         name='value'
                                                                                         defaultValue={option.value}
-                                                                                        className='flex-none w-full bg-transparentcol-span-3  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
+                                                                                        className='flex-none w-full bg-transparent roundedcol-span-3  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
                                                                                     />
                                                                                 </div>
                                                                             
@@ -2748,7 +2746,7 @@ function SystemSetup(props) {
                                                                                 id={`add_${addBtnLabel}_field`}
                                                                                 name='name'
                                                                                 defaultValue={editData.name}
-                                                                                className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
+                                                                                className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
                                                                             />
                                                                     </div>
 
@@ -2771,7 +2769,7 @@ function SystemSetup(props) {
                                                                                 id={`add_${addBtnLabel}_field`}
                                                                                 name='abbreviation'
                                                                                 defaultValue={editData.abbreviation}
-                                                                                className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
+                                                                                className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
                                                                             />
                                                                     </div>
 
@@ -2801,13 +2799,13 @@ function SystemSetup(props) {
                                                                         }),
 
                                                                     }}
-                                                                            options={selectOptionss[1]}
+                                                                            options={selectOptions[1]}
                                                                             required
                                                                             placeholder='Select a Category'
                                                                             key={editData.category}
                                                                             id={`add_${addBtnLabel}_category_field`}
                                                                             name='category'
-                                                                            defaultValue={{value:editData.category, headerName:editData.category_name}}
+                                                                            defaultValue={{value:editData.category, label:editData.category_name}}
                                                                             className='flex-none w-full  flex-grow  placeholder-gray-500 border border-gray-600 outline-none'
                                                                         />
                                                                     </div>
@@ -2838,13 +2836,13 @@ function SystemSetup(props) {
                                                                         }),
 
                                                                     }}
-                                                                            options={selectOptionss[0]}
+                                                                            options={selectOptions[0]}
                                                                             required
                                                                             placeholder='Select Option Group'
                                                                             key={editData.group}
                                                                             id={`add_${addBtnLabel}_sub_county_field`}
                                                                             name='group'
-                                                                            defaultValue={{value:editData.group, headerName:(selectOptionss[0])?.find(i=> i.value ==editData.group)?.label}}
+                                                                            defaultValue={{value:editData.group, label:(selectOptions[0])?.find(i=> i.value ==editData.group)?.label}}
                                                                             className='flex-none w-full  flex-grow  placeholder-gray-500 border border-gray-600 outline-none'
                                                                         />
                                                                     </div>
@@ -2868,7 +2866,7 @@ function SystemSetup(props) {
                                                                                 id={`add_${addBtnLabel}_desc`}
                                                                                 name='description'
                                                                                 defaultValue={editData.description}
-                                                                                className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
+                                                                                className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
                                                                             />
                                                                     </div>
 
@@ -2922,6 +2920,133 @@ function SystemSetup(props) {
                                                                     </>
                                                                 )
 
+                                                            case 'Service Category':
+                                                                return ( 
+                                                                    <form className='w-full h-full' onSubmit={(e)=>handleFacilityOnChange(e, addBtnLabel)}>
+
+                                                                    {/* Name */}
+                                                                    <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                                                        
+                                                                        <label
+                                                                            htmlFor={`add_${addBtnLabel}_name`}
+                                                                            className='text-gray-600 capitalize text-sm'>
+                                                                            Name
+                                                                            <span className='text-medium leading-12 font-semibold'>
+                                                                                {' '}
+                                                                                *
+                                                                            </span>
+                                                                        </label>
+                                                                        <input
+                                                                            required
+                                                                            type="text"
+                                                                            placeholder='Name'
+                                                                            id={`add_${addBtnLabel}_name`}
+                                                                            name='name'
+                                                                            defaultValue={editData.name}
+                                                                            className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
+                                                                        />
+                                                                            
+                                                                    </div>    
+
+                                                                    {/* Parent */}
+                                                                    <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                                                        
+                                                                        <label
+                                                                            htmlFor={`add_${addBtnLabel}_name`}
+                                                                            className='text-gray-600 capitalize text-sm'>
+                                                                            Parent
+                                                                            <span className='text-medium leading-12 font-semibold'>
+                                                                                {' '}
+                                                                                *
+                                                                            </span>
+
+                                                                            
+                                                                        </label>
+                                                                        <Select
+                                                                            styles={{
+                                                                        control: (baseStyles) => ({
+                                                                            ...baseStyles,
+                                                                            backgroundColor: 'transparent',
+                                                                            outLine: 'none',
+                                                                            border: 'none',
+                                                                            outLine: 'none',
+                                                                            textColor: 'transparent',
+                                                                            padding: 0,
+                                                                            height: '4px'
+                                                                        }),
+
+                                                                    }}
+                                                                            options={selectOptions[1]}
+                                                                            required
+                                                                            placeholder={'Select a Category'}
+                                                                            key={editData.category}
+                                                                            id={`add_${addBtnLabel}_category_field`}
+                                                                            name='category'
+                                                                            defaultValue={{value:editData.category, label:editData.category_name}}
+                                                                            className='flex-none w-full rounded  flex-grow  placeholder-gray-500 border border-gray-600 outline-none'
+                                                                        />
+                                                                            
+                                                                    </div>  
+
+                                                                    {/* Abbreviation */}
+                                                                    <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                                                        
+                                                                        <label
+                                                                            htmlFor={`add_${addBtnLabel}_name`}
+                                                                            className='text-gray-600 capitalize text-sm'>
+                                                                            Abbreviation
+                                                                            <span className='text-medium leading-12 font-semibold'>
+                                                                                {' '}
+                                                                                *
+                                                                            </span>
+                                                                        </label>
+                                                                        <input
+                                                                            required
+                                                                            type="text"
+                                                                            placeholder='Name'
+                                                                            id={`add_${addBtnLabel}_name`}
+                                                                            name='name'
+                                                                            defaultValue={editData.name}
+                                                                            className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
+                                                                        />
+                                                                            
+                                                                    </div>                                                          
+
+
+
+                                                                    {/* Description */}
+                                                                    <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                                                            
+                                                                            <label
+                                                                                htmlFor={`add_${addBtnLabel}_desc`}
+                                                                                className='text-gray-600 capitalize text-sm'>
+                                                                                Description
+                                                                                <span className='text-medium leading-12 font-semibold'>
+                                                                                    {' '}
+                                                                                    
+                                                                                </span>
+                                                                            </label>
+                                                                            <textarea
+                                                                            
+                                                                                type='text'
+                                                                                placeholder='Description'
+                                                                                id={`add_${addBtnLabel}_desc`}
+                                                                                name='description'
+                                                                                defaultValue={editData.description}
+                                                                                className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
+                                                                            />
+                                                                    </div>
+
+                                                                
+
+                                                                    <div className='flex items-center space-x-3 mt-4'>
+                                                                            <button type='submit' className='p-2 text-white bg-blue-600  font-semibold'>save</button>
+                                                                            <button className='p-2 text-white bg-indigo-500  font-semibold'>cancel</button>
+                                                                    </div>
+
+                                                                    </form>
+                                                                )
+
                                                             case 'infrastructure':
                                                                 return ( 
                                                                     <form className='w-full h-full' onSubmit={(e)=>handleFacilityOnChange(e, addBtnLabel)}>
@@ -2945,7 +3070,7 @@ function SystemSetup(props) {
                                                                             id={`add_${addBtnLabel}_name`}
                                                                             name='name'
                                                                             defaultValue={editData.name}
-                                                                            className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
+                                                                            className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
                                                                         />
                                                                         </div>                                                            
 
@@ -2975,12 +3100,12 @@ function SystemSetup(props) {
                                                                         }),
 
                                                                     }}
-                                                                            options={selectOptionss}
+                                                                            options={selectOptions}
                                                                             required
                                                                             id={`add_${addBtnLabel}_category_field`}
                                                                             name='category'
                                                                             key={editData.category} 
-                                                                            defaultValue={{value: editData.category, headerName: editData.category_name}}
+                                                                            defaultValue={{value: editData.category, label: editData.category_name}}
                                                                             className='flex-none w-full  flex-grow  placeholder-gray-500 border border-gray-600 outline-none'
                                                                         />
                                                                     </div>
@@ -3021,7 +3146,7 @@ function SystemSetup(props) {
                                                                                 id={`add_${addBtnLabel}_desc`}
                                                                                 name='description'
                                                                                 defaultValue={editData.description}
-                                                                                className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
+                                                                                className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
                                                                             />
                                                                     </div>
 
@@ -3035,7 +3160,70 @@ function SystemSetup(props) {
                                                                     </form>
                                                                 )
 
-                                                            case 'hr category':
+                                                            case 'infrastructure category':
+                                                                return ( 
+                                                                    <form className='w-full h-full' onSubmit={(e)=>handleFacilityOnChange(e, addBtnLabel)}>
+
+                                                                    {/* Name */}
+                                                                    <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                                                        
+                                                                        <label
+                                                                            htmlFor={`add_${addBtnLabel}_name`}
+                                                                            className='text-gray-600 capitalize text-sm'>
+                                                                            Name
+                                                                            <span className='text-medium leading-12 font-semibold'>
+                                                                                {' '}
+                                                                                *
+                                                                            </span>
+                                                                        </label>
+                                                                        <input
+                                                                            required
+                                                                            type="text"
+                                                                            placeholder='Name'
+                                                                            id={`add_${addBtnLabel}_name`}
+                                                                            name='name'
+                                                                            defaultValue={editData.name}
+                                                                            className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
+                                                                        />
+                                                                            
+                                                                    </div>                                                            
+
+
+
+                                                                    {/* Description */}
+                                                                    <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                                                            
+                                                                            <label
+                                                                                htmlFor={`add_${addBtnLabel}_desc`}
+                                                                                className='text-gray-600 capitalize text-sm'>
+                                                                                Description
+                                                                                <span className='text-medium leading-12 font-semibold'>
+                                                                                    {' '}
+                                                                                    
+                                                                                </span>
+                                                                            </label>
+                                                                            <textarea
+                                                                            
+                                                                                type='text'
+                                                                                placeholder='Description'
+                                                                                id={`add_${addBtnLabel}_desc`}
+                                                                                name='description'
+                                                                                defaultValue={editData.description}
+                                                                                className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
+                                                                            />
+                                                                    </div>
+
+                                                                
+
+                                                                    <div className='flex items-center space-x-3 mt-4'>
+                                                                            <button type='submit' className='p-2 text-white bg-blue-600  font-semibold'>save</button>
+                                                                            <button className='p-2 text-white bg-indigo-500  font-semibold'>cancel</button>
+                                                                    </div>
+
+                                                                    </form>
+                                                                )
+
+                                                            case 'human resource category':
                                                                 return (
                                                                     <>
                                                                     <form className='w-full h-full' onSubmit={(e)=>handleFacilityOnChange(e, addBtnLabel)}>
@@ -3059,7 +3247,7 @@ function SystemSetup(props) {
                                                                                 id={`add_${addBtnLabel}_name`}
                                                                                 name='name'
                                                                                 defaultValue={editData.name}
-                                                                                className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
+                                                                                className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
                                                                             />
                                                                     </div>
 
@@ -3082,7 +3270,7 @@ function SystemSetup(props) {
                                                                                 id={`add_${addBtnLabel}_desc`}
                                                                                 name='description'
                                                                                 defaultValue={editData.description}
-                                                                                className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
+                                                                                className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
                                                                             />
                                                                     </div>
 
@@ -3119,7 +3307,7 @@ function SystemSetup(props) {
                                                                             id={`add_${addBtnLabel}_name`}
                                                                             name='name'
                                                                             defaultValue={editData.name}
-                                                                            className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
+                                                                            className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
                                                                         />
                                                                         </div>                                                            
 
@@ -3149,13 +3337,13 @@ function SystemSetup(props) {
                                                                         }),
 
                                                                     }}
-                                                                            options={selectOptionss}
+                                                                            options={selectOptions}
                                                                             required
                                                                             placeholder='Select a Category'
                                                                             key={editData.category}
                                                                             id={`add_${addBtnLabel}_category_field`}
                                                                             name='category'
-                                                                            defaultValue={{value: editData.category, headerName: editData.category_name}} 
+                                                                            defaultValue={{value: editData.category, label: editData.category_name}} 
                                                                             className='flex-none w-full  flex-grow  placeholder-gray-500 border border-gray-600 outline-none'
                                                                         />
                                                                     </div>
@@ -3179,7 +3367,7 @@ function SystemSetup(props) {
                                                                                 id={`add_${addBtnLabel}_desc`}
                                                                                 name='description'
                                                                                 defaultValue={editData.description}
-                                                                                className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
+                                                                                className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
                                                                             />
                                                                     </div>
 
@@ -3217,7 +3405,7 @@ function SystemSetup(props) {
                                                                                 id={`add_${addBtnLabel}_name`}
                                                                                 name='name'
                                                                                 defaultValue={editData.name}
-                                                                                className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
+                                                                                className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
                                                                             />
                                                                     </div>
 
@@ -3241,7 +3429,7 @@ function SystemSetup(props) {
                                                                                 id={`add_${addBtnLabel}_desc`}
                                                                                 name='description'
                                                                                 defaultValue={editData.description}
-                                                                                className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
+                                                                                className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
                                                                             />
                                                                     </div>
                                                                     {/* Active */} 
@@ -3303,7 +3491,7 @@ function SystemSetup(props) {
                                                                             id={`add_${addBtnLabel}_name`}
                                                                             name='name'
                                                                             defaultValue={editData.name}
-                                                                            className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
+                                                                            className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
                                                                         />
                                                                 </div>
 
@@ -3327,7 +3515,7 @@ function SystemSetup(props) {
                                                                             id={`add_${addBtnLabel}_desc`}
                                                                             name='description'
                                                                             defaultValue={editData.description}
-                                                                            className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
+                                                                            className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
                                                                         />
                                                                 </div>
 
@@ -3358,13 +3546,13 @@ function SystemSetup(props) {
                                                                         }),
 
                                                                     }}
-                                                                            options={selectOptionss}
+                                                                            options={selectOptions}
                                                                             required
                                                                             placeholder='Select a regulatory body'
                                                                             id={`add_${addBtnLabel}_category_field`}
                                                                             name='regulatory_body'
                                                                             key={editData.regulatory_body}
-                                                                            defaultValue={{value:editData.regulatory_body, headerName: editData.regulatory_body_name}}
+                                                                            defaultValue={{value:editData.regulatory_body, label: editData.regulatory_body_name}}
                                                                             className='flex-none w-full  flex-grow  placeholder-gray-500 border border-gray-600 outline-none'
                                                                         />
                                                                     
@@ -3404,7 +3592,7 @@ function SystemSetup(props) {
                                                                                 id={`add_${addBtnLabel}_name`}
                                                                                 name='name'
                                                                                 defaultValue={editData.name}
-                                                                                className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none' />
+                                                                                className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none' />
                                                                         </div>
 
 
@@ -3452,11 +3640,11 @@ function SystemSetup(props) {
 
                                                                     }}
                                                                             options={Array.from(
-                                                                                selectOptionss || [],
+                                                                                selectOptions || [],
                                                                                 (fltopt) => {
                                                                                 return {
                                                                                     value: fltopt.label,
-                                                                                    headerName: fltopt.label,
+                                                                                    label: fltopt.label,
                                                                                 };
                                                                                 }
                                                                             )}
@@ -3464,7 +3652,7 @@ function SystemSetup(props) {
                                                                             id={`add_${addBtnLabel}_type`}
                                                                             name='sub_division'
                                                                             key={editData.parent}
-                                                                            defaultValue={{value:editData.sub_division, headerName: editData.sub_division}}
+                                                                            defaultValue={{value:editData.sub_division, label: editData.sub_division}}
                                                                             className='flex-none w-full  flex-grow  placeholder-gray-500 border border-gray-600 outline-none'
                                                                         />
                                                                 </div>
@@ -3488,7 +3676,7 @@ function SystemSetup(props) {
                                                                             id={`add_${addBtnLabel}_type_detail`}
                                                                             name='name'
                                                                             defaultValue={editData.name}
-                                                                            className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
+                                                                            className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
                                                                         />
                                                                 </div>
 
@@ -3524,7 +3712,7 @@ function SystemSetup(props) {
                                                                             id={`add_${addBtnLabel}_status`}
                                                                             name='name'
                                                                             defaultValue={editData.name}
-                                                                            className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
+                                                                            className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
                                                                         />
                                                                 </div>
 
@@ -3586,7 +3774,7 @@ function SystemSetup(props) {
                                                                             id={`add_${addBtnLabel}_status`}
                                                                             name='name'
                                                                             defaultValue={editData.name}
-                                                                            className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
+                                                                            className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
                                                                         />
                                                                 </div>
 
@@ -3625,7 +3813,7 @@ function SystemSetup(props) {
                                                                             id={`add_${addBtnLabel}_name`}
                                                                             name='name'
                                                                             defaultValue={editData.name}
-                                                                            className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
+                                                                            className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
                                                                         />
                                                                 </div>
 
@@ -3648,7 +3836,7 @@ function SystemSetup(props) {
                                                                             id={`add_${addBtnLabel}_desc`}
                                                                             name='description'
                                                                             defaultValue={editData.description}
-                                                                            className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
+                                                                            className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
                                                                         />
                                                                 </div>
                                                                 {editMode && (
@@ -3709,7 +3897,7 @@ function SystemSetup(props) {
                                                                                 id={`add_${addBtnLabel}_name`}
                                                                                 name='name'
                                                                                 defaultValue={editData.name}
-                                                                                className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
+                                                                                className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
                                                                             />
                                                                     </div>
 
@@ -3741,14 +3929,14 @@ function SystemSetup(props) {
                                                                         }),
 
                                                                     }}
-                                                                                options={selectOptionss}
+                                                                                options={selectOptions}
                                                                                 required
                                                                                 placeholder='Select Facility Owner'
                                                                                 onChange={() => console.log('changed type')}
                                                                                 key={editData.owner_type}
                                                                                 id={`add_${addBtnLabel}_owner_type`}
                                                                                 name='owner_type'
-                                                                                defaultValue={{value:editData.owner_type, headerName:editData.owner_type_name}}
+                                                                                defaultValue={{value:editData.owner_type, label:editData.owner_type_name}}
                                                                                 className='flex-none w-full  flex-grow  placeholder-gray-500 border border-gray-600 outline-none'
                                                                             />
                                                                         
@@ -3773,7 +3961,7 @@ function SystemSetup(props) {
                                                                                         id={`add_${addBtnLabel}_constituency_field`}
                                                                                         name='abbreviation'
                                                                                         defaultValue={editData.abbreviation}
-                                                                                        className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
+                                                                                        className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
                                                                                     />
                                                                         </div>
 
@@ -3798,7 +3986,7 @@ function SystemSetup(props) {
                                                                                 id={`add_${addBtnLabel}_desc`}
                                                                                 name='description'
                                                                                 defaultValue={editData.description}
-                                                                                className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
+                                                                                className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
                                                                             />
                                                                     </div>
                                                                     {editMode && (
@@ -3858,7 +4046,7 @@ function SystemSetup(props) {
                                                                             id={`add_${addBtnLabel}_name`}
                                                                             name='name'
                                                                             defaultValue={editData.name}
-                                                                            className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
+                                                                            className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
                                                                         />
                                                                 </div>
 
@@ -3881,7 +4069,7 @@ function SystemSetup(props) {
                                                                             id={`add_${addBtnLabel}_desc`}
                                                                             name='description'
                                                                             defaultValue={editData.description}
-                                                                            className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
+                                                                            className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
                                                                         />
                                                                 </div>
 
@@ -3918,181 +4106,180 @@ function SystemSetup(props) {
                                                                     <ChangeLog />
                                                                     </>
                                                                 )
-                                                        case 'regulatory body':
-                                                            const handleAddClick = (e) => {
-                                                                e.preventDefault();
-                                                                setContactList(s=>{
-                                                                    return [...s, {contact_type: '', contact: ''}]
-                                                                })
-                                                            };
-                                                        
-                                                            return ( 
-                                                                <>
-                                                                <form className='w-full h-full' onSubmit={e=>handleFacilityOnChange(e, addBtnLabel)}>
-                                                                    <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-                                                                        
-                                                                        <label
-                                                                            htmlFor={`add_${addBtnLabel}_name`}
-                                                                            className='text-gray-600 capitalize text-sm'>
-                                                                            Name
-                                                                            <span className='text-medium leading-12 font-semibold'>
-                                                                                {' '}
-                                                                                *
-                                                                            </span>
-                                                                        </label>
-                                                                        <input
-                                                                            required
-                                                                            type='text'
-                                                                            placeholder='Name'
-                                                                            id={`add_${addBtnLabel}_name`}
-                                                                            name="name"
-                                                                            defaultValue={editData.name}
-                                                                            className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
-                                                                        />
-                                                                </div>
-
-                                                                {/* Abbreviation */}
-                                                                <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-                                                                        
-                                                                        <label
-                                                                            htmlFor={`add_${addBtnLabel}_abbr`}
-                                                                            className='text-gray-600 capitalize text-sm'>
-                                                                            Abbreviation
-                                                                            <span className='text-medium leading-12 font-semibold'>
-                                                                                {' '}
-                                                                                
-                                                                            </span>
-                                                                        </label>
-                                                                        <input
-                                                                        
-                                                                            type='text'
-                                                                            placeholder=''
-                                                                            id={`add_${addBtnLabel}_abbr`}
-                                                                            name="abbreviation"
-                                                                            defaultValue={editData.abbreviation}
-                                                                            className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
-                                                                        />
-                                                                </div>
-                                                                {editMode && (
-
-                                                                    <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-                                                                        <input 
-                                                                            className=''
-                                                                            name="active" 
-                                                                            type='checkbox'
-                                                                            defaultChecked={editData.active}
-                                                                            id={`add_${addBtnLabel}_active`}
-                                                                            />
+                                                            case 'regulatory body':
+                                                                const handleAddClick = (e) => {
+                                                                    e.preventDefault();
+                                                                    setContactList(s=>{
+                                                                        return [...s, {contact_type: '', contact: ''}]
+                                                                    })
+                                                                };
+                                                            
+                                                                return ( 
+                                                                    <>
+                                                                    <form className='w-full h-full' onSubmit={e=>handleFacilityOnChange(e, addBtnLabel)}>
+                                                                        <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
                                                                             
                                                                             <label
-                                                                                htmlFor={`add_${addBtnLabel}_active`}
+                                                                                htmlFor={`add_${addBtnLabel}_name`}
                                                                                 className='text-gray-600 capitalize text-sm'>
-                                                                                Is Active?
+                                                                                Name
+                                                                                <span className='text-medium leading-12 font-semibold'>
+                                                                                    {' '}
+                                                                                    *
+                                                                                </span>
+                                                                            </label>
+                                                                            <input
+                                                                                required
+                                                                                type='text'
+                                                                                placeholder='Name'
+                                                                                id={`add_${addBtnLabel}_name`}
+                                                                                name="name"
+                                                                                defaultValue={editData.name}
+                                                                                className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
+                                                                            />
+                                                                    </div>
+
+                                                                    {/* Abbreviation */}
+                                                                    <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                                                            
+                                                                            <label
+                                                                                htmlFor={`add_${addBtnLabel}_abbr`}
+                                                                                className='text-gray-600 capitalize text-sm'>
+                                                                                Abbreviation
                                                                                 <span className='text-medium leading-12 font-semibold'>
                                                                                     {' '}
                                                                                     
                                                                                 </span>
                                                                             </label>
-                                                                    </div>
-                                                                )}
-
-                                                                    {/* inputsContainer */}
-                                                                    <div className='grid grid-cols-2 place-content-start gap-3 space-y-1' ref={inputsContainerRef2}>
-                                                                        <h2 className='text-lg font-semibold text-indigo-900'>Contact Type*</h2>
-                                                                        <h2 className='text-lg font-semibold text-indigo-900'>Contact Details*</h2>
-                                                                    
-                                                                        {contactList.map((contact, index) =>{ return (
-                                                                            <>
-                                                                                {/* Contact Type */}
-
-                                                                                <select
-                                                                                    required
-                                                                                    key={index}
-                                                                                    id={`${index}`}
-                                                                                    name='contact_type'
-                                                                                    defaultValue={contact?.contact_type}
-                                                                                    className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
-
-                                                                                >
-
-                                                                                {selectOptionss.map((ct, i) => (
-                                                                                    <option value={ct.value} key ={i}>{ct.label}</option>
-                                                                                ))}
-                                                                                </select>
-
-                                                                                {/* Contact Detail */}
-                                                                                <input
-                                                                                        required
-                                                                                        type='text'
-                                                                                        placeholder='Contact Details'
-                                                                                        key={index}
-                                                                                        id={index}
-                                                                                        name="contact"
-                                                                                        defaultValue={contact?.contact}
-                                                                                        className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
-                                                                                    />
+                                                                            <input
                                                                             
-                                                                            </>
-                                                                        )})}
-                                                                        
-                                                                        <div className='col-span-2 flex items-center justify-end'>
-                                                                            <button className=' p-2 w-auto h-auto bg-indigo-600 text-white flex items-center self-start'
-                                                                            onClick={handleAddClick}
-                                                                            >Add <PlusIcon className='w-5 h-5 text-white'/></button>
-                                                                        </div>
-
+                                                                                type='text'
+                                                                                placeholder=''
+                                                                                id={`add_${addBtnLabel}_abbr`}
+                                                                                name="abbreviation"
+                                                                                defaultValue={editData.abbreviation}
+                                                                                className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
+                                                                            />
                                                                     </div>
-                                                                    
-                                                                    <div className='flex items-center space-x-3 mt-4'>
-                                                                            <button type='submit' className='p-2 text-white bg-blue-600  font-semibold'>save</button>
-                                                                            <button className='p-2 text-white bg-indigo-500  font-semibold'>cancel</button>
-                                                                    </div>
-                                                        
-                                                                
+                                                                    {editMode && (
 
-                                                                </form>
-                                                                &nbsp;
-                                                                <ChangeLog />
-                                                                </>
-                                                            )
-
-                                                        case 'regulatory status':
-                                                            return (
-                                                                <>
-                                                                <form className='w-full h-full' onSubmit={(e)=>handleFacilityOnChange(e,addBtnLabel)}>
-                                                                    {/* regulatory Status */}
-                                                                <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-                                                                        
-                                                                        <label
-                                                                            htmlFor={`add_${addBtnLabel}_status`}
-                                                                            className='text-gray-600 capitalize text-sm'>
-                                                                            Regulatory Status
-                                                                            <span className='text-medium leading-12 font-semibold'>
-                                                                                {' '}
+                                                                        <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                                                            <input 
+                                                                                className=''
+                                                                                name="active" 
+                                                                                type='checkbox'
+                                                                                defaultChecked={editData.active}
+                                                                                id={`add_${addBtnLabel}_active`}
+                                                                                />
                                                                                 
-                                                                            </span>
-                                                                        </label>
-                                                                        <input
-                                                                        
-                                                                            type='text'
-                                                                            placeholder='Enter Regulatory status'
-                                                                            id={`add_${addBtnLabel}_status`}
-                                                                            name='name'
-                                                                            defaultValue={editData.name}
-                                                                            className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
-                                                                        />
-                                                                </div>
+                                                                                <label
+                                                                                    htmlFor={`add_${addBtnLabel}_active`}
+                                                                                    className='text-gray-600 capitalize text-sm'>
+                                                                                    Is Active?
+                                                                                    <span className='text-medium leading-12 font-semibold'>
+                                                                                        {' '}
+                                                                                        
+                                                                                    </span>
+                                                                                </label>
+                                                                        </div>
+                                                                    )}
 
-                                                                <div className='flex items-center space-x-3 mt-4'>
-                                                                            <button type='submit' className='p-2 text-white bg-blue-600  font-semibold'>save</button>
-                                                                            <button className='p-2 text-white bg-indigo-500  font-semibold'>cancel</button>
-                                                                </div>
-                                                        
-                                                                </form>
-                                                                &nbsp;
-                                                                <ChangeLog />
-                                                                </>
-                                                            )
+                                                                        {/* inputsContainer */}
+                                                                        <div className='grid grid-cols-2 place-content-start gap-3 space-y-1' ref={inputsContainerRef2}>
+                                                                            <h2 className='text-lg font-semibold text-indigo-900'>Contact Type*</h2>
+                                                                            <h2 className='text-lg font-semibold text-indigo-900'>Contact Details*</h2>
+                                                                        
+                                                                            {contactList.map((contact, index) =>{ return (
+                                                                                <>
+                                                                                    {/* Contact Type */}
+
+                                                                                    <select
+                                                                                        required
+                                                                                        key={index}
+                                                                                        id={`${index}`}
+                                                                                        name='contact_type'
+                                                                                        defaultValue={contact?.contact_type}
+                                                                                        className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
+
+                                                                                    >
+
+                                                                                    {selectOptions.map((ct, i) => (
+                                                                                        <option value={ct.value} key ={i}>{ct.label}</option>
+                                                                                    ))}
+                                                                                    </select>
+
+                                                                                    {/* Contact Detail */}
+                                                                                    <input
+                                                                                            required
+                                                                                            type='text'
+                                                                                            placeholder='Contact Details'
+                                                                                            key={index}
+                                                                                            id={index}
+                                                                                            name="contact"
+                                                                                            defaultValue={contact?.contact}
+                                                                                            className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
+                                                                                        />
+                                                                                
+                                                                                </>
+                                                                            )})}
+                                                                            
+                                                                            <div className='col-span-2 flex items-center justify-end'>
+                                                                                <button className=' p-2 w-auto h-auto bg-indigo-600 text-white flex items-center self-start'
+                                                                                onClick={handleAddClick}
+                                                                                >Add <PlusIcon className='w-5 h-5 text-white'/></button>
+                                                                            </div>
+
+                                                                        </div>
+                                                                        
+                                                                        <div className='flex items-center space-x-3 mt-4'>
+                                                                                <button type='submit' className='p-2 text-white bg-blue-600  font-semibold'>save</button>
+                                                                                <button className='p-2 text-white bg-indigo-500  font-semibold'>cancel</button>
+                                                                        </div>
+                                                            
+                                                                    
+
+                                                                    </form>
+                                                                    &nbsp;
+                                                                    <ChangeLog />
+                                                                    </>
+                                                                )
+                                                            case 'regulatory status':
+                                                                return (
+                                                                    <>
+                                                                    <form className='w-full h-full' onSubmit={(e)=>handleFacilityOnChange(e,addBtnLabel)}>
+                                                                        {/* regulatory Status */}
+                                                                    <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                                                            
+                                                                            <label
+                                                                                htmlFor={`add_${addBtnLabel}_status`}
+                                                                                className='text-gray-600 capitalize text-sm'>
+                                                                                Regulatory Status
+                                                                                <span className='text-medium leading-12 font-semibold'>
+                                                                                    {' '}
+                                                                                    
+                                                                                </span>
+                                                                            </label>
+                                                                            <input
+                                                                            
+                                                                                type='text'
+                                                                                placeholder='Enter Regulatory status'
+                                                                                id={`add_${addBtnLabel}_status`}
+                                                                                name='name'
+                                                                                defaultValue={editData.name}
+                                                                                className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
+                                                                            />
+                                                                    </div>
+
+                                                                    <div className='flex items-center space-x-3 mt-4'>
+                                                                                <button type='submit' className='p-2 text-white bg-blue-600  font-semibold'>save</button>
+                                                                                <button className='p-2 text-white bg-indigo-500  font-semibold'>cancel</button>
+                                                                    </div>
+                                                            
+                                                                    </form>
+                                                                    &nbsp;
+                                                                    <ChangeLog />
+                                                                    </>
+                                                                )
                                                             case 'upgrade reason':
                                                                 return (
                                                                     <>
@@ -4117,7 +4304,7 @@ function SystemSetup(props) {
                                                                                 id={`add_${addBtnLabel}_reason`}
                                                                                 name='reason'
                                                                                 defaultValue={editData.reason}
-                                                                                className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
+                                                                                className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
                                                                             />
                                                                     </div>
 
@@ -4140,7 +4327,7 @@ function SystemSetup(props) {
                                                                                 id={`add_${addBtnLabel}_desc`}
                                                                                 name='description'
                                                                                 defaultValue={editData.description}
-                                                                                className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
+                                                                                className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
                                                                             />
                                                                     </div>
 
@@ -4154,7 +4341,6 @@ function SystemSetup(props) {
                                                                     <ChangeLog />
                                                                     </>
                                                                 )
-
                                                             case 'Document':
                                                                 return (
                                                                     <form className='w-full h-full'>
@@ -4176,7 +4362,7 @@ function SystemSetup(props) {
                                                                                 type='text'
                                                                                 placeholder=''
                                                                                 name={`add_${addBtnLabel}_reason`}
-                                                                                className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
+                                                                                className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
                                                                             />
                                                                     </div>
 
@@ -4197,7 +4383,7 @@ function SystemSetup(props) {
                                                                                 type='text'
                                                                                 placeholder='Description'
                                                                                 name={`add_${addBtnLabel}_desc`}
-                                                                                className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
+                                                                                className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
                                                                             />
                                                                     </div>
 
@@ -4218,7 +4404,7 @@ function SystemSetup(props) {
                                                                                 type='file'
                                                                                 placeholder=''
                                                                                 name={`add_${addBtnLabel}_file`}
-                                                                                className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
+                                                                                className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
                                                                             />
                                                                     </div>
 

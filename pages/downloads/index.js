@@ -17,7 +17,7 @@ function Downloads(props) {
     //     </pre>
     // )
 
-    console.log({props})
+    console.log({ props })
 
     return (
         <React.Fragment>
@@ -106,7 +106,7 @@ function Downloads(props) {
                                                         </h2>
                                                         <h4 className='text-gray-500'>
                                                             {docItem?.description}
-  
+
                                                         </h4>
                                                     </div>
                                                 </div>
@@ -136,10 +136,10 @@ function Downloads(props) {
                                                     <div className='flex flex-col gap-2 justify-center'>
                                                         <h2>
                                                             {docItem?.name}
-                                                            
+
                                                         </h2>
                                                         <h4 className="text-gray-500">
-                                                            
+
                                                             {docItem?.description}
 
                                                         </h4>
@@ -163,35 +163,33 @@ function Downloads(props) {
                         >
                             <div className='bg-gray-50 rounded w-full h-auto flex flex-col p-2'>
 
-{
-    props?.checklist?.map(docItem => (
-        <Link href={docItem?.fyl}>
-            <div className="w-full max-h-min p-3 border-b hover:bg-gray-200 border-gray-300 flex justify-between ">
-                <div className="flex gap-2">
-                    <Download className='w-12 h-12 mt-1 text-gray-400' />
-                    <div className='flex flex-col gap-2 justify-center'>
-                        <h2>
-                            {docItem?.facility_name}{" "}
-                            {docItem?.document_type?.includes('FACILITY_LICENSE') && 'License File'}
-                            {docItem?.document_type?.includes('Facility_ChecKList') && 'Checklist File'}
-                        </h2>
-                        <h4 className="text-gray-500">
-                            {docItem?.description}
-                            {/* {docItem?.document_type?.includes('FACILITY_LICENSE') && 'Facility License File'}
-                            {docItem?.document_type?.includes('Facility_ChecKList') && 'Facility Checklist File'} */}
+                                {
+                                    props?.checklist?.map(docItem => (
+                                        <Link href={docItem?.fyl}>
+                                            <div className="w-full max-h-min p-3 border-b hover:bg-gray-200 border-gray-300 flex justify-between ">
+                                                <div className="flex gap-2">
+                                                    <Download className='w-12 h-12 mt-1 text-gray-400' />
+                                                    <div className='flex flex-col gap-2 justify-center'>
+                                                        <h2>
+                                                            {docItem?.facility_name}{" "}
+                                                            {docItem?.document_type?.includes('FACILITY_LICENSE') && 'License File'}
+                                                            {docItem?.document_type?.includes('Facility_ChecKList') && 'Checklist File'}
+                                                        </h2>
+                                                        <h4 className="text-gray-500">
+                                                            {docItem?.description}
 
-                        </h4>
-                    </div>
-                </div>
+                                                        </h4>
+                                                    </div>
+                                                </div>
 
-                <h2 className='hidden md:flex'>Download</h2>
+                                                <h2 className='hidden md:flex'>Download</h2>
 
 
-            </div>
-        </Link>
-    ))
-}
-</div>
+                                            </div>
+                                        </Link>
+                                    ))
+                                }
+                            </div>
                         </Tabs.Panel>
 
 
