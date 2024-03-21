@@ -2171,3 +2171,29 @@ export const propsToGridData = (props, index) => {
 
 }
 
+
+export function propsToNewGridData(props, index) {
+    
+    switch(index){
+        case 0:
+            return {
+                rows: props?.map(result => ({
+                    county: result?.group_by,
+                    hdu_beds: result?.total_hdu_beds,
+                    icu_beds: result?.icu_beds,
+                    maternity_beds: result?.maternity_beds,
+                    inpatient_beds: result?.inpatient_beds,
+                    emergency_casualty_beds: result?.emergency_casualty_beds,
+                    cots: result?.cots
+                })),
+                columns: [
+                    {
+                        headerName: 'County',
+                        field: 'county',
+                        flex: 1
+                    },
+
+                ]
+            }
+    }
+} 

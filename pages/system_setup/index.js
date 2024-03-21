@@ -1058,12 +1058,17 @@ function SystemSetup(props) {
                 url =`/api/system_setup/data/?resource=counties&resourceCategory=AdminUnits&fields=id,name`                
             }
 
-             fetch(url)
-             .then(res => res.json())
+             fetch(url, {
+                headers: {
+                    'Accept':'application/json'
+                }
+             })
+             .then(res => res?.json())
              .then(res => {
-                console.log({res: res?.results})
+                
                 setSelectOptions(res.results.map(({id, name}) => ({value:id, label:name})))
             })
+            .catch(e => console.error("Error: ", e.message))
                 
         }
         if(addBtnLabel === 'service'){
