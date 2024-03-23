@@ -124,6 +124,11 @@ function Reports(props) {
 
                         {/* Tabs */}
                         <div className='w-full col-span-1 md:col-span-7 flex shadow-sm bg-gray-50 px-0 mx-0 h-700 flex-1'>
+                        {/* <pre>
+                            {
+                                JSON.stringify(propsToGridData(props, 6)?.rows, null, 2)
+                            }
+                        </pre> */}
                         <Tabs.Root
                             orientation="horizontal"
                             className="w-full flex flex-col tab-root"
@@ -246,13 +251,14 @@ function Reports(props) {
                                         </Tabs.Tab> */}
 
                                     </Tabs.List>
+
                                     <Tabs.Panel
                                         value="beds_cots"
                                         className="grow-1 tab-panel"
                                     >
                                         {/* Beds and Cots Data Grid */}
 
-                                        <div style={{ height: 700, width: '100%', backgroundColor: '#f9fafb' }} className='shadow-md col-span-7'>
+                                        <div className='shadow-md w-full max-h-min col-span-7'>
                                             <StyledDataGrid
                                                 columns={propsToGridData(props, 0).columns}
                                                 rows={propsToGridData(props, 0)?.rows}
@@ -270,7 +276,8 @@ function Reports(props) {
                                                                 display: 'flex',
                                                                 marginX: 'auto',
                                                                 gap: 5,
-                                                                padding: '0.45rem'
+                                                                padding: '0.45rem',
+                                                                alignItems:'start'
                                                             }}
                                                         />
                                                     ),
@@ -287,7 +294,7 @@ function Reports(props) {
                                     >
                                         {/* Keph Level Data grid */}
 
-                                        <div style={{ height: 700, width: '100%', backgroundColor: '#f9fafb' }} className='shadow-md col-span-7'>
+                                        <div className='shadow-md w-full max-h-min col-span-7'>
                                             <StyledDataGrid
                                                 columns={propsToGridData(props, 1).columns}
                                                 rows={propsToGridData(props, 1)?.rows}
@@ -305,7 +312,8 @@ function Reports(props) {
                                                                 display: 'flex',
                                                                 marginX: 'auto',
                                                                 gap: 5,
-                                                                padding: '0.45rem'
+                                                                padding: '0.45rem',
+                                                                alignItems:'start'
                                                             }}
                                                         />
                                                     ),
@@ -320,7 +328,7 @@ function Reports(props) {
 
                                     >
                                         {/* Facility Ownership */}
-                                        <div style={{ height: 700, width:'100%', backgroundColor: '#eff6ff' }} className='shadow-md col-span-7'>
+                                        <div className='shadow-mdw-full  max-h-min col-span-7'>
                                             
                                             <StyledDataGrid
                                                 columns={propsToGridData(props, 2).columns}
@@ -340,7 +348,8 @@ function Reports(props) {
                                                                 display: 'flex',
                                                                 marginX: 'auto',
                                                                 gap: 5,
-                                                                padding: '0.45rem'
+                                                                padding: '0.45rem',
+                                                                alignItems:'start'
                                                             }}
                                                         />
                                                     ),
@@ -356,7 +365,7 @@ function Reports(props) {
                                     >
                                         {/* Facility Type */}
 
-                                        <div style={{ height: 700, width: '100%', backgroundColor: '#eff6ff' }} className='shadow-md col-span-7'>
+                                         <div className='shadow-md w-full max-h-min col-span-7'>
                                             <StyledDataGrid
                                                 columns={propsToGridData(props, 3).columns}
                                                 rows={propsToGridData(props, 3)?.rows}
@@ -374,13 +383,14 @@ function Reports(props) {
                                                                 display: 'flex',
                                                                 marginX: 'auto',
                                                                 gap: 5,
-                                                                padding: '0.45rem'
+                                                                padding: '0.45rem',
+                                                                alignItems:'start'
                                                             }}
                                                         />
                                                     ),
                                                 }}
                                             />
-                                        </div>
+                                        </div> 
 
                                     </Tabs.Panel>
                                     <Tabs.Panel
@@ -389,7 +399,7 @@ function Reports(props) {
                                     >
                                         {/* Regulatory Body  */}                                  
                                         
-                                        <div style={{ height: 700, width: '100%', backgroundColor: '#eff6ff' }} className='shadow-md col-span-7'>
+                                         <div className='shadow-md w-full max-h-min col-span-7'>
                                             <StyledDataGrid
                                                 columns={propsToGridData(props, 4).columns}
                                                 rows={propsToGridData(props, 4)?.rows}
@@ -407,13 +417,14 @@ function Reports(props) {
                                                                 display: 'flex',
                                                                 marginX: 'auto',
                                                                 gap: 5,
-                                                                padding: '0.45rem'
+                                                                padding: '0.45rem',
+                                                                alignItems:'start'
                                                             }}
                                                         />
                                                     ),
                                                 }}
                                             />
-                                        </div>
+                                        </div> 
                                     </Tabs.Panel>
                                     <Tabs.Panel
                                         value="services"
@@ -421,7 +432,7 @@ function Reports(props) {
                                     >
                                         {/* Services */}                                  
                                         
-                                        <div style={{ height: 700, width: '100%', backgroundColor: '#eff6ff' }} className='shadow-md col-span-7'>
+                                         <div  className='shadow-md w-full max-h-min col-span-7'>
                                             <StyledDataGrid
                                                 columns={propsToGridData(props, 5).columns}
                                                 rows={propsToGridData(props, 5)?.rows}
@@ -439,13 +450,14 @@ function Reports(props) {
                                                                 display: 'flex',
                                                                 marginX: 'auto',
                                                                 gap: 5,
-                                                                padding: '0.45rem'
+                                                                padding: '0.45rem',
+                                                                alignItems:'start'
                                                             }}
                                                         />
                                                     ),
                                                 }}
                                             />
-                                        </div>
+                                        </div> 
 
                                     </Tabs.Panel>
                                     <Tabs.Panel
@@ -454,7 +466,7 @@ function Reports(props) {
                                     >
                                         {/* Infrastructure */}                                  
                                         
-                                        <div style={{ height: 700, width: '100%', backgroundColor: '#eff6ff' }} className='shadow-md col-span-7'>
+                                         <div className='shadow-md w-full max-h-min col-span-7'>
                                             <StyledDataGrid
                                                 columns={propsToGridData(props, 6).columns}
                                                 rows={propsToGridData(props, 6)?.rows}
@@ -472,13 +484,14 @@ function Reports(props) {
                                                                 display: 'flex',
                                                                 marginX: 'auto',
                                                                 gap: 5,
-                                                                padding: '0.45rem'
+                                                                padding: '0.45rem',
+                                                                alignItems:'start'
                                                             }}
                                                         />
                                                     ),
                                                 }}
                                             />
-                                        </div>
+                                        </div> 
 
 
                                     </Tabs.Panel>
@@ -489,10 +502,10 @@ function Reports(props) {
 
                                             {/* Human resource */}                                  
                                         
-                                            <div style={{ height: 700, width: '100%', backgroundColor: '#eff6ff' }} className='shadow-md col-span-7'>
+                                         <div  className='shadow-md w-full max-h-min col-span-7'>
                                             <StyledDataGrid
-                                                columns={propsToGridData(props, 11).columns}
-                                                rows={propsToGridData(props, 11)?.rows}
+                                                columns={propsToGridData(props, 7).columns}
+                                                rows={propsToGridData(props, 7)?.rows}
                                                 getRowClassName={() => `super-app-theme--Row`}
                                                 rowSpacingType="border"
                                                 showColumnRightBorder
@@ -507,13 +520,14 @@ function Reports(props) {
                                                                 display: 'flex',
                                                                 marginX: 'auto',
                                                                 gap: 5,
-                                                                padding: '0.45rem'
+                                                                padding: '0.45rem',
+                                                                alignItems:'start'
                                                             }}
                                                         />
                                                     ),
                                                 }}
                                             />
-                                        </div>
+                                             </div> 
 
                                     </Tabs.Panel>
                                     <Tabs.Panel
@@ -521,7 +535,7 @@ function Reports(props) {
                                         className="grow-1 tab-panel"
                                     >
                                         {/* Geocodes */}
-                                        <div style={{ height: 700, width: '100%', backgroundColor: '#eff6ff' }} className='shadow-md col-span-7'>
+                                        {/* <div  className='shadow-md w-full max-h-min col-span-7'>
                                             <StyledDataGrid
                                                 columns={[
                                                     {
@@ -576,13 +590,14 @@ function Reports(props) {
                                                                 display: 'flex',
                                                                 marginX: 'auto',
                                                                 gap: 5,
-                                                                padding: '0.45rem'
+                                                                padding: '0.45rem',
+                                                                alignItems:'start'
                                                             }}
                                                         />
                                                     ),
                                                 }}
                                             />
-                                        </div>
+                                        </div> */}
 
                                     </Tabs.Panel>
 
@@ -635,7 +650,7 @@ function Reports(props) {
                                         {/* CHU Services */}                                  
                                         {/* { console.log({rows:propsToGridData(props, 9)?.rows, columns: propsToGridData(props, 9).columns})  } */}
                                         
-                                        <div style={{ height: 700, width: '100%', backgroundColor: '#eff6ff' }} className='shadow-md col-span-7'>
+                                        {/* <div className='shadow-md w-full max-h-min col-span-7'>
                                             <StyledDataGrid
                                                 columns={propsToGridData(props, 9).columns}
                                                 rows={propsToGridData(props, 9)?.rows}
@@ -653,13 +668,14 @@ function Reports(props) {
                                                                 display: 'flex',
                                                                 marginX: 'auto',
                                                                 gap: 5,
-                                                                padding: '0.45rem'
+                                                                padding: '0.45rem',
+                                                                alignItems:'start'
                                                             }}
                                                         />
                                                     ),
                                                 }}
                                             />
-                                        </div>
+                                        </div> */}
                                     </Tabs.Panel>
                                     {/* CHU Status Data Grid*/}
 
@@ -668,7 +684,7 @@ function Reports(props) {
                                     className="grow-1 tab-panel"
                                     >
                                         {/* CHU Status */}
-                                        <div style={{ height: 700, width: '100%', backgroundColor: '#eff6ff' }} className='shadow-md col-span-7'>
+                                        {/* <div className='shadow-md w-full max-h-min col-span-7'>
                                             { console.log({rows: propsToGridData(props, 7).rows }) }
                                             <StyledDataGrid
                                                 columns={propsToGridData(props, 7).columns}
@@ -687,13 +703,14 @@ function Reports(props) {
                                                                 display: 'flex',
                                                                 marginX: 'auto',
                                                                 gap: 5,
-                                                                padding: '0.45rem'
+                                                                padding: '0.45rem',
+                                                                alignItems:'start'
                                                             }}
                                                         />
                                                     ),
                                                 }}
                                             />
-                                        </div>
+                                        </div> */}
                                     </Tabs.Panel>
 
                                     {/* CHU Count Data Grid */}
@@ -703,8 +720,7 @@ function Reports(props) {
                                     className="grow-1 tab-panel"
                                     >
                                         {/* CHU Status */}
-                                        <div style={{ height: 700, width: '100%', backgroundColor: '#eff6ff' }} className='shadow-md col-span-7'>
-                                            {/* { console.log({rows: propsToGridData(props, 10).rows }) } */}
+                                        {/* <div className='shadow-md w-full max-h-min col-span-7'>
                                             <StyledDataGrid
                                                 columns={propsToGridData(props, 10).columns}
                                                 rows={propsToGridData(props, 10)?.rows}
@@ -722,13 +738,14 @@ function Reports(props) {
                                                                 display: 'flex',
                                                                 marginX: 'auto',
                                                                 gap: 5,
-                                                                padding: '0.45rem'
+                                                                padding: '0.45rem',
+                                                                alignItems:'start'
                                                             }}
                                                         />
                                                     ),
                                                 }}
                                             />
-                                        </div>
+                                        </div> */}
 
                                     </Tabs.Panel>
 
@@ -756,7 +773,7 @@ Reports.getInitialProps = async (ctx) => {
     ctx?.res?.setHeader(
         'Cache-Control',
         'public, s-maxage=10, stale-while-revalidate=59'
-      )
+    )
 
 
     const reports = [
@@ -789,22 +806,125 @@ Reports.getInitialProps = async (ctx) => {
         'facility_human_resource_category_report_all_hierachies': []
     }
 
-    // return checkToken(ctx.req, ctx.res).then(async (t) => {
-    //     if (t.error) {
-    //          throw new Error('Error checking token')
 
-    //     } else {
-            const token = (await checkToken(ctx.req, ctx.res))?.token;
-            let url = '';
+    const token = (await checkToken(ctx.req, ctx.res))?.token;
+    let url = '';
 
-            // return fetchData(token).then(t => t);
 
-            for (let i = 0; i < reports.length; i++) {
-                const report = reports[i];
-               
-                switch (report) {
-                    case 'beds_and_cots_by_all_hierachies':
-                        url = `${process.env.NEXT_PUBLIC_API_URL}/reporting/?report_type=${report}`;
+    for (const report of reports)
+            switch (report) {
+                case 'beds_and_cots_by_all_hierachies':
+                    url = `${process.env.NEXT_PUBLIC_API_URL}/reporting/?report_type=beds_and_cots_by_all_hierachies${ctx?.query?.groupby !== undefined ? `&report_groupby=${ctx?.query?.groupby}` : '&report_groupby=county'}`;
+
+                    try {
+
+                        const _data = await fetch(url, {
+                            headers: {
+                                Authorization: 'Bearer ' + token,
+                                Accept: 'application/json',
+                            },
+                        })
+
+                        allReports["beds_and_cots_by_all_hierachies"] = (await _data.json())?.results?.results
+
+                    }
+                    catch (err) {
+                        console.log(`Error fetching ${report}: `, err);
+
+                    }
+
+                    break;
+                case 'facility_keph_level_report_all_hierachies':
+                    url = `${process.env.NEXT_PUBLIC_API_URL}/reporting/?report_type=facility_keph_level_report_all_hierachies${ctx?.query?.groupby !== undefined ? `&report_groupby=${ctx?.query?.groupby}` : '&report_groupby=county'}`;
+
+                    try {
+
+                        const _keph = await fetch(url, {
+                            headers: {
+                                Authorization: 'Bearer ' + token,
+                                Accept: 'application/json',
+                            },
+                        })
+
+                        allReports["facility_keph_level_report_all_hierachies"] = (await _keph.json()).results?.results
+                    }
+
+                    catch (err) {
+                        console.log(`Error fetching ${report}: `, err);
+                    }
+
+                    break;               
+                case 'facility_owner_report_all_hierachies':
+                    url = `${process.env.NEXT_PUBLIC_API_URL}/reporting/?report_type=facility_owner_report_all_hierachies${ctx?.query?.groupby !== undefined ? `&report_groupby=${ctx?.query?.groupby}` : '&report_groupby=county'}`;
+
+
+                    try {
+
+                        const _data = await fetch(url, {
+                            headers: {
+                                Authorization: 'Bearer ' + token,
+                                Accept: 'application/json',
+                            },
+                        })
+
+                        allReports["facility_owner_report_all_hierachies"] = (await _data.json())?.results?.results
+                    }
+                    catch (err) {
+                        console.log(`Error fetching ${report}: `, err);
+                       
+                    }
+
+                    break;
+
+                case 'facility_type_report_all_hierachies':
+                    url = `${process.env.NEXT_PUBLIC_API_URL}/reporting/?report_type=facility_type_report_all_hierachies${ctx?.query?.groupby !== undefined ? `&report_groupby=${ctx?.query?.groupby}` : '&report_groupby=county'}`;
+
+
+                    try {
+
+                        const _data = await fetch(url, {
+                            headers: {
+                                Authorization: 'Bearer ' + token,
+                                Accept: 'application/json',
+                            },
+                        })
+
+                        allReports["facility_type_report_all_hierachies"] = (await _data.json()).results?.results
+
+                    }
+                    catch (err) {
+                        console.log(`Error fetching ${report}: `, err);
+                      
+                    }
+
+                    break;
+                    
+                case 'facility_regulatory_body_report_all_hierachies':
+                    url = `${process.env.NEXT_PUBLIC_API_URL}/reporting/?report_type=facility_regulatory_body_report_all_hierachies${ctx?.query?.groupby !== undefined ? `&report_groupby=${ctx?.query?.groupby}` : '&report_groupby=county'}`;
+
+
+                    try {
+
+                        const _data = await fetch(url, {
+                            headers: {
+                                Authorization: 'Bearer ' + token,
+                                Accept: 'application/json',
+                            },
+                        })
+
+                        allReports["facility_regulatory_body_report_all_hierachies"] = (await _data.json())?.results?.results
+
+                    }
+                    catch (err) {
+                        console.log(`Error fetching ${report}: `, err);
+                        
+                    }
+                    
+                    break;
+
+                case 'facility_services_report_all_hierachies':
+                        url = `${process.env.NEXT_PUBLIC_API_URL}/reporting/?report_type=facility_services_report_all_hierachies${ctx?.query?.groupby !== undefined ? `&report_groupby=${ctx?.query?.groupby}` : '&report_groupby=county'}`;
+
 
                         try {
 
@@ -815,416 +935,260 @@ Reports.getInitialProps = async (ctx) => {
                                 },
                             })
 
-                            allReports["beds_and_cots_by_all_hierachies"] = (await _data.json()).results
+                            allReports["facility_services_report_all_hierachies"] = (await _data.json())?.results?.results
 
                         }
                         catch (err) {
                             console.log(`Error fetching ${report}: `, err);
-                            // allReports.push({
-                            //     error: true,
-                            //     err: err,
-                            //     beds_and_cots_by_all_hierachies: [],
-                            //     url
-                            // });
+                          
                         }
 
                         break;
-                    case 'facility_keph_level_report_all_hierachies':
-                        url = `${process.env.NEXT_PUBLIC_API_URL}/reporting/?report_type=${report}`;
-
-                        try {
-
-                            const _data = await fetch(url, {
-                                headers: {
-                                    Authorization: 'Bearer ' + token,
-                                    Accept: 'application/json',
-                                },
-                            })
-
-                            allReports["facility_keph_level_report_all_hierachies"] = (await _data.json()).results
+                case 'facility_human_resource_category_report_all_hierachies':
+                            url = `${process.env.NEXT_PUBLIC_API_URL}/reporting/?report_type=facility_human_resource_category_report_all_hierachies${ctx?.query?.groupby !== undefined ? `&report_groupby=${ctx?.query?.groupby}` : '&report_groupby=county'}`;
 
 
-                        }
-                        catch (err) {
-                            console.log(`Error fetching ${report}: `, err);
-                            // allReports.push({
-                            //     error: true,
-                            //     err: err,
-                            //     facility_keph_level_report_all_hierachies: [],
-                            // });
-                        }
-                        break;
-                    case 'facility_owner_report_all_hierachies':
-                        url = `${process.env.NEXT_PUBLIC_API_URL}/reporting/?report_type=${report}`;
-
-
-                        try {
-
-                            const _data = await fetch(url, {
-                                headers: {
-                                    Authorization: 'Bearer ' + token,
-                                    Accept: 'application/json',
-                                },
-                            })
-
-                            allReports["facility_owner_report_all_hierachies"] = (await _data.json()).results
-
-                        }
-                        catch (err) {
-                            console.log(`Error fetching ${report}: `, err);
-                            // allReports.push({
-                            //     error: true,
-                            //     err: err,
-                            //     facility_owner_report_all_hierachies: [],
-                            // });
-                        }
-
-                        break;
-                    case 'facility_type_report_all_hierachies':
-                        url = `${process.env.NEXT_PUBLIC_API_URL}/reporting/?report_type=${report}`;
-
-
-                        try {
-
-                            const _data = await fetch(url, {
-                                headers: {
-                                    Authorization: 'Bearer ' + token,
-                                    Accept: 'application/json',
-                                },
-                            })
-
-                            allReports["facility_type_report_all_hierachies"] = (await _data.json()).results
-
-                        }
-                        catch (err) {
-                            console.log(`Error fetching ${report}: `, err);
-                            // allReports.push({
-                            //     error: true,
-                            //     err: err,
-                            //     facility_type_report_all_hierachies: [],
-                            // })
-                        }
-
-                        break;
-                    case 'facility_regulatory_body_report_all_hierachies':
-                        url = `${process.env.NEXT_PUBLIC_API_URL}/reporting/?report_type=${report}`;
-
-
-                        try {
-
-                            const _data = await fetch(url, {
-                                headers: {
-                                    Authorization: 'Bearer ' + token,
-                                    Accept: 'application/json',
-                                },
-                            })
-
-                            allReports["facility_regulatory_body_report_all_hierachies"] = (await _data.json()).results
-
-                        }
-                        catch (err) {
-                            console.log(`Error fetching ${report}: `, err);
-                            // allReports.push({
-                            //     error: true,
-                            //     err: err,
-                            //     facility_regulatory_body_report_all_hierachies: [],
-                            // })
-                        }
-
-                        break;
-                    case 'facility_services_report_all_hierachies':
-                            url = `${process.env.NEXT_PUBLIC_API_URL}/reporting/?report_type=${report}`;
-    
-    
                             try {
-    
+
                                 const _data = await fetch(url, {
                                     headers: {
                                         Authorization: 'Bearer ' + token,
                                         Accept: 'application/json',
                                     },
                                 })
-    
-                                allReports["facility_services_report_all_hierachies"] = (await _data.json()).results
-    
+
+                                allReports["facility_human_resource_category_report_all_hierachies"] = (await _data.json()).results?.results 
+
                             }
                             catch (err) {
                                 console.log(`Error fetching ${report}: `, err);
-                                // allReports.push({
-                                //     error: true,
-                                //     err: err,
-                                //     facility_services_report_all_hierachies: [],
-                                // })
+                                
                             }
-    
+
                             break;
-                    case 'facility_human_resource_category_report_all_hierachies':
-                                url = `${process.env.NEXT_PUBLIC_API_URL}/reporting/?report_type=${report}`;
-        
-        
-                                try {
-        
-                                    const _data = await fetch(url, {
-                                        headers: {
-                                            Authorization: 'Bearer ' + token,
-                                            Accept: 'application/json',
-                                        },
-                                    })
-        
-                                    allReports["facility_human_resource_category_report_all_hierachies"] = (await _data.json()).results 
-        
-                                }
-                                catch (err) {
-                                    console.log(`Error fetching ${report}: `, err);
-                                    // allReports.push({
-                                    //     error: true,
-                                    //     err: err,
-                                    //     facility_human_resource_category_report_all_hierachies: [],
-                                    // })
-                                }
-        
-                                break;
-                    case 'facility_infrastructure_report_all_hierachies':
-                                url = `${process.env.NEXT_PUBLIC_API_URL}/reporting/?report_type=${report}`;
-        
-        
-                                try {
-        
-                                    const _data = await fetch(url, {
-                                        headers: {
-                                            Authorization: 'Bearer ' + token,
-                                            Accept: 'application/json',
-                                        },
-                                    })
-        
-                                    allReports["facility_infrastructure_report_all_hierachies"] = (await _data.json()).results 
-        
-                                }
-                                catch (err) {
-                                    console.log(`Error fetching ${report}: `, err);
-                                    // allReports.push({
-                                    //     error: true,
-                                    //     err: err,
-                                    //     facility_infrastructure_report_all_hierachies: [],
-                                    // })
-                                }
-        
-                                break;
-                    case 'chul_status_all_hierachies':
-                        url = `${process.env.NEXT_PUBLIC_API_URL}/reporting/chul/?report_type=${report}`;
+                     
+                case 'facility_infrastructure_report_all_hierachies':
+                            url = `${process.env.NEXT_PUBLIC_API_URL}/reporting/?report_type=facility_infrastructure_report_all_hierachies${ctx?.query?.groupby !== undefined ? `&report_groupby=${ctx?.query?.groupby}` : '&report_groupby=county'}`;
 
 
-                        try {
+                            try {
 
-                            const _data = await fetch(url, {
-                                headers: {
-                                    Authorization: 'Bearer ' + token,
-                                    Accept: 'application/json',
-                                },
-                            })
-
-                            allReports["chul_status_all_hierachies"] = (await _data.json()).results 
-
-                        }
-                        catch (err) {
-                            console.log(`Error fetching ${report}: `, err);
-                            // allReports.push({
-                            //     error: true,
-                            //     err: err,
-                            //     chul_status_all_hierachies: [],
-                            // })
-                        }
-                        break;
-                    case 'chul_services_all_hierachies':
-                        url = `${process.env.NEXT_PUBLIC_API_URL}/reporting/chul/?report_type=${report}`;
-
-
-                        try {
-
-                            const _data = await fetch(url, {
-                                headers: {
-                                    Authorization: 'Bearer ' + token,
-                                    Accept: 'application/json',
-                                },
-                            })
-
-                                allReports["chul_services_all_hierachies"] = (await _data.json()).results.map((
-                                    {
-                                        
-                                        "WASH: Water, sanitation and hygiene education, including hand washing": wash_sanitation,
-                                        "iCCM: Education on danger signs and referral for malaria, pneumonia and diarrhea": iccm,
-                                        "WASH: Water treatment provision": wash_water_treatment,
-                                        "health_unit__facility__ward__name": ward,
-                                        "health_unit__facility__ward__sub_county__county__name": county,
-                                        "health_unit__facility__ward__sub_county__name": sub_county,
-                                        "HIV, TB and Malaria: Treatment defaulter tracing": hiv_tb_malaria_treatment,
-                                        "HIV, TB and Malaria: Education, support for treatment adherence, and referral": hiv_tb_malaria_education,
-                                        "iCCM: Provision of AL drugs to treat malaria": iccm_malaria_drugs,
-                                        "HIV, TB and Malaria: Provision of condoms": hiv_tb_malaria_condoms,
-                                        "Referrals to health facilities": referrals_health_facilities,
-                                        "Provision of Information, Education & Communication (IEC) materials": provision_of_information,
-                                        "iCCM: Rapid diagnostic testing of malaria": iccm_rapid_diagnostic,
-                                        "Nutrition: Education, child growth monitoring, screening and referrals": nutrition_education,
-                                        "MNCH: Education, counseling of mothers, and referral for ANC": mnch_education,
-                                        "Deworming of children": deworming_children,
-                                        "HIV, TB and Malaria: Provision of psychosocial support groups": hiv_tb_malaria_ppsg,
-                                        "Management of diarrhea, injuries, wounds, jiggers and other minor illnesses.": mgmt_diarrhea,
-                                        "NCD: Education and support for treatment adherence": ncd_eduaction,
-                                        "HIV, TB and Malaria: Provision of home based care for PLWA": hiv_tb_malaria_provision,
-                                        "First Aid Services": first_aid_services,        
-                                        "iCCM: Provision of Long Lasting Insecticide Treated Nets": iCCM_provision_long_lasting,
-                                        "Growth monitoring for children under 5 years.": growth_monitoring,
-                                        "NCD: Diabetes and hypertension screening and referral": ncd_diabetes,
-                              
-                                        
+                                const _data = await fetch(url, {
+                                    headers: {
+                                        Authorization: 'Bearer ' + token,
+                                        Accept: 'application/json',
                                     },
-                                    index
-                                ) => ({
-                                    wash_sanitation,
-                                    iccm,
-                                    wash_water_treatment,
-                                    ward,
-                                    county,
-                                    hiv_tb_malaria_treatment,
-                                    hiv_tb_malaria_education,
-                                    iccm_malaria_drugs,
-                                    hiv_tb_malaria_condoms,
-                                    referrals_health_facilities,
-                                    provision_of_information,
-                                    iccm_rapid_diagnostic,
-                                    nutrition_education,
-                                    mnch_education,
-                                    deworming_children,
-                                    sub_county,
-                                    hiv_tb_malaria_ppsg,
-                                    mgmt_diarrhea,
-                                    ncd_eduaction,
-                                    hiv_tb_malaria_provision,
-                                    first_aid_services,
-                                    iCCM_provision_long_lasting,
-                                    growth_monitoring,
-                                    ncd_diabetes,
-                             
-                                    id:index
-                                    
                                 })
-                                ) 
 
-                        }
-                        catch (err) {
-                            console.log(`Error fetching ${report}: `, err);
+                                allReports["facility_infrastructure_report_all_hierachies"] = (await _data.json())?.results?.results 
 
-                            // allReports.push({
-                            //     error: true,
-                            //     err: err,
-                            //     chul_services_all_hierachies: [],
-                            // })
-                        }
-                        break;
+                            }
+                            catch (err) {
+                                console.log(`Error fetching ${report}: `, err);
+                                
+                            }
 
-                    case 'gis':
-                        url = `${process.env.NEXT_PUBLIC_API_URL}/reporting/?report_type=${report}`;
+                            break;
+
+                            /*
+                case 'chul_status_all_hierachies':
+                    url = `${process.env.NEXT_PUBLIC_API_URL}/reporting/chul/?report_type=${report}`;
 
 
-                        try {
+                    try {
 
-                            const _data = await fetch(url, {
-                                headers: {
-                                    Authorization: 'Bearer ' + token,
-                                    Accept: 'application/json',
+                        const _data = await fetch(url, {
+                            headers: {
+                                Authorization: 'Bearer ' + token,
+                                Accept: 'application/json',
+                            },
+                        })
+
+                        allReports["chul_status_all_hierachies"] = (await _data.json()).results 
+
+                    }
+                    catch (err) {
+                        console.log(`Error fetching ${report}: `, err);
+                        // allReports.push({
+                        //     error: true,
+                        //     err: err,
+                        //     chul_status_all_hierachies: [],
+                        // })
+                    }
+                    break;
+                case 'chul_services_all_hierachies':
+                    url = `${process.env.NEXT_PUBLIC_API_URL}/reporting/chul/?report_type=${report}`;
+
+
+                    try {
+
+                        const _data = await fetch(url, {
+                            headers: {
+                                Authorization: 'Bearer ' + token,
+                                Accept: 'application/json',
+                            },
+                        })
+
+                            allReports["chul_services_all_hierachies"] = (await _data.json()).results.map((
+                                {
+                                    
+                                    "WASH: Water, sanitation and hygiene education, including hand washing": wash_sanitation,
+                                    "iCCM: Education on danger signs and referral for malaria, pneumonia and diarrhea": iccm,
+                                    "WASH: Water treatment provision": wash_water_treatment,
+                                    "health_unit__facility__ward__name": ward,
+                                    "health_unit__facility__ward__sub_county__county__name": county,
+                                    "health_unit__facility__ward__sub_county__name": sub_county,
+                                    "HIV, TB and Malaria: Treatment defaulter tracing": hiv_tb_malaria_treatment,
+                                    "HIV, TB and Malaria: Education, support for treatment adherence, and referral": hiv_tb_malaria_education,
+                                    "iCCM: Provision of AL drugs to treat malaria": iccm_malaria_drugs,
+                                    "HIV, TB and Malaria: Provision of condoms": hiv_tb_malaria_condoms,
+                                    "Referrals to health facilities": referrals_health_facilities,
+                                    "Provision of Information, Education & Communication (IEC) materials": provision_of_information,
+                                    "iCCM: Rapid diagnostic testing of malaria": iccm_rapid_diagnostic,
+                                    "Nutrition: Education, child growth monitoring, screening and referrals": nutrition_education,
+                                    "MNCH: Education, counseling of mothers, and referral for ANC": mnch_education,
+                                    "Deworming of children": deworming_children,
+                                    "HIV, TB and Malaria: Provision of psychosocial support groups": hiv_tb_malaria_ppsg,
+                                    "Management of diarrhea, injuries, wounds, jiggers and other minor illnesses.": mgmt_diarrhea,
+                                    "NCD: Education and support for treatment adherence": ncd_eduaction,
+                                    "HIV, TB and Malaria: Provision of home based care for PLWA": hiv_tb_malaria_provision,
+                                    "First Aid Services": first_aid_services,        
+                                    "iCCM: Provision of Long Lasting Insecticide Treated Nets": iCCM_provision_long_lasting,
+                                    "Growth monitoring for children under 5 years.": growth_monitoring,
+                                    "NCD: Diabetes and hypertension screening and referral": ncd_diabetes,
+                            
+                                    
                                 },
+                                index
+                            ) => ({
+                                wash_sanitation,
+                                iccm,
+                                wash_water_treatment,
+                                ward,
+                                county,
+                                hiv_tb_malaria_treatment,
+                                hiv_tb_malaria_education,
+                                iccm_malaria_drugs,
+                                hiv_tb_malaria_condoms,
+                                referrals_health_facilities,
+                                provision_of_information,
+                                iccm_rapid_diagnostic,
+                                nutrition_education,
+                                mnch_education,
+                                deworming_children,
+                                sub_county,
+                                hiv_tb_malaria_ppsg,
+                                mgmt_diarrhea,
+                                ncd_eduaction,
+                                hiv_tb_malaria_provision,
+                                first_aid_services,
+                                iCCM_provision_long_lasting,
+                                growth_monitoring,
+                                ncd_diabetes,
+                            
+                                id:index
+                                
                             })
+                            ) 
 
-                            allReports["gis"] = (await _data.json()).results 
+                    }
+                    catch (err) {
+                        console.log(`Error fetching ${report}: `, err);
 
-                        }
-                        catch (err) {
-                            console.log(`Error fetching ${report}: `, err);
-                            // allReports.push({
-                            //     error: true,
-                            //     err: err,
-                            //     gis: [],
-                            // })
-                        }
-                        break;
-                    
-                   
-                    case 'chul_status_all_hierachies':
-                        url = `${process.env.NEXT_PUBLIC_API_URL}/reporting/chul/?report_type=${report}`;
+                        // allReports.push({
+                        //     error: true,
+                        //     err: err,
+                        //     chul_services_all_hierachies: [],
+                        // })
+                    }
+                    break;
 
-
-                        try {
-
-                            const _data = await fetch(url, {
-                                headers: {
-                                    Authorization: 'Bearer ' + token,
-                                    Accept: 'application/json',
-                                },
-                            })
-
-                            allReports["chul_status_all_hierachies"] = (await _data.json()).results 
-
-                        }
-                        catch (err) {
-                            console.log(`Error fetching ${report}: `, err);
-                            // allReports.push({
-                            //     error: true,
-                            //     err: err,
-                            //     chul_status_all_hierachies: [],
-                            // })
-                        }
-                        break;
-                    case 'chul_count_all_hierachies':
-                        url = `${process.env.NEXT_PUBLIC_API_URL}/reporting/chul/?report_type=${report}`;
+                case 'gis':
+                    url = `${process.env.NEXT_PUBLIC_API_URL}/reporting/?report_type=${report}`;
 
 
-                        try {
+                    try {
 
-                            const _data = await fetch(url, {
-                                headers: {
-                                    Authorization: 'Bearer ' + token,
-                                    Accept: 'application/json',
-                                },
-                            })
+                        const _data = await fetch(url, {
+                            headers: {
+                                Authorization: 'Bearer ' + token,
+                                Accept: 'application/json',
+                            },
+                        })
 
-                            allReports["chul_count_all_hierachies"] = (await _data.json()).results 
+                        allReports["gis"] = (await _data.json()).results 
 
-                        }
-                        catch (err) {
-                            console.log(`Error fetching ${report}: `, err);
-                            // allReports.push({
-                            //     error: true,
-                            //     err: err,
-                            //     chul_count_all_hierachies: [],
-                            // })
-                        }
-                        break;
+                    }
+                    catch (err) {
+                        console.log(`Error fetching ${report}: `, err);
+                        // allReports.push({
+                        //     error: true,
+                        //     err: err,
+                        //     gis: [],
+                        // })
+                    }
+                    break;
+                
+                
+                case 'chul_status_all_hierachies':
+                    url = `${process.env.NEXT_PUBLIC_API_URL}/reporting/chul/?report_type=${report}`;
 
 
-                }
+                    try {
+
+                        const _data = await fetch(url, {
+                            headers: {
+                                Authorization: 'Bearer ' + token,
+                                Accept: 'application/json',
+                            },
+                        })
+
+                        allReports["chul_status_all_hierachies"] = (await _data.json()).results 
+
+                    }
+                    catch (err) {
+                        console.log(`Error fetching ${report}: `, err);
+                        // allReports.push({
+                        //     error: true,
+                        //     err: err,
+                        //     chul_status_all_hierachies: [],
+                        // })
+                    }
+                    break;
+                case 'chul_count_all_hierachies':
+                    url = `${process.env.NEXT_PUBLIC_API_URL}/reporting/chul/?report_type=${report}`;
+
+
+                    try {
+
+                        const _data = await fetch(url, {
+                            headers: {
+                                Authorization: 'Bearer ' + token,
+                                Accept: 'application/json',
+                            },
+                        })
+
+                        allReports["chul_count_all_hierachies"] = (await _data.json()).results 
+
+                    }
+                    catch (err) {
+                        console.log(`Error fetching ${report}: `, err);
+                        // allReports.push({
+                        //     error: true,
+                        //     err: err,
+                        //     chul_count_all_hierachies: [],
+                        // })
+                    }
+                    break;
+                    */
+
+
             }
 
-            return allReports
-        // }
-    // })
-    // .catch((err) => {
-    //     console.log('Error checking token: ', err);
-    //     if (typeof window !== 'undefined' && window) {
-    //         if (ctx?.asPath) {
-    //             window.location.href = ctx?.asPath;
-    //         } else {
-    //             window.location.href = '/reports';
-    //         }
-    //     }
-    //     setTimeout(() => {
-    //         return {
-    //             error: true,
-    //             err: err,
-    //             data: [],
-    //         };
-    //     }, 1000);
-    // }); 
-
+    return allReports
 }
+    
+
+
 
 export default Reports
