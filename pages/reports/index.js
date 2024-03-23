@@ -124,11 +124,11 @@ function Reports(props) {
 
                         {/* Tabs */}
                         <div className='w-full col-span-1 md:col-span-7 flex shadow-sm bg-gray-50 px-0 mx-0 h-700 flex-1'>
-                        <pre>
+                        {/* <pre>
                             {
-                                JSON.stringify(propsToGridData(props, 5)?.rows, null, 2)
+                                JSON.stringify(propsToGridData(props, 6)?.rows, null, 2)
                             }
-                        </pre>
+                        </pre> */}
                         <Tabs.Root
                             orientation="horizontal"
                             className="w-full flex flex-col tab-root"
@@ -258,7 +258,7 @@ function Reports(props) {
                                     >
                                         {/* Beds and Cots Data Grid */}
 
-                                        <div style={{ height: 700, width: '100%', backgroundColor: '#f9fafb' }} className='shadow-md col-span-7'>
+                                        <div className='shadow-md w-full max-h-min col-span-7'>
                                             <StyledDataGrid
                                                 columns={propsToGridData(props, 0).columns}
                                                 rows={propsToGridData(props, 0)?.rows}
@@ -276,7 +276,8 @@ function Reports(props) {
                                                                 display: 'flex',
                                                                 marginX: 'auto',
                                                                 gap: 5,
-                                                                padding: '0.45rem'
+                                                                padding: '0.45rem',
+                                                                alignItems:'start'
                                                             }}
                                                         />
                                                     ),
@@ -293,7 +294,7 @@ function Reports(props) {
                                     >
                                         {/* Keph Level Data grid */}
 
-                                        <div style={{ height: 700, width: '100%', backgroundColor: '#f9fafb' }} className='shadow-md col-span-7'>
+                                        <div className='shadow-md w-full max-h-min col-span-7'>
                                             <StyledDataGrid
                                                 columns={propsToGridData(props, 1).columns}
                                                 rows={propsToGridData(props, 1)?.rows}
@@ -311,7 +312,8 @@ function Reports(props) {
                                                                 display: 'flex',
                                                                 marginX: 'auto',
                                                                 gap: 5,
-                                                                padding: '0.45rem'
+                                                                padding: '0.45rem',
+                                                                alignItems:'start'
                                                             }}
                                                         />
                                                     ),
@@ -326,7 +328,7 @@ function Reports(props) {
 
                                     >
                                         {/* Facility Ownership */}
-                                        <div style={{ height: 700, width:'100%', backgroundColor: '#eff6ff' }} className='shadow-md col-span-7'>
+                                        <div className='shadow-mdw-full  max-h-min col-span-7'>
                                             
                                             <StyledDataGrid
                                                 columns={propsToGridData(props, 2).columns}
@@ -346,7 +348,8 @@ function Reports(props) {
                                                                 display: 'flex',
                                                                 marginX: 'auto',
                                                                 gap: 5,
-                                                                padding: '0.45rem'
+                                                                padding: '0.45rem',
+                                                                alignItems:'start'
                                                             }}
                                                         />
                                                     ),
@@ -362,7 +365,7 @@ function Reports(props) {
                                     >
                                         {/* Facility Type */}
 
-                                         <div style={{ height: 700, width: '100%', backgroundColor: '#eff6ff' }} className='shadow-md col-span-7'>
+                                         <div className='shadow-md w-full max-h-min col-span-7'>
                                             <StyledDataGrid
                                                 columns={propsToGridData(props, 3).columns}
                                                 rows={propsToGridData(props, 3)?.rows}
@@ -380,7 +383,8 @@ function Reports(props) {
                                                                 display: 'flex',
                                                                 marginX: 'auto',
                                                                 gap: 5,
-                                                                padding: '0.45rem'
+                                                                padding: '0.45rem',
+                                                                alignItems:'start'
                                                             }}
                                                         />
                                                     ),
@@ -395,7 +399,7 @@ function Reports(props) {
                                     >
                                         {/* Regulatory Body  */}                                  
                                         
-                                         <div style={{ height: 700, width: '100%', backgroundColor: '#eff6ff' }} className='shadow-md col-span-7'>
+                                         <div className='shadow-md w-full max-h-min col-span-7'>
                                             <StyledDataGrid
                                                 columns={propsToGridData(props, 4).columns}
                                                 rows={propsToGridData(props, 4)?.rows}
@@ -413,7 +417,8 @@ function Reports(props) {
                                                                 display: 'flex',
                                                                 marginX: 'auto',
                                                                 gap: 5,
-                                                                padding: '0.45rem'
+                                                                padding: '0.45rem',
+                                                                alignItems:'start'
                                                             }}
                                                         />
                                                     ),
@@ -427,7 +432,7 @@ function Reports(props) {
                                     >
                                         {/* Services */}                                  
                                         
-                                         <div style={{ height: 700, width: '100%', backgroundColor: '#eff6ff' }} className='shadow-md col-span-7'>
+                                         <div  className='shadow-md w-full max-h-min col-span-7'>
                                             <StyledDataGrid
                                                 columns={propsToGridData(props, 5).columns}
                                                 rows={propsToGridData(props, 5)?.rows}
@@ -445,7 +450,8 @@ function Reports(props) {
                                                                 display: 'flex',
                                                                 marginX: 'auto',
                                                                 gap: 5,
-                                                                padding: '0.45rem'
+                                                                padding: '0.45rem',
+                                                                alignItems:'start'
                                                             }}
                                                         />
                                                     ),
@@ -460,7 +466,7 @@ function Reports(props) {
                                     >
                                         {/* Infrastructure */}                                  
                                         
-                                        {/* <div style={{ height: 700, width: '100%', backgroundColor: '#eff6ff' }} className='shadow-md col-span-7'>
+                                         <div className='shadow-md w-full max-h-min col-span-7'>
                                             <StyledDataGrid
                                                 columns={propsToGridData(props, 6).columns}
                                                 rows={propsToGridData(props, 6)?.rows}
@@ -478,13 +484,14 @@ function Reports(props) {
                                                                 display: 'flex',
                                                                 marginX: 'auto',
                                                                 gap: 5,
-                                                                padding: '0.45rem'
+                                                                padding: '0.45rem',
+                                                                alignItems:'start'
                                                             }}
                                                         />
                                                     ),
                                                 }}
                                             />
-                                        </div> */}
+                                        </div> 
 
 
                                     </Tabs.Panel>
@@ -495,10 +502,10 @@ function Reports(props) {
 
                                             {/* Human resource */}                                  
                                         
-                                            {/* <div style={{ height: 700, width: '100%', backgroundColor: '#eff6ff' }} className='shadow-md col-span-7'>
+                                         <div  className='shadow-md w-full max-h-min col-span-7'>
                                             <StyledDataGrid
-                                                columns={propsToGridData(props, 11).columns}
-                                                rows={propsToGridData(props, 11)?.rows}
+                                                columns={propsToGridData(props, 7).columns}
+                                                rows={propsToGridData(props, 7)?.rows}
                                                 getRowClassName={() => `super-app-theme--Row`}
                                                 rowSpacingType="border"
                                                 showColumnRightBorder
@@ -513,13 +520,14 @@ function Reports(props) {
                                                                 display: 'flex',
                                                                 marginX: 'auto',
                                                                 gap: 5,
-                                                                padding: '0.45rem'
+                                                                padding: '0.45rem',
+                                                                alignItems:'start'
                                                             }}
                                                         />
                                                     ),
                                                 }}
                                             />
-                                             </div> */}
+                                             </div> 
 
                                     </Tabs.Panel>
                                     <Tabs.Panel
@@ -527,7 +535,7 @@ function Reports(props) {
                                         className="grow-1 tab-panel"
                                     >
                                         {/* Geocodes */}
-                                        {/* <div style={{ height: 700, width: '100%', backgroundColor: '#eff6ff' }} className='shadow-md col-span-7'>
+                                        {/* <div  className='shadow-md w-full max-h-min col-span-7'>
                                             <StyledDataGrid
                                                 columns={[
                                                     {
@@ -582,7 +590,8 @@ function Reports(props) {
                                                                 display: 'flex',
                                                                 marginX: 'auto',
                                                                 gap: 5,
-                                                                padding: '0.45rem'
+                                                                padding: '0.45rem',
+                                                                alignItems:'start'
                                                             }}
                                                         />
                                                     ),
@@ -641,7 +650,7 @@ function Reports(props) {
                                         {/* CHU Services */}                                  
                                         {/* { console.log({rows:propsToGridData(props, 9)?.rows, columns: propsToGridData(props, 9).columns})  } */}
                                         
-                                        {/* <div style={{ height: 700, width: '100%', backgroundColor: '#eff6ff' }} className='shadow-md col-span-7'>
+                                        {/* <div className='shadow-md w-full max-h-min col-span-7'>
                                             <StyledDataGrid
                                                 columns={propsToGridData(props, 9).columns}
                                                 rows={propsToGridData(props, 9)?.rows}
@@ -659,7 +668,8 @@ function Reports(props) {
                                                                 display: 'flex',
                                                                 marginX: 'auto',
                                                                 gap: 5,
-                                                                padding: '0.45rem'
+                                                                padding: '0.45rem',
+                                                                alignItems:'start'
                                                             }}
                                                         />
                                                     ),
@@ -674,7 +684,7 @@ function Reports(props) {
                                     className="grow-1 tab-panel"
                                     >
                                         {/* CHU Status */}
-                                        {/* <div style={{ height: 700, width: '100%', backgroundColor: '#eff6ff' }} className='shadow-md col-span-7'>
+                                        {/* <div className='shadow-md w-full max-h-min col-span-7'>
                                             { console.log({rows: propsToGridData(props, 7).rows }) }
                                             <StyledDataGrid
                                                 columns={propsToGridData(props, 7).columns}
@@ -693,7 +703,8 @@ function Reports(props) {
                                                                 display: 'flex',
                                                                 marginX: 'auto',
                                                                 gap: 5,
-                                                                padding: '0.45rem'
+                                                                padding: '0.45rem',
+                                                                alignItems:'start'
                                                             }}
                                                         />
                                                     ),
@@ -709,7 +720,7 @@ function Reports(props) {
                                     className="grow-1 tab-panel"
                                     >
                                         {/* CHU Status */}
-                                        {/* <div style={{ height: 700, width: '100%', backgroundColor: '#eff6ff' }} className='shadow-md col-span-7'>
+                                        {/* <div className='shadow-md w-full max-h-min col-span-7'>
                                             <StyledDataGrid
                                                 columns={propsToGridData(props, 10).columns}
                                                 rows={propsToGridData(props, 10)?.rows}
@@ -727,7 +738,8 @@ function Reports(props) {
                                                                 display: 'flex',
                                                                 marginX: 'auto',
                                                                 gap: 5,
-                                                                padding: '0.45rem'
+                                                                padding: '0.45rem',
+                                                                alignItems:'start'
                                                             }}
                                                         />
                                                     ),
@@ -835,7 +847,6 @@ Reports.getInitialProps = async (ctx) => {
                         })
 
                         allReports["facility_keph_level_report_all_hierachies"] = (await _keph.json()).results?.results
-                        console.log(allReports["facility_keph_level_report_all_hierachies"])
                     }
 
                     catch (err) {
@@ -857,7 +868,6 @@ Reports.getInitialProps = async (ctx) => {
                         })
 
                         allReports["facility_owner_report_all_hierachies"] = (await _data.json())?.results?.results
-                        console.log(allReports["facility_owner_report_all_hierachies"])
                     }
                     catch (err) {
                         console.log(`Error fetching ${report}: `, err);
@@ -934,9 +944,8 @@ Reports.getInitialProps = async (ctx) => {
                         }
 
                         break;
-                        /*
                 case 'facility_human_resource_category_report_all_hierachies':
-                            url = `${process.env.NEXT_PUBLIC_API_URL}/reporting/?report_type=${report}`;
+                            url = `${process.env.NEXT_PUBLIC_API_URL}/reporting/?report_type=facility_human_resource_category_report_all_hierachies${ctx?.query?.groupby !== undefined ? `&report_groupby=${ctx?.query?.groupby}` : '&report_groupby=county'}`;
 
 
                             try {
@@ -948,21 +957,18 @@ Reports.getInitialProps = async (ctx) => {
                                     },
                                 })
 
-                                allReports["facility_human_resource_category_report_all_hierachies"] = (await _data.json()).results 
+                                allReports["facility_human_resource_category_report_all_hierachies"] = (await _data.json()).results?.results 
 
                             }
                             catch (err) {
                                 console.log(`Error fetching ${report}: `, err);
-                                // allReports.push({
-                                //     error: true,
-                                //     err: err,
-                                //     facility_human_resource_category_report_all_hierachies: [],
-                                // })
+                                
                             }
 
                             break;
+                     
                 case 'facility_infrastructure_report_all_hierachies':
-                            url = `${process.env.NEXT_PUBLIC_API_URL}/reporting/?report_type=${report}`;
+                            url = `${process.env.NEXT_PUBLIC_API_URL}/reporting/?report_type=facility_infrastructure_report_all_hierachies${ctx?.query?.groupby !== undefined ? `&report_groupby=${ctx?.query?.groupby}` : '&report_groupby=county'}`;
 
 
                             try {
@@ -974,19 +980,17 @@ Reports.getInitialProps = async (ctx) => {
                                     },
                                 })
 
-                                allReports["facility_infrastructure_report_all_hierachies"] = (await _data.json()).results 
+                                allReports["facility_infrastructure_report_all_hierachies"] = (await _data.json())?.results?.results 
 
                             }
                             catch (err) {
                                 console.log(`Error fetching ${report}: `, err);
-                                // allReports.push({
-                                //     error: true,
-                                //     err: err,
-                                //     facility_infrastructure_report_all_hierachies: [],
-                                // })
+                                
                             }
 
                             break;
+
+                            /*
                 case 'chul_status_all_hierachies':
                     url = `${process.env.NEXT_PUBLIC_API_URL}/reporting/chul/?report_type=${report}`;
 

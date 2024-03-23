@@ -1186,7 +1186,7 @@ import { OtherHouses } from "@mui/icons-material";
 //                         "POWER SOURCE": cat_power_source,
 //                         "ACCESS ROADS": cat_access_road,
 //                         "COLD CHAIN": cat_cold_chain,
-//                         "MEDICAL WASTE MANAGEMENT": cat_waste_medical,
+//                         "MEDICAL WASTE MANAGEMENT": cat_waste_medicall,
 //                         "Ultrasound Machines": ultrasound_machines,
 //                         "Dialysis machines": dialysis_machines,
 //                         "Generator": generator,
@@ -1257,7 +1257,7 @@ import { OtherHouses } from "@mui/icons-material";
 //                    cat_power_source,
 //                    cat_access_road,
 //                    cat_cold_chain,
-//                    cat_waste_medical,
+//                    cat_waste_medicall,
 //                     ultrasound_machines,
 //                     dialysis_machines,
 //                    generator,
@@ -1378,7 +1378,7 @@ import { OtherHouses } from "@mui/icons-material";
 //                     },
 //                     {
 //                         headerName: 'MEDICAL WASTE MANAGEMENT',
-//                         field: 'cat_waste_medical',
+//                         field: 'cat_waste_medicall',
 //                         width:200
 
 //                     },
@@ -2284,17 +2284,6 @@ export function propsToGridData(props, index) {
                     ngo: result[1]['Non-Governmental_Organizations'],
                     fbo: result[1]['Faith_Based_Organization'],
                     id: index
-
-                    /*moh: result[1]['Ministry_of_Health'],
-                    ppb: result[1]['Pharmacy_&_Poisons_Board'],
-                    knrc: result[1]['Kenya_Nuclear_Regulatory_Council_(_Radiation_Board)'],
-                    kmpdb: result[1]['Kenya_MPDB'],
-                    nck: result[1]['Nursing_Council_of_Kenya_(Private_Practice)'],
-                    kpb: result[1]['Kenya_Physiotherapy_Board'],
-                    coc: result[1]['Clinical_Officers_Council'],
-                    kmlttb: result[1]['Kenya_Medical_Laboratory,_Tech_&_Technologists_Board'],
-                    kndi: result[1]['Kenya_Nutrition_and_Dietetic_Institute'],
-                    other: result[1]['Other'],*/
                 })),
                 columns: [
                     {
@@ -2317,63 +2306,6 @@ export function propsToGridData(props, index) {
                         field: 'fbo',
                         flex: 1
                     }
-                    /*{
-                        headerName: 'County',
-                        field: 'county',
-                        flex: 1
-                    },
-                    {
-                        headerName: 'Ministry of Health',
-                        field: 'moh',
-                        flex: 1
-                    },
-                    {
-                        headerName: 'Pharmacy & Poisons Board',
-                        field: 'ppb',
-                        flex: 1
-                    },
-                    {
-                        headerName: 'Kenya Nuclear Regulatory Council ( Radiation Board)',
-                        field: 'knrc',
-                        flex: 1
-                    },
-                    {
-                        headerName: 'Kenya MPDB',
-                        field: 'kmpdb',
-                        flex: 1
-                    },
-                    {
-                        headerName: 'Nursing Council of Kenya (Private Practice)',
-                        field: 'nck',
-                        flex: 1
-                    },
-                    {
-                        headerName: 'Kenya Physiotherapy Board',
-                        field: 'kpb',
-                        flex: 1
-                    },
-
-                    {
-                        headerName: 'Clinical Officers Council',
-                        field: 'coc',
-                        flex: 1
-                    },
-                    {
-                        headerName: 'Kenya Medical Laboratory, Tech & Technologists Board',
-                        field: 'kmlttb',
-                        flex: 1
-                    },
-                    {
-                        headerName: 'Kenya Nutrition and Dietetic Institute',
-                        field: 'kndi',
-                        flex: 1
-                    },
-                    {
-                        headerName: 'Other',
-                        field: 'other',
-                        flex: 1
-                    }*/
-
 
                 ]
             }
@@ -2432,8 +2364,6 @@ export function propsToGridData(props, index) {
                         field: 'hospitals',
                         flex: 1
                     }
-
-
 
                 ]
             }
@@ -2533,7 +2463,7 @@ export function propsToGridData(props, index) {
                     cat_inpatient: result[1]["SPECIALIZED_IN-PATIENT_SERVICES"],
                     cat_icu: result[1]["ICU_SERVICES"],
                     cat_hiv: result[1]["HIV_TREATMENT"],
-                    cat_postnatal_care: result[1]["POSTNATAL_CARE SERVICES"],
+                    cat_postnatal_care: result[1]["POSTNATAL_CARE_SERVICES"],
                     cat_maternity: result[1]["MATERNITY_SERVICES"],
                     cat_nutrition: result[1]["NUTRITION_SERVICES"],
                     cat_fp: result[1]["FAMILY_PLANNING"],
@@ -2803,6 +2733,595 @@ export function propsToGridData(props, index) {
 
                 ]
 
+
+            }
+        case 6:
+
+            return {
+                rows: Object.entries(props?.facility_infrastructure_report_all_hierachies)?.map((result, index) => ({
+                    county: result[0],
+                    cat_ict_infrastructure: result[1]["ICT_INFRASTRUCTURE"],
+                    cat_communications: result[1]["COMMUNICATIONS"],
+                    cat_water_source: result[1]["WATER_SOURCE"],
+                    cat_medical_equipment: result[1]["MEDICAL_EQUIPMENT"],
+                    cat_power_source: result[1]["POWER_SOURCE"],
+                    cat_access_road: result[1]["ACCESS_ROADS"],
+                    cat_cold_chain: result[1]["COLD_CHAIN"],
+                    cat_waste_medical: result[1]["MEDICAL_WASTE_MANAGEMENT"],
+                    ultrasound_machines: result[1]["Ultrasound_Machines"],
+                    dialysis_machines: result[1]["Dialysis_machines"],
+                    generator: result[1]["Generator"],
+                    back_ups: result[1]["Battery_Backups"],
+                    furniture: result[1]["Furniture"],
+                    oxygen_cylinder: result[1]["Oxygen_Cylinders"],
+                    tv_screen: result[1]["TV_Screen"],
+                    tarmac: result[1]["Tarmac"],
+                    printers: result[1]["Printers"],
+                    mri_machines: result[1]["MRI_Machines"],
+                    teleconferencing_facility: result[1]["Teleconferencing_Facility"],
+                    cold_room: result[1]["Cold_room"],
+                    freezers: result[1]["Freezers"],
+                    gravel: result[1]["Gravel"],
+                    open_burning: result[1]["Open_burning"],
+                    dump_without_burning: result[1]["Dump_without_burning"],
+                    routers: result[1]["Routers"],
+                    gas: result[1]["Gas"],
+                    murrum: result[1]["Graded_(_Murrum_)"],
+                    ventilators: result[1]["Ventilators"],
+                    scanners: result[1]["Scanners"],
+                    laptops: result[1]["Laptops"],
+                    boiler: result[1]["Boiler"],
+                    solar: result[1]["Solar"],
+                    wireless_mobile: result[1]["Wireless_Mobile"],
+                    ct_scan_machines: result[1]["CT_Scan_Machines"],
+                    incinerator: result[1]["Incinerator"],
+                    main_grid: result[1]["Main_Grid"],
+                    sewer_system: result[1]["Sewer_system"],
+                    radio_call: result[1]["Radio_Call"],
+                    oxygen_plant: result[1]["Oxygen_Plant"],
+                    bio_gas: result[1]["Bio-Gas"],
+                    roof_harvested_water: result[1]["Roof_Harvested_Water"],
+                    river_dam_lake: result[1]["River_/_Dam_/_Lake"],
+                    protected_wells: result[1]["Protected_Wells_/_Springs"],
+                    mobile_phone: result[1]["Mobile_Phone"],
+                    office_desk: result[1]["Office_desk"],
+                    cool_boxes: result[1]["Cool_boxes"],
+                    wifi: result[1]["Wi-Fi"],
+                    remove_offsite: result[1]["Remove_offsite"],
+                    x_ray_machines: result[1]["X-Ray_Machines"],
+                    vaccine_carriers: result[1]["Vaccine_Carriers"],
+                    donkey_cart: result[1]["Donkey_Cart_/_Vendor"],
+                    video_conferencing_space: result[1]["Video_Conferencing_space"],
+                    pipped_oxygen: result[1]["Pipped_Oxygen"],
+                    lan: result[1]["LAN"],
+                    piped_water: result[1]["Piped_Water"],
+                    wan: result[1]["WAN_(Internet_connectivity)"],
+                    video_confrencing_facility: result[1]["Video_Conferencing_Facility"],
+                    servers: result[1]["Servers"],
+                    fridges: result[1]["Fridges"],
+                    desktops: result[1]["Desktops"],
+                    land_line: result[1]["Land_Line"],
+                    handhedl_devices: result[1]["Handheld_devices"],
+                    bore_hole: result[1]["Bore_Hole"],
+                    eathen_roa: result[1]["Earthen_Road"],
+                    id: index
+
+                })),
+
+                columns: [
+                    {
+                        headerName: 'County',
+                        field: 'county',
+                        width: 100
+                    },
+                    {
+                        headerName: 'ICT INFRASTRUCTURE',
+                        field: 'cat_ict_infrastructure',
+                        width: 200
+
+                    },
+                    {
+                        headerName: 'COMMUNICATIONS',
+                        field: 'cat_communications',
+                        width: 200
+                    },
+                    {
+                        headerName: 'WATER SOURCE',
+                        field: 'cat_water_source',
+                        width: 200
+
+                    },
+                    {
+                        headerName: 'MEDICAL EQUIPMENT',
+                        field: 'cat_medical_equipment',
+                        width: 200
+                    },
+                    {
+                        headerName: 'POWER SOURCE',
+                        field: 'cat_power_source',
+                        width: 200
+
+                    },
+                    {
+                        headerName: 'ACCESS ROADS',
+                        field: 'cat_access_road',
+                        width: 200
+
+                    },
+                    {
+                        headerName: 'COLD CHAIN',
+                        field: 'cat_cold_chain',
+                        width: 200
+                    },
+                    {
+                        headerName: 'MEDICAL WASTE MANAGEMENT',
+                        field: 'cat_waste_medical',
+                        width: 200
+
+                    },
+                    {
+                        headerName: 'Dialysis machines',
+                        field: 'dialysis_machines',
+                        width: 200
+
+                    },
+                    {
+                        headerName: 'Ultrasound Machines',
+                        field: 'ultrasound_machines',
+                        width: 200
+
+                    },
+
+                    {
+                        headerName: 'Generator',
+                        field: 'generator',
+                        width: 200
+
+                    },
+                    {
+                        headerName: 'Battery Backups',
+                        field: 'back_ups',
+                        width: 200
+
+                    },
+
+                    {
+                        headerName: 'Furniture',
+                        field: 'furniture',
+                        width: 200
+
+                    },
+                    {
+                        headerName: 'TV Screen',
+                        field: 'tv_screen',
+                        width: 200
+
+                    },
+                    {
+                        headerName: 'Tarmac',
+                        field: 'tarmac',
+                        width: 200
+
+                    },
+
+                    {
+                        headerName: 'Printers',
+                        field: 'printers',
+                        width: 200
+
+                    },
+                    {
+                        headerName: 'MRI Machines',
+                        field: 'mri_machines',
+                        width: 200
+
+                    },
+                    {
+                        headerName: 'Cold room',
+                        field: 'cold_room',
+                        width: 200
+
+                    },
+                    {
+                        headerName: 'Freezers',
+                        field: 'freezers',
+                        width: 200
+
+                    },
+                    {
+                        headerName: 'Gravel',
+                        field: 'gravel',
+                        width: 200
+
+                    },
+                    {
+                        headerName: 'Open burning',
+                        field: 'open_burning',
+                        width: 200
+
+                    },
+                    {
+                        headerName: 'Dump without burning',
+                        field: 'dump_without_burning',
+                        width: 200
+
+                    },
+                    {
+                        headerName: 'Routers',
+                        field: 'routers',
+                        width: 200
+
+                    },
+                    {
+                        headerName: 'Gas',
+                        field: 'gas',
+                        width: 200
+
+                    },
+                    {
+                        headerName: 'Graded ( Murrum )',
+                        field: 'murrum',
+                        width: 200
+
+                    },
+                    {
+                        headerName: 'Ventilators',
+                        field: 'ventilators',
+                        width: 200
+
+                    },
+                    {
+                        headerName: 'Scanners',
+                        field: 'scanners',
+                        width: 200
+
+                    },
+                    {
+                        headerName: 'Laptops',
+                        field: 'laptops',
+                        width: 200
+
+                    },
+                    {
+                        headerName: 'Boiler',
+                        field: 'boiler',
+                        width: 200
+
+                    },
+                    {
+                        headerName: 'Solar',
+                        field: 'solar',
+                        width: 200
+
+                    },
+                    {
+                        headerName: 'Wireless Mobile',
+                        field: 'wireless_mobile',
+                        width: 200
+
+                    },
+                    {
+                        headerName: 'CT Scan Machines',
+                        field: 'ct_scan_machines',
+                        width: 200
+
+                    },
+                    {
+                        headerName: 'Incinerator',
+                        field: 'incinerator',
+                        width: 200
+
+                    },
+                    {
+                        headerName: 'Main Grid',
+                        field: 'main_grid',
+                        width: 200
+
+                    },
+                    {
+                        headerName: 'Sewer system',
+                        field: 'sewer_system',
+                        width: 200
+
+                    },
+                    {
+                        headerName: 'Oxygen Plant',
+                        field: 'oxygen_plant',
+                        width: 200
+
+                    },
+                    {
+                        headerName: 'Bio-Gas',
+                        field: 'bio_gas',
+                        width: 200
+
+                    },
+                    {
+                        headerName: 'Roof Harvested Water',
+                        field: 'roof_harvested_water',
+                        width: 200
+
+                    },
+                    {
+                        headerName: 'River / Dam / Lake',
+                        field: 'river_dam_lake',
+                        width: 200
+
+                    },
+                    {
+                        headerName: 'Protected Wells / Springs',
+                        field: 'protected_wells',
+                        width: 200
+
+                    },
+                    {
+                        headerName: 'Mobile Phone',
+                        field: 'mobile_phone',
+                        width: 200
+
+                    },
+                    {
+                        headerName: 'Office desk',
+                        field: 'office_desk',
+                        width: 200
+
+                    },
+                    {
+                        headerName: 'Cool boxes',
+                        field: 'cool_boxes',
+                        width: 200
+
+                    },
+                    {
+                        headerName: 'Wi-Fi',
+                        field: 'wifi',
+                        width: 200
+
+                    },
+                    {
+                        headerName: 'Remove offsite',
+                        field: 'remove_offsite',
+                        width: 200
+
+                    },
+                    {
+                        headerName: 'X-Ray Machines',
+                        field: 'x_ray_machines',
+                        width: 200
+
+                    },
+                    {
+                        headerName: 'Vaccine Carriers',
+                        field: 'vaccine_carriers',
+                        width: 200
+
+                    },
+                    {
+                        headerName: 'Video Conferencing space',
+                        field: 'video_conferencing_space',
+                        width: 200
+
+                    },
+                    {
+                        headerName: 'Pipped Oxygen',
+                        field: 'pipped_oxygen',
+                        width: 200
+
+                    },
+                    {
+                        headerName: 'LAN',
+                        field: 'lan',
+                        width: 200
+
+                    },
+                    {
+                        headerName: 'Piped Water',
+                        field: 'piped_water',
+                        width: 200
+
+                    },
+                    {
+                        headerName: 'WAN (Internet connectivity)',
+                        field: 'wan',
+                        width: 200
+
+                    },
+                    {
+                        headerName: 'Video Conferencing Facility',
+                        field: 'video_confrencing_facility',
+                        width: 200
+
+                    },
+                    {
+                        headerName: 'Servers',
+                        field: 'servers',
+                        width: 200
+
+                    },
+                    {
+                        headerName: 'Fridges',
+                        field: 'fridges',
+                        width: 200
+
+                    },
+                    {
+                        headerName: 'Desktops',
+                        field: 'desktops',
+                        width: 200
+
+                    },
+                    {
+                        headerName: 'Land Line',
+                        field: 'Handheld devices',
+                        width: 200
+                    },
+                    {
+                        headerName: 'Bore Hole',
+                        field: 'bore_hole',
+                        width: 200
+
+                    },
+                    {
+                        headerName: 'Earthen Road',
+                        field: 'eathen_road',
+                        width: 200
+
+                    }
+
+
+
+                ]
+            }
+
+        case 7:
+            return {
+                rows: Object.entries(props?.facility_human_resource_category_report_all_hierachies)?.map((result, index) => ({
+                    county: result[0],
+                    clinical_officers: result[1]["Clinical_Officers"],
+                    dental_staff: result[1]["Dental_staff"],
+                    mdeical_engineering: result[1]["Medical_Engineering"],
+                    env_health: result[1]["Environmental_Health"],
+                    medical_officer: result[1]["Medical_Officers_&_Specialists"],
+                    general_support_staffs: result[1]["General_Support_Staffs"],
+                    ict_office: result[1]["ICT_Office"],
+                    medical_laboratory: result[1]["Medical_Laboratory"],
+                    communty_health_services: result[1]["Community_Health_Services"],
+                    pharmacy_staffs: result[1]["Pharmacy_Staffs"],
+                    medical_social_work: result[1]["Medical_Social_Work"],
+                    nurses_and_specailist: result[1]["Nurses_and_specialist"],
+                    health_records_and_info: result[1]["Health_Records_and_Information"],
+                    health_promotion: result[1]["Health_Promotion"],
+                    clinical_psychology: result[1]["Clinical_Psychology"],
+                    nutrition_services: result[1]["Nutrition_Services"],
+                    health_administrative_staffs: result[1]["Health_Administrative_Staffs"],
+                    rehabilitative_staff: result[1]["Rehabilitative_staff"],
+                    // clinicians: result[1]["CLINICIANS"],
+                    diagnostics_imaging: result[1]["Diagnostics_&_Imaging"],
+                    support_staff: result[1]["Support_Staff"],
+                    id: index
+                })),
+
+                columns: [
+                    {
+                        headerName: 'CLINICAL OFFICER',
+                        field: 'clinical_officers',
+                        width:200
+                    
+                    },
+                    {
+                        headerName: 'DENTAL STAFF',
+                        field: 'dental_staff',
+                        width:200
+                    },
+                    {
+                        headerName: 'MEDICAL ENGINEERING',
+                        field: 'mdeical_engineering',
+                        width:200
+                    
+                    },
+                    {
+                        headerName: 'ENVIROMENTAL HEALTH',
+                        field: 'env_health',
+                        width:200
+                    },
+                    {
+                        headerName: 'MEDICAL OFFICERS & SPECIALISTS',
+                        field: 'medical_officer',
+                        width:200
+                    
+                    },
+                    {
+                        headerName: 'GENERAL SUPPORT STAFF',
+                        field: 'general_support_staffs',
+                        width:200
+                    
+                    },
+                    {
+                        headerName: 'ICT OFFICER',
+                        field: 'ict_office',
+                        width:200
+                    },
+                    {
+                        headerName: 'MEDICAL LABORATORY',
+                        field: 'medical_laboratory',
+                        width:200
+                    
+                    },
+                    {
+                        headerName: 'COMMUNITY HEALTH SERVICES',
+                        field: 'communty_health_services',
+                        width:200
+                    
+                    },
+                    {
+                        headerName: 'PHARMACY STAFF',
+                        field: 'pharmacy_staffs',
+                        width:200
+                    
+                    },
+                    {
+                        headerName: 'MEDICAL SOCIAL WORK',
+                        field: 'medical_social_work',
+                        width:200
+                    
+                    },
+                    {
+                        headerName: 'NURSERS AND SPECIALIST',
+                        field: 'nurses_and_specailist',
+                        width:200
+                    
+                    },
+                    {
+                        headerName: 'HEALTH RECORDS AND INFORMATION',
+                        field: 'health_records_and_info',
+                        width:200
+                    
+                    },
+                    {
+                        headerName: 'HEALTH PROMOTION',
+                        field: 'health_promotion',
+                        width:200
+                    
+                    },
+                    {
+                        headerName: 'CLINICAL PYSCHOLOGY',
+                        field: 'clinical_psychology',
+                    
+                        width:200
+                    
+                    },
+                    {
+                        headerName: 'NUTRITION SERVICES',
+                        field: 'nutrition_services',
+                        width:200
+                    
+                    },
+                    {
+                        headerName: 'HEALTH ADMINISTRATIVE STAFF',
+                        field: 'health_administrative_staffs',
+                        width:200
+                    
+                    },
+                    {
+                        headerName: 'REHABILITATIVE STAFF',
+                        field: 'rehabilitative_staff',
+                        width:200
+                    
+                    },
+                    // {
+                    //     headerName: 'CLINICIANS',
+                    //     field: 'clinicians',
+                    //     width:200
+                    
+                    // },
+                    {
+                        headerName: 'SUPPORT STAFFS',
+                        field: 'support_staff',
+                        width:200
+                    
+                    }
+                    
+                ]
 
             }
     }
