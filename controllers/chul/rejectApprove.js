@@ -77,8 +77,11 @@ const approveCHUUpdates = async (e, id, status, router, token) => {
   }
 }
 
-const approveCHU = (e, id, comment, state, router, token) => {
+const approveCHU = (e, id, comment, state, router, token, setSubmitting, alert, setFormError) => {
   e.preventDefault();
+
+  setSubmitting(true);
+
   let payload = {}
   if (state == true) {
     payload = {
@@ -108,21 +111,39 @@ const approveCHU = (e, id, comment, state, router, token) => {
       body: JSON.stringify(payload)
     })
       .then(resp => resp)
-      .then(res => {
-        router.push({
-          pathname: '/community-units',
-          query: {}
-        })
+      .then(async(res) => {
+
+        if(res.ok) {
+          alert.success("Approved CHU successfully")
+          router.push({
+            pathname: '/community-units',
+            query: {}
+          })
+        } else {
+          alert.error(`Unable to approve CHU`)
+           
+           const detail = await res.json()
+
+           const error = Array.isArray(Object.values(detail)) && Object.values(detail).length == 1 ? detail['Error!'][0] : ''
+           console.log({res, detail})
+
+           setFormError(error)
+
+        }
+       
 
 
       })
       .catch(e => {
-        setStatus({ status: 'error', message: e })
+
+        console.error(e.message)
       })
   } catch (e) {
 
     // setStatus({ status: 'error', message: e })
     console.error(e.message)
+  } finally{
+    setSubmitting(false)
   }
 }
 
