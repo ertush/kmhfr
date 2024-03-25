@@ -139,9 +139,8 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
       })
 
         .then(async resp => {
-          if (resp.status == 200 || resp.status == 204) {
+          if (resp.ok) {
 
-            setSubmitting(false)
 
             alert.success(`${props?.name} Basic Details Updated successfully`, {
               containerStyle: {
@@ -151,10 +150,12 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
             })
 
           } else {
-            // const detail = await resp.json()
+            const detail = await resp.json()
+  
+            const error = Array.isArray(Object.values(detail)) && Object.values(detail).length == 1 ? detail[Object.keys(detail)[0]][0] : ''
 
-            setSubmitting(false)
-            // setFormError(Array.isArray(Object.values(detail)) && Object.values(detail).length == 1 && typeof Object.values(detail)[0] == 'string' && detail[0][0])
+            setFormError(error)
+
             alert.error('Unable to save Community Units Basic details')
           }
         })
@@ -162,6 +163,10 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
 
     catch (e) {
       alert.error('Error Occured: ' + e.message)
+    }
+    finally {
+      setSubmitting(false)
+
     }
 
 
@@ -181,6 +186,8 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
       className="flex m-1 p-3 bg-gray-50 flex-col w-full items-start justify-start gap-3"
       onSubmit={handleFormSubmit}
     >
+
+     
 
       {formError && <Alert severity="error" sx={{ width: '100%', marginY: '15px' }}>{formError}</Alert>}
 
@@ -589,7 +596,7 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
         </div>
         <div className="sticky top-0 right-10 w-full flex justify-end">
           <button
-            className=" bg-gray-500 rounded p-2 text-white flex text-md font-semibold mt-3"
+            className="bg-gray-500 rounded p-2 text-white flex text-md font-semibold mt-3"
             onClick={handleAddContact}
           >
             {`Add Contact`}
@@ -603,6 +610,7 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
 
           <button
             type="submit"
+            disabled={submitting}
             className="flex items-center justify-end space-x-2 bg-gray-500 rounded  p-1 px-2"
           >
             <span className="text-medium font-semibold text-white">
@@ -616,7 +624,7 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
             </span>
             {
               submitting &&
-              <span className='text-white'>Saving </span>
+              <span className='text-white'>Saving.. </span>
             }
 
           </button>

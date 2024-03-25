@@ -11,6 +11,8 @@ import {
 } from '@mui/x-data-grid';
 import { propsToGridData } from '../../components/ReportsData';
 import { UserContext } from '../../providers/user';
+import Select from 'react-select';
+import { useRouter } from 'next/router';
 
 
 const StyledDataGrid = styled(DataGrid)(() => ({
@@ -30,31 +32,45 @@ function Reports(props) {
 
     const userCtx = useContext(UserContext);
     const [user, setUser] = useState(userCtx);
+    // const [orgUnitFilter, setOrgUnitFilter] = useState('county')
+    // const [fileteredReports, setFilteredReports] = useState({})
 
+    const [bedsCotsReport, setBedsCotsReport] = useState({rows: null, columns: null})
+    const [kephReport, setKephReport] = useState({rows: null, columns: null})
+    const [ownershipReport, setOwnershipReport] = useState({rows: null, columns: null})
+    const [facilityTypeReport, setFacilityTypeReport] = useState({rows: null, columns: null})
+    const [facilityRegulatorReport, setFacilityRegulatorReport] = useState({rows: null, columns: null})
+    const [servicesReport, setServicesReport] = useState({rows: null, columns: null})
+    const [infrastructureReport, setInfrasturctureReport] = useState({rows: null, columns: null})
+    const [hrReport, setHrReport] = useState({rows: null, columns: null})
+    const [gisReport, setGisReport] = useState({rows: null, columns: null})
+    const [loading, setLoading] = useState(false)
+
+    const router = useRouter()
 
     // Constants
 
-    const gisRowData = ((gisData) => 
-        gisData.map(({
-             facility_county: county,
-             facility_sub_county: sub_county,
-             facility_ward: ward,
-             facility_name: name,
-             facility_code: code,
-             facility_lat:lat,
-             facility_long:lng,
+    // const gisRowData = ((gisData) => 
+    //     gisData.map(({
+    //          facility_county: county,
+    //          facility_sub_county: sub_county,
+    //          facility_ward: ward,
+    //          facility_name: name,
+    //          facility_code: code,
+    //          facility_lat:lat,
+    //          facility_long:lng,
              
-         }, index) => ({
-             county,
-             sub_county,
-             ward,
-             name,
-             code,
-             lat,
-             lng,
-             id:index
-         }))
-     )(props?.gis)
+    //      }, index) => ({
+    //          county,
+    //          sub_county,
+    //          ward,
+    //          name,
+    //          code,
+    //          lat,
+    //          lng,
+    //          id:index
+    //      }))
+    //  )(props?.gis)
 
     const [reportTitle, setReportTitle] = useState('Beds and Cots');
     const [isClient, setIsClient] = useState(false);
@@ -70,8 +86,165 @@ function Reports(props) {
 		}
 
         setIsClient(true);
+
+        setBedsCotsReport({
+            rows: propsToGridData(props, 0)?.rows, 
+            columns: propsToGridData(props, 0)?.columns
+        })
+        setKephReport({
+            rows: propsToGridData(props, 1)?.rows, 
+            columns: propsToGridData(props, 1)?.columns
+        })
+        setOwnershipReport({
+            rows: propsToGridData(props, 2)?.rows, 
+            columns: propsToGridData(props, 2)?.columns
+        })
+        setFacilityTypeReport({
+            rows: propsToGridData(props, 3)?.rows, 
+            columns: propsToGridData(props, 3)?.columns
+        })
+        setFacilityRegulatorReport({
+            rows: propsToGridData(props, 4)?.rows, 
+            columns: propsToGridData(props, 4)?.columns
+        })
+        setServicesReport({
+            rows: propsToGridData(props, 5)?.rows, 
+            columns: propsToGridData(props, 5)?.columns
+        })
+        setInfrasturctureReport({
+            rows: propsToGridData(props, 6)?.rows, 
+            columns: propsToGridData(props, 6)?.columns
+        })
+        setHrReport({
+            rows: propsToGridData(props, 7)?.rows, 
+            columns: propsToGridData(props, 7)?.columns
+        })
+        setGisReport({
+            rows: propsToGridData(props, 8)?.rows, 
+            columns: propsToGridData(props, 8)?.columns
+        })
+
+
+
         
 	}, [])
+
+
+   async function handleOrgUnitChange(value, reportType, token) {
+
+        if(value){
+            // setOrgUnitFilter(value)
+
+            let filterReport = {}
+            setLoading(true)
+
+            try {
+                const report = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/reporting/?report_type=${reportType}&report_groupby=${value}`, {
+                    headers: {
+                        "Accept": "application/json",
+                        "Authorization": `Bearer ${token}`
+                    }
+                })
+
+                filterReport = {[`${reportType}`]: (await report.json())?.results?.results }
+                // setFilteredReports({[`${reportType}`]: (await report.json())?.results?.results } ?? {})
+            } catch (e) {
+                console.error("Error: ", e.message)
+            } finally {
+
+                setLoading(false)
+                switch (reportType) {
+                    case 'beds_and_cots_by_all_hierachies':
+
+                        
+                        const bedscots = filterReport && propsToGridData(filterReport, 0, value)
+                        setBedsCotsReport({
+                            rows: bedscots?.rows,
+                            columns: bedscots?.columns
+                        })
+
+                        break;
+                    case 'facility_keph_level_report_all_hierachies':
+
+                        const keph = filterReport && propsToGridData(filterReport, 1, value)
+                        setKephReport({
+                            rows: keph?.rows,
+                            columns: keph?.columns
+                        })
+
+                        break;
+                    case 'facility_owner_report_all_hierachies':
+
+                        const owner = filterReport && propsToGridData(filterReport, 2, value)
+                        setOwnershipReport({
+                            rows: owner?.rows,
+                            columns: owner?.columns
+                        })
+
+                        break;
+                    case 'facility_type_report_all_hierachies':
+
+                        const type = filterReport && propsToGridData(filterReport, 3, value)
+                        setFacilityTypeReport({
+                            rows: type?.rows,
+                            columns: type?.columns
+                        })
+
+                        break;
+                    case 'facility_regulatory_body_report_all_hierachies':
+
+                        const reg = filterReport && propsToGridData(filterReport, 4, value)
+                        setFacilityRegulatorReport({
+                            rows: reg?.rows,
+                            columns: reg?.columns
+                        })
+
+                        break;
+                    case 'facility_services_report_all_hierachies':
+
+                        const services = filterReport && propsToGridData(filterReport, 5, value)
+                        setServicesReport({
+                            rows: services?.rows,
+                            columns: services?.columns
+                        })
+
+                        break;
+                    case 'facility_infrastructure_report_all_hierachies':
+
+                        const infra = filterReport && propsToGridData(filterReport, 6, value)
+                        setInfrasturctureReport({
+                            rows: infra?.rows,
+                            columns: infra?.columns
+                        })
+
+                        break;
+                    case 'facility_human_resource_category_report_all_hierachies':
+
+                        const hr = filterReport && propsToGridData(filterReport, 7, value)
+                        setHrReport({
+                            rows: hr?.rows,
+                            columns: hr?.columns
+                        })
+
+                        break;
+                    case 'gis':
+
+                        const gis = filterReport && propsToGridData(filterReport, 8, value)
+                        setGisReport({
+                            rows: gis?.rows,
+                            columns: gis?.columns
+                        })
+
+                        break;
+
+
+
+                }
+            }
+        }
+
+
+    }
 
 
     if(isClient){
@@ -122,637 +295,1102 @@ function Reports(props) {
                             </div>
                         </div>
 
+                          
+
                         {/* Tabs */}
                         <div className='w-full col-span-1 md:col-span-7 flex shadow-sm bg-gray-50 px-0 mx-0 h-700 flex-1'>
-                        {/* <pre>
-                            {
-                                JSON.stringify(propsToGridData(props, 6)?.rows, null, 2)
-                            }
-                        </pre> */}
-                        <Tabs.Root
-                            orientation="horizontal"
-                            className="w-full flex flex-col tab-root"
-                            defaultValue="facilities"
-                        >
-                            <Tabs.List className="list-none w-full flex justify-evenly flex-wrap gap-2 md:gap-3 px-4 uppercase leading-none tab-list font-semibold border-b border-gray-400">
-                                        {/* Facilities Tab */}
-                                        <Tabs.Tab
-                                            id={1}
-                                            value="facilities"
-                                            className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
-                                            onClick={() => null}
-                                        >
-                                            Facility Reports
-                                        </Tabs.Tab>
-                                        {/* CHUs Tab */}
-                                        <Tabs.Tab
-                                            id={2}
-                                            value="chus"
-                                            className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
-                                            onClick={() => null}
-                                        >
-                                            Community Health Unit Reports
-                                        </Tabs.Tab>
-                            </Tabs.List>
-                            {/* Facility Reports*/}
-                            <Tabs.Panel
-                            value="facilities"
-                            className="grow-1 tab-panel"
+                         
+                            <Tabs.Root
+                                orientation="horizontal"
+                                className="w-full flex flex-col tab-root"
+                                defaultValue="facilities"
                             >
-                                <Tabs.Root
-                                    orientation="horizontal"
-                                    className="w-full flex flex-col tab-root"
-                                    defaultValue="beds_cots"
+                                <Tabs.List className="list-none w-full flex justify-evenly flex-wrap gap-2 md:gap-3 px-4 uppercase leading-none tab-list font-semibold border-b border-gray-400">
+                                            {/* Facilities Tab */}
+                                            <Tabs.Tab
+                                                id={1}
+                                                value="facilities"
+                                                className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
+                                                onClick={() => null}
+                                            >
+                                                Facility Reports
+                                            </Tabs.Tab>
+                                            {/* CHUs Tab */}
+                                            <Tabs.Tab
+                                                id={2}
+                                                value="chus"
+                                                className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
+                                                onClick={() => null}
+                                            >
+                                                Community Health Unit Reports
+                                            </Tabs.Tab>
+                                </Tabs.List>
+                                {/* Facility Reports*/}
+                                <Tabs.Panel
+                                value="facilities"
+                                className="grow-1 tab-panel"
                                 >
-                                    
-                                    <Tabs.List className="list-none w-full flex justify-evenly flex-wrap gap-2 md:gap-3 px-4 uppercase leading-none tab-list font-semibold border-b border-gray-400">
-                                        <Tabs.Tab
-                                            id={1}
-                                            value="beds_cots"
-                                            className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
-                                            onClick={() => setReportTitle('Beds and Cots')}
-                                        >
-                                            Beds and Cots
-                                        </Tabs.Tab>
-                                        <Tabs.Tab
-                                            id={2}
-                                            value="keph_level"
-                                            className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
-                                            onClick={() => setReportTitle('Keph Level')}
-                                        >
-                                            Keph Level
-                                        </Tabs.Tab>
-                                        <Tabs.Tab
-                                            id={3}
-                                            value="facility_ownership"
-                                            className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
-                                            onClick={() => setReportTitle('Facility Ownership')}
-                                        >
-                                            Facility Ownership
-                                        </Tabs.Tab>
-                                        <Tabs.Tab
-                                            id={4}
-                                            value="facility_type"
-                                            className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
-                                            onClick={() => setReportTitle('Facility Type')}
-                                        >
-                                            Facility Type
-                                        </Tabs.Tab>
+                                    <Tabs.Root
+                                        orientation="horizontal"
+                                        className="w-full flex flex-col tab-root"
+                                        defaultValue="beds_cots"
+                                    >
+                                        
+                                        <Tabs.List className="list-none w-full flex justify-evenly flex-wrap gap-2 md:gap-3 px-4 uppercase leading-none tab-list font-semibold border-b border-gray-400">
+                                            <Tabs.Tab
+                                                id={1}
+                                                value="beds_cots"
+                                                className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
+                                                onClick={() => setReportTitle('Beds and Cots')}
+                                            >
+                                                Beds and Cots
+                                            </Tabs.Tab>
+                                            <Tabs.Tab
+                                                id={2}
+                                                value="keph_level"
+                                                className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
+                                                onClick={() => setReportTitle('Keph Level')}
+                                            >
+                                                Keph Level
+                                            </Tabs.Tab>
+                                            <Tabs.Tab
+                                                id={3}
+                                                value="facility_ownership"
+                                                className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
+                                                onClick={() => setReportTitle('Facility Ownership')}
+                                            >
+                                                Facility Ownership
+                                            </Tabs.Tab>
+                                            <Tabs.Tab
+                                                id={4}
+                                                value="facility_type"
+                                                className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
+                                                onClick={() => setReportTitle('Facility Type')}
+                                            >
+                                                Facility Type
+                                            </Tabs.Tab>
 
-                                        <Tabs.Tab
-                                            id={5}
+                                            <Tabs.Tab
+                                                id={5}
+                                                value="regulatory_body"
+                                                className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
+                                                onClick={() => setReportTitle('Regulatory Body')}
+                                            >
+                                                Regulatory Body
+                                            </Tabs.Tab>
+                                            <Tabs.Tab
+                                                id={6}
+                                                value="services"
+                                                className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
+                                                onClick={() => setReportTitle('Services')}
+                                            >
+                                                Services
+                                            </Tabs.Tab>
+                                            <Tabs.Tab
+                                                id={7}
+                                                value="infrastructure"
+                                                className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
+                                                onClick={() => setReportTitle('Infrastructure')}
+                                            >
+                                                Infrastructure
+                                            </Tabs.Tab>
+                                            <Tabs.Tab
+                                                id={8}
+                                                value="human_resources"
+                                                className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
+                                                onClick={() => setReportTitle('Human Resources')}
+
+                                            >
+                                                Human resources
+                                            </Tabs.Tab>
+                                            <Tabs.Tab
+                                                id={9}
+                                                value="geocodes"
+                                                className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
+                                                onClick={() => setReportTitle('Geo Location')}
+
+                                            >
+                                                Geo Codes
+                                            </Tabs.Tab>
+                                        
+                                            {/* <Tabs.Tab
+                                            id={4}
                                             value="regulatory_body"
                                             className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
-                                            onClick={() => setReportTitle('Regulatory Body')}
+                                            >
+                                            Facility Incharge Details
+                                            </Tabs.Tab> */}
+
+                                        </Tabs.List>
+
+                                        <Tabs.Panel
+                                            value="beds_cots"
+                                            className="grow-1 tab-panel"
                                         >
-                                            Regulatory Body
-                                        </Tabs.Tab>
-                                        <Tabs.Tab
-                                            id={6}
-                                            value="services"
-                                            className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
-                                            onClick={() => setReportTitle('Services')}
-                                        >
-                                            Services
-                                        </Tabs.Tab>
-                                        <Tabs.Tab
-                                            id={7}
-                                            value="infrastructure"
-                                            className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
-                                            onClick={() => setReportTitle('Infrastructure')}
-                                        >
-                                            Infrastructure
-                                        </Tabs.Tab>
-                                        <Tabs.Tab
-                                            id={8}
-                                            value="human_resources"
-                                            className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
-                                            onClick={() => setReportTitle('Human Resources')}
+                                            {/* Beds and Cots Data Grid */}
 
-                                        >
-                                            Human resources
-                                        </Tabs.Tab>
-                                        <Tabs.Tab
-                                            id={9}
-                                            value="geocodes"
-                                            className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
-                                            onClick={() => setReportTitle('Geo Location')}
+                                            <div className='shadow-md w-full max-h-min col-span-7'>
+                                                <StyledDataGrid
+                                                    loading={loading}
+                                                    columns={bedsCotsReport?.columns}
+                                                    rows={bedsCotsReport?.rows}
+                                                    getRowClassName={() => `super-app-theme--Row`}
+                                                    rowSpacingType="border"
+                                                    showColumnRightBorder
+                                                    showCellRightBorder
+                                                    rowSelection={false}
+                                                    getCellClassName={() => 'super-app-theme--Cell'}
+                                                    slots={{
+                                                        toolbar: () => (
+                                                            <div className='w-full flex justify-center  border-b border-gray-400 py-2'>
+                                                            <GridToolbar
+                                                                className="border border-gray-300"
+                                                                sx={{
+                                                                    flex: 1,
+                                                                    display: 'flex',
+                                                                    marginX: 0,
+                                                                    gap: 5,
+                                                                    alignItems:'start',
+                                                                    
+                                                                }}
+                                                            />
+                                                            <Select 
+                                                            name="org_unit" 
+                                                            onChange={({value}) => handleOrgUnitChange(value, 'beds_and_cots_by_all_hierachies', props?.token)}
+                                                            className="w-full max-w-xs rounded border mr-2 border-gray-400"
+                                                    options={[
+                                                        {
+                                                            label:'County',
+                                                            value:'county'
+                                                        },
+                                                        {
+                                                            label:'Sub County',
+                                                            value:'sub_county'
+                                                        },
+                                                        {
+                                                            label:'Ward',
+                                                            value:'ward'
+                                                        }
+                                                    
+                                                    
+                                                    ]}
+                                                    placeholder='Filter by Admin Heirachy'
+                                                    
+                                                    styles={{
+                                                        control: (baseStyles) => ({
+                                                            ...baseStyles,
+                                                            backgroundColor: 'transparent',
+                                                            outLine: 'none',
+                                                            border: 'none',
+                                                            outLine: 'none',
+                                                            textColor: 'transparent',
+                                                            padding: 0,
+                                                            height: '4px'
+                                                        }),
 
-                                        >
-                                            Geo Codes
-                                        </Tabs.Tab>
-                                    
-                                        {/* <Tabs.Tab
-                                        id={4}
-                                        value="regulatory_body"
-                                        className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
-                                        >
-                                        Facility Incharge Details
-                                        </Tabs.Tab> */}
+                                                    }}
 
-                                    </Tabs.List>
-
-                                    <Tabs.Panel
-                                        value="beds_cots"
-                                        className="grow-1 tab-panel"
-                                    >
-                                        {/* Beds and Cots Data Grid */}
-
-                                        <div className='shadow-md w-full max-h-min col-span-7'>
-                                            <StyledDataGrid
-                                                columns={propsToGridData(props, 0).columns}
-                                                rows={propsToGridData(props, 0)?.rows}
-                                                getRowClassName={() => `super-app-theme--Row`}
-                                                rowSpacingType="border"
-                                                showColumnRightBorder
-                                                showCellRightBorder
-                                                rowSelection={false}
-                                                getCellClassName={() => 'super-app-theme--Cell'}
-                                                slots={{
-                                                    toolbar: () => (
-                                                        <GridToolbar
-                                                            sx={{
-                                                                flex: 1,
-                                                                display: 'flex',
-                                                                marginX: 'auto',
-                                                                gap: 5,
-                                                                padding: '0.45rem',
-                                                                alignItems:'start'
-                                                            }}
-                                                        />
-                                                    ),
-                                                }}
-                                            />
-                                        </div>
+                                                    
+                                                />
+                                                            </div>
+                                                        ),
+                                                    }}
+                                                />
+                                            </div>
 
 
-                                    </Tabs.Panel>
-                                    <Tabs.Panel
-                                        value="keph_level"
-                                        className="grow-1 tab-panel"
-                                        
-                                    >
-                                        {/* Keph Level Data grid */}
-
-                                        <div className='shadow-md w-full max-h-min col-span-7'>
-                                            <StyledDataGrid
-                                                columns={propsToGridData(props, 1).columns}
-                                                rows={propsToGridData(props, 1)?.rows}
-                                                getRowClassName={() => `super-app-theme--Row`}
-                                                rowSpacingType="border"
-                                                showColumnRightBorder
-                                                showCellRightBorder
-                                                rowSelection={false}
-                                                getCellClassName={() => 'super-app-theme--Cell'}
-                                                slots={{
-                                                    toolbar: () => (
-                                                        <GridToolbar
-                                                            sx={{
-                                                                flex: 1,
-                                                                display: 'flex',
-                                                                marginX: 'auto',
-                                                                gap: 5,
-                                                                padding: '0.45rem',
-                                                                alignItems:'start'
-                                                            }}
-                                                        />
-                                                    ),
-                                                }}
-                                            />
-                                        </div>
-
-                                    </Tabs.Panel>
-                                    <Tabs.Panel
-                                        value="facility_ownership"
-                                        className="grow-1 tab-panel"
-
-                                    >
-                                        {/* Facility Ownership */}
-                                        <div className='shadow-mdw-full  max-h-min col-span-7'>
+                                        </Tabs.Panel>
+                                        <Tabs.Panel
+                                            value="keph_level"
+                                            className="grow-1 tab-panel"
                                             
-                                            <StyledDataGrid
-                                                columns={propsToGridData(props, 2).columns}
-                                                rows={propsToGridData(props, 2)?.rows}
-                                                getRowClassName={() => `super-app-theme--Row`}
-                                                rowSpacingType="border"
-                                                showColumnRightBorder
-                                                sx={{overflowX:'scroll'}}
-                                                showCellRightBorder
-                                                rowSelection={false}
-                                                getCellClassName={() => 'super-app-theme--Cell'}
-                                                slots={{
-                                                    toolbar: () => (
-                                                        <GridToolbar
-                                                            sx={{
-                                                                flex: 1,
-                                                                display: 'flex',
-                                                                marginX: 'auto',
-                                                                gap: 5,
-                                                                padding: '0.45rem',
-                                                                alignItems:'start'
-                                                            }}
-                                                        />
-                                                    ),
-                                                }}
-                                            />
-                                        </div>
+                                        >
+                                            {/* Keph Level Data grid */}
 
-                                    </Tabs.Panel>
-                                    <Tabs.Panel
-                                        value="facility_type"
-                                        className="grow-1 tab-panel"
+                                            <div className='shadow-md w-full max-h-min col-span-7'>
+                                                <StyledDataGrid
+                                                    loading={loading}
+                                                    columns={kephReport?.columns}
+                                                    rows={kephReport?.rows}
+                                                    getRowClassName={() => `super-app-theme--Row`}
+                                                    rowSpacingType="border"
+                                                    showColumnRightBorder
+                                                    showCellRightBorder
+                                                    rowSelection={false}
+                                                    getCellClassName={() => 'super-app-theme--Cell'}
+                                                    slots={{
+                                                       toolbar: () => (
+                                                            <div className='w-full flex justify-center  border-b border-gray-400 py-2'>
+                                                            <GridToolbar
+                                                                className="border border-gray-300"
+                                                                sx={{
+                                                                    flex: 1,
+                                                                    display: 'flex',
+                                                                    marginX: 0,
+                                                                    gap: 5,
+                                                                    alignItems:'start',
+                                                                    
+                                                                }}
+                                                            />
+                                                            <Select 
+                                                            name="org_unit" 
+                                                            onChange={({value}) => handleOrgUnitChange(value, 'facility_keph_level_report_all_hierachies', props?.token)}
+                                                            className="w-full max-w-xs rounded border mr-2 border-gray-400"
+                                                    options={[
+                                                        {
+                                                            label:'County',
+                                                            value:'county'
+                                                        },
+                                                        {
+                                                            label:'Sub County',
+                                                            value:'sub_county'
+                                                        },
+                                                        {
+                                                            label:'Ward',
+                                                            value:'ward'
+                                                        }
+                                                    
+                                                    
+                                                    ]}
+                                                    placeholder='Filter by Admin Heirachy'
+                                                    data-modal-target="defaultModal" data-modal-toggle="defaultModal"
+                                                    styles={{
+                                                        control: (baseStyles) => ({
+                                                            ...baseStyles,
+                                                            backgroundColor: 'transparent',
+                                                            outLine: 'none',
+                                                            border: 'none',
+                                                            outLine: 'none',
+                                                            textColor: 'transparent',
+                                                            padding: 0,
+                                                            height: '4px'
+                                                        }),
 
-                                    >
-                                        {/* Facility Type */}
+                                                    }}
 
-                                         <div className='shadow-md w-full max-h-min col-span-7'>
-                                            <StyledDataGrid
-                                                columns={propsToGridData(props, 3).columns}
-                                                rows={propsToGridData(props, 3)?.rows}
-                                                getRowClassName={() => `super-app-theme--Row`}
-                                                rowSpacingType="border"
-                                                showColumnRightBorder
-                                                showCellRightBorder
-                                                rowSelection={false}
-                                                getCellClassName={() => 'super-app-theme--Cell'}
-                                                slots={{
-                                                    toolbar: () => (
-                                                        <GridToolbar
-                                                            sx={{
-                                                                flex: 1,
-                                                                display: 'flex',
-                                                                marginX: 'auto',
-                                                                gap: 5,
-                                                                padding: '0.45rem',
-                                                                alignItems:'start'
-                                                            }}
-                                                        />
-                                                    ),
-                                                }}
-                                            />
-                                        </div> 
+                                                    
+                                                />
+                                                            </div>
+                                                        ),
+                                                    }}
+                                                />
+                                            </div>
 
-                                    </Tabs.Panel>
-                                    <Tabs.Panel
-                                        value="regulatory_body"
-                                        className="grow-1 tab-panel"
-                                    >
-                                        {/* Regulatory Body  */}                                  
-                                        
-                                         <div className='shadow-md w-full max-h-min col-span-7'>
-                                            <StyledDataGrid
-                                                columns={propsToGridData(props, 4).columns}
-                                                rows={propsToGridData(props, 4)?.rows}
-                                                getRowClassName={() => `super-app-theme--Row`}
-                                                rowSpacingType="border"
-                                                showColumnRightBorder
-                                                showCellRightBorder
-                                                rowSelection={false}
-                                                getCellClassName={() => 'super-app-theme--Cell'}
-                                                slots={{
-                                                    toolbar: () => (
-                                                        <GridToolbar
-                                                            sx={{
-                                                                flex: 1,
-                                                                display: 'flex',
-                                                                marginX: 'auto',
-                                                                gap: 5,
-                                                                padding: '0.45rem',
-                                                                alignItems:'start'
-                                                            }}
-                                                        />
-                                                    ),
-                                                }}
-                                            />
-                                        </div> 
-                                    </Tabs.Panel>
-                                    <Tabs.Panel
-                                        value="services"
-                                        className="grow-1 tab-panel"
-                                    >
-                                        {/* Services */}                                  
-                                        
-                                         <div  className='shadow-md w-full max-h-min col-span-7'>
-                                            <StyledDataGrid
-                                                columns={propsToGridData(props, 5).columns}
-                                                rows={propsToGridData(props, 5)?.rows}
-                                                getRowClassName={() => `super-app-theme--Row`}
-                                                rowSpacingType="border"
-                                                showColumnRightBorder
-                                                showCellRightBorder
-                                                rowSelection={false}
-                                                getCellClassName={() => 'super-app-theme--Cell'}
-                                                slots={{
-                                                    toolbar: () => (
-                                                        <GridToolbar
-                                                            sx={{
-                                                                flex: 1,
-                                                                display: 'flex',
-                                                                marginX: 'auto',
-                                                                gap: 5,
-                                                                padding: '0.45rem',
-                                                                alignItems:'start'
-                                                            }}
-                                                        />
-                                                    ),
-                                                }}
-                                            />
-                                        </div> 
+                                        </Tabs.Panel>
+                                        <Tabs.Panel
+                                            value="facility_ownership"
+                                            className="grow-1 tab-panel"
 
-                                    </Tabs.Panel>
-                                    <Tabs.Panel
-                                        value="infrastructure"
-                                        className="grow-1 tab-panel"
-                                    >
-                                        {/* Infrastructure */}                                  
-                                        
-                                         <div className='shadow-md w-full max-h-min col-span-7'>
-                                            <StyledDataGrid
-                                                columns={propsToGridData(props, 6).columns}
-                                                rows={propsToGridData(props, 6)?.rows}
-                                                getRowClassName={() => `super-app-theme--Row`}
-                                                rowSpacingType="border"
-                                                showColumnRightBorder
-                                                showCellRightBorder
-                                                rowSelection={false}
-                                                getCellClassName={() => 'super-app-theme--Cell'}
-                                                slots={{
-                                                    toolbar: () => (
-                                                        <GridToolbar
-                                                            sx={{
-                                                                flex: 1,
-                                                                display: 'flex',
-                                                                marginX: 'auto',
-                                                                gap: 5,
-                                                                padding: '0.45rem',
-                                                                alignItems:'start'
-                                                            }}
-                                                        />
-                                                    ),
-                                                }}
-                                            />
-                                        </div> 
-
-
-                                    </Tabs.Panel>
-                                    <Tabs.Panel
-                                    value="human_resources"
-                                        className="grow-1 tab-panel"
-                                    >
-
-                                            {/* Human resource */}                                  
-                                        
-                                         <div  className='shadow-md w-full max-h-min col-span-7'>
-                                            <StyledDataGrid
-                                                columns={propsToGridData(props, 7).columns}
-                                                rows={propsToGridData(props, 7)?.rows}
-                                                getRowClassName={() => `super-app-theme--Row`}
-                                                rowSpacingType="border"
-                                                showColumnRightBorder
-                                                showCellRightBorder
-                                                rowSelection={false}
-                                                getCellClassName={() => 'super-app-theme--Cell'}
-                                                slots={{
-                                                    toolbar: () => (
-                                                        <GridToolbar
-                                                            sx={{
-                                                                flex: 1,
-                                                                display: 'flex',
-                                                                marginX: 'auto',
-                                                                gap: 5,
-                                                                padding: '0.45rem',
-                                                                alignItems:'start'
-                                                            }}
-                                                        />
-                                                    ),
-                                                }}
-                                            />
-                                             </div> 
-
-                                    </Tabs.Panel>
-                                    <Tabs.Panel
-                                        value="geocodes"
-                                        className="grow-1 tab-panel"
-                                    >
-                                        {/* Geocodes */}
-                                        {/* <div  className='shadow-md w-full max-h-min col-span-7'>
-                                            <StyledDataGrid
-                                                columns={[
-                                                    {
-                                                    headerName:'County',
-                                                    field:'county',
-                                                    flex:1
-                                                    },
-                                                    {
-                                                        headerName:'Sub County',
-                                                        field:'sub_county',
-                                                        flex:1
-                                                    },
-                                                    {
-                                                        headerName:'Ward',
-                                                        field:'ward',
-                                                        flex:1
-                                                    },
-                                                    {
-                                                        headerName:'Facility Name',
-                                                        field:'name',
-                                                        flex:1
-                                                    }, 
-                                                    {
-                                                        headerName:'Code',
-                                                        field:'code',
-                                                        flex:1
-                                                    },  
-                                                    {
-                                                        headerName:'Latitude',
-                                                        field:'lat',
-                                                        flex:1
-                                                    },
-                                                    {
-                                                        headerName:'Longitude',
-                                                        field:'lng',
-                                                        flex:1
-                                                    }
+                                        >
+                                            {/* Facility Ownership */}
+                                            <div className='shadow-mdw-full  max-h-min col-span-7'>
                                                 
-                                            ]}
-                                                rows={gisRowData}
-                                                getRowClassName={() => `super-app-theme--Row`}
-                                                rowSpacingType="border"
-                                                showColumnRightBorder
-                                                showCellRightBorder
-                                                rowSelection={false}
-                                                getCellClassName={() => 'super-app-theme--Cell'}
-                                                slots={{
-                                                    toolbar: () => (
-                                                        <GridToolbar
-                                                            sx={{
-                                                                flex: 1,
-                                                                display: 'flex',
-                                                                marginX: 'auto',
-                                                                gap: 5,
-                                                                padding: '0.45rem',
-                                                                alignItems:'start'
-                                                            }}
-                                                        />
-                                                    ),
-                                                }}
-                                            />
-                                        </div> */}
+                                                <StyledDataGrid
+                                                    loading={loading}
+                                                    columns={ownershipReport?.columns}
+                                                    rows={ownershipReport?.rows}
+                                                    getRowClassName={() => `super-app-theme--Row`}
+                                                    rowSpacingType="border"
+                                                    showColumnRightBorder
+                                                    sx={{overflowX:'scroll'}}
+                                                    showCellRightBorder
+                                                    rowSelection={false}
+                                                    getCellClassName={() => 'super-app-theme--Cell'}
+                                                    slots={{
+                                                       toolbar: () => (
+                                                            <div className='w-full flex justify-center  border-b border-gray-400 py-2'>
+                                                            <GridToolbar
+                                                                className="border border-gray-300"
+                                                                sx={{
+                                                                    flex: 1,
+                                                                    display: 'flex',
+                                                                    marginX: 0,
+                                                                    gap: 5,
+                                                                    alignItems:'start',
+                                                                    
+                                                                }}
+                                                            />
+                                                            <Select 
+                                                            name="org_unit" 
+                                                            onChange={({value}) => handleOrgUnitChange(value, 'facility_owner_report_all_hierachies', props?.token)}
+                                                            className="w-full max-w-xs rounded border mr-2 border-gray-400"
+                                                    options={[
+                                                        {
+                                                            label:'County',
+                                                            value:'county'
+                                                        },
+                                                        {
+                                                            label:'Sub County',
+                                                            value:'sub_county'
+                                                        },
+                                                        {
+                                                            label:'Ward',
+                                                            value:'ward'
+                                                        }
+                                                    
+                                                    
+                                                    ]}
+                                                    placeholder='Filter by Admin Heirachy'
+                                                    data-modal-target="defaultModal" data-modal-toggle="defaultModal"
+                                                    styles={{
+                                                        control: (baseStyles) => ({
+                                                            ...baseStyles,
+                                                            backgroundColor: 'transparent',
+                                                            outLine: 'none',
+                                                            border: 'none',
+                                                            outLine: 'none',
+                                                            textColor: 'transparent',
+                                                            padding: 0,
+                                                            height: '4px'
+                                                        }),
 
-                                    </Tabs.Panel>
+                                                    }}
 
+                                                    
+                                                />
+                                                            </div>
+                                                        ),
+                                                    }}
+                                                />
+                                            </div>
 
-                                </Tabs.Root>
-                            </Tabs.Panel>
-                            {/* Community Units Reports */}
-                            <Tabs.Panel
-                            value="chus"
-                            className="grow-1 tab-panel"
-                            >
+                                        </Tabs.Panel>
+                                        <Tabs.Panel
+                                            value="facility_type"
+                                            className="grow-1 tab-panel"
 
-                                <Tabs.Root
-                                    orientation="horizontal"
-                                    className="w-full flex flex-col tab-root"
-                                    defaultValue="chu_services"
-                                >
-                                    
-                                    <Tabs.List className="list-none w-full flex justify-evenly flex-wrap gap-2 md:gap-3 px-4 uppercase leading-none tab-list font-semibold border-b border-gray-600">
-                                        <Tabs.Tab
-                                        id={1}
-                                        value="chu_services"
-                                        className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
                                         >
-                                        CHU Services
-                                        </Tabs.Tab>
-                                        <Tabs.Tab
-                                        id={2}
-                                        value="chu_status"
-                                        className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
+                                            {/* Facility Type */}
+
+                                            <div className='shadow-md w-full max-h-min col-span-7'>
+                                                <StyledDataGrid
+                                                    loading={loading}
+                                                    columns={facilityTypeReport?.columns}
+                                                    rows={facilityTypeReport?.rows}
+                                                    getRowClassName={() => `super-app-theme--Row`}
+                                                    rowSpacingType="border"
+                                                    showColumnRightBorder
+                                                    showCellRightBorder
+                                                    rowSelection={false}
+                                                    getCellClassName={() => 'super-app-theme--Cell'}
+                                                    slots={{
+                                                       toolbar: () => (
+                                                            <div className='w-full flex justify-center  border-b border-gray-400 py-2'>
+                                                            <GridToolbar
+                                                                className="border border-gray-300"
+                                                                sx={{
+                                                                    flex: 1,
+                                                                    display: 'flex',
+                                                                    marginX: 0,
+                                                                    gap: 5,
+                                                                    alignItems:'start',
+                                                                    
+                                                                }}
+                                                            />
+                                                            <Select 
+                                                            name="org_unit" 
+                                                            onChange={({value}) => handleOrgUnitChange(value, 'facility_type_report_all_hierachies', props?.token)}
+                                                            className="w-full max-w-xs rounded border mr-2 border-gray-400"
+                                                    options={[
+                                                        {
+                                                            label:'County',
+                                                            value:'county'
+                                                        },
+                                                        {
+                                                            label:'Sub County',
+                                                            value:'sub_county'
+                                                        },
+                                                        {
+                                                            label:'Ward',
+                                                            value:'ward'
+                                                        }
+                                                    
+                                                    
+                                                    ]}
+                                                    placeholder='Filter by Admin Heirachy'
+                                                    data-modal-target="defaultModal" data-modal-toggle="defaultModal"
+                                                    styles={{
+                                                        control: (baseStyles) => ({
+                                                            ...baseStyles,
+                                                            backgroundColor: 'transparent',
+                                                            outLine: 'none',
+                                                            border: 'none',
+                                                            outLine: 'none',
+                                                            textColor: 'transparent',
+                                                            padding: 0,
+                                                            height: '4px'
+                                                        }),
+
+                                                    }}
+
+                                                    
+                                                />
+                                                            </div>
+                                                        ),
+                                                    }}
+                                                />
+                                            </div> 
+
+                                        </Tabs.Panel>
+                                        <Tabs.Panel
+                                            value="regulatory_body"
+                                            className="grow-1 tab-panel"
                                         >
-                                        CHU Status
-                                        </Tabs.Tab>
-                                        <Tabs.Tab
-                                        id={3}
-                                        value="chu_count"
-                                        className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
-                                        >
-                                        CHU Count
-                                        </Tabs.Tab>
+                                            {/* Regulatory Body  */}                                  
                                             
-                                    
-                                    </Tabs.List>
+                                            <div className='shadow-md w-full max-h-min col-span-7'>
+                                                <StyledDataGrid
+                                                    loading={loading}
+                                                    columns={facilityRegulatorReport?.columns}
+                                                    rows={facilityRegulatorReport?.rows}
+                                                    getRowClassName={() => `super-app-theme--Row`}
+                                                    rowSpacingType="border"
+                                                    showColumnRightBorder
+                                                    showCellRightBorder
+                                                    rowSelection={false}
+                                                    getCellClassName={() => 'super-app-theme--Cell'}
+                                                    slots={{
+                                                       toolbar: () => (
+                                                            <div className='w-full flex justify-center  border-b border-gray-400 py-2'>
+                                                            <GridToolbar
+                                                                className="border border-gray-300"
+                                                                sx={{
+                                                                    flex: 1,
+                                                                    display: 'flex',
+                                                                    marginX: 0,
+                                                                    gap: 5,
+                                                                    alignItems:'start',
+                                                                    
+                                                                }}
+                                                            />
+                                                            <Select 
+                                                            name="org_unit" 
+                                                            onChange={({value}) => handleOrgUnitChange(value, 'facility_regulatory_body_report_all_hierachies', props?.token)}
+                                                            className="w-full max-w-xs rounded border mr-2 border-gray-400"
+                                                    options={[
+                                                        {
+                                                            label:'County',
+                                                            value:'county'
+                                                        },
+                                                        {
+                                                            label:'Sub County',
+                                                            value:'sub_county'
+                                                        },
+                                                        {
+                                                            label:'Ward',
+                                                            value:'ward'
+                                                        }
+                                                    
+                                                    
+                                                    ]}
+                                                    placeholder='Filter by Admin Heirachy'
+                                                    data-modal-target="defaultModal" data-modal-toggle="defaultModal"
+                                                    styles={{
+                                                        control: (baseStyles) => ({
+                                                            ...baseStyles,
+                                                            backgroundColor: 'transparent',
+                                                            outLine: 'none',
+                                                            border: 'none',
+                                                            outLine: 'none',
+                                                            textColor: 'transparent',
+                                                            padding: 0,
+                                                            height: '4px'
+                                                        }),
 
-                                    {/* CHU Services Data Grid */}
-                                    <Tabs.Panel
-                                    value="chu_services"
-                                    className="grow-1 tab-panel"
+                                                    }}
+
+                                                    
+                                                />
+                                                            </div>
+                                                        ),
+                                                    }}
+                                                />
+                                            </div> 
+                                        </Tabs.Panel>
+                                        <Tabs.Panel
+                                            value="services"
+                                            className="grow-1 tab-panel"
+                                        >
+                                            {/* Services */}                                  
+                                            
+                                            <div  className='shadow-md w-full max-h-min col-span-7'>
+                                                <StyledDataGrid
+                                                    loading={loading}
+                                                    columns={servicesReport?.columns}
+                                                    rows={servicesReport?.rows}
+                                                    getRowClassName={() => `super-app-theme--Row`}
+                                                    rowSpacingType="border"
+                                                    showColumnRightBorder
+                                                    showCellRightBorder
+                                                    rowSelection={false}
+                                                    getCellClassName={() => 'super-app-theme--Cell'}
+                                                    slots={{
+                                                       toolbar: () => (
+                                                            <div className='w-full flex justify-center  border-b border-gray-400 py-2'>
+                                                            <GridToolbar
+                                                                className="border border-gray-300"
+                                                                sx={{
+                                                                    flex: 1,
+                                                                    display: 'flex',
+                                                                    marginX: 0,
+                                                                    gap: 5,
+                                                                    alignItems:'start',
+                                                                    
+                                                                }}
+                                                            />
+                                                            <Select 
+                                                            name="org_unit" 
+                                                            onChange={({value}) => handleOrgUnitChange(value, 'facility_services_report_all_hierachies', props?.token)}
+                                                            className="w-full max-w-xs rounded border mr-2 border-gray-400"
+                                                    options={[
+                                                        {
+                                                            label:'County',
+                                                            value:'county'
+                                                        },
+                                                        {
+                                                            label:'Sub County',
+                                                            value:'sub_county'
+                                                        },
+                                                        {
+                                                            label:'Ward',
+                                                            value:'ward'
+                                                        }
+                                                    
+                                                    
+                                                    ]}
+                                                    placeholder='Filter by Admin Heirachy'
+                                                    data-modal-target="defaultModal" data-modal-toggle="defaultModal"
+                                                    styles={{
+                                                        control: (baseStyles) => ({
+                                                            ...baseStyles,
+                                                            backgroundColor: 'transparent',
+                                                            outLine: 'none',
+                                                            border: 'none',
+                                                            outLine: 'none',
+                                                            textColor: 'transparent',
+                                                            padding: 0,
+                                                            height: '4px'
+                                                        }),
+
+                                                    }}
+
+                                                    
+                                                />
+                                                            </div>
+                                                        ),
+                                                    }}
+                                                />
+                                            </div> 
+
+                                        </Tabs.Panel>
+                                        <Tabs.Panel
+                                            value="infrastructure"
+                                            className="grow-1 tab-panel"
+                                        >
+                                            {/* Infrastructure */}                                  
+                                            
+                                            <div className='shadow-md w-full max-h-min col-span-7'>
+                                                <StyledDataGrid
+                                                    loading={loading}
+                                                    columns={infrastructureReport?.columns}
+                                                    rows={infrastructureReport?.rows}
+                                                    getRowClassName={() => `super-app-theme--Row`}
+                                                    rowSpacingType="border"
+                                                    showColumnRightBorder
+                                                    showCellRightBorder
+                                                    rowSelection={false}
+                                                    getCellClassName={() => 'super-app-theme--Cell'}
+                                                    slots={{
+                                                       toolbar: () => (
+                                                            <div className='w-full flex justify-center  border-b border-gray-400 py-2'>
+                                                            <GridToolbar
+                                                                className="border border-gray-300"
+                                                                sx={{
+                                                                    flex: 1,
+                                                                    display: 'flex',
+                                                                    marginX: 0,
+                                                                    gap: 5,
+                                                                    alignItems:'start',
+                                                                    
+                                                                }}
+                                                            />
+                                                            <Select 
+                                                            name="org_unit" 
+                                                            onChange={({value}) => handleOrgUnitChange(value, 'facility_infrastructure_report_all_hierachies', props?.token)}
+                                                            className="w-full max-w-xs rounded border mr-2 border-gray-400"
+                                                    options={[
+                                                        {
+                                                            label:'County',
+                                                            value:'county'
+                                                        },
+                                                        {
+                                                            label:'Sub County',
+                                                            value:'sub_county'
+                                                        },
+                                                        {
+                                                            label:'Ward',
+                                                            value:'ward'
+                                                        }
+                                                    
+                                                    
+                                                    ]}
+                                                    placeholder='Filter by Admin Heirachy'
+                                                    data-modal-target="defaultModal" data-modal-toggle="defaultModal"
+                                                    styles={{
+                                                        control: (baseStyles) => ({
+                                                            ...baseStyles,
+                                                            backgroundColor: 'transparent',
+                                                            outLine: 'none',
+                                                            border: 'none',
+                                                            outLine: 'none',
+                                                            textColor: 'transparent',
+                                                            padding: 0,
+                                                            height: '4px'
+                                                        }),
+
+                                                    }}
+
+                                                    
+                                                />
+                                                            </div>
+                                                        ),
+                                                    }}
+                                                />
+                                            </div> 
+
+
+                                        </Tabs.Panel>
+                                        <Tabs.Panel
+                                        value="human_resources"
+                                            className="grow-1 tab-panel"
+                                        >
+
+                                                {/* Human resource */}                                  
+                                            
+                                            <div  className='shadow-md w-full max-h-min col-span-7'>
+                                                <StyledDataGrid
+                                                    loading={loading}
+                                                    columns={hrReport?.columns}
+                                                    rows={hrReport?.rows}
+                                                    getRowClassName={() => `super-app-theme--Row`}
+                                                    rowSpacingType="border"
+                                                    showColumnRightBorder
+                                                    showCellRightBorder
+                                                    rowSelection={false}
+                                                    getCellClassName={() => 'super-app-theme--Cell'}
+                                                    slots={{
+                                                       toolbar: () => (
+                                                            <div className='w-full flex justify-center  border-b border-gray-400 py-2'>
+                                                            <GridToolbar
+                                                                className="border border-gray-300"
+                                                                sx={{
+                                                                    flex: 1,
+                                                                    display: 'flex',
+                                                                    marginX: 0,
+                                                                    gap: 5,
+                                                                    alignItems:'start',
+                                                                    
+                                                                }}
+                                                            />
+                                                            <Select 
+                                                            name="org_unit" 
+                                                            onChange={({value}) => handleOrgUnitChange(value, 'facility_human_resource_category_report_all_hierachies', props?.token)}
+                                                            className="w-full max-w-xs rounded border mr-2 border-gray-400"
+                                                    options={[
+                                                        {
+                                                            label:'County',
+                                                            value:'county'
+                                                        },
+                                                        {
+                                                            label:'Sub County',
+                                                            value:'sub_county'
+                                                        },
+                                                        {
+                                                            label:'Ward',
+                                                            value:'ward'
+                                                        }
+                                                    
+                                                    
+                                                    ]}
+                                                    placeholder='Filter by Admin Heirachy'
+                                                    data-modal-target="defaultModal" data-modal-toggle="defaultModal"
+                                                    styles={{
+                                                        control: (baseStyles) => ({
+                                                            ...baseStyles,
+                                                            backgroundColor: 'transparent',
+                                                            outLine: 'none',
+                                                            border: 'none',
+                                                            outLine: 'none',
+                                                            textColor: 'transparent',
+                                                            padding: 0,
+                                                            height: '4px'
+                                                        }),
+
+                                                    }}
+
+                                                    
+                                                />
+                                                            </div>
+                                                        ),
+                                                    }}
+                                                />
+                                                </div> 
+
+                                        </Tabs.Panel>
+                                        <Tabs.Panel
+                                            value="geocodes"
+                                            className="grow-1 tab-panel"
+                                        >
+                                            {/* Geocodes */}
+                                            <div  className='shadow-md w-full max-h-min col-span-7'>
+                                                <StyledDataGrid
+                                                    loading={loading}
+                                                    columns={gisReport?.columns}
+                                                    rows={gisReport?.rows}
+                                                    getRowClassName={() => `super-app-theme--Row`}
+                                                    rowSpacingType="border"
+                                                    showColumnRightBorder
+                                                    showCellRightBorder
+                                                    rowSelection={false}
+                                                    getCellClassName={() => 'super-app-theme--Cell'}
+                                                    slots={{
+                                                       toolbar: () => (
+                                                            <div className='w-full flex justify-center  border-b border-gray-400 py-2'>
+                                                            <GridToolbar
+                                                                className="border border-gray-300"
+                                                                sx={{
+                                                                    flex: 1,
+                                                                    display: 'flex',
+                                                                    marginX: 0,
+                                                                    gap: 5,
+                                                                    alignItems:'start',
+                                                                    
+                                                                }}
+                                                            />
+                                                            <Select 
+                                                            name="org_unit" 
+                                                            onChange={({value}) => handleOrgUnitChange(value, 'gis', props?.token)}
+                                                            className="w-full max-w-xs rounded border mr-2 border-gray-400"
+                                                    options={[
+                                                        {
+                                                            label:'County',
+                                                            value:'county'
+                                                        },
+                                                        {
+                                                            label:'Sub County',
+                                                            value:'sub_county'
+                                                        },
+                                                        {
+                                                            label:'Ward',
+                                                            value:'ward'
+                                                        }
+                                                    
+                                                    
+                                                    ]}
+                                                    placeholder='Filter by Admin Heirachy'
+                                                    data-modal-target="defaultModal" data-modal-toggle="defaultModal"
+                                                    styles={{
+                                                        control: (baseStyles) => ({
+                                                            ...baseStyles,
+                                                            backgroundColor: 'transparent',
+                                                            outLine: 'none',
+                                                            border: 'none',
+                                                            outLine: 'none',
+                                                            textColor: 'transparent',
+                                                            padding: 0,
+                                                            height: '4px'
+                                                        }),
+
+                                                    }}
+
+                                                    
+                                                />
+                                                            </div>
+                                                        ),
+                                                    }}
+                                                />
+                                            </div> 
+
+                                        </Tabs.Panel>
+
+
+                                    </Tabs.Root>
+                                </Tabs.Panel>
+                                {/* Community Units Reports */}
+                                <Tabs.Panel
+                                value="chus"
+                                className="grow-1 tab-panel"
+                                >
+
+                                    <Tabs.Root
+                                        orientation="horizontal"
+                                        className="w-full flex flex-col tab-root"
+                                        defaultValue="chu_services"
                                     >
-                                        {/* CHU Services */}                                  
-                                        {/* { console.log({rows:propsToGridData(props, 9)?.rows, columns: propsToGridData(props, 9).columns})  } */}
                                         
-                                        {/* <div className='shadow-md w-full max-h-min col-span-7'>
-                                            <StyledDataGrid
-                                                columns={propsToGridData(props, 9).columns}
-                                                rows={propsToGridData(props, 9)?.rows}
-                                                getRowClassName={() => `super-app-theme--Row`}
-                                                rowSpacingType="border"
-                                                showColumnRightBorder
-                                                showCellRightBorder
-                                                rowSelection={false}
-                                                getCellClassName={() => 'super-app-theme--Cell'}
-                                                slots={{
-                                                    toolbar: () => (
-                                                        <GridToolbar
-                                                            sx={{
-                                                                flex: 1,
-                                                                display: 'flex',
-                                                                marginX: 'auto',
-                                                                gap: 5,
-                                                                padding: '0.45rem',
-                                                                alignItems:'start'
-                                                            }}
-                                                        />
-                                                    ),
-                                                }}
-                                            />
-                                        </div> */}
-                                    </Tabs.Panel>
-                                    {/* CHU Status Data Grid*/}
+                                        <Tabs.List className="list-none w-full flex justify-evenly flex-wrap gap-2 md:gap-3 px-4 uppercase leading-none tab-list font-semibold border-b border-gray-600">
+                                            <Tabs.Tab
+                                            id={1}
+                                            value="chu_services"
+                                            className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
+                                            >
+                                            CHU Services
+                                            </Tabs.Tab>
+                                            <Tabs.Tab
+                                            id={2}
+                                            value="chu_status"
+                                            className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
+                                            >
+                                            CHU Status
+                                            </Tabs.Tab>
+                                            <Tabs.Tab
+                                            id={3}
+                                            value="chu_count"
+                                            className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
+                                            >
+                                            CHU Count
+                                            </Tabs.Tab>
+                                                
+                                        
+                                        </Tabs.List>
 
-                                    <Tabs.Panel
-                                    value="chu_status"
-                                    className="grow-1 tab-panel"
-                                    >
-                                        {/* CHU Status */}
-                                        {/* <div className='shadow-md w-full max-h-min col-span-7'>
-                                            { console.log({rows: propsToGridData(props, 7).rows }) }
-                                            <StyledDataGrid
-                                                columns={propsToGridData(props, 7).columns}
-                                                rows={propsToGridData(props, 7)?.rows}
-                                                getRowClassName={() => `super-app-theme--Row`}
-                                                rowSpacingType="border"
-                                                showColumnRightBorder
-                                                showCellRightBorder
-                                                rowSelection={false}
-                                                getCellClassName={() => 'super-app-theme--Cell'}
-                                                slots={{
-                                                    toolbar: () => (
-                                                        <GridToolbar
-                                                            sx={{
-                                                                flex: 1,
-                                                                display: 'flex',
-                                                                marginX: 'auto',
-                                                                gap: 5,
-                                                                padding: '0.45rem',
-                                                                alignItems:'start'
-                                                            }}
-                                                        />
-                                                    ),
-                                                }}
-                                            />
-                                        </div> */}
-                                    </Tabs.Panel>
+                                        {/* CHU Services Data Grid */}
+                                        <Tabs.Panel
+                                        value="chu_services"
+                                        className="grow-1 tab-panel"
+                                        >
+                                            {/* CHU Services */}                                  
+                                            {/* { console.log({rows:propsToGr, orgUnitFilteridData(props, 9)?.rows, columns: propsToGridData(props, 9).columns})  } */}
+                                            
+                                            {/* <div className='shadow-md w-full max-h-min col-span-7'>
+                                                <StyledDataGrid
+                                                    loading={loading}
+                                                    columns={propsToGridData(props, 9, orgUnitFilter).columns}
+                                                    rows={propsToGridData(props, 9)?.rows}
+                                                    getRowClassName={() => `super-app-theme--Row`}
+                                                    rowSpacingType="border"
+                                                    showColumnRightBorder
+                                                    showCellRightBorder
+                                                    rowSelection={false}
+                                                    getCellClassName={() => 'super-app-theme--Cell'}
+                                                    slots={{
+                                                       toolbar: () => (
+                                                            <div className='w-full flex justify-center  border-b border-gray-400 py-2'>
+                                                            <GridToolbar
+                                                                className="border border-gray-300"
+                                                                sx={{
+                                                                    flex: 1,
+                                                                    display: 'flex',
+                                                                    marginX: 0,
+                                                                    gap: 5,
+                                                                    alignItems:'start',
+                                                                    
+                                                                }}
+                                                            />
+                                                            <Select 
+                                                            name="org_unit" 
+                                                            onChange={({value}) => handleOrgUnitChange(value, 'beds_and_cots_by_all_hierachies', props?.token)}
+                                                            className="w-full max-w-xs rounded border mr-2 border-gray-400"
+                                                    options={[
+                                                        {
+                                                            label:'County',
+                                                            value:'county'
+                                                        },
+                                                        {
+                                                            label:'Sub County',
+                                                            value:'sub_county'
+                                                        },
+                                                        {
+                                                            label:'Ward',
+                                                            value:'ward'
+                                                        }
+                                                    
+                                                    
+                                                    ]}
+                                                    placeholder='Filter by Admin Heirachy'
+                                                    data-modal-target="defaultModal" data-modal-toggle="defaultModal"
+                                                    styles={{
+                                                        control: (baseStyles) => ({
+                                                            ...baseStyles,
+                                                            backgroundColor: 'transparent',
+                                                            outLine: 'none',
+                                                            border: 'none',
+                                                            outLine: 'none',
+                                                            textColor: 'transparent',
+                                                            padding: 0,
+                                                            height: '4px'
+                                                        }),
 
-                                    {/* CHU Count Data Grid */}
+                                                    }}
 
-                                    <Tabs.Panel
-                                    value="chu_count"
-                                    className="grow-1 tab-panel"
-                                    >
-                                        {/* CHU Status */}
-                                        {/* <div className='shadow-md w-full max-h-min col-span-7'>
-                                            <StyledDataGrid
-                                                columns={propsToGridData(props, 10).columns}
-                                                rows={propsToGridData(props, 10)?.rows}
-                                                getRowClassName={() => `super-app-theme--Row`}
-                                                rowSpacingType="border"
-                                                showColumnRightBorder
-                                                showCellRightBorder
-                                                rowSelection={false}
-                                                getCellClassName={() => 'super-app-theme--Cell'}
-                                                slots={{
-                                                    toolbar: () => (
-                                                        <GridToolbar
-                                                            sx={{
-                                                                flex: 1,
-                                                                display: 'flex',
-                                                                marginX: 'auto',
-                                                                gap: 5,
-                                                                padding: '0.45rem',
-                                                                alignItems:'start'
-                                                            }}
-                                                        />
-                                                    ),
-                                                }}
-                                            />
-                                        </div> */}
+                                                    
+                                                />
+                                                            </div>
+                                                        ),
+                                                    }}
+                                                />
+                                            </div> */}
+                                        </Tabs.Panel>
+                                        {/* CHU Status Data Grid*/}
 
-                                    </Tabs.Panel>
+                                        <Tabs.Panel
+                                        value="chu_status"
+                                        className="grow-1 tab-panel"
+                                        >
+                                            {/* CHU Status */}
+                                            {/* <div className='shadow-md w-full max-h-min col-span-7'>
+                                                { console.log({rows: propsToGridData(props, 7).rows }) }
+                                                <StyledDataGrid
+                                                    loading={loading}
+                                                    columns={propsToGridData(props, 7, orgUnitFilter).columns}
+                                                    rows={propsToGridData(props, 7)?.rows}
+                                                    getRowClassName={() => `super-app-theme--Row`}
+                                                    rowSpacingType="border"
+                                                    showColumnRightBorder
+                                                    showCellRightBorder
+                                                    rowSelection={false}
+                                                    getCellClassName={() => 'super-app-theme--Cell'}
+                                                    slots={{
+                                                       toolbar: () => (
+                                                            <div className='w-full flex justify-center  border-b border-gray-400 py-2'>
+                                                            <GridToolbar
+                                                                className="border border-gray-300"
+                                                                sx={{
+                                                                    flex: 1,
+                                                                    display: 'flex',
+                                                                    marginX: 0,
+                                                                    gap: 5,
+                                                                    alignItems:'start',
+                                                                    
+                                                                }}
+                                                            />
+                                                            <Select 
+                                                            name="org_unit" 
+                                                            onChange={({value}) => handleOrgUnitChange(value, 'beds_and_cots_by_all_hierachies', props?.token)}
+                                                            className="w-full max-w-xs rounded border mr-2 border-gray-400"
+                                                    options={[
+                                                        {
+                                                            label:'County',
+                                                            value:'county'
+                                                        },
+                                                        {
+                                                            label:'Sub County',
+                                                            value:'sub_county'
+                                                        },
+                                                        {
+                                                            label:'Ward',
+                                                            value:'ward'
+                                                        }
+                                                    
+                                                    
+                                                    ]}
+                                                    placeholder='Filter by Admin Heirachy'
+                                                    data-modal-target="defaultModal" data-modal-toggle="defaultModal"
+                                                    styles={{
+                                                        control: (baseStyles) => ({
+                                                            ...baseStyles,
+                                                            backgroundColor: 'transparent',
+                                                            outLine: 'none',
+                                                            border: 'none',
+                                                            outLine: 'none',
+                                                            textColor: 'transparent',
+                                                            padding: 0,
+                                                            height: '4px'
+                                                        }),
 
-                                </Tabs.Root> 
+                                                    }}
 
-                            </Tabs.Panel>
-                        </Tabs.Root>
+                                                    
+                                                />
+                                                            </div>
+                                                        ),
+                                                    }}
+                                                />
+                                            </div> */}
+                                        </Tabs.Panel>
+
+                                        {/* CHU Count Data Grid */}
+
+                                        <Tabs.Panel
+                                        value="chu_count"
+                                        className="grow-1 tab-panel"
+                                        >
+                                            {/* CHU Status */}
+                                            {/* <div className='shadow-md w-full max-h-min col-span-7'>
+                                                <StyledDataGrid
+                                                    loading={loading}
+                                                    columns={propsToGridData(props, 1, orgUnitFilter0).columns}
+                                                    rows={propsToGridData(props, 10)?.rows}
+                                                    getRowClassName={() => `super-app-theme--Row`}
+                                                    rowSpacingType="border"
+                                                    showColumnRightBorder
+                                                    showCellRightBorder
+                                                    rowSelection={false}
+                                                    getCellClassName={() => 'super-app-theme--Cell'}
+                                                    slots={{
+                                                       toolbar: () => (
+                                                            <div className='w-full flex justify-center  border-b border-gray-400 py-2'>
+                                                            <GridToolbar
+                                                                className="border border-gray-300"
+                                                                sx={{
+                                                                    flex: 1,
+                                                                    display: 'flex',
+                                                                    marginX: 0,
+                                                                    gap: 5,
+                                                                    alignItems:'start',
+                                                                    
+                                                                }}
+                                                            />
+                                                            <Select 
+                                                            name="org_unit" 
+                                                            onChange={({value}) => handleOrgUnitChange(value, 'beds_and_cots_by_all_hierachies', props?.token)}
+                                                            className="w-full max-w-xs rounded border mr-2 border-gray-400"
+                                                    options={[
+                                                        {
+                                                            label:'County',
+                                                            value:'county'
+                                                        },
+                                                        {
+                                                            label:'Sub County',
+                                                            value:'sub_county'
+                                                        },
+                                                        {
+                                                            label:'Ward',
+                                                            value:'ward'
+                                                        }
+                                                    
+                                                    
+                                                    ]}
+                                                    placeholder='Filter by Admin Heirachy'
+                                                    data-modal-target="defaultModal" data-modal-toggle="defaultModal"
+                                                    styles={{
+                                                        control: (baseStyles) => ({
+                                                            ...baseStyles,
+                                                            backgroundColor: 'transparent',
+                                                            outLine: 'none',
+                                                            border: 'none',
+                                                            outLine: 'none',
+                                                            textColor: 'transparent',
+                                                            padding: 0,
+                                                            height: '4px'
+                                                        }),
+
+                                                    }}
+
+                                                    
+                                                />
+                                                            </div>
+                                                        ),
+                                                    }}
+                                                />
+                                            </div> */}
+
+                                        </Tabs.Panel>
+
+                                    </Tabs.Root> 
+
+                                </Tabs.Panel>
+                            </Tabs.Root>
                         </div>
 
 
@@ -990,6 +1628,28 @@ Reports.getInitialProps = async (ctx) => {
 
                             break;
 
+                            case 'gis':
+                                url = `${process.env.NEXT_PUBLIC_API_URL}/reporting/?report_type=gis${ctx?.query?.groupby !== undefined ? `&report_groupby=${ctx?.query?.groupby}` : '&report_groupby=sub_county'}`;
+            
+            
+                                try {
+            
+                                    const _data = await fetch(url, {
+                                        headers: {
+                                            Authorization: 'Bearer ' + token,
+                                            Accept: 'application/json',
+                                        }
+                                    })
+            
+                                    allReports["gis"] = (await _data.json()).results?.results
+            
+                                }
+                                catch (err) {
+                                    console.log(`Error fetching ${report}: `, err);
+                                   
+                                }
+
+                                break;         
                             /*
                 case 'chul_status_all_hierachies':
                     url = `${process.env.NEXT_PUBLIC_API_URL}/reporting/chul/?report_type=${report}`;
@@ -1103,31 +1763,7 @@ Reports.getInitialProps = async (ctx) => {
                     }
                     break;
 
-                case 'gis':
-                    url = `${process.env.NEXT_PUBLIC_API_URL}/reporting/?report_type=${report}`;
-
-
-                    try {
-
-                        const _data = await fetch(url, {
-                            headers: {
-                                Authorization: 'Bearer ' + token,
-                                Accept: 'application/json',
-                            },
-                        })
-
-                        allReports["gis"] = (await _data.json()).results 
-
-                    }
-                    catch (err) {
-                        console.log(`Error fetching ${report}: `, err);
-                        // allReports.push({
-                        //     error: true,
-                        //     err: err,
-                        //     gis: [],
-                        // })
-                    }
-                    break;
+                
                 
                 
                 case 'chul_status_all_hierachies':
@@ -1184,6 +1820,8 @@ Reports.getInitialProps = async (ctx) => {
 
 
             }
+
+    allReports["token"] = token
 
     return allReports
 }
