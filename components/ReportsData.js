@@ -36,8 +36,8 @@ import { OtherHouses } from "@mui/icons-material";
 
 //                 , columns: [
 //                     {
-//                         headerName: 'County',
-//                         field: 'county',
+//                         headerName: formatString(orgUnitFilter),
+//                         field: `${orgUnitFilter}`,
 //                         flex: 1
 //                     },
 //                     {
@@ -113,8 +113,8 @@ import { OtherHouses } from "@mui/icons-material";
 
 //                 , columns: [
 //                     {
-//                         headerName: 'County',
-//                         field: 'county',
+//                         headerName: formatString(orgUnitFilter),
+//                         field: `${orgUnitFilter}`,
 //                         flex: 1
 //                     },
 //                     {
@@ -237,8 +237,8 @@ import { OtherHouses } from "@mui/icons-material";
 
 //                 , columns: [
 //                     {
-//                         headerName: 'County',
-//                         field: 'county',
+//                         headerName: formatString(orgUnitFilter),
+//                         field: `${orgUnitFilter}`,
 //                         width:100
 
 //                     },
@@ -504,8 +504,8 @@ import { OtherHouses } from "@mui/icons-material";
 
 //                 columns: [
 //                     {
-//                         headerName: 'County',
-//                         field: 'county',
+//                         headerName: formatString(orgUnitFilter),
+//                         field: `${orgUnitFilter}`,
 //                         width:100
 //                     },
 //                     {
@@ -755,8 +755,8 @@ import { OtherHouses } from "@mui/icons-material";
 
 //                 columns: [
 //                     {
-//                         headerName: 'County',
-//                         field: 'county',
+//                         headerName: formatString(orgUnitFilter),
+//                         field: `${orgUnitFilter}`,
 //                         width:100
 //                     },
 //                     {
@@ -924,8 +924,8 @@ import { OtherHouses } from "@mui/icons-material";
 
 //             columns: [
 //                 {
-//                     headerName: 'County',
-//                     field: 'county',
+//                     headerName: formatString(orgUnitFilter),
+//                     field: `${orgUnitFilter}`,
 //                     width:100
 //                 },
 //                 {
@@ -1323,8 +1323,8 @@ import { OtherHouses } from "@mui/icons-material";
 
 //                 columns: [
 //                     {
-//                         headerName: 'County',
-//                         field: 'county',
+//                         headerName: formatString(orgUnitFilter),
+//                         field: `${orgUnitFilter}`,
 //                         width:100
 //                     },
 //                     {
@@ -1725,8 +1725,8 @@ import { OtherHouses } from "@mui/icons-material";
 
 //                 columns: [
 //                     {
-//                         headerName: 'County',
-//                         field: 'county',
+//                         headerName: formatString(orgUnitFilter),
+//                         field: `${orgUnitFilter}`,
 //                         flex:1
 //                     },
 //                     {
@@ -1769,8 +1769,8 @@ import { OtherHouses } from "@mui/icons-material";
 //                 rows: props?.chul_services_all_hierachies ?? [],
 //                 columns: [
 //                     {
-//                         headerName: 'County',
-//                         field: 'county',
+//                         headerName: formatString(orgUnitFilter),
+//                         field: `${orgUnitFilter}`,
 //                         width:100
 //                     },
 
@@ -1936,8 +1936,8 @@ import { OtherHouses } from "@mui/icons-material";
 
 //                 columns: [
 //                     {
-//                         headerName: 'County',
-//                         field: 'county',
+//                         headerName: formatString(orgUnitFilter),
+//                         field: `${orgUnitFilter}`,
 //                         flex:1
 //                     },
 //                     {
@@ -2027,8 +2027,8 @@ import { OtherHouses } from "@mui/icons-material";
 
 //             columns: [
 //                 {
-//                     headerName: 'County',
-//                     field: 'county',
+//                     headerName: formatString(orgUnitFilter),
+//                     field: `${orgUnitFilter}`,
 //                     width:100
 //                 },
 //                 {
@@ -2171,15 +2171,30 @@ import { OtherHouses } from "@mui/icons-material";
 
 // }
 
+function formatString(str) {
+    const fstr = str.replace(/[\s,'_']/, ",").split(",")
 
-export function propsToGridData(props, index) {
+    if(fstr.length == 1) {
+        return `${fstr[0][0].toUpperCase()}${fstr[0].substring(1)}`
+    } else {
+        const ffstr = fstr.map(w => {
+           return `${w.substring(0,1).toUpperCase()}${w.substring(1)}`
+        })
+        
+
+        return ffstr.toString().replace(",", " ")
+    }
+}
+
+
+export function propsToGridData(props, index, orgUnitFilter = "county") {
 
     switch (index) {
         case 0:
             return {
                 rows: Object.entries(props?.beds_and_cots_by_all_hierachies)?.map((result, index) => ({
 
-                    county: result[0],
+                    [`${orgUnitFilter}`]: result[0],
                     hdu_beds: result[1]?.total_hdu_beds,
                     icu_beds: result[1]?.total_icu_beds,
                     maternity_beds: result[1]?.total_maternity_beds,
@@ -2190,8 +2205,8 @@ export function propsToGridData(props, index) {
                 })),
                 columns: [
                     {
-                        headerName: 'County',
-                        field: 'county',
+                        headerName: formatString(orgUnitFilter),
+                        field: `${orgUnitFilter}`,
                         flex: 1
                     },
                     {
@@ -2231,7 +2246,7 @@ export function propsToGridData(props, index) {
         case 1:
             return {
                 rows: Object.entries(props?.facility_keph_level_report_all_hierachies)?.map((result, index) => ({
-                    county: result[0],
+                    [`${orgUnitFilter}`]: result[0],
                     level_2: result[1]?.Level_2,
                     level_3: result[1]?.Level_3,
                     level_4: result[1]?.Level_4,
@@ -2242,8 +2257,8 @@ export function propsToGridData(props, index) {
                 })),
                 columns: [
                     {
-                        headerName: 'County',
-                        field: 'county',
+                        headerName: formatString(orgUnitFilter),
+                        field: `${orgUnitFilter}`,
                         flex: 1
                     },
                     {
@@ -2278,7 +2293,7 @@ export function propsToGridData(props, index) {
         case 2:
             return {
                 rows: Object.entries(props?.facility_owner_report_all_hierachies)?.map((result, index) => ({
-                    county: result[0],
+                    [`${orgUnitFilter}`]: result[0],
                     moh: result[1]['Ministry_of_Health'],
                     private_practice: result[1]['Private_Practice'],
                     ngo: result[1]['Non-Governmental_Organizations'],
@@ -2287,8 +2302,8 @@ export function propsToGridData(props, index) {
                 })),
                 columns: [
                     {
-                        headerName: 'County',
-                        field: 'county',
+                        headerName: formatString(orgUnitFilter),
+                        field: `${orgUnitFilter}`,
                         flex: 1
                     },
                     {
@@ -2312,7 +2327,7 @@ export function propsToGridData(props, index) {
         case 3:
             return {
                 rows: Object.entries(props?.facility_type_report_all_hierachies)?.map((result, index) => ({
-                    county: result[0],
+                    [`${orgUnitFilter}`]: result[0],
                     medical_clinic: result[1]['MEDICAL_CLINIC'],
                     dispensary: result[1]['DISPENSARY'],
                     medical_center: result[1]['MEDICAL_CENTER'],
@@ -2324,8 +2339,8 @@ export function propsToGridData(props, index) {
                 })),
                 columns: [
                     {
-                        headerName: 'County',
-                        field: 'county',
+                        headerName: formatString(orgUnitFilter),
+                        field: `${orgUnitFilter}`,
                         flex: 1
                     },
                     {
@@ -2370,7 +2385,7 @@ export function propsToGridData(props, index) {
         case 4:
             return {
                 rows: Object.entries(props?.facility_regulatory_body_report_all_hierachies)?.map((result, index) => ({
-                    county: result[0],
+                    [`${orgUnitFilter}`]: result[0],
                     moh: result[1]['Ministry_of_Health'],
                     ppb: result[1]['Pharmacy_&_Poisons_Board'],
                     knrc: result[1]['Kenya_Nuclear_Regulatory_Council_(_Radiation_Board)'],
@@ -2385,8 +2400,8 @@ export function propsToGridData(props, index) {
                 })),
                 columns: [
                     {
-                        headerName: 'County',
-                        field: 'county',
+                        headerName: formatString(orgUnitFilter),
+                        field: `${orgUnitFilter}`,
                         flex: 1
                     },
                     {
@@ -2448,7 +2463,7 @@ export function propsToGridData(props, index) {
             return {
                 rows: Object.entries(props?.facility_services_report_all_hierachies)?.map((result, index) =>
                 ({
-                    county: result[0],
+                    [`${orgUnitFilter}`]: result[0],
                     cat_emergency_prep: result[1]["EMERGENCY_PREPAREDNESS"],
                     cat_curative: result[1]["CURATIVE_SERVICES"],
                     cat_orthopaedic: result[1]["ORTHOPAEDIC_TECHNOLOGY_SERVICES"],
@@ -2494,8 +2509,8 @@ export function propsToGridData(props, index) {
                 })),
                 columns: [
                     {
-                        headerName: 'County',
-                        field: 'county',
+                        headerName: formatString(orgUnitFilter),
+                        field: `${orgUnitFilter}`,
                         width: 100
                     },
                     {
@@ -2739,7 +2754,7 @@ export function propsToGridData(props, index) {
 
             return {
                 rows: Object.entries(props?.facility_infrastructure_report_all_hierachies)?.map((result, index) => ({
-                    county: result[0],
+                    [`${orgUnitFilter}`]: result[0],
                     cat_ict_infrastructure: result[1]["ICT_INFRASTRUCTURE"],
                     cat_communications: result[1]["COMMUNICATIONS"],
                     cat_water_source: result[1]["WATER_SOURCE"],
@@ -2810,8 +2825,8 @@ export function propsToGridData(props, index) {
 
                 columns: [
                     {
-                        headerName: 'County',
-                        field: 'county',
+                        headerName: formatString(orgUnitFilter),
+                        field: `${orgUnitFilter}`,
                         width: 100
                     },
                     {
@@ -3176,7 +3191,7 @@ export function propsToGridData(props, index) {
         case 7:
             return {
                 rows: Object.entries(props?.facility_human_resource_category_report_all_hierachies)?.map((result, index) => ({
-                    county: result[0],
+                    [`${orgUnitFilter}`]: result[0],
                     clinical_officers: result[1]["Clinical_Officers"],
                     dental_staff: result[1]["Dental_staff"],
                     mdeical_engineering: result[1]["Medical_Engineering"],
@@ -3202,6 +3217,11 @@ export function propsToGridData(props, index) {
                 })),
 
                 columns: [
+                    {
+                        headerName: formatString(orgUnitFilter),
+                        field: `${orgUnitFilter}`,
+                        width: 100
+                    },
                     {
                         headerName: 'CLINICAL OFFICER',
                         field: 'clinical_officers',

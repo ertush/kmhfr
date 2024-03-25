@@ -11,6 +11,8 @@ import {
 } from '@mui/x-data-grid';
 import { propsToGridData } from '../../components/ReportsData';
 import { UserContext } from '../../providers/user';
+import Select from 'react-select';
+import { useRouter } from 'next/router';
 
 
 const StyledDataGrid = styled(DataGrid)(() => ({
@@ -30,7 +32,21 @@ function Reports(props) {
 
     const userCtx = useContext(UserContext);
     const [user, setUser] = useState(userCtx);
+    // const [orgUnitFilter, setOrgUnitFilter] = useState('county')
+    // const [fileteredReports, setFilteredReports] = useState({})
 
+    const [bedsCotsReport, setBedsCotsReport] = useState({rows: null, columns: null})
+    const [kephReport, setKephReport] = useState({rows: null, columns: null})
+    const [ownershipReport, setOwnershipReport] = useState({rows: null, columns: null})
+    const [facilityTypeReport, setFacilityTypeReport] = useState({rows: null, columns: null})
+    const [facilityRegulatorReport, setFacilityRegulatorReport] = useState({rows: null, columns: null})
+    const [servicesReport, setServicesReport] = useState({rows: null, columns: null})
+    const [infrastructureReport, setInfrasturctureReport] = useState({rows: null, columns: null})
+    const [hrReport, setHrReport] = useState({rows: null, columns: null})
+    const [gisReport, setGisReport] = useState({rows: null, columns: null})
+    const [loading, setLoading] = useState(false)
+
+    const router = useRouter()
 
     // Constants
 
@@ -70,8 +86,165 @@ function Reports(props) {
 		}
 
         setIsClient(true);
+
+        setBedsCotsReport({
+            rows: propsToGridData(props, 0)?.rows, 
+            columns: propsToGridData(props, 0)?.columns
+        })
+        setKephReport({
+            rows: propsToGridData(props, 1)?.rows, 
+            columns: propsToGridData(props, 1)?.columns
+        })
+        setOwnershipReport({
+            rows: propsToGridData(props, 2)?.rows, 
+            columns: propsToGridData(props, 2)?.columns
+        })
+        setFacilityTypeReport({
+            rows: propsToGridData(props, 3)?.rows, 
+            columns: propsToGridData(props, 3)?.columns
+        })
+        setFacilityRegulatorReport({
+            rows: propsToGridData(props, 4)?.rows, 
+            columns: propsToGridData(props, 4)?.columns
+        })
+        setServicesReport({
+            rows: propsToGridData(props, 5)?.rows, 
+            columns: propsToGridData(props, 5)?.columns
+        })
+        setInfrasturctureReport({
+            rows: propsToGridData(props, 6)?.rows, 
+            columns: propsToGridData(props, 6)?.columns
+        })
+        setHrReport({
+            rows: propsToGridData(props, 7)?.rows, 
+            columns: propsToGridData(props, 7)?.columns
+        })
+        setGisReport({
+            rows: propsToGridData(props, 8)?.rows, 
+            columns: propsToGridData(props, 8)?.columns
+        })
+
+
+
         
 	}, [])
+
+
+   async function handleOrgUnitChange(value, reportType, token) {
+
+        if(value){
+            // setOrgUnitFilter(value)
+
+            let filterReport = {}
+            setLoading(true)
+
+            try {
+                const report = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/reporting/?report_type=${reportType}&report_groupby=${value}`, {
+                    headers: {
+                        "Accept": "application/json",
+                        "Authorization": `Bearer ${token}`
+                    }
+                })
+
+                filterReport = {[`${reportType}`]: (await report.json())?.results?.results }
+                // setFilteredReports({[`${reportType}`]: (await report.json())?.results?.results } ?? {})
+            } catch (e) {
+                console.error("Error: ", e.message)
+            } finally {
+
+                setLoading(false)
+                switch (reportType) {
+                    case 'beds_and_cots_by_all_hierachies':
+
+                        
+                        const bedscots = filterReport && propsToGridData(filterReport, 0, value)
+                        setBedsCotsReport({
+                            rows: bedscots?.rows,
+                            columns: bedscots?.columns
+                        })
+
+                        break;
+                    case 'facility_keph_level_report_all_hierachies':
+
+                        const keph = filterReport && propsToGridData(filterReport, 1, value)
+                        setKephReport({
+                            rows: keph?.rows,
+                            columns: keph?.columns
+                        })
+
+                        break;
+                    case 'facility_owner_report_all_hierachies':
+
+                        const owner = filterReport && propsToGridData(filterReport, 2, value)
+                        setOwnershipReport({
+                            rows: owner?.rows,
+                            columns: owner?.columns
+                        })
+
+                        break;
+                    case 'facility_type_report_all_hierachies':
+
+                        const type = filterReport && propsToGridData(filterReport, 3, value)
+                        setFacilityTypeReport({
+                            rows: type?.rows,
+                            columns: type?.columns
+                        })
+
+                        break;
+                    case 'facility_regulatory_body_report_all_hierachies':
+
+                        const reg = filterReport && propsToGridData(filterReport, 4, value)
+                        setFacilityRegulatorReport({
+                            rows: reg?.rows,
+                            columns: reg?.columns
+                        })
+
+                        break;
+                    case 'facility_services_report_all_hierachies':
+
+                        const services = filterReport && propsToGridData(filterReport, 5, value)
+                        setServicesReport({
+                            rows: services?.rows,
+                            columns: services?.columns
+                        })
+
+                        break;
+                    case 'facility_infrastructure_report_all_hierachies':
+
+                        const infra = filterReport && propsToGridData(filterReport, 6, value)
+                        setInfrasturctureReport({
+                            rows: infra?.rows,
+                            columns: infra?.columns
+                        })
+
+                        break;
+                    case 'facility_human_resource_category_report_all_hierachies':
+
+                        const hr = filterReport && propsToGridData(filterReport, 7, value)
+                        setHrReport({
+                            rows: hr?.rows,
+                            columns: hr?.columns
+                        })
+
+                        break;
+                    case 'gis':
+
+                        const gis = filterReport && propsToGridData(filterReport, 8, value)
+                        setGisReport({
+                            rows: gis?.rows,
+                            columns: gis?.columns
+                        })
+
+                        break;
+
+
+
+                }
+            }
+        }
+
+
+    }
 
 
     if(isClient){
@@ -122,11 +295,11 @@ function Reports(props) {
                             </div>
                         </div>
 
+                          
+
                         {/* Tabs */}
                         <div className='w-full col-span-1 md:col-span-7 flex shadow-sm bg-gray-50 px-0 mx-0 h-700 flex-1'>
-                            <div className='w-full flex my-2'>
-                                
-                            </div>
+                         
                             <Tabs.Root
                                 orientation="horizontal"
                                 className="w-full flex flex-col tab-root"
@@ -258,8 +431,9 @@ function Reports(props) {
 
                                             <div className='shadow-md w-full max-h-min col-span-7'>
                                                 <StyledDataGrid
-                                                    columns={propsToGridData(props, 0).columns}
-                                                    rows={propsToGridData(props, 0)?.rows}
+                                                    loading={loading}
+                                                    columns={bedsCotsReport?.columns}
+                                                    rows={bedsCotsReport?.rows}
                                                     getRowClassName={() => `super-app-theme--Row`}
                                                     rowSpacingType="border"
                                                     showColumnRightBorder
@@ -268,16 +442,57 @@ function Reports(props) {
                                                     getCellClassName={() => 'super-app-theme--Cell'}
                                                     slots={{
                                                         toolbar: () => (
+                                                            <div className='w-full flex justify-center  border-b border-gray-400 py-2'>
                                                             <GridToolbar
+                                                                className="border border-gray-300"
                                                                 sx={{
                                                                     flex: 1,
                                                                     display: 'flex',
-                                                                    marginX: 'auto',
+                                                                    marginX: 0,
                                                                     gap: 5,
-                                                                    padding: '0.45rem',
-                                                                    alignItems:'start'
+                                                                    alignItems:'start',
+                                                                    
                                                                 }}
                                                             />
+                                                            <Select 
+                                                            name="org_unit" 
+                                                            onChange={({value}) => handleOrgUnitChange(value, 'beds_and_cots_by_all_hierachies', props?.token)}
+                                                            className="w-full max-w-xs rounded border mr-2 border-gray-400"
+                                                    options={[
+                                                        {
+                                                            label:'County',
+                                                            value:'county'
+                                                        },
+                                                        {
+                                                            label:'Sub County',
+                                                            value:'sub_county'
+                                                        },
+                                                        {
+                                                            label:'Ward',
+                                                            value:'ward'
+                                                        }
+                                                    
+                                                    
+                                                    ]}
+                                                    placeholder='Filter by Admin Heirachy'
+                                                    
+                                                    styles={{
+                                                        control: (baseStyles) => ({
+                                                            ...baseStyles,
+                                                            backgroundColor: 'transparent',
+                                                            outLine: 'none',
+                                                            border: 'none',
+                                                            outLine: 'none',
+                                                            textColor: 'transparent',
+                                                            padding: 0,
+                                                            height: '4px'
+                                                        }),
+
+                                                    }}
+
+                                                    
+                                                />
+                                                            </div>
                                                         ),
                                                     }}
                                                 />
@@ -294,8 +509,9 @@ function Reports(props) {
 
                                             <div className='shadow-md w-full max-h-min col-span-7'>
                                                 <StyledDataGrid
-                                                    columns={propsToGridData(props, 1).columns}
-                                                    rows={propsToGridData(props, 1)?.rows}
+                                                    loading={loading}
+                                                    columns={kephReport?.columns}
+                                                    rows={kephReport?.rows}
                                                     getRowClassName={() => `super-app-theme--Row`}
                                                     rowSpacingType="border"
                                                     showColumnRightBorder
@@ -303,17 +519,58 @@ function Reports(props) {
                                                     rowSelection={false}
                                                     getCellClassName={() => 'super-app-theme--Cell'}
                                                     slots={{
-                                                        toolbar: () => (
+                                                       toolbar: () => (
+                                                            <div className='w-full flex justify-center  border-b border-gray-400 py-2'>
                                                             <GridToolbar
+                                                                className="border border-gray-300"
                                                                 sx={{
                                                                     flex: 1,
                                                                     display: 'flex',
-                                                                    marginX: 'auto',
+                                                                    marginX: 0,
                                                                     gap: 5,
-                                                                    padding: '0.45rem',
-                                                                    alignItems:'start'
+                                                                    alignItems:'start',
+                                                                    
                                                                 }}
                                                             />
+                                                            <Select 
+                                                            name="org_unit" 
+                                                            onChange={({value}) => handleOrgUnitChange(value, 'facility_keph_level_report_all_hierachies', props?.token)}
+                                                            className="w-full max-w-xs rounded border mr-2 border-gray-400"
+                                                    options={[
+                                                        {
+                                                            label:'County',
+                                                            value:'county'
+                                                        },
+                                                        {
+                                                            label:'Sub County',
+                                                            value:'sub_county'
+                                                        },
+                                                        {
+                                                            label:'Ward',
+                                                            value:'ward'
+                                                        }
+                                                    
+                                                    
+                                                    ]}
+                                                    placeholder='Filter by Admin Heirachy'
+                                                    data-modal-target="defaultModal" data-modal-toggle="defaultModal"
+                                                    styles={{
+                                                        control: (baseStyles) => ({
+                                                            ...baseStyles,
+                                                            backgroundColor: 'transparent',
+                                                            outLine: 'none',
+                                                            border: 'none',
+                                                            outLine: 'none',
+                                                            textColor: 'transparent',
+                                                            padding: 0,
+                                                            height: '4px'
+                                                        }),
+
+                                                    }}
+
+                                                    
+                                                />
+                                                            </div>
                                                         ),
                                                     }}
                                                 />
@@ -329,8 +586,9 @@ function Reports(props) {
                                             <div className='shadow-mdw-full  max-h-min col-span-7'>
                                                 
                                                 <StyledDataGrid
-                                                    columns={propsToGridData(props, 2).columns}
-                                                    rows={propsToGridData(props, 2)?.rows}
+                                                    loading={loading}
+                                                    columns={ownershipReport?.columns}
+                                                    rows={ownershipReport?.rows}
                                                     getRowClassName={() => `super-app-theme--Row`}
                                                     rowSpacingType="border"
                                                     showColumnRightBorder
@@ -339,17 +597,58 @@ function Reports(props) {
                                                     rowSelection={false}
                                                     getCellClassName={() => 'super-app-theme--Cell'}
                                                     slots={{
-                                                        toolbar: () => (
+                                                       toolbar: () => (
+                                                            <div className='w-full flex justify-center  border-b border-gray-400 py-2'>
                                                             <GridToolbar
+                                                                className="border border-gray-300"
                                                                 sx={{
                                                                     flex: 1,
                                                                     display: 'flex',
-                                                                    marginX: 'auto',
+                                                                    marginX: 0,
                                                                     gap: 5,
-                                                                    padding: '0.45rem',
-                                                                    alignItems:'start'
+                                                                    alignItems:'start',
+                                                                    
                                                                 }}
                                                             />
+                                                            <Select 
+                                                            name="org_unit" 
+                                                            onChange={({value}) => handleOrgUnitChange(value, 'facility_owner_report_all_hierachies', props?.token)}
+                                                            className="w-full max-w-xs rounded border mr-2 border-gray-400"
+                                                    options={[
+                                                        {
+                                                            label:'County',
+                                                            value:'county'
+                                                        },
+                                                        {
+                                                            label:'Sub County',
+                                                            value:'sub_county'
+                                                        },
+                                                        {
+                                                            label:'Ward',
+                                                            value:'ward'
+                                                        }
+                                                    
+                                                    
+                                                    ]}
+                                                    placeholder='Filter by Admin Heirachy'
+                                                    data-modal-target="defaultModal" data-modal-toggle="defaultModal"
+                                                    styles={{
+                                                        control: (baseStyles) => ({
+                                                            ...baseStyles,
+                                                            backgroundColor: 'transparent',
+                                                            outLine: 'none',
+                                                            border: 'none',
+                                                            outLine: 'none',
+                                                            textColor: 'transparent',
+                                                            padding: 0,
+                                                            height: '4px'
+                                                        }),
+
+                                                    }}
+
+                                                    
+                                                />
+                                                            </div>
                                                         ),
                                                     }}
                                                 />
@@ -365,8 +664,9 @@ function Reports(props) {
 
                                             <div className='shadow-md w-full max-h-min col-span-7'>
                                                 <StyledDataGrid
-                                                    columns={propsToGridData(props, 3).columns}
-                                                    rows={propsToGridData(props, 3)?.rows}
+                                                    loading={loading}
+                                                    columns={facilityTypeReport?.columns}
+                                                    rows={facilityTypeReport?.rows}
                                                     getRowClassName={() => `super-app-theme--Row`}
                                                     rowSpacingType="border"
                                                     showColumnRightBorder
@@ -374,17 +674,58 @@ function Reports(props) {
                                                     rowSelection={false}
                                                     getCellClassName={() => 'super-app-theme--Cell'}
                                                     slots={{
-                                                        toolbar: () => (
+                                                       toolbar: () => (
+                                                            <div className='w-full flex justify-center  border-b border-gray-400 py-2'>
                                                             <GridToolbar
+                                                                className="border border-gray-300"
                                                                 sx={{
                                                                     flex: 1,
                                                                     display: 'flex',
-                                                                    marginX: 'auto',
+                                                                    marginX: 0,
                                                                     gap: 5,
-                                                                    padding: '0.45rem',
-                                                                    alignItems:'start'
+                                                                    alignItems:'start',
+                                                                    
                                                                 }}
                                                             />
+                                                            <Select 
+                                                            name="org_unit" 
+                                                            onChange={({value}) => handleOrgUnitChange(value, 'facility_type_report_all_hierachies', props?.token)}
+                                                            className="w-full max-w-xs rounded border mr-2 border-gray-400"
+                                                    options={[
+                                                        {
+                                                            label:'County',
+                                                            value:'county'
+                                                        },
+                                                        {
+                                                            label:'Sub County',
+                                                            value:'sub_county'
+                                                        },
+                                                        {
+                                                            label:'Ward',
+                                                            value:'ward'
+                                                        }
+                                                    
+                                                    
+                                                    ]}
+                                                    placeholder='Filter by Admin Heirachy'
+                                                    data-modal-target="defaultModal" data-modal-toggle="defaultModal"
+                                                    styles={{
+                                                        control: (baseStyles) => ({
+                                                            ...baseStyles,
+                                                            backgroundColor: 'transparent',
+                                                            outLine: 'none',
+                                                            border: 'none',
+                                                            outLine: 'none',
+                                                            textColor: 'transparent',
+                                                            padding: 0,
+                                                            height: '4px'
+                                                        }),
+
+                                                    }}
+
+                                                    
+                                                />
+                                                            </div>
                                                         ),
                                                     }}
                                                 />
@@ -399,8 +740,9 @@ function Reports(props) {
                                             
                                             <div className='shadow-md w-full max-h-min col-span-7'>
                                                 <StyledDataGrid
-                                                    columns={propsToGridData(props, 4).columns}
-                                                    rows={propsToGridData(props, 4)?.rows}
+                                                    loading={loading}
+                                                    columns={facilityRegulatorReport?.columns}
+                                                    rows={facilityRegulatorReport?.rows}
                                                     getRowClassName={() => `super-app-theme--Row`}
                                                     rowSpacingType="border"
                                                     showColumnRightBorder
@@ -408,17 +750,58 @@ function Reports(props) {
                                                     rowSelection={false}
                                                     getCellClassName={() => 'super-app-theme--Cell'}
                                                     slots={{
-                                                        toolbar: () => (
+                                                       toolbar: () => (
+                                                            <div className='w-full flex justify-center  border-b border-gray-400 py-2'>
                                                             <GridToolbar
+                                                                className="border border-gray-300"
                                                                 sx={{
                                                                     flex: 1,
                                                                     display: 'flex',
-                                                                    marginX: 'auto',
+                                                                    marginX: 0,
                                                                     gap: 5,
-                                                                    padding: '0.45rem',
-                                                                    alignItems:'start'
+                                                                    alignItems:'start',
+                                                                    
                                                                 }}
                                                             />
+                                                            <Select 
+                                                            name="org_unit" 
+                                                            onChange={({value}) => handleOrgUnitChange(value, 'facility_regulatory_body_report_all_hierachies', props?.token)}
+                                                            className="w-full max-w-xs rounded border mr-2 border-gray-400"
+                                                    options={[
+                                                        {
+                                                            label:'County',
+                                                            value:'county'
+                                                        },
+                                                        {
+                                                            label:'Sub County',
+                                                            value:'sub_county'
+                                                        },
+                                                        {
+                                                            label:'Ward',
+                                                            value:'ward'
+                                                        }
+                                                    
+                                                    
+                                                    ]}
+                                                    placeholder='Filter by Admin Heirachy'
+                                                    data-modal-target="defaultModal" data-modal-toggle="defaultModal"
+                                                    styles={{
+                                                        control: (baseStyles) => ({
+                                                            ...baseStyles,
+                                                            backgroundColor: 'transparent',
+                                                            outLine: 'none',
+                                                            border: 'none',
+                                                            outLine: 'none',
+                                                            textColor: 'transparent',
+                                                            padding: 0,
+                                                            height: '4px'
+                                                        }),
+
+                                                    }}
+
+                                                    
+                                                />
+                                                            </div>
                                                         ),
                                                     }}
                                                 />
@@ -432,8 +815,9 @@ function Reports(props) {
                                             
                                             <div  className='shadow-md w-full max-h-min col-span-7'>
                                                 <StyledDataGrid
-                                                    columns={propsToGridData(props, 5).columns}
-                                                    rows={propsToGridData(props, 5)?.rows}
+                                                    loading={loading}
+                                                    columns={servicesReport?.columns}
+                                                    rows={servicesReport?.rows}
                                                     getRowClassName={() => `super-app-theme--Row`}
                                                     rowSpacingType="border"
                                                     showColumnRightBorder
@@ -441,17 +825,58 @@ function Reports(props) {
                                                     rowSelection={false}
                                                     getCellClassName={() => 'super-app-theme--Cell'}
                                                     slots={{
-                                                        toolbar: () => (
+                                                       toolbar: () => (
+                                                            <div className='w-full flex justify-center  border-b border-gray-400 py-2'>
                                                             <GridToolbar
+                                                                className="border border-gray-300"
                                                                 sx={{
                                                                     flex: 1,
                                                                     display: 'flex',
-                                                                    marginX: 'auto',
+                                                                    marginX: 0,
                                                                     gap: 5,
-                                                                    padding: '0.45rem',
-                                                                    alignItems:'start'
+                                                                    alignItems:'start',
+                                                                    
                                                                 }}
                                                             />
+                                                            <Select 
+                                                            name="org_unit" 
+                                                            onChange={({value}) => handleOrgUnitChange(value, 'facility_services_report_all_hierachies', props?.token)}
+                                                            className="w-full max-w-xs rounded border mr-2 border-gray-400"
+                                                    options={[
+                                                        {
+                                                            label:'County',
+                                                            value:'county'
+                                                        },
+                                                        {
+                                                            label:'Sub County',
+                                                            value:'sub_county'
+                                                        },
+                                                        {
+                                                            label:'Ward',
+                                                            value:'ward'
+                                                        }
+                                                    
+                                                    
+                                                    ]}
+                                                    placeholder='Filter by Admin Heirachy'
+                                                    data-modal-target="defaultModal" data-modal-toggle="defaultModal"
+                                                    styles={{
+                                                        control: (baseStyles) => ({
+                                                            ...baseStyles,
+                                                            backgroundColor: 'transparent',
+                                                            outLine: 'none',
+                                                            border: 'none',
+                                                            outLine: 'none',
+                                                            textColor: 'transparent',
+                                                            padding: 0,
+                                                            height: '4px'
+                                                        }),
+
+                                                    }}
+
+                                                    
+                                                />
+                                                            </div>
                                                         ),
                                                     }}
                                                 />
@@ -466,8 +891,9 @@ function Reports(props) {
                                             
                                             <div className='shadow-md w-full max-h-min col-span-7'>
                                                 <StyledDataGrid
-                                                    columns={propsToGridData(props, 6).columns}
-                                                    rows={propsToGridData(props, 6)?.rows}
+                                                    loading={loading}
+                                                    columns={infrastructureReport?.columns}
+                                                    rows={infrastructureReport?.rows}
                                                     getRowClassName={() => `super-app-theme--Row`}
                                                     rowSpacingType="border"
                                                     showColumnRightBorder
@@ -475,17 +901,58 @@ function Reports(props) {
                                                     rowSelection={false}
                                                     getCellClassName={() => 'super-app-theme--Cell'}
                                                     slots={{
-                                                        toolbar: () => (
+                                                       toolbar: () => (
+                                                            <div className='w-full flex justify-center  border-b border-gray-400 py-2'>
                                                             <GridToolbar
+                                                                className="border border-gray-300"
                                                                 sx={{
                                                                     flex: 1,
                                                                     display: 'flex',
-                                                                    marginX: 'auto',
+                                                                    marginX: 0,
                                                                     gap: 5,
-                                                                    padding: '0.45rem',
-                                                                    alignItems:'start'
+                                                                    alignItems:'start',
+                                                                    
                                                                 }}
                                                             />
+                                                            <Select 
+                                                            name="org_unit" 
+                                                            onChange={({value}) => handleOrgUnitChange(value, 'facility_infrastructure_report_all_hierachies', props?.token)}
+                                                            className="w-full max-w-xs rounded border mr-2 border-gray-400"
+                                                    options={[
+                                                        {
+                                                            label:'County',
+                                                            value:'county'
+                                                        },
+                                                        {
+                                                            label:'Sub County',
+                                                            value:'sub_county'
+                                                        },
+                                                        {
+                                                            label:'Ward',
+                                                            value:'ward'
+                                                        }
+                                                    
+                                                    
+                                                    ]}
+                                                    placeholder='Filter by Admin Heirachy'
+                                                    data-modal-target="defaultModal" data-modal-toggle="defaultModal"
+                                                    styles={{
+                                                        control: (baseStyles) => ({
+                                                            ...baseStyles,
+                                                            backgroundColor: 'transparent',
+                                                            outLine: 'none',
+                                                            border: 'none',
+                                                            outLine: 'none',
+                                                            textColor: 'transparent',
+                                                            padding: 0,
+                                                            height: '4px'
+                                                        }),
+
+                                                    }}
+
+                                                    
+                                                />
+                                                            </div>
                                                         ),
                                                     }}
                                                 />
@@ -502,8 +969,9 @@ function Reports(props) {
                                             
                                             <div  className='shadow-md w-full max-h-min col-span-7'>
                                                 <StyledDataGrid
-                                                    columns={propsToGridData(props, 7).columns}
-                                                    rows={propsToGridData(props, 7)?.rows}
+                                                    loading={loading}
+                                                    columns={hrReport?.columns}
+                                                    rows={hrReport?.rows}
                                                     getRowClassName={() => `super-app-theme--Row`}
                                                     rowSpacingType="border"
                                                     showColumnRightBorder
@@ -511,17 +979,58 @@ function Reports(props) {
                                                     rowSelection={false}
                                                     getCellClassName={() => 'super-app-theme--Cell'}
                                                     slots={{
-                                                        toolbar: () => (
+                                                       toolbar: () => (
+                                                            <div className='w-full flex justify-center  border-b border-gray-400 py-2'>
                                                             <GridToolbar
+                                                                className="border border-gray-300"
                                                                 sx={{
                                                                     flex: 1,
                                                                     display: 'flex',
-                                                                    marginX: 'auto',
+                                                                    marginX: 0,
                                                                     gap: 5,
-                                                                    padding: '0.45rem',
-                                                                    alignItems:'start'
+                                                                    alignItems:'start',
+                                                                    
                                                                 }}
                                                             />
+                                                            <Select 
+                                                            name="org_unit" 
+                                                            onChange={({value}) => handleOrgUnitChange(value, 'facility_human_resource_category_report_all_hierachies', props?.token)}
+                                                            className="w-full max-w-xs rounded border mr-2 border-gray-400"
+                                                    options={[
+                                                        {
+                                                            label:'County',
+                                                            value:'county'
+                                                        },
+                                                        {
+                                                            label:'Sub County',
+                                                            value:'sub_county'
+                                                        },
+                                                        {
+                                                            label:'Ward',
+                                                            value:'ward'
+                                                        }
+                                                    
+                                                    
+                                                    ]}
+                                                    placeholder='Filter by Admin Heirachy'
+                                                    data-modal-target="defaultModal" data-modal-toggle="defaultModal"
+                                                    styles={{
+                                                        control: (baseStyles) => ({
+                                                            ...baseStyles,
+                                                            backgroundColor: 'transparent',
+                                                            outLine: 'none',
+                                                            border: 'none',
+                                                            outLine: 'none',
+                                                            textColor: 'transparent',
+                                                            padding: 0,
+                                                            height: '4px'
+                                                        }),
+
+                                                    }}
+
+                                                    
+                                                />
+                                                            </div>
                                                         ),
                                                     }}
                                                 />
@@ -535,8 +1044,9 @@ function Reports(props) {
                                             {/* Geocodes */}
                                             <div  className='shadow-md w-full max-h-min col-span-7'>
                                                 <StyledDataGrid
-                                                    columns={propsToGridData(props, 8)?.columns}
-                                                    rows={propsToGridData(props, 8)?.rows}
+                                                    loading={loading}
+                                                    columns={gisReport?.columns}
+                                                    rows={gisReport?.rows}
                                                     getRowClassName={() => `super-app-theme--Row`}
                                                     rowSpacingType="border"
                                                     showColumnRightBorder
@@ -544,17 +1054,58 @@ function Reports(props) {
                                                     rowSelection={false}
                                                     getCellClassName={() => 'super-app-theme--Cell'}
                                                     slots={{
-                                                        toolbar: () => (
+                                                       toolbar: () => (
+                                                            <div className='w-full flex justify-center  border-b border-gray-400 py-2'>
                                                             <GridToolbar
+                                                                className="border border-gray-300"
                                                                 sx={{
                                                                     flex: 1,
                                                                     display: 'flex',
-                                                                    marginX: 'auto',
+                                                                    marginX: 0,
                                                                     gap: 5,
-                                                                    padding: '0.45rem',
-                                                                    alignItems:'start'
+                                                                    alignItems:'start',
+                                                                    
                                                                 }}
                                                             />
+                                                            <Select 
+                                                            name="org_unit" 
+                                                            onChange={({value}) => handleOrgUnitChange(value, 'gis', props?.token)}
+                                                            className="w-full max-w-xs rounded border mr-2 border-gray-400"
+                                                    options={[
+                                                        {
+                                                            label:'County',
+                                                            value:'county'
+                                                        },
+                                                        {
+                                                            label:'Sub County',
+                                                            value:'sub_county'
+                                                        },
+                                                        {
+                                                            label:'Ward',
+                                                            value:'ward'
+                                                        }
+                                                    
+                                                    
+                                                    ]}
+                                                    placeholder='Filter by Admin Heirachy'
+                                                    data-modal-target="defaultModal" data-modal-toggle="defaultModal"
+                                                    styles={{
+                                                        control: (baseStyles) => ({
+                                                            ...baseStyles,
+                                                            backgroundColor: 'transparent',
+                                                            outLine: 'none',
+                                                            border: 'none',
+                                                            outLine: 'none',
+                                                            textColor: 'transparent',
+                                                            padding: 0,
+                                                            height: '4px'
+                                                        }),
+
+                                                    }}
+
+                                                    
+                                                />
+                                                            </div>
                                                         ),
                                                     }}
                                                 />
@@ -609,11 +1160,12 @@ function Reports(props) {
                                         className="grow-1 tab-panel"
                                         >
                                             {/* CHU Services */}                                  
-                                            {/* { console.log({rows:propsToGridData(props, 9)?.rows, columns: propsToGridData(props, 9).columns})  } */}
+                                            {/* { console.log({rows:propsToGr, orgUnitFilteridData(props, 9)?.rows, columns: propsToGridData(props, 9).columns})  } */}
                                             
                                             {/* <div className='shadow-md w-full max-h-min col-span-7'>
                                                 <StyledDataGrid
-                                                    columns={propsToGridData(props, 9).columns}
+                                                    loading={loading}
+                                                    columns={propsToGridData(props, 9, orgUnitFilter).columns}
                                                     rows={propsToGridData(props, 9)?.rows}
                                                     getRowClassName={() => `super-app-theme--Row`}
                                                     rowSpacingType="border"
@@ -622,17 +1174,58 @@ function Reports(props) {
                                                     rowSelection={false}
                                                     getCellClassName={() => 'super-app-theme--Cell'}
                                                     slots={{
-                                                        toolbar: () => (
+                                                       toolbar: () => (
+                                                            <div className='w-full flex justify-center  border-b border-gray-400 py-2'>
                                                             <GridToolbar
+                                                                className="border border-gray-300"
                                                                 sx={{
                                                                     flex: 1,
                                                                     display: 'flex',
-                                                                    marginX: 'auto',
+                                                                    marginX: 0,
                                                                     gap: 5,
-                                                                    padding: '0.45rem',
-                                                                    alignItems:'start'
+                                                                    alignItems:'start',
+                                                                    
                                                                 }}
                                                             />
+                                                            <Select 
+                                                            name="org_unit" 
+                                                            onChange={({value}) => handleOrgUnitChange(value, 'beds_and_cots_by_all_hierachies', props?.token)}
+                                                            className="w-full max-w-xs rounded border mr-2 border-gray-400"
+                                                    options={[
+                                                        {
+                                                            label:'County',
+                                                            value:'county'
+                                                        },
+                                                        {
+                                                            label:'Sub County',
+                                                            value:'sub_county'
+                                                        },
+                                                        {
+                                                            label:'Ward',
+                                                            value:'ward'
+                                                        }
+                                                    
+                                                    
+                                                    ]}
+                                                    placeholder='Filter by Admin Heirachy'
+                                                    data-modal-target="defaultModal" data-modal-toggle="defaultModal"
+                                                    styles={{
+                                                        control: (baseStyles) => ({
+                                                            ...baseStyles,
+                                                            backgroundColor: 'transparent',
+                                                            outLine: 'none',
+                                                            border: 'none',
+                                                            outLine: 'none',
+                                                            textColor: 'transparent',
+                                                            padding: 0,
+                                                            height: '4px'
+                                                        }),
+
+                                                    }}
+
+                                                    
+                                                />
+                                                            </div>
                                                         ),
                                                     }}
                                                 />
@@ -648,7 +1241,8 @@ function Reports(props) {
                                             {/* <div className='shadow-md w-full max-h-min col-span-7'>
                                                 { console.log({rows: propsToGridData(props, 7).rows }) }
                                                 <StyledDataGrid
-                                                    columns={propsToGridData(props, 7).columns}
+                                                    loading={loading}
+                                                    columns={propsToGridData(props, 7, orgUnitFilter).columns}
                                                     rows={propsToGridData(props, 7)?.rows}
                                                     getRowClassName={() => `super-app-theme--Row`}
                                                     rowSpacingType="border"
@@ -657,17 +1251,58 @@ function Reports(props) {
                                                     rowSelection={false}
                                                     getCellClassName={() => 'super-app-theme--Cell'}
                                                     slots={{
-                                                        toolbar: () => (
+                                                       toolbar: () => (
+                                                            <div className='w-full flex justify-center  border-b border-gray-400 py-2'>
                                                             <GridToolbar
+                                                                className="border border-gray-300"
                                                                 sx={{
                                                                     flex: 1,
                                                                     display: 'flex',
-                                                                    marginX: 'auto',
+                                                                    marginX: 0,
                                                                     gap: 5,
-                                                                    padding: '0.45rem',
-                                                                    alignItems:'start'
+                                                                    alignItems:'start',
+                                                                    
                                                                 }}
                                                             />
+                                                            <Select 
+                                                            name="org_unit" 
+                                                            onChange={({value}) => handleOrgUnitChange(value, 'beds_and_cots_by_all_hierachies', props?.token)}
+                                                            className="w-full max-w-xs rounded border mr-2 border-gray-400"
+                                                    options={[
+                                                        {
+                                                            label:'County',
+                                                            value:'county'
+                                                        },
+                                                        {
+                                                            label:'Sub County',
+                                                            value:'sub_county'
+                                                        },
+                                                        {
+                                                            label:'Ward',
+                                                            value:'ward'
+                                                        }
+                                                    
+                                                    
+                                                    ]}
+                                                    placeholder='Filter by Admin Heirachy'
+                                                    data-modal-target="defaultModal" data-modal-toggle="defaultModal"
+                                                    styles={{
+                                                        control: (baseStyles) => ({
+                                                            ...baseStyles,
+                                                            backgroundColor: 'transparent',
+                                                            outLine: 'none',
+                                                            border: 'none',
+                                                            outLine: 'none',
+                                                            textColor: 'transparent',
+                                                            padding: 0,
+                                                            height: '4px'
+                                                        }),
+
+                                                    }}
+
+                                                    
+                                                />
+                                                            </div>
                                                         ),
                                                     }}
                                                 />
@@ -683,7 +1318,8 @@ function Reports(props) {
                                             {/* CHU Status */}
                                             {/* <div className='shadow-md w-full max-h-min col-span-7'>
                                                 <StyledDataGrid
-                                                    columns={propsToGridData(props, 10).columns}
+                                                    loading={loading}
+                                                    columns={propsToGridData(props, 1, orgUnitFilter0).columns}
                                                     rows={propsToGridData(props, 10)?.rows}
                                                     getRowClassName={() => `super-app-theme--Row`}
                                                     rowSpacingType="border"
@@ -692,17 +1328,58 @@ function Reports(props) {
                                                     rowSelection={false}
                                                     getCellClassName={() => 'super-app-theme--Cell'}
                                                     slots={{
-                                                        toolbar: () => (
+                                                       toolbar: () => (
+                                                            <div className='w-full flex justify-center  border-b border-gray-400 py-2'>
                                                             <GridToolbar
+                                                                className="border border-gray-300"
                                                                 sx={{
                                                                     flex: 1,
                                                                     display: 'flex',
-                                                                    marginX: 'auto',
+                                                                    marginX: 0,
                                                                     gap: 5,
-                                                                    padding: '0.45rem',
-                                                                    alignItems:'start'
+                                                                    alignItems:'start',
+                                                                    
                                                                 }}
                                                             />
+                                                            <Select 
+                                                            name="org_unit" 
+                                                            onChange={({value}) => handleOrgUnitChange(value, 'beds_and_cots_by_all_hierachies', props?.token)}
+                                                            className="w-full max-w-xs rounded border mr-2 border-gray-400"
+                                                    options={[
+                                                        {
+                                                            label:'County',
+                                                            value:'county'
+                                                        },
+                                                        {
+                                                            label:'Sub County',
+                                                            value:'sub_county'
+                                                        },
+                                                        {
+                                                            label:'Ward',
+                                                            value:'ward'
+                                                        }
+                                                    
+                                                    
+                                                    ]}
+                                                    placeholder='Filter by Admin Heirachy'
+                                                    data-modal-target="defaultModal" data-modal-toggle="defaultModal"
+                                                    styles={{
+                                                        control: (baseStyles) => ({
+                                                            ...baseStyles,
+                                                            backgroundColor: 'transparent',
+                                                            outLine: 'none',
+                                                            border: 'none',
+                                                            outLine: 'none',
+                                                            textColor: 'transparent',
+                                                            padding: 0,
+                                                            height: '4px'
+                                                        }),
+
+                                                    }}
+
+                                                    
+                                                />
+                                                            </div>
                                                         ),
                                                     }}
                                                 />
@@ -1143,6 +1820,8 @@ Reports.getInitialProps = async (ctx) => {
 
 
             }
+
+    allReports["token"] = token
 
     return allReports
 }
