@@ -2499,7 +2499,7 @@ export function propsToGridData(props, index) {
                         width: 100
                     },
                     {
-                        headerName: 'EMERGENCY PREPAREDNESS',
+                        headerNpropsame: 'EMERGENCY PREPAREDNESS',
                         field: 'cat_emergency_prep',
                         width: 200
 
@@ -3324,5 +3324,51 @@ export function propsToGridData(props, index) {
                 ]
 
             }
+
+        case 8:
+            return {
+                rows: Object.entries(props?.gis)?.map(([key, value], index) => ({
+                    sub_county: key,
+                    facility_name: value?.map(({facility_name}) =>  facility_name)[0],
+                    facility_code: value?.map(({facility_code}) =>  facility_code)[0],
+                    facility_long: value?.map(({facility_long}) =>  facility_long)[0],
+                    facility_lat: value?.map(({facility_lat}) =>  facility_lat)[0],
+                    id:index
+                })),
+
+                columns: [
+                    {
+                        headerName: 'Sub County',
+                        field: 'sub_county',
+                        flex: 1
+
+                    },
+                    {
+                        headerName: 'Facility Name',
+                        field: 'facility_name',
+                        flex: 1
+                    },
+                    {
+                        headerName: 'Facility Code',
+                        field: 'facility_code',
+                        flex: 1
+
+                    },
+                    {
+                        headerName: 'Latitude',
+                        field: 'facility_lat',
+                        flex: 1
+
+                    },
+                    {
+                        headerName: 'Longitude',
+                        field: 'facility_long',
+                        flex: 1
+
+                    }
+
+                ]
+
+            }   
     }
 } 

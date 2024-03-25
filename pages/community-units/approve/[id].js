@@ -2,7 +2,6 @@ import React, { useState, useEffect, useContext } from 'react';
 import Head from 'next/head';
 import MainLayout from '../../../components/MainLayout';
 import { checkToken } from '../../../controllers/auth/auth';
-import { approveCHU, approveCHUUpdates } from '../../../controllers/chul/rejectApprove';
 import { ChevronDownIcon } from '@heroicons/react/solid';
 import { CheckCircleIcon, ChevronRightIcon, InformationCircleIcon, LockClosedIcon, XCircleIcon } from '@heroicons/react/solid';
 import Table from '@mui/material/Table';
@@ -30,11 +29,12 @@ function ApproveCommunityUnit(props) {
   // Reference hooks for the services section
   const [user, setUser] = useState(userCtx);
   const [isCHULDetails, setIsCHULDetails] = useState(true);
-  const [appRejReason, setAppRejReason] = useState('')
   const [isApproveReject, setIsApproveReject] = useState(false);
   const [isClient, setIsClient] = useState(false);
   const [formError, setFormError] = useState(null)
-  const [submitting, setSubmitting] = useState(false)
+  const [isSubmittingApproval, setIsSubmittingApproval] = useState(false)
+  const [isSubmittingRejection, setIsSubmittingRejection] = useState(false)
+
 
   const columns = [
     { label: 'Field', minWidth: 100 },
@@ -57,6 +57,157 @@ function ApproveCommunityUnit(props) {
     { value: `${cu.facility_name}`, label: 'Linked Facility' },
     { value: `${cu.facility_county}`, label: 'County' },
   ]
+
+
+ function approveCHU (e, token) {
+    if (isApproveReject) {
+      setIsSubmittingApproval(true);
+    } else {
+      setIsSubmittingRejection(true);
+    }
+
+  
+    e.preventDefault();
+
+    const formDataEntries = new FormData(e.target)
+
+    const formData = Object.fromEntries(formDataEntries)
+  
+    let payload = {}
+    if (isApproveReject) {
+
+      payload = {
+        approval_comment: formData?.rejection_approval_reason,
+        is_rejected: false,
+        is_approved: true
+      }
+    } else {
+      
+      payload = {
+        rejection_reason: formData?.rejection_approval_reason,
+        is_rejected: true,
+        is_approved: false
+      }
+    }
+  
+    let url = `${process.env.NEXT_PUBLIC_API_URL}/chul/units/${cu?.id}/` // `/api/common/submit_form_data/?path=approve_chul&id=${id}`
+    
+    try {
+      fetch(url, {
+        headers: {
+          'Accept': 'application/json, text/plain, */*',
+          'Content-Type': 'application/json;charset=utf-8',
+          'Authorization': `Bearer ${token}`
+  
+        },
+        method: 'PATCH',
+        body: JSON.stringify(payload)
+      })
+        .then(resp => resp)
+        .then(async(res) => {
+  
+          if(res.ok) {
+            alert.success(`${payload.is_rejected ? 'Rejected' : 'Approved'} CHU successfully`)
+            router.push({
+              pathname: '/community-units',
+              query: {}
+            })
+          } else {
+            alert.error(`Unable to approve CHU`)
+             
+             const detail = await res.json()
+  
+             const error = Array.isArray(Object.values(detail)) && Object.values(detail).length == 1 ? detail[Object.keys(detail)[0]][0] : ''
+             setFormError(error)
+  
+          }
+         
+  
+        })
+        .catch(e => {
+  
+          console.error(e.message)
+        })
+    } catch (e) {
+  
+      // setStatus({ status: 'error', message: e })
+      console.error(e.message)
+    } finally{
+    if (isApproveReject) {
+      setIsSubmittingApproval(false)
+    } else {
+      setIsSubmittingRejection(false)
+      
+    }
+  }
+}
+
+// approveCHUUpdates(e,  true, props?.token)}
+
+async function approveCHUUpdates (e, status, token) {
+  e.preventDefault();
+
+  let payload = ''
+  if (status) {
+    setIsSubmittingApproval(true)
+    payload = { is_approved: true }
+  } else {
+    setIsSubmittingRejection(true)
+    payload = { is_rejected: true }
+  }
+  let url = `${process.env.NEXT_PUBLIC_API_URL}/chul/updates/${cu?.latest_update}/` //`/api/common/submit_form_data/?path=approve_chul_updates&latest_updates=${id}`
+  
+  try {
+    await fetch(url, {
+      headers: {
+        'Accept': 'application/json, text/plain, */*',
+        'Content-Type': 'application/json;charset=utf-8',
+        'Authorization': `Bearer ${token}`
+
+      },
+      method: 'PATCH',
+      body: JSON.stringify(payload)
+    })
+      .then(resp => resp.json())
+      .then(async (res) => {
+
+        if(res.ok) {
+          alert.success(`${payload.is_rejected ? 'Rejected' : 'Approved'} CHU Updates successfully`)
+
+          router.push({
+            pathname: '/community-units',
+            query: { has_edits: false, pending_approval: true }
+          })
+  
+        } else {
+          alert.error(`Unable to approve CHU Updates`)
+             
+             const detail = await res.json()
+  
+             const error = Array.isArray(Object.values(detail)) && Object.values(detail).length == 1 ? detail[Object.keys(detail)[0]][0] : ''
+             
+             setFormError(error)
+
+        }
+        
+      })
+      .catch(e => {
+        console.log(e.message)
+      })
+  } catch (e) {
+
+    console.error(e)
+  } finally {
+    if (status) {
+      setIsSubmittingApproval(false)
+    } else {
+      setIsSubmittingRejection(false)
+      
+    }
+  }
+
+} 
+
 
 
   let reject = ''
@@ -125,33 +276,39 @@ function ApproveCommunityUnit(props) {
                 {/* Info snippet */}
                 <div className='flex flex-wrap gap-3 items-center justify-end col-span-6 md:col-span-2'>
                   <div className='flex flex-wrap gap-3 w-full items-center justify-start md:justify-center'>
-                    {cu.is_approved && (
+                    {cu?.is_approved && (
                       <span className={'p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1' + ' ' + (cu.is_approved ? 'bg-blue-200 text-gray-900' : 'bg-red-200 text-red-900')}>
                         {cu.is_approved ? <>  <CheckCircleIcon className='h-4 w-4' />CHU Approved</> : <><XCircleIcon className='h-4 w-4' />Not approved </>}
                       </span>
                     )}
-                    {cu.is_closed && (
+                    {cu?.is_closed && (
                       <span className='bg-gray-200 text-gray-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1'>
                         <LockClosedIcon className='h-4 w-4' />
                         CHU Closed
                       </span>
                     )}
-                    {cu.deleted && (
+                    {cu?.deleted && (
                       <span className='bg-gray-200 text-gray-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1'>
                         <XCircleIcon className='h-4 w-4' />
                         CHU Deleted
                       </span>
                     )}
-                    {cu.active && (
+                    {cu?.active && (
                       <span className='bg-blue-200 text-gray-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1'>
                         <CheckCircleIcon className='h-4 w-4' />
                         CHU Active
                       </span>
                     )}
-                    {cu.has_fffedits && (
+                    {cu?.has_fffedits && (
                       <span className='bg-blue-200 text-gray-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1'>
                         <InformationCircleIcon className='h-4 w-4' />
                         Has changes
+                      </span>
+                    )}
+                    {cu?.is_rejected && (
+                      <span className='bg-red-200 text-red-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1'>
+                        <InformationCircleIcon className='h-4 w-4' />
+                        CHU Rejected
                       </span>
                     )}
                   </div>
@@ -416,17 +573,39 @@ function ApproveCommunityUnit(props) {
                     <div className="flex flex-row justify-start items-center space-x-3 p-3">
                       <button
                         type="submit"
-                        className={"p-2 text-center -md font-semibold text-base text-white bg-blue-700"}
-                        onClick={(e) => approveCHUUpdates(e, cu.latest_update, true, router, props?.token)}
+                        disabled={isSubmittingApproval}
+                        className={"p-2 text-center font-semibold text-base text-white bg-blue-700"}
+                        onClick={(e) => approveCHUUpdates(e,  true, props?.token)}
                       >
-                        {"Approve CHU Updates"}
+                         {
+                          isSubmittingApproval ?
+                            <div className='flex items-center gap-2'>
+                              <Spinner />
+                              <span className='text-white'>Approving.. </span>
+                            </div>
+                            :
+                            "Approve CHU Updates"
+
+                        }
+                        
                       </button>
                       <button
                         type="submit"
-                        className={"p-2 text-center -md font-semibold text-base text-white bg-black"}
-                        onClick={(e) => approveCHUUpdates(e, cu.latest_update, false, router, props?.token)}
+                        disabled={isSubmittingRejection}
+                        className={"p-2 text-center font-semibold text-base text-white bg-black"}
+                        onClick={(e) => approveCHUUpdates(e,  false, props?.token)}
                       >
-                        {"Reject CHU Updates"}
+                        {
+                          isSubmittingRejection ?
+                            <div className='flex items-center gap-2'>
+                              <Spinner />
+                              <span className='text-white'>Rejecting.. </span>
+                            </div>
+                            :
+                            "Reject CHU Updates"
+
+                        }
+                        
                       </button>
                     </div>
                   </form>
@@ -442,29 +621,32 @@ function ApproveCommunityUnit(props) {
                   {formError && <Alert severity="error" sx={{ width: '100%', marginY: '15px' }}>{formError}</Alert>}
                   <form
                     className="space-y-3"
-                    onSubmit={(e) => approveCHU(e, cu.id, appRejReason, isApproveReject, router, props?.token, setSubmitting, alert, setFormError)}
+                    onSubmit={(e) => approveCHU(e, props?.token)}
                   >
                     <label htmlFor="comment-text-area"></label>
                     <textarea
                       cols="100%"
                       rows="auto"
+                      name="rejection_approval_reason"
                       className="flex bg-transparent w-full col-span-2 rounded border border-gray-400 md text-gray-600 font-normal text-medium p-2"
                       placeholder="Enter a comment"
-                      onChange={(e) => setAppRejReason(e.target.value)}
+                      // onChange={(e) => setRejectionReason(e.target.value)}
                     ></textarea>
 
                     {/* <div className="flex flex-row"> */}
                     <div className="flex flex-row justify-start gap-3 items-center ">
+                    
                       <button
                         type="submit"
+                        disabled={isSubmittingApproval}
                         className={cu.is_approved ? '' : "p-2 text-center  font-semibold text-base text-white bg-blue-700"}
                         onClick={(e) => setIsApproveReject(true)}
                       >
                         {
-                          submitting ?
+                          isSubmittingApproval ?
                             <div className='flex items-center gap-2'>
-                              <span className='text-white'>Approving.. </span>
                               <Spinner />
+                              <span className='text-white'>Approving.. </span>
                             </div>
                             :
                             cu.is_approved ? "" : "Approve Community Health Unit"
@@ -474,14 +656,15 @@ function ApproveCommunityUnit(props) {
                       </button>
                       <button
                         type="submit"
+                        disabled={isSubmittingRejection}
                         className={cu.is_rejected ? '' : "p-2 text-center font-semibold text-base text-white bg-red-500"}
                         onClick={(e) => setIsApproveReject(false)}
                       >
                         {
-                          submitting ?
+                          isSubmittingRejection ?
                             <div className='flex items-center gap-2'>
-                              <span className='text-white'>Rejecting.. </span>
                               <Spinner />
+                              <span className='text-white'>Rejecting.. </span>
                             </div>
                             :
                             cu.is_rejected ? "" : "Reject Community Health Unit"

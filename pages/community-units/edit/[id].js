@@ -1,6 +1,7 @@
 import {CommunityUnitEditForm } from '../../../components/Forms/CommunityUnitsForms'
 import {useState, useEffect, createContext} from 'react'
 import { checkToken } from '../../../controllers/auth/auth'
+import Alert from '@mui/material/Alert'
 
 
 export const ChuOptionsContext = createContext()
@@ -34,10 +35,11 @@ export default function CommunityUnitEdit (props){
 }
 
 
-export async function getServerSideProps({req, res, query}) {
+export async function getServerSideProps(ctx) {
 
-  const {token} = await checkToken(req, res)
+  const {token} = await checkToken(ctx?.req, ctx?.res)
 
+  
   const response = {}
   
   const options = [
@@ -75,7 +77,7 @@ export async function getServerSideProps({req, res, query}) {
       switch(option){ 
 
         case "cu":
-            const cu = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/chul/units/${query.id}/`,{
+            const cu = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/chul/units/${ctx?.query.id}/`,{
             headers:{
               'Authorization': 'Bearer ' + token,
               'Accept': 'application/json'
@@ -101,11 +103,13 @@ export async function getServerSideProps({req, res, query}) {
 
       case "facilities":
 
-        
-        const facilities = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/?page_size=${count > 500 ? '500' : count}&fields=id,name,county,sub_county_name,constituency,ward_name`,{
+        // page_size=${count > 500 ? '500' : count}& ; For limiting number of CHUs
+        const params = response?.cu !== undefined ? `?ward=${response?.cu?.geo_features?.properties?.ward}&fields=id,name,county,sub_county_name,constituency,ward_name` : '?fields=id,name,county,sub_county_name,constituency,ward_name';
+
+        const facilities = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${params}`,{
           headers:{
             'Authorization': 'Bearer ' + token,
-            'Accept': 'application/json'
+            'Accept': 'application/json'  
           }
           
         })
