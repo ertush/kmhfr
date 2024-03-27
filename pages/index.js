@@ -137,120 +137,125 @@ function Home(props) {
         </Head>
 
         <div className="w-full h-screen overflow-y-scroll flex flex-col items-center md:items-start">
-          {/* Logo And Title */}
-          <div className='w-full fixed z-10 max-h-min bg-gray-100 flex'>
-            {/* Heading */}
-            <div className="max-h-min w-[80%] container flex  mx-auto">
+        
+         <div className='w-full h-auto z-10 fixed top-0'>
+            {/* Logo And Title */}
+            <div className='w-full fixed  max-h-min bg-gray-50 flex'>
               {/* Heading */}
-              <div className='w-full flex md:justify-between md:items-center justify-center py-4 max-h-min '>
-                {/* <div className='flex gap-6 items-center'> */}
-                  {/* Logo */}
-                  <Link
-                    href={`${userID !== 6 ? '/dashboard' : '/'}`}
-                    className="leading-none tracking-tight flex justify-center items-center text-black font-bold relative"
-                  >
-                    <Image src="/moh-logo-alt.png" className="w-auto h-auto" alt="logo" height="65" width="350" />
-                  </Link>
+              <div className="max-h-min w-[80%] container flex  mx-auto">
+                {/* Heading */}
+                <div className='w-full flex md:justify-between md:items-center justify-center py-4 max-h-min '>
+                  {/* <div className='flex gap-6 items-center'> */}
+                    {/* Logo */}
+                    <Link
+                      href={`${userID !== 6 ? '/dashboard' : '/'}`}
+                      className="leading-none tracking-tight flex justify-center items-center text-black font-bold relative"
+                    >
+                      <Image src="/moh-logo-alt.png" className="w-auto h-auto" alt="logo" height="65" width="350" />
+                    </Link>
 
-                  {/* Title */}
+                    {/* Title */}
 
 
-                {/* Login Button */}
-                <div className='text-lg group hidden  duration-200 hover:rounded ease-in-out rounded hover:border hover:border-gray-800 hover:text-gray-800  h-auto md:h-[40px] px-3 md:flex gap-x-2 items-center text-gray-800 capitalize font-semibold'>
-                  <Login className='w-6 h-6 text-gray-800 group-hover:text-gray-800' />
-                  <Link href="/auth/login">
-                    log in
-                  </Link>
+                  {/* Login Button */}
+                  <div className='text-lg group hidden  duration-200 hover:rounded ease-in-out rounded hover:border hover:border-gray-800 hover:text-gray-800  h-auto md:h-[40px] px-3 md:flex gap-x-2 items-center text-gray-800 capitalize font-semibold'>
+                    <Login className='w-6 h-6 text-gray-800 group-hover:text-gray-800' />
+                    <Link href="/auth/login">
+                      log in
+                    </Link>
+                  </div>
+
                 </div>
 
               </div>
 
             </div>
 
-          </div>
-          {/* Menu Heading */}
-          <div className='w-full bg-gray-300 top-[80px] md:top-[104px] fixed z-10 max-h-min flex items-center justify-between md:items-start md:items-between p-3 md:p-0'>
-            
             {/* Menu Heading */}
-            <nav className="hidden max-h-min w-[60%] container md:flex mx-auto ">
-              <ul className='list-none w-full flex items-center  justify-between '>
-               <li className={`text-lg h-[60px] flex items-center  hover:text-gray-100  duration-200 ease-out hover:bg-blue-800 px-4 ${router.asPath == "/" && 'border-b-2 text-gray-100 border-b-gray-50 bg-blue-800/85'} font-semibold capitalize `}>
-                  <Link href="/">Home</Link>
-                </li>
-                <li className='text-lg h-[60px] flex items-center  hover:text-gray-100  duration-200 ease-out hover:bg-blue-800 px-4 font-semibold capitalize text-gray-900 '>
-                  <Link href='/public/facilities'>Facilities</Link>
-                </li>
-                <li className='text-lg h-[60px] flex items-center  hover:text-gray-100  duration-200 ease-out hover:bg-blue-800 px-4 font-semibold capitalize text-gray-900 '>
-                  <Link href='/public/chu'>Community Units</Link>
-                </li>
-                <li className='text-lg h-[60px] flex items-center  hover:text-gray-100  duration-200 ease-out hover:bg-blue-800 px-4 font-semibold capitalize text-gray-900 '>
-                  <Link href="/public/about">About</Link>
-                </li>
-                <li className='text-lg h-[60px] flex items-center  hover:text-gray-100  duration-200 ease-out hover:bg-blue-800 px-4 font-semibold capitalize text-gray-900 '>
-                  <Link href="/public/faqs">FAQs</Link>
-                </li>
+            <div className='w-full md:mt-[104px] mt-[82px] bg-gray-300 max-h-min flex items-center justify-between md:items-start md:items-between p-3 md:p-0'>
+              
+              {/* Menu Heading */}
+              <nav className="hidden max-h-min w-[60%] container md:flex mx-auto ">
+                <ul className='list-none w-full flex items-center  justify-between '>
+                <li className={`text-lg h-[60px] flex items-center  hover:text-gray-100  duration-200 ease-out hover:bg-blue-800 px-4 ${router.asPath == "/" && 'border-b-2 text-gray-100 border-b-gray-50 bg-blue-800/85'} font-semibold capitalize `}>
+                    <Link href="/">Home</Link>
+                  </li>
+                  <li className='text-lg h-[60px] flex items-center  hover:text-gray-100  duration-200 ease-out hover:bg-blue-800 px-4 font-semibold capitalize text-gray-900 '>
+                    <Link href='/public/facilities'>Facilities</Link>
+                  </li>
+                  <li className='text-lg h-[60px] flex items-center  hover:text-gray-100  duration-200 ease-out hover:bg-blue-800 px-4 font-semibold capitalize text-gray-900 '>
+                    <Link href='/public/chu'>Community Units</Link>
+                  </li>
+                  <li className='text-lg h-[60px] flex items-center  hover:text-gray-100  duration-200 ease-out hover:bg-blue-800 px-4 font-semibold capitalize text-gray-900 '>
+                    <Link href="/public/about">About</Link>
+                  </li>
+                  <li className='text-lg h-[60px] flex items-center  hover:text-gray-100  duration-200 ease-out hover:bg-blue-800 px-4 font-semibold capitalize text-gray-900 '>
+                    <Link href="/public/faqs">FAQs</Link>
+                  </li>
 
-                <li className='text-lg h-[60px] flex items-center  hover:text-gray-100  duration-200 ease-out hover:bg-blue-800 px-4 font-semibold capitalize text-gray-900 '>
-                  <Link href="https://kmhfr-docs.github.io">Documentation</Link>
-                </li>
-                
-              </ul>
-            </nav>
-            
-            <button className='md:hidden relative' onClick={() => setIsMobileMenu(!isMobileMenu)}>
-              {
-                !isMobileMenu &&
-                 <Menu className='w-6 aspect-square text-gray-800'/>
-              }
+                  <li className='text-lg h-[60px] flex items-center  hover:text-gray-100  duration-200 ease-out hover:bg-blue-800 px-4 font-semibold capitalize text-gray-900 '>
+                    <Link href="https://kmhfr-docs.github.io">Documentation</Link>
+                  </li>
+                  
+                </ul>
+              </nav>
+              
+              <button className='md:hidden relative' onClick={() => setIsMobileMenu(!isMobileMenu)}>
+                {
+                  !isMobileMenu &&
+                  <Menu className='w-6 aspect-square text-gray-800'/>
+                }
 
-              {
+                {
+                  isMobileMenu &&
+                  <CloseOutlined className='w-6 aspect-square text-gray-800'/>
+                }
+
+                {
                 isMobileMenu &&
-                <CloseOutlined className='w-6 aspect-square text-gray-800'/>
+                <nav className="flex max-h-min w-auto container md:hidden mx-auto absolute top-[120%]">
+                <ul className='list-none w-[200px] flex flex-col text-start items-start  bg-gray-50 shadow-sm rounded'>
+                  <li className={`text-lg h-[50px] w-full border-b border-b-gray-300 flex items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-600 ${currentPath == "/" && 'border-r-2 border-r-gray-50 bg-blue-700/85 text-gray-100'}`}>
+                    <Link href="/">Home</Link>
+                  </li>
+                  <li className={`text-lg h-[50px] w-full border-b border-b-gray-300 flex items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-600 ${currentPath == "/public/facilities" && 'border-r-2 border-r-gray-50 bg-blue-700/85 text-gray-100 '}`}>
+                    <Link href='/public/facilities'>Facilities</Link>
+                  </li>
+                  <li className={`text-lg h-[50px] w-full border-b border-b-gray-300 flex items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-600 ${currentPath == "/public/chu" && 'border-r-2 border-r-gray-50 bg-blue-700/85 text-gray-100'}`}>
+                    <Link href='/public/chu'>Community</Link>
+                    <>Units</>
+
+                  </li>
+                  <li className={`text-lg h-[50px] w-full border-b border-b-gray-300 flex items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-600 ${currentPath == "/public/about" && 'border-r-2 border-r-gray-50 bg-blue-700/85 text-gray-100'}`}>
+                    <Link href="/public/about">About</Link>
+                  </li>
+                  <li className={`text-lg h-[50px] w-full border-b border-b-gray-300 flex items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-600 ${currentPath == "/public/faqs" && 'border-r-2 border-r-gray-50 bg-blue-700/85 text-gray-100'}`}>
+                    <Link href="/public/faqs">FAQs</Link>
+                  </li>
+
+                  <li className={`text-lg h-[50px] w-full border-b border-b-gray-300 flex items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-600 ${currentPath == "/public/faqs" && 'border-r-2 border-r-gray-50 bg-blue-700/85 text-gray-100'}`}>
+                    <Link href="https://kmhfr-docs.github.io">Documentation</Link>
+                  </li>
+                  
+                </ul>
+              </nav>
               }
+              </button>
 
-              {
-              isMobileMenu &&
-              <nav className="flex max-h-min w-auto container md:hidden mx-auto absolute top-[120%]">
-               <ul className='list-none w-[200px] flex flex-col text-start items-start  bg-gray-50 shadow-sm rounded'>
-                 <li className={`text-lg h-[50px] w-full border-b border-b-gray-300 flex items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-600 ${currentPath == "/" && 'border-r-2 border-r-gray-50 bg-blue-700/85 text-gray-100'}`}>
-                  <Link href="/">Home</Link>
-                </li>
-                <li className={`text-lg h-[50px] w-full border-b border-b-gray-300 flex items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-600 ${currentPath == "/public/facilities" && 'border-r-2 border-r-gray-50 bg-blue-700/85 text-gray-100 '}`}>
-                  <Link href='/public/facilities'>Facilities</Link>
-                </li>
-                <li className={`text-lg h-[50px] w-full border-b border-b-gray-300 flex items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-600 ${currentPath == "/public/chu" && 'border-r-2 border-r-gray-50 bg-blue-700/85 text-gray-100'}`}>
-                  <Link href='/public/chu'>Community</Link>
-                  <>Units</>
+              <div className='text-lg md:hidden max-h-min flex gap-2 items-center justify-center text-gray-800 capitalize font-semibold'>
+                    <Login className='w-6 aspect-square text-gray-800 group-hover:text-gray-100' />
+                    <Link href="/auth/login">
+                      log in
+                    </Link>
+              </div>
 
-                </li>
-                <li className={`text-lg h-[50px] w-full border-b border-b-gray-300 flex items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-600 ${currentPath == "/public/about" && 'border-r-2 border-r-gray-50 bg-blue-700/85 text-gray-100'}`}>
-                  <Link href="/public/about">About</Link>
-                </li>
-                <li className={`text-lg h-[50px] w-full border-b border-b-gray-300 flex items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-600 ${currentPath == "/public/faqs" && 'border-r-2 border-r-gray-50 bg-blue-700/85 text-gray-100'}`}>
-                  <Link href="/public/faqs">FAQs</Link>
-                </li>
+              
 
-                <li className={`text-lg h-[50px] w-full border-b border-b-gray-300 flex items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-600 ${currentPath == "/public/faqs" && 'border-r-2 border-r-gray-50 bg-blue-700/85 text-gray-100'}`}>
-                  <Link href="https://kmhfr-docs.github.io">Documentation</Link>
-                </li>
-                
-              </ul>
-            </nav>
-             }
-            </button>
-
-            <div className='text-lg md:hidden max-h-min flex gap-2 items-center justify-center text-gray-800 capitalize font-semibold'>
-                  <Login className='w-6 aspect-square text-gray-800 group-hover:text-gray-100' />
-                  <Link href="/auth/login">
-                    log in
-                  </Link>
-             </div>
-
-             
+            </div>
 
           </div>
+          
 
-         
 
           {/* Contacts */}
           {

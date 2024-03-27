@@ -442,7 +442,7 @@ function Reports(props) {
                                                     getCellClassName={() => 'super-app-theme--Cell'}
                                                     slots={{
                                                         toolbar: () => (
-                                                            <div className='w-full flex justify-center  border-b border-gray-400 py-2'>
+                                                            <div className='w-full flex justify-between border-b border-gray-400 py-2'>
                                                             <GridToolbar
                                                                 className="border border-gray-300"
                                                                 sx={{
@@ -454,6 +454,47 @@ function Reports(props) {
                                                                     
                                                                 }}
                                                             />
+
+                                                            <Select                                               
+                                                                name="year" 
+                                                                    onChange={({value}) => handleOrgUnitChange(value, 'date', props?.token)}
+                                                                    className="w-full max-w-xs rounded border mr-2 border-gray-400"
+                                                            options={[
+                                                                {
+                                                                    label:'2018',
+                                                                    value:'2018'
+                                                                },
+                                                                {
+                                                                    label:'2019',
+                                                                    value:'2019'
+                                                                },
+                                                                {
+                                                                    label:'2020',
+                                                                    value:'2020'
+                                                                }
+                                                            
+                                                            
+                                                            ]}
+                                                            placeholder='Filter by period'
+                                                            
+                                                            styles={{
+                                                                control: (baseStyles) => ({
+                                                                    ...baseStyles,
+                                                                    backgroundColor: 'transparent',
+                                                                    outLine: 'none',
+                                                                    border: 'none',
+                                                                    outLine: 'none',
+                                                                    textColor: 'transparent',
+                                                                    padding: 0,
+                                                                    height: '4px'
+                                                                }),
+
+                                                            }}
+
+                                                            
+                                                        />
+
+                                                            
                                                             <Select 
                                                             name="org_unit" 
                                                             onChange={({value}) => handleOrgUnitChange(value, 'beds_and_cots_by_all_hierachies', props?.token)}
@@ -520,7 +561,7 @@ function Reports(props) {
                                                     getCellClassName={() => 'super-app-theme--Cell'}
                                                     slots={{
                                                        toolbar: () => (
-                                                            <div className='w-full flex justify-center  border-b border-gray-400 py-2'>
+                                                            <div className='w-full flex justify-between border-b border-gray-400 py-2'>
                                                             <GridToolbar
                                                                 className="border border-gray-300"
                                                                 sx={{
@@ -532,6 +573,47 @@ function Reports(props) {
                                                                     
                                                                 }}
                                                             />
+
+                                                            <Select                                               
+	    name="year" 
+            onChange={({value}) => handleOrgUnitChange(value, 'date', props?.token)}
+            className="w-full max-w-xs rounded border mr-2 border-gray-400"
+    options={[
+        {
+            label:'2018',
+            value:'2018'
+        },
+        {
+            label:'2019',
+            value:'2019'
+        },
+        {
+            label:'2020',
+            value:'2020'
+        }
+    
+    
+    ]}
+    placeholder='Filter by period'
+    
+    styles={{
+        control: (baseStyles) => ({
+            ...baseStyles,
+            backgroundColor: 'transparent',
+            outLine: 'none',
+            border: 'none',
+            outLine: 'none',
+            textColor: 'transparent',
+            padding: 0,
+            height: '4px'
+        }),
+
+    }}
+
+    
+/>
+
+                                                            
                                                             <Select 
                                                             name="org_unit" 
                                                             onChange={({value}) => handleOrgUnitChange(value, 'facility_keph_level_report_all_hierachies', props?.token)}
@@ -598,7 +680,7 @@ function Reports(props) {
                                                     getCellClassName={() => 'super-app-theme--Cell'}
                                                     slots={{
                                                        toolbar: () => (
-                                                            <div className='w-full flex justify-center  border-b border-gray-400 py-2'>
+                                                            <div className='w-full flex justify-between border-b border-gray-400 py-2'>
                                                             <GridToolbar
                                                                 className="border border-gray-300"
                                                                 sx={{
@@ -610,6 +692,47 @@ function Reports(props) {
                                                                     
                                                                 }}
                                                             />
+
+                                                            <Select                                               
+	    name="year" 
+            onChange={({value}) => handleOrgUnitChange(value, 'date', props?.token)}
+            className="w-full max-w-xs rounded border mr-2 border-gray-400"
+    options={[
+        {
+            label:'2018',
+            value:'2018'
+        },
+        {
+            label:'2019',
+            value:'2019'
+        },
+        {
+            label:'2020',
+            value:'2020'
+        }
+    
+    
+    ]}
+    placeholder='Filter by period'
+    
+    styles={{
+        control: (baseStyles) => ({
+            ...baseStyles,
+            backgroundColor: 'transparent',
+            outLine: 'none',
+            border: 'none',
+            outLine: 'none',
+            textColor: 'transparent',
+            padding: 0,
+            height: '4px'
+        }),
+
+    }}
+
+    
+/>
+
+                                                            
                                                             <Select 
                                                             name="org_unit" 
                                                             onChange={({value}) => handleOrgUnitChange(value, 'facility_owner_report_all_hierachies', props?.token)}
@@ -675,7 +798,7 @@ function Reports(props) {
                                                     getCellClassName={() => 'super-app-theme--Cell'}
                                                     slots={{
                                                        toolbar: () => (
-                                                            <div className='w-full flex justify-center  border-b border-gray-400 py-2'>
+                                                            <div className='w-full flex justify-between border-b border-gray-400 py-2'>
                                                             <GridToolbar
                                                                 className="border border-gray-300"
                                                                 sx={{
@@ -687,6 +810,47 @@ function Reports(props) {
                                                                     
                                                                 }}
                                                             />
+
+                                                            <Select                                               
+	    name="year" 
+            onChange={({value}) => handleOrgUnitChange(value, 'date', props?.token)}
+            className="w-full max-w-xs rounded border mr-2 border-gray-400"
+    options={[
+        {
+            label:'2018',
+            value:'2018'
+        },
+        {
+            label:'2019',
+            value:'2019'
+        },
+        {
+            label:'2020',
+            value:'2020'
+        }
+    
+    
+    ]}
+    placeholder='Filter by period'
+    
+    styles={{
+        control: (baseStyles) => ({
+            ...baseStyles,
+            backgroundColor: 'transparent',
+            outLine: 'none',
+            border: 'none',
+            outLine: 'none',
+            textColor: 'transparent',
+            padding: 0,
+            height: '4px'
+        }),
+
+    }}
+
+    
+/>
+
+                                                            
                                                             <Select 
                                                             name="org_unit" 
                                                             onChange={({value}) => handleOrgUnitChange(value, 'facility_type_report_all_hierachies', props?.token)}
@@ -751,7 +915,7 @@ function Reports(props) {
                                                     getCellClassName={() => 'super-app-theme--Cell'}
                                                     slots={{
                                                        toolbar: () => (
-                                                            <div className='w-full flex justify-center  border-b border-gray-400 py-2'>
+                                                            <div className='w-full flex justify-between border-b border-gray-400 py-2'>
                                                             <GridToolbar
                                                                 className="border border-gray-300"
                                                                 sx={{
@@ -763,6 +927,47 @@ function Reports(props) {
                                                                     
                                                                 }}
                                                             />
+
+                                                            <Select                                               
+	    name="year" 
+            onChange={({value}) => handleOrgUnitChange(value, 'date', props?.token)}
+            className="w-full max-w-xs rounded border mr-2 border-gray-400"
+    options={[
+        {
+            label:'2018',
+            value:'2018'
+        },
+        {
+            label:'2019',
+            value:'2019'
+        },
+        {
+            label:'2020',
+            value:'2020'
+        }
+    
+    
+    ]}
+    placeholder='Filter by period'
+    
+    styles={{
+        control: (baseStyles) => ({
+            ...baseStyles,
+            backgroundColor: 'transparent',
+            outLine: 'none',
+            border: 'none',
+            outLine: 'none',
+            textColor: 'transparent',
+            padding: 0,
+            height: '4px'
+        }),
+
+    }}
+
+    
+/>
+
+                                                            
                                                             <Select 
                                                             name="org_unit" 
                                                             onChange={({value}) => handleOrgUnitChange(value, 'facility_regulatory_body_report_all_hierachies', props?.token)}
@@ -826,7 +1031,7 @@ function Reports(props) {
                                                     getCellClassName={() => 'super-app-theme--Cell'}
                                                     slots={{
                                                        toolbar: () => (
-                                                            <div className='w-full flex justify-center  border-b border-gray-400 py-2'>
+                                                            <div className='w-full flex justify-between border-b border-gray-400 py-2'>
                                                             <GridToolbar
                                                                 className="border border-gray-300"
                                                                 sx={{
@@ -838,6 +1043,47 @@ function Reports(props) {
                                                                     
                                                                 }}
                                                             />
+
+                                                            <Select                                               
+	    name="year" 
+            onChange={({value}) => handleOrgUnitChange(value, 'date', props?.token)}
+            className="w-full max-w-xs rounded border mr-2 border-gray-400"
+    options={[
+        {
+            label:'2018',
+            value:'2018'
+        },
+        {
+            label:'2019',
+            value:'2019'
+        },
+        {
+            label:'2020',
+            value:'2020'
+        }
+    
+    
+    ]}
+    placeholder='Filter by period'
+    
+    styles={{
+        control: (baseStyles) => ({
+            ...baseStyles,
+            backgroundColor: 'transparent',
+            outLine: 'none',
+            border: 'none',
+            outLine: 'none',
+            textColor: 'transparent',
+            padding: 0,
+            height: '4px'
+        }),
+
+    }}
+
+    
+/>
+
+                                                            
                                                             <Select 
                                                             name="org_unit" 
                                                             onChange={({value}) => handleOrgUnitChange(value, 'facility_services_report_all_hierachies', props?.token)}
@@ -902,7 +1148,7 @@ function Reports(props) {
                                                     getCellClassName={() => 'super-app-theme--Cell'}
                                                     slots={{
                                                        toolbar: () => (
-                                                            <div className='w-full flex justify-center  border-b border-gray-400 py-2'>
+                                                            <div className='w-full flex justify-between border-b border-gray-400 py-2'>
                                                             <GridToolbar
                                                                 className="border border-gray-300"
                                                                 sx={{
@@ -914,6 +1160,47 @@ function Reports(props) {
                                                                     
                                                                 }}
                                                             />
+
+                                                            <Select                                               
+	    name="year" 
+            onChange={({value}) => handleOrgUnitChange(value, 'date', props?.token)}
+            className="w-full max-w-xs rounded border mr-2 border-gray-400"
+    options={[
+        {
+            label:'2018',
+            value:'2018'
+        },
+        {
+            label:'2019',
+            value:'2019'
+        },
+        {
+            label:'2020',
+            value:'2020'
+        }
+    
+    
+    ]}
+    placeholder='Filter by period'
+    
+    styles={{
+        control: (baseStyles) => ({
+            ...baseStyles,
+            backgroundColor: 'transparent',
+            outLine: 'none',
+            border: 'none',
+            outLine: 'none',
+            textColor: 'transparent',
+            padding: 0,
+            height: '4px'
+        }),
+
+    }}
+
+    
+/>
+
+                                                            
                                                             <Select 
                                                             name="org_unit" 
                                                             onChange={({value}) => handleOrgUnitChange(value, 'facility_infrastructure_report_all_hierachies', props?.token)}
@@ -980,7 +1267,7 @@ function Reports(props) {
                                                     getCellClassName={() => 'super-app-theme--Cell'}
                                                     slots={{
                                                        toolbar: () => (
-                                                            <div className='w-full flex justify-center  border-b border-gray-400 py-2'>
+                                                            <div className='w-full flex justify-between border-b border-gray-400 py-2'>
                                                             <GridToolbar
                                                                 className="border border-gray-300"
                                                                 sx={{
@@ -992,6 +1279,47 @@ function Reports(props) {
                                                                     
                                                                 }}
                                                             />
+
+                                                            <Select                                               
+	    name="year" 
+            onChange={({value}) => handleOrgUnitChange(value, 'date', props?.token)}
+            className="w-full max-w-xs rounded border mr-2 border-gray-400"
+    options={[
+        {
+            label:'2018',
+            value:'2018'
+        },
+        {
+            label:'2019',
+            value:'2019'
+        },
+        {
+            label:'2020',
+            value:'2020'
+        }
+    
+    
+    ]}
+    placeholder='Filter by period'
+    
+    styles={{
+        control: (baseStyles) => ({
+            ...baseStyles,
+            backgroundColor: 'transparent',
+            outLine: 'none',
+            border: 'none',
+            outLine: 'none',
+            textColor: 'transparent',
+            padding: 0,
+            height: '4px'
+        }),
+
+    }}
+
+    
+/>
+
+                                                            
                                                             <Select 
                                                             name="org_unit" 
                                                             onChange={({value}) => handleOrgUnitChange(value, 'facility_human_resource_category_report_all_hierachies', props?.token)}
@@ -1055,7 +1383,7 @@ function Reports(props) {
                                                     getCellClassName={() => 'super-app-theme--Cell'}
                                                     slots={{
                                                        toolbar: () => (
-                                                            <div className='w-full flex justify-center  border-b border-gray-400 py-2'>
+                                                            <div className='w-full flex justify-between border-b border-gray-400 py-2'>
                                                             <GridToolbar
                                                                 className="border border-gray-300"
                                                                 sx={{
@@ -1067,6 +1395,47 @@ function Reports(props) {
                                                                     
                                                                 }}
                                                             />
+
+                                                            <Select                                               
+	    name="year" 
+            onChange={({value}) => handleOrgUnitChange(value, 'date', props?.token)}
+            className="w-full max-w-xs rounded border mr-2 border-gray-400"
+    options={[
+        {
+            label:'2018',
+            value:'2018'
+        },
+        {
+            label:'2019',
+            value:'2019'
+        },
+        {
+            label:'2020',
+            value:'2020'
+        }
+    
+    
+    ]}
+    placeholder='Filter by period'
+    
+    styles={{
+        control: (baseStyles) => ({
+            ...baseStyles,
+            backgroundColor: 'transparent',
+            outLine: 'none',
+            border: 'none',
+            outLine: 'none',
+            textColor: 'transparent',
+            padding: 0,
+            height: '4px'
+        }),
+
+    }}
+
+    
+/>
+
+                                                            
                                                             <Select 
                                                             name="org_unit" 
                                                             onChange={({value}) => handleOrgUnitChange(value, 'gis', props?.token)}
@@ -1175,7 +1544,7 @@ function Reports(props) {
                                                     getCellClassName={() => 'super-app-theme--Cell'}
                                                     slots={{
                                                        toolbar: () => (
-                                                            <div className='w-full flex justify-center  border-b border-gray-400 py-2'>
+                                                            <div className='w-full flex justify-between border-b border-gray-400 py-2'>
                                                             <GridToolbar
                                                                 className="border border-gray-300"
                                                                 sx={{
@@ -1187,6 +1556,47 @@ function Reports(props) {
                                                                     
                                                                 }}
                                                             />
+
+                                                            <Select                                               
+	    name="year" 
+            onChange={({value}) => handleOrgUnitChange(value, 'date', props?.token)}
+            className="w-full max-w-xs rounded border mr-2 border-gray-400"
+    options={[
+        {
+            label:'2018',
+            value:'2018'
+        },
+        {
+            label:'2019',
+            value:'2019'
+        },
+        {
+            label:'2020',
+            value:'2020'
+        }
+    
+    
+    ]}
+    placeholder='Filter by period'
+    
+    styles={{
+        control: (baseStyles) => ({
+            ...baseStyles,
+            backgroundColor: 'transparent',
+            outLine: 'none',
+            border: 'none',
+            outLine: 'none',
+            textColor: 'transparent',
+            padding: 0,
+            height: '4px'
+        }),
+
+    }}
+
+    
+/>
+
+                                                            
                                                             <Select 
                                                             name="org_unit" 
                                                             onChange={({value}) => handleOrgUnitChange(value, 'beds_and_cots_by_all_hierachies', props?.token)}
@@ -1252,7 +1662,7 @@ function Reports(props) {
                                                     getCellClassName={() => 'super-app-theme--Cell'}
                                                     slots={{
                                                        toolbar: () => (
-                                                            <div className='w-full flex justify-center  border-b border-gray-400 py-2'>
+                                                            <div className='w-full flex justify-between border-b border-gray-400 py-2'>
                                                             <GridToolbar
                                                                 className="border border-gray-300"
                                                                 sx={{
@@ -1264,6 +1674,47 @@ function Reports(props) {
                                                                     
                                                                 }}
                                                             />
+
+                                                            <Select                                               
+	    name="year" 
+            onChange={({value}) => handleOrgUnitChange(value, 'date', props?.token)}
+            className="w-full max-w-xs rounded border mr-2 border-gray-400"
+    options={[
+        {
+            label:'2018',
+            value:'2018'
+        },
+        {
+            label:'2019',
+            value:'2019'
+        },
+        {
+            label:'2020',
+            value:'2020'
+        }
+    
+    
+    ]}
+    placeholder='Filter by period'
+    
+    styles={{
+        control: (baseStyles) => ({
+            ...baseStyles,
+            backgroundColor: 'transparent',
+            outLine: 'none',
+            border: 'none',
+            outLine: 'none',
+            textColor: 'transparent',
+            padding: 0,
+            height: '4px'
+        }),
+
+    }}
+
+    
+/>
+
+                                                            
                                                             <Select 
                                                             name="org_unit" 
                                                             onChange={({value}) => handleOrgUnitChange(value, 'beds_and_cots_by_all_hierachies', props?.token)}
@@ -1329,7 +1780,7 @@ function Reports(props) {
                                                     getCellClassName={() => 'super-app-theme--Cell'}
                                                     slots={{
                                                        toolbar: () => (
-                                                            <div className='w-full flex justify-center  border-b border-gray-400 py-2'>
+                                                            <div className='w-full flex justify-between border-b border-gray-400 py-2'>
                                                             <GridToolbar
                                                                 className="border border-gray-300"
                                                                 sx={{
@@ -1341,6 +1792,47 @@ function Reports(props) {
                                                                     
                                                                 }}
                                                             />
+
+                                                            <Select                                               
+	    name="year" 
+            onChange={({value}) => handleOrgUnitChange(value, 'date', props?.token)}
+            className="w-full max-w-xs rounded border mr-2 border-gray-400"
+    options={[
+        {
+            label:'2018',
+            value:'2018'
+        },
+        {
+            label:'2019',
+            value:'2019'
+        },
+        {
+            label:'2020',
+            value:'2020'
+        }
+    
+    
+    ]}
+    placeholder='Filter by period'
+    
+    styles={{
+        control: (baseStyles) => ({
+            ...baseStyles,
+            backgroundColor: 'transparent',
+            outLine: 'none',
+            border: 'none',
+            outLine: 'none',
+            textColor: 'transparent',
+            padding: 0,
+            height: '4px'
+        }),
+
+    }}
+
+    
+/>
+
+                                                            
                                                             <Select 
                                                             name="org_unit" 
                                                             onChange={({value}) => handleOrgUnitChange(value, 'beds_and_cots_by_all_hierachies', props?.token)}

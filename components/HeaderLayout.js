@@ -185,8 +185,10 @@ export default function HeaderLayout({
 
       <div className="w-full overflow-y-scroll flex flex-col ">
 
+      <div className='w-full h-auto z-10 fixed top-0'>
+
         {/* Logo And Title */}
-        <div className='w-full fixed z-20 max-h-min bg-gray-100 flex'>
+        <div className='w-full fixed  max-h-min bg-gray-50 flex'>
           {/* Heading */}
           <div className="max-h-min md:w-[80%] w-full container flex md:mx-auto">
             {/* Heading */}
@@ -463,7 +465,7 @@ export default function HeaderLayout({
           {/* Menu Heading */}
         {
           currentPath !== '/logout' &&
-          <div style={{ backgroundColor: '#1651b6'}} className='w-full hidden top-[97px] fixed z-10  max-h-min md:flex md:items-center justify-center'>
+          <div style={{ backgroundColor: '#1651b6'}} className='w-full md:mt-[97px] mt-[82px] bg-gray-300 max-h-min flex items-center justify-between md:items-start md:items-between p-3 md:p-0'>
             {/* Wide view Port Nav bar */}
             <nav className="hidden max-h-min w-[60%] lg:w-[80%] container md:flex mx-auto ">
             
@@ -669,6 +671,8 @@ export default function HeaderLayout({
             </nav>
           </div>
         }
+
+        </div>
 
         {/* FAQ */}
         {

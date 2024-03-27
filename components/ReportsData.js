@@ -35,7 +35,12 @@ import { OtherHouses } from "@mui/icons-material";
 //                 })) ?? []
 
 //                 , columns: [
-//                     {
+    // {
+    //     headerName: 'Date',
+    //     field: 'date',
+    //     flex: 1
+    // }
+//             ,        {
 //                         headerName: formatString(orgUnitFilter),
 //                         field: `${orgUnitFilter}`,
 //                         flex: 1
@@ -112,7 +117,12 @@ import { OtherHouses } from "@mui/icons-material";
 //                 })) ?? []
 
 //                 , columns: [
-//                     {
+    // {
+    //     headerName: 'Date',
+    //     field: 'date',
+    //     flex: 1
+    // }
+//             ,        {
 //                         headerName: formatString(orgUnitFilter),
 //                         field: `${orgUnitFilter}`,
 //                         flex: 1
@@ -236,7 +246,12 @@ import { OtherHouses } from "@mui/icons-material";
 //                 })) ?? []
 
 //                 , columns: [
-//                     {
+    // {
+    //     headerName: 'Date',
+    //     field: 'date',
+    //     flex: 1
+    // }
+//             ,        {
 //                         headerName: formatString(orgUnitFilter),
 //                         field: `${orgUnitFilter}`,
 //                         width:100
@@ -502,8 +517,13 @@ import { OtherHouses } from "@mui/icons-material";
 //                 })
 //                 ) ?? [],
 
-//                 columns: [
-//                     {
+//                  columns: [
+//     {
+//         headerName: 'Date',
+//         field: 'date',
+//         flex: 1
+//     }
+//             ,        {
 //                         headerName: formatString(orgUnitFilter),
 //                         field: `${orgUnitFilter}`,
 //                         width:100
@@ -754,7 +774,12 @@ import { OtherHouses } from "@mui/icons-material";
 //                 ) ?? [],
 
 //                 columns: [
-//                     {
+    // {
+    //     headerName: 'Date',
+    //     field: 'date',
+    //     flex: 1
+    // }
+//             ,        {
 //                         headerName: formatString(orgUnitFilter),
 //                         field: `${orgUnitFilter}`,
 //                         width:100
@@ -923,7 +948,12 @@ import { OtherHouses } from "@mui/icons-material";
 //             ) ?? [],
 
 //             columns: [
-//                 {
+//     {
+//         headerName: 'Date',
+//         field: 'date',
+//         flex: 1
+//     }
+// //             ,    {
 //                     headerName: formatString(orgUnitFilter),
 //                     field: `${orgUnitFilter}`,
 //                     width:100
@@ -1322,7 +1352,12 @@ import { OtherHouses } from "@mui/icons-material";
 //                 ) ?? [],
 
 //                 columns: [
-//                     {
+    // {
+    //     headerName: 'Date',
+    //     field: 'date',
+    //     flex: 1
+    // }
+//             ,        {
 //                         headerName: formatString(orgUnitFilter),
 //                         field: `${orgUnitFilter}`,
 //                         width:100
@@ -1724,7 +1759,12 @@ import { OtherHouses } from "@mui/icons-material";
 //                 ) ?? [],
 
 //                 columns: [
-//                     {
+    // {
+    //     headerName: 'Date',
+    //     field: 'date',
+    //     flex: 1
+    // }
+//             ,        {
 //                         headerName: formatString(orgUnitFilter),
 //                         field: `${orgUnitFilter}`,
 //                         flex:1
@@ -1768,7 +1808,12 @@ import { OtherHouses } from "@mui/icons-material";
 //             return {
 //                 rows: props?.chul_services_all_hierachies ?? [],
 //                 columns: [
-//                     {
+    // {
+    //     headerName: 'Date',
+    //     field: 'date',
+    //     flex: 1
+    // }
+//             ,        {
 //                         headerName: formatString(orgUnitFilter),
 //                         field: `${orgUnitFilter}`,
 //                         width:100
@@ -1935,7 +1980,12 @@ import { OtherHouses } from "@mui/icons-material";
 //                 ) ?? [],
 
 //                 columns: [
-//                     {
+    // {
+    //     headerName: 'Date',
+    //     field: 'date',
+    //     flex: 1
+    // }
+//             ,        {
 //                         headerName: formatString(orgUnitFilter),
 //                         field: `${orgUnitFilter}`,
 //                         flex:1
@@ -2025,8 +2075,13 @@ import { OtherHouses } from "@mui/icons-material";
 //                     })
 //             ) ?? [],
 
-//             columns: [
-//                 {
+// //             columns: [
+//     {
+//         headerName: 'Date',
+//         field: 'date',
+//         flex: 1
+//     }
+//             ,    {
 //                     headerName: formatString(orgUnitFilter),
 //                     field: `${orgUnitFilter}`,
 //                     width:100
@@ -2195,6 +2250,7 @@ export function propsToGridData(props, index, orgUnitFilter = "county") {
                 rows: Object.entries(props?.beds_and_cots_by_all_hierachies)?.map((result, index) => ({
 
                     [`${orgUnitFilter}`]: result[0],
+                    date: result[1]?.date_established,
                     hdu_beds: result[1]?.total_hdu_beds,
                     icu_beds: result[1]?.total_icu_beds,
                     maternity_beds: result[1]?.total_maternity_beds,
@@ -2204,9 +2260,16 @@ export function propsToGridData(props, index, orgUnitFilter = "county") {
                     id: index
                 })),
                 columns: [
+                    
                     {
                         headerName: formatString(orgUnitFilter),
                         field: `${orgUnitFilter}`,
+                        flex: 1
+                    },
+                    
+                    {
+                        headerName: 'Date',
+                        field: 'date',
                         flex: 1
                     },
                     {
@@ -2247,6 +2310,7 @@ export function propsToGridData(props, index, orgUnitFilter = "county") {
             return {
                 rows: Object.entries(props?.facility_keph_level_report_all_hierachies)?.map((result, index) => ({
                     [`${orgUnitFilter}`]: result[0],
+                    date: result[1]?.date_established,
                     level_2: result[1]?.Level_2,
                     level_3: result[1]?.Level_3,
                     level_4: result[1]?.Level_4,
@@ -2256,9 +2320,16 @@ export function propsToGridData(props, index, orgUnitFilter = "county") {
                     id: index
                 })),
                 columns: [
+                    
                     {
                         headerName: formatString(orgUnitFilter),
                         field: `${orgUnitFilter}`,
+                        flex: 1
+                    },
+                    
+                    {
+                        headerName: 'Date',
+                        field: 'date',
                         flex: 1
                     },
                     {
@@ -2294,6 +2365,7 @@ export function propsToGridData(props, index, orgUnitFilter = "county") {
             return {
                 rows: Object.entries(props?.facility_owner_report_all_hierachies)?.map((result, index) => ({
                     [`${orgUnitFilter}`]: result[0],
+                    date: result[1]?.date_established,
                     moh: result[1]['Ministry_of_Health'],
                     private_practice: result[1]['Private_Practice'],
                     ngo: result[1]['Non-Governmental_Organizations'],
@@ -2301,9 +2373,16 @@ export function propsToGridData(props, index, orgUnitFilter = "county") {
                     id: index
                 })),
                 columns: [
+                    
                     {
                         headerName: formatString(orgUnitFilter),
                         field: `${orgUnitFilter}`,
+                        flex: 1
+                    },
+                    
+                    {
+                        headerName: 'Date',
+                        field: 'date',
                         flex: 1
                     },
                     {
@@ -2328,6 +2407,7 @@ export function propsToGridData(props, index, orgUnitFilter = "county") {
             return {
                 rows: Object.entries(props?.facility_type_report_all_hierachies)?.map((result, index) => ({
                     [`${orgUnitFilter}`]: result[0],
+                    date: result[1]?.date_established,
                     medical_clinic: result[1]['MEDICAL_CLINIC'],
                     dispensary: result[1]['DISPENSARY'],
                     medical_center: result[1]['MEDICAL_CENTER'],
@@ -2338,9 +2418,16 @@ export function propsToGridData(props, index, orgUnitFilter = "county") {
                     id: index
                 })),
                 columns: [
+                    
                     {
                         headerName: formatString(orgUnitFilter),
                         field: `${orgUnitFilter}`,
+                        flex: 1
+                    },
+                    
+                    {
+                        headerName: 'Date',
+                        field: 'date',
                         flex: 1
                     },
                     {
@@ -2386,6 +2473,7 @@ export function propsToGridData(props, index, orgUnitFilter = "county") {
             return {
                 rows: Object.entries(props?.facility_regulatory_body_report_all_hierachies)?.map((result, index) => ({
                     [`${orgUnitFilter}`]: result[0],
+                    date: result[1]?.date_established,
                     moh: result[1]['Ministry_of_Health'],
                     ppb: result[1]['Pharmacy_&_Poisons_Board'],
                     knrc: result[1]['Kenya_Nuclear_Regulatory_Council_(_Radiation_Board)'],
@@ -2399,9 +2487,16 @@ export function propsToGridData(props, index, orgUnitFilter = "county") {
                     id: index
                 })),
                 columns: [
+                    
                     {
                         headerName: formatString(orgUnitFilter),
                         field: `${orgUnitFilter}`,
+                        flex: 1
+                    },
+                    
+                    {
+                        headerName: 'Date',
+                        field: 'date',
                         flex: 1
                     },
                     {
@@ -2464,6 +2559,7 @@ export function propsToGridData(props, index, orgUnitFilter = "county") {
                 rows: Object.entries(props?.facility_services_report_all_hierachies)?.map((result, index) =>
                 ({
                     [`${orgUnitFilter}`]: result[0],
+                    date: result[1]?.date_established,
                     cat_emergency_prep: result[1]["EMERGENCY_PREPAREDNESS"],
                     cat_curative: result[1]["CURATIVE_SERVICES"],
                     cat_orthopaedic: result[1]["ORTHOPAEDIC_TECHNOLOGY_SERVICES"],
@@ -2508,12 +2604,19 @@ export function propsToGridData(props, index, orgUnitFilter = "county") {
 
                 })),
                 columns: [
+                    
                     {
                         headerName: formatString(orgUnitFilter),
                         field: `${orgUnitFilter}`,
                         width: 100
                     },
-                    {
+                 
+                 {
+                        headerName: 'Date',
+                        field: 'date',
+                        flex: 1
+                    },
+                       {
                         headerNpropsame: 'EMERGENCY PREPAREDNESS',
                         field: 'cat_emergency_prep',
                         width: 200
@@ -2755,6 +2858,7 @@ export function propsToGridData(props, index, orgUnitFilter = "county") {
             return {
                 rows: Object.entries(props?.facility_infrastructure_report_all_hierachies)?.map((result, index) => ({
                     [`${orgUnitFilter}`]: result[0],
+                    date: result[1]?.date_established,
                     cat_ict_infrastructure: result[1]["ICT_INFRASTRUCTURE"],
                     cat_communications: result[1]["COMMUNICATIONS"],
                     cat_water_source: result[1]["WATER_SOURCE"],
@@ -2824,12 +2928,19 @@ export function propsToGridData(props, index, orgUnitFilter = "county") {
                 })),
 
                 columns: [
+                    
                     {
                         headerName: formatString(orgUnitFilter),
                         field: `${orgUnitFilter}`,
                         width: 100
                     },
-                    {
+                 
+                 {
+                        headerName: 'Date',
+                        field: 'date',
+                        flex: 1
+                    },
+                       {
                         headerName: 'ICT INFRASTRUCTURE',
                         field: 'cat_ict_infrastructure',
                         width: 200
@@ -3192,6 +3303,7 @@ export function propsToGridData(props, index, orgUnitFilter = "county") {
             return {
                 rows: Object.entries(props?.facility_human_resource_category_report_all_hierachies)?.map((result, index) => ({
                     [`${orgUnitFilter}`]: result[0],
+                    date: result[1]?.date_established,
                     clinical_officers: result[1]["Clinical_Officers"],
                     dental_staff: result[1]["Dental_staff"],
                     mdeical_engineering: result[1]["Medical_Engineering"],
@@ -3217,12 +3329,19 @@ export function propsToGridData(props, index, orgUnitFilter = "county") {
                 })),
 
                 columns: [
+                    
                     {
                         headerName: formatString(orgUnitFilter),
                         field: `${orgUnitFilter}`,
                         width: 100
                     },
-                    {
+                 
+                 {
+                        headerName: 'Date',
+                        field: 'date',
+                        flex: 1
+                    },
+                       {
                         headerName: 'CLINICAL OFFICER',
                         field: 'clinical_officers',
                         width:200
@@ -3357,14 +3476,20 @@ export function propsToGridData(props, index, orgUnitFilter = "county") {
                 })),
 
                 columns: [
+                    
                     {
                         headerName: 'Sub County',
                         field: 'sub_county',
                         flex: 1
 
                     },
+                     {
+                        headerName: 'Date',
+                        field: 'date',
+                        flex: 1
+                    },
                     {
-                        headerName: 'Facility Name',
+                          headerName: 'Facility Name',
                         field: 'facility_name',
                         flex: 1
                     },
