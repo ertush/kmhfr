@@ -60,86 +60,90 @@ function ApproveCommunityUnit(props) {
 
 
  function approveCHU (e, token) {
+
+  console.log({isApproveReject})
     if (isApproveReject) {
+      console.log({isApproveReject})
       setIsSubmittingApproval(true);
     } else {
       setIsSubmittingRejection(true);
     }
 
   
-    e.preventDefault();
+  //   e.preventDefault();
 
-    const formDataEntries = new FormData(e.target)
+  //   const formDataEntries = new FormData(e.target)
 
-    const formData = Object.fromEntries(formDataEntries)
+  //   const formData = Object.fromEntries(formDataEntries)
   
-    let payload = {}
-    if (isApproveReject) {
+  //   let payload = {}
 
-      payload = {
-        approval_comment: formData?.rejection_approval_reason,
-        is_rejected: false,
-        is_approved: true
-      }
-    } else {
+  //   if (isApproveReject) {
+
+  //     payload = {
+  //       approval_comment: formData?.rejection_approval_reason,
+  //       is_rejected: false,
+  //       is_approved: true
+  //     }
+  //   } else {
       
-      payload = {
-        rejection_reason: formData?.rejection_approval_reason,
-        is_rejected: true,
-        is_approved: false
-      }
-    }
+  //     payload = {
+  //       rejection_reason: formData?.rejection_approval_reason,
+  //       is_rejected: true,
+  //       is_approved: false
+  //     }
+  //   }
   
-    let url = `${process.env.NEXT_PUBLIC_API_URL}/chul/units/${cu?.id}/` // `/api/common/submit_form_data/?path=approve_chul&id=${id}`
+  //   let url = `${process.env.NEXT_PUBLIC_API_URL}/chul/units/${cu?.id}/` // `/api/common/submit_form_data/?path=approve_chul&id=${id}`
     
-    try {
-      fetch(url, {
-        headers: {
-          'Accept': 'application/json, text/plain, */*',
-          'Content-Type': 'application/json;charset=utf-8',
-          'Authorization': `Bearer ${token}`
+  //   try {
+  //     fetch(url, {
+  //       headers: {
+  //         'Accept': 'application/json, text/plain, */*',
+  //         'Content-Type': 'application/json;charset=utf-8',
+  //         'Authorization': `Bearer ${token}`
   
-        },
-        method: 'PATCH',
-        body: JSON.stringify(payload)
-      })
-        .then(resp => resp)
-        .then(async(res) => {
+  //       },
+  //       method: 'PATCH',
+  //       body: JSON.stringify(payload)
+  //     })
+  //       .then(resp => resp)
+  //       .then(async(res) => {
   
-          if(res.ok) {
-            alert.success(`${payload.is_rejected ? 'Rejected' : 'Approved'} CHU successfully`)
-            router.push({
-              pathname: '/community-units',
-              query: {}
-            })
-          } else {
-            alert.error(`Unable to approve CHU`)
+  //         if(res.ok) {
+  //           alert.success(`${payload.is_rejected ? 'Rejected' : 'Approved'} CHU successfully`)
+  //           router.push({
+  //             pathname: '/community-units',
+  //             query: {}
+  //           })
+  //         } else {
+  //           alert.error(`Unable to approve CHU`)
              
-             const detail = await res.json()
+  //            const detail = await res.json()
   
-             const error = Array.isArray(Object.values(detail)) && Object.values(detail).length == 1 ? detail[Object.keys(detail)[0]][0] : ''
-             setFormError(error)
+  //            const error = Array.isArray(Object.values(detail)) && Object.values(detail).length == 1 ? detail[Object.keys(detail)[0]][0] : ''
+  //            setFormError(error)
   
-          }
+  //         }
          
   
-        })
-        .catch(e => {
+  //       })
+  //       .catch(e => {
   
-          console.error(e.message)
-        })
-    } catch (e) {
+  //         console.error(e.message)
+  //       })
+  //   } catch (e) {
   
-      // setStatus({ status: 'error', message: e })
-      console.error(e.message)
-    } finally{
-    if (isApproveReject) {
-      setIsSubmittingApproval(false)
-    } else {
-      setIsSubmittingRejection(false)
+  //     // setStatus({ status: 'error', message: e })
+  //     console.error(e.message)
+  //   } finally{
+  //   if (isApproveReject) {
+  //     setIsSubmittingApproval(false)
+  //   } else {
+  //     setIsSubmittingRejection(false)
       
-    }
-  }
+  //   }
+  // }
 }
 
 // approveCHUUpdates(e,  true, props?.token)}
@@ -147,7 +151,8 @@ function ApproveCommunityUnit(props) {
 async function approveCHUUpdates (e, status, token) {
   e.preventDefault();
 
-  let payload = ''
+  console.log({status})
+  // let payload = ''
   if (status) {
     setIsSubmittingApproval(true)
     payload = { is_approved: true }
@@ -155,56 +160,57 @@ async function approveCHUUpdates (e, status, token) {
     setIsSubmittingRejection(true)
     payload = { is_rejected: true }
   }
-  let url = `${process.env.NEXT_PUBLIC_API_URL}/chul/updates/${cu?.latest_update}/` //`/api/common/submit_form_data/?path=approve_chul_updates&latest_updates=${id}`
+
+  // let url = `${process.env.NEXT_PUBLIC_API_URL}/chul/updates/${cu?.latest_update}/` //`/api/common/submit_form_data/?path=approve_chul_updates&latest_updates=${id}`
   
-  try {
-    await fetch(url, {
-      headers: {
-        'Accept': 'application/json, text/plain, */*',
-        'Content-Type': 'application/json;charset=utf-8',
-        'Authorization': `Bearer ${token}`
+  // try {
+  //   await fetch(url, {
+  //     headers: {
+  //       'Accept': 'application/json, text/plain, */*',
+  //       'Content-Type': 'application/json;charset=utf-8',
+  //       'Authorization': `Bearer ${token}`
 
-      },
-      method: 'PATCH',
-      body: JSON.stringify(payload)
-    })
-      .then(resp => resp.json())
-      .then(async (res) => {
+  //     },
+  //     method: 'PATCH',
+  //     body: JSON.stringify(payload)
+  //   })
+  //     .then(resp => resp.json())
+  //     .then(async (res) => {
 
-        if(res.ok) {
-          alert.success(`${payload.is_rejected ? 'Rejected' : 'Approved'} CHU Updates successfully`)
+  //       if(res.ok) {
+  //         alert.success(`${payload.is_rejected ? 'Rejected' : 'Approved'} CHU Updates successfully`)
 
-          router.push({
-            pathname: '/community-units',
-            query: { has_edits: false, pending_approval: true }
-          })
+  //         router.push({
+  //           pathname: '/community-units',
+  //           query: { has_edits: false, pending_approval: true }
+  //         })
   
-        } else {
-          alert.error(`Unable to approve CHU Updates`)
+  //       } else {
+  //         alert.error(`Unable to approve CHU Updates`)
              
-             const detail = await res.json()
+  //            const detail = await res.json()
   
-             const error = Array.isArray(Object.values(detail)) && Object.values(detail).length == 1 ? detail[Object.keys(detail)[0]][0] : ''
+  //            const error = Array.isArray(Object.values(detail)) && Object.values(detail).length == 1 ? detail[Object.keys(detail)[0]][0] : ''
              
-             setFormError(error)
+  //            setFormError(error)
 
-        }
+  //       }
         
-      })
-      .catch(e => {
-        console.log(e.message)
-      })
-  } catch (e) {
+  //     })
+  //     .catch(e => {
+  //       console.log(e.message)
+  //     })
+  // } catch (e) {
 
-    console.error(e)
-  } finally {
-    if (status) {
-      setIsSubmittingApproval(false)
-    } else {
-      setIsSubmittingRejection(false)
+  //   console.error(e)
+  // } finally {
+  //   if (status) {
+  //     setIsSubmittingApproval(false)
+  //   } else {
+  //     setIsSubmittingRejection(false)
       
-    }
-  }
+  //   }
+  // }
 
 } 
 
@@ -649,8 +655,7 @@ async function approveCHUUpdates (e, status, token) {
                               <span className='text-white'>Approving.. </span>
                             </div>
                             :
-                            cu.is_approved ? "" : "Approve Community Health Unit"
-
+                             "Approve Community Health Unit" // cu.is_approved ? "" :
                         }
 
                       </button>
@@ -667,8 +672,7 @@ async function approveCHUUpdates (e, status, token) {
                               <span className='text-white'>Rejecting.. </span>
                             </div>
                             :
-                            cu.is_rejected ? "" : "Reject Community Health Unit"
-
+                             "Reject Community Health Unit" // cu.is_rejected ? "" :
                         }
 
                       </button>
@@ -678,6 +682,7 @@ async function approveCHUUpdates (e, status, token) {
               )}
 
             </div>
+            
           </div>
         </MainLayout >
       </>

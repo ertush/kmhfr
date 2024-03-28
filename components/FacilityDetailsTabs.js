@@ -2,9 +2,34 @@ import React from 'react'
 import * as Tabs from "@radix-ui/react-tabs";
 import { CheckCircleIcon, XCircleIcon } from "@heroicons/react/solid";
 
-function FacilityDetailsTabs({ facility }) {
+function FacilityDetailsTabs({ facility, token }) {
+  
+  const [cus, setCUs] = React.useState(null)
+
+
+  React.useEffect(() => {
+
+
+   async function fetchCHUs() {
+       fetch(`${process.env.NEXT_PUBLIC_API_URL}/chul/units/?facility=${facility?.id}`, {
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      })
+      .then(resp => resp.json())
+      .then(cu => {
+        setCUs(cu?.results)
+      })
+    }
+
+     fetchCHUs()
+    
+  }, [])
+  
   return (
     <div className="col-span-5 rounded md:col-span-3 flex bg-gray-50 shadow-md flex-col gap-3 mt-4">
+     
       <Tabs.Root
         orientation="horizontal"
         className="w-full flex flex-col flex-wrap tab-root"
@@ -44,9 +69,10 @@ function FacilityDetailsTabs({ facility }) {
             value="community_units"
             className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
           >
-            Facility Units
+            Community Health Units
           </Tabs.Tab>
         </Tabs.List>
+
         <Tabs.Panel
           value="overview"
           className="grow-1 py-1 px-4 tab-panel"
@@ -587,10 +613,7 @@ function FacilityDetailsTabs({ facility }) {
         >
           <div className="col-span-4 md:col-span-4 flex flex-col gap-y-2 group items-center justify-start text-left">
             <div className="bg-gray-50 w-full px-2 my-4">
-              {/* <h3 className="text-2xl w-full flex flex-wrap justify-between items-center leading-tight tracking-tight"> */}
-              {/* <span className="font-semibold">Services</span> */}
-              {/* {user && user?.id ? <a href={"/facility/edit/"+facility?.id+"#services"} className="text-base text-gray-700 font-medium hover:text-black focus:text-black active:text-black">Edit services</a> : ""} */}
-              {/* </h3> */}
+            
               <ul>
                 {facility?.facility_services &&
                   facility?.facility_services.length > 0 ? (
@@ -722,25 +745,27 @@ function FacilityDetailsTabs({ facility }) {
           <div className="col-span-4 md:col-span-4 flex flex-col gap-y-2 group items-center justify-start text-left">
             <div className="bg-gray-50 w-full px-2 my-4">
               <ul>
-                {facility?.facility_units &&
-                  facility?.facility_units.length > 0 ? (
-                  facility?.facility_units.map((unit) => (
+                {
+                  cus?.length > 0 ? (
+                  cus?.map((cu) => (
                     <li
-                      key={unit.id}
+                      key={cu?.id}
                       className="w-full flex flex-row justify-between gap-2 my-2 p-3 border-b border-gray-400"
                     >
                       <div>
                         <p className="text-gray-800 text-base">
-                          {unit.unit_name}
+                          {cu?.name}
                         </p>
                         <small className="text-xs text-gray-500">
-                          {unit.regulating_body_name || ""}
+                          {cu?.code || "-"}
                         </small>
                       </div>
                       <div className="flex flex-row gap-1 items-center">
                         <CheckCircleIcon className="h-6 w-6 text-gray-500" />
                         <label className="text-sm text-gray-600">
-                          Active
+                          {
+                            cu?.status_name
+                          }
                         </label>
                       </div>
                     </li>
@@ -749,7 +774,7 @@ function FacilityDetailsTabs({ facility }) {
                   <li className="w-full  bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base leading-none">
                     <p>No units in this facility?.</p>
                   </li>
-                )}
+                )} 
               </ul>
             </div>
           </div>

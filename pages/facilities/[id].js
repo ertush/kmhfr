@@ -115,7 +115,7 @@ const Facility = (props) => {
       return (
         <>
           <Head>
-            <title>KMHFR | {facility?.official_name ?? ""}</title>
+            <title>KMHFR - {facility?.official_name ?? ""}</title>
             <link rel="icon" href="/favicon.ico" />
             <link rel="stylesheet" href="/assets/css/leaflet.css" />
           </Head>
@@ -124,6 +124,14 @@ const Facility = (props) => {
 
             <div className="w-full md:w-[85%] grid grid-cols-1 md:grid-cols-7 px-4 md:px-0 gap-3 my-4 place-content-center">
               {/* Closed Facility Modal */}
+
+              {/* {
+                <pre>
+                  {
+                    JSON.stringify(props, null, 2)
+                  }
+                </pre>
+              } */}
 
               {
                   facility?.closed && 
@@ -364,7 +372,6 @@ const Facility = (props) => {
                     <i className="text-black">{facility?.code || "NO_CODE"}</i> )
                   </span>
                 </div>
-
                 {/* Header Bunner  */}
                 <div
                   className={
@@ -631,9 +638,9 @@ const Facility = (props) => {
                         Close
                       </button>
                       }
-                      {/* {
+                      {
                         console.log({props})
-                      } */}
+                      }
                       
                       <button
                         onClick={() => {
@@ -650,7 +657,7 @@ const Facility = (props) => {
                 }
 
                 {/* Facility Details Tab Section */}
-                 <FacilityDetailsTabs facility={facility}/>
+                  <FacilityDetailsTabs facility={facility} token={props["3"]?.token}/>
               </div>
 
               {/* end facility approval */}

@@ -274,7 +274,7 @@ function Dashboard(props) {
                         
                             <div className="no-print flex flex-row gap-2 md:text-base py-3">
                                 {/* <Link className="text-gray-700" href="/" >Home</Link>  */}
-                                <span className="text-gray-600 text-2xl">Dashboard</span> 
+                                {/* <span className="text-gray-600 text-2xl">Dashboard</span>  */}
 
                             </div>
                             

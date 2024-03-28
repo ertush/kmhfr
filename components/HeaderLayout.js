@@ -316,7 +316,7 @@ export default function HeaderLayout({
 
 
                     <li className={`text-lg h-[50px] w-full border-b border-b-gray-300 flex items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-600 ${/\/community-units\/.+/.test(currentPath) || /\/community-units/.test(currentPath) && 'border-r-2 border-r-gray-50 bg-blue-700/85 text-gray-100'}  ${currentPath == "/public/chu" && 'border-r-2 border-r-gray-50 bg-blue-700/85 text-gray-100'}`}>
-                      <Link href={`${userID !== 6 && isLoggedIn ? '/community-units' : '/public/chu'}`}>Community Units</Link>
+                      <Link href={`${userID !== 6 && isLoggedIn ? '/community-units' : '/public/chu'}`}><span>Community Units</span></Link>
                     </li>
 
                     {
@@ -356,7 +356,7 @@ export default function HeaderLayout({
                       ) &&
                       isLoggedIn &&
                       <li className={`text-lg h-[50px] w-full border-b border-b-gray-300 flex items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-600 ${currentPath == "/system_setup" && 'border-r-2 border-r-gray-50 bg-blue-700/85 text-gray-100'}`}>
-                        <Link href='/system_setup'>System Setup</Link>
+                        <Link href='/system_setup'><span>System Setup</span></Link>
                       </li>
                     }
 
