@@ -183,7 +183,7 @@ function Home(props) {
                   <li className='text-lg h-[60px] flex items-center  hover:text-gray-100  duration-200 ease-out hover:bg-blue-800 px-4 font-semibold capitalize text-gray-900 '>
                     <Link href='/public/facilities'>Facilities</Link>
                   </li>
-                  <li className='text-lg h-[60px] flex items-center  hover:text-gray-100  duration-200 ease-out hover:bg-blue-800 px-4 font-semibold capitalize text-gray-900 '>
+                  <li className='text-lg h-[60px] text-nowrap flex items-center  hover:text-gray-100  duration-200 ease-out hover:bg-blue-800 px-4 font-semibold capitalize text-gray-900 '>
                     <Link href='/public/chu'>Community Units</Link>
                   </li>
                   <li className='text-lg h-[60px] flex items-center  hover:text-gray-100  duration-200 ease-out hover:bg-blue-800 px-4 font-semibold capitalize text-gray-900 '>

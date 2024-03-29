@@ -109,7 +109,12 @@ export function GeolocationForm({ editMode }) {
   
       if (payload) {
 
-        fetch(`${process.env.NEXT_PUBLIC_API_URL}/gis/facility_coordinates/${options?.data?.lat_long && options?.data?.coordinates + '/'}`, {
+        const url = options?.data?.lat_long && options?.data?.coordinates ? 
+        `${process.env.NEXT_PUBLIC_API_URL}/gis/facility_coordinates/${options?.data?.lat_long && `${options?.data?.coordinates}/`}` :
+        `${process.env.NEXT_PUBLIC_API_URL}/gis/facility_coordinates/`
+        
+
+        fetch(url, {
           headers: {
             'Authorization': 'Bearer ' + options?.token,
             'Accept': 'application/json, text/plain, */*',

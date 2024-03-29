@@ -315,8 +315,8 @@ export default function HeaderLayout({
 
 
 
-                    <li className={`text-lg h-[50px] w-full border-b border-b-gray-300 flex items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-600 ${/\/community-units\/.+/.test(currentPath) || /\/community-units/.test(currentPath) && 'border-r-2 border-r-gray-50 bg-blue-700/85 text-gray-100'}  ${currentPath == "/public/chu" && 'border-r-2 border-r-gray-50 bg-blue-700/85 text-gray-100'}`}>
-                      <Link href={`${userID !== 6 && isLoggedIn ? '/community-units' : '/public/chu'}`}><span>Community Units</span></Link>
+                    <li className={`text-lg h-[50px] w-full border-b text-nowrap border-b-gray-300 flex items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-600 ${/\/community-units\/.+/.test(currentPath) || /\/community-units/.test(currentPath) && 'border-r-2 border-r-gray-50 bg-blue-700/85 text-gray-100'}  ${currentPath == "/public/chu" && 'border-r-2 border-r-gray-50 bg-blue-700/85 text-gray-100'}`}>
+                      <Link href={`${userID !== 6 && isLoggedIn ? '/community-units' : '/public/chu'}`}>Community Units</Link>
                     </li>
 
                     {
@@ -496,7 +496,7 @@ export default function HeaderLayout({
 
                 {
                   userID &&
-                <li className={`text-lg h-[60px]  flex text-center justify-center items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/community-units" && 'border-b-2 border-b-gray-50 bg-blue-500/85'} ${currentPath == "/public/chu" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
+                <li className={`text-lg h-[60px]  flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/community-units" && 'border-b-2 border-b-gray-50 bg-blue-500/85'} ${currentPath == "/public/chu" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
                   <Link href={`${userID !== 6 && isLoggedIn ? '/community-units' : '/public/chu'}`}>Community Units</Link>
                 </li>
                 }
@@ -535,7 +535,7 @@ export default function HeaderLayout({
                       groupID == 5)
                   ) &&
                   isLoggedIn &&
-                  <li className={`text-lg h-[60px] flex text-center justify-center items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/system_setup" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
+                  <li className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/system_setup" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
                     <Link href='/system_setup'>System Setup</Link>
                   </li>
                 }
@@ -555,7 +555,7 @@ export default function HeaderLayout({
                   (groupID == 7 ||
                     groupID == 5) &&
                   isLoggedIn &&
-                  <li className={`text-lg h-[60px] flex text-center justify-center items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/admin_offices" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
+                  <li className={`text-lg h-[60px] flex text-center justify-center items-center text-nowrap group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/admin_offices" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
                     <Link href='/admin_offices'>Admin Offices</Link>
                   </li>
                 }
