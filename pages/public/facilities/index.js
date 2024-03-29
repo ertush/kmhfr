@@ -129,7 +129,7 @@ function Home(props) {
 
 		// TODO: Fix the facility detials display list
 
-		let url = API_URL + `/facilities/facilities/?fields=id,code,name,regulatory_status_name,facility_type_name,owner_name,county,sub_county_name,constituency,ward_name,keph_level_name,operation_status_name`
+		let url = `${API_URL}/facilities/facilities/?fields=id,code,name,regulatory_status_name,facility_type_name,owner_name,county,sub_county_name,constituency,ward_name,keph_level_name,operation_status_name`
 
 
 		const formData = new FormData(e.target)
@@ -296,13 +296,13 @@ function Home(props) {
 
 										}
 									</span>
-									{
-										submitting &&
-										<span className='text-white'>Searching... </span>
+										{
+											submitting &&
+											<span className='text-white'>Searching... </span>
 
-
-									}
+										}
 								</button>
+
 								<button
 									type='submit'
 									className="bg-gray-50  text-black flex items-center justify-center px-4 py-1 "
@@ -315,7 +315,6 @@ function Home(props) {
 							{/* <div className='card flex flex-wrap'> */}
 							<div className="card col-span-6 md:col-span-2 flex flex-col items-start gap-4 justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50 rounded" style={{ minHeight: '50px' }}>
 								<h2>Search for a Facility</h2>
-
 
 								<input
 									name="facility"
@@ -596,7 +595,6 @@ function Home(props) {
 								</div>
 
 							</div>
-
 
 
 						</form>

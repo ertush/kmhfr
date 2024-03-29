@@ -132,12 +132,7 @@ function CommunityUnit(props) {
                 </div>
               </div>
 
-                {/* <button
-                    className=" bg-indigo-500 col-span-1 col-start-6 min-w-0 p-2 text-white text-lg font-semibold"
-                    onClick={() => { window.location.href = url}}
-                  >
-                    Print
-                  </button> */}
+               
             </div>
 
           </div>
@@ -164,20 +159,7 @@ function CommunityUnit(props) {
                     >
                       Overview
                     </Tabs.Tab>
-                    {/* <Tabs.Tab
-                      id={2}
-                      value="services"
-                      className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-400 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
-                    >
-                      Services
-                    </Tabs.Tab> */}
-                    {/* <Tabs.Tab
-                      id={3}
-                      value="hr_staffing"
-                      className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-400 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
-                    >
-                      HR &amp; Staffing
-                    </Tabs.Tab> */}
+                   
                     <Tabs.Tab
                       id={3}
                       value="chu_ratings"
