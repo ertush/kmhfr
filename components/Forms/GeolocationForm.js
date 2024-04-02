@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState, memo, Suspense } from 'react';
 // import { FacilityIdContext, FormContext } from './Form';
-import { Alert } from '@mui/lab';
+import { Alert } from '@mui/material';
 import dynamic from 'next/dynamic';
 import {
   ChevronDoubleRightIcon,
@@ -64,18 +64,20 @@ export function GeolocationForm({ editMode }) {
   function handleGeolocationPrevious(e) {
     e.preventDefault()
 
-    // const url = new URL(basicDetailsURL)
-
-    // url.searchParams.set('formId', '0')
-
-    // url.searchParams.set('from', 'previous')
 
     // router.push(url)
+    let formData = ""
+
+    if(window) {
+      formData = window.localStorage.getItem('basic_details')
+    }
 
     router.push({
       pathname: '/facilities/add',
       query: {
-          formId: 0
+          formId: 0,
+          formData,
+          from:"previous"
       }
     })
     .then((navigated) => {
@@ -172,6 +174,20 @@ export function GeolocationForm({ editMode }) {
 
 
   function handleGeolocationFormCreate(e) {
+    function mockFetch() {
+
+      return new Promise(resolve => {
+        setTimeout(() => resolve({
+          ward: {
+            lat: 0.0000,
+            long: -1.11001
+          }
+        })
+        , 1000)
+      })
+
+}
+
     e.preventDefault()
 
     const formData = new FormData(e.target)
@@ -195,22 +211,30 @@ export function GeolocationForm({ editMode }) {
     console.log({payload})
 
 
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/gis/facility_coordinates/`, {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json;charset=UTF-8',
-        'Authorization': `Bearer ${options?.token}`
-      },
-      body: JSON.stringify(payload)
-    })
+    // fetch(`${process.env.NEXT_PUBLIC_API_URL}/gis/facility_coordinates/`, {
+    //   method: 'POST',
+    //   headers: {
+    //     'Accept': 'application/json',
+    //     'Content-Type': 'application/json;charset=UTF-8',
+    //     'Authorization': `Bearer ${options?.token}`
+    //   },
+    //   body: JSON.stringify(payload)
+    // })
+      mockFetch()
       .then(res => {
-        if (res.ok) {
-          alert.success('Facility Geolocation Details have been saved successfully')
 
+        if (res.ward !== undefined) { // res.ok
+          alert.success('Facility Geolocation Details have been saved successfully')
           setSubmitting(false)
 
           // Navigation & Persisitng Data
+
+          if(window) {
+            const base64GeolocationFormData = Buffer.from(JSON.stringify(data)).toString('base64')
+            window.localStorage.setItem('geolocation', base64GeolocationFormData)
+          }
+
+
 
           const params = [];
 
@@ -219,6 +243,11 @@ export function GeolocationForm({ editMode }) {
           if (wardData) params.push(`wardData=${Buffer.from(JSON.stringify(wardData)).toString('base64')}`)
 
           const base64EncParams = Buffer.from(params.join('&')).toString('base64')
+
+             // store in localstorage
+            //  if(window) {
+            //   window.localStorage.setItem('geolocation', base64EncWardData)
+            // }
 
           router.push({
             pathname: `${window.location.origin}/facilities/add`,
@@ -292,13 +321,60 @@ export function GeolocationForm({ editMode }) {
 
     if (window && !editMode) {
 
-      const current_url = new URL(window.location.href)
+      const current_url = new URL(window.document.location.href)
 
       setFrom(current_url.searchParams.get('from'))
 
       setFacilityId(current_url.searchParams.get('facilityId'))
 
-      if (current_url.searchParams.get('from') == 'previous') setBasicDetailsURL(current_url)
+      if (current_url.searchParams.get('from') == 'previous') {
+
+      
+          const previousFormData = current_url.searchParams.get('formData')
+      
+          if (previousFormData !== null) {
+      
+            const formData = Buffer.from(previousFormData ?? 'J3t9Jw==', 'base64').toString()
+  
+            const data = JSON.parse(formData)
+  
+            console.log({data, previousFormData})
+  
+  
+          // const strFormData = Buffer.from(path.searchParams?.get('formData') ?? 'J3t9Jw==', 'base64').toString() ?? "{}"
+          // const params = new URL(`${window.location.origin}/facilities/add?${strFormData}`).searchParams
+  
+          const base64WardData = window.localStorage.getItem('ward_data')
+          const wardDataStr = Buffer.from(base64WardData, 'base64').toString()
+
+          // const _wardData = JSON.parse(wardDataStr)
+          console.log({wardDataStr})
+
+
+
+          // setWardData(_wardData)
+
+          // setGeoJSON(_wardData?.geoJSON)
+          // setGeoCenter(_wardData?.centerCoordinates)
+          // setWardName(_wardData?.geoJSON?.properties?.name)
+
+          const newOptions = {}
+  
+          Object.assign(newOptions, options)
+  
+          // console.log(new Date(formData.collection_date))
+  
+          newOptions['data'] = data // { lat_long: [formData.latitude, formData.longitude], collection_date: formData.collection_date }
+  
+          for (let [k, v] of Object.entries(newOptions?.data)) {
+            newOptions.data[k] = v
+  
+          }
+  
+          setOptions(newOptions)
+  
+           }
+      }
 
       if (current_url.searchParams.get('from') == 'submission') {
 
@@ -308,6 +384,11 @@ export function GeolocationForm({ editMode }) {
 
         // const paramEntries = params.entries()
         const base64WardData = params.get('wardData')
+
+        if(window) {
+          window.document.setItem('ward_data', base64WardData)
+        }
+        
         const wardDataStr = Buffer.from(base64WardData, 'base64').toString()
         const _wardData = JSON.parse(wardDataStr)
         const formData = Object.fromEntries(params.entries())
@@ -319,7 +400,6 @@ export function GeolocationForm({ editMode }) {
         setGeoJSON(_wardData?.geoJSON)
         setGeoCenter(_wardData?.centerCoordinates)
         setWardName(_wardData?.geoJSON?.properties?.name)
-
 
         const newOptions = {}
 
@@ -335,6 +415,9 @@ export function GeolocationForm({ editMode }) {
         }
 
         setOptions(newOptions)
+
+
+     
       }
     }
 

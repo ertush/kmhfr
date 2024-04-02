@@ -4,11 +4,7 @@ import { FacilityContact, OfficerContactDetails } from './formComponents/Facilit
 import Select from './formComponents/FormikSelect';
 import { ChevronDoubleLeftIcon, ChevronDoubleRightIcon, PlusIcon } from '@heroicons/react/solid'
 import { FormOptionsContext } from '../../pages/facilities/add';
-// import { FormContext } from './Form';
-// import { useLocalStorageState } from './hooks/formHook';
 
-// import { object, string } from "zod";
-// import { toFormikValidationSchema } from "zod-formik-adapter";
 
 import {
     handleFacilityContactsSubmit,
@@ -218,18 +214,19 @@ export function FacilityContactsForm() {
 
         event.preventDefault()
 
-        // const previous_url =  new URL(geolocationUrl)
+        let formData = ""
 
-        // previous_url.searchParams.set('formId', '1')
+        if(window) {
+          formData = window.localStorage.getItem('geolocation')
+        }
 
-        // previous_url.searchParams.set('from', 'previous')
-
-        // window.location.url = previous_url
 
         router.push({
             pathname: '/facilities/add',
             query: {
-                formId: 1
+                formId: 1,
+                formData, 
+                from:'previous'
             }
         })
         .then((navigated) => {
@@ -624,9 +621,9 @@ export function FacilityContactsForm() {
                                         <div className='flex justify-between items-center w-full'>
                                             <button
                                                 onClick={handleGeolocationPrevious}
-                                                className='flex items-center justify-start space-x-2 p-1 group hover:bg-blue-700 border border-gray-700 px-2'>
-                                                <ChevronDoubleLeftIcon className='w-4 h-4 group-hover:text-white text-gray-900' />
-                                                <span className='text-medium font-semibold group-hover:text-white text-gray-900 '>
+                                                className='flex items-center justify-start space-x-2 p-1 group border border-gray-700 px-2'>
+                                                <ChevronDoubleLeftIcon className='w-4 h-4 text-gray-900' />
+                                                <span className='text-medium font-semibold text-gray-900 '>
                                                     Geolocation
                                                 </span>
                                             </button>
