@@ -1,4 +1,4 @@
-import {useState, useContext, useMemo} from 'react';
+import {useState, useEffect, useContext, useMemo} from 'react';
 import EditListItem from './formComponents/EditListItem';
 import { FormOptionsContext } from '../../pages/facilities/add';
 // import { FormContext } from './Form';
@@ -12,12 +12,6 @@ import {
 import { FacilityUpdatesContext } from '../../pages/facilities/edit/[id]';
 import {useRouter} from 'next/router'
 import { UpdateFormIdContext } from './Form';
-
-
-
-
-
-// import {Formik, Field, Form} from 'formik'
 
 
 export function ServicesForm() {
@@ -40,27 +34,10 @@ export function ServicesForm() {
 
         return [id, setId]
     }, [])
-
-    
+ 
     const [regulationFormURL, setRegulationFormURL] = useState('');
 
     const router = useRouter()
-
-    // const [formId, setFormId] = useMemo(() => {
-    //     let id = ''
-
-    //     function setId(_id) {
-    //         id = _id
-    //     }
-
-    //     if(window) {
-    //         setId(new URL(window.location.href).searchParams.get('formId'))
-    //     }
-
-    //     // console.log({id})
-
-    //     return [id, setId]
-    // }, [])
 
     const [submitting, setSubmitting] = useState(false)
     
@@ -68,7 +45,6 @@ export function ServicesForm() {
     
     const { updatedSavedChanges, updateFacilityUpdateData } = options?.data ? useContext(FacilityUpdatesContext) : {updatedSavedChanges: null, updateFacilityUpdateData: null }
  
-    
     //Options
     const serviceOptions = ((_services) => {
 
@@ -93,21 +69,22 @@ export function ServicesForm() {
     const editMode = options?.data ? true : false
 
     //Event handlers
-    function handleServicePrevious() {
-        // setFormId(`${parseInt(formId) - 1}`);
+    function handleServicePrevious(e) {
+      
+        e.preventDefault()
 
-        // const url = new URL(regulationFormURL)
+        let formData = ""
 
-        // url.searchParams.set('formId', '3')
-
-        // url.searchParams.set('from', 'previous')
-
-        // router.push(url)
+        if(window) {
+            formData = window.localStorage.getItem('regulation')
+        }
 
         router.push({
             pathname: '/facilities/add',
             query: {
-                formId: 3
+                formId: 3,
+                formData,
+                from:'previous'
             }
         })
         .then((navigated) => {
@@ -115,8 +92,11 @@ export function ServicesForm() {
         })
         
 
-
   } 
+
+  useEffect(() => {
+    
+  }, [])
 
     return <>
                 <h4 className="text-lg uppercase pb-2 mt-4 border-b border-gray-400  w-full mb-4 font-semibold text-gray-900">Services</h4>

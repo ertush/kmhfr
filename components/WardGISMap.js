@@ -7,19 +7,6 @@ import { MarkerIcon } from './MarkerIcon';
 
 
 
-// function MapEventListener({coordinates}) {
-
-//     const map = useMapEvent('mouseover', () => {
-//     //   map.flyTo(coordinates, map.getZoom())
-
-//     map.invalidateSize(false);
-
-//       console.log('Loaded Map...')
-//     })
-
-//     return null
-// }
-
 function MapListener ({tabOpen}) {
     const map = useMap()
 
@@ -34,7 +21,7 @@ function MapListener ({tabOpen}) {
 }
 
 
-const WardGISMap = ({ markerCoordinates, geoJSON, center, ward, from }) => {
+const WardGISMap = ({ markerCoordinates, geoJSON, center, ward, from, zoom }) => {
 
 
     const isValidGeoCoordinates = /^((\-?|\+?)?\d+(\.\d+)?),\s*((\-?|\+?)?\d+(\.\d+)?)$/.test(markerCoordinates.join(','))
@@ -106,7 +93,7 @@ const WardGISMap = ({ markerCoordinates, geoJSON, center, ward, from }) => {
                 <MapContainer 
                     className='w-full z-0' 
                     center={center ?? [-0.818389, 37.477222]} 
-                    zoom={9.899} 
+                    zoom={(zoom * 2) ?? 9.899} 
                     maxZoom={12.70} 
                     scrollWheelZoom={false} 
                     touchZoom={false} 

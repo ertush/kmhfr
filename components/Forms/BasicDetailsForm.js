@@ -311,13 +311,7 @@ export function BasicDeatilsForm({ editMode }) {
 
     const data = Object.fromEntries(formData)
 
-    // const payload = {}
-
-    // for (let field of touchedFields) {
-    //   payload[field] = data[field] == undefined ? false : data[field] == "on" || data[field] == "true" ? true : data[field] == "false" ? false : (Number(data[field]) ?? data[field])
-    // }
-
-    // console.log({payload})
+   
 
     setSubmitting(true)
 
@@ -473,31 +467,25 @@ export function BasicDeatilsForm({ editMode }) {
 
                 const base64EncWardData = Buffer.from(JSON.stringify(wardGeoData)).toString('base64')
 
-                const params = [];
+                
 
-                for (let [k, v] of formData) {
-                  if (k == 'facility_checklist_document') {
-                    params.push(`${k}=${JSON.stringify(v)}`)
-                  }
-                  else {
-
-                    params.push(`${k}=${v}`)
-
-                  }
+                
+                // params.push(`wardData=${base64EncWardData}`)
+                
+                if(window) {
+                  window.localStorage.setItem('ward_data', base64EncWardData  )
                 }
 
-                params.push(`wardData=${base64EncWardData}`)
-
-                const base64EncParams = Buffer.from(params.join('&')).toString('base64')
+                // const base64EncParams = Buffer.from(params.join('&')).toString('base64')
 
 
                 router.push({
                   pathname: `${window.location.origin}/facilities/add`,
 
                   query: {
-                    formData: base64EncParams,
+                    wardData: base64EncWardData,
                     formId: 1,
-                    facilityId: facilityId,
+                    facilityId,
                     from: 'submission'
                   }
 
@@ -629,7 +617,7 @@ export function BasicDeatilsForm({ editMode }) {
     
         if (previousFormData !== null) {
     
-          const formData = Buffer.from(previousFormData ?? 'J3t9Jw==', 'base64').toString()
+          const formData = Buffer.from(previousFormData ?? 'e30=', 'base64').toString()
 
           const data = JSON.parse(formData)
 

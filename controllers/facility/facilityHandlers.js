@@ -356,10 +356,11 @@ async function handleRegulationSubmit(token, values, facilityId, setSubmitting, 
         body: JSON.stringify(payload[0])
     })
     .then(resp => {
-        if (resp.status == 204 || resp.status == 200) {
+        if (resp.ok) {
             alert.success('Facility Regulation Details Created Successfully', {
                 timeout: 10000
             })
+            
 
             fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${facilityId}/`, {
 
@@ -373,7 +374,7 @@ async function handleRegulationSubmit(token, values, facilityId, setSubmitting, 
                 body: JSON.stringify(payload[1])
             })
             .then(resp => {
-                if(resp.status == 204 || resp.status == 200 ) {
+                if(resp.ok) {
                     setSubmitting(false)
                     alert.success('Facility Department units Created Successfully', {
                         timeout: 10000
@@ -381,7 +382,12 @@ async function handleRegulationSubmit(token, values, facilityId, setSubmitting, 
 
                     // Posting  license  file
 
+
                     const formDataBase64Enc = Buffer.from(JSON.stringify(payload)).toString('base64')
+
+                    if(window) {
+                        window.localStorage.setItem('regulation', formDataBase64Enc)
+                    }
 
                     // router.push({
                     //     pathname: `${window.location.origin}/facilities/add`,
@@ -570,6 +576,14 @@ function handleServiceSubmit(token, services, facilityId) {
             },
             method: 'PATCH',
             body: JSON.stringify({ services: _payload })
+        })
+        .then(resp => {
+            if(resp.ok) {
+                if(window){
+                    const servicesEnc = Buffer.from(_payload).toString('base64')
+                    window.localStorage.setItem('services', servicesEnc)
+                }
+            }
         })
 
 

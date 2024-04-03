@@ -54,9 +54,6 @@ export function FacilityContactsForm() {
     })
 
 
-    // console.log({facilityContactsData})
-    // State
-    // const [formId, setFormId] = useState('');
     const [facilityId, setFacilityId] = useState('');
     const [submitting, setSubmitting] = useState(false);
     const [formError, setFormError] = useState(null)
@@ -156,7 +153,24 @@ export function FacilityContactsForm() {
         const contactCount = Object.keys(initialValueObj).filter(x => /^contact_\d/.test(x)).length;
         const officerContactCount = Object.keys(initialValueObj).filter(x => x.match(/^officer_details_contact_[0-9]/)).length;
 
+        if(window){
+            const currentUrl = new URL(window.document.location.href)
 
+            if(currentUrl?.searchParams.get('from').includes('previous')) {
+
+                const formContactsEnc = window.localStorage.getItem('facility_contacts')
+
+                const formContactsStr = Buffer.from(formContactsEnc ?? 'e30=', 'base64').toString()
+
+                const formContacts = JSON.parse(formContactsStr)
+
+
+                setFormValues(formContacts)
+
+
+            }
+        }
+      
   
         if (contactCount > 1) {
             for (let i = 0; i < contactCount; i++) {
@@ -288,8 +302,8 @@ export function FacilityContactsForm() {
                     :
                     handleFacilityContactsSubmit(options.token, values,  facilityId)
                         .then(resp => {
-                            console.log(JSON.stringify({token: options.token, values,  facilityId}, null , 2))
-                            if (resp.status == 204) {
+                            // console.log(JSON.stringify({token: options.token, values,  facilityId}, null , 2))
+                            if (resp.ok) {
 
                                 setSubmitting(false)
 
@@ -303,6 +317,10 @@ export function FacilityContactsForm() {
                                 alert.success('Officer Incharge Contacts Saved successfully')
 
                                 const formDataBase64Enc = Buffer.from(JSON.stringify(values)).toString('base64')
+                                
+                                if(window) {
+                                    window.localStorage.setItem('facility_contacts', formDataBase64Enc)
+                                }
 
                                 router.push({
                                     pathname: `${window.location.origin}/facilities/add`,

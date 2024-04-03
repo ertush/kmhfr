@@ -48,7 +48,7 @@ export function GeolocationForm({ editMode }) {
   const [wardName, setWardName] = useState(_options?.data?.ward_name)
   const [geoCenter, setGeoCenter] = useState(_options?.geolocation?.centerCoordinates)
   const [submitting, setSubmitting] = useState(false)
-  const [basicDetailsURL, setBasicDetailsURL] = useState('')
+  // const [basicDetailsURL, setBasicDetailsURL] = useState('')
   const [latitude, setLatitude] = useState('')
   const [longitude, setLongitude] = useState('')
   const [wardData, setWardData] = useState({})
@@ -174,19 +174,7 @@ export function GeolocationForm({ editMode }) {
 
 
   function handleGeolocationFormCreate(e) {
-    function mockFetch() {
 
-      return new Promise(resolve => {
-        setTimeout(() => resolve({
-          ward: {
-            lat: 0.0000,
-            long: -1.11001
-          }
-        })
-        , 1000)
-      })
-
-}
 
     e.preventDefault()
 
@@ -211,19 +199,18 @@ export function GeolocationForm({ editMode }) {
     console.log({payload})
 
 
-    // fetch(`${process.env.NEXT_PUBLIC_API_URL}/gis/facility_coordinates/`, {
-    //   method: 'POST',
-    //   headers: {
-    //     'Accept': 'application/json',
-    //     'Content-Type': 'application/json;charset=UTF-8',
-    //     'Authorization': `Bearer ${options?.token}`
-    //   },
-    //   body: JSON.stringify(payload)
-    // })
-      mockFetch()
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/gis/facility_coordinates/`, {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json;charset=UTF-8',
+        'Authorization': `Bearer ${options?.token}`
+      },
+      body: JSON.stringify(payload)
+    })
       .then(res => {
 
-        if (res.ward !== undefined) { // res.ok
+        if (res.ok) { 
           alert.success('Facility Geolocation Details have been saved successfully')
           setSubmitting(false)
 
@@ -326,10 +313,9 @@ export function GeolocationForm({ editMode }) {
       setFrom(current_url.searchParams.get('from'))
 
       setFacilityId(current_url.searchParams.get('facilityId'))
-
+      
       if (current_url.searchParams.get('from') == 'previous') {
 
-      
           const previousFormData = current_url.searchParams.get('formData')
       
           if (previousFormData !== null) {
@@ -347,20 +333,21 @@ export function GeolocationForm({ editMode }) {
           const base64WardData = window.localStorage.getItem('ward_data')
           const wardDataStr = Buffer.from(base64WardData, 'base64').toString()
 
-          // const _wardData = JSON.parse(wardDataStr)
-          console.log({wardDataStr})
+          const _wardData = JSON.parse(wardDataStr)
+
+          // console.log({wardDataStr})
 
 
 
-          // setWardData(_wardData)
+          setWardData(_wardData)
 
-          // setGeoJSON(_wardData?.geoJSON)
-          // setGeoCenter(_wardData?.centerCoordinates)
-          // setWardName(_wardData?.geoJSON?.properties?.name)
+          setGeoJSON(_wardData?.geoJSON)
+          setGeoCenter(_wardData?.centerCoordinates)
+          setWardName(_wardData?.geoJSON?.properties?.name)
 
           const newOptions = {}
   
-          Object.assign(newOptions, options)
+          // Object.assign(newOptions, options)
   
           // console.log(new Date(formData.collection_date))
   
@@ -378,20 +365,18 @@ export function GeolocationForm({ editMode }) {
 
       if (current_url.searchParams.get('from') == 'submission') {
 
-        const strFormData = Buffer.from(current_url.searchParams?.get('formData') ?? 'J3t9Jw==', 'base64').toString() ?? "{}"
-        const params = new URL(`${window.location.origin}/facilities/add?${strFormData}`).searchParams
+        // const strFormData = Buffer.from(current_url.searchParams?.get('formData') ?? 'J3t9Jw==', 'base64').toString() ?? "{}"
+        const params = current_url.searchParams
 
 
         // const paramEntries = params.entries()
         const base64WardData = params.get('wardData')
 
-        if(window) {
-          window.document.setItem('ward_data', base64WardData)
-        }
+
         
-        const wardDataStr = Buffer.from(base64WardData, 'base64').toString()
+        const wardDataStr = Buffer.from(base64WardData ?? 'e30=' , 'base64').toString()
         const _wardData = JSON.parse(wardDataStr)
-        const formData = Object.fromEntries(params.entries())
+        // const formData = Object.fromEntries(params.entries())
 
         // const formData = Object.fromEntries(paramEntries)
 
@@ -401,24 +386,24 @@ export function GeolocationForm({ editMode }) {
         setGeoCenter(_wardData?.centerCoordinates)
         setWardName(_wardData?.geoJSON?.properties?.name)
 
+
         const newOptions = {}
 
         Object.assign(newOptions, options)
 
-        console.log(new Date(formData.collection_date))
+        // console.log(new Date(formData.collection_date))
 
-        newOptions['data'] = { lat_long: [formData.latitude, formData.longitude], collection_date: formData.collection_date }
+        // newOptions['data'] = { lat_long: [formData.latitude, formData.longitude], collection_date: formData.collection_date }
 
-        for (let [k, v] of Object.entries(newOptions?.data)) {
-          newOptions.data[k] = v
+        // for (let [k, v] of Object.entries(newOptions?.data)) {
+        //   newOptions.data[k] = v
 
-        }
+        // }
 
         setOptions(newOptions)
 
-
-     
       }
+
     }
 
   }, [])
@@ -438,6 +423,7 @@ export function GeolocationForm({ editMode }) {
         formError && <Alert severity='error' className='w-full border-2 border-red-500 rounded-none'>{formError}</Alert> 
       }
 
+
       {/* Collection Date */}
       <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
         <label
@@ -454,7 +440,7 @@ export function GeolocationForm({ editMode }) {
           type='date'
           name='collection_date'
           onChange={handleInput}
-          defaultValue={options?.collection_date?.split('T')[0] ?? ''}
+          defaultValue={options?.collection_date?.split('T')[0] ?? options?.data?.collection_date ?? ''}
           className='flex-none w-full  p-2 flex-grow border placeholder-gray-500 bg-transparent border-gray-400 rounded focus:shadow-none focus:border-black outline-none'
         />
 
@@ -478,7 +464,7 @@ export function GeolocationForm({ editMode }) {
             type='decimal'
             name='longitude'
             step={0.000001}
-            defaultValue={(options?.data?.lat_long && options?.data?.lat_long?.length == 2 && options?.data?.lat_long[1]) ?? ''}
+            defaultValue={(options?.data?.lat_long && options?.data?.lat_long?.length == 2 && options?.data?.lat_long[1]) ?? options?.data?.longitude ?? ''}
             onChange={handleInput}
             placeholder='Enter longitude'
             className='flex-none w-full  p-2 flex-grow border bg-transparent placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:border-black outline-none'
@@ -504,7 +490,7 @@ export function GeolocationForm({ editMode }) {
             step={0.000001}
             onChange={handleInput}
             placeholder='Enter latitude'
-            defaultValue={(options?.data?.lat_long && options?.data?.lat_long?.length == 2 && options?.data?.lat_long[0]) ?? ''}
+            defaultValue={(options?.data?.lat_long && options?.data?.lat_long?.length == 2 && options?.data?.lat_long[0]) ?? options?.data?.latitude ?? ''}
             className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:border-black outline-none'
           />
 
@@ -524,7 +510,7 @@ export function GeolocationForm({ editMode }) {
             {
               (editMode) || (!editMode && geoJSON && geoCenter && wardName) ?
 
-                <Map markerCoordinates={[latitude, longitude]} geoJSON={geoJSON} from={from} ward={wardName} center={geoCenter} />
+                <Map markerCoordinates={[latitude, longitude]} geoJSON={geoJSON} from={from} ward={wardName} center={geoCenter} zoom={geoJSON?.properties?.density} />
                 :
                 <Alert severity='warning' className='w-full p-1 border-2 border-yellow-500 rounded-none'>Geolocation Data is Missing For this facility</Alert>
             }
