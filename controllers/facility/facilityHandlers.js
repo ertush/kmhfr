@@ -399,7 +399,7 @@ async function handleRegulationSubmit(token, values, facilityId, setSubmitting, 
     
                     //     }
                     // })
-                    const url = new URL(`${window.location.origin}/facilities/add?formData=${formDataBase64Enc}`)
+                    const url = new URL(`${window.location.origin}/facilities/add`)
 
                     url.searchParams.set('formId', '4')
 
@@ -577,15 +577,7 @@ function handleServiceSubmit(token, services, facilityId) {
             method: 'PATCH',
             body: JSON.stringify({ services: _payload })
         })
-        .then(resp => {
-            if(resp.ok) {
-                if(window){
-                    const servicesEnc = Buffer.from(_payload).toString('base64')
-                    window.localStorage.setItem('services', servicesEnc)
-                }
-            }
-        })
-
+        
 
     }
     else {
@@ -632,6 +624,7 @@ function handleInfrastructureSubmit(token, formData, facilityId) {
     // console.log({_payload})
 
     if (_payload) {
+
 
         try {
             return fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${facilityId}/`, {

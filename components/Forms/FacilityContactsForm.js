@@ -54,7 +54,22 @@ export function FacilityContactsForm() {
     })
 
 
-    const [facilityId, setFacilityId] = useState('');
+    const [facilityId, setFacilityId] =  useMemo(() => {
+        let id = ''
+
+        function setId(_id) {
+            id = _id
+        }
+
+        if(window) {
+            setId(new URL(window.location.href).searchParams.get('facilityId') ?? '')
+        }
+
+        // console.log({id})
+
+        return [id, setId]
+    }, [])
+
     const [submitting, setSubmitting] = useState(false);
     const [formError, setFormError] = useState(null)
     const [geolocationUrl, setGeolocationUrl] = useState('')
@@ -98,27 +113,7 @@ export function FacilityContactsForm() {
 
         let vals = {}
 
-        if (window && !options?.data) {
-
-        const current_url =  new URL(window.location.href)
-
-        setFacilityId(current_url.searchParams.get('facilityId'))            
-
-        if(current_url.searchParams.get('from') == 'submission') setGeolocationUrl(window.location.href)
-
-        if(current_url.searchParams.get('from') == 'previous') {
-
-        // Extract form data from current url
-
-        const formDataBase64Enc = current_url.searchParams.get('formData')
-        const formData = JSON.parse(Buffer.from(formDataBase64Enc, 'base64').toString() ?? '{}')
-
-    
-
-         vals = formData
-            
-        } 
-    } else {
+        if (options?.data)  {
     
         for (let i = 0; i < facilityContacts.length; i++) {
             vals[`contact_type_${i}`] = "";
@@ -153,10 +148,10 @@ export function FacilityContactsForm() {
         const contactCount = Object.keys(initialValueObj).filter(x => /^contact_\d/.test(x)).length;
         const officerContactCount = Object.keys(initialValueObj).filter(x => x.match(/^officer_details_contact_[0-9]/)).length;
 
-        if(window){
-            const currentUrl = new URL(window.document.location.href)
+        const currentUrl = new URL(window.document.location.href)
 
-            if(currentUrl?.searchParams.get('from').includes('previous')) {
+        if(!options?.data){
+            if(window && currentUrl?.searchParams.get('from').includes('previous')){
 
                 const formContactsEnc = window.localStorage.getItem('facility_contacts')
 
@@ -167,10 +162,10 @@ export function FacilityContactsForm() {
 
                 setFormValues(formContacts)
 
-
-            }
         }
       
+        }
+       
   
         if (contactCount > 1) {
             for (let i = 0; i < contactCount; i++) {
@@ -228,19 +223,13 @@ export function FacilityContactsForm() {
 
         event.preventDefault()
 
-        let formData = ""
-
-        if(window) {
-          formData = window.localStorage.getItem('geolocation')
-        }
-
 
         router.push({
             pathname: '/facilities/add',
             query: {
                 formId: 1,
-                formData, 
-                from:'previous'
+                from:'previous',
+                facilityId
             }
         })
         .then((navigated) => {
@@ -325,7 +314,6 @@ export function FacilityContactsForm() {
                                 router.push({
                                     pathname: `${window.location.origin}/facilities/add`,
                                     query: { 
-                                      formData: formDataBase64Enc,
                                       formId: 3,
                                       facilityId: facilityId,
                                       from: 'submission'

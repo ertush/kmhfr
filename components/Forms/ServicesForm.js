@@ -27,7 +27,7 @@ export function ServicesForm() {
         }
 
         if(window) {
-            setId(new URL(window.location.href).searchParams.get('facilityId'))
+            setId(new URL(window.location.href).searchParams.get('facilityId') ?? '')
         }
 
         // console.log({id})
@@ -64,7 +64,7 @@ export function ServicesForm() {
 	})(options?.services ?? [])
 
     //State
-    const [services, setServices] = useState();
+    const [cachedServices, setCachedServices] = useState();
 
     const editMode = options?.data ? true : false
 
@@ -73,17 +73,11 @@ export function ServicesForm() {
       
         e.preventDefault()
 
-        let formData = ""
-
-        if(window) {
-            formData = window.localStorage.getItem('regulation')
-        }
-
         router.push({
             pathname: '/facilities/add',
             query: {
                 formId: 3,
-                formData,
+                facilityId,
                 from:'previous'
             }
         })
@@ -95,7 +89,46 @@ export function ServicesForm() {
   } 
 
   useEffect(() => {
+
+    if(window) {
+        const currentUrl = new URL(window.document.location.href)
+
+        if(currentUrl.searchParams.get('from') == "previous") {
+            const servicesEnc = window.localStorage.getItem('services')
+            const servicesStr = Buffer.from(servicesEnc ?? 'e30=', 'base64').toString()
+            const services = JSON.parse(servicesStr)
+
+            // console.log(servicesEnc, services)
+
+            // setCachedServices(services)
+
+            function getServiceAttr(serviceId, prop) {
+                return options?.services?.find(({id}) => id == serviceId)[prop]
+              }
+          
+              function getServiceCategoryAttr(serviceId, prop) {
+                return serviceOptions.categories?.find(({value}) => value == getServiceAttr(serviceId, "category"))[prop]
+              }
+          
+              if (Array.isArray(services)) {
+                const result = []
+          
+                setCachedServices(() => {
+          
+                    // console.log("setting selectedItems")
+                    services?.map((service) => {
+                      result.push({ sname: getServiceAttr(service?.service, "name"), rowid: service?.service, category_id: getServiceCategoryAttr(service?.service, "value"), category_name: getServiceCategoryAttr(service?.service, "label") })
+                    })
+          
+                    return result
+          
+                })
+              }
     
+        }
+     
+        
+    }
   }, [])
 
     return <>
@@ -107,7 +140,7 @@ export function ServicesForm() {
                     <div className='flex items-center w-full h-auto min-h-[300px]'>
 
                         <EditListItem
-                            itemData={options?.data ? options?.data.facility_services : null}
+                            itemData={options?.data ? options?.data.facility_services : cachedServices ?? null}
                             categoryItems={serviceOptions.categories}
                             itemId={facilityId ?? options?.data?.id}
                             options={options?.services}

@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState, memo, Suspense } from 'react';
+import { useContext, useEffect, useState, useMemo, memo, Suspense } from 'react';
 // import { FacilityIdContext, FormContext } from './Form';
 import { Alert } from '@mui/material';
 import dynamic from 'next/dynamic';
@@ -30,7 +30,6 @@ const Map = memo(WardMap)
 // const _ = require('underscore');
 
 
-
 export function GeolocationForm({ editMode }) {
 
   const _options = useContext(FormOptionsContext);
@@ -40,7 +39,22 @@ export function GeolocationForm({ editMode }) {
 
   const [options, setOptions] = useState(_options)
   // const [wardData, setWardData] = useState({})
-  const [facilityId, setFacilityId] = useState('')
+  const [facilityId, setFacilityId] =  useMemo(() => {
+    let id = ''
+
+    function setId(_id) {
+        id = _id
+    }
+
+    if(window) {
+        setId(new URL(window.location.href).searchParams.get('facilityId') ?? '')
+    }
+
+    // console.log({id})
+
+    return [id, setId]
+}, [])
+
   const [geoJSON, setGeoJSON] = useState(_options?.geolocation?.geoJSON)
 
   // console.log({geoJSON})
@@ -65,19 +79,12 @@ export function GeolocationForm({ editMode }) {
     e.preventDefault()
 
 
-    // router.push(url)
-    let formData = ""
-
-    if(window) {
-      formData = window.localStorage.getItem('basic_details')
-    }
-
     router.push({
       pathname: '/facilities/add',
       query: {
           formId: 0,
-          formData,
-          from:"previous"
+          from: "previous",
+          facilityId
       }
     })
     .then((navigated) => {
@@ -196,7 +203,7 @@ export function GeolocationForm({ editMode }) {
       facility: facilityId
     }
 
-    console.log({payload})
+    // console.log({payload})
 
 
     fetch(`${process.env.NEXT_PUBLIC_API_URL}/gis/facility_coordinates/`, {
@@ -229,7 +236,7 @@ export function GeolocationForm({ editMode }) {
 
           if (wardData) params.push(`wardData=${Buffer.from(JSON.stringify(wardData)).toString('base64')}`)
 
-          const base64EncParams = Buffer.from(params.join('&')).toString('base64')
+          // const base64EncParams = Buffer.from(params.join('&')).toString('base64')
 
              // store in localstorage
             //  if(window) {
@@ -239,7 +246,7 @@ export function GeolocationForm({ editMode }) {
           router.push({
             pathname: `${window.location.origin}/facilities/add`,
             query: { 
-              formData: base64EncParams,
+              // formData: base64EncParams,
               formId: 2,
               facilityId: facilityId,
               from: 'submission'
@@ -314,22 +321,15 @@ export function GeolocationForm({ editMode }) {
 
       setFacilityId(current_url.searchParams.get('facilityId'))
       
-      if (current_url.searchParams.get('from') == 'previous') {
+      if (window && current_url.searchParams.get('from') == 'previous') {
 
-          const previousFormData = current_url.searchParams.get('formData')
-      
-          if (previousFormData !== null) {
-      
-            const formData = Buffer.from(previousFormData ?? 'J3t9Jw==', 'base64').toString()
-  
-            const data = JSON.parse(formData)
-  
-            console.log({data, previousFormData})
-  
-  
-          // const strFormData = Buffer.from(path.searchParams?.get('formData') ?? 'J3t9Jw==', 'base64').toString() ?? "{}"
-          // const params = new URL(`${window.location.origin}/facilities/add?${strFormData}`).searchParams
-  
+          const previousFormData = window.localStorage.getItem('geolocation')
+    
+          const formData = Buffer.from(previousFormData ?? 'J3t9Jw==', 'base64').toString()
+
+          const data = JSON.parse(formData)
+
+         
           const base64WardData = window.localStorage.getItem('ward_data')
           const wardDataStr = Buffer.from(base64WardData, 'base64').toString()
 
@@ -347,16 +347,14 @@ export function GeolocationForm({ editMode }) {
 
           const newOptions = {}
   
-          // Object.assign(newOptions, options)
-  
-          // console.log(new Date(formData.collection_date))
+      
   
           newOptions['data'] = data // { lat_long: [formData.latitude, formData.longitude], collection_date: formData.collection_date }
   
           for (let [k, v] of Object.entries(newOptions?.data)) {
             newOptions.data[k] = v
   
-          }
+          
   
           setOptions(newOptions)
   
@@ -391,14 +389,7 @@ export function GeolocationForm({ editMode }) {
 
         Object.assign(newOptions, options)
 
-        // console.log(new Date(formData.collection_date))
-
-        // newOptions['data'] = { lat_long: [formData.latitude, formData.longitude], collection_date: formData.collection_date }
-
-        // for (let [k, v] of Object.entries(newOptions?.data)) {
-        //   newOptions.data[k] = v
-
-        // }
+     
 
         setOptions(newOptions)
 

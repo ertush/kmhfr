@@ -2,7 +2,7 @@
 
 "use client"
 
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState, useMemo } from 'react';
 import { Select as CustomSelect } from './formComponents/Select';
 import { FormOptionsContext } from '../../pages/facilities/add';
 import {
@@ -30,7 +30,22 @@ export function BasicDeatilsForm({ editMode }) {
   // State
   const [isClient, setIsClient] = useState(false)
   const [totalFunctionalBeds, setTotalFunctionalBeds] = useState(0)
-  const [facilityId, setFacilityId] = useState('')
+  const [facilityId, setFacilityId] = useMemo(() => {
+    let id = ''
+
+    function setId(_id) {
+        id = _id
+    }
+
+    if(window) {
+        setId(new URL(window.location.href).searchParams.get('facilityId') ?? '')
+    }
+
+    // console.log({id})
+
+    return [id, setId]
+}, [])
+
   const [submitting, setSubmitting] = useState(false);
   const [touchedFields, setTouchedFields] = useState([]);
   const [formError, setFormError] = useState(null);
@@ -381,9 +396,6 @@ export function BasicDeatilsForm({ editMode }) {
 
     const data = Object.fromEntries(formData)
 
-    // if(data.hasOwnerProperty('facility_type')) {
-    //   data.facility_type = data.facility_type_details;
-    // }
 
     setSubmitting(true)
 
@@ -520,7 +532,6 @@ export function BasicDeatilsForm({ editMode }) {
 
     handleFocus(e)
 
-
     const number_of_inpatient_beds = Number(document.getElementsByName('number_of_inpatient_beds')[0]?.value)
     const number_of_icu_beds = Number(document.getElementsByName('number_of_icu_beds')[0]?.value)
     const number_of_hdu_beds = Number(document.getElementsByName('number_of_hdu_beds')[0]?.value)
@@ -604,16 +615,12 @@ export function BasicDeatilsForm({ editMode }) {
     }
 
     if (window && !editMode) {
-      const path = new URL(window.location.href)
+      const path = new URL(window.document.location.href)
 
       if (path.searchParams.get('from') == 'previous') {
 
         
-        const navUrl = new URL(window.document.location.href)
-
-        console.log({navUrl})
-    
-        const previousFormData = navUrl.searchParams.get('formData')
+        const previousFormData = window.localStorage.getItem('basic_details')
     
         if (previousFormData !== null) {
     
@@ -622,12 +629,12 @@ export function BasicDeatilsForm({ editMode }) {
           const data = JSON.parse(formData)
 
 
-        const strFormData = Buffer.from(path.searchParams?.get('formData') ?? 'J3t9Jw==', 'base64').toString() ?? "{}"
-        const params = new URL(`${window.location.origin}/facilities/add?${strFormData}`).searchParams
-        // const paramEntries = params.entries()
+        // const strFormData = Buffer.from(path.searchParams?.get('formData') ?? 'J3t9Jw==', 'base64').toString() ?? "{}"
+        // const params = new URL(`${window.location.origin}/facilities/add?${strFormData}`).searchParams
+        // // const paramEntries = params.entries()
       
 
-        if (facilityId == '') setFacilityId(params?.facilityId)
+        // if (facilityId == '') setFacilityId(params?.facilityId)
 
         delete formData?.facility_checklist_document
 
@@ -709,7 +716,7 @@ export function BasicDeatilsForm({ editMode }) {
     // return(
     //   <pre>
     //     {
-    //       JSON.stringify({facility_type_detail: options?.facility_type_details, facility_types: options?.facility_types}, null, 2)
+    //       JSON.stringify({data: options?.data}, null, 2)
     //     }
     //   </pre>
     // )

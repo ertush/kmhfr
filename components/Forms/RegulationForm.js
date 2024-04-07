@@ -40,7 +40,20 @@ export function RegulationForm() {
     const router = useRouter()
 
  
-    const [facilityId, setFacilityId] = useState('');
+    const [facilityId, setFacilityId] = useMemo(() => {
+        let id = ''
+    
+        function setId(_id) {
+            id = _id
+        }
+    
+        if(window) {
+            setId(new URL(window.location.href).searchParams.get('facilityId') ?? '')
+        }
+    
+        return [id, setId]
+    }, [])
+
     const [facilityContactsUrl, setFacilityContactsUrl] = useState('');
     const [submitting, setSubmitting] = useState(false);
     const [licenseFile, setLicenseFile] = useState(null);
@@ -71,29 +84,9 @@ export function RegulationForm() {
         let vals = {}
 
 
-        if (window && !options?.data) {
+        if (options?.data) {
 
-            const current_url =  new URL(window.location.href)
-    
-            setFacilityId(current_url.searchParams.get('facilityId'))            
-    
-            if(current_url.searchParams.get('from') == 'submission') setFacilityContactsUrl(window.location.href)
-    
-            if(current_url.searchParams.get('from') == 'previous') {
-    
-            // Extract form data from current url
-    
-            const formDataBase64Enc = current_url.searchParams.get('formData')
-            const formData = JSON.parse(Buffer.from(formDataBase64Enc, 'base64').toString() ?? '{}')
-    
-            // console.log(formData)
-    
-             vals = formData
-                
-            } 
-        } else {
-
-
+             
         for(let i = 0; i < facilityDepts.length; i++){
             vals[`facility_unit_${i}`] = "";
             vals[`facility_regulating_body_name_${i}`] = "";
@@ -114,6 +107,7 @@ export function RegulationForm() {
     }
         return vals
     }, [facilityDepts])
+    
 
     const [initialValues, handleFormUpdate] = useState(options?.data ? facilityRegulationData :  formFields)
 
@@ -130,26 +124,19 @@ export function RegulationForm() {
 
     // Event Handlers
  
-    const handleRegulationPrevious = useCallback((event) => {
+ const handleRegulationPrevious = useCallback((event) => {
         // setFormId(`${formId - 1}`)
 
         event.preventDefault();
 
-        let formData = ""
-
-        if(window) {
-          formData = window.localStorage.getItem('facility_contacts')
-        }
 
 
-
-        
         router.push({
             pathname: '/facilities/add',
             query: {
                 formId: 2,
-                formData,
-                from:'previous'
+                from:'previous',
+                facilityId
             }
         })
         .then((navigated) => {
@@ -174,11 +161,14 @@ function handleLicenseFileChange (e) {
 
         const _units = [];
 
+        const currentUrl = new URL(window.location.href)
+
         const initialValueObj = options?.data ? facilityRegulationData : typeof initialValues == 'string' ? JSON.parse(initialValues) : {}
 
         const unitCount = Object.keys(initialValueObj).filter(x => /^facility_unit_\d/.test(x)).length;
 
-        if(window) {
+        if(window && currentUrl.searchParams.get("from") == "previous") {
+            
             const regulationDataEnc = window.localStorage.getItem('regulation')
             const regulationDataStr = Buffer.from(regulationDataEnc ?? 'e30=' , 'base64').toString()
             const regulationData = JSON.parse(regulationDataStr)
