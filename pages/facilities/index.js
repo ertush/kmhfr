@@ -60,7 +60,7 @@ function FacilityHome (props){
     const [fromDate, setFromDate] = React.useState(new Date());
     const [toDate, setToDate] = React.useState(new Date());
 
-    const [isAccordionExpanded, setIsAccordionExpanded] = useState(false);
+    const [isAccordionExpanded, setIsAccordionExpanded] = useState(true);
     const [title, setTitle] = useState('Facilities') 
 
     // quick filter themes
@@ -98,13 +98,13 @@ function FacilityHome (props){
     }, [facilityFeedBack, title])
 
 
-    const handleDates=(from, to) => {
+    function handleDates(from, to) {
         setFromDate(from);
         setToDate(to);
     
-     }
+    }
 
-    const handleAccordionExpand = (ev) => {
+    function handleAccordionExpand(ev) {
         if(isAccordionExpanded){
             setIsAccordionExpanded(false)
         }else{
@@ -113,8 +113,44 @@ function FacilityHome (props){
         
     }
 
-    if(isClient){
+    function handleFiltersSubmit(event) {
+        event.preventDefault()
 
+        const formDataEntries = new FormData(event.target)
+
+        const formData = Object.fromEntries(formDataEntries)
+
+        // let uri = '/facilities/'
+
+        // for(let entry of formDataEntries) {
+        //     if(uri.includes("=")) {
+        //         uri += `&${entry.join("=")}`
+
+        //     } else {
+        //         uri += `?${entry.join("=")}`
+        //     }
+        // }
+
+        router.push({
+            pathname: '/facilities',
+            query: formData
+        })
+
+        // console.log({uri})
+    }
+
+    function handleFiltersReset(event) {
+        event.preventDefault()
+
+        const filterForm = document.querySelector('#select')
+
+        for(const field of filterForm.children) {
+            console.log({field})
+        }
+        
+    }
+
+    if(isClient){
 
     return (
         <>
@@ -220,22 +256,25 @@ function FacilityHome (props){
                         </div>
 
                          {/* Hidden */}
-                        <div className="hidden flex-wrap items-center justify-between gap-2 text-sm md:text-base ">
+                        <div className="flex-wrap items-center justify-between gap-2 text-sm md:text-base ">
                   
 
                             {/* Accordion Filter */}
 
-                            <Accordion sx={{borderRadius:'none', backgroundColor:'transparent', boxShadow:'none', borderBottomLeftRadius:'0px', borderBottomRightRadius:'0px'}} className='border border-gray-600 mb-4 w-full shadow-none' expanded={isAccordionExpanded} onChange={handleAccordionExpand}>
+                            <Accordion 
+                            sx={{borderRadius:'4px', boxShadow:'none', borderBottomLeftRadius:'0px', borderBottomRightRadius:'0px'}} className='border bg-gray-50 border-gray-200  mb-4 w-full shadow-none' expanded={isAccordionExpanded} onChange={handleAccordionExpand}>
                                             <AccordionSummary
                                                 expandIcon={<ExpandMoreIcon />}
                                                 aria-controls="panel1a-content"
                                                 id="panel1a-header"
+                                                
                                                 >
                                                 
                                                 <h2 className='my-2 font-semibold text-xl text-gray-900 flex items-center space-x-2'>
                                                 <FilterIcon className='w-6 h-6 text-gray-900'/>
                                                     <p>Filter Facilities By ...</p></h2>
                                             </AccordionSummary>
+
                                             <AccordionDetails sx={{width:'100%', padding:4, height:'auto' }}>
                                             <div className="flex flex-col gap-2">
                                                         {filters && filters?.error ?
@@ -243,23 +282,25 @@ function FacilityHome (props){
                                                                 <p>No filters.</p>
                                                             </div>)
                                                             : (
-                                                                <div className='grid grid-cols-4 place-content-center items-content-end gap-2'>
+                                                                     <form 
+                                                                            id="filters"
+                                                                            onSubmit={handleFiltersSubmit}
+                                                                            className='grid grid-cols-4 place-content-center items-content-end gap-2'>
                                                                     {  
                                                                         filters && Object.keys(filters).length > 0 &&
                                                                         Object.keys(fltrs).map((ft, i) => (
-                                                                            <form 
-                                                                            key={i} 
-                                                                            // onSubmit={handleFacilityFilter}
-                                                                            className="w-full flex flex-col items-start justify-start gap-1 mb-1">
+                                                                           
                                                                                 
+                                                                                <div className="w-full flex flex-col items-start justify-start gap-1 mb-1">
                                                                                 <label htmlFor={ft} className="text-gray-600 capitalize text-sm">{ft.split('_').join(' ')}</label>
                                                                                
                                                                                 <Select 
                                                                                     isMulti={multiFilters.includes(ft)} 
                                                                                     name={ft}
+                                                                                    isClearable
                                                                                     defaultValue={drillDown[ft] || ""} 
-                                                                                    id={ft} 
-                                                                                    className="w-full max-w-xs  border border-gray-400"
+                                                                                    id={"select"} 
+                                                                                    className="w-full max-w-xs rounded border border-gray-400"
                                                                                     styles={{
                                                                                         control: (baseStyles) => ({
                                                                                             ...baseStyles,
@@ -295,9 +336,10 @@ function FacilityHome (props){
                                                                                         }
                                                                                         setDrillDown({ ...drillDown, ...nf })
                                                                                 }} />
-                                                                            </form>
+                                                                            </div>
                                                                         ))
                                                                     }
+
                                                                     {/* From and To Date Picker Components */}
 
                                                                     {/* <NativePickers onSelected={
@@ -392,37 +434,49 @@ function FacilityHome (props){
                                                                     
                                                                     </div>
 
-                                                                    <button onClick={ev => {
 
+
+                                                                    <button 
+                                                                    type="submit"
+                                                                    // onClick={ev => {
                                                                         
-                                                                        if (Object.keys(drillDown).length > 0) {
-                                                                            let qry = Object.keys(drillDown).map(key => {
-                                                                                let er = ''
-                                                                                if (props?.path && !props?.path.includes(key + '=')) {
-                                                                                    er = encodeURIComponent(key) + '=' + encodeURIComponent(drillDown[key]);
-                                                                                }
-                                                                                return er
-                                                                            }).join('&')
-                                                                            let op = '?'
-                                                                            if (props?.path && props?.path.includes('?') && props?.path.includes('=')) { op = '&' }
+                                                                    //     if (Object.keys(drillDown).length > 0) {
+                                                                    //         let qry = Object.keys(drillDown).map(key => {
+                                                                    //             let er = ''
+                                                                    //             if (props?.path && !props?.path.includes(key + '=')) {
+                                                                    //                 er = encodeURIComponent(key) + '=' + encodeURIComponent(drillDown[key]);
+                                                                    //             }
+                                                                    //             return er
+                                                                    //         }).join('&')
+                                                                    //         let op = '?'
+                                                                    //         if (props?.path && props?.path.includes('?') && props?.path.includes('=')) { op = '&' }
                                                                             
-                                                                            if (router || typeof window == 'undefined') {
-                                                                                router.push(props?.path + op + qry)
-                                                                            } else {
-                                                                                if (typeof window !== 'undefined' && window) {
-                                                                                    window.location.href = props?.path + op + qry
-                                                                                }
-                                                                            }
+                                                                    //         if (router || typeof window == 'undefined') {
+                                                                    //             router.push(props?.path + op + qry)
+                                                                    //         } else {
+                                                                    //             if (typeof window !== 'undefined' && window) {
+                                                                    //                 window.location.href = props?.path + op + qry
+                                                                    //             }
+                                                                    //         }
 
-                                                                        }
-                                                                        setIsAccordionExpanded(false)
-                                                                    }} className="bg-django-blue col-start-1  border border-gray-600  text-gray-600 hover:bg-black hover:text-white hover:border-black font-semibold px-5 py-1 text-base  w-full whitespace-nowrap text-center">Filter</button>
+                                                                    //     }
+                                                                    //     setIsAccordionExpanded(false)
+                                                                    // }} 
+                                                                    className="bg-django-blue col-start-1  border border-gray-600  text-gray-600 hover:bg-black hover:text-white hover:border-black font-semibold px-5 py-1 text-base  w-full whitespace-nowrap text-center">
+                                                                        Filter
+                                                                    </button>
                                                                     
-                                                                    <button className="bg-blue-700 boder border-gray-700 text-white hover:bg-black hover:border-black font-semibold px-5 py-1 text-base  w-full whitespace-nowrap text-center" onClick={ev => {
-                                                                        router.push('/facilities')
-                                                                    }}>Clear filters</button>
+                                                                    <button 
+                                                                    onClick={handleFiltersReset} 
+                                                                    type='reset'
+                                                                    className="bg-blue-700 boder border-gray-700 text-white hover:bg-black hover:border-black font-semibold px-5 py-1 text-base  w-full whitespace-nowrap text-center"
+                                                                     >
+                                                                     Reset
+                                                                    </button>
                                                                     
-                                                                </div>
+
+                                                                    </form>
+                                                                    
                                                             )
                                                         }
                                              </div>
@@ -615,7 +669,7 @@ function FacilityHome (props){
                                                 </div>
                                             ))
                                             :
-                                            <div className='w-[98%] flex my-4  rounded border border-yellow-600 items-center justify-start gap-2 bg-yellow-100  font-medium p-3'>
+                                            <div className='w-[98%] hidden my-4  rounded border border-yellow-600 items-center justify-start gap-2 bg-yellow-100  font-medium p-3'>
 												<span className='text-base text-gray-700'>
 													No Facilities found
 												</span>
@@ -664,7 +718,7 @@ function FacilityHome (props){
                                                     
                                                     (facilities?.length === 0 && facilityFeedBack?.length == 0 || khisSynched) &&
                                                     // No Facility feedback data found
-                                                    <Alert severity="warning" sx={{width:'100%'}}>No facilities found <span onClick={() => {
+                                                    <Alert severity="warning" sx={{width:'100%', marginInline:'4px'}} >No facilities found <span onClick={() => {
                                                         setTitle('Facilities')
                                                         setAllFctsSelected(true)
                                                        

@@ -395,6 +395,8 @@ export function GeolocationForm({ editMode }) {
 
       }
 
+    } else{
+
     }
 
   }, [])
@@ -491,6 +493,11 @@ export function GeolocationForm({ editMode }) {
 
       {/* Ward Geo Map */}
       <div className='w-full h-auto'>
+        {/* <pre>
+          {
+            JSON.stringify({geoJSON, geoCenter, zoom:geoJSON?.properties?.density, from, latitude, longitude, editMode}, null, 2)
+          }
+        </pre> */}
 
         <div className='w-full bg-gray-200   flex flex-col items-start justify-center text-left relative'>
 
@@ -501,7 +508,7 @@ export function GeolocationForm({ editMode }) {
             {
               (editMode) || (!editMode && geoJSON && geoCenter && wardName) ?
 
-                <Map markerCoordinates={[latitude, longitude]} geoJSON={geoJSON} from={from} ward={wardName} center={geoCenter} zoom={geoJSON?.properties?.density} />
+                <Map markerCoordinates={[latitude, longitude]} geoJSON={geoJSON} ward={wardName} center={geoCenter} zoom={geoJSON?.properties?.density} />
                 :
                 <Alert severity='warning' className='w-full p-1 border-2 border-yellow-500 rounded-none'>Geolocation Data is Missing For this facility</Alert>
             }

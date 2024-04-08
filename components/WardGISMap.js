@@ -21,7 +21,7 @@ function MapListener ({tabOpen}) {
 }
 
 
-const WardGISMap = ({ markerCoordinates, geoJSON, center, ward, from, zoom }) => {
+const WardGISMap = ({ markerCoordinates, geoJSON, center, ward, zoom }) => {
 
 
     const isValidGeoCoordinates = /^((\-?|\+?)?\d+(\.\d+)?),\s*((\-?|\+?)?\d+(\.\d+)?)$/.test(markerCoordinates.join(','))
