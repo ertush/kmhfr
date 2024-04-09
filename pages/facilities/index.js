@@ -8,6 +8,8 @@ import { useRouter } from 'next/router'
 import { Menu } from '@headlessui/react'
 import { ChevronDownIcon, FilterIcon, SearchIcon } from '@heroicons/react/outline'
 import Select from 'react-select'
+import { Select as CustomSelect } from '../../components/Forms/formComponents/Select'
+
 
 // @mui imports
 import Accordion from '@mui/material/Accordion';
@@ -142,11 +144,9 @@ function FacilityHome (props){
     function handleFiltersReset(event) {
         event.preventDefault()
 
-        const filterForm = document.querySelector('#select')
+        const filterForm = document.querySelector('#filter-panel')
 
-        for(const field of filterForm.children) {
-            console.log({field})
-        }
+       filterForm.reset()
         
     }
 
@@ -283,7 +283,7 @@ function FacilityHome (props){
                                                             </div>)
                                                             : (
                                                                      <form 
-                                                                            id="filters"
+                                                                            id="filter-panel"
                                                                             onSubmit={handleFiltersSubmit}
                                                                             className='grid grid-cols-4 place-content-center items-content-end gap-2'>
                                                                     {  
@@ -294,12 +294,12 @@ function FacilityHome (props){
                                                                                 <div className="w-full flex flex-col items-start justify-start gap-1 mb-1">
                                                                                 <label htmlFor={ft} className="text-gray-600 capitalize text-sm">{ft.split('_').join(' ')}</label>
                                                                                
-                                                                                <Select 
+                                                                                {/* <Select 
                                                                                     isMulti={multiFilters.includes(ft)} 
                                                                                     name={ft}
-                                                                                    isClearable
+                                                                                    isClearable={multiFilters.includes(ft) ? false : true}
                                                                                     defaultValue={drillDown[ft] || ""} 
-                                                                                    id={"select"} 
+                                                                                    id={ft} 
                                                                                     className="w-full max-w-xs rounded border border-gray-400"
                                                                                     styles={{
                                                                                         control: (baseStyles) => ({
@@ -323,7 +323,7 @@ function FacilityHome (props){
                                                                                                 }
                                                                                             })
                                                                                     }
-                                                                                    placeholder={ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}
+                                                                                    placeholder={`Select ${ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}`}
                                                                                     onChange={sl => {
                                                                                         let nf = {}
                                                                                         if (Array.isArray(sl)) {
@@ -335,7 +335,32 @@ function FacilityHome (props){
                                                                                            
                                                                                         }
                                                                                         setDrillDown({ ...drillDown, ...nf })
-                                                                                }} />
+                                                                                }} /> */}
+
+                                                                                <CustomSelect
+                                                                                            options={Array.from(filters[ft] || [],
+                                                                                                fltopt => {
+                                                                                                    return {
+                                                                                                        value: fltopt.id, label: fltopt.name
+                                                                                                    }
+                                                                                                })}
+                                                                                            
+                                                                                            placeholder={`Select ${ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}`}
+                                                                                            name={ft} // facility_type
+                                                                                            onChange={sl => {
+                                                                                                let nf = {}
+                                                                                                if (Array.isArray(sl)) {
+                                                                                                    nf[ft] = (drillDown[ft] ? drillDown[ft] + ',' : '') + Array.from(sl, l_ => l_.value).join(',')
+                                                                                                } else if (sl && sl !== null && typeof sl === 'object' && !Array.isArray(sl)) {
+                                                                                                    nf[ft] = sl.value
+                                                                                                } else {
+                                                                                                    delete nf[ft]
+                                                                                                   
+                                                                                                }
+                                                                                                setDrillDown({ ...drillDown, ...nf })
+                                                                                        }}
+
+                                                                                        /> 
                                                                             </div>
                                                                         ))
                                                                     }
@@ -463,7 +488,7 @@ function FacilityHome (props){
                                                                     //     setIsAccordionExpanded(false)
                                                                     // }} 
                                                                     className="bg-django-blue col-start-1  border border-gray-600  text-gray-600 hover:bg-black hover:text-white hover:border-black font-semibold px-5 py-1 text-base  w-full whitespace-nowrap text-center">
-                                                                        Filter
+                                                                        Search
                                                                     </button>
                                                                     
                                                                     <button 
