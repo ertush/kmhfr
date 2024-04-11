@@ -3325,7 +3325,6 @@ export function propsToGridData(props, index, orgUnitFilter = "county") {
 
                 ]
             }
-
         case 8:
             return {
                 rows: Object.entries(props?.facility_human_resource_category_report_all_hierachies?.results_bycategory ?? {})?.map((result, index) => ({
@@ -3360,13 +3359,13 @@ export function propsToGridData(props, index, orgUnitFilter = "county") {
                     {
                         headerName: formatString(orgUnitFilter),
                         field: `${orgUnitFilter}`,
-                        width: 100
+                        width: 200
                     },
 
                     {
                         headerName: 'Date',
                         field: 'date',
-                        flex: 1
+                        width: 200
                     },
                     {
                         headerName: 'CLINICAL OFFICER',
@@ -3492,8 +3491,9 @@ export function propsToGridData(props, index, orgUnitFilter = "county") {
             }
         case 9:
             return {
-                rows: Object.entries(props?.facility_human_resource_category_report_all_hierachies ?? {})?.map((result, index) => ({
+                rows: Object.entries(props?.facility_human_resource_category_report_all_hierachies?.results ?? {})?.map((result, index) => ({
                     [`${orgUnitFilter}`]: result[0],
+                    date: result[1]['facility__date_established'],
                     "Accidents_&_Emergency_Nurse": result[1]["Accidents_&_Emergency_Nurse"],
                     Rheumatologist: result[1]["Rheumatologist"],
                     "Nutrition_&_Dietetic_Technologist": result[1]["Nutrition_&_Dietetic_Technologist"],
@@ -3628,6 +3628,16 @@ export function propsToGridData(props, index, orgUnitFilter = "county") {
                 })),
 
                 columns: [
+                    {
+                        headerName: formatString(orgUnitFilter),
+                        field: `${orgUnitFilter}`,
+                        width: 100
+                    },
+                    {
+                        headerName: 'Date',
+                        field: 'date',
+                        width: 100
+                    },
                     {
                         headerName: 'Accidents  &_Emergency_Nurse',
                         field: 'Accidents_&_Emergency_Nurse',
@@ -4299,8 +4309,8 @@ export function propsToGridData(props, index, orgUnitFilter = "county") {
                 columns: [
 
                     {
-                        headerName: 'Sub County',
-                        field: 'sub_county',
+                        headerName: formatString(orgUnitFilter),
+                        field: `${orgUnitFilter}`,
                         flex: 1
 
                     },

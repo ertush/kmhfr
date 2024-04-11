@@ -11,7 +11,7 @@ import {
 } from '@mui/x-data-grid';
 import { propsToGridData } from '../../components/ReportsData';
 import { UserContext } from '../../providers/user';
-import Select from 'react-select';
+// import Select from 'react-select';
 import { useRouter } from 'next/router';
 import { Select as CustomSelect } from '../../components/Forms/formComponents/Select'
 
@@ -44,18 +44,19 @@ function Reports(props) {
     const [servicesReport, setServicesReport] = useState({ rows: null, columns: null })
     const [infrastructureCategoryReport, setInfrasturctureCategoryReport] = useState({ rows: null, columns: null })
     const [infrastructureReport, setInfrasturctureReport] = useState({ rows: null, columns: null })
-    const [hrCategoryReport, setHrCategoryReport] = useState({ rows: null, columns: null })
+    const [hrCategoryReport, setHrReportCategory] = useState({ rows: null, columns: null })
     const [hrReport, setHrReport] = useState({ rows: null, columns: null })
     const [gisReport, setGisReport] = useState({ rows: null, columns: null })
     const [loading, setLoading] = useState(false)
     const [selectedPeriod, setSelectedPeriod] = useState(null)
     const [selectedOrgUnit, setSelectedOrgUnit] = useState(null)
+    const [selectedKeph, setSelectedKeph] = useState(null)
+    const [selectedOwner, setSelectedOwner] = useState(null)
+    const [selectedType, setSelectedType] = useState(null)
 
 
     const router = useRouter()
-
     // Constants
-
 
     const [reportTitle, setReportTitle] = useState('Beds and Cots');
     const [isClient, setIsClient] = useState(false);
@@ -104,13 +105,17 @@ function Reports(props) {
             rows: propsToGridData(props, 7)?.rows,
             columns: propsToGridData(props, 7)?.columns
         })
-        setHrReport({
+        setHrReportCategory({
             rows: propsToGridData(props, 8)?.rows,
             columns: propsToGridData(props, 8)?.columns
         })
-        setGisReport({
+        setHrReport({
             rows: propsToGridData(props, 9)?.rows,
             columns: propsToGridData(props, 9)?.columns
+        })
+        setGisReport({
+            rows: propsToGridData(props, 10)?.rows,
+            columns: propsToGridData(props, 10)?.columns
         })
 
 
@@ -129,6 +134,20 @@ function Reports(props) {
             setSelectedPeriod(null)
         }
 
+        if (selectedKeph !== null) {
+            setSelectedKeph(null)
+        }
+
+        if (selectedType !== null) {
+            setSelectedType(null)
+        }
+
+        if (selectedOwner !== null) {
+            setSelectedOwner(null)
+        }
+
+
+
 
 
         if (event.target) {
@@ -139,16 +158,34 @@ function Reports(props) {
             switch (filter) {
                 case 'year':
                     setSelectedPeriod(value)
+                    break;
                 case 'org_unit':
                     setSelectedOrgUnit(value)
+                    break;
+                case 'keph':
+                    setSelectedKeph(value)
+                    break;
+                case 'type':
+                    setSelectedType(value)
+                    break;
+                case 'owner':
+                    setSelectedOwner(value)
+                    break;
             }
 
             const filterType = ((filterType) => {
+
                 switch (filterType) {
                     case 'year':
                         return 'report_year'
                     case 'org_unit':
                         return 'report_groupby'
+                    case 'keph':
+                        return 'filter_keph'
+                    case 'type':
+                        return 'filter_type'
+                    case 'owner':
+                        return 'filer_owner'
                 }
             })(filter)
 
@@ -175,11 +212,10 @@ function Reports(props) {
 
 
                         const bedscots = ((filterType) => {
-                            switch (filterType) {
-                                case 'year':
-                                    return filterReport && propsToGridData(filterReport, 0)
-                                case 'org_unit':
-                                    return filterReport && propsToGridData(filterReport, 0, value)
+                            if (filterType == 'org_unit') {
+                                return filterReport && propsToGridData(filterReport, 0, value)
+                            } else {
+                                return filterReport && propsToGridData(filterReport, 0)
                             }
                         })(filter)
 
@@ -192,11 +228,10 @@ function Reports(props) {
                     case 'facility_keph_level_report_all_hierachies':
 
                         const keph = ((filterType) => {
-                            switch (filterType) {
-                                case 'year':
-                                    return filterReport && propsToGridData(filterReport, 1)
-                                case 'org_unit':
-                                    return filterReport && propsToGridData(filterReport, 1, value)
+                            if (filterType == 'org_unit') {
+                                return filterReport && propsToGridData(filterReport, 0, value)
+                            } else {
+                                return filterReport && propsToGridData(filterReport, 0)
                             }
                         })(filter)
 
@@ -209,11 +244,10 @@ function Reports(props) {
                     case 'facility_owner_report_all_hierachies':
 
                         const owner = ((filterType) => {
-                            switch (filterType) {
-                                case 'year':
-                                    return filterReport && propsToGridData(filterReport, 2)
-                                case 'org_unit':
-                                    return filterReport && propsToGridData(filterReport, 2, value)
+                            if (filterType == 'org_unit') {
+                                return filterReport && propsToGridData(filterReport, 0, value)
+                            } else {
+                                return filterReport && propsToGridData(filterReport, 0)
                             }
                         })(filter)
 
@@ -226,11 +260,10 @@ function Reports(props) {
                     case 'facility_type_report_all_hierachies':
 
                         const type = ((filterType) => {
-                            switch (filterType) {
-                                case 'year':
-                                    return filterReport && propsToGridData(filterReport, 3)
-                                case 'org_unit':
-                                    return filterReport && propsToGridData(filterReport, 3, value)
+                            if (filterType == 'org_unit') {
+                                return filterReport && propsToGridData(filterReport, 0, value)
+                            } else {
+                                return filterReport && propsToGridData(filterReport, 0)
                             }
                         })(filter)
 
@@ -243,11 +276,10 @@ function Reports(props) {
                     case 'facility_regulatory_body_report_all_hierachies':
 
                         const reg = ((filterType) => {
-                            switch (filterType) {
-                                case 'year':
-                                    return filterReport && propsToGridData(filterReport, 4)
-                                case 'org_unit':
-                                    return filterReport && propsToGridData(filterReport, 4, value)
+                            if (filterType == 'org_unit') {
+                                return filterReport && propsToGridData(filterReport, 0, value)
+                            } else {
+                                return filterReport && propsToGridData(filterReport, 0)
                             }
                         })(filter)
 
@@ -260,11 +292,10 @@ function Reports(props) {
                     case 'facility_services_report_all_hierachies':
 
                         const services = ((filterType) => {
-                            switch (filterType) {
-                                case 'year':
-                                    return filterReport && propsToGridData(filterReport, 5)
-                                case 'org_unit':
-                                    return filterReport && propsToGridData(filterReport, 5, value)
+                            if (filterType == 'org_unit') {
+                                return filterReport && propsToGridData(filterReport, 0, value)
+                            } else {
+                                return filterReport && propsToGridData(filterReport, 0)
                             }
                         })(filter)
 
@@ -274,14 +305,13 @@ function Reports(props) {
                         })
 
                         break;
-                        case 'facility_infrastructure_report_all_hierachies':
+                    case 'facility_infrastructure_report_all_hierachies':
 
                         const infra_cat = ((filterType) => {
-                            switch (filterType) {
-                                case 'year':
-                                    return filterReport && propsToGridData(filterReport, 6)
-                                case 'org_unit':
-                                    return filterReport && propsToGridData(filterReport, 6, value)
+                            if (filterType == 'org_unit') {
+                                return filterReport && propsToGridData(filterReport, 0, value)
+                            } else {
+                                return filterReport && propsToGridData(filterReport, 0)
                             }
                         })(filter)
 
@@ -292,11 +322,10 @@ function Reports(props) {
 
 
                         const infra = ((filterType) => {
-                            switch (filterType) {
-                                case 'year':
-                                    return filterReport && propsToGridData(filterReport, 7)
-                                case 'org_unit':
-                                    return filterReport && propsToGridData(filterReport, 7, value)
+                            if (filterType == 'org_unit') {
+                                return filterReport && propsToGridData(filterReport, 0, value)
+                            } else {
+                                return filterReport && propsToGridData(filterReport, 0)
                             }
                         })(filter)
 
@@ -308,12 +337,24 @@ function Reports(props) {
                         break;
                     case 'facility_human_resource_category_report_all_hierachies':
 
+                        const hr_category = ((filterType) => {
+                            if (filterType == 'org_unit') {
+                                return filterReport && propsToGridData(filterReport, 0, value)
+                            } else {
+                                return filterReport && propsToGridData(filterReport, 0)
+                            }
+                        })(filter)
+
+                        setHrReportCategory({
+                            rows: hr_category?.rows,
+                            columns: hr_category?.columns
+                        })
+
                         const hr = ((filterType) => {
-                            switch (filterType) {
-                                case 'year':
-                                    return filterReport && propsToGridData(filterReport, 8)
-                                case 'org_unit':
-                                    return filterReport && propsToGridData(filterReport, 8, value)
+                            if (filterType == 'org_unit') {
+                                return filterReport && propsToGridData(filterReport, 0, value)
+                            } else {
+                                return filterReport && propsToGridData(filterReport, 0)
                             }
                         })(filter)
 
@@ -326,11 +367,10 @@ function Reports(props) {
                     case 'gis':
 
                         const gis = ((filterType) => {
-                            switch (filterType) {
-                                case 'year':
-                                    return filterReport && propsToGridData(filterReport, 9)
-                                case 'org_unit':
-                                    return filterReport && propsToGridData(filterReport, 9, value)
+                            if (filterType == 'org_unit') {
+                                return filterReport && propsToGridData(filterReport, 0, value)
+                            } else {
+                                return filterReport && propsToGridData(filterReport, 0)
                             }
                         })(filter)
 
@@ -346,6 +386,7 @@ function Reports(props) {
                 }
             }
         }
+
 
 
     }
@@ -451,16 +492,17 @@ function Reports(props) {
                             >
                                 {/* <pre>
                                     {
-                                        JSON.stringify({infra_category: propsToGridData(props, 6)?.rows, infra: propsToGridData(props, 7)?.rows, props:props?.facility_infrastructure_report_all_hierachies}, null, 2)
+                                        JSON.stringify({kephOptions: props?.kephOptions, typeOptions: props?.typeOptions, ownerOptions: props?.ownerOptions}, null, 2)
                                     }
-                                </pre> */}
+                                </pre>  */}
+
                                 <Tabs.List className="list-none w-full flex justify-evenly flex-wrap gap-2 md:gap-3 px-4 uppercase leading-none tab-list font-semibold border-b border-gray-400">
                                     {/* Facilities Tab */}
                                     <Tabs.Tab
                                         id={1}
                                         value="facilities"
                                         className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
-                                        onClick={() => { setSelectedOrgUnit(null); setSelectedPeriod(null); ull }}
+                                        onClick={() => { setSelectedOrgUnit(null); setSelectedPeriod(null); setSelectedKeph(null); setSelectedOwner(null); setSelectedType(null) }}
                                     >
                                         Facility Reports
                                     </Tabs.Tab>
@@ -469,7 +511,7 @@ function Reports(props) {
                                         id={2}
                                         value="chus"
                                         className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
-                                        onClick={() => { setSelectedOrgUnit(null); setSelectedPeriod(null); ull }}
+                                        onClick={() => { setSelectedOrgUnit(null); setSelectedPeriod(null); setSelectedKeph(null); setSelectedOwner(null); setSelectedType(null) }}
                                     >
                                         Community Health Unit Reports
                                     </Tabs.Tab>
@@ -539,7 +581,7 @@ function Reports(props) {
                                                 id={7}
                                                 value="infrastructure_category"
                                                 className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
-                                                onClick={() => { setSelectedOrgUnit(null); setSelectedPeriod(null); setReportTitle('Infrastructure') }}
+                                                onClick={() => { setSelectedOrgUnit(null); setSelectedPeriod(null); setReportTitle('Infrastructure Category') }}
                                             >
                                                 Infrastructure category
                                             </Tabs.Tab>
@@ -553,6 +595,15 @@ function Reports(props) {
                                             </Tabs.Tab>
                                             <Tabs.Tab
                                                 id={9}
+                                                value="human_resources_category"
+                                                className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
+                                                onClick={() => { setSelectedOrgUnit(null); setSelectedPeriod(null); setReportTitle('Human Resources Category') }}
+
+                                            >
+                                                Human resources Category
+                                            </Tabs.Tab>
+                                            <Tabs.Tab
+                                                id={10}
                                                 value="human_resources"
                                                 className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
                                                 onClick={() => { setSelectedOrgUnit(null); setSelectedPeriod(null); setReportTitle('Human Resources') }}
@@ -561,7 +612,7 @@ function Reports(props) {
                                                 Human resources
                                             </Tabs.Tab>
                                             <Tabs.Tab
-                                                id={10}
+                                                id={11}
                                                 value="geocodes"
                                                 className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
                                                 onClick={() => { setSelectedOrgUnit(null); setSelectedPeriod(null); setReportTitle('Geo Location') }}
@@ -613,14 +664,40 @@ function Reports(props) {
                                                                     }}
                                                                 />
 
-                                                                <div className='max-w-1/2 flex gap-x-2 justify-end mr-2'>
+                                                                <div className='max-w-min flex gap-x-2 justify-end mr-2'>
+                                                                    <CustomSelect
+                                                                        name="keph"
+                                                                        onChange={(e) => handleCustomSelectChange(e, 'beds_and_cots_by_all_hierachies', props?.token, 'keph')}
+                                                                        options={props?.kephOptions}
+                                                                        defaultValue={selectedKeph}
+                                                                        placeholder='Filter by Keph'
+
+                                                                    />
+
+                                                                    <CustomSelect
+                                                                        name="type"
+                                                                        onChange={(e) => handleCustomSelectChange(e, 'beds_and_cots_by_all_hierachies', props?.token, 'type')}
+                                                                        options={props?.typeOptions}
+                                                                        defaultValue={selectedType}
+                                                                        placeholder='Filter by Type'
+
+                                                                    />
+
+                                                                    <CustomSelect
+                                                                        name="owner"
+                                                                        onChange={(e) => handleCustomSelectChange(e, 'beds_and_cots_by_all_hierachies', props?.token, 'owner')}
+                                                                        options={props?.ownerOptions}
+                                                                        defaultValue={selectedOwner}
+                                                                        placeholder='Filter by Owner'
+
+                                                                    />
+
                                                                     <CustomSelect
                                                                         name="year"
                                                                         onChange={(e) => handleCustomSelectChange(e, 'beds_and_cots_by_all_hierachies', props?.token, 'year')}
                                                                         options={periodOptions}
                                                                         defaultValue={selectedPeriod}
                                                                         placeholder='Filter by period'
-
 
                                                                     />
 
@@ -631,7 +708,6 @@ function Reports(props) {
                                                                         options={orgUnitOptions}
                                                                         defaultValue={selectedOrgUnit}
                                                                         placeholder='Filter by Admin Heirachy'
-
 
                                                                     />
                                                                 </div>
@@ -678,7 +754,34 @@ function Reports(props) {
                                                                     }}
                                                                 />
 
-                                                                <div className='max-w-1/2 flex gap-x-2 justify-end mr-2'>
+                                                                <div className='max-w-min flex gap-x-2 justify-end mr-2'>
+
+                                                                    <CustomSelect
+                                                                        name="keph"
+                                                                        onChange={(e) => handleCustomSelectChange(e, 'beds_and_cots_by_all_hierachies', props?.token, 'keph')}
+                                                                        options={props?.kephOptions}
+                                                                        defaultValue={selectedKeph}
+                                                                        placeholder='Filter by Keph'
+
+                                                                    />
+
+                                                                    <CustomSelect
+                                                                        name="type"
+                                                                        onChange={(e) => handleCustomSelectChange(e, 'beds_and_cots_by_all_hierachies', props?.token, 'type')}
+                                                                        options={props?.typeOptions}
+                                                                        defaultValue={selectedType}
+                                                                        placeholder='Filter by Type'
+
+                                                                    />
+
+                                                                    <CustomSelect
+                                                                        name="owner"
+                                                                        onChange={(e) => handleCustomSelectChange(e, 'beds_and_cots_by_all_hierachies', props?.token, 'owner')}
+                                                                        options={props?.ownerOptions}
+                                                                        defaultValue={selectedOwner}
+                                                                        placeholder='Filter by Owner'
+
+                                                                    />
 
                                                                     <CustomSelect
                                                                         name="year"
@@ -747,7 +850,34 @@ function Reports(props) {
                                                                     }}
                                                                 />
 
-                                                                <div className='max-w-1/2 flex gap-x-2 justify-end mr-2'>
+                                                                <div className='max-w-min flex gap-x-2 justify-end mr-2'>
+
+                                                                    <CustomSelect
+                                                                        name="keph"
+                                                                        onChange={(e) => handleCustomSelectChange(e, 'beds_and_cots_by_all_hierachies', props?.token, 'keph')}
+                                                                        options={props?.kephOptions}
+                                                                        defaultValue={selectedKeph}
+                                                                        placeholder='Filter by Keph'
+
+                                                                    />
+
+                                                                    <CustomSelect
+                                                                        name="type"
+                                                                        onChange={(e) => handleCustomSelectChange(e, 'beds_and_cots_by_all_hierachies', props?.token, 'type')}
+                                                                        options={props?.typeOptions}
+                                                                        defaultValue={selectedType}
+                                                                        placeholder='Filter by Type'
+
+                                                                    />
+
+                                                                    <CustomSelect
+                                                                        name="owner"
+                                                                        onChange={(e) => handleCustomSelectChange(e, 'beds_and_cots_by_all_hierachies', props?.token, 'owner')}
+                                                                        options={props?.ownerOptions}
+                                                                        defaultValue={selectedOwner}
+                                                                        placeholder='Filter by Owner'
+
+                                                                    />
 
                                                                     <CustomSelect
                                                                         name="year"
@@ -812,7 +942,34 @@ function Reports(props) {
 
                                                                     }}
                                                                 />
-                                                                <div className='max-w-1/2 flex gap-x-2 justify-end mr-2'>
+                                                                <div className='max-w-min flex gap-x-2 justify-end mr-2'>
+
+                                                                    <CustomSelect
+                                                                        name="keph"
+                                                                        onChange={(e) => handleCustomSelectChange(e, 'beds_and_cots_by_all_hierachies', props?.token, 'keph')}
+                                                                        options={props?.kephOptions}
+                                                                        defaultValue={selectedKeph}
+                                                                        placeholder='Filter by Keph'
+
+                                                                    />
+
+                                                                    <CustomSelect
+                                                                        name="type"
+                                                                        onChange={(e) => handleCustomSelectChange(e, 'beds_and_cots_by_all_hierachies', props?.token, 'type')}
+                                                                        options={props?.typeOptions}
+                                                                        defaultValue={selectedType}
+                                                                        placeholder='Filter by Type'
+
+                                                                    />
+
+                                                                    <CustomSelect
+                                                                        name="owner"
+                                                                        onChange={(e) => handleCustomSelectChange(e, 'beds_and_cots_by_all_hierachies', props?.token, 'owner')}
+                                                                        options={props?.ownerOptions}
+                                                                        defaultValue={selectedOwner}
+                                                                        placeholder='Filter by Owner'
+
+                                                                    />
 
 
                                                                     <CustomSelect
@@ -874,7 +1031,34 @@ function Reports(props) {
 
                                                                     }}
                                                                 />
-                                                                <div className='max-w-1/2 flex gap-x-2 justify-end mr-2'>
+                                                                <div className='max-w-min flex gap-x-2 justify-end mr-2'>
+
+                                                                    <CustomSelect
+                                                                        name="keph"
+                                                                        onChange={(e) => handleCustomSelectChange(e, 'beds_and_cots_by_all_hierachies', props?.token, 'keph')}
+                                                                        options={props?.kephOptions}
+                                                                        defaultValue={selectedKeph}
+                                                                        placeholder='Filter by Keph'
+
+                                                                    />
+
+                                                                    <CustomSelect
+                                                                        name="type"
+                                                                        onChange={(e) => handleCustomSelectChange(e, 'beds_and_cots_by_all_hierachies', props?.token, 'type')}
+                                                                        options={props?.typeOptions}
+                                                                        defaultValue={selectedType}
+                                                                        placeholder='Filter by Type'
+
+                                                                    />
+
+                                                                    <CustomSelect
+                                                                        name="owner"
+                                                                        onChange={(e) => handleCustomSelectChange(e, 'beds_and_cots_by_all_hierachies', props?.token, 'owner')}
+                                                                        options={props?.ownerOptions}
+                                                                        defaultValue={selectedOwner}
+                                                                        placeholder='Filter by Owner'
+
+                                                                    />
 
                                                                     <CustomSelect
                                                                         name="year"
@@ -935,7 +1119,34 @@ function Reports(props) {
                                                                     }}
                                                                 />
 
-                                                                <div className='max-w-1/2 flex gap-x-2 justify-end mr-2'>
+                                                                <div className='max-w-min flex gap-x-2 justify-end mr-2'>
+
+                                                                    <CustomSelect
+                                                                        name="keph"
+                                                                        onChange={(e) => handleCustomSelectChange(e, 'beds_and_cots_by_all_hierachies', props?.token, 'keph')}
+                                                                        options={props?.kephOptions}
+                                                                        defaultValue={selectedKeph}
+                                                                        placeholder='Filter by Keph'
+
+                                                                    />
+
+                                                                    <CustomSelect
+                                                                        name="type"
+                                                                        onChange={(e) => handleCustomSelectChange(e, 'beds_and_cots_by_all_hierachies', props?.token, 'type')}
+                                                                        options={props?.typeOptions}
+                                                                        defaultValue={selectedType}
+                                                                        placeholder='Filter by Type'
+
+                                                                    />
+
+                                                                    <CustomSelect
+                                                                        name="owner"
+                                                                        onChange={(e) => handleCustomSelectChange(e, 'beds_and_cots_by_all_hierachies', props?.token, 'owner')}
+                                                                        options={props?.ownerOptions}
+                                                                        defaultValue={selectedOwner}
+                                                                        placeholder='Filter by Owner'
+
+                                                                    />
 
                                                                     <CustomSelect
                                                                         name="year"
@@ -997,7 +1208,34 @@ function Reports(props) {
                                                                     }}
                                                                 />
 
-                                                                <div className='max-w-1/2 flex gap-x-2 justify-end mr-2'>
+                                                                <div className='max-w-min flex gap-x-2 justify-end mr-2'>
+
+                                                                    <CustomSelect
+                                                                        name="keph"
+                                                                        onChange={(e) => handleCustomSelectChange(e, 'beds_and_cots_by_all_hierachies', props?.token, 'keph')}
+                                                                        options={props?.kephOptions}
+                                                                        defaultValue={selectedKeph}
+                                                                        placeholder='Filter by Keph'
+
+                                                                    />
+
+                                                                    <CustomSelect
+                                                                        name="type"
+                                                                        onChange={(e) => handleCustomSelectChange(e, 'beds_and_cots_by_all_hierachies', props?.token, 'type')}
+                                                                        options={props?.typeOptions}
+                                                                        defaultValue={selectedType}
+                                                                        placeholder='Filter by Type'
+
+                                                                    />
+
+                                                                    <CustomSelect
+                                                                        name="owner"
+                                                                        onChange={(e) => handleCustomSelectChange(e, 'beds_and_cots_by_all_hierachies', props?.token, 'owner')}
+                                                                        options={props?.ownerOptions}
+                                                                        defaultValue={selectedOwner}
+                                                                        placeholder='Filter by Owner'
+
+                                                                    />
 
 
                                                                     <CustomSelect
@@ -1061,7 +1299,34 @@ function Reports(props) {
                                                                     }}
                                                                 />
 
-                                                                <div className='max-w-1/2 flex gap-x-2 justify-end mr-2'>
+                                                                <div className='max-w-min flex gap-x-2 justify-end mr-2'>
+
+                                                                    <CustomSelect
+                                                                        name="keph"
+                                                                        onChange={(e) => handleCustomSelectChange(e, 'beds_and_cots_by_all_hierachies', props?.token, 'keph')}
+                                                                        options={props?.kephOptions}
+                                                                        defaultValue={selectedKeph}
+                                                                        placeholder='Filter by Keph'
+
+                                                                    />
+
+                                                                    <CustomSelect
+                                                                        name="type"
+                                                                        onChange={(e) => handleCustomSelectChange(e, 'beds_and_cots_by_all_hierachies', props?.token, 'type')}
+                                                                        options={props?.typeOptions}
+                                                                        defaultValue={selectedType}
+                                                                        placeholder='Filter by Type'
+
+                                                                    />
+
+                                                                    <CustomSelect
+                                                                        name="owner"
+                                                                        onChange={(e) => handleCustomSelectChange(e, 'beds_and_cots_by_all_hierachies', props?.token, 'owner')}
+                                                                        options={props?.ownerOptions}
+                                                                        defaultValue={selectedOwner}
+                                                                        placeholder='Filter by Owner'
+
+                                                                    />
 
 
                                                                     <CustomSelect
@@ -1089,6 +1354,97 @@ function Reports(props) {
                                                 />
                                             </div>
 
+
+                                        </Tabs.Panel>
+
+                                        {/* HR Report Category*/}
+                                        <Tabs.Panel
+                                            value="human_resources_category"
+                                            className="grow-1 tab-panel"
+                                        >
+
+                                            {/* Human resource */}
+
+                                            <div className='shadow-md w-full max-h-min col-span-7'>
+                                                <StyledDataGrid
+                                                    loading={loading}
+                                                    columns={hrCategoryReport?.columns}
+                                                    rows={hrCategoryReport?.rows}
+                                                    getRowClassName={() => `super-app-theme--Row`}
+                                                    rowSpacingType="border"
+                                                    showColumnRightBorder
+                                                    showCellRightBorder
+                                                    rowSelection={false}
+                                                    getCellClassName={() => 'super-app-theme--Cell'}
+                                                    slots={{
+                                                        toolbar: () => (
+                                                            <div className='w-full flex justify-between border-b border-gray-400 py-2'>
+                                                                <GridToolbar
+                                                                    className="border border-gray-300"
+                                                                    sx={{
+                                                                        flex: 1,
+                                                                        display: 'flex',
+                                                                        marginX: 0,
+                                                                        gap: 5,
+                                                                        alignItems: 'start',
+
+                                                                    }}
+                                                                />
+
+                                                                <div className='max-w-min flex gap-x-2 justify-end mr-2'>
+
+                                                                    <CustomSelect
+                                                                        name="keph"
+                                                                        onChange={(e) => handleCustomSelectChange(e, 'beds_and_cots_by_all_hierachies', props?.token, 'keph')}
+                                                                        options={props?.kephOptions}
+                                                                        defaultValue={selectedKeph}
+                                                                        placeholder='Filter by Keph'
+
+                                                                    />
+
+                                                                    <CustomSelect
+                                                                        name="type"
+                                                                        onChange={(e) => handleCustomSelectChange(e, 'beds_and_cots_by_all_hierachies', props?.token, 'type')}
+                                                                        options={props?.typeOptions}
+                                                                        defaultValue={selectedType}
+                                                                        placeholder='Filter by Type'
+
+                                                                    />
+
+                                                                    <CustomSelect
+                                                                        name="owner"
+                                                                        onChange={(e) => handleCustomSelectChange(e, 'beds_and_cots_by_all_hierachies', props?.token, 'owner')}
+                                                                        options={props?.ownerOptions}
+                                                                        defaultValue={selectedOwner}
+                                                                        placeholder='Filter by Owner'
+
+                                                                    />
+
+
+                                                                    <CustomSelect
+                                                                        name="year"
+                                                                        onChange={(e) => handleCustomSelectChange(e, 'facility_human_resource_category_report_all_hierachies', props?.token, 'year')}
+                                                                        className="w-full max-w-xs rounded border mr-2 border-gray-400"
+                                                                        options={periodOptions}
+                                                                        defaultValue={selectedPeriod}
+                                                                        placeholder='Filter by period'
+                                                                    />
+
+
+                                                                    <CustomSelect
+                                                                        name="org_unit"
+                                                                        onChange={(e) => handleCustomSelectChange(e, 'facility_human_resource_category_report_all_hierachies', props?.token, 'org_unit')}
+                                                                        className="w-full max-w-xs rounded border mr-2 border-gray-400"
+                                                                        options={orgUnitOptions}
+                                                                        defaultValue={selectedOrgUnit}
+                                                                        placeholder='Filter by Admin Heirachy'
+                                                                    />
+                                                                </div>
+                                                            </div>
+                                                        ),
+                                                    }}
+                                                />
+                                            </div>
 
                                         </Tabs.Panel>
 
@@ -1126,7 +1482,34 @@ function Reports(props) {
                                                                     }}
                                                                 />
 
-                                                                <div className='max-w-1/2 flex gap-x-2 justify-end mr-2'>
+                                                                <div className='max-w-min flex gap-x-2 justify-end mr-2'>
+
+                                                                    <CustomSelect
+                                                                        name="keph"
+                                                                        onChange={(e) => handleCustomSelectChange(e, 'beds_and_cots_by_all_hierachies', props?.token, 'keph')}
+                                                                        options={props?.kephOptions}
+                                                                        defaultValue={selectedKeph}
+                                                                        placeholder='Filter by Keph'
+
+                                                                    />
+
+                                                                    <CustomSelect
+                                                                        name="type"
+                                                                        onChange={(e) => handleCustomSelectChange(e, 'beds_and_cots_by_all_hierachies', props?.token, 'type')}
+                                                                        options={props?.typeOptions}
+                                                                        defaultValue={selectedType}
+                                                                        placeholder='Filter by Type'
+
+                                                                    />
+
+                                                                    <CustomSelect
+                                                                        name="owner"
+                                                                        onChange={(e) => handleCustomSelectChange(e, 'beds_and_cots_by_all_hierachies', props?.token, 'owner')}
+                                                                        options={props?.ownerOptions}
+                                                                        defaultValue={selectedOwner}
+                                                                        placeholder='Filter by Owner'
+
+                                                                    />
 
 
                                                                     <CustomSelect
@@ -1188,7 +1571,34 @@ function Reports(props) {
                                                                     }}
                                                                 />
 
-                                                                <div className='max-w-1/2 flex gap-x-2 justify-end mr-2'>
+                                                                <div className='max-w-min flex gap-x-2 justify-end mr-2'>
+
+                                                                    <CustomSelect
+                                                                        name="keph"
+                                                                        onChange={(e) => handleCustomSelectChange(e, 'beds_and_cots_by_all_hierachies', props?.token, 'keph')}
+                                                                        options={props?.kephOptions}
+                                                                        defaultValue={selectedKeph}
+                                                                        placeholder='Filter by Keph'
+
+                                                                    />
+
+                                                                    <CustomSelect
+                                                                        name="type"
+                                                                        onChange={(e) => handleCustomSelectChange(e, 'beds_and_cots_by_all_hierachies', props?.token, 'type')}
+                                                                        options={props?.typeOptions}
+                                                                        defaultValue={selectedType}
+                                                                        placeholder='Filter by Type'
+
+                                                                    />
+
+                                                                    <CustomSelect
+                                                                        name="owner"
+                                                                        onChange={(e) => handleCustomSelectChange(e, 'beds_and_cots_by_all_hierachies', props?.token, 'owner')}
+                                                                        options={props?.ownerOptions}
+                                                                        defaultValue={selectedOwner}
+                                                                        placeholder='Filter by Owner'
+
+                                                                    />
 
                                                                     <CustomSelect
                                                                         name="year"
@@ -1653,7 +2063,10 @@ Reports.getInitialProps = async (ctx) => {
         'gis',
         'chul_services_all_hierachies',
         'chul_count_all_hierachies',
-        'facility_human_resource_category_report_all_hierachies'
+        'facility_human_resource_category_report_all_hierachies',
+        'kephOptions',
+        'ownerOptions',
+        'typeOptions'
     ];
 
     const allReports = {
@@ -1856,7 +2269,7 @@ Reports.getInitialProps = async (ctx) => {
                 break;
 
             case 'gis':
-                url = `${process.env.NEXT_PUBLIC_API_URL}/reporting/?report_type=gis${ctx?.query?.groupby !== undefined ? `&report_groupby=${ctx?.query?.groupby}` : '&report_groupby=sub_county'}`;
+                url = `${process.env.NEXT_PUBLIC_API_URL}/reporting/?report_type=gis${ctx?.query?.groupby !== undefined ? `&report_groupby=${ctx?.query?.groupby}` : '&report_groupby=county&page_size=47'}`;
 
 
                 try {
@@ -1877,6 +2290,78 @@ Reports.getInitialProps = async (ctx) => {
                 }
 
                 break;
+
+            case 'kephOptions':
+                url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/keph`
+
+
+                try {
+
+                    const _data = await fetch(url, {
+                        headers: {
+                            Authorization: 'Bearer ' + token,
+                            Accept: 'application/json',
+                        }
+                    })
+
+                    allReports["kephOptions"] = (await _data.json()).results?.map(({ id: value, name: label }) => ({ value, label }))
+
+                }
+                catch (err) {
+                    console.log(`Error fetching ${report}: `, err);
+
+                }
+
+                break;
+
+            case 'typeOptions':
+                url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/facility_types_details?is_parent=false`
+
+
+                try {
+
+                    const _data = await fetch(url, {
+                        headers: {
+                            Authorization: 'Bearer ' + token,
+                            Accept: 'application/json',
+                        }
+                    })
+
+                    allReports["typeOptions"] = (await _data.json()).results?.map(({ id: value, name: label }) => ({ value, label }))
+
+                }
+                catch (err) {
+                    console.log(`Error fetching ${report}: `, err);
+
+                }
+
+                break;
+
+            case 'ownerOptions':
+
+                url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/owner_types`
+
+
+                try {
+
+                    const _data = await fetch(url, {
+                        headers: {
+                            Authorization: 'Bearer ' + token,
+                            Accept: 'application/json',
+                        }
+                    })
+
+                    allReports["ownerOptions"] = (await _data.json()).results?.map(({ id: value, name: label }) => ({ value, label }))
+
+                }
+                catch (err) {
+                    console.log(`Error fetching ${report}: `, err);
+
+                }
+
+                break;
+
+
             /*
 case 'chul_status_all_hierachies':
     url = `${process.env.NEXT_PUBLIC_API_URL}/reporting/chul/?report_type=${report}`;
