@@ -35,11 +35,11 @@ import { OtherHouses } from "@mui/icons-material";
 //                 })) ?? []
 
 //                 , columns: [
-    // {
-    //     headerName: 'Date',
-    //     field: 'date',
-    //     flex: 1
-    // }
+// {
+//     headerName: 'Date',
+//     field: 'date',
+//     flex: 1
+// }
 //             ,        {
 //                         headerName: formatString(orgUnitFilter),
 //                         field: `${orgUnitFilter}`,
@@ -117,11 +117,11 @@ import { OtherHouses } from "@mui/icons-material";
 //                 })) ?? []
 
 //                 , columns: [
-    // {
-    //     headerName: 'Date',
-    //     field: 'date',
-    //     flex: 1
-    // }
+// {
+//     headerName: 'Date',
+//     field: 'date',
+//     flex: 1
+// }
 //             ,        {
 //                         headerName: formatString(orgUnitFilter),
 //                         field: `${orgUnitFilter}`,
@@ -246,11 +246,11 @@ import { OtherHouses } from "@mui/icons-material";
 //                 })) ?? []
 
 //                 , columns: [
-    // {
-    //     headerName: 'Date',
-    //     field: 'date',
-    //     flex: 1
-    // }
+// {
+//     headerName: 'Date',
+//     field: 'date',
+//     flex: 1
+// }
 //             ,        {
 //                         headerName: formatString(orgUnitFilter),
 //                         field: `${orgUnitFilter}`,
@@ -774,11 +774,11 @@ import { OtherHouses } from "@mui/icons-material";
 //                 ) ?? [],
 
 //                 columns: [
-    // {
-    //     headerName: 'Date',
-    //     field: 'date',
-    //     flex: 1
-    // }
+// {
+//     headerName: 'Date',
+//     field: 'date',
+//     flex: 1
+// }
 //             ,        {
 //                         headerName: formatString(orgUnitFilter),
 //                         field: `${orgUnitFilter}`,
@@ -1352,11 +1352,11 @@ import { OtherHouses } from "@mui/icons-material";
 //                 ) ?? [],
 
 //                 columns: [
-    // {
-    //     headerName: 'Date',
-    //     field: 'date',
-    //     flex: 1
-    // }
+// {
+//     headerName: 'Date',
+//     field: 'date',
+//     flex: 1
+// }
 //             ,        {
 //                         headerName: formatString(orgUnitFilter),
 //                         field: `${orgUnitFilter}`,
@@ -1759,11 +1759,11 @@ import { OtherHouses } from "@mui/icons-material";
 //                 ) ?? [],
 
 //                 columns: [
-    // {
-    //     headerName: 'Date',
-    //     field: 'date',
-    //     flex: 1
-    // }
+// {
+//     headerName: 'Date',
+//     field: 'date',
+//     flex: 1
+// }
 //             ,        {
 //                         headerName: formatString(orgUnitFilter),
 //                         field: `${orgUnitFilter}`,
@@ -1808,11 +1808,11 @@ import { OtherHouses } from "@mui/icons-material";
 //             return {
 //                 rows: props?.chul_services_all_hierachies ?? [],
 //                 columns: [
-    // {
-    //     headerName: 'Date',
-    //     field: 'date',
-    //     flex: 1
-    // }
+// {
+//     headerName: 'Date',
+//     field: 'date',
+//     flex: 1
+// }
 //             ,        {
 //                         headerName: formatString(orgUnitFilter),
 //                         field: `${orgUnitFilter}`,
@@ -1980,11 +1980,11 @@ import { OtherHouses } from "@mui/icons-material";
 //                 ) ?? [],
 
 //                 columns: [
-    // {
-    //     headerName: 'Date',
-    //     field: 'date',
-    //     flex: 1
-    // }
+// {
+//     headerName: 'Date',
+//     field: 'date',
+//     flex: 1
+// }
 //             ,        {
 //                         headerName: formatString(orgUnitFilter),
 //                         field: `${orgUnitFilter}`,
@@ -2229,13 +2229,13 @@ import { OtherHouses } from "@mui/icons-material";
 function formatString(str) {
     const fstr = str.replace(/[\s,'_']/, ",").split(",")
 
-    if(fstr.length == 1) {
+    if (fstr.length == 1) {
         return `${fstr[0][0].toUpperCase()}${fstr[0].substring(1)}`
     } else {
         const ffstr = fstr.map(w => {
-           return `${w.substring(0,1).toUpperCase()}${w.substring(1)}`
+            return `${w.substring(0, 1).toUpperCase()}${w.substring(1)}`
         })
-        
+
 
         return ffstr.toString().replace(",", " ")
     }
@@ -2247,7 +2247,7 @@ export function propsToGridData(props, index, orgUnitFilter = "county") {
     switch (index) {
         case 0:
             return {
-                rows: Object.entries(props?.beds_and_cots_by_all_hierachies)?.map((result, index) => ({
+                rows: Object.entries(props?.beds_and_cots_by_all_hierachies ?? {})?.map((result, index) => ({
 
                     [`${orgUnitFilter}`]: result[0],
                     date: result[1]?.date_established,
@@ -2260,13 +2260,13 @@ export function propsToGridData(props, index, orgUnitFilter = "county") {
                     id: index
                 })),
                 columns: [
-                    
+
                     {
                         headerName: formatString(orgUnitFilter),
                         field: `${orgUnitFilter}`,
                         flex: 1
                     },
-                    
+
                     {
                         headerName: 'Date',
                         field: 'date',
@@ -2308,9 +2308,9 @@ export function propsToGridData(props, index, orgUnitFilter = "county") {
             }
         case 1:
             return {
-                rows: Object.entries(props?.facility_keph_level_report_all_hierachies)?.map((result, index) => ({
+                rows: Object.entries(props?.facility_keph_level_report_all_hierachies ?? {})?.map((result, index) => ({
                     [`${orgUnitFilter}`]: result[0],
-                    date: result[1]?.date_established,
+                    date: result[1]?.year_established,
                     level_2: result[1]?.Level_2,
                     level_3: result[1]?.Level_3,
                     level_4: result[1]?.Level_4,
@@ -2320,13 +2320,13 @@ export function propsToGridData(props, index, orgUnitFilter = "county") {
                     id: index
                 })),
                 columns: [
-                    
+
                     {
                         headerName: formatString(orgUnitFilter),
                         field: `${orgUnitFilter}`,
                         flex: 1
                     },
-                    
+
                     {
                         headerName: 'Date',
                         field: 'date',
@@ -2363,7 +2363,7 @@ export function propsToGridData(props, index, orgUnitFilter = "county") {
             }
         case 2:
             return {
-                rows: Object.entries(props?.facility_owner_report_all_hierachies)?.map((result, index) => ({
+                rows: Object.entries(props?.facility_owner_report_all_hierachies ?? {})?.map((result, index) => ({
                     [`${orgUnitFilter}`]: result[0],
                     date: result[1]?.date_established,
                     moh: result[1]['Ministry_of_Health'],
@@ -2373,13 +2373,13 @@ export function propsToGridData(props, index, orgUnitFilter = "county") {
                     id: index
                 })),
                 columns: [
-                    
+
                     {
                         headerName: formatString(orgUnitFilter),
                         field: `${orgUnitFilter}`,
                         flex: 1
                     },
-                    
+
                     {
                         headerName: 'Date',
                         field: 'date',
@@ -2405,7 +2405,7 @@ export function propsToGridData(props, index, orgUnitFilter = "county") {
             }
         case 3:
             return {
-                rows: Object.entries(props?.facility_type_report_all_hierachies)?.map((result, index) => ({
+                rows: Object.entries(props?.facility_type_report_all_hierachies ?? {})?.map((result, index) => ({
                     [`${orgUnitFilter}`]: result[0],
                     date: result[1]?.date_established,
                     medical_clinic: result[1]['MEDICAL_CLINIC'],
@@ -2418,13 +2418,13 @@ export function propsToGridData(props, index, orgUnitFilter = "county") {
                     id: index
                 })),
                 columns: [
-                    
+
                     {
                         headerName: formatString(orgUnitFilter),
                         field: `${orgUnitFilter}`,
                         flex: 1
                     },
-                    
+
                     {
                         headerName: 'Date',
                         field: 'date',
@@ -2471,7 +2471,7 @@ export function propsToGridData(props, index, orgUnitFilter = "county") {
             }
         case 4:
             return {
-                rows: Object.entries(props?.facility_regulatory_body_report_all_hierachies)?.map((result, index) => ({
+                rows: Object.entries(props?.facility_regulatory_body_report_all_hierachies ?? {})?.map((result, index) => ({
                     [`${orgUnitFilter}`]: result[0],
                     date: result[1]?.date_established,
                     moh: result[1]['Ministry_of_Health'],
@@ -2487,13 +2487,13 @@ export function propsToGridData(props, index, orgUnitFilter = "county") {
                     id: index
                 })),
                 columns: [
-                    
+
                     {
                         headerName: formatString(orgUnitFilter),
                         field: `${orgUnitFilter}`,
                         flex: 1
                     },
-                    
+
                     {
                         headerName: 'Date',
                         field: 'date',
@@ -2556,10 +2556,10 @@ export function propsToGridData(props, index, orgUnitFilter = "county") {
             }
         case 5:
             return {
-                rows: Object.entries(props?.facility_services_report_all_hierachies)?.map((result, index) =>
+                rows: Object.entries(props?.facility_services_report_all_hierachies ?? {})?.map((result, index) =>
                 ({
                     [`${orgUnitFilter}`]: result[0],
-                    date: result[1]?.date_established,
+                    date: result[1]?.facility__date_established,
                     cat_emergency_prep: result[1]["EMERGENCY_PREPAREDNESS"],
                     cat_curative: result[1]["CURATIVE_SERVICES"],
                     cat_orthopaedic: result[1]["ORTHOPAEDIC_TECHNOLOGY_SERVICES"],
@@ -2604,20 +2604,20 @@ export function propsToGridData(props, index, orgUnitFilter = "county") {
 
                 })),
                 columns: [
-                    
+
                     {
                         headerName: formatString(orgUnitFilter),
                         field: `${orgUnitFilter}`,
-                        width: 100
+                        width: 200
                     },
-                 
-                 {
+
+                    {
                         headerName: 'Date',
                         field: 'date',
-                        flex: 1
+                        width: 200
                     },
-                       {
-                        headerNpropsame: 'EMERGENCY PREPAREDNESS',
+                    {
+                        headerName: 'EMERGENCY PREPAREDNESS',
                         field: 'cat_emergency_prep',
                         width: 200
 
@@ -2854,11 +2854,10 @@ export function propsToGridData(props, index, orgUnitFilter = "county") {
 
             }
         case 6:
-
             return {
-                rows: Object.entries(props?.facility_infrastructure_report_all_hierachies)?.map((result, index) => ({
+                rows: Object.entries(props?.facility_infrastructure_report_all_hierachies?.results_bycategory ?? {})?.map((result, index) => ({
                     [`${orgUnitFilter}`]: result[0],
-                    date: result[1]?.date_established,
+                    date: result[1]?.facility__date_established,
                     cat_ict_infrastructure: result[1]["ICT_INFRASTRUCTURE"],
                     cat_communications: result[1]["COMMUNICATIONS"],
                     cat_water_source: result[1]["WATER_SOURCE"],
@@ -2867,6 +2866,79 @@ export function propsToGridData(props, index, orgUnitFilter = "county") {
                     cat_access_road: result[1]["ACCESS_ROADS"],
                     cat_cold_chain: result[1]["COLD_CHAIN"],
                     cat_waste_medical: result[1]["MEDICAL_WASTE_MANAGEMENT"],
+                    id: index
+
+                })),
+
+                columns: [
+
+                    {
+                        headerName: formatString(orgUnitFilter),
+                        field: `${orgUnitFilter}`,
+                        width: 200
+                    },
+
+                    {
+                        headerName: 'Date',
+                        field: 'date',
+                        width: 200
+                    },
+                    {
+                        headerName: 'ICT INFRASTRUCTURE',
+                        field: 'cat_ict_infrastructure',
+                        width: 200
+
+                    },
+                    {
+                        headerName: 'COMMUNICATIONS',
+                        field: 'cat_communications',
+                        width: 200
+                    },
+                    {
+                        headerName: 'WATER SOURCE',
+                        field: 'cat_water_source',
+                        width: 200
+
+                    },
+                    {
+                        headerName: 'MEDICAL EQUIPMENT',
+                        field: 'cat_medical_equipment',
+                        width: 200
+                    },
+                    {
+                        headerName: 'POWER SOURCE',
+                        field: 'cat_power_source',
+                        width: 200
+
+                    },
+                    {
+                        headerName: 'ACCESS ROADS',
+                        field: 'cat_access_road',
+                        width: 200
+
+                    },
+                    {
+                        headerName: 'COLD CHAIN',
+                        field: 'cat_cold_chain',
+                        width: 200
+                    },
+                    {
+                        headerName: 'MEDICAL WASTE MANAGEMENT',
+                        field: 'cat_waste_medical',
+                        width: 200
+
+                    }
+
+
+
+                ]
+            }
+        case 7:
+
+            return {
+                rows: Object.entries(props?.facility_infrastructure_report_all_hierachies?.results ?? {})?.map((result, index) => ({
+                    [`${orgUnitFilter}`]: result[0],
+                    date: result[1]?.facility__date_established,
                     ultrasound_machines: result[1]["Ultrasound_Machines"],
                     dialysis_machines: result[1]["Dialysis_machines"],
                     generator: result[1]["Generator"],
@@ -2928,62 +3000,17 @@ export function propsToGridData(props, index, orgUnitFilter = "county") {
                 })),
 
                 columns: [
-                    
+
                     {
                         headerName: formatString(orgUnitFilter),
                         field: `${orgUnitFilter}`,
-                        width: 100
+                        width: 200
                     },
-                 
-                 {
+
+                    {
                         headerName: 'Date',
                         field: 'date',
-                        flex: 1
-                    },
-                       {
-                        headerName: 'ICT INFRASTRUCTURE',
-                        field: 'cat_ict_infrastructure',
                         width: 200
-
-                    },
-                    {
-                        headerName: 'COMMUNICATIONS',
-                        field: 'cat_communications',
-                        width: 200
-                    },
-                    {
-                        headerName: 'WATER SOURCE',
-                        field: 'cat_water_source',
-                        width: 200
-
-                    },
-                    {
-                        headerName: 'MEDICAL EQUIPMENT',
-                        field: 'cat_medical_equipment',
-                        width: 200
-                    },
-                    {
-                        headerName: 'POWER SOURCE',
-                        field: 'cat_power_source',
-                        width: 200
-
-                    },
-                    {
-                        headerName: 'ACCESS ROADS',
-                        field: 'cat_access_road',
-                        width: 200
-
-                    },
-                    {
-                        headerName: 'COLD CHAIN',
-                        field: 'cat_cold_chain',
-                        width: 200
-                    },
-                    {
-                        headerName: 'MEDICAL WASTE MANAGEMENT',
-                        field: 'cat_waste_medical',
-                        width: 200
-
                     },
                     {
                         headerName: 'Dialysis machines',
@@ -3298,12 +3325,11 @@ export function propsToGridData(props, index, orgUnitFilter = "county") {
 
                 ]
             }
-
-        case 7:
+        case 8:
             return {
-                rows: Object.entries(props?.facility_human_resource_category_report_all_hierachies)?.map((result, index) => ({
+                rows: Object.entries(props?.facility_human_resource_category_report_all_hierachies?.results_bycategory ?? {})?.map((result, index) => ({
                     [`${orgUnitFilter}`]: result[0],
-                    date: result[1]?.date_established,
+                    date: result[1]?.facility__date_established,
                     clinical_officers: result[1]["Clinical_Officers"],
                     dental_staff: result[1]["Dental_staff"],
                     mdeical_engineering: result[1]["Medical_Engineering"],
@@ -3329,167 +3355,972 @@ export function propsToGridData(props, index, orgUnitFilter = "county") {
                 })),
 
                 columns: [
-                    
+
                     {
                         headerName: formatString(orgUnitFilter),
                         field: `${orgUnitFilter}`,
-                        width: 100
+                        width: 200
                     },
-                 
-                 {
+
+                    {
                         headerName: 'Date',
                         field: 'date',
-                        flex: 1
+                        width: 200
                     },
-                       {
+                    {
                         headerName: 'CLINICAL OFFICER',
                         field: 'clinical_officers',
-                        width:200
-                    
+                        width: 200
+
                     },
                     {
                         headerName: 'DENTAL STAFF',
                         field: 'dental_staff',
-                        width:200
+                        width: 200
                     },
                     {
                         headerName: 'MEDICAL ENGINEERING',
                         field: 'mdeical_engineering',
-                        width:200
-                    
+                        width: 200
+
                     },
                     {
                         headerName: 'ENVIROMENTAL HEALTH',
                         field: 'env_health',
-                        width:200
+                        width: 200
                     },
                     {
                         headerName: 'MEDICAL OFFICERS & SPECIALISTS',
                         field: 'medical_officer',
-                        width:200
-                    
+                        width: 200
+
                     },
                     {
                         headerName: 'GENERAL SUPPORT STAFF',
                         field: 'general_support_staffs',
-                        width:200
-                    
+                        width: 200
+
                     },
                     {
                         headerName: 'ICT OFFICER',
                         field: 'ict_office',
-                        width:200
+                        width: 200
                     },
                     {
                         headerName: 'MEDICAL LABORATORY',
                         field: 'medical_laboratory',
-                        width:200
-                    
+                        width: 200
+
                     },
                     {
                         headerName: 'COMMUNITY HEALTH SERVICES',
                         field: 'communty_health_services',
-                        width:200
-                    
+                        width: 200
+
                     },
                     {
                         headerName: 'PHARMACY STAFF',
                         field: 'pharmacy_staffs',
-                        width:200
-                    
+                        width: 200
+
                     },
                     {
                         headerName: 'MEDICAL SOCIAL WORK',
                         field: 'medical_social_work',
-                        width:200
-                    
+                        width: 200
+
                     },
                     {
                         headerName: 'NURSERS AND SPECIALIST',
                         field: 'nurses_and_specailist',
-                        width:200
-                    
+                        width: 200
+
                     },
                     {
                         headerName: 'HEALTH RECORDS AND INFORMATION',
                         field: 'health_records_and_info',
-                        width:200
-                    
+                        width: 200
+
                     },
                     {
                         headerName: 'HEALTH PROMOTION',
                         field: 'health_promotion',
-                        width:200
-                    
+                        width: 200
+
                     },
                     {
                         headerName: 'CLINICAL PYSCHOLOGY',
                         field: 'clinical_psychology',
-                    
-                        width:200
-                    
+
+                        width: 200
+
                     },
                     {
                         headerName: 'NUTRITION SERVICES',
                         field: 'nutrition_services',
-                        width:200
-                    
+                        width: 200
+
                     },
                     {
                         headerName: 'HEALTH ADMINISTRATIVE STAFF',
                         field: 'health_administrative_staffs',
-                        width:200
-                    
+                        width: 200
+
                     },
                     {
                         headerName: 'REHABILITATIVE STAFF',
                         field: 'rehabilitative_staff',
-                        width:200
-                    
+                        width: 200
+
                     },
                     // {
                     //     headerName: 'CLINICIANS',
                     //     field: 'clinicians',
                     //     width:200
-                    
+
                     // },
                     {
                         headerName: 'SUPPORT STAFFS',
                         field: 'support_staff',
-                        width:200
-                    
+                        width: 200
+
                     }
-                    
+
+                ]
+
+            }
+        case 9:
+            return {
+                rows: Object.entries(props?.facility_human_resource_category_report_all_hierachies?.results ?? {})?.map((result, index) => ({
+                    [`${orgUnitFilter}`]: result[0],
+                    date: result[1]['facility__date_established'],
+                    "Accidents_&_Emergency_Nurse": result[1]["Accidents_&_Emergency_Nurse"],
+                    Rheumatologist: result[1]["Rheumatologist"],
+                    "Nutrition_&_Dietetic_Technologist": result[1]["Nutrition_&_Dietetic_Technologist"],
+                    Pharmaceutical_Technologist: result[1]["Pharmaceutical_Technologist"],
+                    Supply_Chain_Assistant: result[1]["Supply_Chain_Assistant"],
+                    "Obs/Gyne_Specialist": result[1]["Obs/Gyne_Specialist"],
+                    Plaster_Technicians: result[1]["Plaster_Technicians"],
+                    Patient_Attendants: result[1]["Patient_Attendants"],
+                    Dental_Radiographer: result[1]["Dental_Radiographer"],
+                    Urological_Surgeon: result[1]["Urological_Surgeon"],
+                    Paediatric_Surgeon: result[1]["Paediatric_Surgeon"],
+                    Palliative_Care_Specialist: result[1]["Palliative_Care_Specialist"],
+                    Neonatologist: result[1]["Neonatologist"],
+                    Orthodontist: result[1]["Orthodontist"],
+                    Health_Records_and_Information_Managers: result[1]["Health_Records_and_Information_Managers"],
+                    "Nutrition_&_Dietetic_Officer": result[1]["Nutrition_&_Dietetic_Officer"],
+                    Mammographer: result[1]["Mammographer"],
+                    KECHN: result[1]["KECHN"],
+                    Radiologists: result[1]["Radiologists"],
+                    Occupational_Therapist: result[1]["Occupational_Therapist"],
+                    Medical_Laboratory_Technician: result[1]["Medical_Laboratory_Technician"],
+                    Dermatologists: result[1]["Dermatologists"],
+                    Health_Records_and_Information_Officer: result[1]["Health_Records_and_Information_Officer"],
+                    "Radiation_Monitoring_&_Safety_Officer": result[1]["Radiation_Monitoring_&_Safety_Officer"],
+                    Dental_Technologists: result[1]["Dental_Technologists"],
+                    Forensic_Psychiatrist: result[1]["Forensic_Psychiatrist"],
+                    Theater_Nurses: result[1]["Theater_Nurses"],
+                    Oncology_Pharmacist: result[1]["Oncology_Pharmacist"],
+                    Opthamologist: result[1]["Opthamologist"],
+                    Oncologist: result[1]["Oncologist"],
+                    Critical_Care_Nursing: result[1]["Critical_Care_Nursing"],
+                    Paediatric_Nephrologist: result[1]["Paediatric_Nephrologist"],
+                    Paeditrician: result[1]["Paeditrician"],
+                    Public_Health_Technician: result[1]["Public_Health_Technician"],
+                    CO_Reproductive_Health: result[1]["CO_Reproductive_Health"],
+                    "CO_Dermatology/_Venereology": result[1]["CO_Dermatology/_Venereology"],
+                    Paediatric_Dentist: result[1]["Paediatric_Dentist"],
+                    "Nutrition_&_Dietetic_Technician": result[1]["Nutrition_&_Dietetic_Technician"],
+                    Psychiatrist_Nurse: result[1]["Psychiatrist_Nurse"],
+                    Nephrologist: result[1]["Nephrologist"],
+                    General_Surgeon: result[1]["General_Surgeon"],
+                    Public_Health_Officers: result[1]["Public_Health_Officers"],
+                    Anaesthetist_Nurse: result[1]["Anaesthetist_Nurse"],
+                    "Neuro-Surgeons": result[1]["Neuro-Surgeons"],
+                    Public_Health_Physician: result[1]["Public_Health_Physician"],
+                    Paediatric_Endocrinologist: result[1]["Paediatric_Endocrinologist"],
+                    Community_Psychiatrist: result[1]["Community_Psychiatrist"],
+                    "Clinical_Officer_ENT/Audiology": result[1]["Clinical_Officer_ENT/Audiology"],
+                    General_Medical_Officers: result[1]["General_Medical_Officers"],
+                    Casuals: result[1]["Casuals"],
+                    Cleaners: result[1]["Cleaners"],
+                    physiologist: result[1]["physiologist"],
+                    Clinical_psychologists: result[1]["Clinical_psychologists"],
+                    Security: result[1]["Security"],
+                    "Specialist_Physician_(Internist)": result[1]["Specialist_Physician_(Internist)"],
+                    Medical_Social_Worker: result[1]["Medical_Social_Worker"],
+                    Dental_Officers: result[1]["Dental_Officers"],
+                    Health_Economist: result[1]["Health_Economist"],
+                    Therapy_Radiographer: result[1]["Therapy_Radiographer"],
+                    Health_Promotion_Officers: result[1]["Health_Promotion_Officers"],
+                    Cardiology_Nurse: result[1]["Cardiology_Nurse"],
+                    Health_Administrative_Officers: result[1]["Health_Administrative_Officers"],
+                    "CT_Scan_/MRI_Radiographer": result[1]["CT_Scan_/MRI_Radiographer"],
+                    Mortuary_Attendant: result[1]["Mortuary_Attendant"],
+                    Pharmacist: result[1]["Pharmacist"],
+                    Secretaries: result[1]["Secretaries"],
+                    facility__date_established: result[1]["facility__date_established"],
+                    Pathologist: result[1]["Pathologist"],
+                    BSN_Nurse: result[1]["BSN_Nurse"],
+                    Ophthalmic_Nurse: result[1]["Ophthalmic_Nurse"],
+                    CO_Paediatrics: result[1]["CO_Paediatrics"],
+                    Human_Resource_Management_Officer: result[1]["Human_Resource_Management_Officer"],
+                    CO_Orthopaedics: result[1]["CO_Orthopaedics"],
+                    Nuclear_Medicine_Technologist: result[1]["Nuclear_Medicine_Technologist"],
+                    Critical_Care_Physician: result[1]["Critical_Care_Physician"],
+                    Cateress: result[1]["Cateress"],
+                    Medical_Engineering_Technician: result[1]["Medical_Engineering_Technician"],
+                    Gastroentologist: result[1]["Gastroentologist"],
+                    dddd: result[1]["dddd"],
+                    Kenya_Registered_Nurse: result[1]["Kenya_Registered_Nurse"],
+                    Oromaxillofacial_Surgeon: result[1]["Oromaxillofacial_Surgeon"],
+                    ENT_surgeon: result[1]["ENT_surgeon"],
+                    Medical_Engineers: result[1]["Medical_Engineers"],
+                    "Community_Health_Volunteers(CHV)": result[1]["Community_Health_Volunteers(CHV)"],
+                    Health_Records_and_Information_Technician: result[1]["Health_Records_and_Information_Technician"],
+                    Registered_Midwives: result[1]["Registered_Midwives"],
+                    "Clinical_Officer_Lung_&_Skin": result[1]["Clinical_Officer_Lung_&_Skin"],
+                    Medical_Laboratory_Technologists: result[1]["Medical_Laboratory_Technologists"],
+                    Plaster_Technologists: result[1]["Plaster_Technologists"],
+                    Enrolled_Nurse: result[1]["Enrolled_Nurse"],
+                    "CO_Ophthalmology/Cataract_Surgery": result[1]["CO_Ophthalmology/Cataract_Surgery"],
+                    Specialized_Physiotherapists: result[1]["Specialized_Physiotherapists"],
+                    Cardiologist: result[1]["Cardiologist"],
+                    ICT_Officer: result[1]["ICT_Officer"],
+                    Supply_Chain_Officer: result[1]["Supply_Chain_Officer"],
+                    Optiometrist: result[1]["Optiometrist"],
+                    "CO_Psychiatry/Mental_Health": result[1]["CO_Psychiatry/Mental_Health"],
+                    Drivers: result[1]["Drivers"],
+                    Medical_Engineering_Technologists: result[1]["Medical_Engineering_Technologists"],
+                    Cooks: result[1]["Cooks"],
+                    ddds: result[1]["ddds"],
+                    Medical_Endocrinologist: result[1]["Medical_Endocrinologist"],
+                    KRCHN: result[1]["KRCHN"],
+                    Paediatric_Neurologist: result[1]["Paediatric_Neurologist"],
+                    BSc_Physiotherapy: result[1]["BSc_Physiotherapy"],
+                    Ultrasonographer: result[1]["Ultrasonographer"],
+                    Psychiatrist: result[1]["Psychiatrist"],
+                    Cardiothoracic_Surgeon: result[1]["Cardiothoracic_Surgeon"],
+                    Dental_Nurse: result[1]["Dental_Nurse"],
+                    "Child_&_Adolescent_Psychiatrist": result[1]["Child_&_Adolescent_Psychiatrist"],
+                    Accountants: result[1]["Accountants"],
+                    Oncology_Nurse: result[1]["Oncology_Nurse"],
+                    Clerks: result[1]["Clerks"],
+                    Orthopaedic_Surgeon: result[1]["Orthopaedic_Surgeon"],
+                    "CO_Oncology/Palli--ative_Care": result[1]["CO_Oncology/Palli--ative_Care"],
+                    "Plastic_Surgeon(Recon-structive)": result[1]["Plastic_Surgeon(Recon-structive)"],
+                    Orthopaedic_Technologist: result[1]["Orthopaedic_Technologist"],
+                    Paediatric_Nurse: result[1]["Paediatric_Nurse"],
+                    "General_Clinical_Officers(Diploma)": result[1]["General_Clinical_Officers(Diploma)"],
+                    Neurologist: result[1]["Neurologist"],
+                    Oromaxillofacial_Anesthesiologist: result[1]["Oromaxillofacial_Anesthesiologist"],
+                    "Community_Health_Extension/Assistants": result[1]["Community_Health_Extension/Assistants"],
+                    General_Physiotherapist: result[1]["General_Physiotherapist"],
+                    Clinical_pharmacist: result[1]["Clinical_pharmacist"],
+                    General_Radiographer: result[1]["General_Radiographer"],
+                    Palliative_Care_Nurse: result[1]["Palliative_Care_Nurse"],
+                    Community_Oral_Health_Officers: result[1]["Community_Oral_Health_Officers"],
+                    Forensic_Nurse: result[1]["Forensic_Nurse"],
+                    Sign_Language_Nurse: result[1]["Sign_Language_Nurse"],
+                    "Nephrology_Nurse": result[1]["Nephrology_Nurse"],
+                    id: index
+                })),
+
+                columns: [
+                    {
+                        headerName: formatString(orgUnitFilter),
+                        field: `${orgUnitFilter}`,
+                        width: 100
+                    },
+                    {
+                        headerName: 'Date',
+                        field: 'date',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Accidents  &_Emergency_Nurse',
+                        field: 'Accidents_&_Emergency_Nurse',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Rheumatologist',
+                        field: 'Rheumatologist',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Nutrition  &_Dietetic_Technologist',
+                        field: 'Nutrition_&_Dietetic_Technologist',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Pharmaceutical Technologist',
+                        field: 'Pharmaceutical_Technologist',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Supply Chain  Assistant',
+                        field: 'Supply_Chain_Assistant',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Obs/Gyne_Specialist',
+                        field: 'Obs/Gyne_Specialist',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Plaster Technicians',
+                        field: 'Plaster_Technicians',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Patient Attendants',
+                        field: 'Patient_Attendants',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Dental Radiographer',
+                        field: 'Dental_Radiographer',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Urological Surgeon',
+                        field: 'Urological_Surgeon',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Paediatric Surgeon',
+                        field: 'Paediatric_Surgeon',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Palliative Care  Specialist',
+                        field: 'Palliative_Care_Specialist',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Neonatologist',
+                        field: 'Neonatologist',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Orthodontist',
+                        field: 'Orthodontist',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Health Records  and Information Managers',
+                        field: 'Health_Records_and_Information_Managers',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Nutrition  &_Dietetic_Officer',
+                        field: 'Nutrition_&_Dietetic_Officer',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Mammographer',
+                        field: 'Mammographer',
+                        width: 100
+                    },
+                    {
+                        headerName: 'KECHN',
+                        field: 'KECHN',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Radiologists',
+                        field: 'Radiologists',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Occupational Therapist',
+                        field: 'Occupational_Therapist',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Medical Laboratory  Technician',
+                        field: 'Medical_Laboratory_Technician',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Dermatologists',
+                        field: 'Dermatologists',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Health Records  and Information Officer',
+                        field: 'Health_Records_and_Information_Officer',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Radiation Monitoring_&_Safety_Officer',
+                        field: 'Radiation_Monitoring_&_Safety_Officer',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Dental Technologists',
+                        field: 'Dental_Technologists',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Forensic Psychiatrist',
+                        field: 'Forensic_Psychiatrist',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Theater Nurses',
+                        field: 'Theater_Nurses',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Oncology Pharmacist',
+                        field: 'Oncology_Pharmacist',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Opthamologist',
+                        field: 'Opthamologist',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Oncologist',
+                        field: 'Oncologist',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Critical Care  Nursing',
+                        field: 'Critical_Care_Nursing',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Paediatric Nephrologist',
+                        field: 'Paediatric_Nephrologist',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Paeditrician',
+                        field: 'Paeditrician',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Public Health  Technician',
+                        field: 'Public_Health_Technician',
+                        width: 100
+                    },
+                    {
+                        headerName: 'CO Reproductive  Health',
+                        field: 'CO_Reproductive_Health',
+                        width: 100
+                    },
+                    {
+                        headerName: 'CO Dermatology/ Venereology',
+                        field: 'CO_Dermatology/_Venereology',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Paediatric Dentist',
+                        field: 'Paediatric_Dentist',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Nutrition & Dietetic_Technician',
+                        field: 'Nutrition_&_Dietetic_Technician',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Psychiatrist Nurse',
+                        field: 'Psychiatrist_Nurse',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Nephrologist',
+                        field: 'Nephrologist',
+                        width: 100
+                    },
+                    {
+                        headerName: 'General Surgeon',
+                        field: 'General_Surgeon',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Public Health  Officers',
+                        field: 'Public_Health_Officers',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Anaesthetist Nurse',
+                        field: 'Anaesthetist_Nurse',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Neuro-Surgeons',
+                        field: 'Neuro-Surgeons',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Public Health  Physician',
+                        field: 'Public_Health_Physician',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Paediatric Endocrinologist',
+                        field: 'Paediatric_Endocrinologist',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Community Psychiatrist',
+                        field: 'Community_Psychiatrist',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Clinical Officer  ENT/Audiology',
+                        field: 'Clinical_Officer_ENT/Audiology',
+                        width: 100
+                    },
+                    {
+                        headerName: 'General Medical Officers',
+                        field: 'General_Medical_Officers',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Casuals',
+                        field: 'Casuals',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Cleaners',
+                        field: 'Cleaners',
+                        width: 100
+                    },
+                    {
+                        headerName: 'physiologist',
+                        field: 'physiologist',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Clinical psychologists',
+                        field: 'Clinical_psychologists',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Security',
+                        field: 'Security',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Specialist Physician (Internist)',
+                        field: 'Specialist_Physician_(Internist)',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Medical Social  Worker',
+                        field: 'Medical_Social_Worker',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Dental Officers',
+                        field: 'Dental_Officers',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Health Economist',
+                        field: 'Health_Economist',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Therapy Radiographer',
+                        field: 'Therapy_Radiographer',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Health Promotion  Officers',
+                        field: 'Health_Promotion_Officers',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Cardiology Nurse',
+                        field: 'Cardiology_Nurse',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Health Administrative  Officers',
+                        field: 'Health_Administrative_Officers',
+                        width: 100
+                    },
+
+                    {
+                        headerName: 'CT Scan / MRI Radiographer',
+                        field: 'CT_Scan_/MRI_Radiographer',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Mortuary Attendant',
+                        field: 'Mortuary_Attendant',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Pharmacist',
+                        field: 'Pharmacist',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Secretaries',
+                        field: 'Secretaries',
+                        width: 100
+                    },
+                    {
+                        headerName: 'facility date established',
+                        field: 'facility__date_established',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Pathologist',
+                        field: 'Pathologist',
+                        width: 100
+                    },
+                    {
+                        headerName: 'BSN Nurse',
+                        field: 'BSN_Nurse',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Ophthalmic Nurse',
+                        field: 'Ophthalmic_Nurse',
+                        width: 100
+                    },
+                    {
+                        headerName: 'CO Paediatrics',
+                        field: 'CO_Paediatrics',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Human Resource Management Officer',
+                        field: 'Human_Resource_Management_Officer',
+                        width: 100
+                    },
+                    {
+                        headerName: 'CO Orthopaedics',
+                        field: 'CO_Orthopaedics',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Nuclear Medicine  Technologist',
+                        field: 'Nuclear_Medicine_Technologist',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Critical Care  Physician',
+                        field: 'Critical_Care_Physician',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Cateress',
+                        field: 'Cateress',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Medical Engineering  Technician',
+                        field: 'Medical_Engineering_Technician',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Gastroentologist',
+                        field: 'Gastroentologist',
+                        width: 100
+                    },
+                    {
+                        headerName: 'dddd',
+                        field: 'dddd',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Kenya Registered  Nurse',
+                        field: 'Kenya_Registered_Nurse',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Oromaxillofacial Surgeon',
+                        field: 'Oromaxillofacial_Surgeon',
+                        width: 100
+                    },
+                    {
+                        headerName: 'ENT surgeon',
+                        field: 'ENT_surgeon',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Medical Engineers',
+                        field: 'Medical_Engineers',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Community Health  Volunteers(CHV)',
+                        field: 'Community_Health_Volunteers(CHV)',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Health Records  and Information Technician',
+                        field: 'Health_Records_and_Information_Technician',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Registered Midwives',
+                        field: 'Registered_Midwives',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Clinical Officer  Lung_&_Skin',
+                        field: 'Clinical_Officer_Lung_&_Skin',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Medical Laboratory  Technologists',
+                        field: 'Medical_Laboratory_Technologists',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Plaster Technologists',
+                        field: 'Plaster_Technologists',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Enrolled Nurse',
+                        field: 'Enrolled_Nurse',
+                        width: 100
+                    },
+                    {
+                        headerName: 'CO Ophthalmology/Cataract_Surgery',
+                        field: 'CO_Ophthalmology/Cataract_Surgery',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Specialized Physiotherapists',
+                        field: 'Specialized_Physiotherapists',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Cardiologist',
+                        field: 'Cardiologist',
+                        width: 100
+                    },
+                    {
+                        headerName: 'ICT Officer',
+                        field: 'ICT_Officer',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Supply Chain  Officer',
+                        field: 'Supply_Chain_Officer',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Optiometrist',
+                        field: 'Optiometrist',
+                        width: 100
+                    },
+                    {
+                        headerName: 'CO Psychiatry/Mental_Health',
+                        field: 'CO_Psychiatry/Mental_Health',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Drivers',
+                        field: 'Drivers',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Medical Engineering  Technologists',
+                        field: 'Medical_Engineering_Technologists',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Cooks',
+                        field: 'Cooks',
+                        width: 100
+                    },
+                    {
+                        headerName: 'ddds',
+                        field: 'ddds',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Medical Endocrinologist',
+                        field: 'Medical_Endocrinologist',
+                        width: 100
+                    },
+                    {
+                        headerName: 'KRCHN',
+                        field: 'KRCHN',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Paediatric Neurologist',
+                        field: 'Paediatric_Neurologist',
+                        width: 100
+                    },
+                    {
+                        headerName: 'BSc Physiotherapy',
+                        field: 'BSc_Physiotherapy',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Ultrasonographer',
+                        field: 'Ultrasonographer',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Psychiatrist',
+                        field: 'Psychiatrist',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Cardiothoracic Surgeon',
+                        field: 'Cardiothoracic_Surgeon',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Dental Nurse',
+                        field: 'Dental_Nurse',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Child  &_Adolescent_Psychiatrist',
+                        field: 'Child_&_Adolescent_Psychiatrist',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Accountants',
+                        field: 'Accountants',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Oncology Nurse',
+                        field: 'Oncology_Nurse',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Clerks',
+                        field: 'Clerks',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Orthopaedic Surgeon',
+                        field: 'Orthopaedic_Surgeon',
+                        width: 100
+                    },
+                    {
+                        headerName: 'CO Oncology/Palli--ative_Care',
+                        field: 'CO_Oncology/Palli--ative_Care',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Plastic Surgeon(Recon-structive)',
+                        field: 'Plastic_Surgeon(Recon-structive)',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Orthopaedic Technologist',
+                        field: 'Orthopaedic_Technologist',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Paediatric Nurse',
+                        field: 'Paediatric_Nurse',
+                        width: 100
+                    },
+                    {
+                        headerName: 'General Clinical  Officers(Diploma)',
+                        field: 'General_Clinical_Officers(Diploma)',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Neurologist',
+                        field: 'Neurologist',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Oromaxillofacial Anesthesiologist',
+                        field: 'Oromaxillofacial_Anesthesiologist',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Community Health  Extension/Assistants',
+                        field: 'Community_Health_Extension/Assistants',
+                        width: 100
+                    },
+                    {
+                        headerName: 'General Physiotherapist',
+                        field: 'General_Physiotherapist',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Clinical pharmacist',
+                        field: 'Clinical_pharmacist',
+                        width: 100
+                    },
+                    {
+                        headerName: 'General Radiographer',
+                        field: 'General_Radiographer',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Palliative Care  Nurse',
+                        field: 'Palliative_Care_Nurse',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Community Oral Health Officers',
+                        field: 'Community_Oral_Health_Officers',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Forensic Nurse',
+                        field: 'Forensic_Nurse',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Sign Language  Nurse',
+                        field: 'Sign_Language_Nurse',
+                        width: 100
+                    },
+                    {
+                        headerName: 'Nephrology Nurse',
+                        field: 'Nephrology_Nurse',
+                        width: 100
+                    },
+
                 ]
 
             }
 
-        case 8:
+        case 10:
             return {
-                rows: Object.entries(props?.gis)?.map(([key, value], index) => ({
-                    sub_county: key,
-                    facility_name: value?.map(({facility_name}) =>  facility_name)[0],
-                    facility_code: value?.map(({facility_code}) =>  facility_code)[0],
-                    facility_long: value?.map(({facility_long}) =>  facility_long)[0],
-                    facility_lat: value?.map(({facility_lat}) =>  facility_lat)[0],
-                    id:index
+                rows: Object.entries(props?.gis ?? {})?.map(([key, value], index) => ({
+                    [`${orgUnitFilter}`]: key,
+                    date: value?.map(({ facility_date_established }) => facility_date_established)[0],
+                    facility_name: value?.map(({ facility_name }) => facility_name)[0],
+                    facility_code: value?.map(({ facility_code }) => facility_code)[0],
+                    facility_long: value?.map(({ facility_long }) => facility_long)[0],
+                    facility_lat: value?.map(({ facility_lat }) => facility_lat)[0],
+                    id: index
                 })),
 
                 columns: [
-                    
+
                     {
-                        headerName: 'Sub County',
-                        field: 'sub_county',
+                        headerName: formatString(orgUnitFilter),
+                        field: `${orgUnitFilter}`,
                         flex: 1
 
                     },
-                     {
+                    {
                         headerName: 'Date',
                         field: 'date',
                         flex: 1
                     },
                     {
-                          headerName: 'Facility Name',
+                        headerName: 'Facility Name',
                         field: 'facility_name',
                         flex: 1
                     },
@@ -3514,6 +4345,6 @@ export function propsToGridData(props, index, orgUnitFilter = "county") {
 
                 ]
 
-            }   
+            }
     }
 } 

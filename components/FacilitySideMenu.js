@@ -131,7 +131,7 @@ function FacilitySideMenu({ states, stateSetters, filters }) {
 
             qfilter[0].forEach(({ id, value }) => { filter[id] = value })
 
-            if (filter_id === 'new_pending_validation') filter['is_complete'] = true;
+            // if (filter_id === 'new_pending_validation') filter['is_complete'] = true;
 
             if(filter_id.includes('incomplete')) filter['in_complete_details'] = false;
 

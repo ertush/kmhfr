@@ -39,6 +39,7 @@ function EditListItem({
   const [showItemCategory, setShowItemCategory] = useState(false)
 
   const [formError, setFormError] = useState(null)
+  const [from, setFrom] = useState("submission")
 
   // Refs
   const [categoryOptions, setCategoryItems] = useState(() => {
@@ -74,6 +75,8 @@ function EditListItem({
 
   const handleCheckboxChange = (id, name, category, category_name) => {
     
+    setFrom("submission")
+
     setSelectedItems((prevSelectedRows) => {
       if (prevSelectedRows?.filter((row) => row.rowid == id).length > 0) {
         return prevSelectedRows?.filter((row) => row.rowid !== id);
@@ -115,15 +118,28 @@ function EditListItem({
 
   useEffect(() => {
 
+    // setallServices(itemData)
+
+    const currentUrl = new URL(window.document.location.href)
+
+    // console.log({itemName, from: })
+
+    const fromParam = currentUrl.searchParams.get("from")
+    
+    setFrom(fromParam)
+
+
     if (Array.isArray(itemData)) {
       const result = []
 
       setSelectedItems(() => {
 
-        if (itemName == 'facility_services') {
 
+        if (itemName == 'facility_services' && currentUrl.searchParams.get("from") !== "previous") {
+
+          // console.log("setting selectedItems")
           itemData?.map((service) => {
-            result.push({ sname: service.service_name, rowid: service.service_id, category_id: service.category_id, category_name: service.category_name })
+            result.push({ sname: service.service_name , rowid: service.service_id , category_id: service.category_id , category_name: service.category_name })
           })
 
           return result
@@ -157,7 +173,7 @@ function EditListItem({
 
       const newSelectedItems = selectedItems.filter(({ rowId }, i) => rowId == itemData[i]?.service_id)
 
-      console.log({selectedItems})
+      // console.log({selectedItems})
       
       if (itemName == 'facility_services') {
         handleItemsUpdate(token, [newSelectedItems, itemId])
@@ -228,7 +244,7 @@ function EditListItem({
       if (itemName == "facility_services") {
         handleItemsSubmit(token, selectedItems, itemId)
           .then((resp) => {
-            if (resp.status == 204 || resp.status == 200) {
+            if (resp.ok) {
               if (itemName == "facility_services") {
                 setSubmitting(false)
                 alert.success('Facility services saved successfully');
@@ -236,31 +252,25 @@ function EditListItem({
                 const services = typeof selectedItems == 'string' ? JSON.parse(selectedItems).map(({ rowid }) => ({ service: rowid })) : selectedItems.map(({ rowid }) => ({ service: rowid }))
                 const payload = JSON.stringify(services)
 
-                const base64EncParams = Buffer.from(payload).toString('base64')
+                const base64EncPayload = Buffer.from(payload).toString('base64')
+                
+                if(window){
+                    window.localStorage.setItem('services', base64EncPayload)
+                }
 
-                  router.push({
-                    pathname: `${window.location.origin}/facilities/add`,
-                    query: { 
-                      formData: base64EncParams,
-                      formId: 5,
-                      facilityId: itemId,
-                      from: 'submission'
+                router.push({
+                  pathname: `${window.location.origin}/facilities/add`,
+                  query: { 
+                    // formData: base64EncPayload,
+                    formId: 5,
+                    facilityId: itemId,
+                    from: 'submission'
 
-                    }
-                })
-                .then((navigated) => {
-                  if(navigated) setFormId(5)
-                })
-
-                // const url = new URL(`${window.location.origin}/facilities/add?formData=${base64EncParams}`)
-
-                // url.searchParams.set('formId', '5')
-
-                // url.searchParams.set('facilityId', `${itemId}`)
-
-                // url.searchParams.set('from', 'submission')
-
-                // window.location.href = url
+                  }
+              })
+              .then((navigated) => {
+                if(navigated) setFormId(5)
+              })
 
               } else {
                 setSubmitting(false)
@@ -335,6 +345,13 @@ function EditListItem({
 
   }
 
+// return (
+//   <pre>
+//     {
+//       JSON.stringify({selectedItems , itemData}, null, 2)
+//     }
+//   </pre>
+// )
 
   return (
 
@@ -474,11 +491,22 @@ function EditListItem({
             <tbody className='bg-gray-50 shadow-md'>
 
 
-              {Array.isArray(selectedItems) && selectedItems.length === 0 && <tr><td colSpan={3} className="text-center">No services found</td></tr>}
+              {Array.isArray(selectedItems) && selectedItems.length === 0 && from !== "previous" && <tr><td colSpan={3} className="text-center">No services found</td></tr>}
 
 
               {
-                itemName == "facility_services" ?
+                Array.isArray(itemData) && itemData.length > 0 && from == "previous" ?
+                  itemData?.map((row, i) => (
+                    <tr key={i}>
+
+                      <td className="border border-gray-300 px-1 py-1">{row.sname}</td>
+                      <td className="border border-gray-300 px-1 py-1">
+                        Yes
+                      </td>
+                    </tr>
+                  ))
+                  :
+                  itemName == 'facility_services' ?
                   selectedItems?.map((row, i) => (
                     <tr key={i}>
 

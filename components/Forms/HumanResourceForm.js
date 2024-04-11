@@ -23,23 +23,7 @@ export function HumanResourceForm() {
 
     const setFormId = useContext(UpdateFormIdContext);
 
-    // const [formId, setFormId] = useMemo(() => {
-    //     let id = ''
-
-    //     function setId(_id) {
-    //         id = _id
-    //     }
-
-    //     if(window) {
-    //         setId(new URL(window.location.href).searchParams.get('formId'))
-    //     }
-
-    //     // console.log({id})
-
-    //     return [id, setId]
-    // }, [])
-
-    // const[facilityId, _] = useContext(FacilityIdContext);
+    
     const[facilityId, setFacilityId] = useMemo(() => {
         let id = ''
 
@@ -48,7 +32,7 @@ export function HumanResourceForm() {
         }
 
         if(window) {
-            setId(new URL(window.location.href).searchParams.get('facilityId'))
+            setId(new URL(window.location.href).searchParams.get('facilityId') ?? '')
         }
 
         // console.log({id})
@@ -91,21 +75,17 @@ export function HumanResourceForm() {
 
 
     //Event handlers
+    function handleHrPrevious(e){
 
-    const handleHrPrevious = useCallback(() => {
+    e.preventDefault()
 
-    // const url = new URL(infrastructureFormUrl)
-
-    // url.searchParams.set('formId', '5')
-
-    // url.searchParams.set('from', 'previous')
-
-    // router.push(url)
-
+   
     router.push({
         pathname: '/facilities/add',
         query: {
-            formId: 5
+            formId: 5,
+            facilityId,
+            from: "previous"
         }
     })
     .then((navigated) => {
@@ -114,7 +94,7 @@ export function HumanResourceForm() {
     
 
 
-    }, []);
+    }
 
     return (
         <>
