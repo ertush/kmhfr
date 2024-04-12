@@ -9,7 +9,7 @@ import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import { UserContext } from '../../providers/user';
-import {Formik, Form, Field} from 'formik';
+import { useAlert } from "react-alert";
 import { ChevronDownIcon, FilterIcon, SearchIcon } from '@heroicons/react/outline'
 
 
@@ -45,6 +45,7 @@ const StyledDataGrid = styled(DataGrid)(() => ({
 function AdminOffices(props) {
   
     const router = useRouter()
+    const alert = useAlert()
 
     const userPermissions = useContext(PermissionContext)
     const userCtx = useContext(UserContext)
@@ -154,6 +155,7 @@ function AdminOffices(props) {
             .catch(e => {
                 console.error(e.message)
                 setAdminOffice([])
+                alert.error('No Admin offices found')
             })
             
     }
