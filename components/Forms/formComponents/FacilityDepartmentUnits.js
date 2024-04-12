@@ -9,7 +9,7 @@ export default function FacilityDepartmentUnits({facilityDeptOptions,  setFacili
  
     const facilityDepts = useContext(FacilityDepartmentUnitsContext);
 
-    console.log(facilityDepts)
+    console.log({facilityDepts})
     
 
     return (

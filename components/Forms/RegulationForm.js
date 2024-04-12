@@ -9,6 +9,7 @@ import { useAlert } from 'react-alert';
 import Spinner from '../Spinner';
 import { useRouter } from 'next/router';
 import { Alert } from '@mui/lab'
+import { UpdateFormIdContext } from './Form';
 
 export const FacilityDepartmentUnitsContext = createContext();
 
@@ -16,6 +17,8 @@ export function RegulationForm() {
 
     // Context
     const options = useContext(FormOptionsContext);
+    const setFormId = useContext(UpdateFormIdContext)
+
 
     // Edit Stuff
     const facilityRegulationData = {};
@@ -33,17 +36,29 @@ export function RegulationForm() {
 
     })
 
-
-
     const alert = useAlert()
     const router = useRouter()
 
  
-    const [facilityId, setFacilityId] = useState('');
+    const [facilityId, setFacilityId] = useMemo(() => {
+        let id = ''
+    
+        function setId(_id) {
+            id = _id
+        }
+    
+        if(window) {
+            setId(new URL(window.location.href).searchParams.get('facilityId') ?? '')
+        }
+    
+        return [id, setId]
+    }, [])
+
     const [facilityContactsUrl, setFacilityContactsUrl] = useState('');
     const [submitting, setSubmitting] = useState(false);
     const [licenseFile, setLicenseFile] = useState(null);
     const [formError, setFormError] = useState(null);
+
 
 
     const [facilityDepts, setFacilityDepts] = useState([
@@ -59,7 +74,6 @@ export function RegulationForm() {
     ]);
 
    
-
     // State
    
     const [hideLicenseNumber, setHideLicenseNumber] = useState(false);
@@ -70,29 +84,9 @@ export function RegulationForm() {
         let vals = {}
 
 
-        if (window && !options?.data) {
+        if (options?.data) {
 
-            const current_url =  new URL(window.location.href)
-    
-            setFacilityId(current_url.searchParams.get('facilityId'))            
-    
-            if(current_url.searchParams.get('from') == 'submission') setFacilityContactsUrl(window.location.href)
-    
-            if(current_url.searchParams.get('from') == 'previous') {
-    
-            // Extract form data from current url
-    
-            const formDataBase64Enc = current_url.searchParams.get('formData')
-            const formData = JSON.parse(Buffer.from(formDataBase64Enc, 'base64').toString() ?? '{}')
-    
-            // console.log(formData)
-    
-             vals = formData
-                
-            } 
-        } else {
-
-
+             
         for(let i = 0; i < facilityDepts.length; i++){
             vals[`facility_unit_${i}`] = "";
             vals[`facility_regulating_body_name_${i}`] = "";
@@ -113,14 +107,15 @@ export function RegulationForm() {
     }
         return vals
     }, [facilityDepts])
+    
 
     const [initialValues, handleFormUpdate] = useState(options?.data ? facilityRegulationData :  formFields)
 
 
-    const [formValues, setFormValues] = useState(options?.data ? facilityRegulationData :  initialValues && initialValues.length > 1 ? JSON.parse(initialValues) : formFields)
+    const [formValues, setFormValues] = useState(options?.data ? facilityRegulationData : formFields /*initialValues && initialValues.length > 1 ? JSON.parse(initialValues) : formFields*/)
 
     
-    delete formValues['license_document'];
+   if(formValues) delete formValues['license_document'];
 
     // Ref
     const _regBodyRef = useRef(null)
@@ -129,17 +124,23 @@ export function RegulationForm() {
 
     // Event Handlers
  
-    const handleRegulationPrevious = useCallback((event) => {
+ const handleRegulationPrevious = useCallback((event) => {
         // setFormId(`${formId - 1}`)
 
         event.preventDefault();
 
-        
+
+
         router.push({
             pathname: '/facilities/add',
             query: {
-                formId: 2
+                formId: 2,
+                from:'previous',
+                facilityId
             }
+        })
+        .then((navigated) => {
+            if(navigated) setFormId(2)
         })
 
 
@@ -148,21 +149,54 @@ export function RegulationForm() {
     }
 , []);
 
- function handleLicenseFileChange (e) {
+ 
+function handleLicenseFileChange (e) {
     e.preventDefault()
 
     setLicenseFile(e?.files)
  }
-
 
     // Effects
     useEffect(() => {
 
         const _units = [];
 
+        const currentUrl = new URL(window.location.href)
+
         const initialValueObj = options?.data ? facilityRegulationData : typeof initialValues == 'string' ? JSON.parse(initialValues) : {}
 
         const unitCount = Object.keys(initialValueObj).filter(x => /^facility_unit_\d/.test(x)).length;
+
+        if(window && currentUrl.searchParams.get("from") == "previous") {
+            
+            const regulationDataEnc = window.localStorage.getItem('regulation')
+            const regulationDataStr = Buffer.from(regulationDataEnc ?? 'e30=' , 'base64').toString()
+            const regulationData = JSON.parse(regulationDataStr)
+
+            const regData = {}
+            
+            console.log({regulationDataEnc, regulationData})
+
+            let i = 0
+
+            for (const data of regulationData){
+                for(const [k, v] of Object.entries(data)) {
+                    if(k == "units"){
+                        for(const unit of v){
+                            for(const [_k, _v] of Object.entries(unit)){
+                                regData[`facility_${_k}_${i}`] = _v
+                            }
+                            i += 1
+                        } 
+                    } else {
+                         regData[k] = v
+
+                    }
+                }
+            }
+
+            setFormValues(regData)
+        }
 
         if(unitCount > 1){
             for(let i = 0; i < unitCount; i++) {
@@ -188,6 +222,7 @@ export function RegulationForm() {
 
 
     // Constants
+
 
     return (
         <Formik
@@ -243,7 +278,7 @@ export function RegulationForm() {
 
                
 
-                              
+                                            
                   return (
                    <>
                         <h4 className="text-lg uppercase mt-4 pb-2 border-b border-gray-400  w-full mb-4 font-semibold text-gray-900">Facility Regulation</h4>
@@ -409,9 +444,9 @@ export function RegulationForm() {
 
                                       <div className='flex justify-between items-center w-full'>
                                           <button onClick={handleRegulationPrevious}
-                                              className='flex items-center justify-start space-x-2 p-1 group hover:bg-blue-700 border border-gray-700 px-2'>
-                                              <ChevronDoubleLeftIcon className='w-4 h-4 group-hover:text-white text-gray-900' />
-                                              <span className='text-medium font-semibold group-hover:text-white text-gray-900'>Facility Contacts</span>
+                                              className='flex items-center justify-start space-x-2 p-1 group border border-gray-700 px-2'>
+                                              <ChevronDoubleLeftIcon className='w-4 h-4 text-gray-900' />
+                                              <span className='text-medium font-semibold text-gray-900'>Facility Contacts</span>
                                           </button>
                                           <button type="submit"  disabled={submitting} className={`${submitting ? 'cursor-not-allowed' : 'cursor-pointer'} flex items-center justify-start gap-2 text-white bg-blue-700  p-1 px-2`}>
                                                 <span className='text-medium font-semibold text-white'>

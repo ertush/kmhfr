@@ -356,10 +356,11 @@ async function handleRegulationSubmit(token, values, facilityId, setSubmitting, 
         body: JSON.stringify(payload[0])
     })
     .then(resp => {
-        if (resp.status == 204 || resp.status == 200) {
+        if (resp.ok) {
             alert.success('Facility Regulation Details Created Successfully', {
                 timeout: 10000
             })
+            
 
             fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${facilityId}/`, {
 
@@ -373,7 +374,7 @@ async function handleRegulationSubmit(token, values, facilityId, setSubmitting, 
                 body: JSON.stringify(payload[1])
             })
             .then(resp => {
-                if(resp.status == 204 || resp.status == 200 ) {
+                if(resp.ok) {
                     setSubmitting(false)
                     alert.success('Facility Department units Created Successfully', {
                         timeout: 10000
@@ -381,7 +382,12 @@ async function handleRegulationSubmit(token, values, facilityId, setSubmitting, 
 
                     // Posting  license  file
 
+
                     const formDataBase64Enc = Buffer.from(JSON.stringify(payload)).toString('base64')
+
+                    if(window) {
+                        window.localStorage.setItem('regulation', formDataBase64Enc)
+                    }
 
                     // router.push({
                     //     pathname: `${window.location.origin}/facilities/add`,
@@ -393,7 +399,7 @@ async function handleRegulationSubmit(token, values, facilityId, setSubmitting, 
     
                     //     }
                     // })
-                    const url = new URL(`${window.location.origin}/facilities/add?formData=${formDataBase64Enc}`)
+                    const url = new URL(`${window.location.origin}/facilities/add`)
 
                     url.searchParams.set('formId', '4')
 
@@ -571,7 +577,7 @@ function handleServiceSubmit(token, services, facilityId) {
             method: 'PATCH',
             body: JSON.stringify({ services: _payload })
         })
-
+        
 
     }
     else {
@@ -618,6 +624,7 @@ function handleInfrastructureSubmit(token, formData, facilityId) {
     // console.log({_payload})
 
     if (_payload) {
+
 
         try {
             return fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${facilityId}/`, {

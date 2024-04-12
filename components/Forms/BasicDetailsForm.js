@@ -2,7 +2,7 @@
 
 "use client"
 
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState, useMemo } from 'react';
 import { Select as CustomSelect } from './formComponents/Select';
 import { FormOptionsContext } from '../../pages/facilities/add';
 import {
@@ -30,7 +30,22 @@ export function BasicDeatilsForm({ editMode }) {
   // State
   const [isClient, setIsClient] = useState(false)
   const [totalFunctionalBeds, setTotalFunctionalBeds] = useState(0)
-  const [facilityId, setFacilityId] = useState('')
+  const [facilityId, setFacilityId] = useMemo(() => {
+    let id = ''
+
+    function setId(_id) {
+        id = _id
+    }
+
+    if(window) {
+        setId(new URL(window.location.href).searchParams.get('facilityId') ?? '')
+    }
+
+    // console.log({id})
+
+    return [id, setId]
+}, [])
+
   const [submitting, setSubmitting] = useState(false);
   const [touchedFields, setTouchedFields] = useState([]);
   const [formError, setFormError] = useState(null);
@@ -64,7 +79,6 @@ export function BasicDeatilsForm({ editMode }) {
       label: 'Operational',
     },
   ];
-
 
   // Event handlers
   function handleFocus(e) {
@@ -312,13 +326,7 @@ export function BasicDeatilsForm({ editMode }) {
 
     const data = Object.fromEntries(formData)
 
-    // const payload = {}
-
-    // for (let field of touchedFields) {
-    //   payload[field] = data[field] == undefined ? false : data[field] == "on" || data[field] == "true" ? true : data[field] == "false" ? false : (Number(data[field]) ?? data[field])
-    // }
-
-    // console.log({payload})
+   
 
     setSubmitting(true)
 
@@ -379,35 +387,40 @@ export function BasicDeatilsForm({ editMode }) {
 
   }
 
+
   function handeBasicDetailsCreate(e) {
+
     e.preventDefault()
 
     const formData = new FormData(e.target)
 
     const data = Object.fromEntries(formData)
 
-    // if(data.hasOwnerProperty('facility_type')) {
-    //   data.facility_type = data.facility_type_details;
-    // }
 
     setSubmitting(true)
 
     // Persist Data
 
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/`, {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json;charset=UTF-8',
-        'Authorization': `Bearer ${options?.token}`
-      },
-      body: JSON.stringify(data)
-    })
+      fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/`, {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json;charset=UTF-8',
+          'Authorization': `Bearer ${options?.token}`
+        },
+        body: JSON.stringify(data)
+      })
       .then(async (res) => {
 
-        if (res.status == 201 || res.status == 200) {
+        if (res.ok) {
           setSubmitting(false)
           alert.success('Facility Added Successfully')
+
+          if(window) {
+            const base64BasicDetilsFormData = Buffer.from(JSON.stringify(data)).toString('base64')
+            window.localStorage.setItem('basic_details', base64BasicDetilsFormData)
+          }
+
         } else {
           setSubmitting(false)
           alert.error('Unable to Add facility')
@@ -434,7 +447,7 @@ export function BasicDeatilsForm({ editMode }) {
 
         const facilityId = facilityData?.id
 
-        setFacilityId(facilityId)
+        setFacilityId(facilityId ?? null)
 
         if (facilityData) {
           fetch(
@@ -466,31 +479,25 @@ export function BasicDeatilsForm({ editMode }) {
 
                 const base64EncWardData = Buffer.from(JSON.stringify(wardGeoData)).toString('base64')
 
-                const params = [];
+                
 
-                for (let [k, v] of formData) {
-                  if (k == 'facility_checklist_document') {
-                    params.push(`${k}=${JSON.stringify(v)}`)
-                  }
-                  else {
-
-                    params.push(`${k}=${v}`)
-
-                  }
+                
+                // params.push(`wardData=${base64EncWardData}`)
+                
+                if(window) {
+                  window.localStorage.setItem('ward_data', base64EncWardData  )
                 }
 
-                params.push(`wardData=${base64EncWardData}`)
-
-                const base64EncParams = Buffer.from(params.join('&')).toString('base64')
+                // const base64EncParams = Buffer.from(params.join('&')).toString('base64')
 
 
                 router.push({
                   pathname: `${window.location.origin}/facilities/add`,
 
                   query: {
-                    formData: base64EncParams,
+                    wardData: base64EncWardData,
                     formId: 1,
-                    facilityId: facilityId,
+                    facilityId,
                     from: 'submission'
                   }
 
@@ -525,14 +532,14 @@ export function BasicDeatilsForm({ editMode }) {
 
     handleFocus(e)
 
-
     const number_of_inpatient_beds = Number(document.getElementsByName('number_of_inpatient_beds')[0]?.value)
     const number_of_icu_beds = Number(document.getElementsByName('number_of_icu_beds')[0]?.value)
     const number_of_hdu_beds = Number(document.getElementsByName('number_of_hdu_beds')[0]?.value)
     const number_of_maternity_beds = Number(document.getElementsByName('number_of_maternity_beds')[0]?.value)
+    const number_of_isolation_beds = Number(document.getElementsByName('number_of_isolation_beds')[0]?.value)
     const number_of_emergency_casualty_beds = Number(document.getElementsByName('number_of_emergency_casualty_beds')[0]?.value)
 
-    const totalBeds = number_of_inpatient_beds + number_of_icu_beds + number_of_hdu_beds + number_of_maternity_beds + number_of_emergency_casualty_beds
+    const totalBeds = number_of_inpatient_beds + number_of_icu_beds + number_of_hdu_beds + number_of_maternity_beds + number_of_emergency_casualty_beds + number_of_isolation_beds
 
 
     setTotalFunctionalBeds(totalBeds)
@@ -542,6 +549,7 @@ export function BasicDeatilsForm({ editMode }) {
 
   // Effects
   useEffect(() => {
+
 
     // console.log({facility: options?.data})
     async function updateFacilityTypeDetailOptions(e) {
@@ -607,18 +615,26 @@ export function BasicDeatilsForm({ editMode }) {
     }
 
     if (window && !editMode) {
-      const path = new URL(window.location.href)
+      const path = new URL(window.document.location.href)
 
       if (path.searchParams.get('from') == 'previous') {
 
-        const strFormData = Buffer.from(path.searchParams?.get('formData') ?? 'J3t9Jw==', 'base64').toString() ?? "{}"
-        const params = new URL(`${window.location.origin}/facilities/add?${strFormData}`).searchParams
-        const paramEntries = params.entries()
-        const formData = Object.fromEntries(paramEntries)
+        
+        const previousFormData = window.localStorage.getItem('basic_details')
+    
+        if (previousFormData !== null) {
+    
+          const formData = Buffer.from(previousFormData ?? 'e30=', 'base64').toString()
 
-        // console.log(formData)
+          const data = JSON.parse(formData)
 
-        if (facilityId == '') setFacilityId(params?.facilityId)
+
+        // const strFormData = Buffer.from(path.searchParams?.get('formData') ?? 'J3t9Jw==', 'base64').toString() ?? "{}"
+        // const params = new URL(`${window.location.origin}/facilities/add?${strFormData}`).searchParams
+        // // const paramEntries = params.entries()
+      
+
+        // if (facilityId == '') setFacilityId(params?.facilityId)
 
         delete formData?.facility_checklist_document
 
@@ -626,7 +642,7 @@ export function BasicDeatilsForm({ editMode }) {
 
         Object.assign(newOptions, options)
 
-        newOptions['data'] = formData
+        newOptions['data'] = data // ?? _formData
 
         for (let [k, v] of Object.entries(newOptions?.data)) {
 
@@ -638,11 +654,37 @@ export function BasicDeatilsForm({ editMode }) {
         }
 
         setOptions(newOptions)
+
+        let parent = "";
+      
+      getFacilityTypeDetailsParent(options?.data?.facility_type, options?.token)
+        .then(facilityTypeDetails => {
+
+          parent=facilityTypeDetails[0]?.parent; 
+          if(parent)
+          {
+            document.getElementsByName('facility_type_parent')[0].value = parent.toString();
+           }
+         })
+
+        getFacilityTypeDetails(parent, options?.token)
+        .then(facilityTypeDetails => {
+
+           const _options = facilityTypeDetails?.map(({ id: value, name: label }) => ({ label, value }))
+
+          setFacilityTypeDetailOptions(_options)
+        })
+
       }
+
+      }
+
 
     }
     else if (editMode) {
+
       let parent = "";
+      
       getFacilityTypeDetailsParent(options?.data?.facility_type, options?.token)
         .then(facilityTypeDetails => {
 
@@ -667,15 +709,18 @@ export function BasicDeatilsForm({ editMode }) {
   }, [])
 
 
+
+
   if (isClient) {
 
     // return(
     //   <pre>
     //     {
-    //       JSON.stringify({facility_type_detail: options?.facility_type_details, facility_types: options?.facility_types}, null, 2)
+    //       JSON.stringify({data: options?.data}, null, 2)
     //     }
     //   </pre>
     // )
+    
 
     return (
       <form name='basic_details_form'
