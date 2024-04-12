@@ -29,12 +29,13 @@ function CommunityUnitsBasciDetailsForm(props) {
 
 	const facilities = props?.facilities
 
-	const facilityOptions = facilities?.map(({id: value, name: label}) => ({label, value}))
+	const facilityOptions = facilities?.map(({id: value, name: label, owner_type: type, owner_type_name: own }) => ({label, value, type, own}))
 
 	const [countyValue, setCountyValue] = useState('')
 	const [subCountyValue, setSubCountyValue] = useState('')
 	const [constituencyValue, setConstituencyValue] = useState('')
 	const [wardValue, setWardValue] = useState('')
+	const [facilityType, setFacilityType] = useState('')
 	const [submitting, setSubmitting] = useState(false)
 	const [contactList, setContactList] = useState([{ contact_types: '', contact: '' }])
 
@@ -42,6 +43,10 @@ function CommunityUnitsBasciDetailsForm(props) {
 	const [formError, setFormError] = useState(null)
 	const [validationError, setValidationError] = useState(null)
 	const setFormId = useContext(SetFormIdContext)
+
+	console.log("Dropdown:",facilityOptions)
+	// console.log("Dropdown:",facilities)
+
 
 	function handleCUBasicDetailsSubmit (event) {
 		
@@ -136,12 +141,13 @@ function CommunityUnitsBasciDetailsForm(props) {
 
 	function handleFacilityChange({ value }) {
 
-		facilities?.map(({id, county, sub_county_name, constituency, ward_name}) => {
+		facilities?.map(({id, county, sub_county_name, constituency, ward_name, owner_type, owner_type_name}) => {
 			if (id === value) {
 				setCountyValue(county);
 				setSubCountyValue(sub_county_name);
 				setConstituencyValue(constituency);
 				setWardValue(ward_name);
+				setFacilityType(owner_type_name);
 			}
 		}
 		);
@@ -1335,7 +1341,7 @@ export async function getServerSideProps({req, res, query}) {
 		case "facilities":
   
 		  
-		  const facilities = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/?page_size=${count > 500 ? '500' : count}&fields=id,name,county,sub_county_name,constituency,ward_name`,{
+		  const facilities = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/?page_size=${count > 500 ? '500' : count}&fields=id,name,county,sub_county_name,constituency,ward_name,closed,owner_type,owner_type_name&closed=false&owner_type=6a833136-5f50-46d9-b1f9-5f961a42249f`,{
 			headers:{
 			  'Authorization': 'Bearer ' + token,
 			  'Accept': 'application/json'
@@ -1358,7 +1364,7 @@ export async function getServerSideProps({req, res, query}) {
 		  response["contact_types"] =  (await (await contact_types.json()))?.results?.map(({ id, name }) => ({ label: name, value: id }))
 		  break;
   
-		case "services":
+		case "services":"user_manager"
 		  const services = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/chul/services/?page_size=100&ordering=name`,{
 			headers:{
 			  'Authorization': 'Bearer ' + token,
