@@ -240,6 +240,10 @@ function Reports(props) {
                             columns: keph?.columns
                         })
 
+                        console.log({
+                            rows: kephReport?.rows
+                        })
+
                         break;
                     case 'facility_owner_report_all_hierachies':
 
@@ -431,7 +435,7 @@ function Reports(props) {
     ]
 
 
-
+    
     if (isClient) {
         return (
             <div className="w-full">
@@ -490,11 +494,7 @@ function Reports(props) {
                                 className="w-full flex flex-col tab-root"
                                 defaultValue="facilities"
                             >
-                                {/* <pre>
-                                    {
-                                        JSON.stringify({kephOptions: props?.kephOptions, typeOptions: props?.typeOptions, ownerOptions: props?.ownerOptions}, null, 2)
-                                    }
-                                </pre>  */}
+                                
 
                                 <Tabs.List className="list-none w-full flex justify-evenly flex-wrap gap-2 md:gap-3 px-4 uppercase leading-none tab-list font-semibold border-b border-gray-400">
                                     {/* Facilities Tab */}
@@ -758,7 +758,7 @@ function Reports(props) {
 
                                                                     <CustomSelect
                                                                         name="keph"
-                                                                        onChange={(e) => handleCustomSelectChange(e, 'beds_and_cots_by_all_hierachies', props?.token, 'keph')}
+                                                                        onChange={(e) => handleCustomSelectChange(e, 'facility_keph_level_report_all_hierachies', props?.token, 'keph')}
                                                                         options={props?.kephOptions}
                                                                         defaultValue={selectedKeph}
                                                                         placeholder='Filter by Keph'
@@ -767,7 +767,7 @@ function Reports(props) {
 
                                                                     <CustomSelect
                                                                         name="type"
-                                                                        onChange={(e) => handleCustomSelectChange(e, 'beds_and_cots_by_all_hierachies', props?.token, 'type')}
+                                                                        onChange={(e) => handleCustomSelectChange(e, 'facility_keph_level_report_all_hierachies', props?.token, 'type')}
                                                                         options={props?.typeOptions}
                                                                         defaultValue={selectedType}
                                                                         placeholder='Filter by Type'
@@ -776,7 +776,7 @@ function Reports(props) {
 
                                                                     <CustomSelect
                                                                         name="owner"
-                                                                        onChange={(e) => handleCustomSelectChange(e, 'beds_and_cots_by_all_hierachies', props?.token, 'owner')}
+                                                                        onChange={(e) => handleCustomSelectChange(e, 'facility_keph_level_report_all_hierachies', props?.token, 'owner')}
                                                                         options={props?.ownerOptions}
                                                                         defaultValue={selectedOwner}
                                                                         placeholder='Filter by Owner'
@@ -854,7 +854,7 @@ function Reports(props) {
 
                                                                     <CustomSelect
                                                                         name="keph"
-                                                                        onChange={(e) => handleCustomSelectChange(e, 'beds_and_cots_by_all_hierachies', props?.token, 'keph')}
+                                                                        onChange={(e) => handleCustomSelectChange(e, 'facility_owner_report_all_hierachies', props?.token, 'keph')}
                                                                         options={props?.kephOptions}
                                                                         defaultValue={selectedKeph}
                                                                         placeholder='Filter by Keph'
@@ -863,7 +863,7 @@ function Reports(props) {
 
                                                                     <CustomSelect
                                                                         name="type"
-                                                                        onChange={(e) => handleCustomSelectChange(e, 'beds_and_cots_by_all_hierachies', props?.token, 'type')}
+                                                                        onChange={(e) => handleCustomSelectChange(e, 'facility_owner_report_all_hierachies', props?.token, 'type')}
                                                                         options={props?.typeOptions}
                                                                         defaultValue={selectedType}
                                                                         placeholder='Filter by Type'
@@ -872,7 +872,7 @@ function Reports(props) {
 
                                                                     <CustomSelect
                                                                         name="owner"
-                                                                        onChange={(e) => handleCustomSelectChange(e, 'beds_and_cots_by_all_hierachies', props?.token, 'owner')}
+                                                                        onChange={(e) => handleCustomSelectChange(e, 'facility_owner_report_all_hierachies', props?.token, 'owner')}
                                                                         options={props?.ownerOptions}
                                                                         defaultValue={selectedOwner}
                                                                         placeholder='Filter by Owner'
@@ -946,7 +946,7 @@ function Reports(props) {
 
                                                                     <CustomSelect
                                                                         name="keph"
-                                                                        onChange={(e) => handleCustomSelectChange(e, 'beds_and_cots_by_all_hierachies', props?.token, 'keph')}
+                                                                        onChange={(e) => handleCustomSelectChange(e, 'facility_type_report_all_hierachies', props?.token, 'keph')}
                                                                         options={props?.kephOptions}
                                                                         defaultValue={selectedKeph}
                                                                         placeholder='Filter by Keph'
@@ -955,7 +955,7 @@ function Reports(props) {
 
                                                                     <CustomSelect
                                                                         name="type"
-                                                                        onChange={(e) => handleCustomSelectChange(e, 'beds_and_cots_by_all_hierachies', props?.token, 'type')}
+                                                                        onChange={(e) => handleCustomSelectChange(e, 'facility_type_report_all_hierachies', props?.token, 'type')}
                                                                         options={props?.typeOptions}
                                                                         defaultValue={selectedType}
                                                                         placeholder='Filter by Type'
@@ -964,7 +964,7 @@ function Reports(props) {
 
                                                                     <CustomSelect
                                                                         name="owner"
-                                                                        onChange={(e) => handleCustomSelectChange(e, 'beds_and_cots_by_all_hierachies', props?.token, 'owner')}
+                                                                        onChange={(e) => handleCustomSelectChange(e, 'facility_type_report_all_hierachies', props?.token, 'owner')}
                                                                         options={props?.ownerOptions}
                                                                         defaultValue={selectedOwner}
                                                                         placeholder='Filter by Owner'
@@ -1035,7 +1035,7 @@ function Reports(props) {
 
                                                                     <CustomSelect
                                                                         name="keph"
-                                                                        onChange={(e) => handleCustomSelectChange(e, 'beds_and_cots_by_all_hierachies', props?.token, 'keph')}
+                                                                        onChange={(e) => handleCustomSelectChange(e, 'facility_regulatory_body_report_all_hierachies', props?.token, 'keph')}
                                                                         options={props?.kephOptions}
                                                                         defaultValue={selectedKeph}
                                                                         placeholder='Filter by Keph'
@@ -1044,7 +1044,7 @@ function Reports(props) {
 
                                                                     <CustomSelect
                                                                         name="type"
-                                                                        onChange={(e) => handleCustomSelectChange(e, 'beds_and_cots_by_all_hierachies', props?.token, 'type')}
+                                                                        onChange={(e) => handleCustomSelectChange(e, 'facility_regulatory_body_report_all_hierachies', props?.token, 'type')}
                                                                         options={props?.typeOptions}
                                                                         defaultValue={selectedType}
                                                                         placeholder='Filter by Type'
@@ -1053,7 +1053,7 @@ function Reports(props) {
 
                                                                     <CustomSelect
                                                                         name="owner"
-                                                                        onChange={(e) => handleCustomSelectChange(e, 'beds_and_cots_by_all_hierachies', props?.token, 'owner')}
+                                                                        onChange={(e) => handleCustomSelectChange(e, 'facility_regulatory_body_report_all_hierachies', props?.token, 'owner')}
                                                                         options={props?.ownerOptions}
                                                                         defaultValue={selectedOwner}
                                                                         placeholder='Filter by Owner'
@@ -1123,7 +1123,7 @@ function Reports(props) {
 
                                                                     <CustomSelect
                                                                         name="keph"
-                                                                        onChange={(e) => handleCustomSelectChange(e, 'beds_and_cots_by_all_hierachies', props?.token, 'keph')}
+                                                                        onChange={(e) => handleCustomSelectChange(e, 'facility_services_report_all_hierachies', props?.token, 'keph')}
                                                                         options={props?.kephOptions}
                                                                         defaultValue={selectedKeph}
                                                                         placeholder='Filter by Keph'
@@ -1132,7 +1132,7 @@ function Reports(props) {
 
                                                                     <CustomSelect
                                                                         name="type"
-                                                                        onChange={(e) => handleCustomSelectChange(e, 'beds_and_cots_by_all_hierachies', props?.token, 'type')}
+                                                                        onChange={(e) => handleCustomSelectChange(e, 'facility_services_report_all_hierachies', props?.token, 'type')}
                                                                         options={props?.typeOptions}
                                                                         defaultValue={selectedType}
                                                                         placeholder='Filter by Type'
@@ -1141,7 +1141,7 @@ function Reports(props) {
 
                                                                     <CustomSelect
                                                                         name="owner"
-                                                                        onChange={(e) => handleCustomSelectChange(e, 'beds_and_cots_by_all_hierachies', props?.token, 'owner')}
+                                                                        onChange={(e) => handleCustomSelectChange(e, 'facility_services_report_all_hierachies', props?.token, 'owner')}
                                                                         options={props?.ownerOptions}
                                                                         defaultValue={selectedOwner}
                                                                         placeholder='Filter by Owner'
@@ -1212,7 +1212,7 @@ function Reports(props) {
 
                                                                     <CustomSelect
                                                                         name="keph"
-                                                                        onChange={(e) => handleCustomSelectChange(e, 'beds_and_cots_by_all_hierachies', props?.token, 'keph')}
+                                                                        onChange={(e) => handleCustomSelectChange(e, 'facility_infrastructure_report_all_hierachies', props?.token, 'keph')}
                                                                         options={props?.kephOptions}
                                                                         defaultValue={selectedKeph}
                                                                         placeholder='Filter by Keph'
@@ -1221,7 +1221,7 @@ function Reports(props) {
 
                                                                     <CustomSelect
                                                                         name="type"
-                                                                        onChange={(e) => handleCustomSelectChange(e, 'beds_and_cots_by_all_hierachies', props?.token, 'type')}
+                                                                        onChange={(e) => handleCustomSelectChange(e, 'facility_infrastructure_report_all_hierachies', props?.token, 'type')}
                                                                         options={props?.typeOptions}
                                                                         defaultValue={selectedType}
                                                                         placeholder='Filter by Type'
@@ -1230,7 +1230,7 @@ function Reports(props) {
 
                                                                     <CustomSelect
                                                                         name="owner"
-                                                                        onChange={(e) => handleCustomSelectChange(e, 'beds_and_cots_by_all_hierachies', props?.token, 'owner')}
+                                                                        onChange={(e) => handleCustomSelectChange(e, 'facility_infrastructure_report_all_hierachies', props?.token, 'owner')}
                                                                         options={props?.ownerOptions}
                                                                         defaultValue={selectedOwner}
                                                                         placeholder='Filter by Owner'
@@ -1303,7 +1303,7 @@ function Reports(props) {
 
                                                                     <CustomSelect
                                                                         name="keph"
-                                                                        onChange={(e) => handleCustomSelectChange(e, 'beds_and_cots_by_all_hierachies', props?.token, 'keph')}
+                                                                        onChange={(e) => handleCustomSelectChange(e, 'facility_infrastructure_report_all_hierachies', props?.token, 'keph')}
                                                                         options={props?.kephOptions}
                                                                         defaultValue={selectedKeph}
                                                                         placeholder='Filter by Keph'
@@ -1312,7 +1312,7 @@ function Reports(props) {
 
                                                                     <CustomSelect
                                                                         name="type"
-                                                                        onChange={(e) => handleCustomSelectChange(e, 'beds_and_cots_by_all_hierachies', props?.token, 'type')}
+                                                                        onChange={(e) => handleCustomSelectChange(e, 'facility_infrastructure_report_all_hierachies', props?.token, 'type')}
                                                                         options={props?.typeOptions}
                                                                         defaultValue={selectedType}
                                                                         placeholder='Filter by Type'
@@ -1321,7 +1321,7 @@ function Reports(props) {
 
                                                                     <CustomSelect
                                                                         name="owner"
-                                                                        onChange={(e) => handleCustomSelectChange(e, 'beds_and_cots_by_all_hierachies', props?.token, 'owner')}
+                                                                        onChange={(e) => handleCustomSelectChange(e, 'facility_infrastructure_report_all_hierachies', props?.token, 'owner')}
                                                                         options={props?.ownerOptions}
                                                                         defaultValue={selectedOwner}
                                                                         placeholder='Filter by Owner'
@@ -1395,7 +1395,7 @@ function Reports(props) {
 
                                                                     <CustomSelect
                                                                         name="keph"
-                                                                        onChange={(e) => handleCustomSelectChange(e, 'beds_and_cots_by_all_hierachies', props?.token, 'keph')}
+                                                                        onChange={(e) => handleCustomSelectChange(e, 'facility_human_resource_category_report_all_hierachies', props?.token, 'keph')}
                                                                         options={props?.kephOptions}
                                                                         defaultValue={selectedKeph}
                                                                         placeholder='Filter by Keph'
@@ -1404,7 +1404,7 @@ function Reports(props) {
 
                                                                     <CustomSelect
                                                                         name="type"
-                                                                        onChange={(e) => handleCustomSelectChange(e, 'beds_and_cots_by_all_hierachies', props?.token, 'type')}
+                                                                        onChange={(e) => handleCustomSelectChange(e, 'facility_human_resource_category_report_all_hierachies', props?.token, 'type')}
                                                                         options={props?.typeOptions}
                                                                         defaultValue={selectedType}
                                                                         placeholder='Filter by Type'
@@ -1413,7 +1413,7 @@ function Reports(props) {
 
                                                                     <CustomSelect
                                                                         name="owner"
-                                                                        onChange={(e) => handleCustomSelectChange(e, 'beds_and_cots_by_all_hierachies', props?.token, 'owner')}
+                                                                        onChange={(e) => handleCustomSelectChange(e, 'facility_human_resource_category_report_all_hierachies', props?.token, 'owner')}
                                                                         options={props?.ownerOptions}
                                                                         defaultValue={selectedOwner}
                                                                         placeholder='Filter by Owner'
@@ -1486,7 +1486,7 @@ function Reports(props) {
 
                                                                     <CustomSelect
                                                                         name="keph"
-                                                                        onChange={(e) => handleCustomSelectChange(e, 'beds_and_cots_by_all_hierachies', props?.token, 'keph')}
+                                                                        onChange={(e) => handleCustomSelectChange(e, 'facility_human_resource_category_report_all_hierachies', props?.token, 'keph')}
                                                                         options={props?.kephOptions}
                                                                         defaultValue={selectedKeph}
                                                                         placeholder='Filter by Keph'
@@ -1495,7 +1495,7 @@ function Reports(props) {
 
                                                                     <CustomSelect
                                                                         name="type"
-                                                                        onChange={(e) => handleCustomSelectChange(e, 'beds_and_cots_by_all_hierachies', props?.token, 'type')}
+                                                                        onChange={(e) => handleCustomSelectChange(e, 'facility_human_resource_category_report_all_hierachies', props?.token, 'type')}
                                                                         options={props?.typeOptions}
                                                                         defaultValue={selectedType}
                                                                         placeholder='Filter by Type'
@@ -1504,7 +1504,7 @@ function Reports(props) {
 
                                                                     <CustomSelect
                                                                         name="owner"
-                                                                        onChange={(e) => handleCustomSelectChange(e, 'beds_and_cots_by_all_hierachies', props?.token, 'owner')}
+                                                                        onChange={(e) => handleCustomSelectChange(e, 'facility_human_resource_category_report_all_hierachies', props?.token, 'owner')}
                                                                         options={props?.ownerOptions}
                                                                         defaultValue={selectedOwner}
                                                                         placeholder='Filter by Owner'
@@ -1575,7 +1575,7 @@ function Reports(props) {
 
                                                                     <CustomSelect
                                                                         name="keph"
-                                                                        onChange={(e) => handleCustomSelectChange(e, 'beds_and_cots_by_all_hierachies', props?.token, 'keph')}
+                                                                        onChange={(e) => handleCustomSelectChange(e, 'gis', props?.token, 'keph')}
                                                                         options={props?.kephOptions}
                                                                         defaultValue={selectedKeph}
                                                                         placeholder='Filter by Keph'
@@ -1584,7 +1584,7 @@ function Reports(props) {
 
                                                                     <CustomSelect
                                                                         name="type"
-                                                                        onChange={(e) => handleCustomSelectChange(e, 'beds_and_cots_by_all_hierachies', props?.token, 'type')}
+                                                                        onChange={(e) => handleCustomSelectChange(e, 'gis', props?.token, 'type')}
                                                                         options={props?.typeOptions}
                                                                         defaultValue={selectedType}
                                                                         placeholder='Filter by Type'
@@ -1593,7 +1593,7 @@ function Reports(props) {
 
                                                                     <CustomSelect
                                                                         name="owner"
-                                                                        onChange={(e) => handleCustomSelectChange(e, 'beds_and_cots_by_all_hierachies', props?.token, 'owner')}
+                                                                        onChange={(e) => handleCustomSelectChange(e, 'gis', props?.token, 'owner')}
                                                                         options={props?.ownerOptions}
                                                                         defaultValue={selectedOwner}
                                                                         placeholder='Filter by Owner'
@@ -2081,7 +2081,10 @@ Reports.getInitialProps = async (ctx) => {
         'gis': [],
         'chul_services_all_hierachies': [],
         'chul_count_all_hierachies': [],
-        'facility_human_resource_category_report_all_hierachies': []
+        'facility_human_resource_category_report_all_hierachies': [],
+        kephOptions: [],
+        ownerOptions:[],
+        typeOptions:[]
     }
 
 
@@ -2292,7 +2295,7 @@ Reports.getInitialProps = async (ctx) => {
                 break;
 
             case 'kephOptions':
-                url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/keph`
+                url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/keph/`
 
 
                 try {
@@ -2315,7 +2318,7 @@ Reports.getInitialProps = async (ctx) => {
                 break;
 
             case 'typeOptions':
-                url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/facility_types_details?is_parent=false`
+                url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/facility_types_details/?is_parent=false`
 
 
                 try {
@@ -2339,7 +2342,7 @@ Reports.getInitialProps = async (ctx) => {
 
             case 'ownerOptions':
 
-                url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/owner_types`
+                url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/owner_types/`
 
 
                 try {

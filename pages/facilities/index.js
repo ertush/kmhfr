@@ -7,7 +7,7 @@ import React, { useState, useEffect, useContext } from 'react'
 import { useRouter } from 'next/router'
 import { Menu } from '@headlessui/react'
 import { ChevronDownIcon, FilterIcon, SearchIcon } from '@heroicons/react/outline'
-import Select from 'react-select'
+// import Select from 'react-select'
 import { Select as CustomSelect } from '../../components/Forms/formComponents/Select'
 
 
