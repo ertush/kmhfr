@@ -47,6 +47,7 @@ function Reports(props) {
     const [hrCategoryReport, setHrReportCategory] = useState({ rows: null, columns: null })
     const [hrReport, setHrReport] = useState({ rows: null, columns: null })
     const [gisReport, setGisReport] = useState({ rows: null, columns: null })
+    const [accreditationReport, setAccreditationReport] = useState(null)
     const [loading, setLoading] = useState(false)
     const [selectedPeriod, setSelectedPeriod] = useState(null)
     const [selectedOrgUnit, setSelectedOrgUnit] = useState(null)
@@ -77,10 +78,12 @@ function Reports(props) {
             rows: propsToGridData(props, 0)?.rows,
             columns: propsToGridData(props, 0)?.columns
         })
+
         setKephReport({
             rows: propsToGridData(props, 1)?.rows,
             columns: propsToGridData(props, 1)?.columns
         })
+
         setOwnershipReport({
             rows: propsToGridData(props, 2)?.rows,
             columns: propsToGridData(props, 2)?.columns
@@ -117,6 +120,10 @@ function Reports(props) {
             rows: propsToGridData(props, 10)?.rows,
             columns: propsToGridData(props, 10)?.columns
         })
+        setAccreditationReport({
+            rows: propsToGridData(props, 11)?.rows,
+            columns: propsToGridData(props, 11)?.columns
+        })
 
 
 
@@ -146,9 +153,7 @@ function Reports(props) {
             setSelectedOwner(null)
         }
 
-
-
-
+        
 
         if (event.target) {
             // setOrgUnitFilter(value)
@@ -171,6 +176,7 @@ function Reports(props) {
                 case 'owner':
                     setSelectedOwner(value)
                     break;
+                
             }
 
             const filterType = ((filterType) => {
@@ -229,9 +235,9 @@ function Reports(props) {
 
                         const keph = ((filterType) => {
                             if (filterType == 'org_unit') {
-                                return filterReport && propsToGridData(filterReport, 0, value)
+                                return filterReport && propsToGridData(filterReport, 1, value)
                             } else {
-                                return filterReport && propsToGridData(filterReport, 0)
+                                return filterReport && propsToGridData(filterReport, 1)
                             }
                         })(filter)
 
@@ -240,18 +246,14 @@ function Reports(props) {
                             columns: keph?.columns
                         })
 
-                        console.log({
-                            rows: kephReport?.rows
-                        })
-
                         break;
                     case 'facility_owner_report_all_hierachies':
 
                         const owner = ((filterType) => {
                             if (filterType == 'org_unit') {
-                                return filterReport && propsToGridData(filterReport, 0, value)
+                                return filterReport && propsToGridData(filterReport, 2, value)
                             } else {
-                                return filterReport && propsToGridData(filterReport, 0)
+                                return filterReport && propsToGridData(filterReport, 2)
                             }
                         })(filter)
 
@@ -265,9 +267,9 @@ function Reports(props) {
 
                         const type = ((filterType) => {
                             if (filterType == 'org_unit') {
-                                return filterReport && propsToGridData(filterReport, 0, value)
+                                return filterReport && propsToGridData(filterReport, 3, value)
                             } else {
-                                return filterReport && propsToGridData(filterReport, 0)
+                                return filterReport && propsToGridData(filterReport, 3)
                             }
                         })(filter)
 
@@ -281,9 +283,9 @@ function Reports(props) {
 
                         const reg = ((filterType) => {
                             if (filterType == 'org_unit') {
-                                return filterReport && propsToGridData(filterReport, 0, value)
+                                return filterReport && propsToGridData(filterReport, 4, value)
                             } else {
-                                return filterReport && propsToGridData(filterReport, 0)
+                                return filterReport && propsToGridData(filterReport, 4)
                             }
                         })(filter)
 
@@ -297,9 +299,9 @@ function Reports(props) {
 
                         const services = ((filterType) => {
                             if (filterType == 'org_unit') {
-                                return filterReport && propsToGridData(filterReport, 0, value)
+                                return filterReport && propsToGridData(filterReport, 5, value)
                             } else {
-                                return filterReport && propsToGridData(filterReport, 0)
+                                return filterReport && propsToGridData(filterReport, 5)
                             }
                         })(filter)
 
@@ -313,9 +315,9 @@ function Reports(props) {
 
                         const infra_cat = ((filterType) => {
                             if (filterType == 'org_unit') {
-                                return filterReport && propsToGridData(filterReport, 0, value)
+                                return filterReport && propsToGridData(filterReport, 6, value)
                             } else {
-                                return filterReport && propsToGridData(filterReport, 0)
+                                return filterReport && propsToGridData(filterReport, 6)
                             }
                         })(filter)
 
@@ -327,9 +329,9 @@ function Reports(props) {
 
                         const infra = ((filterType) => {
                             if (filterType == 'org_unit') {
-                                return filterReport && propsToGridData(filterReport, 0, value)
+                                return filterReport && propsToGridData(filterReport, 7, value)
                             } else {
-                                return filterReport && propsToGridData(filterReport, 0)
+                                return filterReport && propsToGridData(filterReport, 7)
                             }
                         })(filter)
 
@@ -343,9 +345,9 @@ function Reports(props) {
 
                         const hr_category = ((filterType) => {
                             if (filterType == 'org_unit') {
-                                return filterReport && propsToGridData(filterReport, 0, value)
+                                return filterReport && propsToGridData(filterReport, 8, value)
                             } else {
-                                return filterReport && propsToGridData(filterReport, 0)
+                                return filterReport && propsToGridData(filterReport, 8)
                             }
                         })(filter)
 
@@ -356,9 +358,9 @@ function Reports(props) {
 
                         const hr = ((filterType) => {
                             if (filterType == 'org_unit') {
-                                return filterReport && propsToGridData(filterReport, 0, value)
+                                return filterReport && propsToGridData(filterReport, 9, value)
                             } else {
-                                return filterReport && propsToGridData(filterReport, 0)
+                                return filterReport && propsToGridData(filterReport, 9)
                             }
                         })(filter)
 
@@ -372,15 +374,31 @@ function Reports(props) {
 
                         const gis = ((filterType) => {
                             if (filterType == 'org_unit') {
-                                return filterReport && propsToGridData(filterReport, 0, value)
+                                return filterReport && propsToGridData(filterReport, 10, value)
                             } else {
-                                return filterReport && propsToGridData(filterReport, 0)
+                                return filterReport && propsToGridData(filterReport, 10)
                             }
                         })(filter)
 
                         setGisReport({
                             rows: gis?.rows,
                             columns: gis?.columns
+                        })
+
+                        break;
+                        case 'accreditation':
+
+                        const nhif = ((filterType) => {
+                            if (filterType == 'org_unit') {
+                                return filterReport && propsToGridData(filterReport, 11, value)
+                            } else {
+                                return filterReport && propsToGridData(filterReport, 11)
+                            }
+                        })(filter)
+
+                        setAccreditationReport({
+                            rows: nhif?.rows,
+                            columns: nhif?.columns
                         })
 
                         break;
@@ -527,6 +545,10 @@ function Reports(props) {
                                         defaultValue="beds_cots"
                                     >
 
+                                    {/* <pre>{
+                                        JSON.stringify(accreditationReport?.rows, null, 2)
+                                        }</pre> */}
+
                                         <Tabs.List className="list-none w-full flex justify-evenly flex-wrap gap-2 md:gap-3 px-4 uppercase leading-none tab-list font-semibold border-b border-gray-400">
                                             <Tabs.Tab
                                                 id={1}
@@ -619,6 +641,15 @@ function Reports(props) {
 
                                             >
                                                 Geo Codes
+                                            </Tabs.Tab>
+                                            <Tabs.Tab
+                                                id={12}
+                                                value="accreditation"
+                                                className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
+                                                onClick={() => { setSelectedOrgUnit(null); setSelectedPeriod(null); setReportTitle('NHIF Accreditation'); }}
+
+                                            >
+                                                NHIF Accreditation
                                             </Tabs.Tab>
 
                                             {/* <Tabs.Tab
@@ -1627,6 +1658,94 @@ function Reports(props) {
 
                                         </Tabs.Panel>
 
+                                        {/* GIS Report */}
+                                        <Tabs.Panel
+                                            value="accreditation"
+                                            className="grow-1 tab-panel"
+                                        >
+                                            {/* Geocodes */}
+                                            <div className='shadow-md w-full max-h-min col-span-7'>
+                                                <StyledDataGrid
+                                                    loading={loading}
+                                                    columns={accreditationReport?.columns}
+                                                    rows={accreditationReport?.rows}
+                                                    getRowClassName={() => `super-app-theme--Row`}
+                                                    rowSpacingType="border"
+                                                    showColumnRightBorder
+                                                    showCellRightBorder
+                                                    rowSelection={false}
+                                                    getCellClassName={() => 'super-app-theme--Cell'}
+                                                    slots={{
+                                                        toolbar: () => (
+                                                            <div className='w-full flex justify-between border-b border-gray-400 py-2'>
+                                                                <GridToolbar
+                                                                    className="border border-gray-300"
+                                                                    sx={{
+                                                                        flex: 1,
+                                                                        display: 'flex',
+                                                                        marginX: 0,
+                                                                        gap: 5,
+                                                                        alignItems: 'start',
+
+                                                                    }}
+                                                                />
+
+                                                                <div className='max-w-min flex gap-x-2 justify-end mr-2'>
+
+                                                                    <CustomSelect
+                                                                        name="keph"
+                                                                        onChange={(e) => handleCustomSelectChange(e, 'facility_nhif_accreditation', props?.token, 'keph')}
+                                                                        options={props?.kephOptions}
+                                                                        defaultValue={selectedKeph}
+                                                                        placeholder='Filter by Keph'
+
+                                                                    />
+
+                                                                    <CustomSelect
+                                                                        name="type"
+                                                                        onChange={(e) => handleCustomSelectChange(e, 'facility_nhif_accreditation', props?.token, 'type')}
+                                                                        options={props?.typeOptions}
+                                                                        defaultValue={selectedType}
+                                                                        placeholder='Filter by Type'
+
+                                                                    />
+
+                                                                    <CustomSelect
+                                                                        name="owner"
+                                                                        onChange={(e) => handleCustomSelectChange(e, 'facility_nhif_accreditation', props?.token, 'owner')}
+                                                                        options={props?.ownerOptions}
+                                                                        defaultValue={selectedOwner}
+                                                                        placeholder='Filter by Owner'
+
+                                                                    />
+
+                                                                    <CustomSelect
+                                                                        name="year"
+                                                                        onChange={(e) => handleCustomSelectChange(e, 'facility_nhif_accreditation', props?.token, 'year')}
+                                                                        className="w-full max-w-xs rounded border mr-2 border-gray-400"
+                                                                        options={periodOptions}
+                                                                        defaultValue={selectedPeriod}
+                                                                        placeholder='Filter by period'
+                                                                    />
+
+
+                                                                    <CustomSelect
+                                                                        name="org_unit"
+                                                                        onChange={(e) => handleCustomSelectChange(e, 'facility_nhif_accreditation', props?.token, 'org_unit')}
+                                                                        className="w-full max-w-xs rounded border mr-2 border-gray-400"
+                                                                        options={orgUnitOptions}
+                                                                        defaultValue={selectedOrgUnit}
+                                                                        placeholder='Filter by Admin Heirachy'
+                                                                    />
+                                                                </div>
+                                                            </div>
+                                                        ),
+                                                    }}
+                                                />
+                                            </div>
+
+                                        </Tabs.Panel>
+
 
                                     </Tabs.Root>
                                 </Tabs.Panel>
@@ -2066,7 +2185,8 @@ Reports.getInitialProps = async (ctx) => {
         'facility_human_resource_category_report_all_hierachies',
         'kephOptions',
         'ownerOptions',
-        'typeOptions'
+        'typeOptions',
+        'accreditation'
     ];
 
     const allReports = {
@@ -2079,6 +2199,7 @@ Reports.getInitialProps = async (ctx) => {
         'facility_infrastructure_report_all_hierachies': [],
         'chul_status_all_hierachies': [],
         'gis': [],
+        'accreditation':[],
         'chul_services_all_hierachies': [],
         'chul_count_all_hierachies': [],
         'facility_human_resource_category_report_all_hierachies': [],
@@ -2294,6 +2415,30 @@ Reports.getInitialProps = async (ctx) => {
 
                 break;
 
+                case 'accreditation':
+                    url = `${process.env.NEXT_PUBLIC_API_URL}/reporting/?report_type=facility_nhif_accreditation${ctx?.query?.groupby !== undefined ? `&report_groupby=${ctx?.query?.groupby}` : '&report_groupby=county&page_size=47'}`;
+    
+    
+                    try {
+    
+                        const _data = await fetch(url, {
+                            headers: {
+                                Authorization: 'Bearer ' + token,
+                                Accept: 'application/json',
+                            }
+                        })
+    
+                        allReports["facility_nhif_accreditation"] = (await _data.json()).results?.results
+    
+                    }
+                    catch (err) {
+                        console.log(`Error fetching ${report}: `, err);
+    
+                    }
+    
+                    break;
+                
+            
             case 'kephOptions':
                 url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/keph/`
 
@@ -2364,6 +2509,7 @@ Reports.getInitialProps = async (ctx) => {
 
                 break;
 
+               
 
             /*
 case 'chul_status_all_hierachies':

@@ -1,4 +1,4 @@
-import { OtherHouses } from "@mui/icons-material";
+// import { OtherHouses } from "@mui/icons-material";
 
 
 
@@ -87,9 +87,9 @@ export function propsToGridData(props, index, orgUnitFilter = "county") {
                 rows: Object.entries(props?.facility_keph_level_report_all_hierachies ?? {})?.map((result, index) => ({
                     [`${orgUnitFilter}`]: result[0],
                     date: result[1]?.year_established,
-                    // keph: result[1]?.facility_keph_level?.includes('All') ? 'All' : result[1]?.facility_keph_level,
-                    owner: result[1]?.facility_owner,
-                    type: result[1]?.facility_type,
+                    keph: result[1]?.facility_keph_level?.includes('All') ? null : result[1]?.facility_keph_level,
+                    owner: result[1]?.facility_owner?.includes('All') ? null : result[1]?.facility_owner,
+                    type: result[1]?.facility_type?.includes('All') ? null : result[1]?.facility_type,
                     level_2: result[1]?.Level_2,
                     level_3: result[1]?.Level_3,
                     level_4: result[1]?.Level_4,
@@ -109,11 +109,11 @@ export function propsToGridData(props, index, orgUnitFilter = "county") {
                         field: 'date',
                         flex: 1
                     },
-                    // {
-                    //     headerName: 'Keph Level',
-                    //     field: keph,
-                    //     flex: 1
-                    // },
+                    {
+                        headerName: 'Keph Level',
+                        field: 'keph',
+                        flex: 1
+                    },
                     {
                         headerName: 'Owner',
                         field: 'owner',
@@ -2137,6 +2137,71 @@ export function propsToGridData(props, index, orgUnitFilter = "county") {
 
                 ]
 
+            }
+
+        case 11:
+            return {
+                rows: Object.entries(props?.facility_nhif_accreditation ?? {})?.map((result, index) => ({
+                    [`${orgUnitFilter}`]: result[0],
+                    facility_keph_level: result[1][0]?.facility_keph_level,
+                    facility_name: result[1][0]?.facility_name,
+                    facility_type_name: result[1][0]?.facility_type_name,
+                    // facility_sub_county: result[1]["facility_sub_county"],
+                    // facility_county: result[1]["facility_county"],
+                    facility_code: result[1][0]?.facility_code,
+                    // facility_ward: result[1]["facility_ward"],
+                    facility_accredited: result[1][0]?.facility_accredited,
+                    facility_date_established: result[1][0]?.facility_date_established,
+                    facility_owner: result[1][0]?.facility_owner,
+                    id: index
+
+                })),
+
+                columns: [
+
+                    {
+                        headerName: formatString(orgUnitFilter),
+                        field: `${orgUnitFilter}`,
+                        width: 200
+                    },
+
+                    {
+                        headerName: 'Date',
+                        field: 'facility_date_established',
+                        width: 200
+                    },
+                    {
+                        headerName: 'Facility Name',
+                        field: 'facility_name',
+                        width: 200
+
+                    },
+                    {
+                        headerName: 'Facility Type',
+                        field: 'facility_type_name',
+                        width: 200
+                    },
+                    {
+                        headerName: 'Facility Code',
+                        field: 'facility_code',
+                        width: 200
+
+                    },
+                    {
+                        headerName: 'NHIF Accreditation',
+                        field: 'facility_accredited',
+                        width: 200
+                    },
+                    {
+                        headerName: 'Facility Owner',
+                        field: 'facility_owner',
+                        width: 200
+
+                    }
+
+
+
+                ]
             }
     }
 } 
