@@ -10,6 +10,7 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import { UserContext } from '../../providers/user';
 import { useAlert } from "react-alert";
+import Alert from '@mui/material/Alert';
 import { ChevronDownIcon, FilterIcon, SearchIcon } from '@heroicons/react/outline'
 
 
@@ -55,12 +56,11 @@ function AdminOffices(props) {
     
     const groupID = userCtx?.groups[0]?.id
 
-    const filters = props?.filters
+    const filters = props?.data
 
-    console.log('Admin offices:', adminOffice?.results)
+    console.log('Admin offices:', adminOffice)
 
     const rows = adminOffice?.results?.length > 0 ? adminOffice?.results.map(({ id, county_name, sub_county_name, name, is_national, phone_number, email }) => ({ id, county_name, sub_county_name, name, is_national: is_national ? 'Yes' : 'No', phone_number, email })) : []
-    // TODO: alert.error('No Admin offices found') || alert.error('Error Occured: ' + e.message)
     const columns = [
         { headerName: "County", field: "county_name", flex:1},
         { headerName: "Sub County", field: "sub_county_name", flex:1 },
@@ -117,9 +117,6 @@ function AdminOffices(props) {
 
         const formData = new FormData(e.target)
 		const formDataObject = Object.fromEntries(formData)
-
-        // const query = values.q.split(' ').join('+');
-        // console.log("data vale:",formData)
 
         const qry = Object.keys(formDataObject).map(function (key) {
             if (formDataObject[key] !== '') {
@@ -230,6 +227,7 @@ function AdminOffices(props) {
                                     }}
                                 onClick={() => {
                                     setOfficeTheme(true)
+                                    setAdminOffice(filters)
                                     router.push('/admin_offices')
 
                                 }}
@@ -246,7 +244,9 @@ function AdminOffices(props) {
 
                             <div className="shadow-md bg-gray-50" style={{ Height: 'auto', width: '100%' }}>
                                
-                                <StyledDataGrid
+                                {
+                                    adminOffice?.results?.length > 0 ?(
+                                    <StyledDataGrid
                                         columns={columns}
                                         rows={rows}
                                         getRowClassName={() => `super-app-theme--Row`}
@@ -269,6 +269,12 @@ function AdminOffices(props) {
                                             ),
                                         }}
                                     />
+                                ):(
+                                        (adminOffice?.results?.length === 0) &&(
+                                        <Alert severity="warning" sx={{width:'100%', marginInline:'4px'}} >No Admin offices found</Alert>
+                                        )
+                                    )
+                                }
                                 
                             </div>
                         </div>
