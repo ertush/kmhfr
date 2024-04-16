@@ -191,7 +191,7 @@ function Reports(props) {
                     case 'type':
                         return 'filter_type'
                     case 'owner':
-                        return 'filer_owner'
+                        return 'filter_owner'
                 }
             })(filter)
 
@@ -206,7 +206,11 @@ function Reports(props) {
                     }
                 })
 
-                filterReport = { [`${reportType}`]: (await report.json())?.results?.results }
+                filterReport = { 
+                    [`${reportType}`]: reportType.includes("facility_infrastructure_report_all_hierachies") || reportType.includes("facility_human_resource_category_report_all_hierachies") ? 
+                    (await report.json())?.results : 
+                    (await report.json())?.results?.results 
+                }
                 // setFilteredReports({[`${reportType}`]: (await report.json())?.results?.results } ?? {})
             } catch (e) {
                 console.error("Error: ", e.message)
@@ -520,7 +524,7 @@ function Reports(props) {
                                         id={1}
                                         value="facilities"
                                         className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
-                                        onClick={() => { setSelectedOrgUnit(null); setSelectedPeriod(null); setSelectedKeph(null); setSelectedOwner(null); setSelectedType(null) }}
+                                        onClick={() => { setSelectedOwner(null); setSelectedType(null); setSelectedKeph(null); setSelectedOrgUnit(null); setSelectedPeriod(null); setSelectedKeph(null); setSelectedOwner(null); setSelectedType(null) }}
                                     >
                                         Facility Reports
                                     </Tabs.Tab>
@@ -529,7 +533,7 @@ function Reports(props) {
                                         id={2}
                                         value="chus"
                                         className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
-                                        onClick={() => { setSelectedOrgUnit(null); setSelectedPeriod(null); setSelectedKeph(null); setSelectedOwner(null); setSelectedType(null) }}
+                                        onClick={() => { setSelectedOwner(null); setSelectedType(null); setSelectedKeph(null); setSelectedOrgUnit(null); setSelectedPeriod(null); setSelectedKeph(null); setSelectedOwner(null); setSelectedType(null) }}
                                     >
                                         Community Health Unit Reports
                                     </Tabs.Tab>
@@ -545,16 +549,16 @@ function Reports(props) {
                                         defaultValue="beds_cots"
                                     >
 
-                                    {/* <pre>{
-                                        JSON.stringify(accreditationReport?.rows, null, 2)
-                                        }</pre> */}
+                                    <pre>{
+                                        JSON.stringify(infrastructureCategoryReport?.rows, null, 2)
+                                        }</pre>
 
                                         <Tabs.List className="list-none w-full flex justify-evenly flex-wrap gap-2 md:gap-3 px-4 uppercase leading-none tab-list font-semibold border-b border-gray-400">
                                             <Tabs.Tab
                                                 id={1}
                                                 value="beds_cots"
                                                 className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
-                                                onClick={() => { setSelectedOrgUnit(null); setSelectedPeriod(null); setReportTitle('Beds and Cots') }}
+                                                onClick={() => { setSelectedOwner(null); setSelectedType(null); setSelectedKeph(null); setSelectedOrgUnit(null); setSelectedPeriod(null); setReportTitle('Beds and Cots') }}
                                             >
                                                 Beds and Cots
                                             </Tabs.Tab>
@@ -562,7 +566,7 @@ function Reports(props) {
                                                 id={2}
                                                 value="keph_level"
                                                 className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
-                                                onClick={() => { setSelectedOrgUnit(null); setSelectedPeriod(null); setReportTitle('Keph Level') }}
+                                                onClick={() => { setSelectedOwner(null); setSelectedType(null); setSelectedKeph(null); setSelectedOrgUnit(null); setSelectedPeriod(null); setReportTitle('Keph Level') }}
                                             >
                                                 Keph Level
                                             </Tabs.Tab>
@@ -570,7 +574,7 @@ function Reports(props) {
                                                 id={3}
                                                 value="facility_ownership"
                                                 className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
-                                                onClick={() => { setSelectedOrgUnit(null); setSelectedPeriod(null); setReportTitle('Facility Ownership') }}
+                                                onClick={() => { setSelectedOwner(null); setSelectedType(null); setSelectedKeph(null); setSelectedOrgUnit(null); setSelectedPeriod(null); setReportTitle('Facility Ownership') }}
                                             >
                                                 Facility Ownership
                                             </Tabs.Tab>
@@ -578,7 +582,7 @@ function Reports(props) {
                                                 id={4}
                                                 value="facility_type"
                                                 className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
-                                                onClick={() => { setSelectedOrgUnit(null); setSelectedPeriod(null); setReportTitle('Facility Type') }}
+                                                onClick={() => { setSelectedOwner(null); setSelectedType(null); setSelectedKeph(null); setSelectedOrgUnit(null); setSelectedPeriod(null); setReportTitle('Facility Type') }}
                                             >
                                                 Facility Type
                                             </Tabs.Tab>
@@ -587,7 +591,7 @@ function Reports(props) {
                                                 id={5}
                                                 value="regulatory_body"
                                                 className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
-                                                onClick={() => { setSelectedOrgUnit(null); setSelectedPeriod(null); setReportTitle('Regulatory Body') }}
+                                                onClick={() => { setSelectedOwner(null); setSelectedType(null); setSelectedKeph(null); setSelectedOrgUnit(null); setSelectedPeriod(null); setReportTitle('Regulatory Body') }}
                                             >
                                                 Regulatory Body
                                             </Tabs.Tab>
@@ -595,7 +599,7 @@ function Reports(props) {
                                                 id={6}
                                                 value="services"
                                                 className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
-                                                onClick={() => { setSelectedOrgUnit(null); setSelectedPeriod(null); setReportTitle('Services') }}
+                                                onClick={() => { setSelectedOwner(null); setSelectedType(null); setSelectedKeph(null); setSelectedOrgUnit(null); setSelectedPeriod(null); setReportTitle('Services') }}
                                             >
                                                 Services
                                             </Tabs.Tab>
@@ -603,7 +607,7 @@ function Reports(props) {
                                                 id={7}
                                                 value="infrastructure_category"
                                                 className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
-                                                onClick={() => { setSelectedOrgUnit(null); setSelectedPeriod(null); setReportTitle('Infrastructure Category') }}
+                                                onClick={() => { setSelectedOwner(null); setSelectedType(null); setSelectedKeph(null); setSelectedOrgUnit(null); setSelectedPeriod(null); setReportTitle('Infrastructure Category') }}
                                             >
                                                 Infrastructure category
                                             </Tabs.Tab>
@@ -611,7 +615,7 @@ function Reports(props) {
                                                 id={8}
                                                 value="infrastructure"
                                                 className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
-                                                onClick={() => { setSelectedOrgUnit(null); setSelectedPeriod(null); setReportTitle('Infrastructure') }}
+                                                onClick={() => { setSelectedOwner(null); setSelectedType(null); setSelectedKeph(null); setSelectedOrgUnit(null); setSelectedPeriod(null); setReportTitle('Infrastructure') }}
                                             >
                                                 Infrastructure
                                             </Tabs.Tab>
@@ -619,7 +623,7 @@ function Reports(props) {
                                                 id={9}
                                                 value="human_resources_category"
                                                 className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
-                                                onClick={() => { setSelectedOrgUnit(null); setSelectedPeriod(null); setReportTitle('Human Resources Category') }}
+                                                onClick={() => { setSelectedOwner(null); setSelectedType(null); setSelectedKeph(null); setSelectedOrgUnit(null); setSelectedPeriod(null); setReportTitle('Human Resources Category') }}
 
                                             >
                                                 Human resources Category
@@ -628,7 +632,7 @@ function Reports(props) {
                                                 id={10}
                                                 value="human_resources"
                                                 className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
-                                                onClick={() => { setSelectedOrgUnit(null); setSelectedPeriod(null); setReportTitle('Human Resources') }}
+                                                onClick={() => { setSelectedOwner(null); setSelectedType(null); setSelectedKeph(null); setSelectedOrgUnit(null); setSelectedPeriod(null); setReportTitle('Human Resources') }}
 
                                             >
                                                 Human resources
@@ -637,7 +641,7 @@ function Reports(props) {
                                                 id={11}
                                                 value="geocodes"
                                                 className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
-                                                onClick={() => { setSelectedOrgUnit(null); setSelectedPeriod(null); setReportTitle('Geo Location') }}
+                                                onClick={() => { setSelectedOwner(null); setSelectedType(null); setSelectedKeph(null); setSelectedOrgUnit(null); setSelectedPeriod(null); setReportTitle('Geo Location') }}
 
                                             >
                                                 Geo Codes
@@ -646,7 +650,7 @@ function Reports(props) {
                                                 id={12}
                                                 value="accreditation"
                                                 className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
-                                                onClick={() => { setSelectedOrgUnit(null); setSelectedPeriod(null); setReportTitle('NHIF Accreditation'); }}
+                                                onClick={() => { setSelectedOwner(null); setSelectedType(null); setSelectedKeph(null); setSelectedOrgUnit(null); setSelectedPeriod(null); setReportTitle('NHIF Accreditation'); }}
 
                                             >
                                                 NHIF Accreditation
@@ -2231,7 +2235,7 @@ Reports.getInitialProps = async (ctx) => {
 
                 }
                 catch (err) {
-                    console.log(`Error fetching ${report}: `, err);
+                    console.log(`Error fetching ${report}: `, err.message);
 
                 }
 
