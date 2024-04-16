@@ -153,7 +153,7 @@ function Reports(props) {
             setSelectedOwner(null)
         }
 
-        
+
 
         if (event.target) {
             // setOrgUnitFilter(value)
@@ -176,7 +176,7 @@ function Reports(props) {
                 case 'owner':
                     setSelectedOwner(value)
                     break;
-                
+
             }
 
             const filterType = ((filterType) => {
@@ -191,7 +191,7 @@ function Reports(props) {
                     case 'type':
                         return 'filter_type'
                     case 'owner':
-                        return 'filer_owner'
+                        return 'filter_owner'
                 }
             })(filter)
 
@@ -206,7 +206,11 @@ function Reports(props) {
                     }
                 })
 
-                filterReport = { [`${reportType}`]: (await report.json())?.results?.results }
+                filterReport = {
+                    [`${reportType}`]: reportType.includes("facility_infrastructure_report_all_hierachies") || reportType.includes("facility_human_resource_category_report_all_hierachies") ?
+                        (await report.json())?.results :
+                        (await report.json())?.results?.results
+                }
                 // setFilteredReports({[`${reportType}`]: (await report.json())?.results?.results } ?? {})
             } catch (e) {
                 console.error("Error: ", e.message)
@@ -386,7 +390,7 @@ function Reports(props) {
                         })
 
                         break;
-                        case 'accreditation':
+                    case 'accreditation':
 
                         const nhif = ((filterType) => {
                             if (filterType == 'org_unit') {
@@ -453,7 +457,7 @@ function Reports(props) {
     ]
 
 
-    
+
     if (isClient) {
         return (
             <div className="w-full">
@@ -512,7 +516,7 @@ function Reports(props) {
                                 className="w-full flex flex-col tab-root"
                                 defaultValue="facilities"
                             >
-                                
+
 
                                 <Tabs.List className="list-none w-full flex justify-evenly flex-wrap gap-2 md:gap-3 px-4 uppercase leading-none tab-list font-semibold border-b border-gray-400">
                                     {/* Facilities Tab */}
@@ -520,7 +524,7 @@ function Reports(props) {
                                         id={1}
                                         value="facilities"
                                         className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
-                                        onClick={() => { setSelectedOrgUnit(null); setSelectedPeriod(null); setSelectedKeph(null); setSelectedOwner(null); setSelectedType(null) }}
+                                        onClick={() => { setSelectedOwner(null); setSelectedType(null); setSelectedKeph(null); setSelectedOrgUnit(null); setSelectedPeriod(null); setSelectedKeph(null); setSelectedOwner(null); setSelectedType(null) }}
                                     >
                                         Facility Reports
                                     </Tabs.Tab>
@@ -529,7 +533,7 @@ function Reports(props) {
                                         id={2}
                                         value="chus"
                                         className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
-                                        onClick={() => { setSelectedOrgUnit(null); setSelectedPeriod(null); setSelectedKeph(null); setSelectedOwner(null); setSelectedType(null) }}
+                                        onClick={() => { setSelectedOwner(null); setSelectedType(null); setSelectedKeph(null); setSelectedOrgUnit(null); setSelectedPeriod(null); setSelectedKeph(null); setSelectedOwner(null); setSelectedType(null) }}
                                     >
                                         Community Health Unit Reports
                                     </Tabs.Tab>
@@ -545,8 +549,8 @@ function Reports(props) {
                                         defaultValue="beds_cots"
                                     >
 
-                                    {/* <pre>{
-                                        JSON.stringify(accreditationReport?.rows, null, 2)
+                                        {/* <pre>{
+                                            JSON.stringify({ rows: propsToGridData(props, 13)?.rows }, null, 2)
                                         }</pre> */}
 
                                         <Tabs.List className="list-none w-full flex justify-evenly flex-wrap gap-2 md:gap-3 px-4 uppercase leading-none tab-list font-semibold border-b border-gray-400">
@@ -554,7 +558,7 @@ function Reports(props) {
                                                 id={1}
                                                 value="beds_cots"
                                                 className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
-                                                onClick={() => { setSelectedOrgUnit(null); setSelectedPeriod(null); setReportTitle('Beds and Cots') }}
+                                                onClick={() => { setSelectedOwner(null); setSelectedType(null); setSelectedKeph(null); setSelectedOrgUnit(null); setSelectedPeriod(null); setReportTitle('Beds and Cots') }}
                                             >
                                                 Beds and Cots
                                             </Tabs.Tab>
@@ -562,7 +566,7 @@ function Reports(props) {
                                                 id={2}
                                                 value="keph_level"
                                                 className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
-                                                onClick={() => { setSelectedOrgUnit(null); setSelectedPeriod(null); setReportTitle('Keph Level') }}
+                                                onClick={() => { setSelectedOwner(null); setSelectedType(null); setSelectedKeph(null); setSelectedOrgUnit(null); setSelectedPeriod(null); setReportTitle('Keph Level') }}
                                             >
                                                 Keph Level
                                             </Tabs.Tab>
@@ -570,7 +574,7 @@ function Reports(props) {
                                                 id={3}
                                                 value="facility_ownership"
                                                 className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
-                                                onClick={() => { setSelectedOrgUnit(null); setSelectedPeriod(null); setReportTitle('Facility Ownership') }}
+                                                onClick={() => { setSelectedOwner(null); setSelectedType(null); setSelectedKeph(null); setSelectedOrgUnit(null); setSelectedPeriod(null); setReportTitle('Facility Ownership') }}
                                             >
                                                 Facility Ownership
                                             </Tabs.Tab>
@@ -578,7 +582,7 @@ function Reports(props) {
                                                 id={4}
                                                 value="facility_type"
                                                 className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
-                                                onClick={() => { setSelectedOrgUnit(null); setSelectedPeriod(null); setReportTitle('Facility Type') }}
+                                                onClick={() => { setSelectedOwner(null); setSelectedType(null); setSelectedKeph(null); setSelectedOrgUnit(null); setSelectedPeriod(null); setReportTitle('Facility Type') }}
                                             >
                                                 Facility Type
                                             </Tabs.Tab>
@@ -587,7 +591,7 @@ function Reports(props) {
                                                 id={5}
                                                 value="regulatory_body"
                                                 className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
-                                                onClick={() => { setSelectedOrgUnit(null); setSelectedPeriod(null); setReportTitle('Regulatory Body') }}
+                                                onClick={() => { setSelectedOwner(null); setSelectedType(null); setSelectedKeph(null); setSelectedOrgUnit(null); setSelectedPeriod(null); setReportTitle('Regulatory Body') }}
                                             >
                                                 Regulatory Body
                                             </Tabs.Tab>
@@ -595,7 +599,7 @@ function Reports(props) {
                                                 id={6}
                                                 value="services"
                                                 className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
-                                                onClick={() => { setSelectedOrgUnit(null); setSelectedPeriod(null); setReportTitle('Services') }}
+                                                onClick={() => { setSelectedOwner(null); setSelectedType(null); setSelectedKeph(null); setSelectedOrgUnit(null); setSelectedPeriod(null); setReportTitle('Services') }}
                                             >
                                                 Services
                                             </Tabs.Tab>
@@ -603,7 +607,7 @@ function Reports(props) {
                                                 id={7}
                                                 value="infrastructure_category"
                                                 className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
-                                                onClick={() => { setSelectedOrgUnit(null); setSelectedPeriod(null); setReportTitle('Infrastructure Category') }}
+                                                onClick={() => { setSelectedOwner(null); setSelectedType(null); setSelectedKeph(null); setSelectedOrgUnit(null); setSelectedPeriod(null); setReportTitle('Infrastructure Category') }}
                                             >
                                                 Infrastructure category
                                             </Tabs.Tab>
@@ -611,7 +615,7 @@ function Reports(props) {
                                                 id={8}
                                                 value="infrastructure"
                                                 className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
-                                                onClick={() => { setSelectedOrgUnit(null); setSelectedPeriod(null); setReportTitle('Infrastructure') }}
+                                                onClick={() => { setSelectedOwner(null); setSelectedType(null); setSelectedKeph(null); setSelectedOrgUnit(null); setSelectedPeriod(null); setReportTitle('Infrastructure') }}
                                             >
                                                 Infrastructure
                                             </Tabs.Tab>
@@ -619,7 +623,7 @@ function Reports(props) {
                                                 id={9}
                                                 value="human_resources_category"
                                                 className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
-                                                onClick={() => { setSelectedOrgUnit(null); setSelectedPeriod(null); setReportTitle('Human Resources Category') }}
+                                                onClick={() => { setSelectedOwner(null); setSelectedType(null); setSelectedKeph(null); setSelectedOrgUnit(null); setSelectedPeriod(null); setReportTitle('Human Resources Category') }}
 
                                             >
                                                 Human resources Category
@@ -628,7 +632,7 @@ function Reports(props) {
                                                 id={10}
                                                 value="human_resources"
                                                 className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
-                                                onClick={() => { setSelectedOrgUnit(null); setSelectedPeriod(null); setReportTitle('Human Resources') }}
+                                                onClick={() => { setSelectedOwner(null); setSelectedType(null); setSelectedKeph(null); setSelectedOrgUnit(null); setSelectedPeriod(null); setReportTitle('Human Resources') }}
 
                                             >
                                                 Human resources
@@ -637,7 +641,7 @@ function Reports(props) {
                                                 id={11}
                                                 value="geocodes"
                                                 className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
-                                                onClick={() => { setSelectedOrgUnit(null); setSelectedPeriod(null); setReportTitle('Geo Location') }}
+                                                onClick={() => { setSelectedOwner(null); setSelectedType(null); setSelectedKeph(null); setSelectedOrgUnit(null); setSelectedPeriod(null); setReportTitle('Geo Location') }}
 
                                             >
                                                 Geo Codes
@@ -646,7 +650,7 @@ function Reports(props) {
                                                 id={12}
                                                 value="accreditation"
                                                 className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
-                                                onClick={() => { setSelectedOrgUnit(null); setSelectedPeriod(null); setReportTitle('NHIF Accreditation'); }}
+                                                onClick={() => { setSelectedOwner(null); setSelectedType(null); setSelectedKeph(null); setSelectedOrgUnit(null); setSelectedPeriod(null); setReportTitle('NHIF Accreditation'); }}
 
                                             >
                                                 NHIF Accreditation
@@ -1793,6 +1797,69 @@ function Reports(props) {
                                             className="grow-1 tab-panel"
                                         >
                                             {/* CHU Services */}
+
+                                            <div className='shadow-md w-full max-h-min col-span-7'>
+                                                <StyledDataGrid
+                                                    loading={loading}
+                                                    columns={propsToGridData(props, 13)?.columns}
+                                                    rows={propsToGridData(props, 13)?.rows}
+                                                    getRowClassName={() => `super-app-theme--Row`}
+                                                    rowSpacingType="border"
+                                                    showColumnRightBorder
+                                                    showCellRightBorder
+                                                    rowSelection={false}
+                                                    getCellClassName={() => 'super-app-theme--Cell'}
+                                                    slots={{
+                                                        toolbar: () => (
+                                                            <div className='w-full flex justify-between border-b border-gray-400 py-2'>
+                                                                <GridToolbar
+                                                                    className="border border-gray-300"
+                                                                    sx={{
+                                                                        flex: 1,
+                                                                        display: 'flex',
+                                                                        marginX: 0,
+                                                                        gap: 5,
+                                                                        alignItems: 'start',
+
+                                                                    }}
+                                                                />
+
+                                                                <div className='max-w-min flex gap-x-2 justify-end mr-2'>
+
+                                                                    <CustomSelect
+                                                                        name="chu_year"
+                                                                        onChange={(e) => handleCustomSelectChange(e, 'facility_nhif_accreditation', props?.token, 'keph')}
+                                                                        options={props?.kephOptions}
+                                                                        defaultValue={null}
+                                                                        placeholder='Filter by Period'
+
+                                                                    />
+
+                                                                    <CustomSelect
+                                                                        name="chu_status"
+                                                                        onChange={(e) => handleCustomSelectChange(e, 'facility_nhif_accreditation', props?.token, 'type')}
+                                                                        options={props?.typeOptions}
+                                                                        defaultValue={null}
+                                                                        placeholder='Filter by CHU Status'
+
+                                                                    />
+
+<CustomSelect
+                                                                        name="chu_org"
+                                                                        onChange={(e) => handleCustomSelectChange(e, 'facility_nhif_accreditation', props?.token, 'type')}
+                                                                        options={props?.typeOptions}
+                                                                        defaultValue={null}
+                                                                        placeholder='Filter Org Unit'
+
+                                                                    />
+                                   
+                                   
+                                                                </div>
+                                                            </div>
+                                                        ),
+                                                    }}
+                                                />
+                                            </div>
                                             {/* { console.log({rows:propsToGr, orgUnitFilteridData(props, 9)?.rows, columns: propsToGridData(props, 9).columns})  } */}
 
                                             {/* <div className='shadow-md w-full max-h-min col-span-7'>
@@ -1912,6 +1979,69 @@ function Reports(props) {
                                             className="grow-1 tab-panel"
                                         >
                                             {/* CHU Status */}
+
+                                            <div className='shadow-md w-full max-h-min col-span-7'>
+                                                <StyledDataGrid
+                                                    loading={loading}
+                                                    columns={propsToGridData(props, 12)?.columns}
+                                                    rows={propsToGridData(props, 12)?.rows}
+                                                    getRowClassName={() => `super-app-theme--Row`}
+                                                    rowSpacingType="border"
+                                                    showColumnRightBorder
+                                                    showCellRightBorder
+                                                    rowSelection={false}
+                                                    getCellClassName={() => 'super-app-theme--Cell'}
+                                                    slots={{
+                                                        toolbar: () => (
+                                                            <div className='w-full flex justify-between border-b border-gray-400 py-2'>
+                                                                <GridToolbar
+                                                                    className="border border-gray-300"
+                                                                    sx={{
+                                                                        flex: 1,
+                                                                        display: 'flex',
+                                                                        marginX: 0,
+                                                                        gap: 5,
+                                                                        alignItems: 'start',
+
+                                                                    }}
+                                                                />
+
+                                                                <div className='max-w-min flex gap-x-2 justify-end mr-2'>
+
+                                                                    <CustomSelect
+                                                                        name="chu_year"
+                                                                        onChange={(e) => handleCustomSelectChange(e, 'facility_nhif_accreditation', props?.token, 'keph')}
+                                                                        options={props?.kephOptions}
+                                                                        defaultValue={null}
+                                                                        placeholder='Filter by Period'
+
+                                                                    />
+
+                                                                    <CustomSelect
+                                                                        name="chu_status"
+                                                                        onChange={(e) => handleCustomSelectChange(e, 'facility_nhif_accreditation', props?.token, 'type')}
+                                                                        options={props?.typeOptions}
+                                                                        defaultValue={null}
+                                                                        placeholder='Filter by CHU Status'
+
+                                                                    />
+
+<CustomSelect
+                                                                        name="chu_org"
+                                                                        onChange={(e) => handleCustomSelectChange(e, 'facility_nhif_accreditation', props?.token, 'type')}
+                                                                        options={props?.typeOptions}
+                                                                        defaultValue={null}
+                                                                        placeholder='Filter Org Unit'
+
+                                                                    />
+                                   
+                                   
+                                                                </div>
+                                                            </div>
+                                                        ),
+                                                    }}
+                                                />
+                                            </div>
                                             {/* <div className='shadow-md w-full max-h-min col-span-7'>
                                                 { console.log({rows: propsToGridData(props, 7).rows }) }
                                                 <StyledDataGrid
@@ -2031,6 +2161,68 @@ function Reports(props) {
                                             className="grow-1 tab-panel"
                                         >
                                             {/* CHU Status */}
+
+                                            <div className='shadow-md w-full max-h-min col-span-7'>
+                                                <StyledDataGrid
+                                                    loading={loading}
+                                                    columns={propsToGridData(props, 14)?.columns}
+                                                    rows={propsToGridData(props, 14)?.rows}
+                                                    getRowClassName={() => `super-app-theme--Row`}
+                                                    rowSpacingType="border"
+                                                    showColumnRightBorder
+                                                    showCellRightBorder
+                                                    rowSelection={false}
+                                                    getCellClassName={() => 'super-app-theme--Cell'}
+                                                    slots={{
+                                                        toolbar: () => (
+                                                            <div className='w-full flex justify-between border-b border-gray-400 py-2'>
+                                                                <GridToolbar
+                                                                    className="border border-gray-300"
+                                                                    sx={{
+                                                                        flex: 1,
+                                                                        display: 'flex',
+                                                                        marginX: 0,
+                                                                        gap: 5,
+                                                                        alignItems: 'start',
+
+                                                                    }}
+                                                                />
+
+                                                                <div className='max-w-min flex gap-x-2 justify-end mr-2'>
+
+                                                                    <CustomSelect
+                                                                        name="chu_year"
+                                                                        onChange={(e) => handleCustomSelectChange(e, 'facility_nhif_accreditation', props?.token, 'keph')}
+                                                                        options={props?.kephOptions}
+                                                                        defaultValue={null}
+                                                                        placeholder='Filter by Period'
+
+                                                                    />
+
+                                                                    <CustomSelect
+                                                                        name="chu_status"
+                                                                        onChange={(e) => handleCustomSelectChange(e, 'facility_nhif_accreditation', props?.token, 'type')}
+                                                                        options={props?.typeOptions}
+                                                                        defaultValue={null}
+                                                                        placeholder='Filter by CHU Status'
+
+                                                                    />
+
+                                                                 <CustomSelect
+                                                                        name="chu_org"
+                                                                        onChange={(e) => handleCustomSelectChange(e, 'facility_nhif_accreditation', props?.token, 'type')}
+                                                                        options={props?.typeOptions}
+                                                                        defaultValue={null}
+                                                                        placeholder='Filter Org Unit'
+
+                                                                    />
+                                   
+                                                                </div>
+                                                            </div>
+                                                        ),
+                                                    }}
+                                                />
+                                            </div>
                                             {/* <div className='shadow-md w-full max-h-min col-span-7'>
                                                 <StyledDataGrid
                                                     loading={loading}
@@ -2199,13 +2391,13 @@ Reports.getInitialProps = async (ctx) => {
         'facility_infrastructure_report_all_hierachies': [],
         'chul_status_all_hierachies': [],
         'gis': [],
-        'accreditation':[],
+        'accreditation': [],
         'chul_services_all_hierachies': [],
         'chul_count_all_hierachies': [],
         'facility_human_resource_category_report_all_hierachies': [],
         kephOptions: [],
-        ownerOptions:[],
-        typeOptions:[]
+        ownerOptions: [],
+        typeOptions: []
     }
 
 
@@ -2231,7 +2423,7 @@ Reports.getInitialProps = async (ctx) => {
 
                 }
                 catch (err) {
-                    console.log(`Error fetching ${report}: `, err);
+                    console.log(`Error fetching ${report}: `, err.message);
 
                 }
 
@@ -2415,30 +2607,30 @@ Reports.getInitialProps = async (ctx) => {
 
                 break;
 
-                case 'accreditation':
-                    url = `${process.env.NEXT_PUBLIC_API_URL}/reporting/?report_type=facility_nhif_accreditation${ctx?.query?.groupby !== undefined ? `&report_groupby=${ctx?.query?.groupby}` : '&report_groupby=county&page_size=47'}`;
-    
-    
-                    try {
-    
-                        const _data = await fetch(url, {
-                            headers: {
-                                Authorization: 'Bearer ' + token,
-                                Accept: 'application/json',
-                            }
-                        })
-    
-                        allReports["facility_nhif_accreditation"] = (await _data.json()).results?.results
-    
-                    }
-                    catch (err) {
-                        console.log(`Error fetching ${report}: `, err);
-    
-                    }
-    
-                    break;
-                
-            
+            case 'accreditation':
+                url = `${process.env.NEXT_PUBLIC_API_URL}/reporting/?report_type=facility_nhif_accreditation${ctx?.query?.groupby !== undefined ? `&report_groupby=${ctx?.query?.groupby}` : '&report_groupby=county&page_size=47'}`;
+
+
+                try {
+
+                    const _data = await fetch(url, {
+                        headers: {
+                            Authorization: 'Bearer ' + token,
+                            Accept: 'application/json',
+                        }
+                    })
+
+                    allReports["facility_nhif_accreditation"] = (await _data.json()).results?.results
+
+                }
+                catch (err) {
+                    console.log(`Error fetching ${report}: `, err);
+
+                }
+
+                break;
+
+
             case 'kephOptions':
                 url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/keph/`
 
@@ -2509,175 +2701,142 @@ Reports.getInitialProps = async (ctx) => {
 
                 break;
 
-               
-
-            /*
-case 'chul_status_all_hierachies':
-    url = `${process.env.NEXT_PUBLIC_API_URL}/reporting/chul/?report_type=${report}`;
+            case 'chul_services_all_hierachies':
+                url = `${process.env.NEXT_PUBLIC_API_URL}/reporting/chul/?report_type=chul_services_all_hierachies${ctx?.query?.groupby !== undefined ? `&report_groupby=${ctx?.query?.groupby}` : '&report_groupby=county&page_size=47'}`;
 
 
-    try {
+                try {
 
-        const _data = await fetch(url, {
-            headers: {
-                Authorization: 'Bearer ' + token,
-                Accept: 'application/json',
-            },
-        })
+                    const _data = await fetch(url, {
+                        headers: {
+                            Authorization: 'Bearer ' + token,
+                            Accept: 'application/json',
+                        },
+                    })
 
-        allReports["chul_status_all_hierachies"] = (await _data.json()).results 
+                    allReports["chul_services_all_hierachies"] = (await _data.json())?.results?.result_summary
 
-    }
-    catch (err) {
-        console.log(`Error fetching ${report}: `, err);
-        // allReports.push({
-        //     error: true,
-        //     err: err,
-        //     chul_status_all_hierachies: [],
-        // })
-    }
-    break;
-case 'chul_services_all_hierachies':
-    url = `${process.env.NEXT_PUBLIC_API_URL}/reporting/chul/?report_type=${report}`;
-
-
-    try {
-
-        const _data = await fetch(url, {
-            headers: {
-                Authorization: 'Bearer ' + token,
-                Accept: 'application/json',
-            },
-        })
-
-            allReports["chul_services_all_hierachies"] = (await _data.json()).results.map((
-                {
                     
-                    "WASH: Water, sanitation and hygiene education, including hand washing": wash_sanitation,
-                    "iCCM: Education on danger signs and referral for malaria, pneumonia and diarrhea": iccm,
-                    "WASH: Water treatment provision": wash_water_treatment,
-                    "health_unit__facility__ward__name": ward,
-                    "health_unit__facility__ward__sub_county__county__name": county,
-                    "health_unit__facility__ward__sub_county__name": sub_county,
-                    "HIV, TB and Malaria: Treatment defaulter tracing": hiv_tb_malaria_treatment,
-                    "HIV, TB and Malaria: Education, support for treatment adherence, and referral": hiv_tb_malaria_education,
-                    "iCCM: Provision of AL drugs to treat malaria": iccm_malaria_drugs,
-                    "HIV, TB and Malaria: Provision of condoms": hiv_tb_malaria_condoms,
-                    "Referrals to health facilities": referrals_health_facilities,
-                    "Provision of Information, Education & Communication (IEC) materials": provision_of_information,
-                    "iCCM: Rapid diagnostic testing of malaria": iccm_rapid_diagnostic,
-                    "Nutrition: Education, child growth monitoring, screening and referrals": nutrition_education,
-                    "MNCH: Education, counseling of mothers, and referral for ANC": mnch_education,
-                    "Deworming of children": deworming_children,
-                    "HIV, TB and Malaria: Provision of psychosocial support groups": hiv_tb_malaria_ppsg,
-                    "Management of diarrhea, injuries, wounds, jiggers and other minor illnesses.": mgmt_diarrhea,
-                    "NCD: Education and support for treatment adherence": ncd_eduaction,
-                    "HIV, TB and Malaria: Provision of home based care for PLWA": hiv_tb_malaria_provision,
-                    "First Aid Services": first_aid_services,        
-                    "iCCM: Provision of Long Lasting Insecticide Treated Nets": iCCM_provision_long_lasting,
-                    "Growth monitoring for children under 5 years.": growth_monitoring,
-                    "NCD: Diabetes and hypertension screening and referral": ncd_diabetes,
-            
+                    /*map((
+                        {
+                            
+                            "WASH: Water, sanitation and hygiene education, including hand washing": wash_sanitation,
+                            "iCCM: Education on danger signs and referral for malaria, pneumonia and diarrhea": iccm,
+                            "WASH: Water treatment provision": wash_water_treatment,
+                            "health_unit__facility__ward__name": ward,
+                            "health_unit__facility__ward__sub_county__county__name": county,
+                            "health_unit__facility__ward__sub_county__name": sub_county,
+                            "HIV, TB and Malaria: Treatment defaulter tracing": hiv_tb_malaria_treatment,
+                            "HIV, TB and Malaria: Education, support for treatment adherence, and referral": hiv_tb_malaria_education,
+                            "iCCM: Provision of AL drugs to treat malaria": iccm_malaria_drugs,
+                            "HIV, TB and Malaria: Provision of condoms": hiv_tb_malaria_condoms,
+                            "Referrals to health facilities": referrals_health_facilities,
+                            "Provision of Information, Education & Communication (IEC) materials": provision_of_information,
+                            "iCCM: Rapid diagnostic testing of malaria": iccm_rapid_diagnostic,
+                            "Nutrition: Education, child growth monitoring, screening and referrals": nutrition_education,
+                            "MNCH: Education, counseling of mothers, and referral for ANC": mnch_education,
+                            "Deworming of children": deworming_children,
+                            "HIV, TB and Malaria: Provision of psychosocial support groups": hiv_tb_malaria_ppsg,
+                            "Management of diarrhea, injuries, wounds, jiggers and other minor illnesses.": mgmt_diarrhea,
+                            "NCD: Education and support for treatment adherence": ncd_eduaction,
+                            "HIV, TB and Malaria: Provision of home based care for PLWA": hiv_tb_malaria_provision,
+                            "First Aid Services": first_aid_services,        
+                            "iCCM: Provision of Long Lasting Insecticide Treated Nets": iCCM_provision_long_lasting,
+                            "Growth monitoring for children under 5 years.": growth_monitoring,
+                            "NCD: Diabetes and hypertension screening and referral": ncd_diabetes,
                     
-                },
-                index
-            ) => ({
-                wash_sanitation,
-                iccm,
-                wash_water_treatment,
-                ward,
-                county,
-                hiv_tb_malaria_treatment,
-                hiv_tb_malaria_education,
-                iccm_malaria_drugs,
-                hiv_tb_malaria_condoms,
-                referrals_health_facilities,
-                provision_of_information,
-                iccm_rapid_diagnostic,
-                nutrition_education,
-                mnch_education,
-                deworming_children,
-                sub_county,
-                hiv_tb_malaria_ppsg,
-                mgmt_diarrhea,
-                ncd_eduaction,
-                hiv_tb_malaria_provision,
-                first_aid_services,
-                iCCM_provision_long_lasting,
-                growth_monitoring,
-                ncd_diabetes,
+                            
+                        },
+                        index
+                    ) => ({
+                        wash_sanitation,
+                        iccm,
+                        wash_water_treatment,
+                        ward,
+                        county,
+                        hiv_tb_malaria_treatment,
+                        hiv_tb_malaria_education,
+                        iccm_malaria_drugs,
+                        hiv_tb_malaria_condoms,
+                        referrals_health_facilities,
+                        provision_of_information,
+                        iccm_rapid_diagnostic,
+                        nutrition_education,
+                        mnch_education,
+                        deworming_children,
+                        sub_county,
+                        hiv_tb_malaria_ppsg,
+                        mgmt_diarrhea,
+                        ncd_eduaction,
+                        hiv_tb_malaria_provision,
+                        first_aid_services,
+                        iCCM_provision_long_lasting,
+                        growth_monitoring,
+                        ncd_diabetes,
+                    
+                        id:index
+                        
+                    })
+                    ) */
+
+                }
+                catch (err) {
+                    console.log(`Error fetching ${report}: `, err);
+
+
+                }
+                break;
+
+            case 'chul_status_all_hierachies':
+                url = `${process.env.NEXT_PUBLIC_API_URL}/reporting/chul/?report_type=chul_status_all_hierachies${ctx?.query?.groupby !== undefined ? `&report_groupby=${ctx?.query?.groupby}` : '&report_groupby=county&page_size=47'}`;
+
+
+                try {
+
+                    const _data = await fetch(url, {
+                        headers: {
+                            Authorization: 'Bearer ' + token,
+                            Accept: 'application/json',
+                        },
+                    })
+
+                    allReports["chul_status_all_hierachies"] = (await _data.json())?.results?.results
+
+                    
+                }
+                catch (err) {
+                    console.log(`Error fetching ${report}: `, err);
+
+                }
+                break;
             
-                id:index
-                
-            })
-            ) 
-
-    }
-    catch (err) {
-        console.log(`Error fetching ${report}: `, err);
-
-        // allReports.push({
-        //     error: true,
-        //     err: err,
-        //     chul_services_all_hierachies: [],
-        // })
-    }
-    break;
-
- 
- 
- 
-case 'chul_status_all_hierachies':
-    url = `${process.env.NEXT_PUBLIC_API_URL}/reporting/chul/?report_type=${report}`;
+            case 'chul_count_all_hierachies':
+                url = `${process.env.NEXT_PUBLIC_API_URL}/reporting/chul/?report_type=chul_count_all_hierachies${ctx?.query?.groupby !== undefined ? `&report_groupby=${ctx?.query?.groupby}` : '&report_groupby=county&page_size=47'}`;
 
 
-    try {
+                try {
 
-        const _data = await fetch(url, {
-            headers: {
-                Authorization: 'Bearer ' + token,
-                Accept: 'application/json',
-            },
-        })
+                    const _data = await fetch(url, {
+                        headers: {
+                            Authorization: 'Bearer ' + token,
+                            Accept: 'application/json',
+                        },
+                    })
 
-        allReports["chul_status_all_hierachies"] = (await _data.json()).results 
+                   
 
-    }
-    catch (err) {
-        console.log(`Error fetching ${report}: `, err);
-        // allReports.push({
-        //     error: true,
-        //     err: err,
-        //     chul_status_all_hierachies: [],
-        // })
-    }
-    break;
-case 'chul_count_all_hierachies':
-    url = `${process.env.NEXT_PUBLIC_API_URL}/reporting/chul/?report_type=${report}`;
+                    allReports["chul_count_all_hierachies"] = (await _data.json())?.results?.result_summary
 
+                    console.log({
+                        url,
+                        chul_count_all_hierachies: allReports["chul_status_all_hierachies"]
+                    })
+                }
+                catch (err) {
+                    console.log(`Error fetching ${report}: `, err);
+                }
+                break;
 
-    try {
-
-        const _data = await fetch(url, {
-            headers: {
-                Authorization: 'Bearer ' + token,
-                Accept: 'application/json',
-            },
-        })
-
-        allReports["chul_count_all_hierachies"] = (await _data.json()).results 
-
-    }
-    catch (err) {
-        console.log(`Error fetching ${report}: `, err);
-        // allReports.push({
-        //     error: true,
-        //     err: err,
-        //     chul_count_all_hierachies: [],
-        // })
-    }
-    break;
-    */
 
 
         }

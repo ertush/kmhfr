@@ -19,6 +19,7 @@ function formatString(str) {
 
 
 export function propsToGridData(props, index, orgUnitFilter = "county") {
+    let isKeph, isOwner, isType = false;
 
     switch (index) {
         case 0:
@@ -27,6 +28,7 @@ export function propsToGridData(props, index, orgUnitFilter = "county") {
 
                     [`${orgUnitFilter}`]: result[0],
                     date: result[1]?.date_established,
+                    total_beds: result[1]?.total_beds,
                     hdu_beds: result[1]?.total_hdu_beds,
                     icu_beds: result[1]?.total_icu_beds,
                     maternity_beds: result[1]?.total_maternity_beds,
@@ -46,6 +48,11 @@ export function propsToGridData(props, index, orgUnitFilter = "county") {
                     {
                         headerName: 'Date',
                         field: 'date',
+                        flex: 1
+                    },
+                    {
+                        headerName: 'Total Beds',
+                        field: 'total_beds',
                         flex: 1
                     },
                     {
@@ -87,9 +94,26 @@ export function propsToGridData(props, index, orgUnitFilter = "county") {
                 rows: Object.entries(props?.facility_keph_level_report_all_hierachies ?? {})?.map((result, index) => ({
                     [`${orgUnitFilter}`]: result[0],
                     date: result[1]?.year_established,
-                    keph: result[1]?.facility_keph_level?.includes('All') ? null : result[1]?.facility_keph_level,
-                    owner: result[1]?.facility_owner?.includes('All') ? null : result[1]?.facility_owner,
-                    type: result[1]?.facility_type?.includes('All') ? null : result[1]?.facility_type,
+                    ...(() => {
+
+                        if (result[1]?.facility_keph_level !== "All") {
+                            isKeph = true;
+                            return { keph: result[1]?.facility_keph_level }
+                        }
+
+                        if (result[1]?.facility_owner !== "All") {
+                            isOwner = true;
+                            return { owner: result[1]?.facility_owner }
+                        }
+
+                        if (result[1]?.facility_type !== "All") {
+                            isType = true;
+                            return { type: result[1]?.facility_type }
+                        }
+
+                        return {}
+
+                    })(),
                     level_2: result[1]?.Level_2,
                     level_3: result[1]?.Level_3,
                     level_4: result[1]?.Level_4,
@@ -97,6 +121,7 @@ export function propsToGridData(props, index, orgUnitFilter = "county") {
                     level_6: result[1]?.Level_6,
                     id: index
                 })),
+
                 columns: [
 
                     {
@@ -109,21 +134,41 @@ export function propsToGridData(props, index, orgUnitFilter = "county") {
                         field: 'date',
                         flex: 1
                     },
-                    {
-                        headerName: 'Keph Level',
-                        field: 'keph',
-                        flex: 1
-                    },
-                    {
-                        headerName: 'Owner',
-                        field: 'owner',
-                        flex: 1
-                    },
-                    {
-                        headerName: 'Type',
-                        field: 'type',
-                        flex: 1
-                    },
+                    ...(() => {
+
+                        if (isKeph) {
+                            return [
+                                {
+                                    headerName: 'Keph Level',
+                                    field: 'keph',
+                                    flex: 1
+                                }
+                            ]
+                        }
+
+                        if (isOwner) {
+                            return [
+                                {
+                                    headerName: 'Owner',
+                                    field: 'owner',
+                                    flex: 1
+                                }
+                            ]
+                        }
+
+                        if (isType) {
+                            return [
+                                {
+                                    headerName: 'Type',
+                                    field: 'type',
+                                    flex: 1
+                                }
+                            ]
+                        }
+
+                        return []
+
+                    })(),
                     {
                         headerName: 'Level 2',
                         field: 'level_2',
@@ -158,6 +203,26 @@ export function propsToGridData(props, index, orgUnitFilter = "county") {
                 rows: Object.entries(props?.facility_owner_report_all_hierachies ?? {})?.map((result, index) => ({
                     [`${orgUnitFilter}`]: result[0],
                     date: result[1]?.date_established,
+                    ...(() => {
+
+                        if (result[1]?.facility_keph_level !== "All") {
+                            isKeph = true;
+                            return { keph: result[1]?.facility_keph_level }
+                        }
+
+                        if (result[1]?.facility_owner !== "All") {
+                            isOwner = true;
+                            return { owner: result[1]?.facility_owner }
+                        }
+
+                        if (result[1]?.facility_type !== "All") {
+                            isType = true;
+                            return { type: result[1]?.facility_type }
+                        }
+
+                        return {}
+
+                    })(),
                     moh: result[1]['Ministry_of_Health'],
                     private_practice: result[1]['Private_Practice'],
                     ngo: result[1]['Non-Governmental_Organizations'],
@@ -177,6 +242,42 @@ export function propsToGridData(props, index, orgUnitFilter = "county") {
                         field: 'date',
                         flex: 1
                     },
+                    ...(() => {
+
+                        if (isKeph) {
+                            return [
+                                {
+                                    headerName: 'Keph Level',
+                                    field: 'keph',
+                                    flex: 1
+                                }
+                            ]
+                        }
+
+                        if (isOwner) {
+                            return [
+                                {
+                                    headerName: 'Owner',
+                                    field: 'owner',
+                                    flex: 1
+                                }
+                            ]
+                        }
+
+                        if (isType) {
+                            return [
+                                {
+                                    headerName: 'Type',
+                                    field: 'type',
+                                    flex: 1
+                                }
+                            ]
+                        }
+
+                        return []
+
+                    })()
+                    ,
                     {
                         headerName: 'Private Practice',
                         field: 'private_practice',
@@ -200,6 +301,26 @@ export function propsToGridData(props, index, orgUnitFilter = "county") {
                 rows: Object.entries(props?.facility_type_report_all_hierachies ?? {})?.map((result, index) => ({
                     [`${orgUnitFilter}`]: result[0],
                     date: result[1]?.date_established,
+                    ...(() => {
+
+                        if (result[1]?.facility_keph_level !== "All") {
+                            isKeph = true;
+                            return { keph: result[1]?.facility_keph_level }
+                        }
+
+                        if (result[1]?.facility_owner !== "All") {
+                            isOwner = true;
+                            return { owner: result[1]?.facility_owner }
+                        }
+
+                        if (result[1]?.facility_type !== "All") {
+                            isType = true;
+                            return { type: result[1]?.facility_type }
+                        }
+
+                        return {}
+
+                    })(),
                     medical_clinic: result[1]['MEDICAL_CLINIC'],
                     dispensary: result[1]['DISPENSARY'],
                     medical_center: result[1]['MEDICAL_CENTER'],
@@ -222,6 +343,42 @@ export function propsToGridData(props, index, orgUnitFilter = "county") {
                         field: 'date',
                         flex: 1
                     },
+                    ...(() => {
+
+                        if (isKeph) {
+                            return [
+                                {
+                                    headerName: 'Keph Level',
+                                    field: 'keph',
+                                    flex: 1
+                                }
+                            ]
+                        }
+
+                        if (isOwner) {
+                            return [
+                                {
+                                    headerName: 'Owner',
+                                    field: 'owner',
+                                    flex: 1
+                                }
+                            ]
+                        }
+
+                        if (isType) {
+                            return [
+                                {
+                                    headerName: 'Type',
+                                    field: 'type',
+                                    flex: 1
+                                }
+                            ]
+                        }
+
+                        return []
+
+                    })()
+                    ,
                     {
                         headerName: 'MEDICAL CLINIC',
                         field: 'medical_clinic',
@@ -266,6 +423,26 @@ export function propsToGridData(props, index, orgUnitFilter = "county") {
                 rows: Object.entries(props?.facility_regulatory_body_report_all_hierachies ?? {})?.map((result, index) => ({
                     [`${orgUnitFilter}`]: result[0],
                     date: result[1]?.date_established,
+                    ...(() => {
+
+                        if (result[1]?.facility_keph_level !== "All") {
+                            isKeph = true;
+                            return { keph: result[1]?.facility_keph_level }
+                        }
+
+                        if (result[1]?.facility_owner !== "All") {
+                            isOwner = true;
+                            return { owner: result[1]?.facility_owner }
+                        }
+
+                        if (result[1]?.facility_type !== "All") {
+                            isType = true;
+                            return { type: result[1]?.facility_type }
+                        }
+
+                        return {}
+
+                    })(),
                     moh: result[1]['Ministry_of_Health'],
                     ppb: result[1]['Pharmacy_&_Poisons_Board'],
                     knrc: result[1]['Kenya_Nuclear_Regulatory_Council_(_Radiation_Board)'],
@@ -291,6 +468,42 @@ export function propsToGridData(props, index, orgUnitFilter = "county") {
                         field: 'date',
                         flex: 1
                     },
+                    ...(() => {
+
+                        if (isKeph) {
+                            return [
+                                {
+                                    headerName: 'Keph Level',
+                                    field: 'keph',
+                                    flex: 1
+                                }
+                            ]
+                        }
+
+                        if (isOwner) {
+                            return [
+                                {
+                                    headerName: 'Owner',
+                                    field: 'owner',
+                                    flex: 1
+                                }
+                            ]
+                        }
+
+                        if (isType) {
+                            return [
+                                {
+                                    headerName: 'Type',
+                                    field: 'type',
+                                    flex: 1
+                                }
+                            ]
+                        }
+
+                        return []
+
+                    })()
+                    ,
                     {
                         headerName: 'Ministry of Health',
                         field: 'moh',
@@ -352,6 +565,26 @@ export function propsToGridData(props, index, orgUnitFilter = "county") {
                 ({
                     [`${orgUnitFilter}`]: result[0],
                     date: result[1]?.facility__date_established,
+                    ...(() => {
+
+                        if (result[1]?.facility_keph_level !== "All") {
+                            isKeph = true;
+                            return { keph: result[1]?.facility_keph_level }
+                        }
+
+                        if (result[1]?.facility_owner !== "All") {
+                            isOwner = true;
+                            return { owner: result[1]?.facility_owner }
+                        }
+
+                        if (result[1]?.facility_type !== "All") {
+                            isType = true;
+                            return { type: result[1]?.facility_type }
+                        }
+
+                        return {}
+
+                    })(),
                     cat_emergency_prep: result[1]["EMERGENCY_PREPAREDNESS"],
                     cat_curative: result[1]["CURATIVE_SERVICES"],
                     cat_orthopaedic: result[1]["ORTHOPAEDIC_TECHNOLOGY_SERVICES"],
@@ -408,6 +641,41 @@ export function propsToGridData(props, index, orgUnitFilter = "county") {
                         field: 'date',
                         width: 200
                     },
+                    ...(() => {
+
+                        if (isKeph) {
+                            return [
+                                {
+                                    headerName: 'Keph Level',
+                                    field: 'keph',
+                                    width: 200
+                                }
+                            ]
+                        }
+
+                        if (isOwner) {
+                            return [
+                                {
+                                    headerName: 'Owner',
+                                    field: 'owner',
+                                    width: 200
+                                }
+                            ]
+                        }
+
+                        if (isType) {
+                            return [
+                                {
+                                    headerName: 'Type',
+                                    field: 'type',
+                                    width: 200
+                                }
+                            ]
+                        }
+
+                        return []
+
+                    })(),
                     {
                         headerName: 'EMERGENCY PREPAREDNESS',
                         field: 'cat_emergency_prep',
@@ -650,6 +918,26 @@ export function propsToGridData(props, index, orgUnitFilter = "county") {
                 rows: Object.entries(props?.facility_infrastructure_report_all_hierachies?.results_bycategory ?? {})?.map((result, index) => ({
                     [`${orgUnitFilter}`]: result[0],
                     date: result[1]?.facility__date_established,
+                    ...(() => {
+
+                        if (result[1]?.facility_keph_level !== "All") {
+                            isKeph = true;
+                            return { keph: result[1]?.facility_keph_level }
+                        }
+
+                        if (result[1]?.facility_owner !== "All") {
+                            isOwner = true;
+                            return { owner: result[1]?.facility_owner }
+                        }
+
+                        if (result[1]?.facility_type !== "All") {
+                            isType = true;
+                            return { type: result[1]?.facility_type }
+                        }
+
+                        return {}
+
+                    })(),
                     cat_ict_infrastructure: result[1]["ICT_INFRASTRUCTURE"],
                     cat_communications: result[1]["COMMUNICATIONS"],
                     cat_water_source: result[1]["WATER_SOURCE"],
@@ -675,6 +963,42 @@ export function propsToGridData(props, index, orgUnitFilter = "county") {
                         field: 'date',
                         width: 200
                     },
+                    ...(() => {
+
+                        if (isKeph) {
+                            return [
+                                {
+                                    headerName: 'Keph Level',
+                                    field: 'keph',
+                                    width: 200
+                                }
+                            ]
+                        }
+
+                        if (isOwner) {
+                            return [
+                                {
+                                    headerName: 'Owner',
+                                    field: 'owner',
+                                    width: 200
+                                }
+                            ]
+                        }
+
+                        if (isType) {
+                            return [
+                                {
+                                    headerName: 'Type',
+                                    field: 'type',
+                                    width: 200
+                                }
+                            ]
+                        }
+
+                        return []
+
+                    })()
+                    ,
                     {
                         headerName: 'ICT INFRASTRUCTURE',
                         field: 'cat_ict_infrastructure',
@@ -731,6 +1055,26 @@ export function propsToGridData(props, index, orgUnitFilter = "county") {
                 rows: Object.entries(props?.facility_infrastructure_report_all_hierachies?.results ?? {})?.map((result, index) => ({
                     [`${orgUnitFilter}`]: result[0],
                     date: result[1]?.facility__date_established,
+                    ...(() => {
+
+                        if (result[1]?.facility_keph_level !== "All") {
+                            isKeph = true;
+                            return { keph: result[1]?.facility_keph_level }
+                        }
+
+                        if (result[1]?.facility_owner !== "All") {
+                            isOwner = true;
+                            return { owner: result[1]?.facility_owner }
+                        }
+
+                        if (result[1]?.facility_type !== "All") {
+                            isType = true;
+                            return { type: result[1]?.facility_type }
+                        }
+
+                        return {}
+
+                    })(),
                     ultrasound_machines: result[1]["Ultrasound_Machines"],
                     dialysis_machines: result[1]["Dialysis_machines"],
                     generator: result[1]["Generator"],
@@ -804,6 +1148,42 @@ export function propsToGridData(props, index, orgUnitFilter = "county") {
                         field: 'date',
                         width: 200
                     },
+                    ...(() => {
+
+                        if (isKeph) {
+                            return [
+                                {
+                                    headerName: 'Keph Level',
+                                    field: 'keph',
+                                    width: 200
+                                }
+                            ]
+                        }
+
+                        if (isOwner) {
+                            return [
+                                {
+                                    headerName: 'Owner',
+                                    field: 'owner',
+                                    width: 200
+                                }
+                            ]
+                        }
+
+                        if (isType) {
+                            return [
+                                {
+                                    headerName: 'Type',
+                                    field: 'type',
+                                    width: 200
+                                }
+                            ]
+                        }
+
+                        return []
+
+                    })()
+                    ,
                     {
                         headerName: 'Dialysis machines',
                         field: 'dialysis_machines',
@@ -1122,6 +1502,26 @@ export function propsToGridData(props, index, orgUnitFilter = "county") {
                 rows: Object.entries(props?.facility_human_resource_category_report_all_hierachies?.results_bycategory ?? {})?.map((result, index) => ({
                     [`${orgUnitFilter}`]: result[0],
                     date: result[1]?.facility__date_established,
+                    ...(() => {
+
+                        if (result[1]?.facility_keph_level !== "All") {
+                            isKeph = true;
+                            return { keph: result[1]?.facility_keph_level }
+                        }
+
+                        if (result[1]?.facility_owner !== "All") {
+                            isOwner = true;
+                            return { owner: result[1]?.facility_owner }
+                        }
+
+                        if (result[1]?.facility_type !== "All") {
+                            isType = true;
+                            return { type: result[1]?.facility_type }
+                        }
+
+                        return {}
+
+                    })(),
                     clinical_officers: result[1]["Clinical_Officers"],
                     dental_staff: result[1]["Dental_staff"],
                     mdeical_engineering: result[1]["Medical_Engineering"],
@@ -1159,6 +1559,41 @@ export function propsToGridData(props, index, orgUnitFilter = "county") {
                         field: 'date',
                         width: 200
                     },
+                    ...(() => {
+
+                        if (isKeph) {
+                            return [
+                                {
+                                    headerName: 'Keph Level',
+                                    field: 'keph',
+                                    width: 200
+                                }
+                            ]
+                        }
+
+                        if (isOwner) {
+                            return [
+                                {
+                                    headerName: 'Owner',
+                                    field: 'owner',
+                                    width: 200
+                                }
+                            ]
+                        }
+
+                        if (isType) {
+                            return [
+                                {
+                                    headerName: 'Type',
+                                    field: 'type',
+                                    width: 200
+                                }
+                            ]
+                        }
+
+                        return []
+
+                    })(),
                     {
                         headerName: 'CLINICAL OFFICER',
                         field: 'clinical_officers',
@@ -1286,6 +1721,26 @@ export function propsToGridData(props, index, orgUnitFilter = "county") {
                 rows: Object.entries(props?.facility_human_resource_category_report_all_hierachies?.results ?? {})?.map((result, index) => ({
                     [`${orgUnitFilter}`]: result[0],
                     date: result[1]['facility__date_established'],
+                    ...(() => {
+
+                        if (result[1]?.facility_keph_level !== "All") {
+                            isKeph = true;
+                            return { keph: result[1]?.facility_keph_level }
+                        }
+
+                        if (result[1]?.facility_owner !== "All") {
+                            isOwner = true;
+                            return { owner: result[1]?.facility_owner }
+                        }
+
+                        if (result[1]?.facility_type !== "All") {
+                            isType = true;
+                            return { type: result[1]?.facility_type }
+                        }
+
+                        return {}
+
+                    })(),
                     "Accidents_&_Emergency_Nurse": result[1]["Accidents_&_Emergency_Nurse"],
                     Rheumatologist: result[1]["Rheumatologist"],
                     "Nutrition_&_Dietetic_Technologist": result[1]["Nutrition_&_Dietetic_Technologist"],
@@ -1430,6 +1885,41 @@ export function propsToGridData(props, index, orgUnitFilter = "county") {
                         field: 'date',
                         width: 100
                     },
+                    ...(() => {
+
+                        if (isKeph) {
+                            return [
+                                {
+                                    headerName: 'Keph Level',
+                                    field: 'keph',
+                                    width: 100
+                                }
+                            ]
+                        }
+
+                        if (isOwner) {
+                            return [
+                                {
+                                    headerName: 'Owner',
+                                    field: 'owner',
+                                    width: 100
+                                }
+                            ]
+                        }
+
+                        if (isType) {
+                            return [
+                                {
+                                    headerName: 'Type',
+                                    field: 'type',
+                                    width: 100
+                                }
+                            ]
+                        }
+
+                        return []
+
+                    })(),
                     {
                         headerName: 'Accidents  &_Emergency_Nurse',
                         field: 'Accidents_&_Emergency_Nurse',
@@ -2085,12 +2575,31 @@ export function propsToGridData(props, index, orgUnitFilter = "county") {
                 ]
 
             }
-
         case 10:
             return {
                 rows: Object.entries(props?.gis ?? {})?.map(([key, value], index) => ({
                     [`${orgUnitFilter}`]: key,
                     date: value?.map(({ facility_date_established }) => facility_date_established)[0],
+                    ...(() => {
+
+                        if (value?.map(({ facility_keph_level }) => facility_keph_level)[0] !== "All") {
+                            isKeph = true;
+                            return { keph: value?.map(({ facility_keph_level }) => facility_keph_level)[0] }
+                        }
+
+                        if (value?.map(({ facility_owner }) => facility_owner)[0] !== "All") {
+                            isOwner = true;
+                            return { owner: value?.map(({ facility_owner }) => facility_owner)[0] }
+                        }
+
+                        if (value?.map(({ facility_type }) => facility_type)[0] !== "All") {
+                            isType = true;
+                            return { type: value?.map(({ facility_type }) => facility_type)[0] }
+                        }
+
+                        return {}
+
+                    })(),
                     facility_name: value?.map(({ facility_name }) => facility_name)[0],
                     facility_code: value?.map(({ facility_code }) => facility_code)[0],
                     facility_long: value?.map(({ facility_long }) => facility_long)[0],
@@ -2111,6 +2620,41 @@ export function propsToGridData(props, index, orgUnitFilter = "county") {
                         field: 'date',
                         flex: 1
                     },
+                    ...(() => {
+
+                        if (isKeph) {
+                            return [
+                                {
+                                    headerName: 'Keph Level',
+                                    field: 'keph',
+                                    flex: 1
+                                }
+                            ]
+                        }
+
+                        if (isOwner) {
+                            return [
+                                {
+                                    headerName: 'Owner',
+                                    field: 'owner',
+                                    flex: 1
+                                }
+                            ]
+                        }
+
+                        if (isType) {
+                            return [
+                                {
+                                    headerName: 'Type',
+                                    field: 'type',
+                                    flex: 1
+                                }
+                            ]
+                        }
+
+                        return []
+
+                    })(),
                     {
                         headerName: 'Facility Name',
                         field: 'facility_name',
@@ -2138,21 +2682,41 @@ export function propsToGridData(props, index, orgUnitFilter = "county") {
                 ]
 
             }
-
         case 11:
             return {
                 rows: Object.entries(props?.facility_nhif_accreditation ?? {})?.map((result, index) => ({
                     [`${orgUnitFilter}`]: result[0],
-                    facility_keph_level: result[1][0]?.facility_keph_level,
+                    facility_date_established: result[1][0]?.facility_date_established,
+
+                    ...(() => {
+
+                        if (result[1][0]?.facility_keph_level !== "All") {
+                            isKeph = true;
+                            return { keph: result[1][0]?.facility_keph_level }
+                        }
+
+                        if (result[1][0]?.facility_owner !== "All") {
+                            isOwner = true;
+                            return { owner: result[1][0]?.facility_owner }
+                        }
+
+                        if (result[1][0]?.facility_type !== "All") {
+                            isType = true;
+                            return { type: result[1][0]?.facility_type }
+                        }
+
+                        return {}
+
+                    })(),
+                    // facility_keph_level: result[1][0]?.facility_keph_level,
                     facility_name: result[1][0]?.facility_name,
-                    facility_type_name: result[1][0]?.facility_type_name,
+                    // facility_type_name: result[1][0]?.facility_type_name,
                     // facility_sub_county: result[1]["facility_sub_county"],
                     // facility_county: result[1]["facility_county"],
                     facility_code: result[1][0]?.facility_code,
                     // facility_ward: result[1]["facility_ward"],
                     facility_accredited: result[1][0]?.facility_accredited,
-                    facility_date_established: result[1][0]?.facility_date_established,
-                    facility_owner: result[1][0]?.facility_owner,
+                    // facility_owner: result[1][0]?.facility_owner,
                     id: index
 
                 })),
@@ -2162,39 +2726,122 @@ export function propsToGridData(props, index, orgUnitFilter = "county") {
                     {
                         headerName: formatString(orgUnitFilter),
                         field: `${orgUnitFilter}`,
-                        width: 200
+                        flex: 1
                     },
+                    ...(() => {
 
+                        if (isKeph) {
+                            return [
+                                {
+                                    headerName: 'Keph Level',
+                                    field: 'keph',
+                                    flex: 1
+                                }
+                            ]
+                        }
+
+                        if (isOwner) {
+                            return [
+                                {
+                                    headerName: 'Owner',
+                                    field: 'owner',
+                                    flex: 1
+                                }
+                            ]
+                        }
+
+                        if (isType) {
+                            return [
+                                {
+                                    headerName: 'Type',
+                                    field: 'type',
+                                    flex: 1
+                                }
+                            ]
+                        }
+
+                        return []
+
+                    })(),
                     {
                         headerName: 'Date',
                         field: 'facility_date_established',
-                        width: 200
+                        flex: 1
                     },
                     {
                         headerName: 'Facility Name',
                         field: 'facility_name',
-                        width: 200
+                        flex: 1
 
-                    },
-                    {
-                        headerName: 'Facility Type',
-                        field: 'facility_type_name',
-                        width: 200
                     },
                     {
                         headerName: 'Facility Code',
                         field: 'facility_code',
-                        width: 200
+                        flex: 1
 
                     },
                     {
                         headerName: 'NHIF Accreditation',
                         field: 'facility_accredited',
-                        width: 200
+                        flex: 1
+                    },
+                    // {
+                    //     headerName: 'Facility Owner',
+                    //     field: 'facility_owner',
+                    //     width: 200
+
+                    // }
+
+
+
+                ]
+            }
+
+        case 12:
+            return {
+                rows: Object.entries(props?.chul_status_all_hierachies ?? {})?.map((result, index) => ({
+                    [`${orgUnitFilter}`]: result[0],
+                    facility__date_established: result[1]?.facility_date_established,
+                    fully_functional: result[1]['Fully-functional'],
+                    semi_functional: result[1]['semi-functional'],
+                    non_functional: result[1]['Non-functional'],
+                    closed: result[1]?.Closed,
+                    id: index
+
+                })),
+
+                columns: [
+
+                    {
+                        headerName: formatString(orgUnitFilter),
+                        field: `${orgUnitFilter}`,
+                        flex: 1
                     },
                     {
-                        headerName: 'Facility Owner',
-                        field: 'facility_owner',
+                        headerName: 'Date',
+                        field: 'facility__date_established',
+                        flex: 1
+                    },
+                    {
+                        headerName: 'Fully Functional',
+                        field: 'fully_functional',
+                        flex: 1
+
+                    },
+                    {
+                        headerName: 'Semi Functional',
+                        field: 'semi_functional',
+                        flex: 1
+
+                    },
+                    {
+                        headerName: 'Non Functional',
+                        field: 'non_functional',
+                        flex: 1
+                    },
+                    {
+                        headerName: 'Closed',
+                        field: 'closed',
                         width: 200
 
                     }
@@ -2203,5 +2850,226 @@ export function propsToGridData(props, index, orgUnitFilter = "county") {
 
                 ]
             }
+
+        case 13:
+            return {
+                rows: Object.entries(props?.chul_services_all_hierachies ?? {})?.map((result, index) => ({
+                    [`${orgUnitFilter}`]: result[0],
+                    facility__date_established: result[1]?.facility_date_established,
+                    wash_sanitation: result[1]["WASH: Water, sanitation and hygiene education, including hand washing"],
+                    iccm: result[1]["iCCM: Education on danger signs and referral for malaria, pneumonia and diarrhea"],
+                    wash_water_treatment: result[1]["WASH: Water treatment provision"],
+                    ward: result[1]["health_unit__facility__ward__name"],
+                    county: result[1]["health_unit__facility__ward__sub_county__county__name"],
+                    sub_county: result[1]["health_unit__facility__ward__sub_county__name"],
+                    hiv_tb_malaria_treatment: result[1]["HIV, TB and Malaria: Treatment defaulter tracing"],
+                    hiv_tb_malaria_education: result[1]["HIV, TB and Malaria: Education, support for treatment adherence, and referral"],
+                    iccm_malaria_drugs: result[1]["iCCM: Provision of AL drugs to treat malaria"],
+                    hiv_tb_malaria_condoms: result[1]["HIV, TB and Malaria: Provision of condoms"],
+                    referrals_health_facilities: result[1]["Referrals to health facilities"],
+                    provision_of_information: result[1]["Provision of Information, Education & Communication (IEC) materials"],
+                    iccm_rapid_diagnostic: result[1]["iCCM: Rapid diagnostic testing of malaria"],
+                    nutrition_education: result[1]["Nutrition: Education, child growth monitoring, screening and referrals"],
+                    mnch_education: result[1]["MNCH: Education, counseling of mothers, and referral for ANC"],
+                    deworming_children: result[1]["Deworming of children"],
+                    hiv_tb_malaria_ppsg: result[1]["HIV, TB and Malaria: Provision of psychosocial support groups"],
+                    mgmt_diarrhea: result[1]["Management of diarrhea, injuries, wounds, jiggers and other minor illnesses."],
+                    ncd_eduaction: result[1]["NCD: Education and support for treatment adherence"],
+                    hiv_tb_malaria_provision: result[1]["HIV, TB and Malaria: Provision of home based care for PLWA"],
+                    first_aid_services: result[1]["First Aid Services"],
+                    iCCM_provision_long_lasting: result[1]["iCCM: Provision of Long Lasting Insecticide Treated Nets"],
+                    growth_monitoring: result[1]["Growth monitoring for children under 5 years."],
+                    ncd_diabetes: result[1]["NCD: Diabetes and hypertension screening and referral"],
+
+                    id: index
+
+                })),
+
+                columns: [
+
+                    {
+                        headerName: formatString(orgUnitFilter),
+                        field: `${orgUnitFilter}`,
+                        flex: 1
+                    },
+                    {
+                        headerName: 'Date',
+                        field: 'facility__date_established',
+                        flex: 1
+                    },
+                    {
+                        headerName: "WASH: Water, sanitation and hygiene education, including hand washing",
+                        field: "wash_sanitation",
+                        flex: 1
+                    },
+                    {
+                        headerName: "iCCM: Education on danger signs and referral for malaria, pneumonia and diarrhea",
+                        field: "iccm",
+                        flex: 1
+                    },
+                    {
+                        headerName: "WASH: Water treatment provision",
+                        field: "wash_water_treatment",
+                        flex: 1
+                    },
+                    {
+                        headerName: "health_unit__facility__ward__name",
+                        field: "ward",
+                        flex: 1
+                    },
+                    {
+                        headerName: "health_unit__facility__ward__sub_county__county__name",
+                        field: "county",
+                        flex: 1
+                    },
+                    {
+                        headerName: "health_unit__facility__ward__sub_county__name",
+                        field: "sub_county",
+                        flex: 1
+                    },
+                    {
+                        headerName: "HIV, TB and Malaria: Treatment defaulter tracing",
+                        field: "hiv_tb_malaria_treatment",
+                        flex: 1
+                    },
+                    {
+                        headerName: "HIV, TB and Malaria: Education, support for treatment adherence, and referral",
+                        field: "hiv_tb_malaria_education",
+                        flex: 1
+                    },
+                    {
+                        headerName: "iCCM: Provision of AL drugs to treat malaria",
+                        field: "iccm_malaria_drugs",
+                        flex: 1
+                    },
+                    {
+                        headerName: "HIV, TB and Malaria: Provision of condoms",
+                        field: "hiv_tb_malaria_condoms",
+                        flex: 1
+                    },
+                    {
+                        headerName: "Referrals to health facilities",
+                        field: "referrals_health_facilities",
+                        flex: 1
+                    },
+                    {
+                        headerName: "Provision of Information, Education & Communication (IEC) materials",
+                        field: "provision_of_information",
+                        flex: 1
+                    },
+                    {
+                        headerName: "iCCM: Rapid diagnostic testing of malaria",
+                        field: "iccm_rapid_diagnostic",
+                        flex: 1
+                    },
+                    {
+                        headerName: "Nutrition: Education, child growth monitoring, screening and referrals",
+                        field: "nutrition_education",
+                        flex: 1
+                    },
+                    {
+                        headerName: "MNCH: Education, counseling of mothers, and referral for ANC",
+                        field: "mnch_education",
+                        flex: 1
+                    },
+                    {
+                        headerName: "Deworming of children",
+                        field: "deworming_children",
+                        flex: 1
+                    },
+                    {
+                        headerName: "HIV, TB and Malaria: Provision of psychosocial support groups",
+                        field: "hiv_tb_malaria_ppsg",
+                        flex: 1
+                    },
+                    {
+                        headerName: "Management of diarrhea, injuries, wounds, jiggers and other minor illnesses.",
+                        field: "mgmt_diarrhea",
+                        flex: 1
+                    },
+                    {
+                        headerName: "NCD: Education and support for treatment adherence",
+                        field: "ncd_eduaction",
+                        flex: 1
+                    },
+                    {
+                        headerName: "HIV, TB and Malaria: Provision of home based care for PLWA",
+                        field: "hiv_tb_malaria_provision",
+                        flex: 1
+                    },
+                    {
+                        headerName: "First Aid Services",
+                        field: "first_aid_services",
+                        flex: 1
+                    },
+                    {
+                        headerName: "iCCM: Provision of Long Lasting Insecticide Treated Nets",
+                        field: "iCCM_provision_long_lasting",
+                        flex: 1
+                    },
+                    {
+                        headerName: "Growth monitoring for children under 5 years.",
+                        field: "growth_monitoring",
+                        flex: 1
+                    },
+                    {
+                        headerName: "NCD: Diabetes and hypertension screening and referral",
+                        field: "ncd_diabetes",
+                        flex: 1
+                    },
+
+
+
+
+                ]
+            }
+
+            case 14:
+                return {
+                    rows: Object.entries(props?.chul_count_all_hierachies ?? {})?.map((result, index) => ({
+                        [`${orgUnitFilter}`]: result[0],
+                        facility__date_established: result[1]?.facility_date_established,
+                        chvs: result[1]?.chvs,
+                        chews: result[1]?.chews,
+                        number_of_units: result[1]?.number_of_units,
+                        id: index
+    
+                    })),
+    
+                    columns: [
+    
+                        {
+                            headerName: formatString(orgUnitFilter),
+                            field: `${orgUnitFilter}`,
+                            flex: 1
+                        },
+                        {
+                            headerName: 'Date',
+                            field: 'facility__date_established',
+                            flex: 1
+                        },
+                        {
+                            headerName: 'CHVs',
+                            field: 'chvs',
+                            flex: 1
+    
+                        },
+                        {
+                            headerName: 'CHEWS',
+                            field: 'chews',
+                            flex: 1
+    
+                        },
+                        {
+                            headerName: 'Number of Units',
+                            field: 'number_of_units',
+                            flex: 1
+                        }
+                        
+    
+    
+    
+                    ]
+                }
     }
 } 
