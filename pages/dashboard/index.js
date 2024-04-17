@@ -3,7 +3,7 @@ import MainLayout from '../../components/MainLayout'
 import { checkToken } from '../../controllers/auth/auth'
 import React, { useState, useEffect, useMemo, useRef, useContext } from 'react'
 import { useRouter } from 'next/router'
-import BarChart from '../../components/BarChart'
+import Chart from '../../components/Chart'
 import Select from 'react-select'
 import { UserContext } from '../../providers/user'
 import Link from 'next/link'
@@ -775,7 +775,23 @@ function Dashboard(props) {
                         {/* <div id="dashboard" className="w-full grid grid-cols-6 gap-4 px-1 md:px-4 py-2 my-4"> */}
                         <div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
                             <h4 className="text-lg uppercase pt-4 text-center border-b border-gray-100 w-full mb-4 font-semibold text-gray-900">Facility owners </h4>
-                            <table className="w-full text-sm md:text-base p-2">
+                            <Chart
+                                    title=""
+                                    categories={Array?.from(props?.data?.owner_types ?? [], cs => cs.name) || []}
+                                    tooltipsuffix="#"
+                                    xaxistitle="Owner Type"
+                                    yaxistitle="count"
+                                    type="pie"
+                                    data={(() => {
+                                        let data = [];
+                                        data?.push({
+                                            name: 'Facilities',
+                                            data: Array.from(props?.data?.owner_types ?? [], cs => ({ name: cs.name, y: parseFloat(cs.count)})) || []
+                                        });
+                                        return data;
+                                    })() || []} />
+
+                            {/* <table className="w-full text-sm md:text-base p-2">
                                 <thead className="border-b border-gray-300">
                                     <tr>
                                         <th className="text-left text-gray-800 p-2 text-sm uppercase">Metric</th>
@@ -790,12 +806,27 @@ function Dashboard(props) {
                                         </tr>
                                     ))}
                                 </tbody>
-                            </table>
+                            </table> */}
                         </div>
 
                         <div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
                             <h4 className="text-lg uppercase pt-4 text-center border-b border-gray-100 w-full mb-4 font-semibold text-gray-900">Facility Types </h4>
-                            <table className="w-full text-sm md:text-base p-2">
+                            <Chart
+                                    title=""
+                                    categories={Array?.from(props?.data?.types_summary ?? [], cs => cs.name) || []}
+                                    tooltipsuffix="#"
+                                    xaxistitle="Facility Type"
+                                    yaxistitle="count"
+                                    type="bar"
+                                    data={(() => {
+                                        let data = [];
+                                        data?.push({
+                                            name: 'Facilities',
+                                            data: Array.from(props?.data?.types_summary ?? [], cs => ({ name: cs.name, y: parseFloat(cs.count)})) || []
+                                        });
+                                        return data;
+                                    })() || []} />
+                            {/* <table className="w-full text-sm md:text-base p-2">
                                 <thead className="border-b border-gray-300">
                                     <tr>
                                         <th className="text-left text-gray-800 p-2 text-sm uppercase">Metric</th>
@@ -810,13 +841,28 @@ function Dashboard(props) {
                                         </tr>
                                     ))}
                                 </tbody>
-                            </table>
+                            </table> */}
                         </div>
 
                         {/* Facilities summary 1/3 - FILTERABLE */}
                         <div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
                             <h4 className="text-lg uppercase pt-4 text-center border-b border-gray-100 w-full mb-4 font-semibold text-gray-900">Facilities summary</h4>
-                            <table className="w-full text-sm md:text-base p-2">
+                            <Chart
+                                    title=""
+                                    categories={Array?.from(totalSummary ?? [], cs => cs.name) || []}
+                                    tooltipsuffix="#"
+                                    xaxistitle="Facility Summaries"
+                                    yaxistitle="count"
+                                    type="bar"
+                                    data={(() => {
+                                        let data = [];
+                                        data?.push({
+                                            name: 'Facilities',
+                                            data: Array.from(totalSummary ?? [], cs => ({ name: cs.name, y: parseFloat(cs.count)})) || []
+                                        });
+                                        return data;
+                                    })() || []} />
+                            {/* <table className="w-full text-sm md:text-base p-2">
                                 <thead className="border-b border-gray-300">
                                     <tr>
                                         <th className="text-left text-gray-800 p-2 text-sm uppercase">Metric</th>
@@ -831,7 +877,7 @@ function Dashboard(props) {
                                         </tr>
                                     ))}
                                 </tbody>
-                            </table>
+                            </table> */}
                         </div>
                         {/* CUs summary - FILTERABLE 1/3 */}
                         <div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
@@ -876,7 +922,22 @@ function Dashboard(props) {
                         {/* facilities by keph level */}
                         <div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
                             <h4 className="text-lg uppercase pt-4 text-center border-b border-gray-100 w-full mb-4 font-semibold text-gray-900">Facility KEPH Level </h4>
-                            <table className="w-full text-sm md:text-base p-2">
+                            <Chart
+                                    title=""
+                                    categories={Array?.from(props?.data?.keph_level ?? [], cs => cs.name) || []}
+                                    tooltipsuffix="#"
+                                    xaxistitle=""
+                                    yaxistitle=""
+                                    type="pie"
+                                    data={(() => {
+                                        let data = [];
+                                        data?.push({
+                                            name: 'Facilities',
+                                            data: Array.from(props?.data?.keph_level ?? [], cs => ({ name: cs.name, y: parseFloat(cs.count)})) || []
+                                        });
+                                        return data;
+                                    })() || []} />
+                            {/* <table className="w-full text-sm md:text-base p-2">
                                 <thead className="border-b border-gray-300">
                                     <tr>
                                         <th className="text-left text-gray-800 p-2 text-sm uppercase">Metric</th>
@@ -891,18 +952,19 @@ function Dashboard(props) {
                                         </tr>
                                     ))}
                                 </tbody>
-                            </table>
+                            </table> */}
                         </div>
                         {/* Facilities & CHUs by county (bar) 1/1 */}
                         {(groupID === 7 || groupID === 5) &&
                             <div className="no-print col-span-6 flex flex-col items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
                                 <h4 className="text-lg uppercase pt-4 border-b text-center border-gray-100 w-full mb-2 font-semibold text-gray-900">Facilities &amp; CHUs by County</h4>
-                                <BarChart
+                                <Chart
                                     title=""
                                     categories={Array?.from(props?.data?.county_summary ?? [], cs => cs.name) || []}
                                     tooltipsuffix="#"
                                     xaxistitle="County"
                                     yaxistitle="Number"
+                                    type="bar"
                                     data={(() => {
                                         let data = [];
                                         data?.push({
@@ -921,12 +983,13 @@ function Dashboard(props) {
                         {groupID === 1 &&
                             <div className="no-print col-span-6 flex flex-col items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
                                 <h4 className="text-lg uppercase pt-4 text-center border-b border-gray-100 w-full mb-2 font-semibold text-gray-900">Facilities &amp; CHUs by Subcounty</h4>
-                                <BarChart
+                                <Chart
                                     title=""
                                     categories={Array?.from(props?.data?.constituencies_summary ?? [], cs => cs.name) || []}
                                     tooltipsuffix="#"
                                     xaxistitle="Subcounty"
                                     yaxistitle="Number"
+                                    type="column"
                                     data={(() => {
                                         let data = [];
                                         data?.push({
@@ -945,12 +1008,13 @@ function Dashboard(props) {
                         {groupID === 2 &&
                             <div className="no-print col-span-6 flex flex-col items-start justify-start p-3 shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
                                 <h4 className="text-lg uppercase pt-4 text-center border-b border-gray-100 w-full mb-2 font-semibold text-gray-900">Facilities &amp; CHUs by Ward</h4>
-                                <BarChart
+                                <Chart
                                     title=""
                                     categories={Array?.from(props?.data?.wards_summary ?? [], cs => cs.name) || []}
                                     tooltipsuffix="#"
                                     xaxistitle="Ward"
                                     yaxistitle="Number"
+                                    type="bar"
                                     data={(() => {
                                         let data = [];
                                         data?.push({
@@ -968,12 +1032,13 @@ function Dashboard(props) {
                         {/* Facility owners & categories - national summary - FILTERABLE (bar) 1/2 */}
                         <div className="no-print col-span-6 md:col-span-3 flex flex-col items-start justify-start p-3 shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
                             <h4 className="text-lg uppercase pt-4 text-center border-b border-gray-100 w-full mb-2 font-semibold text-gray-900">Facility owners</h4>
-                            <BarChart
+                            <Chart
                                 title=""
                                 categories={Array.from(props?.data?.owner_types ?? [], ot => ot.name) || []}
                                 tooltipsuffix="#"
                                 xaxistitle="Owner"
                                 yaxistitle="Number"
+                                type="column"
                                 data={(() => {
                                     return [{ name: "Owner", data: Array.from(props?.data?.owner_types ?? [], ot => parseFloat(ot.count)) || [] }];
                                 })() || []} />
@@ -981,12 +1046,13 @@ function Dashboard(props) {
                         {/* Facility types - national summary - FILTERABLE (bar) 1/2 */}
                         <div className="no-print col-span-6 md:col-span-3 flex flex-col items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
                             <h4 className="text-lg uppercase pt-4 text-center border-b border-gray-100 w-full mb-2 font-semibold text-gray-900">Facility types</h4>
-                            <BarChart
+                            <Chart
                                 title=""
                                 categories={Array.from(props?.data?.types_summary ?? [], ts => ts.name) || []}
                                 tooltipsuffix="#"
                                 xaxistitle="Type"
                                 yaxistitle="Number"
+                                type="column"
                                 data={(() => {
                                     return [{ name: "Type", data: Array.from(props?.data?.types_summary ?? [], ts => parseFloat(ts.count)) || [] }];
                                 })() || []} />
