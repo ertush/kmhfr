@@ -19,7 +19,7 @@ function formatString(str) {
 
 
 export function propsToGridData(props, index, orgUnitFilter = "county") {
-    let isKeph, isOwner, isType = false;
+    let isKeph, isOwner, isType, isCHUstatus = false;
 
     switch (index) {
         case 0:
@@ -2801,7 +2801,16 @@ export function propsToGridData(props, index, orgUnitFilter = "county") {
             return {
                 rows: Object.entries(props?.chul_status_all_hierachies ?? {})?.map((result, index) => ({
                     [`${orgUnitFilter}`]: result[0],
-                    facility__date_established: result[1]?.facility_date_established,
+                    // facility__date_established: result[1]?.facility_date_established,
+                    ...(() => {
+
+                        if (result[1]?.chu_status !== "all") {
+                            isCHUstatus = true;
+                            return { chu_status: result[1]?.chu_status }
+                        }
+
+                        return {}
+                    })(),
                     fully_functional: result[1]['Fully-functional'],
                     semi_functional: result[1]['semi-functional'],
                     non_functional: result[1]['Non-functional'],
@@ -2817,11 +2826,25 @@ export function propsToGridData(props, index, orgUnitFilter = "county") {
                         field: `${orgUnitFilter}`,
                         flex: 1
                     },
-                    {
-                        headerName: 'Date',
-                        field: 'facility__date_established',
-                        flex: 1
-                    },
+                    // {
+                    //     headerName: 'Date',
+                    //     field: 'facility__date_established',
+                    //     flex: 1
+                    // },
+                    ...(() => {
+
+                        if (isCHUstatus) {
+                            return [
+                                {
+                                    headerName: 'CHU Status',
+                                    field: 'chu_status',
+                                    flex: 1
+                                }
+                            ]
+                        }
+
+                        return []
+                    })(),
                     {
                         headerName: 'Fully Functional',
                         field: 'fully_functional',
@@ -2842,7 +2865,7 @@ export function propsToGridData(props, index, orgUnitFilter = "county") {
                     {
                         headerName: 'Closed',
                         field: 'closed',
-                        width: 200
+                        flex: 1
 
                     }
 
@@ -2855,13 +2878,22 @@ export function propsToGridData(props, index, orgUnitFilter = "county") {
             return {
                 rows: Object.entries(props?.chul_services_all_hierachies ?? {})?.map((result, index) => ({
                     [`${orgUnitFilter}`]: result[0],
-                    facility__date_established: result[1]?.facility_date_established,
+                    // chu_date_established: result[1]?.health_unit__date_established,
+                    ...(() => {
+
+                        if (result[1]?.chu_status !== "all") {
+                            isCHUstatus = true;
+                            return { chu_status: result[1]?.chu_status }
+                        }
+
+                        return {}
+                    })(),
                     wash_sanitation: result[1]["WASH: Water, sanitation and hygiene education, including hand washing"],
                     iccm: result[1]["iCCM: Education on danger signs and referral for malaria, pneumonia and diarrhea"],
                     wash_water_treatment: result[1]["WASH: Water treatment provision"],
-                    ward: result[1]["health_unit__facility__ward__name"],
-                    county: result[1]["health_unit__facility__ward__sub_county__county__name"],
-                    sub_county: result[1]["health_unit__facility__ward__sub_county__name"],
+                    // ward: result[1]["health_unit__facility__ward__name"],
+                    // county: result[1]["health_unit__facility__ward__sub_county__county__name"],
+                    // sub_county: result[1]["health_unit__facility__ward__sub_county__name"],
                     hiv_tb_malaria_treatment: result[1]["HIV, TB and Malaria: Treatment defaulter tracing"],
                     hiv_tb_malaria_education: result[1]["HIV, TB and Malaria: Education, support for treatment adherence, and referral"],
                     iccm_malaria_drugs: result[1]["iCCM: Provision of AL drugs to treat malaria"],
@@ -2890,132 +2922,147 @@ export function propsToGridData(props, index, orgUnitFilter = "county") {
                     {
                         headerName: formatString(orgUnitFilter),
                         field: `${orgUnitFilter}`,
-                        flex: 1
+                        width: 200
                     },
-                    {
-                        headerName: 'Date',
-                        field: 'facility__date_established',
-                        flex: 1
-                    },
+                    // {
+                    //     headerName: 'Date',
+                    //     field: 'chu_date_established',
+                    //     width: 200
+                    // },
+                    ...(() => {
+
+                        if (isCHUstatus) {
+                            return [
+                                {
+                                    headerName: 'CHU Status',
+                                    field: 'chu_status',
+                                    width: 200
+                                }
+                            ]
+                        }
+
+                        return []
+                    })(),
+
                     {
                         headerName: "WASH: Water, sanitation and hygiene education, including hand washing",
                         field: "wash_sanitation",
-                        flex: 1
+                        width: 200
                     },
                     {
                         headerName: "iCCM: Education on danger signs and referral for malaria, pneumonia and diarrhea",
                         field: "iccm",
-                        flex: 1
+                        width: 200
                     },
                     {
                         headerName: "WASH: Water treatment provision",
                         field: "wash_water_treatment",
-                        flex: 1
+                        width: 200
                     },
-                    {
-                        headerName: "health_unit__facility__ward__name",
-                        field: "ward",
-                        flex: 1
-                    },
-                    {
-                        headerName: "health_unit__facility__ward__sub_county__county__name",
-                        field: "county",
-                        flex: 1
-                    },
-                    {
-                        headerName: "health_unit__facility__ward__sub_county__name",
-                        field: "sub_county",
-                        flex: 1
-                    },
+                    // {
+                    //     headerName: "health_unit__facility__ward__name",
+                    //     field: "ward",
+                    //     flex: 1
+                    // },
+                    // {
+                    //     headerName: "health_unit__facility__ward__sub_county__county__name",
+                    //     field: "county",
+                    //     flex: 1
+                    // },
+                    // {
+                    //     headerName: "health_unit__facility__ward__sub_county__name",
+                    //     field: "sub_county",
+                    //     flex: 1
+                    // },
                     {
                         headerName: "HIV, TB and Malaria: Treatment defaulter tracing",
                         field: "hiv_tb_malaria_treatment",
-                        flex: 1
+                        width: 200
                     },
                     {
                         headerName: "HIV, TB and Malaria: Education, support for treatment adherence, and referral",
                         field: "hiv_tb_malaria_education",
-                        flex: 1
+                        width: 200
                     },
                     {
                         headerName: "iCCM: Provision of AL drugs to treat malaria",
                         field: "iccm_malaria_drugs",
-                        flex: 1
+                        width: 200
                     },
                     {
                         headerName: "HIV, TB and Malaria: Provision of condoms",
                         field: "hiv_tb_malaria_condoms",
-                        flex: 1
+                        width: 200
                     },
                     {
                         headerName: "Referrals to health facilities",
                         field: "referrals_health_facilities",
-                        flex: 1
+                        width: 200
                     },
                     {
                         headerName: "Provision of Information, Education & Communication (IEC) materials",
                         field: "provision_of_information",
-                        flex: 1
+                        width: 200
                     },
                     {
                         headerName: "iCCM: Rapid diagnostic testing of malaria",
                         field: "iccm_rapid_diagnostic",
-                        flex: 1
+                        width: 200
                     },
                     {
                         headerName: "Nutrition: Education, child growth monitoring, screening and referrals",
                         field: "nutrition_education",
-                        flex: 1
+                        width: 200
                     },
                     {
                         headerName: "MNCH: Education, counseling of mothers, and referral for ANC",
                         field: "mnch_education",
-                        flex: 1
+                        width: 200
                     },
                     {
                         headerName: "Deworming of children",
                         field: "deworming_children",
-                        flex: 1
+                        width: 200
                     },
                     {
                         headerName: "HIV, TB and Malaria: Provision of psychosocial support groups",
                         field: "hiv_tb_malaria_ppsg",
-                        flex: 1
+                        width: 200
                     },
                     {
                         headerName: "Management of diarrhea, injuries, wounds, jiggers and other minor illnesses.",
                         field: "mgmt_diarrhea",
-                        flex: 1
+                        width: 200
                     },
                     {
                         headerName: "NCD: Education and support for treatment adherence",
                         field: "ncd_eduaction",
-                        flex: 1
+                        width: 200
                     },
                     {
                         headerName: "HIV, TB and Malaria: Provision of home based care for PLWA",
                         field: "hiv_tb_malaria_provision",
-                        flex: 1
+                        width: 200
                     },
                     {
                         headerName: "First Aid Services",
                         field: "first_aid_services",
-                        flex: 1
+                        width: 200
                     },
                     {
                         headerName: "iCCM: Provision of Long Lasting Insecticide Treated Nets",
                         field: "iCCM_provision_long_lasting",
-                        flex: 1
+                        width: 200
                     },
                     {
                         headerName: "Growth monitoring for children under 5 years.",
                         field: "growth_monitoring",
-                        flex: 1
+                        width: 200
                     },
                     {
                         headerName: "NCD: Diabetes and hypertension screening and referral",
                         field: "ncd_diabetes",
-                        flex: 1
+                        width: 200
                     },
 
 
@@ -3028,7 +3075,16 @@ export function propsToGridData(props, index, orgUnitFilter = "county") {
                 return {
                     rows: Object.entries(props?.chul_count_all_hierachies ?? {})?.map((result, index) => ({
                         [`${orgUnitFilter}`]: result[0],
-                        facility__date_established: result[1]?.facility_date_established,
+                        // facility__date_established: result[1]?.facility_date_established,
+                        ...(() => {
+
+                            if (result[1]?.chu_status !== "all") {
+                                isCHUstatus = true;
+                                return { chu_status: result[1]?.chu_status }
+                            }
+    
+                            return {}
+                        })(),
                         chvs: result[1]?.chvs,
                         chews: result[1]?.chews,
                         number_of_units: result[1]?.number_of_units,
@@ -3043,11 +3099,25 @@ export function propsToGridData(props, index, orgUnitFilter = "county") {
                             field: `${orgUnitFilter}`,
                             flex: 1
                         },
-                        {
-                            headerName: 'Date',
-                            field: 'facility__date_established',
-                            flex: 1
-                        },
+                        // {
+                        //     headerName: 'Date',
+                        //     field: 'facility__date_established',
+                        //     flex: 1
+                        // },
+                        ...(() => {
+
+                            if (isCHUstatus) {
+                                return [
+                                    {
+                                        headerName: 'CHU Status',
+                                        field: 'chu_status',
+                                        width: 200
+                                    }
+                                ]
+                            }
+    
+                            return []
+                        })(),
                         {
                             headerName: 'CHVs',
                             field: 'chvs',
