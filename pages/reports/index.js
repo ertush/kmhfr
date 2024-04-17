@@ -48,12 +48,17 @@ function Reports(props) {
     const [hrReport, setHrReport] = useState({ rows: null, columns: null })
     const [gisReport, setGisReport] = useState({ rows: null, columns: null })
     const [accreditationReport, setAccreditationReport] = useState(null)
+    const [chuServicesReport, setCHUServicesReport]= useState(null)
+    const [chuStatusReport, setCHUStatusReport] = useState(null)
+    const [chuCountReport, setCHUCountReport] = useState(null)
     const [loading, setLoading] = useState(false)
     const [selectedPeriod, setSelectedPeriod] = useState(null)
     const [selectedOrgUnit, setSelectedOrgUnit] = useState(null)
     const [selectedKeph, setSelectedKeph] = useState(null)
     const [selectedOwner, setSelectedOwner] = useState(null)
     const [selectedType, setSelectedType] = useState(null)
+    const [selectedCHUStatus, setSelectedCHUStatus] = useState(null)
+
 
 
     const router = useRouter()
@@ -124,6 +129,18 @@ function Reports(props) {
             rows: propsToGridData(props, 11)?.rows,
             columns: propsToGridData(props, 11)?.columns
         })
+        setCHUStatusReport({
+            rows: propsToGridData(props, 12)?.rows,
+            columns: propsToGridData(props, 12)?.columns
+        })
+        setCHUCountReport({
+            rows: propsToGridData(props, 14)?.rows,
+            columns: propsToGridData(props, 14)?.columns
+        })
+        setCHUServicesReport({
+            rows: propsToGridData(props, 13)?.rows,
+            columns: propsToGridData(props, 13)?.columns
+        })
 
 
 
@@ -153,6 +170,9 @@ function Reports(props) {
             setSelectedOwner(null)
         }
 
+        if(setSelectedCHUStatus !== null) {
+            setSelectedCHUStatus(null)
+        }
 
 
         if (event.target) {
@@ -176,6 +196,9 @@ function Reports(props) {
                 case 'owner':
                     setSelectedOwner(value)
                     break;
+                case 'chu_status':
+                    setSelectedCHUStatus(value)
+                    break;
 
             }
 
@@ -192,25 +215,56 @@ function Reports(props) {
                         return 'filter_type'
                     case 'owner':
                         return 'filter_owner'
+                    case 'chu_status':
+                        return 'filter_chustatus'
                 }
             })(filter)
 
             let filterReport = {}
             setLoading(true)
 
+            
+            const url = (
+                    reportType == 'chul_status_all_hierachies' ||
+                    reportType == 'chul_services_all_hierachies' ||
+                    reportType == 'chul_count_all_hierachies'
+                    ) 
+                    ?
+                    `${process.env.NEXT_PUBLIC_API_URL}/reporting/chul/?report_type=${reportType}&${filterType}=${value}`
+                    :
+                     `${process.env.NEXT_PUBLIC_API_URL}/reporting/?report_type=${reportType}&${filterType}=${value}`
+
+
             try {
-                const report = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/reporting/?report_type=${reportType}&${filterType}=${value}`, {
+                const report = await fetch(url, {
                     headers: {
                         "Accept": "application/json",
                         "Authorization": `Bearer ${token}`
                     }
                 })
 
-                filterReport = {
-                    [`${reportType}`]: reportType.includes("facility_infrastructure_report_all_hierachies") || reportType.includes("facility_human_resource_category_report_all_hierachies") ?
+                filterReport = 
+                    (
+                    reportType == 'chul_status_all_hierachies' ||
+                    reportType == 'chul_services_all_hierachies' ||
+                    reportType == 'chul_count_all_hierachies'
+                    ) 
+                    ?
+                    reportType == 'chul_services_all_hierachies' ?
+                     { [`${reportType}`]: (await report.json())?.results?.result_summary }
+                    :
+                    reportType == 'chul_status_all_hierachies' ?
+                    { [`${reportType}`]: (await report.json())?.results?.results }
+                    :
+                    { [`${reportType}`]: (await report.json())?.results?.result_summary }
+
+                     :
+                    {
+                        [`${reportType}`]: reportType.includes("facility_infrastructure_report_all_hierachies") || reportType.includes("facility_human_resource_category_report_all_hierachies") ?
                         (await report.json())?.results :
                         (await report.json())?.results?.results
-                }
+                    }
+
                 // setFilteredReports({[`${reportType}`]: (await report.json())?.results?.results } ?? {})
             } catch (e) {
                 console.error("Error: ", e.message)
@@ -406,6 +460,61 @@ function Reports(props) {
                         })
 
                         break;
+                        case 'chul_status_all_hierachies':
+
+                        const chu_status = ((filterType) => {
+                            if (filterType == 'org_unit') {
+                                return filterReport && propsToGridData(filterReport, 12, value)
+                            } else {
+                                return filterReport && propsToGridData(filterReport, 12)
+                            }
+                        })(filter)
+
+                        console.log({
+                            filterReport,
+                            rows: chu_status?.rows,
+                        })
+
+                        setCHUStatusReport({
+                            rows: chu_status?.rows,
+                            columns: chu_status?.columns
+                        })
+
+                        break;
+
+                        case 'chul_services_all_hierachies':
+
+                        const chu_services = ((filterType) => {
+                            if (filterType == 'org_unit') {
+                                return filterReport && propsToGridData(filterReport, 13, value)
+                            } else {
+                                return filterReport && propsToGridData(filterReport, 13)
+                            }
+                        })(filter)
+
+                        setCHUServicesReport({
+                            rows: chu_services?.rows,
+                            columns: chu_services?.columns
+                        })
+
+                        break;
+
+                        case 'chul_count_all_hierachies':
+
+                        const chu_count = ((filterType) => {
+                            if (filterType == 'org_unit') {
+                                return filterReport && propsToGridData(filterReport, 14, value)
+                            } else {
+                                return filterReport && propsToGridData(filterReport, 14)
+                            }
+                        })(filter)
+
+                        setCHUCountReport({
+                            rows: chu_count?.rows,
+                            columns: chu_count?.columns
+                        })
+
+                        break;
 
 
 
@@ -416,6 +525,8 @@ function Reports(props) {
 
 
     }
+
+    // CustomSelect Options
 
     const periodOptions = (() => {
 
@@ -454,6 +565,25 @@ function Reports(props) {
             value: 'ward'
         }
 
+    ]
+
+    const chuStatusOptions = [
+        {
+            label: 'Fully-Functional',
+            value: 'fully-functional'
+        },
+        {
+            label: 'Semi-Functional',
+            value: 'semi-functional'
+        },
+        {
+            label: 'Non-Functional',
+            value: 'non-functional'
+        },
+        {
+            label: 'Closed',
+            value: 'closed'
+        }
     ]
 
 
@@ -1770,6 +1900,7 @@ function Reports(props) {
                                                 id={1}
                                                 value="chu_services"
                                                 className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
+                                                onClick={() => {setSelectedCHUStatus(null); setSelectedPeriod(null); setSelectedOrgUnit(null)}}
                                             >
                                                 CHU Services
                                             </Tabs.Tab>
@@ -1777,6 +1908,8 @@ function Reports(props) {
                                                 id={2}
                                                 value="chu_status"
                                                 className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
+                                                onClick={() => {setSelectedCHUStatus(null); setSelectedPeriod(null); setSelectedOrgUnit(null)}}
+
                                             >
                                                 CHU Status
                                             </Tabs.Tab>
@@ -1784,6 +1917,8 @@ function Reports(props) {
                                                 id={3}
                                                 value="chu_count"
                                                 className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
+                                                onClick={() => {setSelectedCHUStatus(null); setSelectedPeriod(null); setSelectedOrgUnit(null)}}
+
                                             >
                                                 CHU Count
                                             </Tabs.Tab>
@@ -1801,8 +1936,8 @@ function Reports(props) {
                                             <div className='shadow-md w-full max-h-min col-span-7'>
                                                 <StyledDataGrid
                                                     loading={loading}
-                                                    columns={propsToGridData(props, 13)?.columns}
-                                                    rows={propsToGridData(props, 13)?.rows}
+                                                    columns={chuServicesReport?.columns}
+                                                    rows={chuServicesReport?.rows}
                                                     getRowClassName={() => `super-app-theme--Row`}
                                                     rowSpacingType="border"
                                                     showColumnRightBorder
@@ -1811,7 +1946,7 @@ function Reports(props) {
                                                     getCellClassName={() => 'super-app-theme--Cell'}
                                                     slots={{
                                                         toolbar: () => (
-                                                            <div className='w-full flex justify-between border-b border-gray-400 py-2'>
+                                                            <div className='w-full  flex justify-between border-b border-gray-400 py-2'>
                                                                 <GridToolbar
                                                                     className="border border-gray-300"
                                                                     sx={{
@@ -1824,31 +1959,31 @@ function Reports(props) {
                                                                     }}
                                                                 />
 
-                                                                <div className='max-w-min flex gap-x-2 justify-end mr-2'>
+                                                                <div className='w-64 flex gap-x-2 justify-end mr-2'>
 
                                                                     <CustomSelect
                                                                         name="chu_year"
-                                                                        onChange={(e) => handleCustomSelectChange(e, 'facility_nhif_accreditation', props?.token, 'keph')}
-                                                                        options={props?.kephOptions}
-                                                                        defaultValue={null}
+                                                                        onChange={(e) => handleCustomSelectChange(e, 'chul_services_all_hierachies', props?.token, 'year')}
+                                                                        options={periodOptions}
+                                                                        defaultValue={selectedPeriod}
                                                                         placeholder='Filter by Period'
 
                                                                     />
 
                                                                     <CustomSelect
                                                                         name="chu_status"
-                                                                        onChange={(e) => handleCustomSelectChange(e, 'facility_nhif_accreditation', props?.token, 'type')}
-                                                                        options={props?.typeOptions}
-                                                                        defaultValue={null}
+                                                                        onChange={(e) => handleCustomSelectChange(e, 'chul_services_all_hierachies', props?.token, 'chu_status')}
+                                                                        options={chuStatusOptions}
+                                                                        defaultValue={selectedCHUStatus}
                                                                         placeholder='Filter by CHU Status'
 
                                                                     />
 
 <CustomSelect
                                                                         name="chu_org"
-                                                                        onChange={(e) => handleCustomSelectChange(e, 'facility_nhif_accreditation', props?.token, 'type')}
-                                                                        options={props?.typeOptions}
-                                                                        defaultValue={null}
+                                                                        onChange={(e) => handleCustomSelectChange(e, 'chul_services_all_hierachies', props?.token, 'org_unit')}
+                                                                        options={orgUnitOptions}
+                                                                        defaultValue={selectedOrgUnit}
                                                                         placeholder='Filter Org Unit'
 
                                                                     />
@@ -1860,117 +1995,7 @@ function Reports(props) {
                                                     }}
                                                 />
                                             </div>
-                                            {/* { console.log({rows:propsToGr, orgUnitFilteridData(props, 9)?.rows, columns: propsToGridData(props, 9).columns})  } */}
-
-                                            {/* <div className='shadow-md w-full max-h-min col-span-7'>
-                                                <StyledDataGrid
-                                                    loading={loading}
-                                                    columns={propsToGridData(props, 9, orgUnitFilter).columns}
-                                                    rows={propsToGridData(props, 9)?.rows}
-                                                    getRowClassName={() => `super-app-theme--Row`}
-                                                    rowSpacingType="border"
-                                                    showColumnRightBorder
-                                                    showCellRightBorder
-                                                    rowSelection={false}
-                                                    getCellClassName={() => 'super-app-theme--Cell'}
-                                                    slots={{
-                                                       toolbar: () => (
-                                                            <div className='w-full flex justify-between border-b border-gray-400 py-2'>
-                                                            <GridToolbar
-                                                                className="border border-gray-300"
-                                                                sx={{
-                                                                    flex: 1,
-                                                                    display: 'flex',
-                                                                    marginX: 0,
-                                                                    gap: 5,
-                                                                    alignItems:'start',
-                                                                    
-                                                                }}
-                                                            />
-
-                                                            <CustomSelect                                               
-	    name="year" 
-            onChange={({value}) => handleCustomSelectChange(value, 'date', props?.token)}
-            className="w-full max-w-xs rounded border mr-2 border-gray-400"
-    options={[
-        {
-            label:'2018',
-            value:'2018'
-        },
-        {
-            label:'2019',
-            value:'2019'
-        },
-        {
-            label:'2020',
-            value:'2020'
-        }
-    
-    
-    ]}
-    placeholder='Filter by period'
-    
-    styles={{
-        control: (baseStyles) => ({
-            ...baseStyles,
-            backgroundColor: 'transparent',
-            outLine: 'none',
-            border: 'none',
-            outLine: 'none',
-            textColor: 'transparent',
-            padding: 0,
-            height: '4px'
-        }),
-
-    }}
-
-    
-/>
-
-                                                            
-                                                            <CustomSelect 
-                                                            name="org_unit" 
-                                                            onChange={({value}) => handleCustomSelectChange(value, 'beds_and_cots_by_all_hierachies', props?.token)}
-                                                            className="w-full max-w-xs rounded border mr-2 border-gray-400"
-                                                    options={[
-                                                        {
-                                                            label:'County',
-                                                            value:'county'
-                                                        },
-                                                        {
-                                                            label:'Sub County',
-                                                            value:'sub_county'
-                                                        },
-                                                        {
-                                                            label:'Ward',
-                                                            value:'ward'
-                                                        }
-                                                    
-                                                    
-                                                    ]}
-                                                    placeholder='Filter by Admin Heirachy'
-                                                    
-                                                    styles={{
-                                                        control: (baseStyles) => ({
-                                                            ...baseStyles,
-                                                            backgroundColor: 'transparent',
-                                                            outLine: 'none',
-                                                            border: 'none',
-                                                            outLine: 'none',
-                                                            textColor: 'transparent',
-                                                            padding: 0,
-                                                            height: '4px'
-                                                        }),
-
-                                                    }}
-
-                                                    
-                                                />
-                                                            </div>
-                                                        ),
-                                                    }}
-                                                />
-                                            </div> */}
+       
                                         </Tabs.Panel>
                                         {/* CHU Status Data Grid*/}
 
@@ -1983,8 +2008,8 @@ function Reports(props) {
                                             <div className='shadow-md w-full max-h-min col-span-7'>
                                                 <StyledDataGrid
                                                     loading={loading}
-                                                    columns={propsToGridData(props, 12)?.columns}
-                                                    rows={propsToGridData(props, 12)?.rows}
+                                                    columns={chuStatusReport?.columns}
+                                                    rows={chuStatusReport?.rows}
                                                     getRowClassName={() => `super-app-theme--Row`}
                                                     rowSpacingType="border"
                                                     showColumnRightBorder
@@ -2006,31 +2031,31 @@ function Reports(props) {
                                                                     }}
                                                                 />
 
-                                                                <div className='max-w-min flex gap-x-2 justify-end mr-2'>
+                                                                <div className='w-64 flex gap-x-2 justify-end mr-2'>
 
                                                                     <CustomSelect
                                                                         name="chu_year"
-                                                                        onChange={(e) => handleCustomSelectChange(e, 'facility_nhif_accreditation', props?.token, 'keph')}
-                                                                        options={props?.kephOptions}
-                                                                        defaultValue={null}
+                                                                        onChange={(e) => handleCustomSelectChange(e, 'chul_status_all_hierachies', props?.token, 'year')}
+                                                                        options={periodOptions}
+                                                                        defaultValue={selectedPeriod}
                                                                         placeholder='Filter by Period'
 
                                                                     />
 
                                                                     <CustomSelect
                                                                         name="chu_status"
-                                                                        onChange={(e) => handleCustomSelectChange(e, 'facility_nhif_accreditation', props?.token, 'type')}
-                                                                        options={props?.typeOptions}
-                                                                        defaultValue={null}
+                                                                        onChange={(e) => handleCustomSelectChange(e, 'chul_status_all_hierachies', props?.token, 'chu_status')}
+                                                                        options={chuStatusOptions}
+                                                                        defaultValue={selectedCHUStatus}
                                                                         placeholder='Filter by CHU Status'
 
                                                                     />
 
 <CustomSelect
                                                                         name="chu_org"
-                                                                        onChange={(e) => handleCustomSelectChange(e, 'facility_nhif_accreditation', props?.token, 'type')}
-                                                                        options={props?.typeOptions}
-                                                                        defaultValue={null}
+                                                                        onChange={(e) => handleCustomSelectChange(e, 'chul_status_all_hierachies', props?.token, 'org_unit')}
+                                                                        options={orgUnitOptions}
+                                                                        defaultValue={selectedOrgUnit}
                                                                         placeholder='Filter Org Unit'
 
                                                                     />
@@ -2042,116 +2067,7 @@ function Reports(props) {
                                                     }}
                                                 />
                                             </div>
-                                            {/* <div className='shadow-md w-full max-h-min col-span-7'>
-                                                { console.log({rows: propsToGridData(props, 7).rows }) }
-                                                <StyledDataGrid
-                                                    loading={loading}
-                                                    columns={propsToGridData(props, 7, orgUnitFilter).columns}
-                                                    rows={propsToGridData(props, 7)?.rows}
-                                                    getRowClassName={() => `super-app-theme--Row`}
-                                                    rowSpacingType="border"
-                                                    showColumnRightBorder
-                                                    showCellRightBorder
-                                                    rowSelection={false}
-                                                    getCellClassName={() => 'super-app-theme--Cell'}
-                                                    slots={{
-                                                       toolbar: () => (
-                                                            <div className='w-full flex justify-between border-b border-gray-400 py-2'>
-                                                            <GridToolbar
-                                                                className="border border-gray-300"
-                                                                sx={{
-                                                                    flex: 1,
-                                                                    display: 'flex',
-                                                                    marginX: 0,
-                                                                    gap: 5,
-                                                                    alignItems:'start',
-                                                                    
-                                                                }}
-                                                            />
-
-                                                            <CustomSelect                                               
-	    name="year" 
-            onChange={({value}) => handleCustomSelectChange(value, 'date', props?.token)}
-            className="w-full max-w-xs rounded border mr-2 border-gray-400"
-    options={[
-        {
-            label:'2018',
-            value:'2018'
-        },
-        {
-            label:'2019',
-            value:'2019'
-        },
-        {
-            label:'2020',
-            value:'2020'
-        }
-    
-    
-    ]}
-    placeholder='Filter by period'
-    
-    styles={{
-        control: (baseStyles) => ({
-            ...baseStyles,
-            backgroundColor: 'transparent',
-            outLine: 'none',
-            border: 'none',
-            outLine: 'none',
-            textColor: 'transparent',
-            padding: 0,
-            height: '4px'
-        }),
-
-    }}
-
-    
-/>
-
-                                                            
-                                                            <CustomSelect 
-                                                            name="org_unit" 
-                                                            onChange={({value}) => handleCustomSelectChange(value, 'beds_and_cots_by_all_hierachies', props?.token)}
-                                                            className="w-full max-w-xs rounded border mr-2 border-gray-400"
-                                                    options={[
-                                                        {
-                                                            label:'County',
-                                                            value:'county'
-                                                        },
-                                                        {
-                                                            label:'Sub County',
-                                                            value:'sub_county'
-                                                        },
-                                                        {
-                                                            label:'Ward',
-                                                            value:'ward'
-                                                        }
-                                                    
-                                                    
-                                                    ]}
-                                                    placeholder='Filter by Admin Heirachy'
-                                                    
-                                                    styles={{
-                                                        control: (baseStyles) => ({
-                                                            ...baseStyles,
-                                                            backgroundColor: 'transparent',
-                                                            outLine: 'none',
-                                                            border: 'none',
-                                                            outLine: 'none',
-                                                            textColor: 'transparent',
-                                                            padding: 0,
-                                                            height: '4px'
-                                                        }),
-
-                                                    }}
-
-                                                    
-                                                />
-                                                            </div>
-                                                        ),
-                                                    }}
-                                                />
-                                            </div> */}
+                                            
                                         </Tabs.Panel>
 
                                         {/* CHU Count Data Grid */}
@@ -2165,8 +2081,8 @@ function Reports(props) {
                                             <div className='shadow-md w-full max-h-min col-span-7'>
                                                 <StyledDataGrid
                                                     loading={loading}
-                                                    columns={propsToGridData(props, 14)?.columns}
-                                                    rows={propsToGridData(props, 14)?.rows}
+                                                    columns={chuCountReport?.columns}
+                                                    rows={chuCountReport?.rows}
                                                     getRowClassName={() => `super-app-theme--Row`}
                                                     rowSpacingType="border"
                                                     showColumnRightBorder
@@ -2188,31 +2104,31 @@ function Reports(props) {
                                                                     }}
                                                                 />
 
-                                                                <div className='max-w-min flex gap-x-2 justify-end mr-2'>
+                                                                <div className='w-64 flex gap-x-2 justify-end mr-2'>
 
                                                                     <CustomSelect
                                                                         name="chu_year"
-                                                                        onChange={(e) => handleCustomSelectChange(e, 'facility_nhif_accreditation', props?.token, 'keph')}
-                                                                        options={props?.kephOptions}
-                                                                        defaultValue={null}
+                                                                        onChange={(e) => handleCustomSelectChange(e, 'chul_count_all_hierachies', props?.token, 'year')}
+                                                                        options={periodOptions}
+                                                                        defaultValue={selectedPeriod}
                                                                         placeholder='Filter by Period'
 
                                                                     />
 
                                                                     <CustomSelect
                                                                         name="chu_status"
-                                                                        onChange={(e) => handleCustomSelectChange(e, 'facility_nhif_accreditation', props?.token, 'type')}
-                                                                        options={props?.typeOptions}
-                                                                        defaultValue={null}
+                                                                        onChange={(e) => handleCustomSelectChange(e, 'chul_count_all_hierachies', props?.token, 'chu_status')}
+                                                                        options={chuStatusOptions}
+                                                                        defaultValue={selectedCHUStatus}
                                                                         placeholder='Filter by CHU Status'
 
                                                                     />
 
                                                                  <CustomSelect
                                                                         name="chu_org"
-                                                                        onChange={(e) => handleCustomSelectChange(e, 'facility_nhif_accreditation', props?.token, 'type')}
-                                                                        options={props?.typeOptions}
-                                                                        defaultValue={null}
+                                                                        onChange={(e) => handleCustomSelectChange(e, 'chul_count_all_hierachies', props?.token, 'org_unit')}
+                                                                        options={orgUnitOptions}
+                                                                        defaultValue={selectedOrgUnit}
                                                                         placeholder='Filter Org Unit'
 
                                                                     />
@@ -2223,115 +2139,7 @@ function Reports(props) {
                                                     }}
                                                 />
                                             </div>
-                                            {/* <div className='shadow-md w-full max-h-min col-span-7'>
-                                                <StyledDataGrid
-                                                    loading={loading}
-                                                    columns={propsToGridData(props, 1, orgUnitFilter0).columns}
-                                                    rows={propsToGridData(props, 10)?.rows}
-                                                    getRowClassName={() => `super-app-theme--Row`}
-                                                    rowSpacingType="border"
-                                                    showColumnRightBorder
-                                                    showCellRightBorder
-                                                    rowSelection={false}
-                                                    getCellClassName={() => 'super-app-theme--Cell'}
-                                                    slots={{
-                                                       toolbar: () => (
-                                                            <div className='w-full flex justify-between border-b border-gray-400 py-2'>
-                                                            <GridToolbar
-                                                                className="border border-gray-300"
-                                                                sx={{
-                                                                    flex: 1,
-                                                                    display: 'flex',
-                                                                    marginX: 0,
-                                                                    gap: 5,
-                                                                    alignItems:'start',
-                                                                    
-                                                                }}
-                                                            />
-
-                                                            <CustomSelect                                               
-	    name="year" 
-            onChange={({value}) => handleCustomSelectChange(value, 'date', props?.token)}
-            className="w-full max-w-xs rounded border mr-2 border-gray-400"
-    options={[
-        {
-            label:'2018',
-            value:'2018'
-        },
-        {
-            label:'2019',
-            value:'2019'
-        },
-        {
-            label:'2020',
-            value:'2020'
-        }
-    
-    
-    ]}
-    placeholder='Filter by period'
-    
-    styles={{
-        control: (baseStyles) => ({
-            ...baseStyles,
-            backgroundColor: 'transparent',
-            outLine: 'none',
-            border: 'none',
-            outLine: 'none',
-            textColor: 'transparent',
-            padding: 0,
-            height: '4px'
-        }),
-
-    }}
-
-    
-/>
-
-                                                            
-                                                            <CustomSelect 
-                                                            name="org_unit" 
-                                                            onChange={({value}) => handleCustomSelectChange(value, 'beds_and_cots_by_all_hierachies', props?.token)}
-                                                            className="w-full max-w-xs rounded border mr-2 border-gray-400"
-                                                    options={[
-                                                        {
-                                                            label:'County',
-                                                            value:'county'
-                                                        },
-                                                        {
-                                                            label:'Sub County',
-                                                            value:'sub_county'
-                                                        },
-                                                        {
-                                                            label:'Ward',
-                                                            value:'ward'
-                                                        }
-                                                    
-                                                    
-                                                    ]}
-                                                    placeholder='Filter by Admin Heirachy'
-                                                    
-                                                    styles={{
-                                                        control: (baseStyles) => ({
-                                                            ...baseStyles,
-                                                            backgroundColor: 'transparent',
-                                                            outLine: 'none',
-                                                            border: 'none',
-                                                            outLine: 'none',
-                                                            textColor: 'transparent',
-                                                            padding: 0,
-                                                            height: '4px'
-                                                        }),
-
-                                                    }}
-
-                                                    
-                                                />
-                                                            </div>
-                                                        ),
-                                                    }}
-                                                />
-                                            </div> */}
+                                           
 
                                         </Tabs.Panel>
 
