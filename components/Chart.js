@@ -6,12 +6,12 @@ import HighchartsReact from 'highcharts-react-official'
 
 
 
-const BarChart = props => {
+function Chart(props){
 
     const options = {
         chart: {
-            type: 'column',
-            backgroundColor: "#eff6ff"
+            type: props?.type,
+            backgroundColor: "#f9fafb" // "#eff6ff"
         },
         title: {
             text: props.title || ''
@@ -43,7 +43,30 @@ const BarChart = props => {
                 dataLabels: {
                     enabled: true
                 }
-            }
+            },
+            // series: {
+            //     allowPointSelect: true,
+            //     cursor: 'pointer',
+            //     dataLabels: [{
+            //       enabled: true,
+            //       distance: 20
+            //     }, {
+            //       enabled: true,
+            //       distance: -40,
+            //       format: '{point.percentage:.1f}%',
+            //       style: {
+            //         fontSize: '1.2em',
+            //         textOutline: 'none',
+            //         opacity: 0.7
+            //       },
+            //       filter: {
+            //         operator: '>',
+            //         property: '',
+            //         value: 10
+            //       }
+            //     }]
+            // }
+           
         },
         legend: {
             layout: 'vertical',
@@ -80,4 +103,4 @@ const BarChart = props => {
     );
 };
 
-export default BarChart;
+export default Chart;
