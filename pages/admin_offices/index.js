@@ -9,6 +9,9 @@ import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import { UserContext } from '../../providers/user';
+import { useAlert } from "react-alert";
+import Alert from '@mui/material/Alert';
+import { ChevronDownIcon, FilterIcon, SearchIcon } from '@heroicons/react/outline'
 
 
 import {
@@ -23,6 +26,7 @@ import Head from 'next/dist/shared/lib/head'
 
 // components imports
 import MainLayout from '../../components/MainLayout'
+import { values } from 'underscore'
 
 
 const StyledDataGrid = styled(DataGrid)(() => ({
@@ -42,14 +46,21 @@ const StyledDataGrid = styled(DataGrid)(() => ({
 function AdminOffices(props) {
   
     const router = useRouter()
+    const alert = useAlert()
 
     const userPermissions = useContext(PermissionContext)
     const userCtx = useContext(UserContext)
     const [isClient, setIsClient] = useState(false)
+    const [adminOffice, setAdminOffice] = useState(props?.data)
+    const API_URL = process.env.NEXT_PUBLIC_API_URL;
     
     const groupID = userCtx?.groups[0]?.id
 
-    const rows = props?.data?.results?.map(({ id, county_name, sub_county_name, name, is_national, phone_number, email }) => ({ id, county_name, sub_county_name, name, is_national: is_national == true ? 'Yes' : 'No', phone_number, email })) ?? []
+    const filters = props?.data
+
+    console.log('Admin offices:', adminOffice)
+
+    const rows = adminOffice?.results?.length > 0 ? adminOffice?.results.map(({ id, county_name, sub_county_name, name, is_national, phone_number, email }) => ({ id, county_name, sub_county_name, name, is_national: is_national ? 'Yes' : 'No', phone_number, email })) : []
     const columns = [
         { headerName: "County", field: "county_name", flex:1},
         { headerName: "Sub County", field: "sub_county_name", flex:1 },
@@ -81,7 +92,6 @@ function AdminOffices(props) {
 
     const [user, setUser] = useState(userCtx)
   
-
     useEffect(() => {
         setIsClient(true)
         setUser(userCtx)
@@ -98,7 +108,54 @@ function AdminOffices(props) {
     }, [])
  
     const [officeTheme, setOfficeTheme] = useState([]);
+    
+    function handleSearch(e){
 
+        e.preventDefault()
+        
+        let url = API_URL+ `/admin_offices/?fields=id,name,county_name,county,sub_county,sub_county_name,phone_number,email,is_national`
+
+        const formData = new FormData(e.target)
+		const formDataObject = Object.fromEntries(formData)
+
+        const qry = Object.keys(formDataObject).map(function (key) {
+            if (formDataObject[key] !== '') {
+                const er = (key) + '=' + (formDataObject[key]).split(' ').join('+');
+
+                console.log("data object:",(formDataObject[key]))
+                return er
+            }
+        }).filter(Boolean).join('&')
+
+
+        if (qry !== '') {
+            url += `&${qry}`
+            console.log("Constructed URL:", url + `&${qry}`);
+        }
+
+        fetch(url, {
+            headers: {
+                Authorization: 'Bearer ' + props?.token,
+                Accept: 'application/json',
+            },
+
+        })
+            .then(resp => {
+
+                return resp.json()
+            })
+            .then(adminOffice => {
+                console.log({ adminOffice })
+                setAdminOffice(adminOffice)
+
+            })
+            .catch(e => {
+                console.error(e.message)
+                setAdminOffice([])
+                alert.error('No Admin offices found')
+            })
+            
+    }
 
     if(isClient) {
     return (
@@ -129,6 +186,27 @@ function AdminOffices(props) {
                             </div>
                         </div>
                     </div>
+
+                    <div className='w-full p-2 flex justify-between items-center border-b border-gray-400'>
+                    <form
+                        className="inline-flex flex-row justify-start flex-grow py-2 lg:py-0"
+                        onSubmit={handleSearch}>
+
+                        <input
+                        name="name"
+                        id="search-input"
+                        className="flex-none bg-transparent p-2 w-full md:flex-grow flex-grow shadow-sm rounded-tl rounded-bl border border-gray-400 placeholder-gray-600  focus:shadow-none focus:ring-black focus:border-black outline-none"
+                        type="search"
+                        placeholder="Search an Admin office"
+                        />
+                        <button
+                        type="submit"
+                        className="bg-transparent border-t border-r border-b rounded-tr rounded-br border-gray-400 text-black flex items-center justify-center px-4 py-1"
+                        >
+                        <SearchIcon className="w-5 h-5 text-gray-600" />
+                        </button>
+                    </form>
+                    </div>
                     <div className='col-span-1 w-full col-start-1 h-auto shadow-sm bg-gray-50'>
 
                         <List
@@ -149,11 +227,13 @@ function AdminOffices(props) {
                                     }}
                                 onClick={() => {
                                     setOfficeTheme(true)
-                                    router.push('/admin_office')
+                                    setAdminOffice(filters)
+                                    router.push('/admin_offices')
 
                                 }}
                             >
-                                <ListItemText primary="All Admin Offices" />
+                                <ListItemText primary="All Admin Offices" 
+                                filters={filters ?? {}}/>
                             </ListItemButton>
                         </List>
                     </div>
@@ -164,7 +244,9 @@ function AdminOffices(props) {
 
                             <div className="shadow-md bg-gray-50" style={{ Height: 'auto', width: '100%' }}>
                                
-                                <StyledDataGrid
+                                {
+                                    adminOffice?.results?.length > 0 ?(
+                                    <StyledDataGrid
                                         columns={columns}
                                         rows={rows}
                                         getRowClassName={() => `super-app-theme--Row`}
@@ -187,6 +269,12 @@ function AdminOffices(props) {
                                             ),
                                         }}
                                     />
+                                ):(
+                                        (adminOffice?.results?.length === 0) &&(
+                                        <Alert severity="warning" sx={{width:'100%', marginInline:'4px'}} >No Admin offices found</Alert>
+                                        )
+                                    )
+                                }
                                 
                             </div>
                         </div>
@@ -268,7 +356,14 @@ AdminOffices.getInitialProps = async (ctx) => {
 
             return fetchFilters(token).then(ft => {
                 return {
-                    data: json, query, filters: { ...ft }, token, path: ctx.asPath, tok: token || '/admin_office', current_url: url, api_url: API_URL
+                    data: json, 
+                    query, 
+                    filters: { ...ft }, 
+                    token, 
+                    path: ctx.asPath, 
+                    tok: token || '/admin_offices', 
+                    current_url: current_url, 
+                    api_url: API_URL
                 }
             })
 
@@ -279,7 +374,7 @@ AdminOffices.getInitialProps = async (ctx) => {
                 err: err,
                 data: [],
                 query: {},
-                path: ctx.asPath || '/admin_office',
+                path: ctx.asPath || '/admin_offices',
                 current_url: ''
             }
         }
@@ -298,7 +393,7 @@ AdminOffices.getInitialProps = async (ctx) => {
             if (ctx?.asPath) {
                 window.location.href = ctx?.asPath
             } else {
-                window.location.href = '/admin_office'
+                window.location.href = '/admin_offices'
             }
         }
         setTimeout(() => {
@@ -307,7 +402,7 @@ AdminOffices.getInitialProps = async (ctx) => {
                 err: err,
                 data: [],
                 query: {},
-                path: ctx.asPath || '/admin_office',
+                path: ctx.asPath || '/admin_offices',
                 current_url: ''
             }
         }, 1000);
