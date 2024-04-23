@@ -1672,10 +1672,12 @@ export function BasicDeatilsForm({ editMode }) {
           {
             editMode ?
             <input
-            type='text'
+            type='file'
             name='facility_checklist_document'
             disabled={editMode}
-            defaultValue={`Checklist File is ${options?.data?.facility_checklist_document?.url ?? 'missing'}`}
+            defaultValue={options?.data?.facility_checklist_document}
+            accept="image/png, image/jpeg .doc, .docx, .xml, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document" 
+            // defaultValue={`Checklist File is ${options?.data?.facility_checklist_document?.url ?? 'missing'}`}
             className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:border-black outline-none'
           /> :
           <input
