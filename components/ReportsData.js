@@ -19,7 +19,7 @@ function formatString(str) {
 
 
 export function propsToGridData(props, index, orgUnitFilter = "county") {
-    let isKeph, isOwner, isType, isCHUstatus = false;
+    let isKeph, isOwner, isType, isCHUstatus, isCHUyear = false;
 
     switch (index) {
         case 0:
@@ -2708,15 +2708,9 @@ export function propsToGridData(props, index, orgUnitFilter = "county") {
                         return {}
 
                     })(),
-                    // facility_keph_level: result[1][0]?.facility_keph_level,
                     facility_name: result[1][0]?.facility_name,
-                    // facility_type_name: result[1][0]?.facility_type_name,
-                    // facility_sub_county: result[1]["facility_sub_county"],
-                    // facility_county: result[1]["facility_county"],
                     facility_code: result[1][0]?.facility_code,
-                    // facility_ward: result[1]["facility_ward"],
                     facility_accredited: result[1][0]?.facility_accredited,
-                    // facility_owner: result[1][0]?.facility_owner,
                     id: index
 
                 })),
@@ -2801,12 +2795,16 @@ export function propsToGridData(props, index, orgUnitFilter = "county") {
             return {
                 rows: Object.entries(props?.chul_status_all_hierachies ?? {})?.map((result, index) => ({
                     [`${orgUnitFilter}`]: result[0],
-                    // facility__date_established: result[1]?.facility_date_established,
                     ...(() => {
+
+                        if (result[1]?.health_unit__year_established !== "all") {
+                            isCHUyear = true;
+                            return { health_unit__year_established: result[1]?.health_unit__year_established }
+                        }
 
                         if (result[1]?.chu_status !== "all") {
                             isCHUstatus = true;
-                            return { chu_status: result[1]?.chu_status }
+                            return { chu_status: result[1]?.health_unit__year_established }
                         }
 
                         return {}
@@ -2826,12 +2824,18 @@ export function propsToGridData(props, index, orgUnitFilter = "county") {
                         field: `${orgUnitFilter}`,
                         flex: 1
                     },
-                    // {
-                    //     headerName: 'Date',
-                    //     field: 'facility__date_established',
-                    //     flex: 1
-                    // },
+                    
                     ...(() => {
+
+                        if (isCHUyear) {
+                            return [
+                                {
+                                    headerName: 'Year Established',
+                                    field: 'health_unit__year_established',
+                                    flex: 1
+                                }
+                            ]
+                        }
 
                         if (isCHUstatus) {
                             return [
@@ -2878,8 +2882,12 @@ export function propsToGridData(props, index, orgUnitFilter = "county") {
             return {
                 rows: Object.entries(props?.chul_services_all_hierachies ?? {})?.map((result, index) => ({
                     [`${orgUnitFilter}`]: result[0],
-                    // chu_date_established: result[1]?.health_unit__date_established,
                     ...(() => {
+
+                        if (result[1]?.health_unit__year_established !== "all") {
+                            isCHUyear = true;
+                            return { health_unit__year_established: result[1]?.health_unit__year_established }
+                        }
 
                         if (result[1]?.chu_status !== "all") {
                             isCHUstatus = true;
@@ -2891,9 +2899,6 @@ export function propsToGridData(props, index, orgUnitFilter = "county") {
                     wash_sanitation: result[1]["WASH: Water, sanitation and hygiene education, including hand washing"],
                     iccm: result[1]["iCCM: Education on danger signs and referral for malaria, pneumonia and diarrhea"],
                     wash_water_treatment: result[1]["WASH: Water treatment provision"],
-                    // ward: result[1]["health_unit__facility__ward__name"],
-                    // county: result[1]["health_unit__facility__ward__sub_county__county__name"],
-                    // sub_county: result[1]["health_unit__facility__ward__sub_county__name"],
                     hiv_tb_malaria_treatment: result[1]["HIV, TB and Malaria: Treatment defaulter tracing"],
                     hiv_tb_malaria_education: result[1]["HIV, TB and Malaria: Education, support for treatment adherence, and referral"],
                     iccm_malaria_drugs: result[1]["iCCM: Provision of AL drugs to treat malaria"],
@@ -2924,12 +2929,17 @@ export function propsToGridData(props, index, orgUnitFilter = "county") {
                         field: `${orgUnitFilter}`,
                         width: 200
                     },
-                    // {
-                    //     headerName: 'Date',
-                    //     field: 'chu_date_established',
-                    //     width: 200
-                    // },
                     ...(() => {
+
+                        if (isCHUyear) {
+                            return [
+                                {
+                                    headerName: 'Year Established',
+                                    field: 'health_unit__year_established',
+                                    width: 200
+                                }
+                            ]
+                        }
 
                         if (isCHUstatus) {
                             return [
@@ -2959,21 +2969,6 @@ export function propsToGridData(props, index, orgUnitFilter = "county") {
                         field: "wash_water_treatment",
                         width: 200
                     },
-                    // {
-                    //     headerName: "health_unit__facility__ward__name",
-                    //     field: "ward",
-                    //     flex: 1
-                    // },
-                    // {
-                    //     headerName: "health_unit__facility__ward__sub_county__county__name",
-                    //     field: "county",
-                    //     flex: 1
-                    // },
-                    // {
-                    //     headerName: "health_unit__facility__ward__sub_county__name",
-                    //     field: "sub_county",
-                    //     flex: 1
-                    // },
                     {
                         headerName: "HIV, TB and Malaria: Treatment defaulter tracing",
                         field: "hiv_tb_malaria_treatment",
@@ -3075,8 +3070,12 @@ export function propsToGridData(props, index, orgUnitFilter = "county") {
                 return {
                     rows: Object.entries(props?.chul_count_all_hierachies ?? {})?.map((result, index) => ({
                         [`${orgUnitFilter}`]: result[0],
-                        // facility__date_established: result[1]?.facility_date_established,
                         ...(() => {
+
+                            if (result[1]?.health_unit__year_established !== "all") {
+                                isCHUyear = true;
+                                return { chu_status: result[1]?.health_unit__year_established }
+                            }
 
                             if (result[1]?.chu_status !== "all") {
                                 isCHUstatus = true;
@@ -3099,12 +3098,17 @@ export function propsToGridData(props, index, orgUnitFilter = "county") {
                             field: `${orgUnitFilter}`,
                             flex: 1
                         },
-                        // {
-                        //     headerName: 'Date',
-                        //     field: 'facility__date_established',
-                        //     flex: 1
-                        // },
                         ...(() => {
+
+                            if (isCHUyear) {
+                                return [
+                                    {
+                                        headerName: 'Year Established',
+                                        field: 'health_unit__year_established',
+                                        width: 200
+                                    }
+                                ]
+                            }
 
                             if (isCHUstatus) {
                                 return [

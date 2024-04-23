@@ -1900,7 +1900,7 @@ function Reports(props) {
                                                 id={1}
                                                 value="chu_services"
                                                 className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
-                                                onClick={() => {setSelectedCHUStatus(null); setSelectedPeriod(null); setSelectedOrgUnit(null)}}
+                                                onClick={() => {setReportTitle('CHU Services'); setSelectedCHUStatus(null); setSelectedPeriod(null); setSelectedOrgUnit(null)}}
                                             >
                                                 CHU Services
                                             </Tabs.Tab>
@@ -1908,7 +1908,7 @@ function Reports(props) {
                                                 id={2}
                                                 value="chu_status"
                                                 className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
-                                                onClick={() => {setSelectedCHUStatus(null); setSelectedPeriod(null); setSelectedOrgUnit(null)}}
+                                                onClick={() => {setReportTitle('CHU Status'); setSelectedCHUStatus(null); setSelectedPeriod(null); setSelectedOrgUnit(null)}}
 
                                             >
                                                 CHU Status
@@ -1917,7 +1917,7 @@ function Reports(props) {
                                                 id={3}
                                                 value="chu_count"
                                                 className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
-                                                onClick={() => {setSelectedCHUStatus(null); setSelectedPeriod(null); setSelectedOrgUnit(null)}}
+                                                onClick={() => {setReportTitle('CHU Count'); setSelectedCHUStatus(null); setSelectedPeriod(null); setSelectedOrgUnit(null)}}
 
                                             >
                                                 CHU Count
