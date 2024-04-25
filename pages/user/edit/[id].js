@@ -15,6 +15,7 @@ import { UserContext } from '../../../providers/user';
 import { hasPermission } from '../../../utils/checkPermissions';
 import Alert from '@mui/material/Alert';
 import Link from 'next/link';
+import { WarningOutlined } from '@mui/icons-material';
 
 const User = (props) => {
 	
@@ -153,7 +154,7 @@ const User = (props) => {
 				.then(res => {
 
 					router.push('/user/')
-					alert.success('User deleted successfully')
+					alert.success('User Account Deactivated successfully')
 				})
 
 		} catch (error) {
@@ -253,12 +254,16 @@ const User = (props) => {
 									p: 4,
 								}
 							}>
-								<span className="flex gap-2">
-									Are you sure you want to delete<b>{userData?.first_name + ' ' + userData?.last_name + ' ' + userData?.other_names}</b> ?
-								</span>
+								<div className='flex gap-2'>
+									<WarningOutlined className='text-red-400 w-5 aspect-square'/>
+									<span className="flex gap-2">
+										Are you sure you want to deactivate<b>{userData?.first_name + ' ' + userData?.last_name + ' ' + userData?.other_names}</b> ?
+									</span>
+								</div>
+								
 								<div className='flex justify-start gap-4 mt-4'>
-									<button className="bg-gray-500 text-white font-semibold  p-2 text-center" type="button" disabled={!delete_user} onClick={(e) => { deleteUser(e, props['6']?.token); setOpen(false) }} >Delete</button>
-									<button className="bg-red-500 text-white font-semibold  p-2 text-center"
+									<button className="bg-red-400 text-white font-semibold  p-2 text-center" type="button" disabled={!delete_user} onClick={(e) => { deleteUser(e, props['6']?.token); setOpen(false) }} >Deactivate</button>
+									<button className="bg-gray-500 text-white font-semibold  p-2 text-center"
 										onClick={() => { setOpen(false) }}
 									>Cancel</button>
 								</div>

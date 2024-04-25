@@ -153,7 +153,7 @@ function User(props){
 				.then(res => {
 
 					router.push('/user/')
-					alert.success('User deleted successfully')
+					alert.success('User Account Deactivated successfully')
 				})
 
 		} catch (error) {
