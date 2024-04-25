@@ -28,18 +28,21 @@ import Fade from '@mui/material/Fade';
 import {Formik, Form, Field} from 'formik'
 import Typography from '@mui/material/Typography';
 import FacilitySideMenu from "../../components/FacilitySideMenu";
-import { Table, TableBody, TableCell, TableRow } from "@mui/material";
+import { Avatar} from "@mui/material";
 
 import { useAlert } from "react-alert";
 import { KeyboardArrowRight, KeyboardArrowDown } from "@mui/icons-material";
-import { ChevronRight } from "@mui/icons-material";
+
+import { Checklist } from "@mui/icons-material";
+import { DocumentScanner } from "@mui/icons-material";
+import { FileCopy } from "@mui/icons-material";
+import { MailOutline } from "@mui/icons-material";
 
 
 
 const Facility = (props) => {
 
-  // const userPermissions = useContext(PermissionContext)
-  // const userGroup = useContext(UserGroupContext)
+
   const userCtx = useContext(UserContext)
 
 
@@ -56,12 +59,12 @@ const Facility = (props) => {
   );
 
 
-  const facility = props["0"]?.data;
-  const wardName = props["0"]?.data?.ward_name;
-  const center = props["1"]?.geoLocation?.center;
-  const geoLocationData = props["1"]?.geoLocation;
-  const qf = props["3"]?.qf ?? '';
-  // const {facility_updated_json } = props["2"]?.updates;
+  const facility = props?.data;
+  const wardName = props?.data?.ward_name;
+  const center = props?.geoLocation?.center;
+  const geoLocationData = props?.geoLocation;
+  const qf = props?.qf ?? '';
+  // const {facility_updated_json } = props?.updates;
   const filters = []
 
 
@@ -78,11 +81,11 @@ const Facility = (props) => {
   const [khisSynched, setKhisSynched] = useState(false);
   const [facilityFeedBack, setFacilityFeedBack] = useState([])
   const [pathId, setPathId] = useState('') 
-  const [allFctsSelected, setAllFctsSelected] = useState(false);
+  const [allFctsSelected, setAllFctsSelected] = useState(false)
   const [title, setTitle] = useState('') 
 
-  const [isViewChangeLog, setIsViewChangeLog] = useState(false)
-  const [changeLogData, setChangeLogData] = useState(null)
+  const [isViewActivityLog, setViewActivityLog] = useState(true)
+  const [activityLog, setActivityLog] = useState(null)
   const [isClosingFacility, setIsClosingFacility] = useState(false)
 
   
@@ -107,11 +110,16 @@ const Facility = (props) => {
 
     useEffect(() => {
       setUser(userCtx);
+      setActivityLog(props?.activityLog)
       if(user.id === 6){
         router.push('/auth/login')
       }
     }, [])
     if(isClient) {
+
+      // return (<pre>{
+      //   JSON.stringify(props, null, 2)
+      // }</pre>)
       return (
         <>
           <Head>
@@ -501,7 +509,7 @@ const Facility = (props) => {
         		</button>
               
 
-              <div className={`col-span-1 ${isViewChangeLog ? 'md:col-span-3':'md:col-span-4'} md:w-full  flex flex-col md:gap-3 gap-5 `}>
+              <div className={`col-span-1 md:col-span-4 md:w-full  flex flex-col md:gap-3 gap-5 `}>
 
                 {/* Action Buttons e.g (Approve/Reject, Edit, Regulate, Upgrade, Close) */}
 
@@ -642,7 +650,7 @@ const Facility = (props) => {
                         console.log({props})
                       }
                       
-                      <button
+                      {/* <button
                         onClick={() => {
                                                
                             router.push(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facility_detail_report/${facility?.id}/?access_token=${props['3']?.token}`)
@@ -650,19 +658,56 @@ const Facility = (props) => {
                         className="p-2 text-center -md font-semibold text-base  text-white bg-gray-600  rounded"
                       >
                         Print
-                      </button>
+                      </button> */}
+
+<button id="dropdownBgHoverButton" data-dropdown-toggle="dropdownBgHover" class="text-white  relative bg-gray-600 focus:outline-none font-semibold rounded p-2 text-center inline-flex items-center" type="button">Print
+<svg class="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+</svg>
+
+<div id="dropdownBgHover" class={`z-5 hidden absolute right-0 top-14 w-48 bg-white rounded-lg shadow `}>
+    <ul class="p-3 space-y-1 text-sm text-gray-700 " aria-labelledby="dropdownBgHoverButton">
+      <li>
+        <div class="flex items-center p-2 rounded hover:bg-gray-200 ">
+          <MailOutline />
+          <label for="checkbox-item-4" class="w-full ms-2 text-sm text-start font-medium text-gray-900 rounded ">Cover letter</label>
+        </div>
+      </li>
+      <li>
+        <div class="flex items-center p-2 rounded hover:bg-gray-200 ">
+            <Checklist />
+            <label for="checkbox-item-5" class="w-full ms-2 text-sm  text-start font-medium text-gray-900 rounded ">Facility Checklist</label>
+          </div>
+      </li>
+      <li>
+        <div class="flex items-center p-2 rounded hover:bg-gray-200 ">
+          <DocumentScanner />
+          <label for="checkbox-item-6" class="w-full  text-start ms-2 text-sm font-medium text-gray-900 rounded ">Facility Details</label>
+        </div>
+      </li>
+      <li>
+        <div class="flex items-center p-2 rounded hover:bg-gray-200 ">
+          <FileCopy />
+          <label for="checkbox-item-6" class="min-w-max ms-2 text-start text-sm font-medium text-gray-900 rounded ">Correction Template</label>
+        </div>
+      </li>
+    </ul>
+</div>
+</button>
+
+
 
                     </div>
                   </div>
                 }
 
                 {/* Facility Details Tab Section */}
-                  <FacilityDetailsTabs facility={facility} token={props["3"]?.token}/>
+                  <FacilityDetailsTabs facility={facility} token={props?.token}/>
               </div>
 
               {/* end facility approval */}
                   
-              <aside className={`flex flex-col col-span-1 ${isViewChangeLog ? 'md:col-span-3': 'md:col-span-2'}  gap-4 rounded `}>
+              <aside className={`flex flex-col col-span-1 md:col-span-2 gap-4 rounded `}>
                 {/* <h3 className="text-2xl tracking-tight font-semibold leading-5">
                   Map
                 </h3> */}
@@ -690,81 +735,98 @@ const Facility = (props) => {
                     
                    </div>
                 )}
-                <div className="flex flex-col items-start mt-2 justify-center gap-2">
-                  {/* View/Hide Change Log Btn*/}
+
+                <div className="flex flex-col items-start mt-2 px-3 md:px-0 justify-center gap-2">
+                  {/* View/Hide Activity Log Btn*/}
                   <button 
                   onClick={async () => {
-                    setIsViewChangeLog(!isViewChangeLog);
+                    setViewActivityLog(!isViewActivityLog);
 
-                    if(!isViewChangeLog){
+                    if(!isViewActivityLog && !activityLog){
                       try{
-                          const resp = await fetch(`/api/facility/get_facility/?path=change_log&id=${facility?.id}`)
+                          const resp = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${facility?.id}/?fields=__rev__&include_audit=true`, {
+                            headers: {
+                              'Accept': 'application/json',
+                              'Authorization': `Bearer ${props?.token}`
+                            }
+                          })
                         
-                          setChangeLogData((await resp.json()).revisions)
+                          setActivityLog((await resp.json()).revisions)
       
                       }
                       catch(e){
-                        console.error(e.message)
+                        console.error('Error when fetching Activity Log', e.message)
                       }
                     }
 
                   }}
                   className="bg-gray-600 rounded w-auto p-2 text-white text-lg font-semibold flex items-center justify-between">
-                  <span>{isViewChangeLog ? 'Hide Change Log' : 'View Change Log'}</span>
+                  <span>{isViewActivityLog ? 'Hide Activity Log' : 'View Activity Log'}</span>
                   {
-                    isViewChangeLog ?
+                    isViewActivityLog ?
                     <ChevronDownIcon className="w-6 h-6 text-base text-white"/>
                     :
                     <ChevronRightIcon className="w-6 h-6 text-base text-white"/>
                   }
                   </button>
 
-                  {/* Change Log Table */}
+                  {/* Activity Log Table */}
                   {
-                  isViewChangeLog &&
-                  
-                  <Table>
-                  <TableBody className="w-full h-auto border border-gray-600">
-                    <TableRow classes="border-b border-gray-400">
-                      <TableCell className="font-semibold">Date</TableCell>
-                      <TableCell className="font-semibold">User</TableCell>
-                      <TableCell className="font-semibold">Updates</TableCell>
-                    </TableRow>
-                    
-                  
-                  
-                    {
-                      changeLogData &&
-                      changeLogData.map(({updated_on, updated_by, updates}, i) => (
-                        <TableRow className="border-b border-gray-600 " key={i}>
-                          <TableCell>
-                            {new Date(updated_on).toLocaleString()}
-                          </TableCell>
-                          <TableCell>
-                            {updated_by}
-                          </TableCell>
-                          <TableCell>
+                  isViewActivityLog &&
+            
+              <ol class="relative border-l-4 mt-4 md:ml-4 mx-auto border-gray-200 w-full dark:border-gray-300">  
+              {    
+                    activityLog &&
+                    activityLog.map(({updated_on, updated_by, updates}, i) => (      
+                  <li class="mb-10 ms-8" key={i}>            
+                      <span class="absolute flex items-center justify-center w-6 h-6 bg-blue-100 rounded-full -start-3 ">
+                          <Avatar  className="w-7 bg-gray-400 aspect-square mt-4">{updated_by[0].toUpperCase()}</Avatar>
+                      </span>
+                      <div class="items-start justify-between p-4 bg-blue-100 border border-blue-600 rounded-lg shadow-sm sm:flex">
+                          <time class="mb-1 text-xs font-normal text-blue-900 sm:order-last sm:mb-0">{new Date(updated_on).toLocaleString(
+                            'en-gb',
                             {
-                              updates && updates.length > 0 &&
-                              updates.map(({old, new:_new, name}) => (
-                                <span className="grid grid-cols-2 text-wrap">
-                                  <span className="font-semibold text-base md:col-start-1">{name}{" :"}</span>
-                                  <span className="text-red-400 md:col-start-2">{old}
-                                  <span className="text-black">{" >> "}</span>
-                                  <span className="text-gray-400">{_new}</span>
-                                  </span>
-                                  
-                                </span>
-                              ))
+                              year: 'numeric',
+                              month: 'long',
+                              day: 'numeric',
+                              timeZone: 'utc'
                             }
-                          </TableCell>
-                        </TableRow>
-                      ))
-                      
-                    }
-          
-                  </TableBody>
-                  </Table>
+                          )}</time>
+                          
+                          <div class="text-sm font-normal text-blue-800 gap-y-2">
+                            <span className="bg-blue-400 text-gray-50 text-xs font-semibold me-1 px-2.5 py-0.5 rounded">{updated_by}</span>made the following changes: 
+                            {
+                            updates && updates.length > 0 &&
+                            updates?.map(({old, new:_new, name}) => (
+                              <div className="flex gap-1 mt-1 gap-y-1 flex-wrap">
+                            {"Changed "}
+                            <span className="font-semibold text-gray-500">
+                            { (name !== "id" || 
+                               name !== "created" || 
+                               name !== "updated" || 
+                               name !== "created_by" || 
+                               name !== "updated_by") && name} 
+                           </span>
+                            {/* <span  class="font-semibold text-gray-500"> { old } </span>  */}
+                            to
+                             <span class="font-semibold text-gray-500 min-w-max">{ _new ?? '-'} </span>
+                            </div>
+                            ))
+                          }
+                          </div>
+                         
+                        
+                      </div>
+                  </li>
+                ))
+
+              }
+
+                  
+                  
+              </ol>
+
+
                 
                   }   
                   
@@ -783,7 +845,7 @@ const Facility = (props) => {
 };
 
 Facility.getInitialProps = async (ctx) => {
-  const allOptions = [];
+  const allOptions = {};
 
   if (ctx.query.q) {
     const query = ctx.query.q;
@@ -819,9 +881,7 @@ Facility.getInitialProps = async (ctx) => {
         })
           .then((r) => r.json())
           .then(async (json) => {
-            allOptions.push({
-              data: json,
-            })
+            allOptions["data"] = json
     
 
             // fetch ward boundaries
@@ -842,10 +902,9 @@ Facility.getInitialProps = async (ctx) => {
                 const [lng, lat] =
                   _data?.ward_boundary.properties.center.coordinates;
 
-                allOptions.push({
-                  geoLocation: JSON.parse(JSON.stringify(_data?.ward_boundary)),
-                  center: [lat, lng],
-                });
+                allOptions["geoLocation"] = JSON.parse(JSON.stringify(_data?.ward_boundary));
+                allOptions["center"] = [lat, lng];
+              
               } catch (e) {
                 console.error("Error in fetching ward boundaries", e.message);
               }
@@ -863,9 +922,8 @@ Facility.getInitialProps = async (ctx) => {
                 }
               )).json()
                 
-                allOptions.push({
-                  updates: facilityUpdateData,
-                })
+                allOptions["updates"]=  facilityUpdateData
+                
                                                          
               }
               catch(e){
@@ -873,13 +931,27 @@ Facility.getInitialProps = async (ctx) => {
               }
             }
 
-            allOptions.push({
-              token
-            });
+            if(json) {
+              try{
+                const resp = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${json?.id}/?fields=__rev__&include_audit=true`, {
+                  headers: {
+                    'Accept': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                  }
+                })
+              
+                allOptions["activityLog"] = (await resp.json()).revisions
 
-            allOptions.push({
-              qf: ctx.query.qf
-            });
+            }
+            catch(e){
+              console.error('Error when fetching Activity Log', e.message)
+            }
+          
+            }
+
+            allOptions["token"] = token
+
+            allOptions["qf"] = ctx.query.qf
 
             return allOptions;
           })

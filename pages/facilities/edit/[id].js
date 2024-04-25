@@ -702,6 +702,7 @@ EditFacility.getInitialProps = async (ctx) => {
 							}
 							break;
 						case "facility_data":
+
 							try {
 								const _facility_data = await fetch(
 									`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${ctx.query.id}/`,
@@ -756,6 +757,8 @@ EditFacility.getInitialProps = async (ctx) => {
 
 
 										try {
+									console.log(facilityData?.id)
+
 											const response = await fetch(
 												`${process.env.NEXT_PUBLIC_API_URL}/facilities/facility_regulation_status/?facility=${facilityData?.id}/?format=json`,
 												{
@@ -772,12 +775,12 @@ EditFacility.getInitialProps = async (ctx) => {
 
 											}
 										} catch (err) {
-											console.log(`Error fetching ${option}: `, err);
+											console.log(`Error fetching facility_regulation_status ${option}: `, err);
 
 										}
 
 									} catch (err) {
-										console.log(`Error fetching ${option}: `, err);
+										console.log(`Error fetching wards data ${option}: `, err);
 
 									}
 								}
