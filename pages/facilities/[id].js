@@ -509,7 +509,7 @@ const Facility = (props) => {
         		</button>
               
 
-              <div className={`col-span-1 ${isViewActivityLog ? 'md:col-span-3':'md:col-span-4'} md:w-full  flex flex-col md:gap-3 gap-5 `}>
+              <div className={`col-span-1 md:col-span-4 md:w-full  flex flex-col md:gap-3 gap-5 `}>
 
                 {/* Action Buttons e.g (Approve/Reject, Edit, Regulate, Upgrade, Close) */}
 
@@ -707,7 +707,7 @@ const Facility = (props) => {
 
               {/* end facility approval */}
                   
-              <aside className={`flex flex-col col-span-1 ${isViewActivityLog ? 'md:col-span-3': 'md:col-span-2'}  gap-4 rounded `}>
+              <aside className={`flex flex-col col-span-1 md:col-span-2 gap-4 rounded `}>
                 {/* <h3 className="text-2xl tracking-tight font-semibold leading-5">
                   Map
                 </h3> */}
@@ -735,6 +735,7 @@ const Facility = (props) => {
                     
                    </div>
                 )}
+
                 <div className="flex flex-col items-start mt-2 px-3 md:px-0 justify-center gap-2">
                   {/* View/Hide Activity Log Btn*/}
                   <button 
@@ -797,7 +798,7 @@ const Facility = (props) => {
                             {
                             updates && updates.length > 0 &&
                             updates?.map(({old, new:_new, name}) => (
-                              <div className="flex gap-1 mt-1 gap-y-1 md:flex-nowrap flex-wrap">
+                              <div className="flex gap-1 mt-1 gap-y-1 flex-wrap">
                             {"Changed "}
                             <span className="font-semibold text-gray-500">
                             { (name !== "id" || 
