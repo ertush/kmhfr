@@ -35,6 +35,7 @@ function CommunityUnitsBasciDetailsForm(props) {
 	const [subCountyValue, setSubCountyValue] = useState('')
 	const [constituencyValue, setConstituencyValue] = useState('')
 	const [wardValue, setWardValue] = useState('')
+	const [facilityType, setFacilityType] = useState('')
 	const [submitting, setSubmitting] = useState(false)
 	const [contactList, setContactList] = useState([{ contact_types: '', contact: '' }])
 
@@ -42,6 +43,8 @@ function CommunityUnitsBasciDetailsForm(props) {
 	const [formError, setFormError] = useState(null)
 	const [validationError, setValidationError] = useState(null)
 	const setFormId = useContext(SetFormIdContext)
+
+	// console.log("Dropdown:",facilityOptions)
 
 	function handleCUBasicDetailsSubmit (event) {
 		
@@ -133,7 +136,6 @@ function CommunityUnitsBasciDetailsForm(props) {
 			return [...s, { contact_types: '', contact: '' }]
 		})
 	};
-
 
 	function handleFacilityChange({ value }) {
 
@@ -1335,8 +1337,9 @@ export async function getServerSideProps({req, res, query}) {
 		  break;
   
 		case "facilities":
+  
 		  
-		 const facilities = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/?page_size=${count > 500 ? '500' : count}&fields=id,name,county,sub_county_name,constituency,ward_name,closed,owner_type,owner_type_name&closed=false&owner_type=6a833136-5f50-46d9-b1f9-5f961a42249f`,{
+		  const facilities = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/?page_size=${count > 500 ? '500' : count}&fields=id,name,county,sub_county_name,constituency,ward_name,closed,owner_type,owner_type_name&closed=false&owner_type=6a833136-5f50-46d9-b1f9-5f961a42249f`,{
 			headers:{
 			  'Authorization': 'Bearer ' + token,
 			  'Accept': 'application/json'
@@ -1359,7 +1362,7 @@ export async function getServerSideProps({req, res, query}) {
 		  response["contact_types"] =  (await (await contact_types.json()))?.results?.map(({ id, name }) => ({ label: name, value: id }))
 		  break;
   
-		  case "services":"user_manager"
+		case "services":"user_manager"
 		  const services = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/chul/services/?page_size=100&ordering=name`,{
 			headers:{
 			  'Authorization': 'Bearer ' + token,

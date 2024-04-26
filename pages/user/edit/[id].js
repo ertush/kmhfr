@@ -137,6 +137,7 @@ const User = (props) => {
 
 			setStatus({ status: 'error', message: e.message })
 		}
+		// console.log(status?.message)
 	}
 
 	const deleteUser = (event, token) => {
@@ -283,11 +284,12 @@ const User = (props) => {
 						<div>
 
 
-							{
+							{  
 								status?.status.includes("error") &&
 								<Alert severity={status?.status} sx={{ width: '100%' }}>
 
-									{status.message?.__all__[0]}
+									{/* {status.message?.__all__[0]} */}
+									{status.message?.email || status.message?.contacts || status.message?.county|| status.message?.password}
 
 								</Alert>
 							}
@@ -495,13 +497,13 @@ const User = (props) => {
 											htmlFor='password'
 											className='text-gray-600 capitalize text-sm'>
 											Password
-											<span className='text-medium leading-12 font-semibold'>
+											{/* <span className='text-medium leading-12 font-semibold'>
 												{' '}
 												*
-											</span>
+											</span> */}
 										</label>
 										<input
-											required
+											// required
 											type='password'
 											name='password'
 											onChange={ev => {
@@ -520,13 +522,13 @@ const User = (props) => {
 											htmlFor='conf-password'
 											className='text-gray-600 capitalize text-sm'>
 											Confirm Password
-											<span className='text-medium leading-12 font-semibold'>
+											{/* <span className='text-medium leading-12 font-semibold'>
 												{' '}
 												*
-											</span>
+											</span> */}
 										</label>
 										<input
-											required
+											// required
 											type='password'
 											name='conf_password'
 											onChange={ev => {
@@ -865,7 +867,10 @@ const User = (props) => {
 
 									{/* Cancel & Save */}
 									<div className='flex justify-between items-center w-full'>
-										<button className='flex items-center justify-start space-x-2 p-1 border-2 border-black  px-2'>
+										<button className='flex items-center justify-start space-x-2 p-1 border-2 border-black  px-2'
+										onClick={()=>{
+											router.push('/user')
+										}}>
 											<ChevronDoubleLeftIcon className='w-4 h-4 text-black' />
 											<span className='text-medium font-semibold text-black '>
 												Cancel

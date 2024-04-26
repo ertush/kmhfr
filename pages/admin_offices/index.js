@@ -9,8 +9,9 @@ import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import { UserContext } from '../../providers/user';
-// import {Formik, Form, Field} from 'formik';
-import { SearchIcon } from '@heroicons/react/outline'
+import { useAlert } from "react-alert";
+import Alert from '@mui/material/Alert';
+import { ChevronDownIcon, FilterIcon, SearchIcon } from '@heroicons/react/outline'
 
 
 import {
@@ -25,7 +26,7 @@ import Head from 'next/dist/shared/lib/head'
 
 // components imports
 import MainLayout from '../../components/MainLayout'
-// import { values } from 'underscore'
+import { values } from 'underscore'
 
 
 const StyledDataGrid = styled(DataGrid)(() => ({
@@ -45,21 +46,21 @@ const StyledDataGrid = styled(DataGrid)(() => ({
 function AdminOffices(props) {
   
     const router = useRouter()
+    const alert = useAlert()
 
     const userPermissions = useContext(PermissionContext)
     const userCtx = useContext(UserContext)
     const [isClient, setIsClient] = useState(false)
     const [adminOffice, setAdminOffice] = useState(props?.data)
     const API_URL = process.env.NEXT_PUBLIC_API_URL;
-
+    
     const groupID = userCtx?.groups[0]?.id
 
-    // const rows = props?.data?.results?.map(({ id, county_name, sub_county_name, name, is_national, phone_number, email }) => ({ id, county_name, sub_county_name, name, is_national: is_national == true ? 'Yes' : 'No', phone_number, email })) ?? []
-    
-    const filters = props?.filters
+    const filters = props?.data
+
+    // console.log('Admin offices:', adminOffice)
 
     const rows = adminOffice?.results?.length > 0 ? adminOffice?.results.map(({ id, county_name, sub_county_name, name, is_national, phone_number, email }) => ({ id, county_name, sub_county_name, name, is_national: is_national ? 'Yes' : 'No', phone_number, email })) : []
-    
     const columns = [
         { headerName: "County", field: "county_name", flex:1},
         { headerName: "Sub County", field: "sub_county_name", flex:1 },
@@ -91,7 +92,6 @@ function AdminOffices(props) {
 
     const [user, setUser] = useState(userCtx)
   
-
     useEffect(() => {
         setIsClient(true)
         setUser(userCtx)
@@ -108,25 +108,21 @@ function AdminOffices(props) {
     }, [])
  
     const [officeTheme, setOfficeTheme] = useState([]);
-
-
+    
     function handleSearch(e){
 
         e.preventDefault()
-
+        
         let url = API_URL+ `/admin_offices/?fields=id,name,county_name,county,sub_county,sub_county_name,phone_number,email,is_national`
 
         const formData = new FormData(e.target)
 		const formDataObject = Object.fromEntries(formData)
 
-        // const query = values.q.split(' ').join('+');
-        // console.log("data vale:",formData)
-
         const qry = Object.keys(formDataObject).map(function (key) {
             if (formDataObject[key] !== '') {
                 const er = (key) + '=' + (formDataObject[key]).split(' ').join('+');
 
-                console.log("data object:",(formDataObject[key]))
+                // console.log("data object:",(formDataObject[key]))
                 return er
             }
         }).filter(Boolean).join('&')
@@ -149,19 +145,17 @@ function AdminOffices(props) {
                 return resp.json()
             })
             .then(adminOffice => {
-                // console.log({ adminOffice })
+                console.log({ adminOffice })
                 setAdminOffice(adminOffice)
 
             })
             .catch(e => {
                 console.error(e.message)
                 setAdminOffice([])
+                alert.error('No Admin offices found')
             })
-
+            
     }
-
-
-
 
     if(isClient) {
     return (
@@ -193,9 +187,9 @@ function AdminOffices(props) {
                         </div>
                     </div>
 
-                    <div className='max-w-max flex justify-end items-center  md:col-span-2 self-end'>
+                    <div className='w-full p-2 flex justify-between items-center border-b border-gray-400'>
                     <form
-                        className="inline-flex flex-row justify-start  flex-grow py-2 lg:py-0"
+                        className="inline-flex flex-row justify-start flex-grow py-2 lg:py-0"
                         onSubmit={handleSearch}>
 
                         <input
@@ -213,7 +207,6 @@ function AdminOffices(props) {
                         </button>
                     </form>
                     </div>
-                    
                     <div className='col-span-1 w-full col-start-1 h-auto shadow-sm bg-gray-50'>
 
                         <List
@@ -234,11 +227,12 @@ function AdminOffices(props) {
                                     }}
                                 onClick={() => {
                                     setOfficeTheme(true)
+                                    setAdminOffice(filters)
                                     router.push('/admin_offices')
 
                                 }}
                             >
-                               <ListItemText primary="All Admin Offices" 
+                                <ListItemText primary="All Admin Offices" 
                                 filters={filters ?? {}}/>
                             </ListItemButton>
                         </List>
@@ -250,7 +244,9 @@ function AdminOffices(props) {
 
                             <div className="shadow-md bg-gray-50" style={{ Height: 'auto', width: '100%' }}>
                                
-                                <StyledDataGrid
+                                {
+                                    adminOffice?.results?.length > 0 ?(
+                                    <StyledDataGrid
                                         columns={columns}
                                         rows={rows}
                                         getRowClassName={() => `super-app-theme--Row`}
@@ -273,6 +269,12 @@ function AdminOffices(props) {
                                             ),
                                         }}
                                     />
+                                ):(
+                                        (adminOffice?.results?.length === 0) &&(
+                                        <Alert severity="warning" sx={{width:'100%', marginInline:'4px'}} >No Admin offices found</Alert>
+                                        )
+                                    )
+                                }
                                 
                             </div>
                         </div>
