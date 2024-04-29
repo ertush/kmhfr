@@ -106,7 +106,7 @@ function Dashboard(props) {
         }
     }
 
-    const fetchWards = async (sub_county) => {
+    async function fetchWards(sub_county){
 
         try {
             const r = await fetch(`/api/common/fetch_form_data/?path=wards&id=${sub_county}`)
@@ -201,12 +201,10 @@ function Dashboard(props) {
 
 
     // console.log(props.data)
-
     const exportToPdf = useReactToPrint({
         documentTitle: 'Summary',
         content: () => dwn.current,
     });
-
 
 
     const totalSummary = [
@@ -242,6 +240,7 @@ function Dashboard(props) {
         { name: 'New CHUs added', count: `${props?.data?.recently_created_chus || 0}` },
         { name: 'CHUs updated', count: `${props?.data?.recently_updated_chus || 0}` }
     ]
+
     // console.log(user)
     const csvHeaders = useMemo(
         () => [
@@ -280,21 +279,22 @@ function Dashboard(props) {
                             
                             <div className="flex flex-col w-full md:flex-wrap lg:flex-row xl:flex-row gap-1 text-sm md:text-base items-center justify-between">
                                 <h1 className="w-full md:w-auto text-4xl tracking-tight font-bold leading-3 flex items-start justify-center gap-x-1 gap-y-2 flex-grow mb-4 md:mb-2 flex-col">
+                                    
                                     {/* <span className='no-print' id="dashboard-title">Overview</span> */}
                                     <div className='flex items-center gap-x-2 mt-3'>
-                                        {drillDown && drillDown?.county && groupID !== 1 &&
-                                            <small className="text-gray-900 text-base font-semibold ml-1">
-                                                {filters && filters?.county && filters?.county.find(ft => ft.id == drillDown?.county)?.name ? filters?.county.find(ft => ft.id == drillDown?.county)?.name + " County" : "National Summary" || ""}
-                                            </small>
-                                        }
-                                        {user && userCounty &&
-                                            <small className="text-gray-900 text-base font-semibold">
+                                        {/* {drillDown && drillDown?.county && groupID !== 1 && */}
+                                            {/* <small className="text-gray-900 text-base font-semibold ml-1"> */}
+                                                {/* {filters && filters?.county && filters?.county.find(ft => ft.id == drillDown?.county)?.name ? filters?.county.find(ft => ft.id == drillDown?.county)?.name + " County" : "National Summary" || ""} */}
+                                            {/* </small> */}
+                                        {/* } */}
+                                        {/* {user && userCounty && */}
+                                            {/* <small className="text-gray-900 text-base font-semibold"> */}
 
-                                                {`${userCounty ?? user?.county_name} County`}
+                                                {/* {userCounty ?? user?.county_name} County */}
 
-                                            </small>
-                                        }
-                                        {user && userSubCounty ?
+                                            {/* </small> */}
+                                        {/* } */}
+                                        {/* {user && userSubCounty ?
                                             <>
                                                 <span className='text-gray-500 text-base'> / </span>
 
@@ -312,8 +312,8 @@ function Dashboard(props) {
 
                                                 </small>
                                             </>
-                                        }
-                                        {drillDown && drillDown?.wards &&
+                                        } */}
+                                        {/* {drillDown && drillDown?.wards &&
                                             <>
                                                 <span className='text-gray-500 text-base text-center'> / </span>
                                                 <small className="text-gray-900 text-base font-semibold ml-1">
@@ -321,19 +321,19 @@ function Dashboard(props) {
                                                     {wards && wards?.wards && wards?.wards.find(ft => ft.id == drillDown?.wards)?.name != undefined ? wards?.wards.find(ft => ft.id == drillDown?.wards)?.name + " Ward" : "Subcounty Summary" || ""}
                                                 </small>
                                             </>
-                                        }
+                                        } */}
                                     </div>
                                 </h1>
 
-                                <div className=" no-print flex-grow flex gap-x-3 items-center justify-end w-full md:w-auto">
+                                <div className="max-w-max flex gap-2">
 
                                     {/* show datetime filters */}
                                     {/* --- */}
                                     {user &&
-                                        <div className="w-full flex  items-center justify-end space-x-3 ">
-                                            <div className="w-full max-w-xs flex flex-col items-start justify-start">
-                                                {/* <label htmlFor='Yearselector' className="text-gray-600 capitalize font-semibold text-sm ml-1">Filter by Year</label> */}
-                                                <Select id="Yearselector" className="w-full max-w-xs rounded border border-gray-400"
+                                        <div className="w-full flex items-center justify-end space-x-3 ">
+                                            <div className="w-full flex flex-col items-start justify-start">
+                                                {/* <label htmlFor='yearSelector' className="text-gray-600 capitalize font-semibold text-sm ml-1">Filter by Year</label> */}
+                                                <Select id="yearSelector" className="max-w-max md:w-[250px] rounded border border-gray-400"
                                                     options={Years}
                                                     placeholder='Filter by Year'
                                                     data-modal-target="defaultModal" data-modal-toggle="defaultModal"

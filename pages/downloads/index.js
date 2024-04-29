@@ -57,13 +57,13 @@ function Downloads(props) {
                     <Tabs.Root
                         orientation="horizontal"
                         className="w-full flex flex-col col-span-1 md:col-span-5 tab-root"
-                        defaultValue="overview"
+                        defaultValue="all"
                     >
                         <Tabs.List className="list-none grid grid-cols-3 uppercase leading-none tab-list font-semibold border-b border-gray-400">
                             <Tabs.Tab
                                 id={1}
                                 value="all"
-                                className="p-2 whitespace-nowrap  focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
+                                className="p-2 whitespace-nowrap  focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-pointer border-b-2 border-transparent tab-item"
                             >
                                 All
                             </Tabs.Tab>
@@ -71,7 +71,7 @@ function Downloads(props) {
                             <Tabs.Tab
                                 id={2}
                                 value="common"
-                                className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
+                                className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-pointer border-b-2 border-transparent tab-item"
                             >
                                 Common
                             </Tabs.Tab>
@@ -79,7 +79,7 @@ function Downloads(props) {
                             <Tabs.Tab
                                 id={3}
                                 value="checklist"
-                                className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
+                                className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-pointer border-b-2 border-transparent tab-item"
                             >
                                 Checklist
                             </Tabs.Tab>

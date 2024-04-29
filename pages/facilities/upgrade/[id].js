@@ -6,7 +6,7 @@ import { useRouter } from 'next/router'
 import Link from 'next/link'
 import FacilitySideMenu from '../../../components/FacilitySideMenu'
 import { checkToken } from "../../../controllers/auth/auth"
-import { Formik, Form, Field } from 'formik'
+// import { Formik, Form, Field } from 'formik'
 import Select from 'react-select'
 import { ChevronRightIcon, ChevronDownIcon } from '@heroicons/react/solid'
 import { Table, TableBody, TableCell, TableRow } from '@mui/material';
@@ -15,6 +15,8 @@ import { handleFacilityUpgrades } from '../../../controllers/facility/facilityHa
 import { UserContext } from '../../../providers/user'
 import Spinner from '../../../components/Spinner'
 import { Alert } from '@mui/lab'
+import * as Tabs from "@radix-ui/react-tabs";
+
 
 
 
@@ -146,13 +148,6 @@ function UpgradeFacility(props) {
 
     if (isClient) {
 
-        // return (
-        //     <pre>
-        //         {
-        //             JSON.stringify(props, null, 2)
-        //         }
-        //     </pre>
-        // )
         return (
             <>
                 <Head>
@@ -204,12 +199,45 @@ function UpgradeFacility(props) {
                         </div>
 
                         {/* Facility Upgrade View */}
-                        <div className='md:col-span-6 flex flex-col items-center gap-2'>
-                            {/* Upgrade Form */}
-                          
+                        
+
+                        <Tabs.Root
+                        orientation="horizontal"
+                        className="w-full flex flex-col bg-gray-50 max-h-min rounded col-span-1 md:col-span-6 tab-root"
+                        defaultValue="upgrade"
+                    >
+                        <Tabs.List className="list-none flex justify-evenly uppercase leading-none tab-list font-semibold border-b border-gray-400">
+                            <Tabs.Tab
+                                id={1}
+                                value="upgrade"
+                                className="p-2 whitespace-nowrap cursor-pointer w-full  focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black border-b-2 border-transparent tab-item"
+                            >
+                                Upgrade
+                            </Tabs.Tab>
+
+                            <Tabs.Tab
+                                id={2}
+                                value="downgrade"
+                                className="p-2 whitespace-nowrap cursor-pointer w-full focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black border-b-2 border-transparent tab-item"
+                            >
+                                Downgrade
+                            </Tabs.Tab>
+
+
+                        </Tabs.List>
+
+                        <Tabs.Panel
+                            value="upgrade"
+                            className="grow-1 py-4 tab-panel"
+                        >
+                            <div className='rounded w-full h-auto flex flex-col p-2'>
+
+                                {/* Upgrade form */}
+
+
                             <form 
                             onSubmit={handleSubmit}
-                            className='md:col-span-5 flex flex-col bg-gray-50 rounded shadow-md p-3 w-full justify-start items-start gap-2 md:mt-1'>
+                            className='md:col-span-5 flex flex-col bg-gray-50 rounded p-3 w-full justify-start items-start gap-2 md:mt-1'>
 
                                 {
                                     formError && <Alert severity='error' className='w-full my-4'>{formError}</Alert>
@@ -397,7 +425,7 @@ function UpgradeFacility(props) {
                                                 submitting ?
                                                     <Spinner />
                                                     :
-                                                    '  Upgrade/Downgrade'
+                                                    'Upgrade'
 
                                             }
                                         </span>
@@ -411,11 +439,233 @@ function UpgradeFacility(props) {
 
                             </form>
                                 
+                            </div>
+                        </Tabs.Panel>
+
+                        <Tabs.Panel
+                            value="downgrade"
+                            className="grow-1 py-4 tab-panel"
+                        >
+                            <div className='bg-gray-50 rounded w-full max-h-min flex flex-col p-2'>
+
+                             {/* Downgrade form */}
+
+
+                            <form 
+                            onSubmit={handleSubmit}
+                            className='md:col-span-5 max-h-min flex flex-col bg-gray-50 rounded p-3 w-full justify-start items-start gap-2 md:mt-1'>
+
+                                {
+                                    formError && <Alert severity='error' className='w-full my-4'>{formError}</Alert>
+
+                                }
+                                {/* Previous KEPH Level */}
+                                <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                    <label
+                                        htmlFor='collection_date'
+                                        className='text-gray-600 capitalize text-sm'>
+                                        Current KEPH Level
+                                        <span className='text-medium leading-12 font-semibold'>
+                                            {' '}
+                                        </span>
+                                    </label>
+                                    <input
+                                        type='text'
+                                        name='previous_keph'
+                                        disabled={true}
+                                        defaultValue={formValues?.previous_keph}
+                                        className='rounded flex-none w-full bg-transparent border-gray-600 p-2 flex-grow border placeholder-gray-500  focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                    />
+                                </div>
+
+                                {/* New KEPH level */}
+                                <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                                    <label htmlFor="keph_level" className="text-gray-600 capitalize text-sm">Update to KEPH Level</label>
+                                    <Select
+                                        styles={{
+                                            control: (baseStyles) => ({
+                                                ...baseStyles,
+                                                backgroundColor: 'transparent',
+                                                outLine: 'none',
+                                                border: 'none',
+                                                outLine: 'none',
+                                                textColor: 'transparent',
+                                                padding: 0,
+                                                height: '4px'
+                                            }),
+
+                                        }}
+                                        options={props?.kephOptions}
+                                        placeholder="Select a KEPH Level.."
+                                        defaultValue={formValues?.previous_keph}
+                                        name="keph_level"
+                                        className='flex-none w-full flex-grow placeholder-gray-500 border border-gray-600 outline-none' />
+                                </div>
+
+
+
+                                {/* Previous Facility Type */}
+                                <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                    <label
+                                        htmlFor='collection_date'
+                                        className='text-gray-600 capitalize text-sm'>
+                                        Current Facility Type
+                                        <span className='text-medium leading-12 font-semibold'>
+                                            {' '}
+                                        </span>
+                                    </label>
+                                    <input
+                                        type='text'
+                                        name='previous_facility_type'
+                                        disabled={true}
+                                        defaultValue={formValues?.previous_facility_type}
+                                        className='rounded flex-none w-full bg-transparent border-gray-600 p-2 flex-grow border placeholder-gray-500 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                    />
+                                </div>
+
+                                {/* New Facility Type */}
+                                <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                                    <label htmlFor="facility_type" className="text-gray-600 capitalize text-sm">Update to Facility Type {" *"}</label>
+                                    <Select
+                                        styles={{
+                                            control: (baseStyles) => ({
+                                                ...baseStyles,
+                                                backgroundColor: 'transparent',
+                                                outLine: 'none',
+                                                border: 'none',
+                                                outLine: 'none',
+                                                textColor: 'transparent',
+                                                padding: 0,
+                                                height: '4px'
+                                            }),
+
+                                        }}
+                                        options={props?.facilityTypes}
+                                        required
+                                        placeholder="Select a facility type..."
+                                        name="facility_type"
+                                        className="flex-none w-full bg-transparent border border-gray-600 flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none rounded" />
+                                </div>
+
+
+
+                                {/* Reason for Upgrade */}
+                                <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                                    <label htmlFor="facility_type" className="text-gray-600 capitalize text-sm">Reason for Downgrade {" *"}</label>
+                                    <Select
+                                        styles={{
+                                            control: (baseStyles) => ({
+                                                ...baseStyles,
+                                                backgroundColor: 'transparent',
+                                                outLine: 'none',
+                                                border: 'none',
+                                                outLine: 'none',
+                                                textColor: 'transparent',
+                                                padding: 0,
+                                                height: '4px'
+                                            }),
+
+                                        }}
+                                        options={props?.levelChangeReasons}
+                                        required
+                                        placeholder="Select a reason"
+                                        name="reason_upgrade"
+                                        className="flex-none w-full bg-transparent border border-gray-600 flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none rounded" />
+
+                                </div>
+
+                                {/* View Facility Services Button */}
+                                <button
+                                    className="bg-blue-600 font-semibold w-auto text-white flex text-left items-center p-2 h-auto -md"
+                                    onClick={(e) => {
+                                        e.preventDefault()
+                                        if (isFacilityServices) {
+                                            setIsFacilityServices(false);
+                                        } else {
+                                            setIsFacilityServices(true);
+                                        }
+                                    }}
+                                >
+                                    {isFacilityServices ? 'Show' : 'Hide'} Facility Services
+                                    {isFacilityServices ? (
+                                        <ChevronRightIcon className="text-white h-7 w-7 font-bold" />
+                                    ) : (
+                                        <ChevronDownIcon className="text-white h-7 w-7 text-base font-bold" />
+                                    )}
+                                </button>
+
+                                {/* Facility Services Table */}
+                                {
+                                    !isFacilityServices &&
+
+                                    <Table>
+                                        <TableBody>
+                                            <TableRow>
+                                                <TableCell>
+                                                    <p className='text-base font-semibold'>Name</p>
+                                                </TableCell>
+                                                <TableCell className='text-xl font-semibold'>
+                                                    <p className='text-base font-semibold'>Service Option</p>
+                                                </TableCell>
+                                            </TableRow>
+                                            {
+                                                facilityServices?.map(({ service_name }, id) => (
+                                                    <TableRow key={id}>
+                                                        <TableCell>
+                                                            {service_name}
+                                                        </TableCell>
+                                                        <TableCell>
+                                                            Yes
+                                                        </TableCell>
+                                                    </TableRow>
+                                                ))
+                                            }
+
+                                        </TableBody>
+                                    </Table>
+
+
+                                }
+
+                                {/* Facility Upgrade Button */}
+
+                                <div className='flex items-center justify-end w-full'>
+                                    <button
+                                        type="submit"
+                                        className="bg-blue-600 rounded mt-3 font-semibold w-auto text-white flex text-left items-center p-2 h-auto -md">
+
+
+
+                                        <span className='text-medium font-semibold text-white'>
+                                            {
+                                                submitting ?
+                                                    <Spinner />
+                                                    :
+                                                    'Downgrade'
+
+                                            }
+                                        </span>
+                                        {
+                                            submitting &&
+                                            <span className='text-white'>Downgrading.. </span>
+                                        }
+                                    </button>
+                                </div>
+
+
+                            </form>
+                                
+                            </div>
+                        </Tabs.Panel>
+
+
+                     
 
 
 
 
-                        </div>
+                    </Tabs.Root>
+
 
 
                     </div>

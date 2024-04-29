@@ -33,6 +33,44 @@
 
   }
 
+  input:invalid {
+    border: 1px solid red;
+    border-radius: 5px;
+  }
+
+  input:invalid + span {
+    /* position: absolute; */
+    top: 100%;
+    /* content: ""; */
+    /* color: red; */
+    visibility: visible;
+
+  }
+
+  input:valid + span {
+    /* position: absolute; */
+    /* content: ""; */
+    visibility: hidden;
+
+  }
+
+
+/* Tooltip text */
+.tooltiptext {
+  /* visibility: hidden; */
+  width: auto;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  padding: 5px;
+  border-radius: 6px;
+  /* Position the tooltip text - see examples below! */
+  position: absolute;
+  z-index: 1;
+}
+
+ 
+
   .ag-header {
     color: red;
     background-color:white

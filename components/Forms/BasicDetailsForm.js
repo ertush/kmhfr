@@ -1611,7 +1611,6 @@ export function BasicDeatilsForm({ editMode }) {
             </span>
           </label>
           <input
-
             type='text'
             name='plot_number'
             defaultValue={options?.data?.plot_number ?? ''}
@@ -1621,7 +1620,7 @@ export function BasicDeatilsForm({ editMode }) {
         </div>
 
         {/* Nearest landmark */}
-        <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+        {/* <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
           <label
             htmlFor='nearest_landmark'
             className='text-gray-600 capitalize text-sm'>
@@ -1639,7 +1638,7 @@ export function BasicDeatilsForm({ editMode }) {
             onFocus={handleFocus}
             className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:border-black outline-none'
           />
-        </div>
+        </div> */}
 
         {/* Location Description */}
         <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
