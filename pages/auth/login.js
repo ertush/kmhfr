@@ -16,7 +16,7 @@ const Login = (props) => {
     return (
         <div>
             <Head>
-                <title>Log in | KMHFR</title>
+                <title>Sign in | KMHFR</title>
                 <link rel="icon" href="/favicon.ico" />
               
             </Head>
@@ -88,7 +88,7 @@ const Login = (props) => {
 
                     className="bg-gray-50 w-full max-w-screen-sm p-4 md:p-6 drop-shadow backdrop-filter flex flex-col items-center gap-4 md:gap-6 shadow-lg border border-gray-50">
 
-                    <h3 className="text-center leading-tight text-xl font-bold tracking-wide text-gray-800 uppercase">Log in</h3>
+                    {/* <h3 className="text-center leading-tight text-xl font-bold tracking-wide text-gray-800 uppercase">Sigin in</h3> */}
                     <div className="flex flex-col gap-0 w-full">
                         {error && error.length > 0 && <p className="text-red-900 bg-red-200 rounded drop-shadow py-2 font-medium normal-case text-base px-3">{error}</p>}
                         {msg && msg.length > 0 && <p className="text-gray-900 bg-blue-200 rounded drop-shadow py-2 font-medium normal-case text-base px-3">{msg}</p>}
