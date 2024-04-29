@@ -119,6 +119,7 @@ const checkToken = async (req, res, isProtected, creds) => {
         }
     } else if (isServer) {
         // console.log('running checkToken in the SERVER')
+        if(cookies){
         ct = cookies?.get('access_token')
         if (typeof ct == "string" && ct.length > 0) {
             ct = JSON.parse(ct)
@@ -128,6 +129,7 @@ const checkToken = async (req, res, isProtected, creds) => {
             // console.log('S Token is valid')//: ', ct)
             return ct
         }
+    }
     }
     //check of cookie has expired
     if (!ct || ct == null || ct == undefined || (ct && JSON.parse(ct).expires > Date.now())) {

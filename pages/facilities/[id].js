@@ -446,14 +446,14 @@ const Facility = (props) => {
 
                         <span className="bg-yellow-200  flex flex-col justify-start h-auto text-yellow-900 p-2 leading-none text-sm  whitespace-nowrap cursor-default items-start gap-2 gap-x-1">
                             
-                            <span class='flex gap-1'>
+                            <span className='flex gap-1'>
                               <CheckCircleIcon className="h-4 w-4" />
                               <h4>Incomplete Details</h4>
                             </span>
 
                           {
                             facility?.in_complete_details?.split(',')?.map(name => (
-                              <span class='flex gap-1 capitalize'>
+                              <span className='flex gap-1 capitalize'>
                               <ChevronRightIcon className="h-4 w-4" />
                               {name}
                             </span>
@@ -660,35 +660,35 @@ const Facility = (props) => {
                         Print
                       </button> */}
 
-<button id="dropdownBgHoverButton" data-dropdown-toggle="dropdownBgHover" class="text-white  relative bg-gray-600 focus:outline-none font-semibold rounded p-2 text-center inline-flex items-center" type="button">Print
-<svg class="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+<button id="dropdownBgHoverButton" data-dropdown-toggle="dropdownBgHover" className="text-white  relative bg-gray-600 focus:outline-none font-semibold rounded p-2 text-center inline-flex items-center" type="button">Print
+<svg className="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
 </svg>
 
-<div id="dropdownBgHover" class={`z-5 hidden absolute right-0 top-14 w-48 bg-white rounded-lg shadow `}>
-    <ul class="p-3 space-y-1 text-sm text-gray-700 " aria-labelledby="dropdownBgHoverButton">
+<div id="dropdownBgHover" className={`z-5 hidden absolute right-0 top-14 w-48 bg-white rounded-lg shadow `}>
+    <ul className="p-3 space-y-1 text-sm text-gray-700 " aria-labelledby="dropdownBgHoverButton">
       <li>
-        <div class="flex items-center p-2 rounded hover:bg-gray-200 ">
+        <div className="flex items-center p-2 rounded hover:bg-gray-200 ">
           <MailOutline />
-          <label for="checkbox-item-4" class="w-full ms-2 text-sm text-start font-medium text-gray-900 rounded ">Cover letter</label>
+          <label for="checkbox-item-4" className="w-full ms-2 text-sm text-start font-medium text-gray-900 rounded ">Cover letter</label>
         </div>
       </li>
       <li>
-        <div class="flex items-center p-2 rounded hover:bg-gray-200 ">
+        <div className="flex items-center p-2 rounded hover:bg-gray-200 ">
             <Checklist />
-            <label for="checkbox-item-5" class="w-full ms-2 text-sm  text-start font-medium text-gray-900 rounded ">Facility Checklist</label>
+            <label for="checkbox-item-5" className="w-full ms-2 text-sm  text-start font-medium text-gray-900 rounded ">Facility Checklist</label>
           </div>
       </li>
       <li>
-        <div class="flex items-center p-2 rounded hover:bg-gray-200 ">
+        <div className="flex items-center p-2 rounded hover:bg-gray-200 ">
           <DocumentScanner />
-          <label for="checkbox-item-6" class="w-full  text-start ms-2 text-sm font-medium text-gray-900 rounded ">Facility Details</label>
+          <label for="checkbox-item-6" className="w-full  text-start ms-2 text-sm font-medium text-gray-900 rounded ">Facility Details</label>
         </div>
       </li>
       <li>
-        <div class="flex items-center p-2 rounded hover:bg-gray-200 ">
+        <div className="flex items-center p-2 rounded hover:bg-gray-200 ">
           <FileCopy />
-          <label for="checkbox-item-6" class="min-w-max ms-2 text-start text-sm font-medium text-gray-900 rounded ">Correction Template</label>
+          <label for="checkbox-item-6" className="min-w-max ms-2 text-start text-sm font-medium text-gray-900 rounded ">Correction Template</label>
         </div>
       </li>
     </ul>
@@ -774,16 +774,16 @@ const Facility = (props) => {
                   {
                   isViewActivityLog &&
             
-              <ol class="relative border-l-4 mt-4 md:ml-4 mx-auto border-gray-200 w-full dark:border-gray-300">  
+              <ol className="relative border-l-4 mt-4 md:ml-4 mx-auto border-gray-200 w-full dark:border-gray-300">  
               {    
                     activityLog &&
-                    activityLog.map(({updated_on, updated_by, updates}, i) => (      
-                  <li class="mb-10 ms-8" key={i}>            
-                      <span class="absolute flex items-center justify-center w-6 h-6 bg-blue-100 rounded-full -start-3 ">
+                    activityLog?.map(({updated_on, updated_by, updates}, i) => (      
+                  <li className="mb-10 ms-8" key={i}>            
+                      <span className="absolute flex items-center justify-center w-6 h-6 bg-blue-100 rounded-full -start-3 ">
                           <Avatar  className="w-7 bg-gray-400 aspect-square mt-4">{updated_by[0].toUpperCase()}</Avatar>
                       </span>
-                      <div class="items-start justify-between p-4 bg-blue-100 border border-blue-600 rounded-lg shadow-sm sm:flex">
-                          <time class="mb-1 text-xs font-normal text-blue-900 sm:order-last sm:mb-0">{new Date(updated_on).toLocaleString(
+                      <div className="items-start justify-between p-4 bg-blue-100 border border-blue-600 rounded-lg shadow-sm sm:flex">
+                          <time className="mb-1 text-xs font-normal text-blue-900 sm:order-last sm:mb-0">{new Date(updated_on).toLocaleString(
                             'en-gb',
                             {
                               year: 'numeric',
@@ -793,7 +793,7 @@ const Facility = (props) => {
                             }
                           )}</time>
                           
-                          <div class="text-sm font-normal text-blue-800 gap-y-2">
+                          <div className="text-sm font-normal text-blue-800 gap-y-2">
                             <span className="bg-blue-400 text-gray-50 text-xs font-semibold me-1 px-2.5 py-0.5 rounded">{updated_by}</span>made the following changes: 
                             {
                             updates && updates.length > 0 &&
@@ -807,9 +807,9 @@ const Facility = (props) => {
                                name !== "created_by" || 
                                name !== "updated_by") && name} 
                            </span>
-                            {/* <span  class="font-semibold text-gray-500"> { old } </span>  */}
+                            {/* <span  className="font-semibold text-gray-500"> { old } </span>  */}
                             to
-                             <span class="font-semibold text-gray-500 min-w-max">{ _new ?? '-'} </span>
+                             <span className="font-semibold text-gray-500 min-w-max">{ _new ?? '-'} </span>
                             </div>
                             ))
                           }

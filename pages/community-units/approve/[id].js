@@ -237,6 +237,7 @@ async function approveCHUUpdates (e, status, token) {
 
 
   if (isClient) {
+
     return (
       <>
         <Head>
@@ -403,8 +404,9 @@ async function approveCHUUpdates (e, status, token) {
               )
               }
 
+
               {/* Pending updates approval */}
-              {cu.pending_updates && Object.keys(cu.pending_updates).length > 0 && (
+              {cu?.pending_updates && Object.keys(cu?.pending_updates).length > 0 && (
                 <div className="bg-gray-50  shadow-lg border border-gray-300/70 w-full p-3  flex flex-col gap-3 mt-6">
                   <h3 className="text-gray-900 font-semibold leading-16 text-medium">
                     Pending Updates
@@ -619,7 +621,7 @@ async function approveCHUUpdates (e, status, token) {
               )}
 
               {/* CHU Rejection Commment */}
-              {cu.pending_updates && Object.keys(cu.pending_updates).length == 0 && (
+              {cu?.pending_updates && Object.keys(cu?.pending_updates).length == 0 && (
 
                 <div className="bg-gray-50  shadow-lg border border-gray-300/70 w-full p-3  flex flex-col gap-3 mt-6">
                   <h3 className="text-gray-900 font-semibold leading-16 text-medium">Approval comment: </h3>
