@@ -630,13 +630,7 @@ export function BasicDeatilsForm({ editMode }) {
           const data = JSON.parse(formData)
 
 
-        // const strFormData = Buffer.from(path.searchParams?.get('formData') ?? 'J3t9Jw==', 'base64').toString() ?? "{}"
-        // const params = new URL(`${window.location.origin}/facilities/add?${strFormData}`).searchParams
-        // // const paramEntries = params.entries()
-      
-
-        // if (facilityId == '') setFacilityId(params?.facilityId)
-
+        
         delete formData?.facility_checklist_document
 
         const newOptions = {}
@@ -717,12 +711,7 @@ export function BasicDeatilsForm({ editMode }) {
 
   if (isClient) {
 
-    
-    // return (
-    //   <pre>{
-    //     JSON.stringify(formError, null, 2)
-    //   }</pre>
-    // )
+  
 
     return (
       <form name='basic_details_form'

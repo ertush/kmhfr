@@ -185,6 +185,7 @@ function EditCommunityUnit(props){
             {/* Approve/Reject, Edit Buttons */}
             <div className="bg-gray-50 shadow-sm rounded w-full p-3  flex flex-col gap-3 mt-4">
          
+        
            <div className="flex flex-row justify-start items-center space-x-3 p-3">
                 { 
                  (groupID == 7 || 
@@ -211,7 +212,7 @@ function EditCommunityUnit(props){
                 <button
                   onClick={() =>
                     router.push(
-                      "/community-units/edit/" + props?.cu.id
+                      "/community-units/edit/" + props?.cu?.id
                     )
                   }
                   className="p-2 text-center -md font-semibold rounded text-base  text-white bg-black"
@@ -223,28 +224,28 @@ function EditCommunityUnit(props){
 
             <Tabs.Root
               orientation="horizontal"
-              className="w-full flex flex-col border border-gray-600 tab-root"
+              className="w-full flex flex-col bg-gray-50 rounded shadow tab-root"
               defaultValue="overview"
             >
-              <Tabs.List className="list-non border-b border-gray-600 flex justify-evenly flex-wrap gap-2 md:gap-3 uppercase leading-none tab-list font-semibold ">
+              <Tabs.List className="list-none border-b border-gray-600 flex justify-evenly flex-wrap md:flex-nowrap gap-2 md:gap-3 uppercase leading-none tab-list font-semibold ">
                 <Tabs.Tab
                   id={1}
                   value="overview"
-                  className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
+                  className="p-2 flex-1 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
                 >
                   Overview
                 </Tabs.Tab>
                 <Tabs.Tab
                   id={2}
                   value="services"
-                  className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
+                  className="p-2  flex-1 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
                 >
                   Services
                 </Tabs.Tab>
                 <Tabs.Tab
                   id={3}
                   value="hr_staffing"
-                  className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
+                  className="p-2 flex-1 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
                 >
                   HR &amp; Staffing
                 </Tabs.Tab>
@@ -253,41 +254,44 @@ function EditCommunityUnit(props){
 
               <Tabs.Panel
                 value="overview"
-                className="grow-1 py-1 px-4 tab-panel"
+                className="grow-1 p-3 tab-panel"
               >
-                <div className="col-span-4 md:col-span-4 flex flex-col md:p-4 gap-y-2 group items-center justify-start text-left">
-                  <div className="bg-gray-50 shadow-md rounded w-full p-3  grid grid-cols-2 gap-3  mt-4">
-                    <h3 className="text-lg leading-tight underline col-span-2 text-gray-700 font-medium">
-                      Status:
+                <div className="col-span-4 md:col-span-4 flex flex-col md:p-4 gap-y-3 group items-center justify-start text-left">
+                <div className="rounded border p-4 border-blue-500 bg-blue-100/60 w-full grid grid-cols-1 gap-8 md:grid-cols-2 md:gap-24">
+                  <div className="flex flex-col gap-1 w-full">
+                    <h3 className="text-lg leading-tight font-semibold col-span-2 text-gray-700">
+                      Status
                     </h3>
-                    <div className="grid grid-cols-2 w-full md:w-11/12 col-span-2 md:col-span-1 mx-auto leading-none items-center">
+
+                    <div className="flex justify-between gap-1">
                       <label className=" text-gray-600">
                         Functionality status
                       </label>
                       <p className="text-black font-medium text-base flex">
-                        {props?.cu.status_name
+                        {props?.cu?.status_name
                           ?.toLocaleLowerCase()
                           .includes("fully-") ? (
                           <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 text-gray-900 flex gap-x-1 items-center cursor-default">
                             <CheckCircleIcon className="h-4 w-4" />
-                            {props?.cu?.status_name || "Yes"}
+                            {props?.cu?.status_name || "Fully functional"}
                           </span>
                         ) : props?.cu.status_name
                           ?.toLocaleLowerCase()
                           .includes("semi") ? (
                           <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 text-gray-900 flex gap-x-1 items-center cursor-default">
                             <CheckCircleIcon className="h-4 w-4" />
-                            {props?.cu?.status_name || "Yes"}
+                            {props?.cu?.status_name || "Semi Functional"}
                           </span>
                         ) : (
                           <span className="bg-red-200 text-gray-900 p-1 px-2 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
-                            <XCircleIcon className="h-4 w-4" />
-                            {props?.cu?.status_name || "No"}
+                            {/* <XCircleIcon className="h-4 w-4" /> */}
+                            {props?.cu?.status_name || "Non Functional"}
                           </span>
                         )}
                       </p>
                     </div>
-                    <div className="grid grid-cols-2 w-full md:w-11/12 md:px-3 col-span-2 md:col-span-1 mx-auto leading-none items-center">
+
+                    <div className="flex justify-between gap-1">
                       <label className=" text-gray-600">CHU approved</label>
                       <p className="text-black font-medium text-base flex">
                         {props?.cu.is_approved ? (
@@ -303,8 +307,9 @@ function EditCommunityUnit(props){
                         )}
                       </p>
                     </div>
+
                     {true && (
-                      <div className="grid grid-cols-2 w-full md:w-11/12 md:px-3 col-span-2 md:col-span-1 mx-auto leading-none items-center">
+                      <div className="flex justify-between gap-1">
                         <label className=" text-gray-600">CHU deleted</label>
                         <p className="text-black font-medium text-base flex">
                           {props?.cu.deleted ? (
@@ -320,7 +325,7 @@ function EditCommunityUnit(props){
                       </div>
                     )}
                     {true && (
-                      <div className="grid grid-cols-2 w-full md:w-11/12 md:px-3 col-span-2 md:col-span-1 mx-auto leading-none items-center">
+                      <div className="flex justify-between gap-1">
                         <label className=" text-gray-600">CHU closed</label>
                         <p className="text-black font-medium text-base flex">
                           {props?.cu.is_closed ? (
@@ -336,7 +341,7 @@ function EditCommunityUnit(props){
                       </div>
                     )}
                     {props?.cu.closing_reason && (
-                      <div className="grid grid-cols-2 w-full md:w-11/12 md:px-3 col-span-2 md:col-span-1 mx-auto leading-none items-center">
+                      <div className="flex justify-between gap-1">
                         <label className=" text-gray-600">
                           Closure reason
                         </label>
@@ -347,7 +352,7 @@ function EditCommunityUnit(props){
                       </div>
                     )}
                     {true && (
-                      <div className="grid grid-cols-2 w-full md:w-11/12 md:px-3 col-span-2 md:col-span-1 mx-auto leading-none items-center">
+                      <div className="flex justify-between gap-1">
                         <label className=" text-gray-600">Has edits</label>
                         <p className="text-black font-medium text-base flex">
                           {props?.cu.has_edits ? (
@@ -363,7 +368,7 @@ function EditCommunityUnit(props){
                       </div>
                     )}
                     {true && (
-                      <div className="grid grid-cols-2 w-full md:w-11/12 md:px-3 col-span-2 md:col-span-1 mx-auto leading-none items-center">
+                      <div className="flex justify-between gap-1">
                         <label className=" text-gray-600">Rejected</label>
                         <p className="text-black font-medium text-base flex">
                           {props?.cu.is_rejected ? (
@@ -380,11 +385,11 @@ function EditCommunityUnit(props){
                     )}
                   </div>
 
-                  <div className="bg-gray-50 shadow-md rounded w-full p-3  flex flex-col gap-3  mt-4">
-                    <h3 className="text-lg leading-tight underline text-gray-700 font-medium">
-                      Coverage:
+                  <div className="flex flex-col gap-1 w-full">
+                    <h3 className="text-lg leading-tight text-gray-700 font-semibold">
+                      Coverage
                     </h3>
-                    <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
+                    <div className="flex justify-between gap-1">
                       <label className="col-span-1 text-gray-600">
                         Households monitored
                       </label>
@@ -392,7 +397,7 @@ function EditCommunityUnit(props){
                         {props?.cu.households_monitored || " - "}
                       </p>
                     </div>
-                    <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
+                    <div className="flex justify-between gap-1">
                       <label className="col-span-1 text-gray-600">
                         Number of CHVs
                       </label>
@@ -401,12 +406,15 @@ function EditCommunityUnit(props){
                       </p>
                     </div>
                   </div>
+                </div>
 
-                  <div className="bg-gray-50 shadow-md rounded w-full p-3  flex flex-col gap-3  mt-4">
-                    <h3 className="text-lg leading-tight underline text-gray-700 font-medium">
-                      Location:
+
+                <div className="rounded border p-4 border-blue-500 bg-blue-100/60 w-full grid grid-cols-1 gap-8 md:grid-cols-2 md:gap-24">
+                  <div className="flex flex-col gap-1 w-full">
+                    <h3 className="text-lg leading-tight text-gray-700 font-semibold">
+                      Location
                     </h3>
-                    <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
+                    <div className="flex justify-between gap-1">
                       <label className="col-span-1 text-gray-600">
                         Linked facility
                       </label>
@@ -414,13 +422,13 @@ function EditCommunityUnit(props){
                         {props?.cu.facility_name || " - "}
                       </p>
                     </div>
-                    <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
+                    <div className="flex justify-between gap-1">
                       <label className="col-span-1 text-gray-600">Ward</label>
                       <p className="col-span-2 text-black font-medium text-base">
                         {props?.cu.facility_ward || " - "}
                       </p>
                     </div>
-                    <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
+                    <div className="flex justify-between gap-1">
                       <label className="col-span-1 text-gray-600">
                         Constituency
                       </label>
@@ -428,7 +436,7 @@ function EditCommunityUnit(props){
                         {props?.cu.facility_constituency || " - "}
                       </p>
                     </div>
-                    <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
+                    <div className="flex justify-between gap-1">
                       <label className="col-span-1 text-gray-600">
                         Sub-county
                       </label>
@@ -436,7 +444,7 @@ function EditCommunityUnit(props){
                         {props?.cu.facility_subcounty || " - "}
                       </p>
                     </div>
-                    <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
+                    <div className="flex justify-between gap-1">
                       <label className="col-span-1 text-gray-600">
                         County
                       </label>
@@ -446,12 +454,12 @@ function EditCommunityUnit(props){
                     </div>
                   </div>
 
-                  <div className="bg-gray-50 shadow-md rounded w-full p-3  flex flex-col gap-3  mt-4">
-                    <h3 className="text-lg leading-tight underline text-gray-700 font-medium">
+                  <div className="flex flex-col gap-1 w-full">
+                    <h3 className="text-lg leading-tight text-gray-700 font-semibold">
                       Regulation:
                     </h3>
                     {props?.cu.date_established && (
-                      <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
+                      <div className="flex justify-between gap-1">
                         <label className="col-span-1 text-gray-600">
                           Date established
                         </label>
@@ -468,7 +476,7 @@ function EditCommunityUnit(props){
                       </div>
                     )}
                     {props?.cu.date_operational && (
-                      <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
+                      <div className="flex justify-between gap-1">
                         <label className="col-span-1 text-gray-600">
                           Date operational
                         </label>
@@ -484,7 +492,7 @@ function EditCommunityUnit(props){
                         </p>
                       </div>
                     )}
-                    <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
+                    <div className="flex justify-between gap-1">
                       <label className="col-span-1 text-gray-600">
                         Regulated
                       </label>
@@ -503,16 +511,19 @@ function EditCommunityUnit(props){
                       </p>
                     </div>
                   </div>
-
-                  <div className="bg-gray-50 shadow-md rounded w-full p-3  flex flex-col gap-3  mt-4">
-                    <h3 className="text-lg leading-tight underline text-gray-700 font-medium">
-                      Contacts:
+                </div>
+                {
+                  props?.cu?.contacts && props?.cu?.contacts.length > 0 &&
+                <div className="rounded border p-4 border-blue-500 bg-blue-100/60 w-full grid grid-cols-1 gap-8 md:grid-cols-2 md:gap-24">
+                  <div className="flex flex-col gap-1 w-full">
+                    <h3 className="text-lg leading-tight text-gray-700 font-semibold">
+                      Contacts
                     </h3>
                     {props?.cu.contacts && props?.cu.contacts.length > 0 &&
                       props?.cu.contacts.map((contact, i) => (
                         <div
                           key={i}
-                          className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center"
+                          className="flex justify-between gap-1"
                         >
                           <label className="col-span-1 text-gray-600 capitalize">
                             {contact.contact_type_name[0].toLocaleUpperCase() +
@@ -526,7 +537,7 @@ function EditCommunityUnit(props){
                         </div>
                       ))}
                     {props?.cu.officer_in_charge && (
-                      <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
+                      <div className="flex justify-between gap-1">
                         <label className="col-span-1 text-gray-600 capitalize">
                           {props?.cu.officer_in_charge.title_name ||
                             "Officer in charge"}
@@ -554,7 +565,9 @@ function EditCommunityUnit(props){
                           </p>
                         </div>
                       ))}
-                  </div>
+                      </div>
+                </div>
+                }
                   {/* <div> */}
 
                   {/* </div> */}
@@ -635,7 +648,7 @@ function EditCommunityUnit(props){
                 className="grow-1 py-1  px-4 tab-panel"
               >
                 <div className="col-span-4 md:col-span-4 flex flex-col group items-center justify-start text-left">
-                  <div className="bg-gray-50 shadow-md w-full p-4 m-3 ">
+                  <div className="bg-gray-50 w-full m-3 ">
                     <h3 className="text-2xl w-full flex flex-wrap justify-between items-center leading-tight tracking-tight">
                       <span className="font-semibold">Services</span>
                       <div className="col-span-6 md:col-span-1 flex flex-col items-center justify-center p-2"></div>
@@ -670,7 +683,7 @@ function EditCommunityUnit(props){
                 className="grow-1 py-1 px-4 tab-panel"
               >
                 <div className="col-span-4 md:col-span-4 flex flex-col group items-center justify-start text-left">
-                  <div className="bg-gray-50 shadow-md w-full p-4 m-3 ">
+                  <div className="bg-gray-50 w-full m-3 ">
                     <h3 className="text-2xl w-full flex flex-wrap justify-between items-center leading-tight tracking-tight">
                       <span className="font-semibold">
                         Health Unit workers
@@ -735,7 +748,7 @@ EditCommunityUnit.getInitialProps = async (ctx) => {
   .then(async (res) => {
     if(res.ok) {
 
-      props['props?.cu'] = await res.json()
+      props['cu'] = await res.json()
 
       return fetch(`${process.env.NEXT_PUBLIC_API_URL}/chul/units/${ctx?.query?.id}/?fields=__rev__&include_audit=true`, {
         headers: {
