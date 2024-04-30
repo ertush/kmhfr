@@ -1158,7 +1158,7 @@ async function handleHrDelete(event, facility_hr_id, alert) {
 }
 
 // handleFacilityUpgrades
-async function handleFacilityUpgrades(payload, token) {
+async function handleKephLevelChange(payload, token) {
 
     try {
 
@@ -1199,7 +1199,7 @@ export {
     handleServiceUpdates,
     handleInfrastructureUpdates,
     handleHrUpdates,
-    handleFacilityUpgrades,
+    handleKephLevelChange,
     handleServiceDelete,
     handleHrDelete,
     handleInfrastructureDelete,
