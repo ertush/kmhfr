@@ -259,6 +259,14 @@ function Dashboard(props) {
     
     if (isClient) {
         return (
+            <pre>
+                {
+                    JSON.stringify(props, null, 2)
+                }
+            </pre>
+        )
+
+        return (
             <div className="">
                 <Head>
                     <title>KMHFR | Dashboardboard</title>

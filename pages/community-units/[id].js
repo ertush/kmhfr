@@ -670,7 +670,7 @@ function EditCommunityUnit(props){
                         ))
                       ) : (
                         <li className="w-full  bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base">
-                          <p>No services listed for this props?.cu.</p>
+                          <p>No services listed for this cu.</p>
                         </li>
                       )}
                     </ul>
@@ -706,7 +706,7 @@ function EditCommunityUnit(props){
                         ))
                       ) : (
                         <li className="w-full  bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base leading-none">
-                          <p>No HR data listed for this props?.cu.</p>
+                          <p>No HR data listed for this cu.</p>
                         </li>
                       )}
                     </ul>
