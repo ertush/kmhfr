@@ -45,6 +45,7 @@ ecosystem.config.js
 .env.local.dev
 .vscode
 .env.remote.dev
+todo.md
 /test-results/
 /playwright-report/
 /playwright/.cache/
