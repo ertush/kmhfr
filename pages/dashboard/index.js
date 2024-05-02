@@ -4,12 +4,11 @@ import { checkToken } from '../../controllers/auth/auth'
 import React, { useState, useEffect, useMemo, useRef, useContext } from 'react'
 import { useRouter } from 'next/router'
 import Chart from '../../components/Chart'
-import Select from 'react-select'
+// import Select from 'react-select'
+import {Select as CustomSelect} from '../../components/Forms/formComponents/Select'
 import { UserContext } from '../../providers/user'
-import Link from 'next/link'
 import { useReactToPrint } from 'react-to-print'
 import 'react-datepicker/dist/react-datepicker.css';
-import { DownloadIcon } from '@heroicons/react/outline';
 import propTypes from 'prop-types'
 
 
@@ -80,8 +79,16 @@ function Dashboard(props) {
     const [user, setUser] = useState(userCtx)
     const [subcounties, setSubcounties] = useState([])
     const [counties, setCounties] = useState([])
-    const [wards, setWards] = useState([])
+    const [wards, s] = useState([])
     const [isClient, setIsClient] = useState(false);
+
+    const [yearFilter, setYearFilter] = useState("Filter by year")
+    const [countyFilter, setCountyFilter] = useState("Filter by County")
+    const [subCountyFilter, setSubCountyFilter] = useState("Filter Sub County")
+    const [wardFilter, setWardFilter ] = useState("Filter by ward")
+
+
+
 
 
     const dwn = useRef()
@@ -110,7 +117,7 @@ function Dashboard(props) {
 
         try {
             const r = await fetch(`/api/common/fetch_form_data/?path=wards&id=${sub_county}`)
-            setWards({ wards: (await r.json())?.results })
+            s({ wards: (await r.json())?.results })
         } catch (err) {
             console.log(`Unable to fetch wards: ${err.message}`)
         }
@@ -256,16 +263,186 @@ function Dashboard(props) {
 
     const userSubCounty = user?.user_sub_counties[0]?.sub_county_name
 
+    function  countyOptions(filters, ft) {
+        if (groupID === 5 || groupID === 7) {
+            let opts = [{ value: "national", label: "National summary" }, ...Array.from(filters[ft] || [],
+                fltopt => {
+                    if (fltopt.id != null && fltopt.id.length > 0) {
+                        return {
+                            value: fltopt.id, label: fltopt.name
+                        }
+                    }
+                })]
+            return opts
+        } else {
+            let opts = [...Array.from(filters[ft] || [],
+                fltopt => {
+                    if (fltopt.id != null && fltopt.id.length > 0) {
+                        return {
+                            value: fltopt.id, label: fltopt.name
+                        }
+                    }
+                })]
+            return opts
+        }
+    }
+
+    function subCountyOptions(filters, ft) {
+        if (groupID === 1) {
+            let opts = [{ value: "county", label: "County summary" }, ...Array.from(subcounties[ft] || [],
+                fltopt => {
+                    if (fltopt.id != null && fltopt.id.length > 0) {
+                        return {
+                            value: fltopt.id, label: fltopt.name
+                        }
+                    }
+                })]
+            return opts
+        } else {
+            let opts = [...Array.from(subcounties[ft] || [],
+                fltopt => {
+                    if (fltopt.id != null && fltopt.id.length > 0) {
+                        return {
+                            value: fltopt.id, label: fltopt.name
+                        }
+                    }
+                })]
+            return opts
+        }
+    }
+
+    function wardOptions(filters, ft) {
+        
+            if (groupID === 2) {
+                let opts = [{ value: "Subcounty", label: "Subcounty summary" }, ...Array.from(wards[ft] || [],
+                    fltopt => {
+                        if (fltopt.id != null && fltopt.id.length > 0) {
+                            return {
+                                value: fltopt.id, label: fltopt.name
+                            }
+                        }
+                    })]
+                return opts
+            } else {
+                let opts = [...Array.from(wards[ft] || [],
+                    fltopt => {
+                        if (fltopt.id != null && fltopt.id.length > 0) {
+                            return {
+                                value: fltopt.id, label: fltopt.name
+                            }
+                        }
+                    })]
+                return opts
+            }
+        
+    }
+
+
+
+
+
+    function handleYearChange(event) {
+
+        event.preventDefault()
+
+        if(countyFilter !== null) setCountyFilter(null)
+        if(subCountyFilter !== null) setSubCountyFilter(null)
+        if(wardFilter !== null) setWardFilter(null)
+
+        const year = event.target.value
+      
+        if (year == "custom") {
+            setIsquarterOpen(false)
+            setIsOpen(true)
+            return;
+        } else {
+            router.push({
+                pathname: 'dashboard',
+                query:{
+                  year: year 
+                }
+            })
+        }
+
+    }
+
+    function handleCountyOrgUnitChange(event) {
+
+        event.preventDefault()
+
+        if(yearFilter !== null) setYearFilter(null)
+        if(subCountyFilter !== null) setSubCountyFilter(null)
+        if(wardFilter !== null) setWardFilter(null)
+      
+        const orgUnit = event.target.value
+
+        
+        if (orgUnit) {
+            router.push({
+                pathname: 'dashboard',
+                query:{
+                  county: orgUnit 
+                }
+            })
+        
+        }
+    }
+
+    function handleSubCountyOrgUnitChange(event) {
+        
+        event.preventDefault()
+
+        if(yearFilter !== null) setYearFilter(null)
+        if(subCountyFilter !== null) setCountyFilter(null)
+        if(wardFilter !== null)     setWardFilter(null)
+
+        const orgUnit = event.target.value
+     
+        
+        if (orgUnit) {
+            router.push({
+                pathname: 'dashboard',
+                query:{
+                  sub_county: orgUnit 
+                }
+            })
+        
+        }
+    }
+
+    function handleWardOrgUnitChange(event) {
+      
+        event.preventDefault()
+
+        if(yearFilter !== null) setYearFilter(null)
+        if(subCountyFilter !== null) setSubCountyFilter(null)
+        if(CountyFilter !== null) setCountyFilter(null)
+
+        const orgUnit = event.target.value
+        
+        
+        if (orgUnit.value) {
+            router.push({
+                pathname: 'dashboard',
+                query:{
+                  ward: orgUnit 
+                }
+            })
+        
+        }
+    }
+
     
     if (isClient) {
-        return (
-            <pre>
-                {
-                    JSON.stringify(props, null, 2)
-                }
-            </pre>
-        )
 
+        // return (
+        //     <pre>
+        //         {
+        //             JSON.stringify(props, null, 2)
+        //         }
+        //     </pre>
+        // )
+       
         return (
             <div className="">
                 <Head>
@@ -284,137 +461,91 @@ function Dashboard(props) {
                                 {/* <span className="text-gray-600 text-2xl">Dashboard</span>  */}
 
                             </div>
+
+                            
                             
                             <div className="flex flex-col w-full md:flex-wrap lg:flex-row xl:flex-row gap-1 text-sm md:text-base items-center justify-between">
+                                  
+
+                                
+                                
+                                
+
+                                <div className="w-full flex justify-between">
+
                                 <h1 className="w-full md:w-auto text-4xl tracking-tight font-bold leading-3 flex items-start justify-center gap-x-1 gap-y-2 flex-grow mb-4 md:mb-2 flex-col">
-                                    
-                                    {/* <span className='no-print' id="dashboard-title">Overview</span> */}
-                                    <div className='flex items-center gap-x-2 mt-3'>
-                                        {/* {drillDown && drillDown?.county && groupID !== 1 && */}
-                                            {/* <small className="text-gray-900 text-base font-semibold ml-1"> */}
-                                                {/* {filters && filters?.county && filters?.county.find(ft => ft.id == drillDown?.county)?.name ? filters?.county.find(ft => ft.id == drillDown?.county)?.name + " County" : "National Summary" || ""} */}
-                                            {/* </small> */}
-                                        {/* } */}
-                                        {/* {user && userCounty && */}
-                                            {/* <small className="text-gray-900 text-base font-semibold"> */}
-
-                                                {/* {userCounty ?? user?.county_name} County */}
-
-                                            {/* </small> */}
-                                        {/* } */}
-                                        {/* {user && userSubCounty ?
-                                            <>
-                                                <span className='text-gray-500 text-base'> / </span>
-
-                                                <small className="text-gray-900 text-base font-semibold ">
-
-                                                    {`${userSubCounty ?? user?.sub_county_name} Sub county`}
-
-                                                </small>
-                                            </>
-                                            :
-                                            <>
-                                                {groupID !== 7 || groupID !== 5 && <span className='text-gray-500 text-base text-center'> / </span>}
-                                                <small className="text-gray-900 text-base font-semibold">
-                                                    {subcounties && subcounties?.subcounties && subcounties?.subcounties.find(ft => ft.id == drillDown?.subcounties)?.name != undefined ? subcounties.subcounties.find(ft => ft.id == drillDown?.subcounties)?.name + " Sub county" : !drillDown?.county && "" || ""}
-
-                                                </small>
-                                            </>
-                                        } */}
-                                        {/* {drillDown && drillDown?.wards &&
-                                            <>
-                                                <span className='text-gray-500 text-base text-center'> / </span>
-                                                <small className="text-gray-900 text-base font-semibold ml-1">
-
-                                                    {wards && wards?.wards && wards?.wards.find(ft => ft.id == drillDown?.wards)?.name != undefined ? wards?.wards.find(ft => ft.id == drillDown?.wards)?.name + " Ward" : "Subcounty Summary" || ""}
-                                                </small>
-                                            </>
-                                        } */}
-                                    </div>
+                                {
+                                    !(new URL(window.location.href))?.searchParams.toString().includes('year') ?
+                                    props?.filters?.county?.find(({id}) => id == Object.entries(props?.query)[1][1])?.name 
+                                    :
+                                    'National'
+                                } 
                                 </h1>
-
-                                <div className="max-w-max flex gap-2">
 
                                     {/* show datetime filters */}
                                     {/* --- */}
                                     {user &&
-                                        <div className="w-full flex items-center justify-end space-x-3 ">
-                                            <div className="w-full flex flex-col items-start justify-start">
-                                                {/* <label htmlFor='yearSelector' className="text-gray-600 capitalize font-semibold text-sm ml-1">Filter by Year</label> */}
-                                                <Select id="yearSelector" className="max-w-max md:w-[250px] rounded border border-gray-400"
-                                                    options={Years}
-                                                    placeholder='Filter by Year'
-                                                    data-modal-target="defaultModal" data-modal-toggle="defaultModal"
-                                                    styles={{
-                                                        control: (baseStyles) => ({
-                                                            ...baseStyles,
-                                                            backgroundColor: 'transparent',
-                                                            outLine: 'none',
-                                                            border: 'none',
-                                                            outLine: 'none',
-                                                            textColor: 'transparent',
-                                                            padding: 0,
-                                                            height: '4px'
-                                                        }),
+                                        <div className="w-auto flex items-center gap-3">
+                                        
+                                                        <CustomSelect 
+                                                            options={Years}
+                                                            placeholder='Filter by Year'
+                                                            data-modal-target="defaultModal"
+                                                            name='year'
+                                                            defaultValue={yearFilter}
+                                                            onChange={handleYearChange}
+                                                        />
 
-                                                    }}
+                                                    {/* County Select */}
+                                                   
+                                                        {
+                                                            (groupID === 5 || groupID === 7) && 
+                                                            filters && Object.keys(filters).length > 0 &&
+                                                            Object.keys(filters)?.map(ft => (
+                                                                <CustomSelect 
+                                                                name={ft}
+                                                                
+                                                                id={ft}
+                                                                defaultValue={countyFilter}
+                                                                options={countyOptions(filters, ft)}
+                                                                placeholder={`Filter by ${ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}`}
+                                                                onChange={handleCountyOrgUnitChange} />
+                                                            ))}
+                  
+                                                    {/* county user */}
+                                    {groupID === 1 && <div className="max-w-min">
+                                        {subcounties && Object.keys(subcounties).length > 0 &&
+                                            Object.keys(subcounties)?.map(ft => (
+                                                    <CustomSelect name={ft} id={ft} 
+                                                       defaultValue={subCountyFilter}
+                                                        options={
+                                                            subCountyOptions(filters, ft)
+                                                        }
+                                                        placeholder={`Filter by ${ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}`}
+                                                        onChange={handleSubCountyOrgUnitChange} />
 
-                                                    onChange={async (sl) => {
-                                                        let startdate = ''
-                                                        let enddate = ''
-                                                        if (sl.value && sl.value == "custom") {
-                                                            setIsquarterOpen(false)
-                                                            setIsOpen(true)
-                                                            return;
-                                                        }
-                                                        else if (sl.label.length == 4) {
-                                                            startdate = sl.value
-                                                            enddate = sl.value.toString().split('-')[0] + "-12-31"
-                                                            setIsquarterOpen(true)
-                                                            if (document.getElementById("quarterselector") != null) {
-                                                                document.getElementById("quarterselector").value = 'All'
-                                                            }
-                                                            let myear = {}
-                                                            if (sl && sl !== null) {
-                                                                drillDown["year"] = sl.value
-                                                            } else {
-                                                                delete drillDown["year"]
+                                            ))}
+                                    </div>
+                                    }
+                                    {/* sub_county user */}
 
-                                                            }
-                                                            setDrillDown({ ...drillDown, ...myear })
-                                                            return;
-                                                        }
-                                                        else {
-                                                            setIsquarterOpen(false)
-                                                            alert("The selected period is not recognized")
-                                                            return;
-                                                        }
-                                                        if (startdate == '' || enddate == '') {
-                                                            return;
-                                                        }
+                                    {groupID === 2 &&
+                                        <div className="flex">
 
-                                                        let parameters = "?"
-                                                        if (sl.value) {
-                                                            parameters += "datefrom=" + startdate
-                                                        }
-                                                        if (sl.value) {
-                                                            parameters += "&dateto=" + enddate
-                                                        }
-                                                        if (props?.query?.county) {
-                                                            parameters += "&county=" + props?.query?.county
-                                                        }
-                                                        if (props?.query?.sub_county) {
-                                                            parameters += "&subc_county=" + props?.query?.sub_county
-                                                        }
-                                                        if (props?.query?.ward) {
-                                                            parameters += "&ward=" + props?.query?.ward
-                                                        }
+                                            {wards && Object.keys(wards).length > 0 &&
+                                                Object.keys(wards)?.map(ft => (
+                                                        <CustomSelect name={ft} 
+                                                        defaultValue={wardFilter} 
+                                                        id={ft} 
+                                                        options={wardOptions(filters, ft)}
+                                                        placeholder={`Filter by ${ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}`}
+                                                        onChange={handleWardOrgUnitChange} />
 
-                                                        router.push('/dashboard' + parameters)
-                                                          
+                                                ))}
+                                        </div>
+                                    }
+                                                {/* </div> */}
 
-                                                    }}
-                                                />
                                                 <div className="relative">
                                                     {/* Modal overlay */}
                                                     {isOpen && (
@@ -474,7 +605,7 @@ function Dashboard(props) {
                                                                             if (props?.query?.ward) {
                                                                                 parameters += "&ward=" + props?.query?.ward
                                                                             }
-                                                                            router.push(`/dashboard ${encodeURI(querySelector)}`)
+                                                                            router.push(`/dashboard/${encodeURI(parameters)}`)
                                                                         }
                                                                         }
                                                                         className="w-full px-4 py-2 bg-gray-500 text-white -md"
@@ -488,7 +619,7 @@ function Dashboard(props) {
                                                 </div>
 
 
-                                            </div>
+                                            {/* </div> */}
                                             {/* ~~~F L T R S~~~ */}
                                         </div>
 
@@ -497,282 +628,8 @@ function Dashboard(props) {
 
                                     {/* filter by organizational units  */}
                                     {/* national */}
-                                    {(groupID === 5 || groupID === 7) && <div className="w-full flex  items-center justify-end space-x-3">
-                                        {filters && Object.keys(filters).length > 0 &&
-                                            Object.keys(filters)?.map(ft => (
-                                                <div key={ft} className="w-full max-w-xs flex flex-col items-start justify-start" id='first'>
-                                                    {/* <label htmlFor={ft} className="text-gray-600 capitalize font-semibold text-sm ml-1">{ft.split('_').join(' ')}</label> */}
-                                                    <Select name={ft} defaultValue={drillDown[ft] || "national"} id={ft} className="w-full max-w-xs rounded border border-gray-400"
-                                                        styles={{
-                                                            control: (baseStyles) => ({
-                                                                ...baseStyles,
-                                                                backgroundColor: 'transparent',
-                                                                outLine: 'none',
-                                                                border: 'none',
-                                                                outLine: 'none',
-                                                                textColor: 'transparent',
-                                                                padding: 0,
-                                                                height: '4px'
-                                                            }),
-
-                                                        }}
-                                                        options={
-                                                            (() => {
-                                                                if (groupID === 5 || groupID === 7) {
-                                                                    let opts = [{ value: "national", label: "National summary" }, ...Array.from(filters[ft] || [],
-                                                                        fltopt => {
-                                                                            if (fltopt.id != null && fltopt.id.length > 0) {
-                                                                                return {
-                                                                                    value: fltopt.id, label: fltopt.name
-                                                                                }
-                                                                            }
-                                                                        })]
-                                                                    return opts
-                                                                } else {
-                                                                    let opts = [...Array.from(filters[ft] || [],
-                                                                        fltopt => {
-                                                                            if (fltopt.id != null && fltopt.id.length > 0) {
-                                                                                return {
-                                                                                    value: fltopt.id, label: fltopt.name
-                                                                                }
-                                                                            }
-                                                                        })]
-                                                                    return opts
-                                                                }
-                                                            })()
-                                                        }
-                                                        placeholder={ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}
-                                                        onChange={sl => {
-                                                            let nf = {}
-                                                            if (sl && sl !== null && typeof sl === 'object' && !Array.isArray(sl)) {
-                                                                nf[ft] = sl.value
-                                                            } else {
-                                                                delete nf[ft]
-                                                                // let rr = drillDown.filter(d => d.key !== ft)
-                                                                // setDrilldown(rr)
-                                                            }
-
-                                                            setDrillDown({ ...drillDown, ...nf })
-                                                            //alert(JSON.stringify(drillDown))
-                                                            let value = sl.value
-                                                            let parameters = ""
-                                                            let ar = []
-                                                            if (value) {
-                                                                if (value !== 'national') {
-                                                                    ar.push('county=' + value)
-                                                                }
-                                                            }
-                                                            if (props?.query.datefrom) {
-                                                                ar.push("datefrom=" + props.query['datefrom'])
-                                                            }
-                                                            if (props?.query.dateto) {
-                                                                ar.push("dateto=" + props.query['dateto'])
-                                                            }
-                                                            ar?.map(k => {
-                                                                if (parameters.includes('?')) {
-                                                                    parameters += "&" + k
-                                                                } else {
-                                                                    parameters += "?" + k
-                                                                }
-                                                            })
-                                                            router.push('/dashboard' + parameters)
-                                                        }} />
-
-                                                </div>
-                                            ))}
-                                        {/* ~~~F L T R S~~~ */}
-                                    </div>}
-                                    {/* county user */}
-                                    {groupID === 1 && <div className="w-full flex  items-center justify-end space-x-3">
-                                        {subcounties && Object.keys(subcounties).length > 0 &&
-                                            Object.keys(subcounties)?.map(ft => (
-                                                <div key={ft} className="w-full max-w-xs flex flex-col items-start justify-start" id="second">
-                                                    {/* <label htmlFor={ft} className="text-gray-600 capitalize font-semibold text-sm ml-1">{ft.split('_').join(' ').replace('ies', 'y')}</label> */}
-                                                    <Select name={ft} id={ft} className="w-full max-w-xs border rounded border-gray-400"
-                                                        styles={{
-                                                            control: (baseStyles) => ({
-                                                                ...baseStyles,
-                                                                backgroundColor: 'transparent',
-                                                                outLine: 'none',
-                                                                border: 'none',
-                                                                outLine: 'none',
-                                                                textColor: 'transparent',
-                                                                padding: 0,
-                                                                height: '4px'
-                                                            }),
-
-                                                        }}
-                                                        options={
-                                                            (() => {
-                                                                if (groupID === 1) {
-                                                                    let opts = [{ value: "county", label: "County summary" }, ...Array.from(subcounties[ft] || [],
-                                                                        fltopt => {
-                                                                            if (fltopt.id != null && fltopt.id.length > 0) {
-                                                                                return {
-                                                                                    value: fltopt.id, label: fltopt.name
-                                                                                }
-                                                                            }
-                                                                        })]
-                                                                    return opts
-                                                                } else {
-                                                                    let opts = [...Array.from(subcounties[ft] || [],
-                                                                        fltopt => {
-                                                                            if (fltopt.id != null && fltopt.id.length > 0) {
-                                                                                return {
-                                                                                    value: fltopt.id, label: fltopt.name
-                                                                                }
-                                                                            }
-                                                                        })]
-                                                                    return opts
-                                                                }
-                                                            })()
-                                                        }
-                                                        placeholder={ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}
-                                                        onChange={sl => {
-                                                            let nf = {}
-                                                            if (sl && sl !== null && typeof sl === 'object' && !Array.isArray(sl)) {
-                                                                nf[ft] = sl.value
-                                                            } else {
-                                                                delete nf[ft]
-                                                                // let rr = drillDown.filter(d => d.key !== ft)
-                                                                // setDrilldown(rr)
-                                                            }
-                                                            // fetchWards(sl.value)
-                                                            setDrillDown({ ...drillDown, ...nf })
-
-                                                            let parameters = ""
-                                                            let ar = []
-                                                            if (sl.value) {
-                                                                if (sl.value !== 'county') {
-                                                                    ar.push('sub_county=' + sl.value)
-                                                                } else {
-                                                                    ar.push('county=' + user.county)
-                                                                }
-                                                            }
-
-                                                            if (props?.query.datefrom) {
-                                                                ar.push("datefrom=" + props.query['datefrom'])
-                                                            }
-                                                            if (props?.query.dateto) {
-                                                                ar.push("dateto=" + props.query['dateto'])
-                                                            }
-                                                            ar?.map(k => {
-                                                                if (parameters.includes('?')) {
-                                                                    parameters += "&" + k
-                                                                } else {
-                                                                    parameters += "?" + k
-                                                                }
-                                                            })
-
-                                                            router.push('/dashboard' + parameters)
-                                                        }} />
-
-                                                </div>
-                                            ))}
-                                    </div>
-                                    }
-                                    {/* sub_county user */}
-
-                                    {groupID === 2 &&
-                                        <div className="w-full flex  items-center justify-end space-x-3">
-
-                                            {wards && Object.keys(wards).length > 0 &&
-                                                Object.keys(wards)?.map(ft => (
-                                                    <div key={ft} className="w-full max-w-xs flex flex-col items-start justify-start" id="third">
-                                                        {/* <label htmlFor={ft} className="text-gray-600 capitalize font-semibold text-sm ml-1">{ft.split('_').join(' ').replace('s', '')}</label> */}
-                                                        <Select name={ft} defaultValue={drillDown[ft] || "Subcounty"} id={ft} className="w-full max-w-xs  rounded border border-gray-400"
-                                                            styles={{
-                                                                control: (baseStyles) => ({
-                                                                    ...baseStyles,
-                                                                    backgroundColor: 'transparent',
-                                                                    outLine: 'none',
-                                                                    border: 'none',
-                                                                    outLine: 'none',
-                                                                    textColor: 'transparent',
-                                                                    padding: 0,
-                                                                    height: '4px'
-                                                                }),
-
-                                                            }}
-                                                            options={
-                                                                (() => {
-                                                                    if (groupID === 2) {
-                                                                        let opts = [{ value: "Subcounty", label: "Subcounty summary" }, ...Array.from(wards[ft] || [],
-                                                                            fltopt => {
-                                                                                if (fltopt.id != null && fltopt.id.length > 0) {
-                                                                                    return {
-                                                                                        value: fltopt.id, label: fltopt.name
-                                                                                    }
-                                                                                }
-                                                                            })]
-                                                                        return opts
-                                                                    } else {
-                                                                        let opts = [...Array.from(wards[ft] || [],
-                                                                            fltopt => {
-                                                                                if (fltopt.id != null && fltopt.id.length > 0) {
-                                                                                    return {
-                                                                                        value: fltopt.id, label: fltopt.name
-                                                                                    }
-                                                                                }
-                                                                            })]
-                                                                        return opts
-                                                                    }
-                                                                })()
-                                                            }
-                                                            placeholder={ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}
-                                                            // onChange={async (option) => {
-
-                                                            //     try {
-                                                            //         const resp = await fetch(`/api/facility/get_facility/?path=dashboard&id=${option.value}`)
-
-                                                            //         // console.log({resp: (await resp.json())})
-                                                            //         console.log({ resp: (await JSON.stringify(resp)) })
-                                                            //     } catch (e) {
-                                                            //         console.error(e.message)
-                                                            //     }
-                                                            // }} 
-                                                            onChange={sl => {
-                                                                let nf = {}
-                                                                if (sl && sl !== null && typeof sl === 'object' && !Array.isArray(sl)) {
-                                                                    nf[ft] = sl.value
-                                                                } else {
-                                                                    delete nf[ft]
-                                                                    // let rr = drillDown.filter(d => d.key !== ft)
-                                                                    // setDrilldown(rr)
-                                                                }
-                                                                // fetchWards(sl.value)
-                                                                setDrillDown({ ...drillDown, ...nf })
-
-                                                                let parameters = ""
-                                                                let ar = []
-                                                                if (sl.value) {
-                                                                    if (sl.value !== 'Subcounty') {
-                                                                        ar.push('ward=' + sl.value)
-                                                                    } else {
-                                                                        ar.push('sub_county=' + user.user_sub_counties[0].sub_county)
-                                                                    }
-                                                                }
-                                                                if (props?.query.datefrom) {
-                                                                    ar.push("datefrom=" + props.query['datefrom'])
-                                                                }
-                                                                if (props?.query.dateto) {
-                                                                    ar.push("dateto=" + props.query['dateto'])
-                                                                }
-                                                                ar?.map(k => {
-                                                                    if (parameters.includes('?')) {
-                                                                        parameters += "&" + k
-                                                                    } else {
-                                                                        parameters += "?" + k
-                                                                    }
-                                                                })
-
-                                                                router.push('/dashboard' + parameters)
-                                                            }} />
-
-                                                    </div>
-                                                ))}
-                                        </div>
-                                    }
+                                   
+                                    
 
                                 </div>
 
