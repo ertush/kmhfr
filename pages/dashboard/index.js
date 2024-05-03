@@ -490,7 +490,6 @@ function Dashboard(props) {
                                                         <CustomSelect 
                                                             options={Years}
                                                             placeholder='Filter by Year'
-                                                            data-modal-target="defaultModal"
                                                             name='year'
                                                             defaultValue={yearFilter}
                                                             onChange={handleYearChange}
