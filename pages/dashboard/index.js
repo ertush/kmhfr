@@ -13,7 +13,6 @@ import propTypes from 'prop-types'
 
 
 
-
 function Dashboard(props) {
 
     const router = useRouter()
@@ -82,11 +81,7 @@ function Dashboard(props) {
     const [wards, s] = useState([])
     const [isClient, setIsClient] = useState(false);
 
-    const [yearFilter, setYearFilter] = useState("Filter by year")
-    const [countyFilter, setCountyFilter] = useState("Filter by County")
-    const [subCountyFilter, setSubCountyFilter] = useState("Filter Sub County")
-    const [wardFilter, setWardFilter ] = useState("Filter by ward")
-
+  
 
 
 
@@ -345,11 +340,12 @@ function Dashboard(props) {
 
         event.preventDefault()
 
-        if(countyFilter !== null) setCountyFilter(null)
-        if(subCountyFilter !== null) setSubCountyFilter(null)
-        if(wardFilter !== null) setWardFilter(null)
-
         const year = event.target.value
+        const county = document.querySelector("#county-filter")
+        const subCounty = document.querySelector("#sub-county-filter")
+        const ward = document.querySelector("#ward-filter")
+
+        console.log(county?.value)
       
         if (year == "custom") {
             setIsquarterOpen(false)
@@ -359,7 +355,29 @@ function Dashboard(props) {
             router.push({
                 pathname: 'dashboard',
                 query:{
-                  year: year 
+                  year: year,
+                  ...(() => {
+                        if(county?.value){
+                            return {
+                                county: county?.value
+                            }
+                        }
+
+                        if(subCounty?.value){
+                            return {
+                                sub_county: subCounty?.value
+                            }
+                        }
+
+                        if(ward?.value){
+                            return {
+                                ward: ward?.value
+                            }
+                        }
+
+                        return {}
+
+                  })()
                 }
             })
         }
@@ -370,9 +388,9 @@ function Dashboard(props) {
 
         event.preventDefault()
 
-        if(yearFilter !== null) setYearFilter(null)
-        if(subCountyFilter !== null) setSubCountyFilter(null)
-        if(wardFilter !== null) setWardFilter(null)
+        const year = document.querySelector("#year-filter")
+        const subCounty = document.querySelector("#sub-county-filter")
+        const ward = document.querySelector("#ward-filter")
       
         const orgUnit = event.target.value
 
@@ -381,7 +399,29 @@ function Dashboard(props) {
             router.push({
                 pathname: 'dashboard',
                 query:{
-                  county: orgUnit 
+                  county: orgUnit,
+                  ...(() => {
+                    if(year?.value){
+                        return {
+                            year: year?.value
+                        }
+                    }
+
+                    if(subCounty?.value){
+                        return {
+                            sub_county: subCounty?.value
+                        }
+                    }
+
+                    if(ward?.value){
+                        return {
+                            ward: ward?.value
+                        }
+                    }
+
+                    return {}
+
+              })()
                 }
             })
         
@@ -392,9 +432,9 @@ function Dashboard(props) {
         
         event.preventDefault()
 
-        if(yearFilter !== null) setYearFilter(null)
-        if(subCountyFilter !== null) setCountyFilter(null)
-        if(wardFilter !== null)     setWardFilter(null)
+        const year = document.querySelector("#year-filter")
+        const county = document.querySelector("#county-filter")
+        const ward = document.querySelector("#ward-filter")
 
         const orgUnit = event.target.value
      
@@ -403,7 +443,29 @@ function Dashboard(props) {
             router.push({
                 pathname: 'dashboard',
                 query:{
-                  sub_county: orgUnit 
+                  sub_county: orgUnit,
+                  ...(() => {
+                    if(year?.value){
+                        return {
+                            year: year?.value
+                        }
+                    }
+
+                    if(county?.value){
+                        return {
+                            county: county?.value
+                        }
+                    }
+
+                    if(ward?.value){
+                        return {
+                            ward: ward?.value
+                        }
+                    }
+
+                    return {}
+
+              })()
                 }
             })
         
@@ -414,9 +476,9 @@ function Dashboard(props) {
       
         event.preventDefault()
 
-        if(yearFilter !== null) setYearFilter(null)
-        if(subCountyFilter !== null) setSubCountyFilter(null)
-        if(CountyFilter !== null) setCountyFilter(null)
+        const year = document.querySelector("#year-filter")
+        const county = document.querySelector("#county-filter")
+        const subCounty = document.querySelector("#sub-county-filter")
 
         const orgUnit = event.target.value
         
@@ -425,7 +487,29 @@ function Dashboard(props) {
             router.push({
                 pathname: 'dashboard',
                 query:{
-                  ward: orgUnit 
+                  ward: orgUnit,
+                  ...(() => {
+                    if(year?.value){
+                        return {
+                            year: year?.value
+                        }
+                    }
+
+                    if(county?.value){
+                        return {
+                            county: county?.value
+                        }
+                    }
+
+                    if(subCounty?.value){
+                        return {
+                            sub_county: subCounty?.value
+                        }
+                    }
+
+                    return {}
+
+              })()
                 }
             })
         
@@ -472,10 +556,17 @@ function Dashboard(props) {
                                 
 
                                 <div className="w-full flex justify-between">
+                                    {/* {
+                                        <pre>
+                                            {
+                                                JSON.stringify(Object.entries(props?.query), null, 2)
+                                            }
+                                        </pre>
+                                    } */}
 
                                 <h1 className="w-full md:w-auto text-4xl tracking-tight font-bold leading-3 flex items-start justify-center gap-x-1 gap-y-2 flex-grow mb-4 md:mb-2 flex-col">
                                 {
-                                    !(new URL(window.location.href))?.searchParams.toString().includes('year') ?
+                                    Object.entries(props?.query)?.length >= 2 ?
                                     props?.filters?.county?.find(({id}) => id == Object.entries(props?.query)[1][1])?.name 
                                     :
                                     'National'
@@ -487,13 +578,16 @@ function Dashboard(props) {
                                     {user &&
                                         <div className="w-auto flex items-center gap-3">
                                         
+                                                       <div className='w-auto flex realtive'>
                                                         <CustomSelect 
                                                             options={Years}
                                                             placeholder='Filter by Year'
                                                             name='year'
-                                                            defaultValue={yearFilter}
+                                                            id="year-filter"
                                                             onChange={handleYearChange}
                                                         />
+                                                        <span className='absolute inset-y-0 right-0'>x</span>
+                                                        </div>
 
                                                     {/* County Select */}
                                                    
@@ -503,9 +597,7 @@ function Dashboard(props) {
                                                             Object.keys(filters)?.map(ft => (
                                                                 <CustomSelect 
                                                                 name={ft}
-                                                                
-                                                                id={ft}
-                                                                defaultValue={countyFilter}
+                                                                id={"county-filter"}
                                                                 options={countyOptions(filters, ft)}
                                                                 placeholder={`Filter by ${ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}`}
                                                                 onChange={handleCountyOrgUnitChange} />
@@ -515,8 +607,9 @@ function Dashboard(props) {
                                     {groupID === 1 && <div className="max-w-min">
                                         {subcounties && Object.keys(subcounties).length > 0 &&
                                             Object.keys(subcounties)?.map(ft => (
-                                                    <CustomSelect name={ft} id={ft} 
-                                                       defaultValue={subCountyFilter}
+                                                    <CustomSelect 
+                                                        name={ft} 
+                                                        id="sub-county-filter" 
                                                         options={
                                                             subCountyOptions(filters, ft)
                                                         }
@@ -534,8 +627,7 @@ function Dashboard(props) {
                                             {wards && Object.keys(wards).length > 0 &&
                                                 Object.keys(wards)?.map(ft => (
                                                         <CustomSelect name={ft} 
-                                                        defaultValue={wardFilter} 
-                                                        id={ft} 
+                                                        id="ward-filter"
                                                         options={wardOptions(filters, ft)}
                                                         placeholder={`Filter by ${ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}`}
                                                         onChange={handleWardOrgUnitChange} />
