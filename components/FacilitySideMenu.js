@@ -122,7 +122,7 @@ function FacilitySideMenu({ states, stateSetters, filters }) {
         setAllFctsSelected(false)
     }
 
-    const handleQuickFiltersClick = async (filter_id) => {
+    async function handleQuickFiltersClick(filter_id) {
 
         let filter = {}
         if (filter_id !== 'khis_synched' && filter_id !== 'feedback') {
@@ -162,17 +162,30 @@ function FacilitySideMenu({ states, stateSetters, filters }) {
                 }
 
                 break;
+            case 'updated_pending_validation':
+                console.log({val: 'updated_pending_validation'})
+
+                router.push({
+                    pathname: '/facilities',
+                    query:{
+                        has_edits:true
+
+                    }
+                })
+                break;
+
             default:
                 setFacilityFeedBack([])
                 setKhisSynched(false)
 
-
                 router.push({ pathname: '/facilities', query: { qf: filter_id, ...filter } })
+
                 break;
         }
 
 
     }
+
 
     useEffect(() => {
         const url = window.history.state.as

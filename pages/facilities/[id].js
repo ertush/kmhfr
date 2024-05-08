@@ -42,7 +42,7 @@ import { MarkAsUnread } from "@mui/icons-material";
 
 
 
-const Facility = (props) => {
+function Facility(props) {
 
 
   const userCtx = useContext(UserContext)
@@ -66,7 +66,6 @@ const Facility = (props) => {
   const center = props?.geoLocation?.center;
   const geoLocationData = props?.geoLocation;
   const qf = props?.qf ?? '';
-  // const {facility_updated_json } = props?.updates;
   const filters = []
 
 
@@ -90,7 +89,6 @@ const Facility = (props) => {
   const [activityLog, setActivityLog] = useState(null)
   const [isClosingFacility, setIsClosingFacility] = useState(false)
   const [isPrint, setIsPrint] = useState(false)
-
 
 
 
@@ -132,8 +130,6 @@ const Facility = (props) => {
 
           <div className="w-full md:w-[85%] grid grid-cols-1 md:grid-cols-7 px-4 md:px-0 gap-3 my-4 place-content-center">
             {/* Closed Facility Modal */}
-
-
 
             {
               facility?.closed &&
@@ -446,8 +442,8 @@ const Facility = (props) => {
                         </span>
 
                         {
-                          facility?.in_complete_details?.split(',')?.map(name => (
-                            <span className='flex gap-1 capitalize'>
+                          facility?.in_complete_details?.split(',')?.map((name, i) => (
+                            <span key={i} className='flex gap-1 capitalize'>
                               <ChevronRightIcon className="h-4 w-4" />
                               {name}
                             </span>
@@ -621,7 +617,7 @@ const Facility = (props) => {
 
                       <button
                         onClick={() => router.push(`/facilities/upgrade/${facility?.id}`)}
-                        className="p-2 text-center -md font-semibold text-base  text-white bg-gray-600  rounded"
+                        className="p-2 text-center font-semibold text-base  text-white bg-gray-600  rounded"
                       >
                         Upgrade/Downgrade
                       </button>
@@ -641,7 +637,7 @@ const Facility = (props) => {
                       </button>
                     }
                     {
-                      console.log({ props })
+                      // console.log({ props })
                     }
 
                     {/* <button
@@ -656,27 +652,31 @@ const Facility = (props) => {
 
                     <button onClick={() => setIsPrint(!isPrint)} id="dropdownBgHoverButton" data-dropdown-toggle="dropdownBgHover" className="text-white  relative bg-gray-600 focus:outline-none font-semibold rounded p-2 text-center inline-flex items-center" type="button">Print
                       <svg className="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4" />
+                        <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 4 4 4-4" />
                       </svg>
 
-                      <div id="dropdownBgHover" className={`z-5 ${isPrint && 'hidden'} absolute right-0 top-14 w-48 bg-white rounded-lg shadow `}>
+                      {
+                        isPrint &&
+                      <div id="dropdownBgHover" className={'z-5 absolute right-0 top-14 w-48 bg-white rounded-lg shadow'}>
                         <ul className="p-3 space-y-1 text-sm text-gray-700 " aria-labelledby="dropdownBgHoverButton">
                           <a href={`${process.env.NEXT_PUBLIC_API_URL}/facilities/facility_correction_template/${props?.data?.id}/?access_token=${props?.token}`}>
                             <div className="flex items-center  p-2 rounded hover:bg-gray-200 ">
                               <DocumentScanner />
-                              <label for="checkbox-item-4" className="cursor-pointer w-full ms-2 text-sm text-nowrap text-start font-medium text-gray-900 rounded ">Correction Template</label>
+                              <label htmlFor="checkbox-item-4" className="cursor-pointer w-full ms-2 text-sm text-nowrap text-start font-medium text-gray-900 rounded ">Correction Template</label>
                             </div>
                           </a>
+
                           <a href={`${process.env.NEXT_PUBLIC_API_URL}/facilities/facility_cover_report/${props?.data?.id}/?access_token=${props?.token}`}>
                             <div className="flex items-center p-2 rounded hover:bg-gray-200 ">
                               <MarkAsUnread />
-                              <label for="checkbox-item-5" className="cursor-pointer w-full ms-2 text-sm  text-start font-medium text-gray-900 rounded ">Cover Letter</label>
+                              <label htmlFor="checkbox-item-5" className="cursor-pointer w-full ms-2 text-sm  text-start font-medium text-gray-900 rounded ">Cover Letter</label>
                             </div>
                           </a>
+
                           <a href={`${process.env.NEXT_PUBLIC_API_URL}/facilities/facility_detail_report/${props?.data?.id}/?access_token=${props?.token}`}>
                             <div className="flex items-center p-2 rounded hover:bg-gray-200 ">
                               <Info />
-                              <label for="checkbox-item-6" className="w-full  text-start ms-2 text-sm font-medium text-gray-900 rounded ">Facility Details</label>
+                              <label htmlFor="checkbox-item-6" className="w-full  text-start ms-2 text-sm font-medium text-gray-900 rounded ">Facility Details</label>
                             </div>
                           </a>
                           {
@@ -684,12 +684,13 @@ const Facility = (props) => {
                             <a href={`https://admin.kmhfltest.health.go.ke/media/${props?.data?.facility_checklist_document?.url}`}>
                               <div className="flex items-center p-2 rounded hover:bg-gray-200 ">
                                 <Checklist />
-                                <label for="checkbox-item-6" className="min-w-max ms-2 text-start text-sm font-medium text-gray-900 rounded ">Facility Checklist</label>
+                                <label htmlFor="checkbox-item-6" className="min-w-max ms-2 text-start text-sm font-medium text-gray-900 rounded ">Facility Checklist</label>
                               </div>
                             </a>
                           }
                         </ul>
                       </div>
+                      }
                     </button>
 
 
@@ -795,8 +796,8 @@ const Facility = (props) => {
                               <span className="bg-blue-400 text-gray-50 text-xs font-semibold me-1 px-2.5 py-0.5 rounded">{updated_by}</span>made the following changes:
                               {
                                 updates && updates.length > 0 &&
-                                updates?.map(({ old, new: _new, name }) => (
-                                  <div className="flex gap-1 mt-1 gap-y-1 flex-wrap">
+                                updates?.map(({ old, new: _new, name }, i) => (
+                                  <div key={i} className="flex gap-1 mt-1 gap-y-1 flex-wrap">
                                     {"Changed "}
                                     <span className="font-semibold text-gray-500">
                                       {(name !== "id" ||

@@ -7,7 +7,6 @@ import React, { useState, useEffect, useContext } from 'react'
 import { useRouter } from 'next/router'
 import { Menu } from '@headlessui/react'
 import { ChevronDownIcon, FilterIcon, SearchIcon } from '@heroicons/react/outline'
-// import Select from 'react-select'
 import { Select as CustomSelect } from '../../components/Forms/formComponents/Select'
 
 
@@ -122,23 +121,11 @@ function FacilityHome (props){
 
         const formData = Object.fromEntries(formDataEntries)
 
-        // let uri = '/facilities/'
-
-        // for(let entry of formDataEntries) {
-        //     if(uri.includes("=")) {
-        //         uri += `&${entry.join("=")}`
-
-        //     } else {
-        //         uri += `?${entry.join("=")}`
-        //     }
-        // }
-
         router.push({
             pathname: '/facilities',
             query: formData
         })
 
-        // console.log({uri})
     }
 
     function handleFiltersReset(event) {
@@ -173,11 +160,6 @@ function FacilityHome (props){
                             <div className="flex w-full flex-wrap items-start md:items-center justify-between gap-2 text-sm md:text-base py-1">
                             {/* Bread Crumbs */}
 
-                            {/* <div className="flex flex-row items-center justify-between gap-2 text-sm md:text-base py-3">
-                                <span className="text-gray-600 text-2xl">Facilities</span> 
-                            </div> */}
-
-
                                 <div className={"col-span-1 md:col-span-5 flex justify-between w-full bg-django-blue border drop-shadow  text-black p-4 md:divide-x md:divide-gray-200 items-start md:items-center border-l-8 " + (true ? "border-gray-700" : "border-red-600")}>
                                     <h2 className='flex items-center text-2xl font-bold text-gray-900 capitalize gap-2'>
                                         {title}
@@ -195,8 +177,8 @@ function FacilityHome (props){
                                 <div className='flex flex-col gap-5 md:flex-row md:items-center md:space-x-6 w-auto'>
                                     {/* Facility Button */}
                                     {
-                                       
-                                         // Display add facility button if  user belong to SCHRIO group
+                                     // Display add facility button if  user belong to SCHRIO group
+
                                    <Menu.Item as="div"  className="px-3 py-2 bg-gray-600 rounded text-white text-md tracking-tighter font-semibold whitespace-nowrap  hover:bg-black focus:bg-black active:bg-black uppercase">
                                         <button  onClick={() => {router.push('/facilities/add?formId=0')}} className='flex items-center justify-center'>
 
@@ -291,51 +273,10 @@ function FacilityHome (props){
                                                                         Object.keys(fltrs).map((ft, i) => (
                                                                            
                                                                                 
-                                                                                <div className="w-full flex flex-col items-start justify-start gap-1 mb-1">
+                                                                                <div key={i} className="w-full flex flex-col items-start justify-start gap-1 mb-1">
                                                                                 <label htmlFor={ft} className="text-gray-600 capitalize text-sm">{ft.split('_').join(' ')}</label>
                                                                                
-                                                                                {/* <Select 
-                                                                                    isMulti={multiFilters.includes(ft)} 
-                                                                                    name={ft}
-                                                                                    isClearable={multiFilters.includes(ft) ? false : true}
-                                                                                    defaultValue={drillDown[ft] || ""} 
-                                                                                    id={ft} 
-                                                                                    className="w-full max-w-xs rounded border border-gray-400"
-                                                                                    styles={{
-                                                                                        control: (baseStyles) => ({
-                                                                                            ...baseStyles,
-                                                                                            backgroundColor: 'transparent',
-                                                                                            outLine: 'none',
-                                                                                            border: 'none',
-                                                                                            outLine: 'none',
-                                                                                            textColor: 'transparent',
-                                                                                            padding: 0,
-                                                                                            height: '4px'
-                                                                                        }),
-                                        
-                                                                                    }}
-                                                                                
-                                                                                   options={
-                                                                                        Array.from(filters[ft] || [],
-                                                                                            fltopt => {
-                                                                                                return {
-                                                                                                    value: fltopt.id, label: fltopt.name
-                                                                                                }
-                                                                                            })
-                                                                                    }
-                                                                                    placeholder={`Select ${ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}`}
-                                                                                    onChange={sl => {
-                                                                                        let nf = {}
-                                                                                        if (Array.isArray(sl)) {
-                                                                                            nf[ft] = (drillDown[ft] ? drillDown[ft] + ',' : '') + Array.from(sl, l_ => l_.value).join(',')
-                                                                                        } else if (sl && sl !== null && typeof sl === 'object' && !Array.isArray(sl)) {
-                                                                                            nf[ft] = sl.value
-                                                                                        } else {
-                                                                                            delete nf[ft]
-                                                                                           
-                                                                                        }
-                                                                                        setDrillDown({ ...drillDown, ...nf })
-                                                                                }} /> */}
+
 
                                                                                 <CustomSelect
                                                                                             options={Array.from(filters[ft] || [],
@@ -367,10 +308,6 @@ function FacilityHome (props){
 
                                                                     {/* From and To Date Picker Components */}
 
-                                                                    {/* <NativePickers onSelected={
-                                                                        handleDates
-                                                                    }></NativePickers> */}
-                                                                    
 
                                                                     {/* Yes/No Dialog */}
                                                                     <div className="w-full col-span-3 gap-x-3 grid grid-cols-4 mb-3">
@@ -463,30 +400,6 @@ function FacilityHome (props){
 
                                                                     <button 
                                                                     type="submit"
-                                                                    // onClick={ev => {
-                                                                        
-                                                                    //     if (Object.keys(drillDown).length > 0) {
-                                                                    //         let qry = Object.keys(drillDown).map(key => {
-                                                                    //             let er = ''
-                                                                    //             if (props?.path && !props?.path.includes(key + '=')) {
-                                                                    //                 er = encodeURIComponent(key) + '=' + encodeURIComponent(drillDown[key]);
-                                                                    //             }
-                                                                    //             return er
-                                                                    //         }).join('&')
-                                                                    //         let op = '?'
-                                                                    //         if (props?.path && props?.path.includes('?') && props?.path.includes('=')) { op = '&' }
-                                                                            
-                                                                    //         if (router || typeof window == 'undefined') {
-                                                                    //             router.push(props?.path + op + qry)
-                                                                    //         } else {
-                                                                    //             if (typeof window !== 'undefined' && window) {
-                                                                    //                 window.location.href = props?.path + op + qry
-                                                                    //             }
-                                                                    //         }
-
-                                                                    //     }
-                                                                    //     setIsAccordionExpanded(false)
-                                                                    // }} 
                                                                     className="bg-django-blue col-start-1  border border-gray-600  text-gray-600 hover:bg-black hover:text-white hover:border-black font-semibold px-5 py-1 text-base  w-full whitespace-nowrap text-center">
                                                                         Search
                                                                     </button>
@@ -825,7 +738,6 @@ function FacilityHome (props){
 
 FacilityHome.getInitialProps = async (ctx) => {
 
-
     ctx?.res?.setHeader(
         'Cache-Control',
         'public, s-maxage=10, stale-while-revalidate=59'
@@ -835,6 +747,7 @@ FacilityHome.getInitialProps = async (ctx) => {
     const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
     function fetchFilters(token) {
+        
         let filters_url = API_URL + '/common/filtering_summaries/?fields=county%2Cfacility_type%2Cconstituency%2Cward%2Coperation_status%2Cservice_category%2Cowner_type%2Cowner%2Cservice%2Ckeph_level%2Csub_county'
 
         return fetch(filters_url, {

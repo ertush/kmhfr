@@ -591,6 +591,35 @@ export default function HeaderLayout({
 
                 }
 
+                {
+                   groupID == 4 &&
+                   !isLoggedIn &&
+                <ul className='list-none w-[200px] flex flex-col text-start items-start  bg-gray-50 shadow-sm rounded'>
+                  <li className={`text-lg h-[50px] w-full border-b border-b-gray-300 flex items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 hover:text-gray-100 px-4 font-semibold capitalize ${currentPath == "/" && 'border-r-2 border-r-gray-50 bg-blue-700/85 text-gray-100'}`}>
+                    <Link href="/">Home</Link>
+                  </li>
+                  <li className={`text-lg h-[50px] w-full border-b border-b-gray-300 flex items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 hover:text-gray-100 px-4 font-semibold capitalize ${currentPath == "/public/facilities" && 'border-r-2 border-r-gray-50 bg-blue-700/85 text-gray-100 '}`}>
+                    <Link href='/public/facilities'>Facilities</Link>
+                  </li>
+                  <li className={`text-lg h-[50px] w-full border-b border-b-gray-300 flex items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 hover:text-gray-100 px-4 font-semibold capitalize ${currentPath == "/public/chu" && 'border-r-2 border-r-gray-50 bg-blue-700/85 text-gray-100'}`}>
+                    <Link href='/public/chu'>Community</Link>
+                    <>Units</>
+
+                  </li>
+                  <li className={`text-lg h-[50px] w-full border-b border-b-gray-300 flex items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 hover:text-gray-100 px-4 font-semibold capitalize ${currentPath == "/public/about" && 'border-r-2 border-r-gray-50 bg-blue-700/85 text-gray-100'}`}>
+                    <Link href="/public/about">About</Link>
+                  </li>
+                  <li className={`text-lg h-[50px] w-full border-b border-b-gray-300 flex items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 hover:text-gray-100 px-4 font-semibold capitalize ${currentPath == "/public/faqs" && 'border-r-2 border-r-gray-50 bg-blue-700/85 text-gray-100'}`}>
+                    <Link href="/public/faqs">FAQs</Link>
+                  </li>
+
+                  <li className={`text-lg h-[50px] w-full border-b border-b-gray-300 flex items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 hover:text-gray-100 px-4 font-semibold capitalize ${currentPath == "/public/faqs" && 'border-r-2 border-r-gray-50 bg-blue-700/85 text-gray-100'}`}>
+                    <Link href="https://kmhfr-docs.github.io">Documentation</Link>
+                  </li>
+                  
+                </ul>
+                }
+
                     </nav>
                   }
                 </button>
@@ -911,6 +940,33 @@ export default function HeaderLayout({
                       <Link href='/downloads'>Downloads</Link>
                     </li>
                   </ul>
+                }
+
+                {
+                  groupID == 4 &&
+                  !isLoggedIn &&
+                  <ul className='list-none w-full flex items-center  justify-between '>
+                <li className={`text-lg h-[60px] flex items-center  hover:text-gray-100  duration-200 ease-out hover:bg-blue-500 px-4 text-gray-100 font-semibold capitalize `}>
+                    <Link href="/">Home</Link>
+                  </li>
+                  <li className={`text-lg h-[60px] flex items-center ${router.asPath == "/public/facilities" && 'border-b-2 text-gray-100 border-b-gray-50 bg-blue-500/85'} hover:bg-blue-500 hover:text-gray-100 duration-200 ease-out px-4 font-semibold capitalize text-gray-100`}>
+                    <Link href='/public/facilities'>Facilities</Link>
+                  </li>
+                  <li className={`text-lg h-[60px] flex items-center ${router.asPath == "/public/chu" && 'border-b-2 text-gray-100 border-b-gray-50 bg-blue-500/85'} hover:bg-blue-500 hover:text-gray-100 duration-200 ease-out px-4 font-semibold capitalize text-gray-100`}>
+                    <Link href='/public/chu'>Community Units</Link>
+                  </li>
+                  <li className={`text-lg h-[60px] flex items-center ${router.asPath == "/public/about" && 'border-b-2 text-gray-100 border-b-gray-50 bg-blue-500/85'} hover:bg-blue-500 hover:text-gray-100 duration-200 ease-out px-4 font-semibold capitalize text-gray-100`}>
+                    <Link href="/public/about">About</Link>
+                  </li>
+                  <li className={`text-lg h-[60px] flex items-center ${router.asPath == "/public/faqs" && 'border-b-2 text-gray-100 border-b-gray-50 bg-blue-500/85'} hover:bg-blue-500 hover:text-gray-100 duration-200 ease-out px-4 font-semibold capitalize text-gray-100`}>
+                    <Link href="/public/faqs">FAQs</Link>
+                  </li>
+
+                  <li className={`text-lg h-[60px] flex items-center hover:bg-blue-500 hover:text-gray-100 duration-200 ease-out px-4 font-semibold capitalize text-gray-100`}>
+                    <Link href="https://kmhfr-docs.github.io">Documentation</Link>
+                  </li>
+                  
+                </ul>
                 }
 
 
