@@ -4,8 +4,8 @@ import { checkToken } from '../../controllers/auth/auth'
 import React, { useState, useEffect, useMemo, useRef, useContext } from 'react'
 import { useRouter } from 'next/router'
 import Chart from '../../components/Chart'
-// import Select from 'react-select'
-import {Select as CustomSelect} from '../../components/Forms/formComponents/Select'
+import Select from 'react-select'
+// import { Select as CustomSelect } from '../../components/Forms/formComponents/Select'
 import { UserContext } from '../../providers/user'
 import { useReactToPrint } from 'react-to-print'
 import 'react-datepicker/dist/react-datepicker.css';
@@ -81,7 +81,7 @@ function Dashboard(props) {
     const [wards, s] = useState([])
     const [isClient, setIsClient] = useState(false);
 
-  
+
 
 
 
@@ -108,7 +108,7 @@ function Dashboard(props) {
         }
     }
 
-    async function fetchWards(sub_county){
+    async function fetchWards(sub_county) {
 
         try {
             const r = await fetch(`/api/common/fetch_form_data/?path=wards&id=${sub_county}`)
@@ -189,7 +189,7 @@ function Dashboard(props) {
     // Check for user authentication
     useEffect(() => {
         setIsClient(true)
-       
+
 
         if (userCtx?.groups[0].id == 2) fetchWards(user?.user_sub_counties[0]?.sub_county ?? null)
         if (userCtx?.groups[0].id == 1) fetchSubCounties(userCtx?.county)
@@ -197,7 +197,7 @@ function Dashboard(props) {
 
         setUser(userCtx)
 
-     
+
 
     }, [])
 
@@ -258,7 +258,7 @@ function Dashboard(props) {
 
     const userSubCounty = user?.user_sub_counties[0]?.sub_county_name
 
-    function  countyOptions(filters, ft) {
+    function countyOptions(filters, ft) {
         if (groupID === 5 || groupID === 7) {
             let opts = [{ value: "national", label: "National summary" }, ...Array.from(filters[ft] || [],
                 fltopt => {
@@ -307,216 +307,214 @@ function Dashboard(props) {
     }
 
     function wardOptions(filters, ft) {
-        
-            if (groupID === 2) {
-                let opts = [{ value: "Subcounty", label: "Subcounty summary" }, ...Array.from(wards[ft] || [],
-                    fltopt => {
-                        if (fltopt.id != null && fltopt.id.length > 0) {
-                            return {
-                                value: fltopt.id, label: fltopt.name
-                            }
+
+        if (groupID === 2) {
+            let opts = [{ value: "Subcounty", label: "Subcounty summary" }, ...Array.from(wards[ft] || [],
+                fltopt => {
+                    if (fltopt.id != null && fltopt.id.length > 0) {
+                        return {
+                            value: fltopt.id, label: fltopt.name
                         }
-                    })]
-                return opts
-            } else {
-                let opts = [...Array.from(wards[ft] || [],
-                    fltopt => {
-                        if (fltopt.id != null && fltopt.id.length > 0) {
-                            return {
-                                value: fltopt.id, label: fltopt.name
-                            }
+                    }
+                })]
+            return opts
+        } else {
+            let opts = [...Array.from(wards[ft] || [],
+                fltopt => {
+                    if (fltopt.id != null && fltopt.id.length > 0) {
+                        return {
+                            value: fltopt.id, label: fltopt.name
                         }
-                    })]
-                return opts
-            }
-        
+                    }
+                })]
+            return opts
+        }
+
     }
 
 
 
 
 
-    function handleYearChange(event) {
+    function handleYearChange(value) {
 
-        event.preventDefault()
+        // event.preventDefault()
 
-        const year = event.target.value
+        const year = value.value //event.target.value
         const county = document.querySelector("#county-filter")
         const subCounty = document.querySelector("#sub-county-filter")
         const ward = document.querySelector("#ward-filter")
 
-        console.log(county?.value)
-      
-        if (year == "custom") {
+        if (value.label == "custom") {
             setIsquarterOpen(false)
             setIsOpen(true)
             return;
         } else {
             router.push({
                 pathname: 'dashboard',
-                query:{
-                  year: year,
-                  ...(() => {
-                        if(county?.value){
+                query: {
+                    year: year,
+                    ...(() => {
+                        if (county?.childNodes[3]?.value) {
                             return {
-                                county: county?.value
+                                county: county?.childNodes[3]?.value
                             }
                         }
 
-                        if(subCounty?.value){
+                        if (subCounty?.childNodes[3]?.value) {
                             return {
-                                sub_county: subCounty?.value
+                                sub_county: subCounty?.childNodes[3]?.value
                             }
                         }
 
-                        if(ward?.value){
+                        if (ward?.childNodes[3]?.value) {
                             return {
-                                ward: ward?.value
+                                ward: ward?.childNodes[3]?.value
                             }
                         }
 
                         return {}
 
-                  })()
+                    })()
                 }
             })
         }
 
     }
 
-    function handleCountyOrgUnitChange(event) {
 
-        event.preventDefault()
+    function handleCountyOrgUnitChange(value) {
 
         const year = document.querySelector("#year-filter")
         const subCounty = document.querySelector("#sub-county-filter")
         const ward = document.querySelector("#ward-filter")
-      
-        const orgUnit = event.target.value
 
-        
+        const orgUnit = value.value //event.target.value
+
+
         if (orgUnit) {
             router.push({
                 pathname: 'dashboard',
-                query:{
-                  county: orgUnit,
-                  ...(() => {
-                    if(year?.value){
-                        return {
-                            year: year?.value
+                query: {
+                    county: orgUnit,
+                    ...(() => {
+                        if (year?.childNodes[3]?.value) {
+                            return {
+                                year: year.childNodes[3]?.value
+                            }
                         }
-                    }
 
-                    if(subCounty?.value){
-                        return {
-                            sub_county: subCounty?.value
+                        if (subCounty?.childNodes[3]?.value) {
+                            return {
+                                sub_county: subCounty.childNodes[3]?.value
+                            }
                         }
-                    }
 
-                    if(ward?.value){
-                        return {
-                            ward: ward?.value
+                        if (ward?.childNodes[3]?.value) {
+                            return {
+                                ward: ward.childNodes[3]?.value
+                            }
                         }
-                    }
 
-                    return {}
+                        return {}
 
-              })()
+                    })()
                 }
             })
-        
+
         }
     }
 
-    function handleSubCountyOrgUnitChange(event) {
-        
-        event.preventDefault()
+    function handleSubCountyOrgUnitChange(value) {
+
+        // event.preventDefault()
 
         const year = document.querySelector("#year-filter")
         const county = document.querySelector("#county-filter")
         const ward = document.querySelector("#ward-filter")
 
-        const orgUnit = event.target.value
-     
-        
+        const orgUnit = value.value //event.target.value
+
+
+
         if (orgUnit) {
             router.push({
                 pathname: 'dashboard',
-                query:{
-                  sub_county: orgUnit,
-                  ...(() => {
-                    if(year?.value){
-                        return {
-                            year: year?.value
+                query: {
+                    sub_county: orgUnit,
+                    ...(() => {
+                        if (year?.childNodes[3]?.value) {
+                            return {
+                                year: year.childNodes[3]?.value
+                            }
                         }
-                    }
 
-                    if(county?.value){
-                        return {
-                            county: county?.value
+                        if (county?.childNodes[3]?.value) {
+                            return {
+                                county: county?.childNodes[3]?.value
+                            }
                         }
-                    }
 
-                    if(ward?.value){
-                        return {
-                            ward: ward?.value
+                        if (ward?.childNodes[3]?.value) {
+                            return {
+                                ward: ward?.childNodes[3]?.value
+                            }
                         }
-                    }
 
-                    return {}
+                        return {}
 
-              })()
+                    })()
                 }
             })
-        
+
         }
     }
 
-    function handleWardOrgUnitChange(event) {
-      
-        event.preventDefault()
+    function handleWardOrgUnitChange(value) {
+
+        // event.preventDefault()
 
         const year = document.querySelector("#year-filter")
         const county = document.querySelector("#county-filter")
         const subCounty = document.querySelector("#sub-county-filter")
 
-        const orgUnit = event.target.value
-        
-        
-        if (orgUnit.value) {
+        const orgUnit = value.value //event.target.value
+
+
+        if (orgUnit) {
             router.push({
                 pathname: 'dashboard',
-                query:{
-                  ward: orgUnit,
-                  ...(() => {
-                    if(year?.value){
-                        return {
-                            year: year?.value
+                query: {
+                    ward: orgUnit,
+                    ...(() => {
+                        if (ward?.childNodes[3]?.value) {
+                            return {
+                                year: ward?.childNodes[3]?.value
+                            }
                         }
-                    }
 
-                    if(county?.value){
-                        return {
-                            county: county?.value
+                        if (county?.childNodes[3]?.value) {
+                            return {
+                                county: county?.childNodes[3]?.value
+                            }
                         }
-                    }
 
-                    if(subCounty?.value){
-                        return {
-                            sub_county: subCounty?.value
+                        if (subCounty?.childNodes[3]?.value) {
+                            return {
+                                sub_county: subCounty?.childNodes[3]?.value
+                            }
                         }
-                    }
 
-                    return {}
+                        return {}
 
-              })()
+                    })()
                 }
             })
-        
+
         }
     }
 
-    
+
     if (isClient) {
 
         // return (
@@ -526,7 +524,7 @@ function Dashboard(props) {
         //         }
         //     </pre>
         // )
-       
+
         return (
             <div className="">
                 <Head>
@@ -539,21 +537,21 @@ function Dashboard(props) {
                     <div className="w-full md:w-[85%] md:mx-auto grid grid-cols-1 md:grid-cols-6 gap-3 md:mt-3 md:mb-12 mb-6 px-4 md:px-0">
                         <div className="col-span-6 flex flex-col gap-3 md:gap-5 mb-8 ">
                             {/* Debug */}
-                        
+
                             <div className="no-print flex flex-row gap-2 md:text-base py-3">
                                 {/* <Link className="text-gray-700" href="/" >Home</Link>  */}
                                 {/* <span className="text-gray-600 text-2xl">Dashboard</span>  */}
 
                             </div>
 
-                            
-                            
-                            <div className="flex flex-col w-full md:flex-wrap lg:flex-row xl:flex-row gap-1 text-sm md:text-base items-center justify-between">
-                                  
 
-                                
-                                
-                                
+
+                            <div className="flex flex-col w-full md:flex-wrap lg:flex-row xl:flex-row gap-1 text-sm md:text-base items-center justify-between">
+
+
+
+
+
 
                                 <div className="w-full flex justify-between">
                                     {/* {
@@ -564,150 +562,210 @@ function Dashboard(props) {
                                         </pre>
                                     } */}
 
-                                <h1 className="w-full md:w-auto text-4xl tracking-tight font-bold leading-3 flex items-start justify-center gap-x-1 gap-y-2 flex-grow mb-4 md:mb-2 flex-col">
-                                {
-                                    Object.entries(props?.query)?.length >= 2 ?
-                                    props?.filters?.county?.find(({id}) => id == Object.entries(props?.query)[1][1])?.name 
-                                    :
-                                    'National'
-                                } 
-                                </h1>
+                                    <h1 className="w-full md:w-auto text-4xl tracking-tight font-bold leading-3 flex items-start justify-center gap-x-1 gap-y-2 flex-grow mb-4 md:mb-2 flex-col">
+                                        {
+                                            Object.entries(props?.query)?.length >= 2 ?
+                                                props?.filters?.county?.find(({ id }) => id == Object.entries(props?.query)[1][1])?.name
+                                                :
+                                                'National'
+                                        }
+                                    </h1>
 
                                     {/* show datetime filters */}
                                     {/* --- */}
                                     {user &&
                                         <div className="w-auto flex items-center gap-3">
-                                        
-                                                       <div className='w-auto flex realtive'>
-                                                        <CustomSelect 
-                                                            options={Years}
-                                                            placeholder='Filter by Year'
-                                                            name='year'
-                                                            id="year-filter"
-                                                            onChange={handleYearChange}
-                                                        />
-                                                        <span className='absolute inset-y-0 right-0'>x</span>
-                                                        </div>
 
-                                                    {/* County Select */}
-                                                   
-                                                        {
-                                                            (groupID === 5 || groupID === 7) && 
-                                                            filters && Object.keys(filters).length > 0 &&
-                                                            Object.keys(filters)?.map(ft => (
-                                                                <CustomSelect 
-                                                                name={ft}
-                                                                id={"county-filter"}
-                                                                options={countyOptions(filters, ft)}
-                                                                placeholder={`Filter by ${ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}`}
-                                                                onChange={handleCountyOrgUnitChange} />
-                                                            ))}
-                  
-                                                    {/* county user */}
-                                    {groupID === 1 && <div className="max-w-min">
-                                        {subcounties && Object.keys(subcounties).length > 0 &&
-                                            Object.keys(subcounties)?.map(ft => (
-                                                    <CustomSelect 
-                                                        name={ft} 
-                                                        id="sub-county-filter" 
-                                                        options={
-                                                            subCountyOptions(filters, ft)
-                                                        }
+                                            <div className='w-auto flex realtive'>
+                                                <Select
+                                                    className="max-w-max md:w-[250px] rounded border border-gray-400"
+                                                    styles={{
+                                                        control: (baseStyles) => ({
+                                                            ...baseStyles,
+                                                            backgroundColor: 'transparent',
+                                                            outLine: 'none',
+                                                            border: 'none',
+                                                            outLine: 'none',
+                                                            textColor: 'transparent',
+                                                            padding: 0,
+                                                            height: '4px'
+                                                        }),
+
+                                                    }}
+
+                                                    options={Years}
+                                                    placeholder='Filter by Year'
+                                                    name='year'
+                                                    id="year-filter"
+                                                    onChange={handleYearChange}
+                                                />
+                                                <span className='absolute inset-y-0 right-0'>x</span>
+                                            </div>
+
+                                            {/* County Select */}
+
+                                            {
+                                                (groupID == 5 || groupID == 7) &&
+                                                filters && Object.keys(filters).length > 0 &&
+                                                Object.keys(filters)?.map(ft => (
+                                                    <Select
+                                                        className="max-w-max md:w-[250px] rounded border border-gray-400"
+                                                        styles={{
+                                                            control: (baseStyles) => ({
+                                                                ...baseStyles,
+                                                                backgroundColor: 'transparent',
+                                                                outLine: 'none',
+                                                                border: 'none',
+                                                                outLine: 'none',
+                                                                textColor: 'transparent',
+                                                                padding: 0,
+                                                                height: '4px'
+                                                            }),
+
+                                                        }}
+
+                                                        name={ft}
+                                                        id={"county-filter"}
+                                                        options={countyOptions(filters, ft)}
                                                         placeholder={`Filter by ${ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}`}
-                                                        onChange={handleSubCountyOrgUnitChange} />
-
-                                            ))}
-                                    </div>
-                                    }
-                                    {/* sub_county user */}
-
-                                    {groupID === 2 &&
-                                        <div className="flex">
-
-                                            {wards && Object.keys(wards).length > 0 &&
-                                                Object.keys(wards)?.map(ft => (
-                                                        <CustomSelect name={ft} 
-                                                        id="ward-filter"
-                                                        options={wardOptions(filters, ft)}
-                                                        placeholder={`Filter by ${ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}`}
-                                                        onChange={handleWardOrgUnitChange} />
-
+                                                        onChange={handleCountyOrgUnitChange} />
                                                 ))}
-                                        </div>
-                                    }
-                                                {/* </div> */}
 
-                                                <div className="relative">
-                                                    {/* Modal overlay */}
-                                                    {isOpen && (
-                                                        <div className="fixed z-50 inset-0 bg-gray-500 bg-opacity-50 flex justify-center items-center">
-                                                            {/* Modal content */}
-                                                            <div className="bg-white p-4 -md">
-                                                                <h1 className="text-lg font-bold mb-2 ">Select Date Range</h1>
+                                            {/* county user */}
+                                            {groupID === 1 && <div className="max-w-min">
+                                                {subcounties && Object.keys(subcounties).length > 0 &&
+                                                    Object.keys(subcounties)?.map(ft => (
+                                                        <Select
+                                                            className="max-w-max md:w-[250px] rounded border border-gray-400"
+                                                            styles={{
+                                                                control: (baseStyles) => ({
+                                                                    ...baseStyles,
+                                                                    backgroundColor: 'transparent',
+                                                                    outLine: 'none',
+                                                                    border: 'none',
+                                                                    outLine: 'none',
+                                                                    textColor: 'transparent',
+                                                                    padding: 0,
+                                                                    height: '4px'
+                                                                }),
 
-                                                                <div className='grid grid-cols-2 gap-4'>
-                                                                    <div>
-                                                                        <label>Start Date</label>
-                                                                        <br />
-                                                                        <input id='startdate'
-                                                                            type="date"
-                                                                            className="border border-gray-400 p-2 -md"
-                                                                        />
-                                                                    </div>
-                                                                    <div>
-                                                                        <label>End Date</label>
-                                                                        <br />
-                                                                        <input id='enddate'
-                                                                            type="date"
-                                                                            className="border border-gray-400 p-2 -md"
-                                                                        />
-                                                                    </div>
+                                                            }}
+
+                                                            name={ft}
+                                                            id="sub-county-filter"
+                                                            options={
+                                                                subCountyOptions(filters, ft)
+                                                            }
+                                                            placeholder={`Filter by ${ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}`}
+                                                            onChange={handleSubCountyOrgUnitChange} />
+
+                                                    ))}
+                                            </div>
+                                            }
+                                            {/* sub_county user */}
+
+                                            {groupID === 2 &&
+                                                <div className="flex">
+
+                                                    {wards && Object.keys(wards).length > 0 &&
+                                                        Object.keys(wards)?.map(ft => (
+                                                            <Select name={ft}
+                                                                className="max-w-max md:w-[250px] rounded border border-gray-400"
+                                                                styles={{
+                                                                    control: (baseStyles) => ({
+                                                                        ...baseStyles,
+                                                                        backgroundColor: 'transparent',
+                                                                        outLine: 'none',
+                                                                        border: 'none',
+                                                                        outLine: 'none',
+                                                                        textColor: 'transparent',
+                                                                        padding: 0,
+                                                                        height: '4px'
+                                                                    }),
+
+                                                                }}
+
+                                                                id="ward-filter"
+                                                                options={wardOptions(filters, ft)}
+                                                                placeholder={`Filter by ${ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}`}
+                                                                onChange={handleWardOrgUnitChange} />
+
+                                                        ))}
+                                                </div>
+                                            }
+                                            {/* </div> */}
+
+                                            <div className="relative">
+                                                {/* Modal overlay */}
+                                                {isOpen && (
+                                                    <div className="fixed z-50 inset-0 bg-gray-500 bg-opacity-50 flex justify-center items-center">
+                                                        {/* Modal content */}
+                                                        <div className="bg-white p-4 -md">
+                                                            <h1 className="text-lg font-bold mb-2 ">Select Date Range</h1>
+
+                                                            <div className='grid grid-cols-2 gap-4'>
+                                                                <div>
+                                                                    <label>Start Date</label>
+                                                                    <br />
+                                                                    <input id='startdate'
+                                                                        type="date"
+                                                                        className="border border-gray-400 p-2 -md"
+                                                                    />
                                                                 </div>
-                                                                <div className="mt-4 flex justify-center">
-                                                                    <button
-                                                                        onClick={() => {
-                                                                            setIsOpen(false)
-                                                                        }
-                                                                        }
-                                                                        className="w-full px-4 py-2 bg-gray-400 text-white -md mr-2"
-                                                                    >
-                                                                        Cancel
-                                                                    </button>
-                                                                    <button
-                                                                        onClick={() => {
-                                                                            setIsOpen(false)
-                                                                            let parameters = "?"
-                                                                            if (document.getElementById('startdate').value && document.querySelector('#startdate').value) {
-                                                                                parameters += "datefrom=" + document.querySelector('#startdate').value
-                                                                                parameters += "&dateto=" + document.querySelector('#enddate').value
-
-                                                                            }
-                                                                            else {
-                                                                                alert("You must select Start Date and End Date")
-                                                                                return;
-                                                                            }
-
-                                                                            if (props?.query?.county) {
-                                                                                parameters += "&county=" + props?.query?.county
-                                                                            }
-                                                                            if (props?.query?.sub_county) {
-                                                                                parameters += "&sub_county=" + props?.query?.sub_county
-                                                                            }
-                                                                            if (props?.query?.ward) {
-                                                                                parameters += "&ward=" + props?.query?.ward
-                                                                            }
-                                                                            router.push(`/dashboard/${encodeURI(parameters)}`)
-                                                                        }
-                                                                        }
-                                                                        className="w-full px-4 py-2 bg-gray-500 text-white -md"
-                                                                    >
-                                                                        Set
-                                                                    </button>
+                                                                <div>
+                                                                    <label>End Date</label>
+                                                                    <br />
+                                                                    <input id='enddate'
+                                                                        type="date"
+                                                                        className="border border-gray-400 p-2 -md"
+                                                                    />
                                                                 </div>
                                                             </div>
+                                                            <div className="mt-4 flex justify-center">
+                                                                <button
+                                                                    onClick={() => {
+                                                                        setIsOpen(false)
+                                                                    }
+                                                                    }
+                                                                    className="w-full px-4 py-2 bg-gray-400 text-white -md mr-2"
+                                                                >
+                                                                    Cancel
+                                                                </button>
+                                                                <button
+                                                                    onClick={() => {
+                                                                        setIsOpen(false)
+                                                                        let parameters = "?"
+                                                                        if (document.getElementById('startdate').value && document.querySelector('#startdate').value) {
+                                                                            parameters += "datefrom=" + document.querySelector('#startdate').value
+                                                                            parameters += "&dateto=" + document.querySelector('#enddate').value
+
+                                                                        }
+                                                                        else {
+                                                                            alert("You must select Start Date and End Date")
+                                                                            return;
+                                                                        }
+
+                                                                        if (props?.query?.county) {
+                                                                            parameters += "&county=" + props?.query?.county
+                                                                        }
+                                                                        if (props?.query?.sub_county) {
+                                                                            parameters += "&sub_county=" + props?.query?.sub_county
+                                                                        }
+                                                                        if (props?.query?.ward) {
+                                                                            parameters += "&ward=" + props?.query?.ward
+                                                                        }
+                                                                        router.push(`/dashboard/${encodeURI(parameters)}`)
+                                                                    }
+                                                                    }
+                                                                    className="w-full px-4 py-2 bg-gray-500 text-white -md"
+                                                                >
+                                                                    Set
+                                                                </button>
+                                                            </div>
                                                         </div>
-                                                    )}
-                                                </div>
+                                                    </div>
+                                                )}
+                                            </div>
 
 
                                             {/* </div> */}
@@ -715,16 +773,16 @@ function Dashboard(props) {
                                         </div>
 
                                     }
-                                    
+
 
                                     {/* filter by organizational units  */}
                                     {/* national */}
-                                   
-                                    
+
+
 
                                 </div>
 
-                              
+
                             </div>
                         </div>
 
@@ -732,20 +790,20 @@ function Dashboard(props) {
                         <div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
                             <h4 className="text-lg uppercase pt-4 text-center border-b border-gray-100 w-full mb-4 font-semibold text-gray-900">Facility owners </h4>
                             <Chart
-                                    title=""
-                                    categories={Array?.from(props?.data?.owner_types ?? [], cs => cs.name) || []}
-                                    tooltipsuffix="#"
-                                    xaxistitle="Owner Type"
-                                    yaxistitle="count"
-                                    type="pie"
-                                    data={(() => {
-                                        let data = [];
-                                        data?.push({
-                                            name: 'Facilities',
-                                            data: Array.from(props?.data?.owner_types ?? [], cs => ({ name: cs.name, y: parseFloat(cs.count)})) || []
-                                        });
-                                        return data;
-                                    })() || []} />
+                                title=""
+                                categories={Array?.from(props?.data?.owner_types ?? [], cs => cs.name) || []}
+                                tooltipsuffix="#"
+                                xaxistitle="Owner Type"
+                                yaxistitle="count"
+                                type="pie"
+                                data={(() => {
+                                    let data = [];
+                                    data?.push({
+                                        name: 'Facilities',
+                                        data: Array.from(props?.data?.owner_types ?? [], cs => ({ name: cs.name, y: parseFloat(cs.count) })) || []
+                                    });
+                                    return data;
+                                })() || []} />
 
                             {/* <table className="w-full text-sm md:text-base p-2">
                                 <thead className="border-b border-gray-300">
@@ -768,20 +826,20 @@ function Dashboard(props) {
                         <div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
                             <h4 className="text-lg uppercase pt-4 text-center border-b border-gray-100 w-full mb-4 font-semibold text-gray-900">Facility Types </h4>
                             <Chart
-                                    title=""
-                                    categories={Array?.from(props?.data?.types_summary ?? [], cs => cs.name) || []}
-                                    tooltipsuffix="#"
-                                    xaxistitle="Facility Type"
-                                    yaxistitle="count"
-                                    type="bar"
-                                    data={(() => {
-                                        let data = [];
-                                        data?.push({
-                                            name: 'Facilities',
-                                            data: Array.from(props?.data?.types_summary ?? [], cs => ({ name: cs.name, y: parseFloat(cs.count)})) || []
-                                        });
-                                        return data;
-                                    })() || []} />
+                                title=""
+                                categories={Array?.from(props?.data?.types_summary ?? [], cs => cs.name) || []}
+                                tooltipsuffix="#"
+                                xaxistitle="Facility Type"
+                                yaxistitle="count"
+                                type="bar"
+                                data={(() => {
+                                    let data = [];
+                                    data?.push({
+                                        name: 'Facilities',
+                                        data: Array.from(props?.data?.types_summary ?? [], cs => ({ name: cs.name, y: parseFloat(cs.count) })) || []
+                                    });
+                                    return data;
+                                })() || []} />
                             {/* <table className="w-full text-sm md:text-base p-2">
                                 <thead className="border-b border-gray-300">
                                     <tr>
@@ -804,20 +862,20 @@ function Dashboard(props) {
                         <div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
                             <h4 className="text-lg uppercase pt-4 text-center border-b border-gray-100 w-full mb-4 font-semibold text-gray-900">Facilities summary</h4>
                             <Chart
-                                    title=""
-                                    categories={Array?.from(totalSummary ?? [], cs => cs.name) || []}
-                                    tooltipsuffix="#"
-                                    xaxistitle="Facility Summaries"
-                                    yaxistitle="count"
-                                    type="bar"
-                                    data={(() => {
-                                        let data = [];
-                                        data?.push({
-                                            name: 'Facilities',
-                                            data: Array.from(totalSummary ?? [], cs => ({ name: cs.name, y: parseFloat(cs.count)})) || []
-                                        });
-                                        return data;
-                                    })() || []} />
+                                title=""
+                                categories={Array?.from(totalSummary ?? [], cs => cs.name) || []}
+                                tooltipsuffix="#"
+                                xaxistitle="Facility Summaries"
+                                yaxistitle="count"
+                                type="bar"
+                                data={(() => {
+                                    let data = [];
+                                    data?.push({
+                                        name: 'Facilities',
+                                        data: Array.from(totalSummary ?? [], cs => ({ name: cs.name, y: parseFloat(cs.count) })) || []
+                                    });
+                                    return data;
+                                })() || []} />
                             {/* <table className="w-full text-sm md:text-base p-2">
                                 <thead className="border-b border-gray-300">
                                     <tr>
@@ -879,20 +937,20 @@ function Dashboard(props) {
                         <div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
                             <h4 className="text-lg uppercase pt-4 text-center border-b border-gray-100 w-full mb-4 font-semibold text-gray-900">Facility KEPH Level </h4>
                             <Chart
-                                    title=""
-                                    categories={Array?.from(props?.data?.keph_level ?? [], cs => cs.name) || []}
-                                    tooltipsuffix="#"
-                                    xaxistitle=""
-                                    yaxistitle=""
-                                    type="pie"
-                                    data={(() => {
-                                        let data = [];
-                                        data?.push({
-                                            name: 'Facilities',
-                                            data: Array.from(props?.data?.keph_level ?? [], cs => ({ name: cs.name, y: parseFloat(cs.count)})) || []
-                                        });
-                                        return data;
-                                    })() || []} />
+                                title=""
+                                categories={Array?.from(props?.data?.keph_level ?? [], cs => cs.name) || []}
+                                tooltipsuffix="#"
+                                xaxistitle=""
+                                yaxistitle=""
+                                type="pie"
+                                data={(() => {
+                                    let data = [];
+                                    data?.push({
+                                        name: 'Facilities',
+                                        data: Array.from(props?.data?.keph_level ?? [], cs => ({ name: cs.name, y: parseFloat(cs.count) })) || []
+                                    });
+                                    return data;
+                                })() || []} />
                             {/* <table className="w-full text-sm md:text-base p-2">
                                 <thead className="border-b border-gray-300">
                                     <tr>
@@ -1072,7 +1130,7 @@ Dashboard.propTypes = {
 Dashboard.defaultProps = {
     api_url: `${process.env.NEXT_PUBLIC_API_URL}`,
     path: '/dashboard',
-    current:`${process.env.NEXT_PUBLIC_API_URL}/facilities/dashboard`
+    current: `${process.env.NEXT_PUBLIC_API_URL}/facilities/dashboard`
 }
 
 
@@ -1082,7 +1140,7 @@ export async function getServerSideProps(ctx) {
     ctx?.res?.setHeader(
         'Cache-Control',
         'public, s-maxage=10, stale-while-revalidate=59'
-      )
+    )
 
 
     const token = (await checkToken(ctx.req, ctx.res))?.token
@@ -1091,7 +1149,7 @@ export async function getServerSideProps(ctx) {
     let query = { 'searchTerm': '' }
 
     async function fetchFilters(apiToken) {
-    
+
         let url = `${process.env.NEXT_PUBLIC_API_URL}/common/filtering_summaries/?fields=county`
 
         if (ctx?.query?.q) {
@@ -1106,29 +1164,29 @@ export async function getServerSideProps(ctx) {
                 'Accept': 'application/json'
             }
         })
-        .then(resp => resp.json())
-        .catch(console.error)
+            .then(resp => resp.json())
+            .catch(console.error)
     }
 
     async function fetchDashboardData(token) {
 
-    let url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/dashboard`
-   
-    let other_posssible_filters = ["datefrom", "dateto", "county", "sub_county", "ward"]
-    //ensure county and subcounties parameters are passed if the user is countyuser or subcountyuser respectively
+        let url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/dashboard`
 
-    other_posssible_filters?.map(flt => {
-        if (ctx?.query[flt]) {
-            query[flt] = ctx?.query[flt]
-            if (url.includes('?')) {
-                url += `&${flt}=${ctx?.query[flt]}`
-            } else {
-                url += `?${flt}=${ctx?.query[flt]}`
+        let other_posssible_filters = ["datefrom", "dateto", "county", "sub_county", "ward"]
+        //ensure county and subcounties parameters are passed if the user is countyuser or subcountyuser respectively
+
+        other_posssible_filters?.map(flt => {
+            if (ctx?.query[flt]) {
+                query[flt] = ctx?.query[flt]
+                if (url.includes('?')) {
+                    url += `&${flt}=${ctx?.query[flt]}`
+                } else {
+                    url += `?${flt}=${ctx?.query[flt]}`
+                }
             }
-        }
-    })
+        })
 
-       return fetch(url, {
+        return fetch(url, {
             headers: {
                 "Accept": "application/json",
                 "Authorization": `Bearer ${token}`
@@ -1137,38 +1195,38 @@ export async function getServerSideProps(ctx) {
             .then(resp => resp.json())
             .then(json => ({
                 data: json
-                
+
             }))
             .catch(e => console.error(e.message))
-     }
-    
+    }
 
-     const ft = await fetchFilters(token)
-    
-     const dashboard = await fetchDashboardData(token)
-      
-          
-    if(dashboard?.data) {      // console.log({ft, query})
-    return {
-        props: {
-            data: dashboard?.data,
-            query,
-            filters: { ...ft }, 
-    
+
+    const ft = await fetchFilters(token)
+
+    const dashboard = await fetchDashboardData(token)
+
+
+    if (dashboard?.data) {      // console.log({ft, query})
+        return {
+            props: {
+                data: dashboard?.data,
+                query,
+                filters: { ...ft },
+
+            }
+        }
+    } else {
+        return {
+            props: {
+                data: null,
+                query,
+                filters: { ...ft },
+
+            }
         }
     }
-   } else {
-    return {
-        props: {
-            data: null,
-            query,
-            filters: { ...ft }, 
-    
-        }
-    }
-   }
-      
-  
+
+
 
 }
 
