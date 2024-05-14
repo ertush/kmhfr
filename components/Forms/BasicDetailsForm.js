@@ -866,6 +866,40 @@ export function BasicDeatilsForm({ editMode }) {
           />
         </div>
 
+         {/* Out reach services */}
+         <div className='flex flex-col w-full items-start'>
+          <div className='w-full flex flex-row items-center px-2 justify-start gap-1 gap-x-3 mb-3'>
+            <label
+              htmlFor='out_reach_services'
+              className='text-gray-700 capitalize text-sm flex-grow'>
+              Does the Facility have Out-reach services (mobile){' '}
+            </label>
+            <span className='flex items-center gap-x-1'>
+              <input
+                type='radio'
+                name='out_reach_services'
+                value={true}
+                // defaultChecked={options?.data?.accredited_lab_iso_15189 === true}
+
+              />
+              <small className='text-gray-700'>Yes</small>
+            </span>
+            <span className='flex items-center gap-x-1'>
+              <input
+                type='radio'
+                name='out_reach_services'
+                value={false}
+                // defaultChecked={options?.data?.accredited_lab_iso_15189 === false}
+
+
+              />
+              <small className='text-gray-700'>No</small>
+            </span>
+
+          </div>
+
+        </div>
+
         {/* Is Facility accredited */}
         <div className='flex flex-col w-full items-start'>
           <div className='w-full flex flex-row items-center px-2 justify-start gap-1 gap-x-3 mb-3'>

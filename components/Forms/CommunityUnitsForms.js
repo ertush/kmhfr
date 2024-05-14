@@ -33,6 +33,9 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
   const [contacts, setContacts] = useState(props?.contacts ?? [{contact: '', contact_type_name: ''}]);
 
 
+  useEffect(() => {console.log({submitting})}, submitting)
+
+
   const alert = useAlert()
 
   function handleFieldChange(event) {
@@ -93,10 +96,10 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
   }
 
   function handleFormSubmit(event) {
+    setSubmitting(true)
 
     event.preventDefault()
 
-    setSubmitting(true)
 
     const payload = {}
     const formData = new FormData(event.target)
@@ -125,7 +128,7 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
     payload['basic']['contact'] && delete payload['basic']['contact']
     payload['basic']['contact_type'] && delete payload['basic']['contact_type']
 
-    // console.log(payload)
+    console.log({submitting})
 
     try {
       fetch(`${process.env.NEXT_PUBLIC_API_URL}/chul/units/${props?.id}/`, {
@@ -1095,18 +1098,9 @@ function EditCommunityUnitsServicesForm(props) {
 
 export function CommunityUnitEditForm(props) {
 
-  const [isClient, setIsClient] = useState(false)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
 
-
-  useEffect(() => {
-    setIsClient(true)
-  }, []);
-
-
-  if (isClient) {
     return (
-
       <MainLayout>
         <div className="w-full md:w-[85%] px-4 grid grid-cols-1 md:grid-cols-7 place-content-center md:grid gap-4 md:p-2 my-6">
           <div className="md:col-span-7 flex flex-col items-start justify-start gap-3">
@@ -1295,8 +1289,5 @@ export function CommunityUnitEditForm(props) {
         </div>
       </MainLayout>
     )
-  } else {
-    return null
-  }
-
+  
 }

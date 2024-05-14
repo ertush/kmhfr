@@ -76,9 +76,9 @@ function Dashboard(props) {
     const [isOpen, setIsOpen] = useState(false);
     const [drillDown, setDrillDown] = useState({})
     const [user, setUser] = useState(userCtx)
-    const [subcounties, setSubcounties] = useState([])
+    const [subCounties, setSubCounties] = useState([])
     const [counties, setCounties] = useState([])
-    const [wards, s] = useState([])
+    const [wards, setWards] = useState([])
     const [isClient, setIsClient] = useState(false);
 
     const [ownerPresentationType, setOwnerPresentationType] = useState('pie')
@@ -106,7 +106,7 @@ function Dashboard(props) {
 
         try {
             const r = await fetch(`/api/common/fetch_form_data/?path=sub_counties&id=${county}`)
-            setSubcounties({ subcounties: (await r.json())?.results })
+            setSubCounties({ subCounties: (await r.json())?.results })
         } catch (err) {
             console.log(`Unable to fetch sub_counties: ${err.message}`)
         }
@@ -116,7 +116,7 @@ function Dashboard(props) {
 
         try {
             const r = await fetch(`/api/common/fetch_form_data/?path=wards&id=${sub_county}`)
-            s({ wards: (await r.json())?.results })
+            setWards({ wards: (await r.json())?.results })
         } catch (err) {
             console.log(`Unable to fetch wards: ${err.message}`)
         }
@@ -169,8 +169,8 @@ function Dashboard(props) {
                     }
                 })
             }
-            if (subcounties && Object.keys(subcounties).length > 0) {
-                Object.keys(subcounties)?.map(ft => {
+            if (subCounties && Object.keys(subCounties).length > 0) {
+                Object.keys(subCounties)?.map(ft => {
                     if (props?.query[ft] && props?.query[ft] != null && props?.query[ft].length > 0) {
                         setDrillDown({ ...drillDown, [ft]: props?.query[ft] })
                     }
@@ -187,16 +187,16 @@ function Dashboard(props) {
         }
         return () => { mtd = false }
 
-    }, [filters, subcounties, wards])
+    }, [filters, subCounties, wards])
 
 
     // Check for user authentication
     useEffect(() => {
         setIsClient(true)
 
-
+        console.log({userCtx: userCtx})
         if (userCtx?.groups[0].id == 2) fetchWards(user?.user_sub_counties[0]?.sub_county ?? null)
-        if (userCtx?.groups[0].id == 1) fetchSubCounties(userCtx?.county)
+        if (userCtx?.groups[0].id == 1) fetchSubCounties(props?.filters?.county[0]?.id)
         if (userCtx?.groups[0].id == 7) fetchCounties();
 
         setUser(userCtx)
@@ -288,7 +288,7 @@ function Dashboard(props) {
 
     function subCountyOptions(filters, ft) {
         if (groupID === 1) {
-            let opts = [{ value: "county", label: "County summary" }, ...Array.from(subcounties[ft] || [],
+            let opts = [{ value: "county", label: "County summary" }, ...Array.from(subCounties[ft] || [],
                 fltopt => {
                     if (fltopt.id != null && fltopt.id.length > 0) {
                         return {
@@ -298,7 +298,7 @@ function Dashboard(props) {
                 })]
             return opts
         } else {
-            let opts = [...Array.from(subcounties[ft] || [],
+            let opts = [...Array.from(subCounties[ft] || [],
                 fltopt => {
                     if (fltopt.id != null && fltopt.id.length > 0) {
                         return {
@@ -567,14 +567,7 @@ function Dashboard(props) {
 
     if (isClient) {
 
-        // return (
-        //     <pre>
-        //         {
-        //             JSON.stringify(props, null, 2)
-        //         }
-        //     </pre>
-        // )
-
+       
         return (
             <div className="">
                 <Head>
@@ -604,22 +597,29 @@ function Dashboard(props) {
 
 
                                 <div className="w-full flex justify-between">
-                                    {/* {
-                                        <pre>
-                                            {
-                                                JSON.stringify(Object.entries(props?.query), null, 2)
-                                            }
-                                        </pre>
-                                    } */}
+                                  
+                                    {/* <pre>
+                                        {
+                                        JSON.stringify(new URL(window.location.href).searchParams.get('county'), null, 2)
+                                        }
+                                        </pre> */}
 
                                     <h1 className="w-full md:w-auto text-4xl tracking-tight font-bold leading-3 flex items-start justify-center gap-x-1 gap-y-2 flex-grow mb-4 md:mb-2 flex-col">
                                         {
-                                            Object.entries(props?.query)?.length >= 2 ?
+                                            props?.filters?.county.length == 1 ?
+                                                props?.filters?.county[0]?.name
+                                                :
+                                                new URL(window.location.href).searchParams.get('county') !== 'national' && 
+                                                new URL(window.location.href).searchParams.get('county') ?
                                                 props?.filters?.county?.find(({ id }) => id == Object.entries(props?.query)[1][1])?.name
                                                 :
                                                 'National'
                                         }
                                     </h1>
+
+                                    {/* <pre>{
+                                        JSON.stringify({props}, null, 2)
+                                    }</pre> */}
 
                                     {/* show datetime filters */}
                                     {/* --- */}
@@ -656,8 +656,8 @@ function Dashboard(props) {
 
                                             {
                                                 (groupID == 5 || groupID == 7) &&
-                                                filters && Object.keys(filters).length > 0 &&
-                                                Object.keys(filters)?.map(ft => (
+                                                props?.filters && props?.filters?.county.length > 0 &&
+                                                Object.keys(props?.filters)?.map(ft => (
                                                     <Select
                                                         className="max-w-max md:w-[250px] rounded border border-gray-400"
                                                         styles={{
@@ -683,8 +683,8 @@ function Dashboard(props) {
 
                                             {/* county user */}
                                             {groupID === 1 && <div className="max-w-min">
-                                                {subcounties && Object.keys(subcounties).length > 0 &&
-                                                    Object.keys(subcounties)?.map(ft => (
+                                                {subCounties && subCounties?.subCounties.length > 0 &&
+                                                    Object.keys(subCounties)?.map(ft => (
                                                         <Select
                                                             className="max-w-max md:w-[250px] rounded border border-gray-400"
                                                             styles={{
@@ -1135,7 +1135,6 @@ function Dashboard(props) {
                             <div className="no-print col-span-6 flex flex-col items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
                                 <h4 className="text-lg uppercase pt-4 border-b text-center border-gray-100 w-full mb-2 font-semibold text-gray-900">Facilities &amp; CHUs by County</h4>
                              
-
                                 <Chart
                                     title=""
                                     categories={Array?.from(props?.data?.county_summary ?? [], cs => cs.name) || []}
@@ -1167,7 +1166,7 @@ function Dashboard(props) {
                                 
                             </div>
                         }
-                        {/* Facilities & CHUs by subcounties (bar) 1/1 */}
+                        {/* Facilities & CHUs by subCounties (bar) 1/1 */}
                         {groupID === 1 &&
                             <div className="no-print col-span-6 flex flex-col items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
                                 <h4 className="text-lg uppercase pt-4 text-center border-b border-gray-100 w-full mb-2 font-semibold text-gray-900">Facilities &amp; CHUs by Subcounty</h4>
@@ -1177,7 +1176,7 @@ function Dashboard(props) {
                                     tooltipsuffix="#"
                                     xaxistitle="Subcounty"
                                     yaxistitle="Number"
-                                    type="column"
+                                    type={facilityCHUsPresentationType}
                                     data={(() => {
                                         let data = [];
                                         data?.push({
@@ -1190,7 +1189,18 @@ function Dashboard(props) {
                                         });
                                         return data;
                                     })() || []} />
+
+                              <Select 
+                                name="facility_chu_chart" 
+                                options={chartPresentationOptions.filter(({value}) => (value !== 'pie' && value !== 'table'))} 
+                                value={defaultPresentation('facility_chu_chart')}
+                                onChange={value => handlePresentationChange(value, 'facility_chu_chart')}
+                                placeholder="presentation type"
+                                title="Select Presentation Type" 
+                                className='self-end'/>
+                                
                             </div>
+                        
                         }
                         {/* Facilities & CHUs by ward (bar) 1/1 */}
                         {groupID === 2 &&
@@ -1347,15 +1357,24 @@ export async function getServerSideProps(ctx) {
         let url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/dashboard`
 
         let other_posssible_filters = ["datefrom", "dateto", "county", "sub_county", "ward"]
-        //ensure county and subcounties parameters are passed if the user is countyuser or subcountyuser respectively
+        //ensure county and subCounties parameters are passed if the user is countyuser or subcountyuser respectively
 
         other_posssible_filters?.map(flt => {
             if (ctx?.query[flt]) {
                 query[flt] = ctx?.query[flt]
                 if (url.includes('?')) {
-                    url += `&${flt}=${ctx?.query[flt]}`
+                    if(ctx?.query[flt] == 'national') {
+                        url = url
+                    } else {
+                        url += `&${flt}=${ctx?.query[flt]}`
+                    }
+                    
                 } else {
-                    url += `?${flt}=${ctx?.query[flt]}`
+                    if(ctx?.query[flt] == 'national') {
+                        url = url
+                    } else {
+                        url += `?${flt}=${ctx?.query[flt]}`
+                    }
                 }
             }
         })

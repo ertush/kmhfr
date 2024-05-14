@@ -152,7 +152,7 @@ async function approveCHUUpdates (e, status, token) {
   e.preventDefault();
 
   console.log({status})
-  // let payload = ''
+  let payload = ''
   if (status) {
     setIsSubmittingApproval(true)
     payload = { is_approved: true }
@@ -161,56 +161,56 @@ async function approveCHUUpdates (e, status, token) {
     payload = { is_rejected: true }
   }
 
-  // let url = `${process.env.NEXT_PUBLIC_API_URL}/chul/updates/${cu?.latest_update}/` //`/api/common/submit_form_data/?path=approve_chul_updates&latest_updates=${id}`
+  let url = `${process.env.NEXT_PUBLIC_API_URL}/chul/updates/${cu?.latest_update}/` //`/api/common/submit_form_data/?path=approve_chul_updates&latest_updates=${id}`
   
-  // try {
-  //   await fetch(url, {
-  //     headers: {
-  //       'Accept': 'application/json, text/plain, */*',
-  //       'Content-Type': 'application/json;charset=utf-8',
-  //       'Authorization': `Bearer ${token}`
+  try {
+    await fetch(url, {
+      headers: {
+        'Accept': 'application/json, text/plain, */*',
+        'Content-Type': 'application/json;charset=utf-8',
+        'Authorization': `Bearer ${token}`
 
-  //     },
-  //     method: 'PATCH',
-  //     body: JSON.stringify(payload)
-  //   })
-  //     .then(resp => resp.json())
-  //     .then(async (res) => {
+      },
+      method: 'PATCH',
+      body: JSON.stringify(payload)
+    })
+      .then(resp => resp.json())
+      .then(async (res) => {
 
-  //       if(res.ok) {
-  //         alert.success(`${payload.is_rejected ? 'Rejected' : 'Approved'} CHU Updates successfully`)
+        if(res.ok) {
+          alert.success(`${payload.is_rejected ? 'Rejected' : 'Approved'} CHU Updates successfully`)
 
-  //         router.push({
-  //           pathname: '/community-units',
-  //           query: { has_edits: false, pending_approval: true }
-  //         })
+          router.push({
+            pathname: '/community-units',
+            query: { has_edits: false, pending_approval: true }
+          })
   
-  //       } else {
-  //         alert.error(`Unable to approve CHU Updates`)
+        } else {
+          alert.error(`Unable to approve CHU Updates`)
              
-  //            const detail = await res.json()
+             const detail = await res.json()
   
-  //            const error = Array.isArray(Object.values(detail)) && Object.values(detail).length == 1 ? detail[Object.keys(detail)[0]][0] : ''
+             const error = Array.isArray(Object.values(detail)) && Object.values(detail).length == 1 ? detail[Object.keys(detail)[0]][0] : ''
              
-  //            setFormError(error)
+             setFormError(error)
 
-  //       }
+        }
         
-  //     })
-  //     .catch(e => {
-  //       console.log(e.message)
-  //     })
-  // } catch (e) {
+      })
+      .catch(e => {
+        console.log(e.message)
+      })
+  } catch (e) {
 
-  //   console.error(e)
-  // } finally {
-  //   if (status) {
-  //     setIsSubmittingApproval(false)
-  //   } else {
-  //     setIsSubmittingRejection(false)
+    console.error(e)
+  } finally {
+    if (status) {
+      setIsSubmittingApproval(false)
+    } else {
+      setIsSubmittingRejection(false)
       
-  //   }
-  // }
+    }
+  }
 
 } 
 

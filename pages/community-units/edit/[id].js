@@ -17,6 +17,7 @@ export default function CommunityUnitEdit (props){
   
 
   if(isClient){
+
     return (
       <ChuOptionsContext.Provider value={{
           facilities: props?.facilities,
@@ -39,7 +40,6 @@ export async function getServerSideProps(ctx) {
 
   const {token} = await checkToken(ctx?.req, ctx?.res)
 
-  
   const response = {}
   
   const options = [
@@ -68,6 +68,8 @@ export async function getServerSideProps(ctx) {
 
   const count = await getFacilityCount(token)
 
+
+  async function getProps(token, options){
 
   try {
       
@@ -144,16 +146,23 @@ export async function getServerSideProps(ctx) {
       } 
 
       response['token'] = token
-     
 
-      return {
-        props: response 
-      }
-      
+
     }
-    
   catch(e) {
     console.error(e.message)
+  }
+
+  return response
+
+}
+
+const props = await getProps(token, options)
+
+console.log({props})
+
+  return {
+    props 
   }
 
 }
