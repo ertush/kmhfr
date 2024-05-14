@@ -184,7 +184,7 @@ function EditCommunityUnit(props){
           <div className="col-span-5 md:col-span-6 flex flex-col gap-3 mt-4">
             {/* Approve/Reject, Edit Buttons */}
             <div className="bg-gray-50 shadow-sm rounded w-full p-3  flex flex-col gap-3 mt-4">
-         
+
         
            <div className="flex flex-row justify-start items-center space-x-3 p-3">
                 { 

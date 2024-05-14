@@ -74,13 +74,6 @@ function CommunityUnit(props) {
 							<div className='flex flex-wrap items-center justify-between gap-2 text-sm md:text-base py-3'>
 								{/* Bread Crumbs */}
 
-								{/* <div className='flex flex-row gap-2 text-sm md:text-base py-3'>
-								<Link className='text-gray-700' href='/'>
-									Home
-								</Link>
-								{'/'}
-								<span className='text-gray-500'>Community Units</span>
-							</div> */}
 
 
 								<div className={"col-sapn-1 md:col-span-5 flex flex-col items-start md:flex-row md:justify-between w-full bg-django-blue border drop-shadow  text-black p-4 md:divide-x md:divide-gray-200 md:items-center border-l-8 " + (true ? "border-gray-700" : "border-red-600")}>
@@ -257,15 +250,20 @@ function CommunityUnit(props) {
 									onSubmit={(values) => {
 
 										const query = values.q.split(' ').join('+');
-
-
 										// console.log({values})
 										switch ((new URL(window.location.href))?.searchParams.get('qf')) {
 											case "all":
 												router.push(`/community-units/?q=${query}&qf=all`)
 												break;
 											case "approved":
-												router.push(`/community-units/?q=${query}&qf=approved&is_approved=true`)
+												router.push({
+													pathname: '/community-units',
+													query: {
+														is_approved: true,
+														q: query
+														// qf: 'approved'
+													}
+												})
 												break;
 											case "new_pending_approval":
 												router.push(`/community-units/?q=${query}&qf=new_pending_approval&has_edits=false&pending_approval=true`)
@@ -294,7 +292,7 @@ function CommunityUnit(props) {
 											className="flex-none bg-transparent p-2 w-3/5 md:flex-grow-0 flex-grow shadow-sm rounded-tl rounded-bl border border-gray-400 placeholder-gray-600  focus:shadow-none focus:ring-black focus:border-black outline-none"
 											type="search"
 
-											placeholder="Search a facility"
+											placeholder="Search for a community health unit "
 										/>
 										<button
 											type="submit"

@@ -45,7 +45,7 @@ function EditListItem({
   const [categoryOptions, setCategoryItems] = useState(() => {
 
     let newarray = [];
-    categoryItems.forEach(element => {
+    categoryItems?.forEach(element => {
       let customitem = {}
       customitem = { value: element.value, label: element.label }
       newarray.push(customitem);

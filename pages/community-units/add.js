@@ -606,7 +606,7 @@ function CommunityUnitsBasciDetailsForm(props) {
 						</span>
 						{
 							submitting ? 
-							<span className='text-white'>Saving </span>
+							<span className='text-white'>Saving.. </span>
 							:
 							<ChevronDoubleRightIcon className='w-4 h-4 text-white' />
 
