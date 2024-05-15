@@ -1246,12 +1246,65 @@ export function BasicDeatilsForm({ editMode }) {
 
         </div>
 
+         {/* No. of Minor Theatres */}
+        <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+          <label
+            htmlFor='number_of_minor_theatres'
+            className='text-gray-600 capitalize text-sm'>
+            Number of Minor Theatres
+            <span className='text-medium leading-12 font-semibold'>
+              {' '}
+              *
+            </span>
+          </label>
+
+          <input
+            required
+            type='number'
+            min={0}
+            name='number_of_minor_theatres'
+            onFocus={handleFocus}
+            // defaultValue={options?.data?.number_of_general_theatres ?? ''}
+
+            className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:border-black outline-none'
+          />
+
+
+        </div>
+
+          {/* No. of Eye Theatres */}
+          <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+          <label
+            htmlFor='number_of_eye_theatres'
+            className='text-gray-600 capitalize text-sm'>
+            Number of Eye Theatres
+            <span className='text-medium leading-12 font-semibold'>
+              {' '}
+              *
+            </span>
+          </label>
+
+          <input
+            required
+            type='number'
+            min={0}
+            name='number_of_eye_theatres'
+            onFocus={handleFocus}
+            // defaultValue={options?.data?.number_of_general_theatres ?? ''}
+
+            className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:border-black outline-none'
+          />
+
+
+        </div>
+
+
         {/* Facility Catchment Population */}
         <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
           <label
             htmlFor='facility_catchment_population'
             className='text-gray-600 capitalize text-sm'>
-            Facility Catchment Population
+            Facility Catchment Population (Calculated Estimates)
             <span className='text-medium leading-12 font-semibold'>
               {' '}
 

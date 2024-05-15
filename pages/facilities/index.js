@@ -267,7 +267,7 @@ function FacilityHome (props){
                                                                      <form 
                                                                             id="filter-panel"
                                                                             onSubmit={handleFiltersSubmit}
-                                                                            className='grid grid-cols-4 place-content-center items-content-end gap-2'>
+                                                                            className='flex flex-col md:grid md:grid-cols-4 place-content-center items-content-end gap-2'>
                                                                     {  
                                                                         filters && Object.keys(filters).length > 0 &&
                                                                         Object.keys(fltrs).map((ft, i) => (
@@ -276,7 +276,6 @@ function FacilityHome (props){
                                                                                 <div key={i} className="w-full flex flex-col items-start justify-start gap-1 mb-1">
                                                                                 <label htmlFor={ft} className="text-gray-600 capitalize text-sm">{ft.split('_').join(' ')}</label>
                                                                                
-
 
                                                                                 <CustomSelect
                                                                                             options={Array.from(filters[ft] || [],
@@ -310,7 +309,7 @@ function FacilityHome (props){
 
 
                                                                     {/* Yes/No Dialog */}
-                                                                    <div className="w-full col-span-3 gap-x-3 grid grid-cols-4 mb-3">
+                                                                    <div className="w-full col-span-3 gap-x-3 grid md:grid-cols-4 grid-cols-2 mb-3">
                                                                         <div className='flex flex-col items-start justify-center gap-1'>
                                                                             <span className='inline-flex gap-2'>
                                                                                 <input type="checkbox" className="justify-self-end border border-gray-600 bg-django-blue" value={false} defaultChecked={props?.query?.has_edits === "true"} name="has_edits" id="has_edits" onChange={ev => {
@@ -528,7 +527,7 @@ function FacilityHome (props){
                                         className="flex-none bg-transparent p-2 w-3/5 md:flex-grow-0 flex-grow shadow-sm rounded-tl rounded-bl border border-gray-400 placeholder-gray-600  focus:shadow-none focus:ring-black focus:border-black outline-none"
                                         type="search"
                                         
-                                        placeholder="Search a facility"
+                                        placeholder="Search for a facility"
                                         />
                                         <button
                                         type="submit"
@@ -556,28 +555,39 @@ function FacilityHome (props){
                                                 <div key={index} 
                                                 title={`Incomplete Details : ${facility?.is_complete ? 'none' : facility?.in_complete_details}`}
                                                 className={`grid grid-cols-8 gap-2 border-b py-4 w-full ${!facility?.is_complete && !facility?.in_complete_details ? 'bg-yellow-50 border-yellow-500 hover:bg-gray-50' : 'bg-transparent border-gray-400 hover:border-grat-400' }`}>
-                                                    <div className="px-2 col-span-8 md:col-span-8 lg:col-span-6 flex flex-col group items-center justify-start text-left">
+                                                    <div className="px-2 col-span-8 md:col-span-8 lg:col-span-6 gap-2 md:gap-0 flex flex-col group items-center justify-start text-left">
                                                         <h3 className="text-2xl font-semibold w-full">
                                                             <span onClick={() => router.push({pathname: `/facilities/${facility?.id}`, query: {qf: router.query.qf}})} className={`cursor-pointer ${facility?.is_complete ? 'hover:text-gray-600' : 'hover:text-yellow-600'} group-focus:text-gray-800 active:text-gray-800`} >
                                                                 {facility?.official_name || facility?.official_name || facility?.name} 
                                                             </span>
                                                         </h3>
                                                         
-                                                        <div className="w-full grid grid-cols-4 gap-1">
+                                                        <div className="w-full grid grid-cols-2 md:grid-cols-4 gap-1">
                                                            
 
                                                             <div className="flex flex-col items-start justify-start gap-0 leading-none whitespace-pre-wrap mb-2">
                                                                 <label className="text-xs text-gray-500 ">Code:</label>
                                                                 <span className="whitespace-pre-line font-semibold"># {facility?.code ?? 'NO_CODE' }</span>
                                                             </div>
+
+                                                            <div className="flex flex-col  items-start justify-start gap-0 leading-none whitespace-pre-wrap">
+                                                                <label className="text-xs text-gray-500">Type:</label>
+                                                                <span className="whitespace-pre-line md:text-nowrap text-wrap">{facility?.facility_type_name ?? ' '}</span>
+                                                            </div>
+                                                            
                                                           
-                                                            <div className="flex flex-col col-span-2 items-start justify-start gap-0 leading-none whitespace-pre-wrap">
+                                                            <div className="flex flex-col  items-start justify-start gap-0 leading-none whitespace-pre-wrap">
                                                                 <label className="text-xs text-gray-500">Owner:</label>
-                                                                <span className="whitespace-pre-line">{facility?.owner_name ?? ' '}</span>
+                                                                <span className="whitespace-pre-line text-wrap">{facility?.owner_name ?? ' '}</span>
+                                                            </div>
+                                                            
+                                                            <div className="flex flex-col items-start justify-start gap-0 leading-none whitespace-pre-wrap">
+                                                                <label className="text-xs text-gray-500">Keph:</label>
+                                                                <span className="whitespace-pre-line">{filters?.keph_level.find(({id}) => id == facility?.keph_level)?.name ?? '-'}</span>
                                                             </div>
                                                         </div>
 
-                                                        <div className="text-base grid grid-cols-2 md:grid-cols-4 items-center justify-start gap-3 w-full">
+                                                        <div className="text-base grid grid-cols-2 md:grid-cols-4 items-center justify-start gap-1 w-full">
                                                             <div className="flex flex-col items-start justify-start gap-0 leading-none whitespace-pre-wrap">
                                                                 <label className="text-xs text-gray-500">County:</label>
                                                                 <span className="whitespace-pre-line">{facility?.county_name || facility?.county || 'N/A'}</span>
