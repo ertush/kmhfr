@@ -1298,6 +1298,41 @@ export function BasicDeatilsForm({ editMode }) {
 
         </div>
 
+          {/* New Born Unit */}
+          <div className='flex flex-col w-full items-start'>
+          <div className='w-full flex flex-row items-center px-2 justify-start gap-1 gap-x-3 mb-3'>
+            <label
+              htmlFor='new_born_unit'
+              className='text-gray-700 capitalize text-sm flex-grow'>
+              New Born Unit{' '}
+            </label>
+            <span className='flex items-center gap-x-1'>
+              <input
+                type='radio'
+                name='new_born_unit'
+                onFocus={handleFocus}
+                // defaultChecked={options?.data?.nhif_accreditation == true}
+                value={true}
+
+              />
+              <small className='text-gray-700'>Yes</small>
+            </span>
+            <span className='flex items-center gap-x-1'>
+              <input
+                type='radio'
+                name='new_born_unit'
+                onFocus={handleFocus}
+                // defaultChecked={options?.data?.nhif_accreditation == false}
+                value={false}
+
+              />
+              <small className='text-gray-700'>No</small>
+            </span>
+
+          </div>
+
+        </div>
+
 
         {/* Facility Catchment Population */}
         <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>

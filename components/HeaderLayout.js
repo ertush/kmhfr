@@ -176,11 +176,15 @@ export default function HeaderLayout({
   }, [])
 
 
-
   return (
 
 
     <header className='w-full max-h-min flex'>
+      {
+        <pre className="hidden">{
+          JSON.stringify({isLoggedIn, userCtx}, null, 2)
+        }</pre>
+      }
       <Head>
         {/*   <title>KMHFR | Home</title> */}
         <link rel="icon" href="/favicon.ico" />

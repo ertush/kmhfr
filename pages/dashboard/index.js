@@ -598,12 +598,7 @@ function Dashboard(props) {
 
                                 <div className="w-full flex justify-between">
                                   
-                                    {/* <pre>
-                                        {
-                                        JSON.stringify(new URL(window.location.href).searchParams.get('county'), null, 2)
-                                        }
-                                        </pre> */}
-
+                                    
                                     <h1 className="w-full md:w-auto text-4xl tracking-tight font-bold leading-3 flex items-start justify-center gap-x-1 gap-y-2 flex-grow mb-4 md:mb-2 flex-col">
                                         {
                                             props?.filters?.county.length == 1 ?
@@ -617,12 +612,16 @@ function Dashboard(props) {
                                         }
                                     </h1>
 
-                                    {/* <pre>{
-                                        JSON.stringify({props}, null, 2)
-                                    }</pre> */}
+                                    
 
                                     {/* show datetime filters */}
-                                    {/* --- */}
+                                    {/* {
+                                        <pre className=''>
+                                            {
+                                            JSON.stringify(groupID, null, 2)
+                                            }
+                                        </pre>
+                                    } */}
                                     {user &&
                                         <div className="w-auto flex items-center gap-3">
 
