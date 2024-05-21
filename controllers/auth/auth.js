@@ -182,7 +182,7 @@ const logUserIn = (req, res, creds, was) => {
         })
 }
 
-const getUserDetails = async (token, url) => {
+function getUserDetails (token, url) {
     if (typeof window != "undefined") {
         // let savedSession = window.sessionStorage.getItem('user')
         // if (savedSession && savedSession.length > 0) {
@@ -223,6 +223,7 @@ const getUserDetails = async (token, url) => {
             if (typeof window !== "undefined") {
                 // // console.log('getUserDetails returning ', response)
                 // window.sessionStorage.setItem('user', JSON.stringify(response))
+                console.log('[+] Storing user details on localstorage')
                 window.localStorage.setItem('user', JSON.stringify(response))
             }
             return response

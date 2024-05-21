@@ -3,8 +3,11 @@ import Head from 'next/head'
 import { useRouter } from 'next/router'
 import React from 'react'
 import Link from 'next/link'
+import { getUserDetails } from '../../controllers/auth/auth'
 
-const Login = (props) => {
+
+function Login(props) {
+
     const router = useRouter()
     const [username, setUsername] = React.useState('')
     const [password, setPassword] = React.useState('')
@@ -12,7 +15,62 @@ const Login = (props) => {
     const [error, setError] = React.useState(props.error)
     const [msg, setMsg] = React.useState(props.msg)
     const [loading, setLoading] = React.useState(false)
-    const goSomewhere = where => router.push(where) // (where, reload) => reload ? router.reload(where) : router.push(where)
+    const [groupID, setGroupID] = React.useState(null)
+
+
+function handleLogin(ev) {
+
+    ev.preventDefault()
+    setLoading(true)
+    setError('')
+    if (
+        (username && username.length > 0) &&
+        (password && password.length > 0)
+    ) {
+        return fetch('/api/login', {
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            method: 'POST',
+            body: JSON.stringify({
+                username: username,
+                password: password
+            })
+        })
+            .then(r => r.json())
+            .then(rsp => {
+                getUserDetails(rsp?.token, `${process.env.NEXT_PUBLIC_API_URL}/rest-auth/user/`)
+               
+                 
+                if (rsp.error) {
+                    setLoading(false)
+                    setError(rsp.error)
+                } else if (rsp?.access_token || rsp?.token) {
+                    setLoading(false)
+                    setMsg('Log-in successful. Redirecting...')
+                    setTimeout(() => {
+                        router.push({
+                            pathname: props.was
+                        })
+                    }, 2000);
+                } else {
+                    setError(error)
+                    setLoading(false)
+                }
+                return false
+            }).catch(err => {
+                setLoading(false)
+                setError(err.message)
+                return false
+            })
+
+    } else {
+        setLoading(false)
+        setError('Please fill in all fields')
+        return false
+    }
+}
     return (
         <div>
             <Head>
@@ -37,54 +95,7 @@ const Login = (props) => {
                         <Link className="text-gray-800 text-lg font-medium  focus:underline active:underline" href="/">&larr; Back home</Link>
                     </div>
                 </div>
-                <form onSubmit={ev => {
-                    ev.preventDefault()
-                    setLoading(true)
-                    setError('')
-                    if (
-                        (username && username.length > 0) &&
-                        (password && password.length > 0)
-                    ) {
-                        return fetch('/api/login', {
-                            headers: {
-                                'Accept': 'application/json',
-                                'Content-Type': 'application/json'
-                            },
-                            method: 'POST',
-                            body: JSON.stringify({
-                                username: username,
-                                password: password
-                            })
-                        })
-                            .then(r => r.json())
-                            .then(rsp => {
-
-                                if (rsp.error) {
-                                    setLoading(false)
-                                    setError(rsp.error)
-                                } else if (rsp?.access_token || rsp?.token) {
-                                    setLoading(false)
-                                    setMsg('Log-in successful. Redirecting...')
-                                    setTimeout(() => {
-                                        goSomewhere(props.was)
-                                    }, 2000);
-                                } else {
-                                    setError(error)
-                                    setLoading(false)
-                                }
-                                return false
-                            }).catch(err => {
-                                setLoading(false)
-                                setError(err.message)
-                                return false
-                            })
-
-                    } else {
-                        setLoading(false)
-                        setError('Please fill in all fields')
-                        return false
-                    }
-                }}
+                <form onSubmit={handleLogin}
 
                     className="bg-gray-50 w-full max-w-screen-sm p-4 md:p-6 drop-shadow backdrop-filter flex flex-col items-center gap-4 md:gap-6 shadow-lg border border-gray-50">
 

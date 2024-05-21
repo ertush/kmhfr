@@ -39,6 +39,9 @@ function Home(props) {
   let API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 
+
+ 
+
   useEffect(() => {
 
     setIsClient(true)
@@ -46,50 +49,55 @@ function Home(props) {
     // if(userID !== 6) {
     //   router.replace('/dashboard')
     // }
-
     let mtd = true;
-    if (mtd) {
-      let is_user_logged_in =
-        (typeof window !== "undefined" &&
-          window.document.cookie.indexOf("access_token=") > -1) ||
-        false;
-      let session_token = null;
-      if (is_user_logged_in) {
-        session_token = JSON.parse(
-          window.document.cookie.split("access_token=")[1].split(";")[0]
-        );
-      }
-
-      if (
-        is_user_logged_in &&
-        typeof window !== "undefined" &&
-        session_token !== null
-      ) {
 
 
-        getUserDetails(session_token.token, `${API_URL}/rest-auth/user/`).then(
-          (usr) => {
+    function initializePage() {
 
-            if (usr.error || usr.detail) {
-              setIsLoggedIn(false);
-              setUser(null);
-            } else {
-              
-              if(usr.type !== undefined) {
-                 usr.type == 6  ? setIsLoggedIn(false) : setIsLoggedIn(true);
+      if (mtd) {
+        let is_user_logged_in =
+          (typeof window !== "undefined" &&
+            window.document.cookie.indexOf("access_token=") > -1) ||
+          false;
+        let session_token = null;
+        if (is_user_logged_in) {
+          session_token = JSON.parse(
+            window.document.cookie.split("access_token=")[1].split(";")[0]
+          );
+        }
+  
+        if (
+          is_user_logged_in &&
+          typeof window !== "undefined" &&
+          session_token !== null
+        ) {
+  
+  
+          getUserDetails(session_token.token, `${API_URL}/rest-auth/user/`).then(
+            (usr) => {
+  
+              if (usr.error || usr.detail) {
+                setIsLoggedIn(false);
+                setUser(null);
+              } else {
+                
+                if(usr.type !== undefined) {
+                   usr.type == 6  ? setIsLoggedIn(false) : setIsLoggedIn(true);
+                }
+  
+                setUser(usr);
+  
               }
-
-              setUser(usr);
-
             }
-          }
-        );
-      } else {
-        console.log("no session. Refreshing...");
-        // router.push('/auth/login')
+          );
+        } else {
+          console.log("no session. Refreshing...");
+          // router.push('/auth/login')
+        }
       }
     }
 
+   initializePage()
 
     return () => {
       mtd = false;

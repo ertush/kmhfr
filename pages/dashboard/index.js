@@ -7,7 +7,6 @@ import Chart from '../../components/Chart'
 import Select from 'react-select'
 // import { Select as CustomSelect } from '../../components/Forms/formComponents/Select'
 import { UserContext } from '../../providers/user'
-import { useReactToPrint } from 'react-to-print'
 import 'react-datepicker/dist/react-datepicker.css';
 import propTypes from 'prop-types'
 
@@ -50,34 +49,13 @@ function Dashboard(props) {
         }
     ]
 
-    const quarters = [
-        {
-            value: 'All',
-            label: 'All Quarters'
-        },
-        {
-            value: 'quarter 1',
-            label: 'Quarter 1'
-        },
-        {
-            value: 'quarter 2',
-            label: 'Quarter 2'
-        },
-        {
-            value: 'quarter 3',
-            label: 'Quarter 3'
-        },
-        {
-            value: 'quarter 4',
-            label: 'Quarter 4'
-        }
-    ]
-    const [isquarterOpen, setIsquarterOpen] = useState(false);
+  
+
+
     const [isOpen, setIsOpen] = useState(false);
     const [drillDown, setDrillDown] = useState({})
-    const [user, setUser] = useState(userCtx)
     const [subCounties, setSubCounties] = useState([])
-    const [counties, setCounties] = useState([])
+    const [_, setCounties] = useState([])
     const [wards, setWards] = useState([])
     const [isClient, setIsClient] = useState(false);
 
@@ -90,7 +68,9 @@ function Dashboard(props) {
     const [facilityCHUsPresentationType, setFacilityCHUsPresentationType] = useState('bar')
 
 
-    const dwn = useRef()
+
+    const groupID = userCtx?.groups[0]?.id
+    const user = userCtx
 
     async function fetchCounties() {
 
@@ -122,42 +102,10 @@ function Dashboard(props) {
         }
     }
 
-    function getperiod(item, curryear) {
-        let startdate = ''
-        let enddate = ''
-        try {
-            if (item === 'All') {
-                startdate = curryear + "-01-01"
-                enddate = curryear + "-12-" + (new Date(curryear, 12, 0).getDate().toString())
-            }
-            else if (item === 'quarter 1') {
-                startdate = curryear + "-01-01"
-                enddate = curryear + "-03-" + (new Date(curryear, 3, 0).getDate().toString())
-            }
-            else if (item === 'quarter 2') {
-                startdate = curryear + "-04-01"
-                enddate = curryear + "-06-" + (new Date(curryear, 6, 0).getDate().toString())
-            }
-            else if (item === 'quarter 3') {
-                startdate = curryear + "-07-01"
-                enddate = curryear + "-09-" + (new Date(curryear, 9, 0).getDate().toString())
-            }
-            else if (item === 'quarter 4') {
-                startdate = curryear + "-10-01"
-                enddate = curryear + "-12-" + (new Date(curryear, 12, 0).getDate().toString())
-            }
-            else {
-                return null
-            }
-            return [startdate, enddate]
-        } catch (error) {
-            return null
-        }
-    }
-
+  
 
     useEffect(() => {
-        setUser(userCtx)
+        // setUser(userCtx)
 
         let mtd = true
         if (mtd) {
@@ -183,7 +131,8 @@ function Dashboard(props) {
                     }
                 })
             }
-            if (userCtx) setUser(userCtx)
+            // if (window) setUser(JSON.parse(window.localStorage.getItem('user')))
+
         }
         return () => { mtd = false }
 
@@ -191,28 +140,22 @@ function Dashboard(props) {
 
 
     // Check for user authentication
-    useEffect(() => {
+    useEffect(() => {  
+        
+
         setIsClient(true)
 
-        console.log({userCtx: userCtx})
-        if (userCtx?.groups[0].id == 2) fetchWards(user?.user_sub_counties[0]?.sub_county ?? null)
-        if (userCtx?.groups[0].id == 1) fetchSubCounties(props?.filters?.county[0]?.id)
-        if (userCtx?.groups[0].id == 7) fetchCounties();
+        console.log({groupID})
 
-        setUser(userCtx)
-
+        if (groupID == 2) fetchWards(user?.user_sub_counties[0]?.sub_county ?? null)
+        if (groupID == 1) fetchSubCounties(props?.filters?.county[0]?.id)
+        if (groupID == 7) fetchCounties();
 
 
     }, [])
 
 
-    // console.log(props.data)
-    const exportToPdf = useReactToPrint({
-        documentTitle: 'Summary',
-        content: () => dwn.current,
-    });
-
-
+  
     const totalSummary = [
         { name: 'Total Facilities', count: `${props?.data?.total_facilities || 0}` },
         { name: 'Total approved facilities', count: `${props?.data?.approved_facilities || 0}` },
@@ -247,20 +190,7 @@ function Dashboard(props) {
         { name: 'CHUs updated', count: `${props?.data?.recently_updated_chus || 0}` }
     ]
 
-    // console.log(user)
-    const csvHeaders = useMemo(
-        () => [
-            { key: 'metric', label: 'Metric' },
-            { key: 'value', label: 'Value' },
-        ],
-        [],
-    );
-
-    const groupID = user?.groups[0]?.id
-
-    const userCounty = user?.user_counties[0]?.county_name
-
-    const userSubCounty = user?.user_sub_counties[0]?.sub_county_name
+  
 
     function countyOptions(filters, ft) {
         if (groupID === 5 || groupID === 7) {
@@ -371,9 +301,9 @@ function Dashboard(props) {
         const county = document.querySelector("#county-filter")
         const subCounty = document.querySelector("#sub-county-filter")
         const ward = document.querySelector("#ward-filter")
+        
 
-        if (value.label == "custom") {
-            setIsquarterOpen(false)
+        if (value.label.toLowerCase().trim() == "custom range") {
             setIsOpen(true)
             return;
         } else {
@@ -505,7 +435,7 @@ function Dashboard(props) {
         const county = document.querySelector("#county-filter")
         const subCounty = document.querySelector("#sub-county-filter")
 
-        const orgUnit = value.value //event.target.value
+        const orgUnit = value.value 
 
 
         if (orgUnit) {
@@ -564,10 +494,23 @@ function Dashboard(props) {
         if(chart_type == 'facility_chu_chart') chartPresentationOptions.find(({value}) => value == facilityCHUsPresentationType)
     }
 
+    function getTitle() {
+
+        if(groupID == 5 || groupID == 7) { // National And Super User groups
+            return 'National'
+        } else if(groupID == 1) { // CHRIO Group
+            return `${userCtx?.county_name} County`
+        } else if(groupID == 2) { // SCHRIO Group
+            return `${userCtx?.sub_county_name} Sub County`
+        } else {    
+            return ''
+        }
+       
+    }
+
 
     if (isClient) {
 
-       
         return (
             <div className="">
                 <Head>
@@ -582,9 +525,7 @@ function Dashboard(props) {
                             {/* Debug */}
 
                             <div className="no-print flex flex-row gap-2 md:text-base py-3">
-                                {/* <Link className="text-gray-700" href="/" >Home</Link>  */}
-                                {/* <span className="text-gray-600 text-2xl">Dashboard</span>  */}
-
+                           
                             </div>
 
 
@@ -597,32 +538,22 @@ function Dashboard(props) {
 
 
                                 <div className="w-full flex justify-between">
-                                  
                                     {/* <pre>
                                         {
-                                        JSON.stringify(new URL(window.location.href).searchParams.get('county'), null, 2)
+                                            getTitle()
                                         }
-                                        </pre> */}
-
+                                    </pre> */}
+                                  
+                                    
                                     <h1 className="w-full md:w-auto text-4xl tracking-tight font-bold leading-3 flex items-start justify-center gap-x-1 gap-y-2 flex-grow mb-4 md:mb-2 flex-col">
                                         {
-                                            props?.filters?.county.length == 1 ?
-                                                props?.filters?.county[0]?.name
-                                                :
-                                                new URL(window.location.href).searchParams.get('county') !== 'national' && 
-                                                new URL(window.location.href).searchParams.get('county') ?
-                                                props?.filters?.county?.find(({ id }) => id == Object.entries(props?.query)[1][1])?.name
-                                                :
-                                                'National'
+                                            getTitle()
                                         }
                                     </h1>
 
-                                    {/* <pre>{
-                                        JSON.stringify({props}, null, 2)
-                                    }</pre> */}
+                                    
 
-                                    {/* show datetime filters */}
-                                    {/* --- */}
+                                   
                                     {user &&
                                         <div className="w-auto flex items-center gap-3">
 
@@ -644,7 +575,7 @@ function Dashboard(props) {
                                                     }}
 
                                                     options={Years}
-                                                    placeholder='Filter by Year'
+                                                    placeholder='Select Year'
                                                     name='year'
                                                     id="year-filter"
                                                     onChange={handleYearChange}
@@ -653,12 +584,13 @@ function Dashboard(props) {
                                             </div>
 
                                             {/* County Select */}
-
+                                           
                                             {
                                                 (groupID == 5 || groupID == 7) &&
                                                 props?.filters && props?.filters?.county.length > 0 &&
                                                 Object.keys(props?.filters)?.map(ft => (
                                                     <Select
+                                                        key={ft?.id}
                                                         className="max-w-max md:w-[250px] rounded border border-gray-400"
                                                         styles={{
                                                             control: (baseStyles) => ({
@@ -677,15 +609,18 @@ function Dashboard(props) {
                                                         name={ft}
                                                         id={"county-filter"}
                                                         options={countyOptions(filters, ft)}
-                                                        placeholder={`Filter by ${ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}`}
+                                                        placeholder={`Select ${ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}`}
                                                         onChange={handleCountyOrgUnitChange} />
                                                 ))}
 
                                             {/* county user */}
-                                            {groupID === 1 && <div className="max-w-min">
-                                                {subCounties && subCounties?.subCounties.length > 0 &&
+                                            
+                                            {groupID === 1 &&  
+                                            <div className="max-w-min">
+                                                {Array.isArray(subCounties?.subCounties) && subCounties?.subCounties.length > 0 &&
                                                     Object.keys(subCounties)?.map(ft => (
                                                         <Select
+                                                            key={ft?.id}
                                                             className="max-w-max md:w-[250px] rounded border border-gray-400"
                                                             styles={{
                                                                 control: (baseStyles) => ({
@@ -706,7 +641,7 @@ function Dashboard(props) {
                                                             options={
                                                                 subCountyOptions(filters, ft)
                                                             }
-                                                            placeholder={`Filter by ${ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}`}
+                                                            placeholder={`Select ${ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(" ").slice(1)}`}
                                                             onChange={handleSubCountyOrgUnitChange} />
 
                                                     ))}
@@ -737,13 +672,13 @@ function Dashboard(props) {
 
                                                                 id="ward-filter"
                                                                 options={wardOptions(filters, ft)}
-                                                                placeholder={`Filter by ${ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}`}
+                                                                placeholder={`Select ${ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}`}
                                                                 onChange={handleWardOrgUnitChange} />
 
                                                         ))}
                                                 </div>
                                             }
-                                            {/* </div> */}
+                                            
 
                                             <div className="relative">
                                                 {/* Modal overlay */}
@@ -1258,19 +1193,12 @@ function Dashboard(props) {
 
 
                         {/* Floating div at bottom right of page */}
-                        {/* <div className="fixed bottom-4 right-4 z-10 w-96 h-auto bg-gray-50/50 bg-blend-lighten shadow-lg -lg flex flex-col justify-center items-center py-2 px-3">
-                            <h5 className="text-sm font-bold">
-                                <span className="text-gray-600 uppercase">Limited results</span>
-                            </h5>
-                            <p className="text-sm text-gray-800">
-                                For testing reasons, results are limited at the moment.
-                            </p>
-                        </div> */}
-                        {/* </div> */}
+                       
 
-                        <style jsx global>{`
+                        {/* <style jsx global>
+                            {`
                         @media print {
-                        /* Exclude the content with the "no-print" class */
+                        
                         .no-print {
                             display: none;
                         }
@@ -1288,7 +1216,7 @@ function Dashboard(props) {
                             
                         }
                         }
-                    `}</style>
+                    `}</style> */}
                     </div>
                 </MainLayout>
             </div>
