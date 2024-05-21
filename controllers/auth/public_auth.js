@@ -46,7 +46,7 @@ const getToken = (req, res, refresh_token, creds) => {
         bod.password = creds?.password || process.env.NEXT_PUBLIC_CLIENT_PASSWORD
     }
     bod.client_id = process.env.NEXT_PUBLIC_CLIENT_PUBLIC_ID
-    bod.client_secret = process.env.NEXT_PUBLIC_CLIENT_PUBLIC_SECRET
+    bod.client_secret = process.env.CLIENT_PUBLIC_SECRET
 
     return fetch(process.env.TOKEN_URL, {
         'method': 'POST',
@@ -54,7 +54,7 @@ const getToken = (req, res, refresh_token, creds) => {
             "Accept": "application/json",
             'cache-control': "no-cache",
             "Content-Type": "application/x-www-form-urlencoded", 
-            "Authorization": "Basic " + Buffer.from(process.env.NEXT_PUBLIC_CLIENT_PUBLIC_ID + ":" + process.env.NEXT_PUBLIC_CLIENT_PUBLIC_SECRET).toString('base64')
+            "Authorization": "Basic " + Buffer.from(process.env.NEXT_PUBLIC_CLIENT_PUBLIC_ID + ":" + process.env.CLIENT_PUBLIC_SECRET).toString('base64')
         },
         'body': new URLSearchParams(bod).toString()//bod
     })
