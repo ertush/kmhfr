@@ -43,6 +43,7 @@ function CommunityUnitsBasciDetailsForm(props) {
 	const [validationError, setValidationError] = useState(null)
 	const setFormId = useContext(SetFormIdContext)
 
+
 	function handleCUBasicDetailsSubmit (event) {
 		
 		event.preventDefault();
@@ -725,7 +726,7 @@ function CommunityUnitsExtensionWorkersForm(props) {
 	return (
 		<>
 			<h4 className='text-lg uppercase pb-2 border-b border-gray-600 w-full mb-4 font-semibold text-gray-900'>
-				CHEWs: Community Health Promoters
+				CHAs: Community Health Assistant
 			</h4>
 
 			{formError && <Alert severity="error" sx={{width:'100%', marginY:'15px'}}>{formError}</Alert> }
@@ -734,8 +735,11 @@ function CommunityUnitsExtensionWorkersForm(props) {
 				name='chews_form'
 				className='flex flex-col w-full items-start justify-start gap-3'
 				onSubmit={handleCHEWSubmit}>
-				<div className='w-full flex flex-col items-between justify-start border border-gray-600  gap-4 mb-3 p-3'>
-					<div className='w-full grid grid-cols-4  mx-auto place-content-start gap-x-3 flex-1 mb-2'>
+				<div className='w-full flex flex-col items-between justify-start border border-gray-600  gap-2 mb-3 p-3'>
+					
+				<div className="flex items-start justify-between">
+
+					<div className='w-full grid md:grid-cols-5 mx-auto place-content-start gap-x-5 flex-1 mb-2'>
 
 						<label
 							htmlFor='last_name'
@@ -750,31 +754,52 @@ function CommunityUnitsExtensionWorkersForm(props) {
 						</label>
 
 						<label
-							htmlFor='last_name'
+							htmlFor='mobile_no'
 							className='block text-sm font-medium text-gray-700'>
-							In Charge
+							Mobile Phone Number*
 						</label>
 
-						<div className='flex flex-row justify-between gap-2'>
-							<label
+						<label
+							htmlFor='email'
+							className='block text-sm font-medium text-gray-700'>
+							Email
+						</label>
+
+						<label
 								htmlFor='last_name'
 								className='block text-sm font-medium text-gray-700'>
 								Delete
 							</label>
+
+							
+
+			
+					</div>
+					
+					<div className='flex flex-row justify-between gap-2'>
+							
 							<button className=' w-auto  bg-blue-600 p-2 text-white flex text-md font-semibold '
 								onClick={handleAddCHEW}
 							>
 								{`Add +`}
 
 							</button>
+						</div> 
+
+
+						{/* <label
+							htmlFor='last_name'
+							className='block text-sm font-medium text-gray-700'>
+							In Charge
+						</label> */}
 						</div>
 
+				
 
-
-					</div>
 					
 					{contactCHEW.map((_, i) => (
-						<div className='w-full grid grid-cols-4 mx-auto place-content-start gap-y-1 gap-x-3' key={i} >
+						<div className="flex items-start justify-between" key={i+1}>
+						<div className='w-full grid md:grid-cols-5 mx-auto place-content-start gap-y-1 gap-x-5'  >
 							{/* First Name */}
 
 							<input
@@ -783,7 +808,7 @@ function CommunityUnitsExtensionWorkersForm(props) {
 								type='text'
 								name='first_name'
 								defaultValue={''}
-								className='flex-none  md:w-52 w-auto bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
+								className='flex-none  md:max-w-min w-auto bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
 							/>
 
 
@@ -792,25 +817,53 @@ function CommunityUnitsExtensionWorkersForm(props) {
 
 							<input
 								required
-								
 								type='text'
 								name='last_name'
 								defaultValue={''}
-
-								className='flex-none  md:w-52 w-auto bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
+								className='flex-none  md:max-w-min w-auto bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
 							/>
+
+					
+							{/* Phone Number */}
+
+							<input
+								required
+								type='tel'
+								pattern={'[+]{1}[254]{3}[ ]{1}[0-9]{9}'}
+								placeholder={'+254 #########'}
+								name='mobile_no'
+								defaultValue={''}
+
+								className='flex-none  md:max-w-min w-auto bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
+							/>
+
+
+
+							{/* Email */}
+
+							<input
+								required
+								type='email'
+								name='email'
+								defaultValue={''}
+								placeholder="user@email-domain"
+								pattern="[a-z0-9]+[.]*[\-]*[a-z0-9]+@[a-z0-9]+[\-]*[.]*[a-z0-9]+[.][a-z]{2,}"
+								className='flex-none  md:max-w-min w-auto bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
+							/>
+
+
 
 
 							{/* In charge */}
 
-
+							{/* 
 							<input
 
 								name='is_incharge'
 								
 								type='checkbox'
 								className='focus:ring-indigo-50 bg-transparent h-4 w-4 border-gray-600'
-							/>
+							/> */}
 
 
 
@@ -833,11 +886,27 @@ function CommunityUnitsExtensionWorkersForm(props) {
 
 
 						</div>
+
+						<div className='flex flex-row justify-between gap-x-2'>
+							
+							<span disabled={true} className=' w-auto bg-transparent p-4 text-white flex text-md font-semibold '
+							>
+								{`Add +`}
+
+							</span>
+						</div> 
+
+						</div>
 					))}
 
 
 
 				</div>
+
+				
+
+
+				
 
 				{/* Basic Details and Services */}
 				<div className='flex justify-between items-center w-full p-2'>
@@ -980,6 +1049,8 @@ function CommunityUnitsServicesForm(props) {
 				JSON.stringify(props?.service_category)
 			} */}
 
+		
+
 			<div
 				name='chu_services_form'
 				className='flex flex-col w-full items-start justify-start gap-3'
@@ -1006,6 +1077,8 @@ function CommunityUnitsServicesForm(props) {
 							handleItemPrevious={handleServicesPrevious} //handleServicePrevious
 						
 						/>
+
+
 
 					</div>
 				</div>
@@ -1039,7 +1112,7 @@ function AddCommunityUnit(props) {
 	// Define registration steps
 	const steps = [ 
 		'Basic Details',
-		'CHEWS: Community Health Promoters',
+		'CHAs: Community Health Assistants',
 		'Services',
 	];
 

@@ -714,7 +714,7 @@ function EditCommunityUnitsCHEWSForm(props) {
   
               setSubmitting(false)
               // setFormError(Array.isArray(Object.values(detail)) && Object.values(detail).length == 1 && typeof Object.values(detail)[0] == 'string' && detail[0][0])
-              alert.error('Unable to update Community Units healtjh workers')
+              alert.error('Unable to update Community Units health workers')
             }
           })
       }

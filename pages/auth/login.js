@@ -15,7 +15,6 @@ function Login(props) {
     const [error, setError] = React.useState(props.error)
     const [msg, setMsg] = React.useState(props.msg)
     const [loading, setLoading] = React.useState(false)
-    const [groupID, setGroupID] = React.useState(null)
 
 
 function handleLogin(ev) {
