@@ -364,6 +364,148 @@ function EditListItem({
 
       {formError && <Alert severity='error' className={'w-full'}>{formError}</Alert>}
 
+      <div className='flex flex-col w-full items-start'>
+          <div className='w-full flex flex-row items-center px-2 justify-start gap-1 gap-x-3 mb-3'>
+            <label
+              htmlFor='income_generating_activities'
+              className='text-gray-700 capitalize text-sm flex-grow'>
+              Does the CHU have income-generating activities{' '}
+            </label>
+            <span className='flex items-center gap-x-1'>
+              <input
+                type='radio'
+                name='income_generating_activities'
+                value={true}
+                // defaultChecked={options?.data?.accredited_lab_iso_15189 === true}
+
+              />
+              <small className='text-gray-700'>Yes</small>
+            </span>
+            <span className='flex items-center gap-x-1'>
+              <input
+                type='radio'
+                name='income_generating_activities'
+                value={false}
+                // defaultChecked={options?.data?.accredited_lab_iso_15189 === false}
+
+
+              />
+              <small className='text-gray-700'>No</small>
+            </span>
+
+          </div>
+
+          <div className='w-full flex flex-row items-center px-2 justify-start gap-1 gap-x-3 mb-3'>
+            <label
+              htmlFor='education_communication_materials'
+              className='text-gray-700 capitalize text-sm flex-grow'>
+              Education & Communication (IEC) materials{' '}
+            </label>
+            <span className='flex items-center gap-x-1'>
+              <input
+                type='radio'
+                name='education_communication_materials'
+                value={true}
+                // defaultChecked={options?.data?.accredited_lab_iso_15189 === true}
+
+              />
+              <small className='text-gray-700'>Yes</small>
+            </span>
+            <span className='flex items-center gap-x-1'>
+              <input
+                type='radio'
+                name='education_communication_materials'
+                value={false}
+                // defaultChecked={options?.data?.accredited_lab_iso_15189 === false}
+
+
+              />
+              <small className='text-gray-700'>No</small>
+            </span>
+
+          </div>
+
+        </div>
+
+        <div className='flex flex-col w-full items-start gap-1'>
+        <h4 className="text-lg uppercase mt-4 pb-2 border-b border-gray-600 w-full mb-4 font-semibold text-gray-900">Partner(s) currently supporting CHU</h4>
+        
+
+        <div className="w-full flex flex-col items-start justify-start gap-y-7 mb-3">
+      <label
+                  htmlFor={`partner_name`}
+                  start
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Partner Name
+                </label>
+        {
+        Array.isArray([1]) && [1].length > 0  && (
+          [1]?.map((id, index) => {
+            return (
+              <div
+                className="flex  items-center justify-between md:mx-1 gap-4 w-full"
+                key={index + 1}
+              >
+                {/* First Name */}
+                <div className="flex-col w-full gap-2">
+                  
+                  <input
+                    required
+                    type="text"
+                    id={`first_name_${index}`}
+                    name={`first_name_${index}`}
+                    defaultValue={''}
+                    className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:bg-white focus:border-black outline-none"
+                  />
+                </div>
+                
+
+                {/* Delete CHEW */}
+
+                <div className="flex-col gap-2">
+                  <div className="flex items-center">
+                    {/* insert red button for deleting */}
+                    <button
+                      onClick={(e) => null}
+                      className="flex items-center justify-start space-x-2 bg-red-600 rounded  p-1 px-2"
+                    
+                    >
+                      <span className="text-medium font-semibold text-white">
+                        
+                          
+                          
+                          Delete
+
+                        
+                        
+                      </span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )
+          })
+        )
+        }
+       
+
+        <div className="sticky top-0 right-10 w-full flex justify-end">
+          <button
+            className=" bg-gray-500 rounded p-2 text-white flex text-md font-semibold "
+            onClick={(e) => {
+              e.preventDefault()
+              
+            }}
+          >
+            {`Add +`}
+            {/* <PlusIcon className='text-white ml-2 h-5 w-5'/> */}
+          </button>
+        </div>
+      </div>
+
+        </div>
+
       <div className='w-full grid grid-cols-12 gap-4'>
         <div className={`${itemName == "chul_services" ? 'col-span-12' : 'col-span-5'}`} >
           <h4 className="text-lg uppercase mt-4 pb-2 border-b border-gray-600 w-full mb-4 font-semibold text-gray-900">{itemName == 'chul_services' ? 'Services' : 'Categories'}</h4>

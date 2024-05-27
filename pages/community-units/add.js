@@ -8,7 +8,10 @@ import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
 import CommunityUnitSideMenu from '../../components/CommunityUnitSideMenu';
-import { ChevronDoubleRightIcon, ChevronDoubleLeftIcon, TrashIcon } from '@heroicons/react/solid';
+import { 
+	ChevronDoubleRightIcon, 
+	ChevronDoubleLeftIcon, 
+	TrashIcon } from '@heroicons/react/solid';
 import { Select as CustomSelect } from '../../components/Forms/formComponents/Select';
 import Select from 'react-select'
 import { useAlert } from "react-alert";
@@ -16,6 +19,11 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import Spinner from '../../components/Spinner'
 import Alert from '@mui/material/Alert';
+import { 
+	KeyboardArrowRight,
+	KeyboardArrowDown
+
+} from '@mui/icons-material'
 
 
 const SetFormIdContext = createContext(null)
@@ -42,6 +50,7 @@ function CommunityUnitsBasciDetailsForm(props) {
 	const [formError, setFormError] = useState(null)
 	const [validationError, setValidationError] = useState(null)
 	const setFormId = useContext(SetFormIdContext)
+
 
 	function handleCUBasicDetailsSubmit (event) {
 		
@@ -134,7 +143,6 @@ function CommunityUnitsBasciDetailsForm(props) {
 		})
 	};
 
-
 	function handleFacilityChange({ value }) {
 
 		facilities?.map(({id, county, sub_county_name, constituency, ward_name, owner_type, owner_type_name}) => {
@@ -214,8 +222,6 @@ function CommunityUnitsBasciDetailsForm(props) {
 	}, [])
 
 
-
-
 	return (
 		<>
 			<h4 className='text-lg uppercase  pb-2 border-b border-gray-600 w-full font-semibold'>
@@ -245,7 +251,7 @@ function CommunityUnitsBasciDetailsForm(props) {
 						type='text'
 						name='name'
 						defaultValue={formData?.name}
-						className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
+						className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
 					/>
 				</div>
 
@@ -335,7 +341,7 @@ function CommunityUnitsBasciDetailsForm(props) {
 									name='date_established'
 									onChange={handleDateChange}
 									defaultValue={formData?.date_established}
-									className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
+									className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
 								/>
 
 								{validationError?.date_established && <span className='text-red-500 text-sm'>{validationError?.date_established}</span>}
@@ -362,7 +368,7 @@ function CommunityUnitsBasciDetailsForm(props) {
 									onChange={handleDateChange}
 									defaultValue={formData?.date_operational}
 
-									className={`${validationError !== null ? 'border-red-600' : ''} flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none`}
+									className={`${validationError !== null ? 'border-red-600' : ''} flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-600 rounded focus:shadow-none focus:bg-white focus:border-black outline-none`}
 								/>
 
 								{validationError?.date_operational && <span className='text-red-500 text-sm'>{validationError?.date_operational}</span>}
@@ -389,7 +395,7 @@ function CommunityUnitsBasciDetailsForm(props) {
 						placeholder='Number of households served by the unit'
 						defaultValue={formData?.households_monitored}
 						min={0}
-						className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
+						className='flex-none w-full bg-transparent rounded  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
 					/>
 				</div>
 
@@ -412,15 +418,15 @@ function CommunityUnitsBasciDetailsForm(props) {
 						min={0}
 						defaultValue={formData?.number_of_chvs}
 
-						className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
+						className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
 					/>
 				</div>
 
 				{/* Location */}
 				<div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-					<div className='grid grid-cols-4 place-content-start gap-3 w-full'>
+					<div className='grid md:grid-cols-4 grid-cols-1 place-content-start gap-3 w-full'>
 						{/* County  */}
-						<div className='col-start-1 col-span-1'>
+						<div className='col-span-1'>
 							<div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
 								<label
 									htmlFor='facility_county'
@@ -436,13 +442,13 @@ function CommunityUnitsBasciDetailsForm(props) {
 
 									type='text'
 									name='facility_county'
-									className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
+									className='flex-none w-full bg-transparent rounded  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
 								/>
 							</div>
 						</div>
 
 						{/* Sub-county */}
-						<div className='col-start-2 col-span-1'>
+						<div className='col-span-1'>
 							<div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
 								<label
 									htmlFor='facility_subcounty'
@@ -457,13 +463,13 @@ function CommunityUnitsBasciDetailsForm(props) {
 									defaultValue={formData?.facility_subcounty ?? subCountyValue }
 									type='text'
 									name='facility_subcounty'
-									className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
+									className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
 								/>
 							</div>
 						</div>
 
 						{/* Constituency */}
-						<div className='col-start-3 col-span-1'>
+						<div className='col-span-1'>
 							<div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
 								<label
 									htmlFor='facility_constituency'
@@ -478,13 +484,13 @@ function CommunityUnitsBasciDetailsForm(props) {
 									defaultValue={formData?.facility_constituency ?? constituencyValue}
 									type='text'
 									name='facility_constituency'
-									className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
+									className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
 								/>
 							</div>
 						</div>
 
 						{/* Ward */}
-						<div className='col-start-4 col-span-1'>
+						<div className='col-span-1'>
 							<div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
 								<label
 									htmlFor='facility_ward'
@@ -499,7 +505,7 @@ function CommunityUnitsBasciDetailsForm(props) {
 									defaultValue={formData?.facility_ward ?? wardValue}
 									type='text'
 									name='facility_ward'
-									className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
+									className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
 								/>
 							</div>
 						</div>
@@ -519,8 +525,69 @@ function CommunityUnitsBasciDetailsForm(props) {
 						name='location'
 						defaultValue={formData?.location}
 						placeholder='Description of the area of coverage'
-						className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
+						className='flex-none w-full bg-transparent rounded  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
 					/>
+				</div>
+
+				{/* COmmunity Health Unit Workforce */}
+				<div className='grid grid-cols-3 grid-rows-5 gap-3 mb-3 w-full'>
+					<h4 className='col-span-3 self-end row-start-1 text-lg uppercase  border-b border-gray-600 w-full font-semibold text-gray-900'>
+					Community Health Unit Workforce
+					</h4>
+					<label className='col-start-2 row-start-2 text-gray-600 self-end'>Number Present</label>
+					<label className='col-start-3 row-start-2 text-gray-600 self-end'>Number Trained</label>
+
+					{/* <div className='row-span-3'> */}
+					<label className='col-start-1 row-start-3 self-end'>Community Health Promoters (CHPs)*</label>
+					<label className='col-start-1 row-start-4 self-end'>Community Health Assistants (CHAs)*</label>
+					<label className='col-start-1 row-start-5 self-end'>Community Health Commitee Members (CHC)*</label>
+
+					{/* </div> */}
+				
+					<input
+						defaultValue={''}
+						type='number'
+						name='chps_present'
+						className='col-start-2 flex-none w-full bg-transparent  rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
+					/>
+
+					<input
+						defaultValue={''}
+						type='number'
+						name='chps_trained'
+						className='col-start-3 flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
+					/>
+					
+					<input
+						defaultValue={''}
+						type='number'
+						name='chas_present'
+						className='col-start-2 flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
+					/>
+
+					<input
+						defaultValue={''}
+						type='number'
+						name='chas_trained'
+						className='col-start-3 flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
+					/>
+
+					<input
+						defaultValue={''}
+						type='number'
+						name='chc_present'
+						className='col-start-2 flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
+					/>
+
+					<input
+						defaultValue={''}
+						type='number'
+						name='chc_trained'
+						className='col-start-3 flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
+					/>
+
+
+
 				</div>
 
 				<div className=' w-full flex flex-col items-start justify-start p-3  border border-gray-600 bg-transparent h-auto'>
@@ -725,7 +792,7 @@ function CommunityUnitsExtensionWorkersForm(props) {
 	return (
 		<>
 			<h4 className='text-lg uppercase pb-2 border-b border-gray-600 w-full mb-4 font-semibold text-gray-900'>
-				CHEWs: Community Health Promoters
+				CHAs: Community Health Assistant
 			</h4>
 
 			{formError && <Alert severity="error" sx={{width:'100%', marginY:'15px'}}>{formError}</Alert> }
@@ -734,8 +801,11 @@ function CommunityUnitsExtensionWorkersForm(props) {
 				name='chews_form'
 				className='flex flex-col w-full items-start justify-start gap-3'
 				onSubmit={handleCHEWSubmit}>
-				<div className='w-full flex flex-col items-between justify-start border border-gray-600  gap-4 mb-3 p-3'>
-					<div className='w-full grid grid-cols-4  mx-auto place-content-start gap-x-3 flex-1 mb-2'>
+				<div className='w-full flex flex-col items-between justify-start border border-gray-600  gap-2 mb-3 p-3'>
+					
+				<div className="flex items-start justify-between">
+
+					<div className='w-full grid md:grid-cols-5 mx-auto place-content-start gap-x-5 flex-1 mb-2'>
 
 						<label
 							htmlFor='last_name'
@@ -750,31 +820,52 @@ function CommunityUnitsExtensionWorkersForm(props) {
 						</label>
 
 						<label
-							htmlFor='last_name'
+							htmlFor='mobile_no'
 							className='block text-sm font-medium text-gray-700'>
-							In Charge
+							Mobile Phone Number*
 						</label>
 
-						<div className='flex flex-row justify-between gap-2'>
-							<label
+						<label
+							htmlFor='email'
+							className='block text-sm font-medium text-gray-700'>
+							Email
+						</label>
+
+						<label
 								htmlFor='last_name'
 								className='block text-sm font-medium text-gray-700'>
 								Delete
 							</label>
+
+							
+
+			
+					</div>
+					
+					<div className='flex flex-row justify-between gap-2'>
+							
 							<button className=' w-auto  bg-blue-600 p-2 text-white flex text-md font-semibold '
 								onClick={handleAddCHEW}
 							>
 								{`Add +`}
 
 							</button>
+						</div> 
+
+
+						{/* <label
+							htmlFor='last_name'
+							className='block text-sm font-medium text-gray-700'>
+							In Charge
+						</label> */}
 						</div>
 
+				
 
-
-					</div>
 					
 					{contactCHEW.map((_, i) => (
-						<div className='w-full grid grid-cols-4 mx-auto place-content-start gap-y-1 gap-x-3' key={i} >
+						<div className="flex items-start justify-between" key={i+1}>
+						<div className='w-full grid md:grid-cols-5 mx-auto place-content-start gap-y-1 gap-x-5'  >
 							{/* First Name */}
 
 							<input
@@ -783,7 +874,7 @@ function CommunityUnitsExtensionWorkersForm(props) {
 								type='text'
 								name='first_name'
 								defaultValue={''}
-								className='flex-none  md:w-52 w-auto bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
+								className='flex-none  md:max-w-min w-auto bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
 							/>
 
 
@@ -792,25 +883,53 @@ function CommunityUnitsExtensionWorkersForm(props) {
 
 							<input
 								required
-								
 								type='text'
 								name='last_name'
 								defaultValue={''}
-
-								className='flex-none  md:w-52 w-auto bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
+								className='flex-none  md:max-w-min w-auto bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
 							/>
+
+					
+							{/* Phone Number */}
+
+							<input
+								required
+								type='tel'
+								pattern={'[+]{1}[254]{3}[ ]{1}[0-9]{9}'}
+								placeholder={'+254 #########'}
+								name='mobile_no'
+								defaultValue={''}
+
+								className='flex-none  md:max-w-min w-auto bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
+							/>
+
+
+
+							{/* Email */}
+
+							<input
+								required
+								type='email'
+								name='email'
+								defaultValue={''}
+								placeholder="user@email-domain"
+								pattern="[a-z0-9]+[.]*[\-]*[a-z0-9]+@[a-z0-9]+[\-]*[.]*[a-z0-9]+[.][a-z]{2,}"
+								className='flex-none  md:max-w-min w-auto bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
+							/>
+
+
 
 
 							{/* In charge */}
 
-
+							{/* 
 							<input
 
 								name='is_incharge'
 								
 								type='checkbox'
 								className='focus:ring-indigo-50 bg-transparent h-4 w-4 border-gray-600'
-							/>
+							/> */}
 
 
 
@@ -833,11 +952,27 @@ function CommunityUnitsExtensionWorkersForm(props) {
 
 
 						</div>
+
+						<div className='flex flex-row justify-between gap-x-2'>
+							
+							<span disabled={true} className=' w-auto bg-transparent p-4 text-white flex text-md font-semibold '
+							>
+								{`Add +`}
+
+							</span>
+						</div> 
+
+						</div>
 					))}
 
 
 
 				</div>
+
+				
+
+
+				
 
 				{/* Basic Details and Services */}
 				<div className='flex justify-between items-center w-full p-2'>
@@ -980,6 +1115,8 @@ function CommunityUnitsServicesForm(props) {
 				JSON.stringify(props?.service_category)
 			} */}
 
+		
+
 			<div
 				name='chu_services_form'
 				className='flex flex-col w-full items-start justify-start gap-3'
@@ -1007,6 +1144,8 @@ function CommunityUnitsServicesForm(props) {
 						
 						/>
 
+
+
 					</div>
 				</div>
 			</div>
@@ -1023,6 +1162,8 @@ function AddCommunityUnit(props) {
 
 	
 	const [formId, setFormId] = useState(0);
+	const [isMenuOpen, setIsMenuOpen] = useState(false)
+
 	
 	useEffect(() => {
 		if(window) {
@@ -1039,7 +1180,7 @@ function AddCommunityUnit(props) {
 	// Define registration steps
 	const steps = [ 
 		'Basic Details',
-		'CHEWS: Community Health Promoters',
+		'CHAs: Community Health Assistants',
 		'Services',
 	];
 
@@ -1056,7 +1197,7 @@ function AddCommunityUnit(props) {
 
 			{/* Main Layout */}
 			<MainLayout isLoading={false} searchTerm={props?.query?.searchTerm}>
-				<div className='w-full md:w-[85%] md:mx-auto h-full grid grid-cols-5 gap-4 px-0 md:px-4 py-2 my-4'>
+				<div className='w-full md:w-[85%] md:mx-auto h-full grid md:grid-cols-5 grid-cols-1 place-content-center md:gap-4 gap-y-4 md:gap-y-0 px-4 py-2 my-4'>
 					{/* Breadcrumbs */}
 					<div className='col-span-5 flex flex-col gap-3 md:gap-5 px-0'>
 						<div className='flex flex-wrap items-center justify-between gap-2 text-sm md:text-base py-3'>
@@ -1083,7 +1224,7 @@ function AddCommunityUnit(props) {
 					</div>
 
 					{/* Side Menu Filters*/}
-					<div className="md:col-span-1 md:mt-3 h-full">
+					<div className="hidden md:flex md:col-span-1 md:mt-3 h-full">
 						<CommunityUnitSideMenu
 							qf={qf}
 							filters={[]}
@@ -1091,8 +1232,30 @@ function AddCommunityUnit(props) {
 						/>
 					</div>
 
+					<button className='md:hidden col-span-1 relative p-2 border border-gray-800 rounded min-w-full' onClick={() => setIsMenuOpen(!isMenuOpen)}>
+							Community Units Menu
+							{
+								!isMenuOpen &&
+								<KeyboardArrowRight className='w-8 aspect-square text-gray-800' />
+							}
+
+							{
+								isMenuOpen &&
+								<KeyboardArrowDown className='w-8 aspect-square text-gray-800' />
+							}
+
+							{
+								isMenuOpen &&
+								<CommunityUnitSideMenu
+									qf={qf}
+									filters={[]}
+									_pathId={''}
+								/>
+							}
+						</button>
+
 					{/* Stepper and Form */}
-					<div className='col-span-5 md:col-span-4 flex flex-col items-center border border-gray-600  pt-8 pb-4 gap-4 mt-3 order-last md:order-none'>
+					<div className='col-span-5 md:col-span-4 flex flex-col items-center border rounded border-gray-600  pt-8 pb-4 gap-4 mt-3 order-last md:order-none'>
 						{/* Stepper Header */}
 						<div className='flex flex-col justify-center items-center px-1 md:px-4 w-full '>
 							<Box sx={{ width: '100%' }}>
@@ -1113,9 +1276,9 @@ function AddCommunityUnit(props) {
 						</div>
 
 						{/* Stepper Body */}
-						<div className='flex flex-col justify-center items-start px-1 md:px-4 w-full '>
+						<div className='flex flex-col justify-center items-start p-2 md:px-4 w-full '>
 							<div
-								className=' w-full flex flex-col items-start justify-start p-4 bg-gray-50 shadow-md'
+								className=' w-full flex flex-col items-start justify-start p-4 bg-gray-50 rounded'
 								style={{ minHeight: '250px' }}>
 								{/* Form-changing switch statement */}
 
