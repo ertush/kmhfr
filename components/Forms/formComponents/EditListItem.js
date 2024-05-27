@@ -11,6 +11,64 @@ import { TrashIcon } from '@heroicons/react/solid'
 import { Alert } from '@mui/lab'
 
 
+function RenderpartnersForm({index, setPartners}) {
+
+ 
+  return (
+    <div
+    className="flex  items-center justify-between md:mx-1 gap-4 w-full"
+    key={index + 1}
+  >
+    {/* First Name */}
+    <div className="flex-col w-full gap-2">
+      
+      <input
+        required
+        type="text"
+        id={`first_name_${index}`}
+        name={`first_name_${index}`}
+        defaultValue={''}
+        className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:bg-white focus:border-black outline-none"
+      />
+    </div>
+    
+
+    {/* Delete CHEW */}
+
+    <div className="flex-col gap-2">
+      <div className="flex items-center">
+        {/* insert red button for deleting */}
+        <button
+          onClick={(e) => {
+            e.preventDefault()
+            
+             setPartners(partners => {
+
+              delete partners[index]
+
+            
+              const val = partners.filter(i => i !== undefined)
+
+
+              console.log({val})
+              return val
+
+             })
+
+          
+            }}
+          className="flex items-center justify-start space-x-2 bg-red-600 rounded p-1 px-2"
+        
+        >
+          <span className="text-medium font-semibold text-white">
+            Delete
+          </span>
+        </button>
+      </div>
+    </div>
+  </div>
+  )
+}
 
 function EditListItem({
   itemData,
@@ -40,6 +98,7 @@ function EditListItem({
 
   const [formError, setFormError] = useState(null)
   const [from, setFrom] = useState("submission")
+  const [partners, setPartners] = useState([0])
 
   // Refs
   const [categoryOptions, setCategoryItems] = useState(() => {
@@ -345,14 +404,6 @@ function EditListItem({
 
   }
 
-// return (
-//   <pre>
-//     {
-//       JSON.stringify({selectedItems , itemData}, null, 2)
-//     }
-//   </pre>
-// )
-
   return (
 
     <form
@@ -428,63 +479,22 @@ function EditListItem({
         </div>
 
         <div className='flex flex-col w-full items-start gap-1'>
-        <h4 className="text-lg uppercase mt-4 pb-2 border-b border-gray-600 w-full mb-4 font-semibold text-gray-900">Partner(s) currently supporting CHU</h4>
+        <h4 className="text-lg uppercase mt-4 pb-2 border-b border-gray-600 w-full mb-4 font-semibold text-gray-900">partners(s) currently supporting CHU</h4>
         
 
         <div className="w-full flex flex-col items-start justify-start gap-y-7 mb-3">
       <label
-                  htmlFor={`partner_name`}
+                  htmlFor={`partners_name`}
                   start
                   className="block text-sm font-medium text-gray-700"
                 >
-                  Partner Name
+                  Partner Names
                 </label>
         {
-        Array.isArray([1]) && [1].length > 0  && (
-          [1]?.map((id, index) => {
-            return (
-              <div
-                className="flex  items-center justify-between md:mx-1 gap-4 w-full"
-                key={index + 1}
-              >
-                {/* First Name */}
-                <div className="flex-col w-full gap-2">
-                  
-                  <input
-                    required
-                    type="text"
-                    id={`first_name_${index}`}
-                    name={`first_name_${index}`}
-                    defaultValue={''}
-                    className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:bg-white focus:border-black outline-none"
-                  />
-                </div>
-                
-
-                {/* Delete CHEW */}
-
-                <div className="flex-col gap-2">
-                  <div className="flex items-center">
-                    {/* insert red button for deleting */}
-                    <button
-                      onClick={(e) => null}
-                      className="flex items-center justify-start space-x-2 bg-red-600 rounded  p-1 px-2"
-                    
-                    >
-                      <span className="text-medium font-semibold text-white">
-                        
-                          
-                          
-                          Delete
-
-                        
-                        
-                      </span>
-                    </button>
-                  </div>
-                </div>
-              </div>
-            )
+        Array.isArray(partners) && partners.length > 0  && (
+          partners?.map((_, index) => {
+            return  <RenderpartnersForm index={index} setPartners={setPartners}/>
+            
           })
         )
         }
@@ -495,8 +505,11 @@ function EditListItem({
             className=" bg-gray-500 rounded p-2 text-white flex text-md font-semibold "
             onClick={(e) => {
               e.preventDefault()
-              
-            }}
+              setPartners((prev) => [...prev, Number(prev[prev.length-1])+1])
+            console.log({partners})
+
+            }
+          }
           >
             {`Add +`}
             {/* <PlusIcon className='text-white ml-2 h-5 w-5'/> */}

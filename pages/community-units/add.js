@@ -1115,8 +1115,6 @@ function CommunityUnitsServicesForm(props) {
 				JSON.stringify(props?.service_category)
 			} */}
 
-		
-
 			<div
 				name='chu_services_form'
 				className='flex flex-col w-full items-start justify-start gap-3'
