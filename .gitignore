@@ -14,6 +14,7 @@
 
 # production
 /build
+pages/test.js
 
 # misc
 .DS_Store
