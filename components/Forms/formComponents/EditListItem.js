@@ -11,6 +11,64 @@ import { TrashIcon } from '@heroicons/react/solid'
 import { Alert } from '@mui/lab'
 
 
+function RenderpartnersForm({index, setPartners}) {
+
+ 
+  return (
+    <div
+    className="flex  items-center justify-between md:mx-1 gap-4 w-full"
+    key={index + 1}
+  >
+    {/* First Name */}
+    <div className="flex-col w-full gap-2">
+      
+      <input
+        required
+        type="text"
+        id={`first_name_${index}`}
+        name={`first_name_${index}`}
+        defaultValue={''}
+        className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:bg-white focus:border-black outline-none"
+      />
+    </div>
+    
+
+    {/* Delete CHEW */}
+
+    <div className="flex-col gap-2">
+      <div className="flex items-center">
+        {/* insert red button for deleting */}
+        <button
+          onClick={(e) => {
+            e.preventDefault()
+            
+             setPartners(partners => {
+
+              delete partners[index]
+
+            
+              const val = partners.filter(i => i !== undefined)
+
+
+              console.log({val})
+              return val
+
+             })
+
+          
+            }}
+          className="flex items-center justify-start space-x-2 bg-red-600 rounded p-1 px-2"
+        
+        >
+          <span className="text-medium font-semibold text-white">
+            Delete
+          </span>
+        </button>
+      </div>
+    </div>
+  </div>
+  )
+}
 
 function EditListItem({
   itemData,
@@ -38,17 +96,15 @@ function EditListItem({
   const [selectedItems, setSelectedItems] = useState([])
   const [showItemCategory, setShowItemCategory] = useState(false)
 
-
   const [formError, setFormError] = useState(null)
-
+  const [from, setFrom] = useState("submission")
+  const [partners, setPartners] = useState([0])
 
   // Refs
-
-
   const [categoryOptions, setCategoryItems] = useState(() => {
 
     let newarray = [];
-    categoryItems.forEach(element => {
+    categoryItems?.forEach(element => {
       let customitem = {}
       customitem = { value: element.value, label: element.label }
       newarray.push(customitem);
@@ -77,6 +133,9 @@ function EditListItem({
   }
 
   const handleCheckboxChange = (id, name, category, category_name) => {
+    
+    setFrom("submission")
+
     setSelectedItems((prevSelectedRows) => {
       if (prevSelectedRows?.filter((row) => row.rowid == id).length > 0) {
         return prevSelectedRows?.filter((row) => row.rowid !== id);
@@ -118,15 +177,28 @@ function EditListItem({
 
   useEffect(() => {
 
+    // setallServices(itemData)
+
+    const currentUrl = new URL(window.document.location.href)
+
+    // console.log({itemName, from: })
+
+    const fromParam = currentUrl.searchParams.get("from")
+    
+    setFrom(fromParam)
+
+
     if (Array.isArray(itemData)) {
       const result = []
 
       setSelectedItems(() => {
 
-        if (itemName == 'facility_services') {
 
+        if (itemName == 'facility_services' && currentUrl.searchParams.get("from") !== "previous") {
+
+          // console.log("setting selectedItems")
           itemData?.map((service) => {
-            result.push({ sname: service.service_name, rowid: service.service_id, category_id: service.category_id, category_name: service.category_name })
+            result.push({ sname: service.service_name , rowid: service.service_id , category_id: service.category_id , category_name: service.category_name })
           })
 
           return result
@@ -140,6 +212,7 @@ function EditListItem({
 
   }, [])
 
+
   function handleSearchItemFocus(e) {
     e.preventDefault()
 
@@ -147,6 +220,7 @@ function EditListItem({
       setShowItemCategory(true)
     }
   }
+
 
   function handleSubmit(e) {
 
@@ -158,6 +232,8 @@ function EditListItem({
 
       const newSelectedItems = selectedItems.filter(({ rowId }, i) => rowId == itemData[i]?.service_id)
 
+      // console.log({selectedItems})
+      
       if (itemName == 'facility_services') {
         handleItemsUpdate(token, [newSelectedItems, itemId])
           .then(resp => {
@@ -192,6 +268,8 @@ function EditListItem({
           })
           .catch(e => console.error('unable to update facility services. Error:', e.message))
       } else {
+        
+        
         handleItemsUpdate(newSelectedItems, itemId)
           .then(resp => {
             if (resp.status == 200 || resp.status == 204 || resp.status == 201) {
@@ -225,7 +303,7 @@ function EditListItem({
       if (itemName == "facility_services") {
         handleItemsSubmit(token, selectedItems, itemId)
           .then((resp) => {
-            if (resp.status == 204 || resp.status == 200) {
+            if (resp.ok) {
               if (itemName == "facility_services") {
                 setSubmitting(false)
                 alert.success('Facility services saved successfully');
@@ -233,31 +311,25 @@ function EditListItem({
                 const services = typeof selectedItems == 'string' ? JSON.parse(selectedItems).map(({ rowid }) => ({ service: rowid })) : selectedItems.map(({ rowid }) => ({ service: rowid }))
                 const payload = JSON.stringify(services)
 
-                const base64EncParams = Buffer.from(payload).toString('base64')
+                const base64EncPayload = Buffer.from(payload).toString('base64')
+                
+                if(window){
+                    window.localStorage.setItem('services', base64EncPayload)
+                }
 
-                  router.push({
-                    pathname: `${window.location.origin}/facilities/add`,
-                    query: { 
-                      formData: base64EncParams,
-                      formId: 5,
-                      facilityId: itemId,
-                      from: 'submission'
+                router.push({
+                  pathname: `${window.location.origin}/facilities/add`,
+                  query: { 
+                    // formData: base64EncPayload,
+                    formId: 5,
+                    facilityId: itemId,
+                    from: 'submission'
 
-                    }
-                })
-                .then((navigated) => {
-                  if(navigated) setFormId(5)
-                })
-
-                // const url = new URL(`${window.location.origin}/facilities/add?formData=${base64EncParams}`)
-
-                // url.searchParams.set('formId', '5')
-
-                // url.searchParams.set('facilityId', `${itemId}`)
-
-                // url.searchParams.set('from', 'submission')
-
-                // window.location.href = url
+                  }
+              })
+              .then((navigated) => {
+                if(navigated) setFormId(5)
+              })
 
               } else {
                 setSubmitting(false)
@@ -301,6 +373,9 @@ function EditListItem({
           })
           .catch(e => console.error('unable to submit item data. Error:', e.message))
       } else {
+        
+        // console.log({selectedItems})
+
         handleItemsSubmit(selectedItems, itemId)
           .then(resp => {
             if (resp.status == 200 || resp.status == 201) {
@@ -329,7 +404,6 @@ function EditListItem({
 
   }
 
-
   return (
 
     <form
@@ -341,16 +415,120 @@ function EditListItem({
 
       {formError && <Alert severity='error' className={'w-full'}>{formError}</Alert>}
 
+      <div className='flex flex-col w-full items-start'>
+          <div className='w-full flex flex-row items-center px-2 justify-start gap-1 gap-x-3 mb-3'>
+            <label
+              htmlFor='income_generating_activities'
+              className='text-gray-700 capitalize text-sm flex-grow'>
+              Does the CHU have income-generating activities{' '}
+            </label>
+            <span className='flex items-center gap-x-1'>
+              <input
+                type='radio'
+                name='income_generating_activities'
+                value={true}
+                // defaultChecked={options?.data?.accredited_lab_iso_15189 === true}
+
+              />
+              <small className='text-gray-700'>Yes</small>
+            </span>
+            <span className='flex items-center gap-x-1'>
+              <input
+                type='radio'
+                name='income_generating_activities'
+                value={false}
+                // defaultChecked={options?.data?.accredited_lab_iso_15189 === false}
+
+
+              />
+              <small className='text-gray-700'>No</small>
+            </span>
+
+          </div>
+
+          <div className='w-full flex flex-row items-center px-2 justify-start gap-1 gap-x-3 mb-3'>
+            <label
+              htmlFor='education_communication_materials'
+              className='text-gray-700 capitalize text-sm flex-grow'>
+              Education & Communication (IEC) materials{' '}
+            </label>
+            <span className='flex items-center gap-x-1'>
+              <input
+                type='radio'
+                name='education_communication_materials'
+                value={true}
+                // defaultChecked={options?.data?.accredited_lab_iso_15189 === true}
+
+              />
+              <small className='text-gray-700'>Yes</small>
+            </span>
+            <span className='flex items-center gap-x-1'>
+              <input
+                type='radio'
+                name='education_communication_materials'
+                value={false}
+                // defaultChecked={options?.data?.accredited_lab_iso_15189 === false}
+
+
+              />
+              <small className='text-gray-700'>No</small>
+            </span>
+
+          </div>
+
+        </div>
+
+        <div className='flex flex-col w-full items-start gap-1'>
+        <h4 className="text-lg uppercase mt-4 pb-2 border-b border-gray-600 w-full mb-4 font-semibold text-gray-900">partners(s) currently supporting CHU</h4>
+        
+
+        <div className="w-full flex flex-col items-start justify-start gap-y-7 mb-3">
+      <label
+                  htmlFor={`partners_name`}
+                  start
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Partner Names
+                </label>
+        {
+        Array.isArray(partners) && partners.length > 0  && (
+          partners?.map((_, index) => {
+            return  <RenderpartnersForm index={index} setPartners={setPartners}/>
+            
+          })
+        )
+        }
+       
+
+        <div className="sticky top-0 right-10 w-full flex justify-end">
+          <button
+            className=" bg-gray-500 rounded p-2 text-white flex text-md font-semibold "
+            onClick={(e) => {
+              e.preventDefault()
+              setPartners((prev) => [...prev, Number(prev[prev.length-1])+1])
+            console.log({partners})
+
+            }
+          }
+          >
+            {`Add +`}
+            {/* <PlusIcon className='text-white ml-2 h-5 w-5'/> */}
+          </button>
+        </div>
+      </div>
+
+        </div>
+
       <div className='w-full grid grid-cols-12 gap-4'>
         <div className={`${itemName == "chul_services" ? 'col-span-12' : 'col-span-5'}`} >
-          <h4 className="text-lg uppercase mt-4 pb-2 border-b border-blue-600 w-full mb-4 font-semibold text-blue-900">{itemName == 'chul_services' ? 'Services' : 'Categories'}</h4>
-          <input name="searchItem" type="text" onFocus={handleSearchItemFocus} onChange={(e) => onSearch(e, true, false)} className="col-span-12 border border-blue-600 p-2 placeholder-gray-500  focus:shadow-none focus:bg-white focus:border-black outline-none w-full" placeholder="Search" />
-          {!showItemCategory && <div className="text-center border-l border-blue-500 border-r border-b w-full">Search for services</div>}
+          <h4 className="text-lg uppercase mt-4 pb-2 border-b border-gray-600 w-full mb-4 font-semibold text-gray-900">{itemName == 'chul_services' ? 'Services' : 'Categories'}</h4>
+          <input name="searchItem" type="text" onFocus={handleSearchItemFocus} onChange={(e) => onSearch(e, true, false)} className="col-span-12 border border-gray-600 p-2 placeholder-gray-500  focus:shadow-none focus:bg-white focus:border-black outline-none w-full" placeholder="Search" />
+          {!showItemCategory && <div className="text-center border-l border-gray-500 border-r border-b w-full">Search for services</div>}
 
           <br />
           {
             showItemCategory &&
-            <ul className='max-h-96 overflow-auto border-r border-l border-b border-blue-500'>
+            <ul className='max-h-96 overflow-auto border-r border-l border-b border-gray-500'>
 
               {
                 categoryOptions.map(({ label, value }, i) => (
@@ -365,7 +543,7 @@ function EditListItem({
                           filterSpecialities(value)
                         }}
                       >{label}</li>
-                      <hr className='border-xs boredr-gray-200 group-hover:border-blue-500'></hr>
+                      <hr className='border-xs boredr-gray-200 group-hover:border-gray-500'></hr>
                     </div>
                   </>
                 ))
@@ -377,10 +555,10 @@ function EditListItem({
         {
           itemName == "facility_services" &&
           <div className="col-span-7" >
-            <h4 className="text-lg uppercase mt-4 pb-2 border-b border-blue-600 w-full mb-4 font-semibold text-blue-900">{itemName == 'chul_services' ? 'Selected Services' : 'Services'}</h4>
-            <input type="text" onChange={(e) => onSearch(e, false, true)} className="col-span-12 border border-blue-600 p-2 placeholder-gray-500  focus:shadow-none focus:bg-white focus:border-black outline-none w-full" placeholder="Search" />
+            <h4 className="text-lg uppercase mt-4 pb-2 border-b border-gray-600 w-full mb-4 font-semibold text-gray-900">{itemName == 'chul_services' ? 'Selected Services' : 'Services'}</h4>
+            <input type="text" onChange={(e) => onSearch(e, false, true)} className="col-span-12 border border-gray-600 p-2 placeholder-gray-500  focus:shadow-none focus:bg-white focus:border-black outline-none w-full" placeholder="Search" />
             <br />
-            <div className='max-h-96 overflow-auto border-r border-l border-b border-blue-500'>
+            <div className='max-h-96 overflow-auto border-r border-l border-b border-gray-500'>
 
               <table className="table-auto w-full">
                 <thead>
@@ -468,11 +646,22 @@ function EditListItem({
             <tbody className='bg-gray-50 shadow-md'>
 
 
-              {Array.isArray(selectedItems) && selectedItems.length === 0 && <tr><td colSpan={3} className="text-center">No services found</td></tr>}
+              {Array.isArray(selectedItems) && selectedItems.length === 0 && from !== "previous" && <tr><td colSpan={3} className="text-center">No services found</td></tr>}
 
 
               {
-                itemName == "facility_services" ?
+                Array.isArray(itemData) && itemData.length > 0 && from == "previous" ?
+                  itemData?.map((row, i) => (
+                    <tr key={i}>
+
+                      <td className="border border-gray-300 px-1 py-1">{row.sname}</td>
+                      <td className="border border-gray-300 px-1 py-1">
+                        Yes
+                      </td>
+                    </tr>
+                  ))
+                  :
+                  itemName == 'facility_services' ?
                   selectedItems?.map((row, i) => (
                     <tr key={i}>
 
@@ -516,9 +705,9 @@ function EditListItem({
           // Add
           itemName == "facility_services" && !editMode &&
           <Fragment>
-            <button onClick={handleItemPrevious} className='flex items-center justify-start space-x-2 p-1 border border-blue-900  px-2'>
-              <ChevronDoubleLeftIcon className='w-4 h-4 text-blue-900' />
-              <span className='text-medium font-semibold text-blue-900 '>
+            <button onClick={handleItemPrevious} className='flex items-center justify-start space-x-2 p-1 border border-gray-900  px-2'>
+              <ChevronDoubleLeftIcon className='w-4 h-4 text-gray-900' />
+              <span className='text-medium font-semibold text-gray-900 '>
                 Regulation
               </span>
             </button>
@@ -552,7 +741,7 @@ function EditListItem({
           itemName == "facility_services" && editMode &&
           <button
             type="submit"
-            className="flex items-center justify-end space-x-2 bg-blue-600  p-1 px-2"
+            className="flex items-center justify-end space-x-2 bg-blue-500   p-1 px-2"
           >
             <span className="text-medium font-semibold text-white">
               {
@@ -577,16 +766,16 @@ function EditListItem({
           // Add 
           itemName == "chul_services" && !editMode &&
           <Fragment>
-            <button onClick={handleItemPrevious} className='flex items-center justify-start space-x-2 p-1 border border-blue-900  px-2'>
-              <ChevronDoubleLeftIcon className='w-4 h-4 text-blue-900' />
-              <span className='text-medium font-semibold text-blue-900 '>
+            <button onClick={handleItemPrevious} className='flex items-center justify-start space-x-2 p-1 border border-gray-900  px-2'>
+              <ChevronDoubleLeftIcon className='w-4 h-4 text-gray-900' />
+              <span className='text-medium font-semibold text-gray-900 '>
                 CHEWS
               </span>
             </button>
 
             <button
               type='submit'
-              className='flex items-center justify-start space-x-2 bg-blue-700  p-1 px-2'>
+              className='flex items-center justify-start space-x-2 bg-blue-500  p-1 px-2'>
               <span className='text-medium font-semibold text-white'>
                 {
                   submitting ?
@@ -612,7 +801,7 @@ function EditListItem({
           itemName == "chul_services" && editMode &&
           <button
             type="submit"
-            className="flex items-center justify-end space-x-2 bg-blue-600  p-1 px-2"
+            className="flex items-center justify-end space-x-2 bg-blue-500  p-1 px-2"
           >
             <span className="text-medium font-semibold text-white">
               {

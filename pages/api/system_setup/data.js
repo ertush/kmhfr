@@ -57,6 +57,9 @@ export default async function fetchSystemSetupData(req, res) {
                     url = `${API_URL}/common/${res}/${_id}/?${qry}`
                 }
             break;
+            case 'Counties':
+                url = `${API_URL}/common/${res}/`
+            break;
             case 'Facilities':
                 if(_id== undefined){ 
                     url = `${API_URL}/facilities/${res}/?${qry}`

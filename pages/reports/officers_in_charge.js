@@ -28,7 +28,10 @@ const OfficersInCharge = (props) => {
             href={{ pathname: `/reports/by_county/`,
             query: { id: params.data.sub_county } }}
     
-            ><a>{params.value}</a></Link>
+            >
+                <span>{params.value}</span>
+                
+            </Link>
         )}
 
     const [columns, setColumns]=useState([
@@ -63,18 +66,18 @@ const OfficersInCharge = (props) => {
     return (
         <div className="">
             <Head>
-                <title>KMHFR - Reports</title>
+                <title>KMHFR | Reports</title>
                 <link rel="icon" href="/favicon.ico" />
             </Head>
             <MainLayout isLoading={false} isFullWidth={false}>
-                <div className="w-full grid grid-cols-8 gap-4 p-1 md:mx-4 my-2">
+                <div className="w-full  md:w-[85%] grid grid-cols-8 gap-4 p-1 md:mx-4 my-2">
                     <div className="col-span-8 flex flex-col gap-x-1">
                         <div className="flex flex-wrap items-center justify-between gap-2 text-sm md:text-base py-1">
                             <div className="flex flex-row items-center justify-between gap-x-2 gap-y-0 text-sm md:text-base py-1">
-                                <a className="text-blue-700" href="/">Home</a> {'/'}
+                                <a className="text-gray-700" href="/">Home</a> {'/'}
                                 <span className="text-gray-500">Facility Officers</span> 
                             </div>
-                            <div className={`col-span-5 flex justify-between p-6 w-full bg-transparent drop-shadow  text-black md:divide-x md:divide-gray-200z items-center border border-blue-600 border-l-8 ${'border-blue-600'}`}>
+                            <div className={`col-span-5 flex justify-between p-6 w-full bg-transparent drop-shadow  text-black md:divide-x md:divide-gray-200z items-center border border-gray-600 border-l-8 ${'border-gray-600'}`}>
                                 <h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
                                     {'Facility Officers'}
                                 </h2>
@@ -141,7 +144,7 @@ const OfficersInCharge = (props) => {
                                 {props?.path && props?.data?.near_pages && props?.data?.near_pages.map(page => (
                                     <li key={page} className="text-base text-gray-600">
                                         <Link href={(props.path.includes('?') ?(props.path.includes('page=')? props?.path.replace(/page=\d+/, 'page=' + (page)): null) : props.path + `?page=${page}`)}>
-                                            <a className="text-blue-800 p-2 hover:underline active:underline focus:underline">{page}</a>
+                                            <a className="text-gray-800 p-2 hover:underline active:underline focus:underline">{page}</a>
                                         </Link>
                                     </li>
                                 ))}

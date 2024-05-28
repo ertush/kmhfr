@@ -13,7 +13,6 @@ import CircularProgress from '@mui/material/CircularProgress';
 import { useEffect, useState } from 'react';
 
 
-
 function LoadAnimation({open}) {
   return (
       <Backdrop
@@ -82,6 +81,7 @@ export default function App(props) {
             isNavigating && <LoadAnimation open={true} />
           }
           <Component {...pageProps} />
+        
         </PermissionContext.Provider>
         </UserGroupContext.Provider>
       </UserContext.Provider>

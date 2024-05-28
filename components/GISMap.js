@@ -53,7 +53,7 @@ const GISMap = ({ data }) => {
             height: "100%",
             width: "100%",
             position: "relative",
-            zIndex: "1",
+            zIndex: "0",
             backgroundColor: "#e7eae8",
             padding: "15px",
           }}
@@ -61,6 +61,11 @@ const GISMap = ({ data }) => {
           <TileLayer
             attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
             url="http://{s}.tile.osm.org/{z}/{x}/{y}.png"
+            style={{
+              
+              zIndex: "0"
+              
+            }}
           />
           <GeoJSON
             data={geoJSON}
@@ -93,7 +98,7 @@ const GISMap = ({ data }) => {
                             ? "community-units"
                             : "facilities"
                         }/${facility.id}`}
-                        className="text-base uppercase font-semibold text-blue-700 hover:text-black focus:text-black active:text-black"
+                        className="text-base uppercase font-semibold text-gray-700 hover:text-black focus:text-black active:text-black"
                       >
                         <span>{facility.official_name || facility.name}</span>
                       </a>
@@ -117,7 +122,7 @@ const GISMap = ({ data }) => {
                             (facility?.op_stat == "Operational" ||
                             facility?.op_stat == "Closed" ||
                             facility?.op_stat
-                              ? "text-blue-900 bg-blue-300/70"
+                              ? "text-gray-900 bg-blue-300/70"
                               : "text-gray-900 bg-blue-200")
                           }
                         >

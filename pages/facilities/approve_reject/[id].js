@@ -73,17 +73,17 @@ function ApproveReject(props) {
       <MainLayout>
 
 
-        <div className="w-full grid grid-cols-1 md:grid-cols-7 gap-3 my-4 place-content-center">
+        <div className="w-full md:w-[85%] md:mx-auto grid grid-cols-1 md:grid-cols-7 gap-3 my-4 place-content-center">
 
 
           {/* Breadcramps */}
 
           <div className="flex md:col-span-7 flex-row gap-2 text-sm md:text-base md:my-3">
-            <Link className="text-blue-700" href="/">
+            <Link className="text-gray-700" href="/">
               Home
             </Link>
             {"/"}
-            <Link className="text-blue-700" href="/facilities">
+            <Link className="text-gray-700" href="/facilities">
               Facilities
             </Link>
             {"/"}
@@ -99,19 +99,19 @@ function ApproveReject(props) {
             {/* Header Bunner  */}
             <div
               className={
-                "col-span-5 grid grid-cols-6 gap-5  md:gap-8 py-6 w-full bg-transparent border border-blue-600 drop-shadow  text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " +
-                (facility?.is_approved ? "border-blue-600" : "border-red-600")
+                "col-span-5 grid grid-cols-6 gap-5  md:gap-8 py-6 w-full bg-transparent border border-gray-600 drop-shadow  text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " +
+                (facility?.is_approved ? "border-gray-600" : "border-red-600")
               }
             >
               <div className="col-span-6 md:col-span-3">
-                <span onClick={() => router.push(`/facilities/${facility?.id}`)} className="text-4xl hover:text-blue-600 cursor-pointer tracking-tight font-bold leading-tight">
+                <span onClick={() => router.push(`/facilities/${facility?.id}`)} className="text-4xl hover:text-gray-600 cursor-pointer tracking-tight font-bold leading-tight">
                   {facility?.official_name}
                 </span>
                 <div className="flex gap-2 items-center w-full justify-between">
                   <span
                     className={
                       "font-bold text-2xl " +
-                      (facility?.code ? "text-blue-900" : "text-gray-400")
+                      (facility?.code ? "text-gray-900" : "text-gray-400")
                     }
                   >
                     #{facility?.code || "NO_CODE"}
@@ -119,12 +119,13 @@ function ApproveReject(props) {
 
                 </div>
               </div>
+
               <div className="flex flex-wrap gap-3 items-center justify-end col-span-6 md:col-span-2">
                 <div className="flex flex-wrap gap-3 w-full items-center justify-start md:justify-center">
                   {facility?.operational || facility?.operation_status_name ? (
                     <span
                       className={
-                        "leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 text-blue-900 flex gap-x-1 items-center cursor-default"
+                        "leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 text-gray-900 flex gap-x-1 items-center cursor-default"
                       }
                     >
                       <CheckCircleIcon className="h-4 w-4" />
@@ -134,7 +135,7 @@ function ApproveReject(props) {
                     ""
                   )}
                   {facility?.approved ? (
-                    <span className="bg-blue-200 text-blue-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
+                    <span className="bg-blue-200 text-gray-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
                       <CheckCircleIcon className="h-4 w-4" />
                       Validated
                     </span>
@@ -145,13 +146,13 @@ function ApproveReject(props) {
                     </span>
                   )}
                   {facility?.has_edits && (
-                    <span className="bg-blue-200 text-blue-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
+                    <span className="bg-blue-200 text-gray-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
                       <InformationCircleIcon className="h-4 w-4" />
                       Has changes
                     </span>
                   )}
                   {facility?.is_complete ? (
-                    <span className="bg-blue-200 text-blue-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
+                    <span className="bg-blue-200 text-gray-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
                       <CheckCircleIcon className="h-4 w-4" />
                       Completed{" "}
                     </span>
@@ -194,7 +195,7 @@ function ApproveReject(props) {
 
 
             {/* Facility details */}
-            <div className="bg-gray-50 shadow-md w-full p-3  flex flex-col gap-3 mt-4">
+            <div className="bg-gray-50 rounded shadow-md w-full p-3  flex flex-col gap-3 mt-4">
               <div className="grid grid-cols-3 w-full md:w-11/12 leading-none items-center">
                 <label className="col-span-1 text-gray-600">
                   Functional Status
@@ -285,8 +286,8 @@ function ApproveReject(props) {
 
             {/* Comments and Updates Section  */}
 
-            <div className="bg-gray-50 shadow-md w-full p-3  flex flex-col gap-3 mt-6">
-              <h3 className="text-gray-900 font-semibold leading-16 text-medium">
+            <div className="bg-gray-50 rounded shadow-md w-full p-3  flex flex-col gap-1 mt-6">
+              <h3 className="text-gray-900 text-2xl font-semibold leading-16 text-medium">
                 {facility?.has_edits ? 'Approve Updates' : facility?.is_approved ? "Approval / Reject facility" : "Comment on the validation"}
               </h3>
               {facility?.is_approved}
@@ -324,10 +325,10 @@ function ApproveReject(props) {
                     !facility?.has_edits ?
                       <Field
                         as="textarea"
-                        cols="130"
+                        cols="135"
                         rows="auto"
                         name="comment"
-                        className="flex col-span-2 bg-transparent border focus:ring-1 focus:ring-blue-900 border-blue-600 text-gray-600 font-normal text-medium p-2"
+                        className="flex rounded col-span-2 bg-transparent border focus:ring-1 focus:ring-blue-900 border-gray-600 text-gray-600 font-normal text-medium p-2"
                         placeholder="Enter a comment"
 
                       ></Field>
@@ -341,7 +342,7 @@ function ApproveReject(props) {
 
                     <button
                       type="submit"
-                      className="bg-blue-600  text-gray-100 -md p-2 font-semibold"
+                      className="bg-blue-600 rounded text-gray-100 -md p-2 font-semibold"
                       onClick={() => {setSubmitting(true); setReject(facility?.has_edits ? true : facility?.is_approved ? true : false)}}
 
                     >
@@ -361,7 +362,7 @@ function ApproveReject(props) {
                     {!facility?.approved_national_level &&
                       <button
                         type="submit"
-                        className="bg-red-600  text-gray-100 -md p-2 font-semibold"
+                        className="bg-red-600 rounded text-gray-100 -md p-2 font-semibold"
                         onClick={() => { setRejecting(true);  setReject(facility?.has_edits ? false : facility?.is_approved ? false : true)}}
 
                       >

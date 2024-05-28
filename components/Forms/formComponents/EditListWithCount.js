@@ -28,7 +28,8 @@ function EditListWithCount(
         token,
         itemData,
         title,
-        setFormId
+        setFormId,
+        from
     }
 ) {
 
@@ -71,7 +72,7 @@ function EditListWithCount(
         
         const result = []
 
-        if (itemData.length > 0) {
+        if (itemData.length > 0 && from !== "previous") {
             itemData.forEach((element) => {
                 if (itemsCategoryName.includes('human resource')) {
                     const cat = options.filter((e) => e.id == element.speciality)[0].category
@@ -88,27 +89,30 @@ function EditListWithCount(
                 else if (itemsCategoryName.includes('infrastructure')) {
 
                     result.push({
-                        rowid: element.infrastructure,
-                        sname: element.infrastructure_name,
-                        count: element.count,
-                        category_id: options.filter((e) => e.id == element.infrastructure)[0].category,
-                        category_name: options.filter((e) => e.id == element.infrastructure)[0].category_name,
+                        rowid: element?.infrastructure,
+                        sname: element?.infrastructure_name,
+                        count: element?.count,
+                        category_id: options.filter((e) => e.id == element.infrastructure)[0]?.category,
+                        category_name: options.filter((e) => e.id == element.infrastructure)[0]?.category_name,
                         iscategoryvisible: true
                     })
 
                 }
             });
+        
+            return result
 
+
+        } else {
+            return itemData
         }
 
     
-        return result
-
     })() : []))
 
     const selectedCountByNames = selectedRows.reduce((acc, sc) => {
         const { category_id, count } = sc;
-        acc[category_id] = (acc[category_id] || 0) + count;
+        acc[category_id] = (acc[category_id] && 0) + count;
         return acc;
     }, {})
 
@@ -155,23 +159,23 @@ function EditListWithCount(
 
             x.forEach(obj => {
                 if (
-                    obj?.sname?.includes("Main Grid") ||
-                    obj?.sname?.includes("Gas") ||
-                    obj?.sname?.includes("Bio-Gas") ||
+                    obj?.sname?.includes("Main Grid") &&
+                    obj?.sname?.includes("Gas") &&
+                    obj?.sname?.includes("Bio-Gas") &&
                     // WATER SOURCE
-                    obj?.sname?.includes("Roof Harvested Water") ||
-                    obj?.sname?.includes("River / Dam / Lake") ||
-                    obj?.sname?.includes("Donkey Cart / Vendor") ||
-                    obj?.sname?.includes("Piped Water") ||
+                    obj?.sname?.includes("Roof Harvested Water") &&
+                    obj?.sname?.includes("River / Dam / Lake") &&
+                    obj?.sname?.includes("Donkey Cart / Vendor") &&
+                    obj?.sname?.includes("Piped Water") &&
                     // MEDICAL WASTE MANAGEMENT
-                    obj?.sname?.includes("Sewer systems") ||
-                    obj?.sname?.includes("Dump without burning") ||
-                    obj?.sname?.includes("Open burning") ||
-                    obj?.sname?.includes("Remove offsite") ||
+                    obj?.sname?.includes("Sewer systems") &&
+                    obj?.sname?.includes("Dump without burning") &&
+                    obj?.sname?.includes("Open burning") &&
+                    obj?.sname?.includes("Remove offsite") &&
                     // ACCESS ROADS
-                    obj?.sname?.includes("Tarmac") ||
-                    obj?.sname?.includes("Earthen Road") ||
-                    obj?.sname?.includes("Graded ( Murrum )") ||
+                    obj?.sname?.includes("Tarmac") &&
+                    obj?.sname?.includes("Earthen Road") &&
+                    obj?.sname?.includes("Graded ( Murrum )") &&
                     obj?.sname?.includes("Gravel")
                 ) {
                     delete obj['count']
@@ -275,7 +279,7 @@ function EditListWithCount(
 
             handleItemsUpdate(token, [newSelectedRows, itemId])
                 .then(resp => {
-                    if (resp.status == 200 || resp.status == 204) {
+                    if (resp.ok) {
                         setSubmitting(false)
                         alert.success(`Facility ${e.target.name.includes("infrastructure") ? 'Infrastructure' : 'Human resource'} form updated successfully`)
 
@@ -316,10 +320,12 @@ function EditListWithCount(
 
                 handleItemsSubmit(token, selectedRows, itemId)
                     .then(resp => {
-                        if (resp.status == 204 || resp.status == 200) {
+                        if (resp.ok) {
+                            
                             setSubmitting(false)
                             alert.success('Facility humanresource saved successfully')
 
+                           
                             router.push(`/facilities/${itemId}`)
 
                         } else {
@@ -346,20 +352,25 @@ function EditListWithCount(
 
             })() :  /* Infrastructure */ handleItemsSubmit(token, selectedRows, itemId)
                 .then(resp => {
-                    if (resp.status == 204 || resp.status == 200) {
+                    if (resp.ok) {
                         setSubmitting(false)
                         alert.success('Facility Infrastructure saved successfully')
 
-                        const infrastructure = selectedRows.map(({ rowid }) => ({ service: rowid }))
+                        const infrastructure = selectedRows.map(({ rowid }) => ({ infrastructure: rowid }))
 
                         const payload = JSON.stringify(infrastructure)
 
-                        const base64EncParams = Buffer.from(payload).toString('base64')
+                        const base64EncPayload = Buffer.from(payload).toString('base64')
+
+                        
+                        if(window) {
+                            window.localStorage.setItem('infrastructure', base64EncPayload)
+                        }
 
                         router.push({
                             pathname: `${window.location.origin}/facilities/add`,
                             query: { 
-                              formData: base64EncParams,
+                            //   formData: base64EncPayload,
                               formId: 6,
                               facilityId: itemId,
                               from: 'submission'
@@ -370,16 +381,7 @@ function EditListWithCount(
 							if(navigated) setFormId(6)
 						})
 
-                        // const url = new URL(`${window.location.origin}/facilities/add?formData=${base64EncParams}`)
-
-                        // url.searchParams.set('formId', '6')
-
-                        // url.searchParams.set('facilityId', `${itemId}`)
-
-                        // url.searchParams.set('from', 'submission')
-
-                        // window.location.href = url
-
+                      
 
 
                     } else {
@@ -447,26 +449,26 @@ function EditListWithCount(
 
             <div className='w-full grid grid-cols-12 gap-4'>
                 <div className="col-span-5" >
-                    <h4 className="text-lg uppercase mt-4 pb-2 border-b border-blue-600 w-full mb-4 font-semibold text-blue-900">Categories</h4>
-                    <input type="text" onFocus={handleSearchItemFocus} onChange={(e) => onSearch(e, true, false)} className="col-span-12 border border-blue-600 p-2 placeholder-gray-500  focus:shadow-none focus:bg-white focus:border-black outline-none w-full" placeholder="Search" />
-                    {!showItemCategory && <div className="text-center border-l border-blue-500 border-r border-b w-full">{`Search for ${itemsCategoryName.includes('infrastructure') ? 'infrastructure' : 'a speciality' }`}</div>}
+                    <h4 className="text-lg uppercase mt-4 pb-2 border-b border-gray-600 w-full mb-4 font-semibold text-blue-900">Categories</h4>
+                    <input type="text" onFocus={handleSearchItemFocus} onChange={(e) => onSearch(e, true, false)} className="col-span-12 border border-gray-600 p-2 placeholder-gray-500  focus:shadow-none focus:bg-white focus:border-black outline-none w-full" placeholder="Search" />
+                    {!showItemCategory && <div className="text-center border-l border-gray-500 border-r border-b w-full">{`Search for ${itemsCategoryName.includes('infrastructure') ? 'infrastructure' : 'a speciality' }`}</div>}
 
                     <br />
                     {
                     showItemCategory &&
-                    <ul className='max-h-96 overflow-auto border-r border-l border-b border-blue-500'>
+                    <ul className='max-h-96 overflow-auto border-r border-l border-b border-gray-500'>
                         {categoryOptions.map(({ label, value, catcount }) => (
                             <div key={value}
                                 className='card bg-gray-50 shadow-md p-2 group hover:bg-gray-500 hover:text-gray-50 hover:cursor-pointer'
                             >
                                 <li
-                                    className="flex items-center justify-start cursor-pointer space-x-2 p-1 px-2"
+                                    className="flex items-center justify-start w-full cursor-pointer space-x-2 p-1 px-2"
                                     onClick={() => {
                                         filterSpecialities(value)
                                     }}
                                     key={value}>{label}</li>
                                 <span>({catcount} selected)</span>
-                                <hr className='border-xs boredr-gray-200 group-hover:border-blue-500'></hr>
+                                <hr className='border-xs boredr-gray-200 group-hover:border-gray-500'></hr>
                             </div>
 
                         ))}
@@ -475,10 +477,10 @@ function EditListWithCount(
                 </div>
 
                 <div className="col-span-7" >
-                    <h4 className="text-lg uppercase mt-4 pb-2 border-b border-blue-600 w-full mb-4 font-semibold text-blue-900">{itemsCategoryName.includes('human resource') ? 'Specialities' : itemsCategoryName.includes('infrastructure') ? 'Infrastructure' : null}</h4>
-                    <input type="text" onChange={(e) => onSearch(e, false, true)} className="col-span-12 border border-blue-600 p-2 placeholder-gray-500  focus:shadow-none focus:bg-white focus:border-black outline-none w-full" placeholder="Search" />
+                    <h4 className="text-lg uppercase mt-4 pb-2 border-b border-gray-600 w-full mb-4 font-semibold text-blue-900">{itemsCategoryName.includes('human resource') ? 'Specialities' : itemsCategoryName.includes('infrastructure') ? 'Infrastructure' : null}</h4>
+                    <input type="text" onChange={(e) => onSearch(e, false, true)} className="col-span-12 border border-gray-600 p-2 placeholder-gray-500  focus:shadow-none focus:bg-white focus:border-black outline-none w-full" placeholder="Search" />
                     <br />
-                    <div className='max-h-96 overflow-auto border-r border-l border-b border-blue-500'>
+                    <div className='max-h-96 overflow-auto border-r border-l border-b border-gray-500'>
 
                         <table className="table-auto w-full">
                             <thead>
@@ -513,6 +515,32 @@ function EditListWithCount(
                                             /> Yes
                                         </td>
                                         <td className="border px-1 py-1">
+                                            {/* <pre>
+                                                {
+                                                    JSON.stringify(!row?.name?.includes("Main Grid"), null, 2)
+                                                }
+                                            </pre> */}
+                                            {
+                                               (
+                                               !row?.name?.includes("Main Grid") &&
+                                               !row?.name?.includes("Gas") &&
+                                               !row?.name?.includes("Bio-Gas") &&
+                                               // WATER SOURCE
+                                               !row?.name?.includes("Roof Harvested Water") &&
+                                               !row?.name?.includes("River / Dam / Lake") &&
+                                               !row?.name?.includes("Donkey Cart / Vendor") &&
+                                               !row?.name?.includes("Piped Water") &&
+                                               // MEDICAL WASTE MANAGEMENT
+                                               !row?.name?.includes("Sewer systems") &&
+                                               !row?.name?.includes("Dump without burning") &&
+                                               !row?.name?.includes("Open burning") &&
+                                               !row?.name?.includes("Remove offsite") &&
+                                               // ACCESS ROADS
+                                               !row?.name?.includes("Tarmac") &&
+                                               !row?.name?.includes("Earthen Road") &&
+                                               !row?.name?.includes("Graded ( Murrum )") &&
+                                               !row?.name?.includes("Gravel") 
+                                               ) && 
                                             <input
                                                 type="number"
                                                 className="p-1"
@@ -525,6 +553,7 @@ function EditListWithCount(
                                                 }}
                                                 disabled={!selectedRows.some(item => item?.rowid?.includes(row?.id))}
                                             />
+                                            }
                                         </td>
                                     </tr>
                                 ))}
@@ -549,7 +578,7 @@ function EditListWithCount(
                             {selectedRows.length === 0 && <tr><td colSpan={3} className="text-center">No specialities found</td></tr>}
                             {/* {selectedRows.pop()} */}
                             {selectedRows.map((row) => {
-                                // if(row.name !== "Vaccine Carriers" || row.name !== "Public Health Technician"){
+                                // if(row.name !== "Vaccine Carriers" && row.name !== "Public Health Technician"){
                                 return ( <tr>
                                         <td className="border border-gray-300 px-1 py-1">{row?.sname}</td>
                                        {row?.iscategoryvisible ? <td className="border border-gray-300 px-1 py-1">{row?.category_name}</td> :null }
@@ -590,9 +619,9 @@ function EditListWithCount(
                 itemData === null &&
 
                 <div className='flex justify-between items-center w-full mt-4'>
-                    <button onClick={handleItemPrevious} className='flex items-center justify-start space-x-2 p-1 border border-blue-900  px-2'>
-                        <ChevronDoubleLeftIcon className='w-4 h-4 text-blue-900' />
-                        <span className='text-medium font-semibold text-blue-900 '>
+                    <button onClick={handleItemPrevious} className='flex items-center justify-start space-x-2 p-1 border border-gray-900  px-2'>
+                        <ChevronDoubleLeftIcon className='w-4 h-4 text-gray-900' />
+                        <span className='text-medium font-semibold text-gray-900 '>
                             {previousItemCategory}
                         </span>
                     </button>

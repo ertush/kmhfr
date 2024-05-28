@@ -17,7 +17,7 @@ import Alert from '@mui/material/Alert';
 import 'react-dual-listbox/lib/react-dual-listbox.css';
 
 
-const EditGroup=(props)=> {
+function EditGroup (props) {
     
 	const [selPermissions, setselPermissions] = useState(props?.data.permissions.map((pm)=>{return pm.id}))
 
@@ -109,7 +109,7 @@ const EditGroup=(props)=> {
 // console.log(delete_permission);
   return (
     <MainLayout isLoading={false} searchTerm={props?.query?.searchTerm}>
-        <div className="w-full grid grid-cols-5 gap-4 md:mx-4 my-4">
+        <div className="w-full  md:w-[85%] grid grid-cols-5 gap-4 md:mx-4 my-4">
 		{open && 
                        <Modal
                             aria-labelledby="transition-modal-title"
@@ -150,13 +150,13 @@ const EditGroup=(props)=> {
                     <div className="col-span-5 flex flex-col gap-3 md:gap-5 px-4">
                         <div className="flex flex-wrap items-center justify-between gap-2 text-sm md:text-base py-3">
                             <div className="flex flex-row items-center justify-between gap-2 text-sm md:text-base py-3">
-                                <a className="text-blue-700" href="/">Home</a> {'/'}
-                                <a className="text-blue-700" href="/user/groups">Groups</a> {'/'}
+                                <a className="text-gray-700" href="/">Home</a> {'/'}
+                                <a className="text-gray-700" href="/user/groups">Groups</a> {'/'}
                                 <span className="text-gray-500">Edit group</span>
                             </div>
                         </div>
 						<div>{status !==null && <Alert severity={status.status} sx={{width:'100%'}}>{status.message?.email || status.message?.contacts || status.message?.county|| status.message?.password || status?.message}</Alert>}</div>
-                        <div className={`col-span-5 flex items-center justify-between p-6 w-full bg-transparent drop-shadow  text-black md:divide-x md:divide-gray-200 border border-blue-600 border-l-8  ${'border-blue-600'}`}>
+                        <div className={`col-span-5 flex items-center justify-between p-6 w-full bg-transparent drop-shadow  text-black md:divide-x md:divide-gray-200 border border-gray-600 border-l-8  ${'border-gray-600'}`}>
                                 <h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
                                     <PencilAltIcon className='ml-2 h-5 w-5' />
                                     {'Edit Group'}
@@ -177,7 +177,7 @@ const EditGroup=(props)=> {
 							<div className=' w-full flex flex-col items-start p-3  border border-gray-300/70 shadow-md' style={{backgroundColor:'#eff6ff'}}>
 							
 												<>
-													<h4 className='text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900'>
+													<h4 className='text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-gray-900'>
 														{/* Bio Details */}
 													</h4>
 													<form
@@ -206,7 +206,7 @@ const EditGroup=(props)=> {
 																	)
 																}}
 																value={group_details?.name || ''}
-																className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
+																className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
 															/>
 														</div>
                                                         <div className='w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3'>
@@ -349,7 +349,7 @@ const EditGroup=(props)=> {
 
 														{/* Permissions Details */}
 														<div className=' w-full flex flex-col items-start justify-start p-3  border border-gray-300/70 bg-transparent h-auto'>
-															<h4 className='text-lg uppercase pb-2 border-b border-blue-600 w-full mb-4 font-semibold text-blue-900'>
+															<h4 className='text-lg uppercase pb-2 border-b border-gray-600 w-full mb-4 font-semibold text-gray-900'>
 																Permissions
 															</h4>
 															 <div className='w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3'>

@@ -15,14 +15,17 @@ import {
 import * as Tabs from "@radix-ui/react-tabs";
 import { UserContext } from "../../../providers/user";
 import FacilitySideMenu from '../../../components/FacilitySideMenu'
+import Spinner from '../../../components/Spinner'
+import { useAlert } from 'react-alert'
 
 
-const RegulateFacility = props => {
+function RegulateFacility (props) {
     const userCtx = useContext(UserContext)
-    const facility = props["0"]?.data;
-    const regulationStateOptions = props['1']?.regulation_status
+    const facility = props?.data;
+    const regulationStateOptions = props?.regulation_status
     const [isFacDetails, setIsFacDetails] = useState(true);
     const [user, setUser] = useState(userCtx);
+    const [submitting, setSubmitting] = useState(false)
     const formRef = useRef(null);
     const regulationRef = useRef(null)
 
@@ -33,6 +36,8 @@ const RegulateFacility = props => {
     const [allFctsSelected, setAllFctsSelected] = useState(false);
     const [title, setTitle] = useState('') 
     const filters = []
+
+    const alert = useAlert()
 
     let reject = ''
 
@@ -48,7 +53,7 @@ const RegulateFacility = props => {
         };
     }, []);
 
-    const handleSubmit = async (event,facility_id) => {
+    async function handleSubmit (event, facility_id, token) {
         // Stop the form from submitting and refreshing the page.
         event.preventDefault()
         let _payload = {}
@@ -58,27 +63,35 @@ const RegulateFacility = props => {
             _payload[k] = v
         })
 
-        let url='/api/common/submit_form_data/?path=regulation_status'
+        setSubmitting(true)
+
+        // let url='/api/common/submit_form_data/?path=regulation_status'/
         try{
-            fetch(url, {
+            fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facility_regulation_status/`, {
                 headers:{
                     'Accept': 'application/json, text/plain, */*',
-                    'Content-Type': 'application/json;charset=utf-8'
-
+                    'Content-Type': 'application/json;charset=utf-8',
+                    'Authorization': `Bearer ${token}`
                 },
                 method:'POST',
                 body: JSON.stringify(_payload)
             })
-                .then(resp =>resp)
-                .then(res =>{
+                .then(resp => resp)
+                .then(res => {
 
+                    alert.success('Facility regulation is successfully')
+
+                    setSubmitting(false)
                     // console.log(res.json)
-                    if(res.status==200){
+                    if(res.ok){
                         router.push('/facilities')
                     }
                 })
                 .catch(e=>{
-                    setStatus({status:'error', message: e})
+                    alert.error('Unable to regulate facility')
+                    setSubmitting(false)
+                    console.error(e.message)
+                    // setStatus({status:'error', message: e})
                 })
         }catch (e){
 
@@ -88,23 +101,25 @@ const RegulateFacility = props => {
         console.log(_payload)
     }
 
+
+ 
     return (
         <>
             <Head>
-                <title>KMHFR - Regulate Facility</title>
+                <title>KMHFR | Regulate Facility</title>
                 <link rel="icon" href="/favicon.ico" />
             </Head>
             <MainLayout isLoading={false} searchTerm={props?.query?.searchTerm}>
-                <div className="w-full grid md:grid-cols-7 gap-4 px-1 md:px-4 py-2 my-4">
+                <div className="w-full md:w-[85%] md:mx-auto grid md:grid-cols-7 gap-4 px-4 md:px-0 py-2 my-4">
                     {/* Header */}
-                    <div className="md:col-span-7 flex flex-col items-start px-4 justify-start gap-3">
+                    <div className="md:col-span-7 flex flex-col items-start md justify-start gap-3">
                         {/* Breadcramps */}
                         <div className="flex flex-row items-center justify-between gap-2 text-sm md:text-base py-3">
-                            <Link className="text-blue-700" href="/">
+                            <Link className="text-gray-700" href="/">
                                 Home
                             </Link>
                             {"/"}
-                            <Link className="text-blue-700" href="/facilities">
+                            <Link className="text-gray-700" href="/facilities">
                                 Facilities
                             </Link>
                             {"/"}
@@ -117,16 +132,16 @@ const RegulateFacility = props => {
                         <div
                             className={
                                 "md:col-span-7 grid grid-cols-6 gap-5 md:gap-8 py-6 w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " +
-                                (facility?.regulation_status? "border-blue-600" : "border-red-600")
+                                (facility?.regulation_status? "border-gray-600" : "border-red-600")
                             }
                         >
                             <div className="col-span-6 md:col-span-3">
-                                <span onClick={() => router.push(`/facilities/${facility?.id}`)} className="text-4xl tracking-tight hover:text-blue-600 font-bold cursor-pointer leading-tight">{facility?.official_name}</span>
+                                <span onClick={() => router.push(`/facilities/${facility?.id}`)} className="text-4xl tracking-tight hover:text-gray-600 font-bold cursor-pointer leading-tight">{facility?.official_name}</span>
                                 <div className="flex gap-2 items-center w-full justify-between">
                                     <span
                                         className={
                                             "font-bold text-2xl " +
-                                            (facility?.code ? "text-blue-900" : "text-gray-400")
+                                            (facility?.code ? "text-gray-900" : "text-gray-400")
                                         }
                                     >
                                         #{facility?.code ?? "NO_CODE"}
@@ -250,7 +265,7 @@ const RegulateFacility = props => {
                                                                     Closed {facility?.closed_date || ""}
                                                                 </span>
                                                                      ) : (
-                                                                <span className="bg-blue-200 text-blue-900 p-1 px-2 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1">
+                                                                <span className="bg-blue-200 text-gray-900 p-1 px-2 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1">
                                                                      Not closed
                                                                 </span>
                                                             )}
@@ -270,7 +285,7 @@ const RegulateFacility = props => {
                                                         </label>
                                                         <p className="text-black font-medium text-base flex">
                                                             {facility?.open_weekends ? (
-                                                                <span className="leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-blue-200 text-blue-900 flex gap-x-1 items-center cursor-default">
+                                                                <span className="leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-blue-200 text-gray-900 flex gap-x-1 items-center cursor-default">
                                                                     <CheckCircleIcon className="h-4 w-4" />
                                                                       Yes
                                                                 </span>
@@ -296,7 +311,7 @@ const RegulateFacility = props => {
                                                         </label>
                                                         <p className="text-black font-medium text-base flex">
                                                             {facility?.open_public_holidays ? (
-                                                                <span className="leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-blue-200 text-blue-900 flex gap-x-1 items-center cursor-default">
+                                                                <span className="leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-blue-200 text-gray-900 flex gap-x-1 items-center cursor-default">
                                                                     <CheckCircleIcon className="h-4 w-4" />
                                                                     Yes
                                                                   </span>
@@ -322,7 +337,7 @@ const RegulateFacility = props => {
                                                         </label>
                                                         <p className="text-black font-medium text-base flex">
                                                             {facility?.open_whole_day ? (
-                                                                <span className="leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-blue-200 text-blue-900 flex gap-x-1 items-center cursor-default">
+                                                                <span className="leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-blue-200 text-gray-900 flex gap-x-1 items-center cursor-default">
                                                                     <CheckCircleIcon className="h-4 w-4" />
                                                                     Yes
                                                                   </span>
@@ -361,7 +376,7 @@ const RegulateFacility = props => {
                                                         </label>
                                                         <p className="text-black font-medium text-base flex">
                                                             {facility?.reporting_in_dhis ? (
-                                                                <span className="leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-blue-200 text-blue-900 flex gap-x-1 items-center cursor-default">
+                                                                <span className="leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-blue-200 text-gray-900 flex gap-x-1 items-center cursor-default">
                                                                     <CheckCircleIcon className="h-4 w-4" />
                                                                     Yes
                                                                   </span>
@@ -387,7 +402,7 @@ const RegulateFacility = props => {
                                                         </label>
                                                         <p className="text-black font-medium text-base flex">
                                                             {facility?.nhif_accreditation ? (
-                                                                <span className="leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-blue-200 text-blue-900 flex gap-x-1 items-center cursor-default">
+                                                                <span className="leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-blue-200 text-gray-900 flex gap-x-1 items-center cursor-default">
                                                                     <CheckCircleIcon className="h-4 w-4" />
                                                                     Yes
                                                                   </span>
@@ -413,7 +428,7 @@ const RegulateFacility = props => {
                                                         </label>
                                                         <p className="text-black font-medium text-base flex">
                                                             {facility?.open_normal_day ? (
-                                                                <span className="leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-blue-200 text-blue-900 flex gap-x-1 items-center cursor-default">
+                                                                <span className="leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-blue-200 text-gray-900 flex gap-x-1 items-center cursor-default">
                                                                     <CheckCircleIcon className="h-4 w-4" />
                                                                     Yes
                                                                   </span>
@@ -471,7 +486,7 @@ const RegulateFacility = props => {
                                                         </label>
                                                         <p className="text-black font-medium text-base flex">
                                                             {facility?.open_late_night ? (
-                                                                <span className="leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-blue-200 text-blue-900 flex gap-x-1 items-center cursor-default">
+                                                                <span className="leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-blue-200 text-gray-900 flex gap-x-1 items-center cursor-default">
                                                                     <CheckCircleIcon className="h-4 w-4" />
                                                                     Yes
                                                                   </span>
@@ -497,7 +512,7 @@ const RegulateFacility = props => {
                                                         </label>
                                                         <p className="text-black font-medium text-base flex">
                                                             {facility?.accredited_lab_iso_15189 ? (
-                                                                <span className="leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-blue-200 text-blue-900 flex gap-x-1 items-center cursor-default">
+                                                                <span className="leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-blue-200 text-gray-900 flex gap-x-1 items-center cursor-default">
                                                                     <CheckCircleIcon className="h-4 w-4" />
                                                                     Yes
                                                                 </span>
@@ -625,7 +640,7 @@ const RegulateFacility = props => {
                                                 <div className="bg-white w-full p-4 rounded">
                                                     <h3 className="text-2xl w-full flex flex-wrap justify-between items-center leading-tight tracking-tight">
                                                         <span className="font-semibold">Services</span>
-                                                        {/* {user && user?.id ? <a href={"/facility/edit/"+facility?.id+"#services"} className="text-base text-blue-700 font-medium hover:text-black focus:text-black active:text-black">Edit services</a> : ""} */}
+                                                        {/* {user && user?.id ? <a href={"/facility/edit/"+facility?.id+"#services"} className="text-base text-gray-700 font-medium hover:text-black focus:text-black active:text-black">Edit services</a> : ""} */}
                                                     </h3>
                                                     <ul>
                                                         {facility?.facility_services &&
@@ -655,7 +670,7 @@ const RegulateFacility = props => {
                                                                         </small>
                                                                     </div>
                                                                     <label className="text-sm text-gray-600 flex gap-1 items-center">
-                                                                        <CheckCircleIcon className="h-6 w-6 text-blue-500" />
+                                                                        <CheckCircleIcon className="h-6 w-6 text-gray-500" />
                                                                         <span>Active</span>
                                                                     </label>
                                                                 </li>
@@ -767,7 +782,7 @@ const RegulateFacility = props => {
                             
                                 <form
                                     className='flex flex-col w-full items-start justify-start gap-3 mt-4'
-                                    onSubmit = { (event) => handleSubmit(event, facility?.id)}
+                                    onSubmit = { (event) => handleSubmit(event, facility?.id, props?.token)}
                                     ref={formRef}
                                 >
                                     {/* Regulation Status */}
@@ -833,8 +848,17 @@ const RegulateFacility = props => {
                                             // onClick={() => {router.push('admin_offices')}}
                                         >
 											<span className='text-medium font-semibold text-white'>
-												Regulate
-											</span>
+                                            {
+                                                submitting ?
+                                                <div className='flex items-center gap-2'>
+                                                    <span className='text-white'>Saving.. </span>
+                                                    <Spinner />
+                                                </div>
+                                                :
+                                                'Regulate'
+
+                                            }
+                                                                        </span>
                                         </button>
                                         <button className='flex items-center justify-start space-x-2 p-1 border-2 border-black rounded px-2'>
                                             <ChevronDoubleLeftIcon className='w-4 h-4 text-black' />
@@ -857,12 +881,17 @@ const RegulateFacility = props => {
 
 RegulateFacility.getInitialProps = async (ctx) => {
 
-    const allOptions = []
+    const allOptions = {
+        data: [],
+        regulation_status: [],
+        token: null,
+    }
 
     const options = [
         'regulation_status',
 
     ]
+
     if (ctx.query.q) {
         const query = ctx.query.q;
         if (typeof window !== "undefined" && query.length > 2) {
@@ -883,11 +912,11 @@ RegulateFacility.getInitialProps = async (ctx) => {
             if (t.error) {
                 throw new Error("Error checking token");
             } else {
-                let token = t.token;
-                let _data;
-                let url =
-                    `${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${ctx.query.id}/`
-              
+                const token = t.token;
+                allOptions['token'] = token
+
+                // let _data;
+                let url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${ctx.query.id}/`
                 return fetch(url, {
                     headers: {
                         Authorization: "Bearer " + token,
@@ -896,9 +925,9 @@ RegulateFacility.getInitialProps = async (ctx) => {
                 })
                     .then((r) => r.json())
                     .then(async (json) => {
-                        allOptions.push({
-                            data: json,
-                        })
+
+                        allOptions['data'] = json
+                            
 
                         for(let i = 0; i < options.length; i++) {
                             const option = options[i]
@@ -916,16 +945,12 @@ RegulateFacility.getInitialProps = async (ctx) => {
                                             },
                                         })
 
-                                        allOptions.push({regulation_status: (await _data.json()).results.map(({id, name}) => ({value:id, label:name}))})
+                                        allOptions['regulation_status'] = (await _data.json()).results.map(({id, name}) => ({value:id, label:name}))
 
                                     }
                                     catch(err) {
                                         console.log(`Error fetching ${option}: `, err);
-                                        allOptions.push({
-                                            error: true,
-                                            err: err,
-                                            regulation_status: [],
-                                        })
+                                        
                                     }
                                     break;
                                 default:
@@ -939,14 +964,11 @@ RegulateFacility.getInitialProps = async (ctx) => {
                     })
                     .catch((err) => {
                         console.log("Error fetching facilities: ", err);
-                        return {
-                            error: true,
-                            err: err,
-                            data: [],
-                        };
+                        
                     });
             }
         })
+
         .catch((err) => {
             console.log("Error checking token: ", err);
             if (typeof window !== "undefined" && window) {
@@ -957,11 +979,7 @@ RegulateFacility.getInitialProps = async (ctx) => {
                 }
             }
             setTimeout(() => {
-                return {
-                    error: true,
-                    err: err,
-                    data: [],
-                };
+                return allOptions;
             }, 1000);
         });
 };

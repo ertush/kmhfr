@@ -9,7 +9,8 @@ import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import { UserContext } from '../../providers/user';
-
+// import {Formik, Form, Field} from 'formik';
+import { SearchIcon } from '@heroicons/react/outline'
 
 
 import {
@@ -24,6 +25,7 @@ import Head from 'next/dist/shared/lib/head'
 
 // components imports
 import MainLayout from '../../components/MainLayout'
+// import { values } from 'underscore'
 
 
 const StyledDataGrid = styled(DataGrid)(() => ({
@@ -47,8 +49,17 @@ function AdminOffices(props) {
     const userPermissions = useContext(PermissionContext)
     const userCtx = useContext(UserContext)
     const [isClient, setIsClient] = useState(false)
+    const [adminOffice, setAdminOffice] = useState(props?.data)
+    const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
-    const rows = props?.data?.results?.map(({ id, county_name, sub_county_name, name, is_national, phone_number, email }) => ({ id, county_name, sub_county_name, name, is_national: is_national == true ? 'Yes' : 'No', phone_number, email })) ?? []
+    const groupID = userCtx?.groups[0]?.id
+
+    // const rows = props?.data?.results?.map(({ id, county_name, sub_county_name, name, is_national, phone_number, email }) => ({ id, county_name, sub_county_name, name, is_national: is_national == true ? 'Yes' : 'No', phone_number, email })) ?? []
+    
+    const filters = props?.filters
+
+    const rows = adminOffice?.results?.length > 0 ? adminOffice?.results.map(({ id, county_name, sub_county_name, name, is_national, phone_number, email }) => ({ id, county_name, sub_county_name, name, is_national: is_national ? 'Yes' : 'No', phone_number, email })) : []
+    
     const columns = [
         { headerName: "County", field: "county_name", flex:1},
         { headerName: "Sub County", field: "sub_county_name", flex:1 },
@@ -69,8 +80,8 @@ function AdminOffices(props) {
                         })
                     }}
                 > 
-                <p className="text-blue-900 font-semibold">Edit</p>
-              <PencilAltIcon className="h-5 w-5 text-blue-900"/>
+                <p className="text-gray-900 font-semibold">Edit</p>
+              <PencilAltIcon className="h-5 w-5 text-gray-900"/>
                  </button>
             )
     
@@ -88,30 +99,86 @@ function AdminOffices(props) {
             router.push('/auth/login')
         }
         
-        if (hasPermission(/^admin_office.view_.*$/, userPermissions)) { // hasPermission should be negated with !
-            router.push('/unauthorized')
-        }
+        // if (/*hasPermission(/^admin_office.view_.*$/, userPermissions)*/
+        // groupID !== 7 ||
+        // groupID !== 5
+        //     ) { // hasPermission should be negated with !
+        //     router.push('/unauthorized')
+        // }
     }, [])
  
     const [officeTheme, setOfficeTheme] = useState([]);
+
+
+    function handleSearch(e){
+
+        e.preventDefault()
+
+        let url = API_URL+ `/admin_offices/?fields=id,name,county_name,county,sub_county,sub_county_name,phone_number,email,is_national`
+
+        const formData = new FormData(e.target)
+		const formDataObject = Object.fromEntries(formData)
+
+        // const query = values.q.split(' ').join('+');
+        // console.log("data vale:",formData)
+
+        const qry = Object.keys(formDataObject).map(function (key) {
+            if (formDataObject[key] !== '') {
+                const er = (key) + '=' + (formDataObject[key]).split(' ').join('+');
+
+                console.log("data object:",(formDataObject[key]))
+                return er
+            }
+        }).filter(Boolean).join('&')
+
+
+        if (qry !== '') {
+            url += `&${qry}`
+            console.log("Constructed URL:", url + `&${qry}`);
+        }
+
+        fetch(url, {
+            headers: {
+                Authorization: 'Bearer ' + props?.token,
+                Accept: 'application/json',
+            },
+
+        })
+            .then(resp => {
+
+                return resp.json()
+            })
+            .then(adminOffice => {
+                // console.log({ adminOffice })
+                setAdminOffice(adminOffice)
+
+            })
+            .catch(e => {
+                console.error(e.message)
+                setAdminOffice([])
+            })
+
+    }
+
+
 
 
     if(isClient) {
     return (
         <>
             <Head>
-                <title>KMHFR - Admin Offices</title>
+                <title>KMHFR | Admin Offices</title>
                 <link rel="icon" href="/favicon.ico" />
             </Head>
             <MainLayout isLoading={false} isFullWidth={false}>
-                <div className="w-full grid grid-cols-7 mt-8 gap-4 p-1 md:mx-4 my-2">
+                <div className="w-full  md:w-[85%] px-4 md:px-0 grid grid-cols-7 mt-8 gap-4 p-1 md:mx-4 my-2">
                     <div className="col-span-7 flex flex-col gap-x-1">
                         <div className="flex flex-wrap items-center justify-between gap-2 text-sm md:text-base py-1">
                             <div className="flex flex-row items-center justify-between gap-x-2 gap-y-0 text-sm md:text-base py-1">
-                                <a className="text-blue-700" href="/">Home</a> {'/'}
+                                <a className="text-gray-700" href="/">Home</a> {'/'}
                                 <span className="text-gray-500">Admin Offices</span>
                             </div>
-                            <div className={"col-span-5 flex  justify-between w-full  drop-shadow  text-black p-4 md:divide-x bg-transparent border border-blue-600 md:divide-gray-200 items-center border-l-8 " + (true && "border-blue-600")}>
+                            <div className={"col-span-5 flex  justify-between w-full  drop-shadow  text-black p-4 md:divide-x bg-transparent border border-gray-600 md:divide-gray-200 items-center border-l-8 " + (true && "border-gray-600")}>
                                 <h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
 
                                     {'Admin Offices'}
@@ -125,6 +192,28 @@ function AdminOffices(props) {
                             </div>
                         </div>
                     </div>
+
+                    <div className='max-w-max flex justify-end items-center  md:col-span-2 self-end'>
+                    <form
+                        className="inline-flex flex-row justify-start  flex-grow py-2 lg:py-0"
+                        onSubmit={handleSearch}>
+
+                        <input
+                        name="name"
+                        id="search-input"
+                        className="flex-none bg-transparent p-2 w-full md:flex-grow flex-grow shadow-sm rounded-tl rounded-bl border border-gray-400 placeholder-gray-600  focus:shadow-none focus:ring-black focus:border-black outline-none"
+                        type="search"
+                        placeholder="Search an Admin office"
+                        />
+                        <button
+                        type="submit"
+                        className="bg-transparent border-t border-r border-b rounded-tr rounded-br border-gray-400 text-black flex items-center justify-center px-4 py-1"
+                        >
+                        <SearchIcon className="w-5 h-5 text-gray-600" />
+                        </button>
+                    </form>
+                    </div>
+                    
                     <div className='col-span-1 w-full col-start-1 h-auto shadow-sm bg-gray-50'>
 
                         <List
@@ -145,11 +234,12 @@ function AdminOffices(props) {
                                     }}
                                 onClick={() => {
                                     setOfficeTheme(true)
-                                    router.push('/admin_office')
+                                    router.push('/admin_offices')
 
                                 }}
                             >
-                                <ListItemText primary="All Admin Offices" />
+                               <ListItemText primary="All Admin Offices" 
+                                filters={filters ?? {}}/>
                             </ListItemButton>
                         </List>
                     </div>
@@ -264,7 +354,14 @@ AdminOffices.getInitialProps = async (ctx) => {
 
             return fetchFilters(token).then(ft => {
                 return {
-                    data: json, query, filters: { ...ft }, token, path: ctx.asPath, tok: token || '/admin_office', current_url: url, api_url: API_URL
+                    data: json, 
+                    query, 
+                    filters: { ...ft }, 
+                    token, 
+                    path: ctx.asPath, 
+                    tok: token || '/admin_offices', 
+                    current_url: current_url, 
+                    api_url: API_URL
                 }
             })
 
@@ -275,7 +372,7 @@ AdminOffices.getInitialProps = async (ctx) => {
                 err: err,
                 data: [],
                 query: {},
-                path: ctx.asPath || '/admin_office',
+                path: ctx.asPath || '/admin_offices',
                 current_url: ''
             }
         }
@@ -294,7 +391,7 @@ AdminOffices.getInitialProps = async (ctx) => {
             if (ctx?.asPath) {
                 window.location.href = ctx?.asPath
             } else {
-                window.location.href = '/admin_office'
+                window.location.href = '/admin_offices'
             }
         }
         setTimeout(() => {
@@ -303,7 +400,7 @@ AdminOffices.getInitialProps = async (ctx) => {
                 err: err,
                 data: [],
                 query: {},
-                path: ctx.asPath || '/admin_office',
+                path: ctx.asPath || '/admin_offices',
                 current_url: ''
             }
         }, 1000);

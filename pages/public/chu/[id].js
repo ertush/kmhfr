@@ -29,9 +29,7 @@ function CommunityUnit(props) {
 
   useEffect(() => {
     if (typeof window !== 'undefined') { //auth.add_group
-      // let usr = JSON.parse(window.sessionStorage.getItem('user'))
       if(window.localStorage?.getItem(cu?.id) !== null){
-
         setRating(JSON.parse(window.localStorage?.getItem(cu?.id))[0])
       }
     }
@@ -80,24 +78,25 @@ function CommunityUnit(props) {
   return (
     <>
       <Head>
-        <title> KMHFR - {cu?.name || cu?.official_name}</title>
+        <title> KMHFR | {cu?.name || cu?.official_name}</title>
         <link rel="icon" href="/favicon.ico" />
   
       </Head>
 
       <MainLayout>
-        <div className="w-full grid grid-cols-1 md:grid-cols-7 gap-3 my-4 place-content-center">
+      
+        <div className="w-full md:w-[85%] md:mx-auto grid grid-cols-1 md:grid-cols-7 gap-3 my-4 place-content-center">
          
          {/* Headings matters*/}
-          <div className="md:col-span-7 col-span-1 flex flex-col items-start px-4 justify-start gap-3">
+          <div className="md:col-span-7 col-span-1 flex flex-col items-start px-4 md:px-0 justify-start gap-3">
 
             {/* Header */}
             <div className="flex flex-row items-center justify-between gap-2 text-sm md:text-base py-3">
-              <Link className="text-blue-700" href="/">
+              <Link className="text-gray-700" href="/">
                 Home
               </Link>
               {"/"}
-              <Link className="text-blue-700" href="/public/chu/community_units">
+              <Link className="text-gray-700" href="/public/chu/community_units">
                 Community units
               </Link>
               {"/"}
@@ -110,8 +109,8 @@ function CommunityUnit(props) {
 
             <div
               className={
-                "md:col-span-7 grid grid-cols-6 gap-5 md:gap-8 py-6 w-full bg-gray-50 drop-shadow  text-black p-4 md:divide-x md:divide-gray-200z shadow-sm items-center border-l-8 " +
-                (cu.active ? "border-blue-600" : "border-red-600")
+                "md:col-span-7 grid grid-cols-6 gap-5 md:gap-8 py-6 w-full rounded bg-gray-50 drop-shadow  text-black p-4 md:divide-x md:divide-gray-200 shadow-sm items-center border-l-8 " +
+                (cu.active ? "border-gray-600" : "border-red-600")
               }
             >
               <div className="col-span-6 md:col-span-3">
@@ -122,7 +121,7 @@ function CommunityUnit(props) {
                   <span
                     className={
                       "font-bold text-2xl " +
-                      (cu.code ? "text-blue-900" : "text-gray-400")
+                      (cu.code ? "text-gray-900" : "text-gray-400")
                     }
                   >
                     #{cu.code || "NO_CODE"}
@@ -133,22 +132,17 @@ function CommunityUnit(props) {
                 </div>
               </div>
 
-                {/* <button
-                    className=" bg-indigo-500 col-span-1 col-start-6 min-w-0 p-2 text-white text-lg font-semibold"
-                    onClick={() => { window.location.href = url}}
-                  >
-                    Print
-                  </button> */}
+               
             </div>
 
           </div>
          
 
           {/* Main Body */}
-          <div className="col-span-1 md:col-span-7 flex flex-row gap-3 mt-4">
+          <div className="col-span-1 md:col-span-7 flex rounded flex-col md:flex-row gap-3 mt-4 px-4 md:px-0">
 
               {/* CHU Details Tab section */}
-              <div className="bg-gray-50 shadow-sm flex flex-col gap-3 m-4 w-2/3">
+              <div className="bg-gray-50 shadow-sm flex flex-col gap-3 md:w-2/3 w-full ">
                 {/* Approve/Reject, Edit Buttons */}
               
 
@@ -157,7 +151,7 @@ function CommunityUnit(props) {
                   className="w-full flex flex-col tab-root"
                   defaultValue="overview"
                 >
-                  <Tabs.List className="list-none flex justify-around border-b border-blue-600 flex-wrap gap-2 md:gap-3 px-4 uppercase leading-none tab-list font-semibold">
+                  <Tabs.List className="list-none flex justify-around border-b border-gray-600 flex-wrap gap-2 md:gap-3 px-4 uppercase leading-none tab-list font-semibold">
                     <Tabs.Tab
                       id={1}
                       value="overview"
@@ -165,20 +159,7 @@ function CommunityUnit(props) {
                     >
                       Overview
                     </Tabs.Tab>
-                    {/* <Tabs.Tab
-                      id={2}
-                      value="services"
-                      className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-400 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
-                    >
-                      Services
-                    </Tabs.Tab> */}
-                    {/* <Tabs.Tab
-                      id={3}
-                      value="hr_staffing"
-                      className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-400 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
-                    >
-                      HR &amp; Staffing
-                    </Tabs.Tab> */}
+                   
                     <Tabs.Tab
                       id={3}
                       value="chu_ratings"
@@ -207,14 +188,14 @@ function CommunityUnit(props) {
                             {cu.status_name
                               ?.toLocaleLowerCase()
                               .includes("fully-") ? (
-                              <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 text-blue-900 flex gap-x-1 items-center cursor-default">
+                              <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 text-gray-900 flex gap-x-1 items-center cursor-default">
                                 <CheckCircleIcon className="h-4 w-4" />
                                 {cu?.status_name || "Yes"}
                               </span>
                             ) : cu.status_name
                               ?.toLocaleLowerCase()
                               .includes("semi") ? (
-                              <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 text-blue-900 flex gap-x-1 items-center cursor-default">
+                              <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 text-gray-900 flex gap-x-1 items-center cursor-default">
                                 <CheckCircleIcon className="h-4 w-4" />
                                 {cu?.status_name || "Yes"}
                               </span>
@@ -250,8 +231,9 @@ function CommunityUnit(props) {
                           <label className="col-span-1 text-gray-600">
                             Linked facility
                           </label>
-                          <Link   href={`/public/facility/`+ cu.facility}>
-                            <span className="text-blue-700 col-start-3 underline underline-offset-1">{cu.facility_name || " - "}</span>
+                          
+                          <Link  className="col-start-3" href={`/public/facility/`+ cu.facility}>
+                            <span className="text-gray-700 col-start-3 underline underline-offset-1">{cu.facility_name || " - "}</span>
                           </Link>
                         </div>
                         <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
@@ -509,7 +491,7 @@ function CommunityUnit(props) {
               </div>
               
               {/* Map Section */}
-              <div className="flex flex-col gap-3 mt-4 w-1/3">
+              <div className="flex flex-col gap-3 mt-4 md:w-1/3 w-full rounded">
                 <h2 className="text-xl font-semibold" >{cu?.facility_ward} Ward</h2>
                 {cu?.lat_long && cu?.lat_long.length > 0 ? (
                     <div className="w-full flex flex-col">
@@ -562,6 +544,7 @@ CommunityUnit.getInitialProps = async (ctx) => {
       }
     }
   }
+
   return checkToken(ctx.req, ctx.res)
     .then((t) => {
       if (t.error) {
@@ -578,10 +561,7 @@ CommunityUnit.getInitialProps = async (ctx) => {
         })
           .then((r) => r.json())
           .then( async(json) => {
-            alldata.push({
-              data: json,
-              })
-
+            alldata['data'] = json
             if (json) {
               try {
                 const response = await fetch(

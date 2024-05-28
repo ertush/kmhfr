@@ -2,7 +2,7 @@
 
 "use client"
 
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState, useMemo } from 'react';
 import { Select as CustomSelect } from './formComponents/Select';
 import { FormOptionsContext } from '../../pages/facilities/add';
 import {
@@ -14,6 +14,7 @@ import Spinner from '../Spinner'
 import { useRouter } from 'next/router';
 import { Alert } from '@mui/lab';
 import { UpdateFormIdContext } from './Form';
+// import { indexOf } from 'underscore';
 
 // import { FacilityIdContext, FacilityWardDataContext } from './Form';
 
@@ -30,7 +31,22 @@ export function BasicDeatilsForm({ editMode }) {
   // State
   const [isClient, setIsClient] = useState(false)
   const [totalFunctionalBeds, setTotalFunctionalBeds] = useState(0)
-  const [facilityId, setFacilityId] = useState('')
+  const [facilityId, setFacilityId] = useMemo(() => {
+    let id = ''
+
+    function setId(_id) {
+        id = _id
+    }
+
+    if(window) {
+        setId(new URL(window.location.href).searchParams.get('facilityId') ?? '')
+    }
+
+    // console.log({id})
+
+    return [id, setId]
+}, [])
+
   const [submitting, setSubmitting] = useState(false);
   const [touchedFields, setTouchedFields] = useState([]);
   const [formError, setFormError] = useState(null);
@@ -65,7 +81,6 @@ export function BasicDeatilsForm({ editMode }) {
     },
   ];
 
-
   // Event handlers
   function handleFocus(e) {
     setTouchedFields(touchedFields => {
@@ -76,40 +91,44 @@ export function BasicDeatilsForm({ editMode }) {
   async function handleSelectChange(e) {
 
     const keph = document.getElementsByName('keph_level');
+    const kephDisplay = document.getElementsByName('keph_level_display');
+
 
     // Handle facility Type Change
-    if (e.target.name == 'facility_type') {
+    if (e.target.name == 'facility_type_parent') {
 
       // Keph form validation
-
-
-
       const facilityTypeLabel = e.target.selectedOptions[0].innerText
 
       if (facilityTypeLabel.includes('DISPENSARY')) {
 
-        keph[0]?.value = options?.keph.find(({ label }) => label == 'Level 2')?.value;
+        console.log(keph[0]?.textContent)
+        kephDisplay[0]['value'] = 'Level 2'
+        keph[0]['value'] = options?.keph.find(({ label }) => label == 'Level 2')?.value;
 
       } else if (facilityTypeLabel.includes('MEDICAL CENTER')) {
-        keph[0]?.value = options?.keph.find(({ label }) => label == 'Level 3')?.value;
+        kephDisplay[0]['value'] = 'Level 3'
+        keph[0]['value'] = options?.keph.find(({ label }) => label == 'Level 3')?.value;
 
       }
       else if (facilityTypeLabel.includes('HEALTH CENTRE')) {
-
-        keph[0]?.value = options?.keph.find(({ label }) => label == 'Level 3')?.value;
+        kephDisplay[0]['value'] = 'Level 3'
+        keph[0]['value'] = options?.keph.find(({ label }) => label == 'Level 3')?.value;
 
       }
       else if (facilityTypeLabel.includes('MEDICAL CLINIC')) {
-
-        keph[0]?.value = options?.keph.find(({ label }) => label == 'Level 2')?.value;
+        kephDisplay[0]['value'] = 'Level 2'
+        keph[0]['value'] = options?.keph.find(({ label }) => label == 'Level 2')?.value;
 
       }
       else if (facilityTypeLabel.includes('NURSING HOME')) {
-        keph[0]?.value = options?.keph.find(({ label }) => label == 'Level 3')?.value;
+        kephDisplay[0]['value'] = 'Level 3'
+        keph[0]['value'] = options?.keph.find(({ label }) => label == 'Level 3')?.value;
 
       }
       else if (facilityTypeLabel.includes('STAND ALONE')) {
-        keph[0]?.value = options?.keph.find(({ label }) => label == 'Level 2')?.value;
+        kephDisplay[0]['value'] = 'Level 2'
+        keph[0]['value'] = options?.keph.find(({ label }) => label == 'Level 2')?.value;
 
       }
 
@@ -146,25 +165,28 @@ export function BasicDeatilsForm({ editMode }) {
       }
 
 
-    } else if (e.target.name == 'facility_type_details') {
+    } else if (e.target.name == 'facility_type') {
 
 
 
       const facilityTypeLabel = e.target.selectedOptions[0].innerText
 
       if (facilityTypeLabel.trim().toLowerCase() == 'Comprehensive Teaching & Tertiary Referral Hospital'.trim().toLowerCase()) {
-
-        keph[0]?.value = options?.keph.find(({ label }) => label == 'Level 6')?.value;
+        kephDisplay[0]['value'] = 'Level 6'
+        keph[0]['value'] = options?.keph.find(({ label }) => label == 'Level 6')?.value;
 
       } else if (facilityTypeLabel.trim().toLowerCase() == 'Specialized & Tertiary Referral hospitals'.trim().toLowerCase()) {
-        keph[0]?.value = options?.keph.find(({ label }) => label == 'Level 6')?.value;
+        kephDisplay[0]['value'] = 'Level 6'
+        keph[0]['value'] = options?.keph.find(({ label }) => label == 'Level 6')?.value;
 
       } else if (facilityTypeLabel.trim().toLowerCase() == 'Secondary care hospitals'.trim().toLowerCase()) {
-        keph[0]?.value = options?.keph.find(({ label }) => label == 'Level 5')?.value;
+        kephDisplay[0]['value'] = 'Level 5'
+        keph[0]['value'] = options?.keph.find(({ label }) => label == 'Level 5')?.value;
 
       }
       else if (facilityTypeLabel.trim().toLowerCase() == 'Primary care hospitals'.trim().toLowerCase()) {
-        keph[0]?.value = options?.keph.find(({ label }) => label == 'Level 4')?.value;
+        kephDisplay[0]['value'] = 'Level 4'
+        keph[0]['value'] = options?.keph.find(({ label }) => label == 'Level 4')?.value;
 
       }
 
@@ -305,13 +327,7 @@ export function BasicDeatilsForm({ editMode }) {
 
     const data = Object.fromEntries(formData)
 
-    const payload = {}
-
-    for (let field of touchedFields) {
-      payload[field] = data[field] == undefined ? false : data[field] == "on" || data[field] == "true" ? true : data[field] == "false" ? false : (Number(data[field]) ?? data[field])
-    }
-
-    // console.log({payload})
+   
 
     setSubmitting(true)
 
@@ -324,7 +340,7 @@ export function BasicDeatilsForm({ editMode }) {
         'Content-Type': 'application/json;charset=UTF-8',
         'Authorization': `Bearer ${options?.token}`
       },
-      body: JSON.stringify(payload)
+      body: JSON.stringify(data/*payload*/)
     })
       .then(res => {
         if (res.status == 204 || res.status == 200) {
@@ -372,31 +388,40 @@ export function BasicDeatilsForm({ editMode }) {
 
   }
 
+
   function handeBasicDetailsCreate(e) {
+
     e.preventDefault()
 
     const formData = new FormData(e.target)
 
     const data = Object.fromEntries(formData)
 
+
     setSubmitting(true)
 
     // Persist Data
 
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/`, {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json;charset=UTF-8',
-        'Authorization': `Bearer ${options?.token}`
-      },
-      body: JSON.stringify(data)
-    })
+      fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/`, {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json;charset=UTF-8',
+          'Authorization': `Bearer ${options?.token}`
+        },
+        body: JSON.stringify(data)
+      })
       .then(async (res) => {
 
-        if (res.status == 201 || res.status == 200) {
+        if (res.ok) {
           setSubmitting(false)
           alert.success('Facility Added Successfully')
+
+          if(window) {
+            const base64BasicDetilsFormData = Buffer.from(JSON.stringify(data)).toString('base64')
+            window.localStorage.setItem('basic_details', base64BasicDetilsFormData)
+          }
+
         } else {
           setSubmitting(false)
           alert.error('Unable to Add facility')
@@ -423,7 +448,7 @@ export function BasicDeatilsForm({ editMode }) {
 
         const facilityId = facilityData?.id
 
-        setFacilityId(facilityId)
+        setFacilityId(facilityId ?? null)
 
         if (facilityData) {
           fetch(
@@ -455,31 +480,25 @@ export function BasicDeatilsForm({ editMode }) {
 
                 const base64EncWardData = Buffer.from(JSON.stringify(wardGeoData)).toString('base64')
 
-                const params = [];
+                
 
-                for (let [k, v] of formData) {
-                  if (k == 'facility_checklist_document') {
-                    params.push(`${k}=${JSON.stringify(v)}`)
-                  }
-                  else {
-
-                    params.push(`${k}=${v}`)
-
-                  }
+                
+                // params.push(`wardData=${base64EncWardData}`)
+                
+                if(window) {
+                  window.localStorage.setItem('ward_data', base64EncWardData  )
                 }
 
-                params.push(`wardData=${base64EncWardData}`)
-
-                const base64EncParams = Buffer.from(params.join('&')).toString('base64')
+                // const base64EncParams = Buffer.from(params.join('&')).toString('base64')
 
 
                 router.push({
                   pathname: `${window.location.origin}/facilities/add`,
 
                   query: {
-                    formData: base64EncParams,
+                    wardData: base64EncWardData,
                     formId: 1,
-                    facilityId: facilityId,
+                    facilityId,
                     from: 'submission'
                   }
 
@@ -487,18 +506,6 @@ export function BasicDeatilsForm({ editMode }) {
                   .then((navigated) => {
                     if (navigated) setFormId(1)
                   })
-
-                // const url = new URL(`${window.location.origin}/facilities/add?formData=${base64EncParams}`)
-
-                // url.searchParams.set('formId', '1')
-
-                // url.searchParams.set('facilityId', `${facilityId}`)
-
-                // url.searchParams.set('from', 'submission')
-
-
-                // window.location.href = url
-
 
               }
 
@@ -526,14 +533,14 @@ export function BasicDeatilsForm({ editMode }) {
 
     handleFocus(e)
 
-
     const number_of_inpatient_beds = Number(document.getElementsByName('number_of_inpatient_beds')[0]?.value)
     const number_of_icu_beds = Number(document.getElementsByName('number_of_icu_beds')[0]?.value)
     const number_of_hdu_beds = Number(document.getElementsByName('number_of_hdu_beds')[0]?.value)
     const number_of_maternity_beds = Number(document.getElementsByName('number_of_maternity_beds')[0]?.value)
+    const number_of_isolation_beds = Number(document.getElementsByName('number_of_isolation_beds')[0]?.value)
     const number_of_emergency_casualty_beds = Number(document.getElementsByName('number_of_emergency_casualty_beds')[0]?.value)
 
-    const totalBeds = number_of_inpatient_beds + number_of_icu_beds + number_of_hdu_beds + number_of_maternity_beds + number_of_emergency_casualty_beds
+    const totalBeds = number_of_inpatient_beds + number_of_icu_beds + number_of_hdu_beds + number_of_maternity_beds + number_of_emergency_casualty_beds + number_of_isolation_beds
 
 
     setTotalFunctionalBeds(totalBeds)
@@ -544,15 +551,17 @@ export function BasicDeatilsForm({ editMode }) {
   // Effects
   useEffect(() => {
 
+
     // console.log({facility: options?.data})
-    async function updateFacilityTypeDetailOptions() {
+    async function updateFacilityTypeDetailOptions(e) {
       try {
-        const facilityTypeDetails = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facility_types_details/?is_parent=false&parent=${e.target.value}`, {
+        const facilityTypeDetails = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facility_types_details/?is_parent=false`, {
           headers: {
             'Accept': 'application/json',
             'Authorization': `Bearer ${options?.token}`
           }
         })
+
 
         const filteredFacilityType = (await facilityTypeDetails.json())?.results
 
@@ -566,17 +575,32 @@ export function BasicDeatilsForm({ editMode }) {
           }
         })
 
-
+        
         setFacilityTypeDetailOptions(facilityType ?? options?.facility_type_details)
 
       }
       catch (e) {
-        console.error(e.message)
+        console.error(e?.message)
       }
     }
 
     updateFacilityTypeDetailOptions()
 
+    function getFacilityTypeDetailsParent(facilityTypeId, token) {
+
+      return fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facility_types_details/?id=${facilityTypeId}`, {
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      })
+        .then(resp => resp.json())
+        .then(resp => resp?.results)
+        .catch(console.error)
+
+    }
+
+    
     function getFacilityTypeDetails(facilityTypeId, token) {
 
       return fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facility_types_details/?is_parent=false&parent=${facilityTypeId}`, {
@@ -592,26 +616,28 @@ export function BasicDeatilsForm({ editMode }) {
     }
 
     if (window && !editMode) {
-      const path = new URL(window.location.href)
+      const path = new URL(window.document.location.href)
 
       if (path.searchParams.get('from') == 'previous') {
 
-        const strFormData = Buffer.from(path.searchParams?.get('formData') ?? 'J3t9Jw==', 'base64').toString() ?? "{}"
-        const params = new URL(`${window.location.origin}/facilities/add?${strFormData}`).searchParams
-        const paramEntries = params.entries()
-        const formData = Object.fromEntries(paramEntries)
+        
+        const previousFormData = window.localStorage.getItem('basic_details')
+    
+        if (previousFormData !== null) {
+    
+          const formData = Buffer.from(previousFormData ?? 'e30=', 'base64').toString()
 
-        // console.log(formData)
+          const data = JSON.parse(formData)
 
-        if (facilityId == '') setFacilityId(params?.facilityId)
 
+        
         delete formData?.facility_checklist_document
 
         const newOptions = {}
 
         Object.assign(newOptions, options)
 
-        newOptions['data'] = formData
+        newOptions['data'] = data // ?? _formData
 
         for (let [k, v] of Object.entries(newOptions?.data)) {
 
@@ -623,16 +649,55 @@ export function BasicDeatilsForm({ editMode }) {
         }
 
         setOptions(newOptions)
+
+        let parent = "";
+      
+      getFacilityTypeDetailsParent(options?.data?.facility_type, options?.token)
+        .then(facilityTypeDetails => {
+
+          parent=facilityTypeDetails[0]?.parent; 
+          if(parent)
+          {
+            document.getElementsByName('facility_type_parent')[0].value = parent.toString();
+           }
+         })
+
+        getFacilityTypeDetails(parent, options?.token)
+        .then(facilityTypeDetails => {
+
+           const _options = facilityTypeDetails?.map(({ id: value, name: label }) => ({ label, value }))
+
+          setFacilityTypeDetailOptions(_options)
+        })
+
       }
+
+      }
+
 
     }
     else if (editMode) {
-      getFacilityTypeDetails(options?.data?.facility_type, options?.token)
+
+      let parent = "";
+      
+      getFacilityTypeDetailsParent(options?.data?.facility_type, options?.token)
         .then(facilityTypeDetails => {
 
-          console.log({ facilityTypeDetails })
+          parent=facilityTypeDetails[0]?.parent; 
+          if(parent)
+          {
+            const facilityTypeParent = document.getElementsByName('facility_type_parent')
+            if(facilityTypeParent) facilityTypeParent["value"] = parent;
+            // console.log({typeParent: facilityTypeParent["value"]})
 
-          const _options = facilityTypeDetails?.map(({ id: value, name: label }) => ({ label, value }))
+          }
+         })
+
+        getFacilityTypeDetails(parent, options?.token)
+        .then(facilityTypeDetails => {
+
+           const _options = facilityTypeDetails?.map(({ id: value, name: label }) => ({ label, value }))
+
           setFacilityTypeDetailOptions(_options)
         })
     }
@@ -642,7 +707,11 @@ export function BasicDeatilsForm({ editMode }) {
   }, [])
 
 
+
+
   if (isClient) {
+
+  
 
     return (
       <form name='basic_details_form'
@@ -672,7 +741,7 @@ export function BasicDeatilsForm({ editMode }) {
             name='official_name'
             defaultValue={options?.data?.official_name ?? ''}
             onFocus={handleFocus}
-            className='flex-none w-full bg-gray-50 p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+            className='flex-none w-full bg-gray-50 p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:border-black outline-none'
           />
         </div>
 
@@ -693,7 +762,7 @@ export function BasicDeatilsForm({ editMode }) {
             name='name'
             defaultValue={options?.data?.name ?? ''}
             onFocus={handleFocus}
-            className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+            className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:border-black outline-none'
           />
 
         </div>
@@ -701,7 +770,7 @@ export function BasicDeatilsForm({ editMode }) {
         {/* Facility Type */}
         <div className={`w-full flex flex-col items-start justify-start gap-1 mb-3`}>
           <label
-            htmlFor='facility_type'
+            htmlFor='facility_type_parent' // facility_type
             className='text-gray-600 capitalize text-sm'>
             Facility Type{' '}
             <span className='text-medium leading-12 font-semibold'>
@@ -712,12 +781,12 @@ export function BasicDeatilsForm({ editMode }) {
 
           <CustomSelect
             options={options?.facility_types}
-            defaultValue={options?.facility_types?.map(({ value }) => value).includes(options?.data?.facility_type) ? options?.data?.facility_type : (() => {
+            defaultValue={options?.data?.facility_type_parent /*options?.facility_types?.map(({ value }) => value).includes(options?.data?.facility_type) ? options?.data?.facility_type : (() => {
               return options?.facility_types?.find(({ label }) => label == options?.data?.facility_type_parent)?.value
-            })()}
+            })()*/}
             placeholder="Select a facility type..."
             required
-            name='facility_type'
+            name='facility_type_parent' // facility_type
             onChange={handleSelectChange}
             onFocus={handleFocus}
 
@@ -728,7 +797,7 @@ export function BasicDeatilsForm({ editMode }) {
         {/* Facility Type Details */}
         <div className={`w-full flex flex-col items-start justify-start gap-1 mb-3`}>
           <label
-            htmlFor='facility_type_details'
+            htmlFor='facility_type' // facility_type_details
             className='text-gray-600 capitalize text-sm'>
             Facility Type Details
             <span className='text-medium leading-12 font-semibold'>
@@ -739,13 +808,13 @@ export function BasicDeatilsForm({ editMode }) {
 
 
           <CustomSelect
-            options={facilityTypeDetailOptions.length > 0 ? facilityTypeDetailOptions : options?.facility_type_details}
+            options={facilityTypeDetailOptions}
             placeholder="Select facility type details..."
             onChange={handleSelectChange}
             onFocus={handleFocus}
-            defaultValue={options?.facility_type_details?.find(({ label }) => label == options?.data?.facility_type_name)?.value}
+            defaultValue={options?.data?.facility_type/*options?.facility_type_details?.find(({ label }) => label == options?.data?.facility_type_name)?.value*/}
             required
-            name='facility_type_details'
+            name='facility_type' // facility_type_details
 
           />
 
@@ -792,9 +861,43 @@ export function BasicDeatilsForm({ editMode }) {
             name="date_established"
             onFocus={handleFocus}
             defaultValue={options?.data?.date_established ?? ''}
-            className='flex-none w-full bg-transparent p-2 flex-grow placeholder-gray-500 border border-blue-600 focus:shadow-none  focus:border-black outline-none'
+            className='flex-none w-full bg-transparent p-2 flex-grow placeholder-gray-500 border border-gray-400 rounded focus:shadow-none  focus:border-black outline-none'
 
           />
+        </div>
+
+         {/* Out reach services */}
+         <div className='flex flex-col w-full items-start'>
+          <div className='w-full flex flex-row items-center px-2 justify-start gap-1 gap-x-3 mb-3'>
+            <label
+              htmlFor='out_reach_services'
+              className='text-gray-700 capitalize text-sm flex-grow'>
+              Does the Facility have Out-reach services (mobile){' '}
+            </label>
+            <span className='flex items-center gap-x-1'>
+              <input
+                type='radio'
+                name='out_reach_services'
+                value={true}
+                // defaultChecked={options?.data?.accredited_lab_iso_15189 === true}
+
+              />
+              <small className='text-gray-700'>Yes</small>
+            </span>
+            <span className='flex items-center gap-x-1'>
+              <input
+                type='radio'
+                name='out_reach_services'
+                value={false}
+                // defaultChecked={options?.data?.accredited_lab_iso_15189 === false}
+
+
+              />
+              <small className='text-gray-700'>No</small>
+            </span>
+
+          </div>
+
         </div>
 
         {/* Is Facility accredited */}
@@ -867,7 +970,6 @@ export function BasicDeatilsForm({ editMode }) {
           </label>
           <CustomSelect
             options={ownerTypeDetailsOptions ?? []}
-            defaultChecked={options?.data?.owner ?? ''}
             onFocus={handleFocus}
             placeholder="Select owner..."
             required
@@ -880,19 +982,29 @@ export function BasicDeatilsForm({ editMode }) {
         {/* KEPH Level */}
         <div className={`${options?.data ? "cursor-not-allowed" : "cursor-default"} w-full flex flex-col items-start justify-start gap-1 mb-3`}>
           <label
-            htmlFor='keph_level'
+            htmlFor='keph_level_display'
             className='text-gray-600 capitalize text-sm'>
             KEPH Level
           </label>
+
+          <input
+            required
+            type='text'
+            name='keph_level_display'
+            readOnly
+            placeholder='Level #'
+            defaultValue={options?.data?.keph_level_name ?? ''}     
+            className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:border-black outline-none'
+          />
+          
           <CustomSelect
             options={options?.keph}
-            placeholder="Select a KEPH Level.."
             name='keph_level'
-            defaultValue={options?.data?.keph_level ?? ''}
-            onFocus={handleFocus}
-            disabled={options?.data ? true : false}
-
+            defaultValue={options?.data?.keph_level}
+            hidden={true}
           />
+
+          
         </div>
 
         {/* Total Functional In-patient Beds */}
@@ -912,7 +1024,7 @@ export function BasicDeatilsForm({ editMode }) {
             min={0}
             name='number_of_beds'
             value={totalFunctionalBeds}
-            className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+            className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:border-black outline-none'
           />
 
 
@@ -937,7 +1049,7 @@ export function BasicDeatilsForm({ editMode }) {
             name='number_of_inpatient_beds'
             onFocus={handleNumberInputChange}
             defaultValue={options?.data?.number_of_inpatient_beds ?? 0}
-            className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+            className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:border-black outline-none'
           />
 
         </div>
@@ -960,7 +1072,7 @@ export function BasicDeatilsForm({ editMode }) {
             name='number_of_cots'
             onFocus={handleFocus}
             defaultValue={options?.data?.number_of_cots ?? ''}
-            className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+            className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:border-black outline-none'
           />
 
         </div>
@@ -983,7 +1095,7 @@ export function BasicDeatilsForm({ editMode }) {
             name='number_of_emergency_casualty_beds'
             onFocus={handleNumberInputChange}
             defaultValue={options?.data?.number_of_emergency_casualty_beds ?? ''}
-            className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+            className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:border-black outline-none'
           />
 
 
@@ -1007,7 +1119,7 @@ export function BasicDeatilsForm({ editMode }) {
             name='number_of_icu_beds'
             onFocus={handleNumberInputChange}
             defaultValue={options?.data?.number_of_icu_beds ?? ''}
-            className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+            className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:border-black outline-none'
           />
 
 
@@ -1031,7 +1143,7 @@ export function BasicDeatilsForm({ editMode }) {
             name='number_of_hdu_beds'
             onFocus={handleNumberInputChange}
             defaultValue={options?.data?.number_of_hdu_beds ?? ''}
-            className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+            className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:border-black outline-none'
           />
 
 
@@ -1055,7 +1167,7 @@ export function BasicDeatilsForm({ editMode }) {
             name='number_of_maternity_beds'
             onFocus={handleNumberInputChange}
             defaultValue={options?.data?.number_of_maternity_beds ?? ''}
-            className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+            className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:border-black outline-none'
           />
 
 
@@ -1079,7 +1191,7 @@ export function BasicDeatilsForm({ editMode }) {
             name='number_of_isolation_beds'
             onFocus={handleFocus}
             defaultValue={options?.data?.number_of_isolation_beds ?? ''}
-            className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+            className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:border-black outline-none'
           />
 
 
@@ -1105,7 +1217,7 @@ export function BasicDeatilsForm({ editMode }) {
             onFocus={handleFocus}
             defaultValue={options?.data?.number_of_general_theatres ?? ''}
 
-            className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+            className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:border-black outline-none'
           />
 
 
@@ -1129,17 +1241,105 @@ export function BasicDeatilsForm({ editMode }) {
             name='number_of_maternity_theatres'
             onFocus={handleFocus}
             defaultValue={options?.data?.number_of_maternity_theatres ?? ''}
-            className='flex-none w-full  bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+            className='flex-none w-full  bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:border-black outline-none'
           />
 
         </div>
+
+         {/* No. of Minor Theatres */}
+        <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+          <label
+            htmlFor='number_of_minor_theatres'
+            className='text-gray-600 capitalize text-sm'>
+            Number of Minor Theatres
+            <span className='text-medium leading-12 font-semibold'>
+              {' '}
+              *
+            </span>
+          </label>
+
+          <input
+            required
+            type='number'
+            min={0}
+            name='number_of_minor_theatres'
+            onFocus={handleFocus}
+            // defaultValue={options?.data?.number_of_general_theatres ?? ''}
+
+            className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:border-black outline-none'
+          />
+
+
+        </div>
+
+          {/* No. of Eye Theatres */}
+          <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+          <label
+            htmlFor='number_of_eye_theatres'
+            className='text-gray-600 capitalize text-sm'>
+            Number of Eye Theatres
+            <span className='text-medium leading-12 font-semibold'>
+              {' '}
+              *
+            </span>
+          </label>
+
+          <input
+            required
+            type='number'
+            min={0}
+            name='number_of_eye_theatres'
+            onFocus={handleFocus}
+            // defaultValue={options?.data?.number_of_general_theatres ?? ''}
+
+            className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:border-black outline-none'
+          />
+
+
+        </div>
+
+          {/* New Born Unit */}
+          <div className='flex flex-col w-full items-start'>
+          <div className='w-full flex flex-row items-center px-2 justify-start gap-1 gap-x-3 mb-3'>
+            <label
+              htmlFor='new_born_unit'
+              className='text-gray-700 capitalize text-sm flex-grow'>
+              New Born Unit{' '}
+            </label>
+            <span className='flex items-center gap-x-1'>
+              <input
+                type='radio'
+                name='new_born_unit'
+                onFocus={handleFocus}
+                // defaultChecked={options?.data?.nhif_accreditation == true}
+                value={true}
+
+              />
+              <small className='text-gray-700'>Yes</small>
+            </span>
+            <span className='flex items-center gap-x-1'>
+              <input
+                type='radio'
+                name='new_born_unit'
+                onFocus={handleFocus}
+                // defaultChecked={options?.data?.nhif_accreditation == false}
+                value={false}
+
+              />
+              <small className='text-gray-700'>No</small>
+            </span>
+
+          </div>
+
+        </div>
+
 
         {/* Facility Catchment Population */}
         <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
           <label
             htmlFor='facility_catchment_population'
             className='text-gray-600 capitalize text-sm'>
-            Facility Catchment Population
+            Facility Catchment Population (Calculated Estimates)
             <span className='text-medium leading-12 font-semibold'>
               {' '}
 
@@ -1151,7 +1351,7 @@ export function BasicDeatilsForm({ editMode }) {
             name='facility_catchment_population'
             onFocus={handleFocus}
             defaultValue={options?.data?.facility_catchment_population ?? ''}
-            className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+            className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:border-black outline-none'
           />
 
         </div>
@@ -1253,8 +1453,8 @@ export function BasicDeatilsForm({ editMode }) {
         </div>
 
         {/* Armed Forces Facilities */}
-        <div className=' w-full flex flex-col items-start justify-start p-3  border border-blue-600 bg-transaprent h-auto'>
-          <h4 className='text-lg uppercase pb-2 border-b border-blue-600 w-full mb-4 font-semibold text-blue-900'>
+        <div className=' w-full flex flex-col items-start justify-start p-3  border border-gray-400 rounded bg-transaprent h-auto'>
+          <h4 className='text-lg uppercase pb-2 border-b border-gray-400  w-full mb-4 font-semibold text-gray-900'>
             Armed Forces Facilities
           </h4>
           <div className='w-full flex flex-row items-center px-2 justify-start gap-1 gap-x-3 mb-3'>
@@ -1275,8 +1475,8 @@ export function BasicDeatilsForm({ editMode }) {
         </div>
 
         {/* Hours/Days of Operation */}
-        <div className=' w-full flex flex-col items-start justify-start p-3  border border-blue-600 bg-transaprent h-auto'>
-          <h4 className='text-lg uppercase pb-2 border-b border-blue-600 w-full mb-4 font-semibold text-blue-900'>
+        <div className=' w-full flex flex-col items-start justify-start p-3  border border-gray-400 rounded bg-transaprent h-auto'>
+          <h4 className='text-lg uppercase pb-2 border-b border-gray-400  w-full mb-4 font-semibold text-gray-900'>
             Hours/Days of Operation
           </h4>
           <div className='w-full flex flex-row items-center px-2 gap-1 gap-x-3 mb-3'>
@@ -1363,13 +1563,13 @@ export function BasicDeatilsForm({ editMode }) {
 
 
         {/* Location Details */}
-        <div className=' w-full flex flex-col items-start justify-start p-3  border border-blue-600 bg-transaprent h-auto'>
-          <h4 className='text-lg uppercase pb-2 border-b border-blue-600 w-full mb-4 font-semibold text-blue-900'>
+        <div className=' w-full flex flex-col items-start justify-start p-3  border border-gray-400 rounded bg-transaprent h-auto'>
+          <h4 className='text-lg uppercase pb-2 border-b border-gray-400 w-full mb-4 font-semibold text-gray-900'>
             Location Details
           </h4>
-          <div className='grid grid-cols-4 place-content-start gap-3 w-full'>
+          <div className='grid md:grid-cols-4 grid-cols-1 place-content-start gap-3 w-full'>
             {/* County  */}
-            <div className='col-start-1 col-span-1'>
+            <div className='md:col-start-1 col-span-1 '>
               <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
 
 
@@ -1383,6 +1583,7 @@ export function BasicDeatilsForm({ editMode }) {
                     *
                   </span>
                 </label>
+
                 <CustomSelect
                   options={options?.counties} // 
                   required
@@ -1399,7 +1600,7 @@ export function BasicDeatilsForm({ editMode }) {
             </div>
 
             {/* Sub-county */}
-            <div className='col-start-2 col-span-1'>
+            <div className='md:col-start-2 col-span-1 '>
               <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
                 <label
                   htmlFor='sub_county_id'
@@ -1427,7 +1628,7 @@ export function BasicDeatilsForm({ editMode }) {
             </div>
 
             {/* Constituency */}
-            <div className='col-start-3 col-span-1'>
+            <div className='md:col-start-3 col-span-1 '>
               <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
                 <label
                   htmlFor='constituency_id'
@@ -1455,7 +1656,7 @@ export function BasicDeatilsForm({ editMode }) {
             </div>
 
             {/* Ward */}
-            <div className='col-start-4 col-span-1'>
+            <div className='md:col-start-4 col-span-1'>
               <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
                 <label
                   htmlFor='ward'
@@ -1505,7 +1706,7 @@ export function BasicDeatilsForm({ editMode }) {
             name='town_name'
             defaultValue={options?.data?.town_name ?? ''}
             onFocus={handleFocus}
-            className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+            className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:border-black outline-none'
           />
         </div>
 
@@ -1521,17 +1722,16 @@ export function BasicDeatilsForm({ editMode }) {
             </span>
           </label>
           <input
-
             type='text'
             name='plot_number'
             defaultValue={options?.data?.plot_number ?? ''}
             onFocus={handleFocus}
-            className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+            className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:border-black outline-none'
           />
         </div>
 
         {/* Nearest landmark */}
-        <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+        {/* <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
           <label
             htmlFor='nearest_landmark'
             className='text-gray-600 capitalize text-sm'>
@@ -1547,9 +1747,9 @@ export function BasicDeatilsForm({ editMode }) {
             name='nearest_landmark'
             defaultValue={options?.data?.nearest_landmark ?? ''}
             onFocus={handleFocus}
-            className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+            className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:border-black outline-none'
           />
-        </div>
+        </div> */}
 
         {/* Location Description */}
         <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
@@ -1568,7 +1768,7 @@ export function BasicDeatilsForm({ editMode }) {
             name='location_desc'
             defaultValue={options?.data?.location_desc ?? ''}
             onFocus={handleFocus}
-            className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+            className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:border-black outline-none'
           />
         </div>
 
@@ -1582,13 +1782,44 @@ export function BasicDeatilsForm({ editMode }) {
 
           </label>
 
+          {
+
+          editMode ?
+
+          <div className='w-full flex flex-col gap-3 p-2 border border-gray-400 rounded'>
+
+          {
+            options?.data?.facility_checklist_document?.url !== (null || undefined) &&
+            <span className='w-full flex flex-col border border-blue-400 rounded p-3 bg-blue-100'>
+              <p>Uploaded File:</p>
+              <a href={`${process.env.NEXT_PUBLIC_API_URL.substring(0, process.env.NEXT_PUBLIC_API_URL.length - 3)}media/${options?.data?.facility_checklist_document?.url}`} className="text-blue-900 hover:underline">
+                {/* {options?.data?.official_name} Facility Checklist File */}
+                {options?.data?.facility_checklist_document?.url}
+              </a>
+            </span>
+          }
+
           <input
             type='file'
+            readOnly
+            // disabled={options?.data?.facility_checklist_document?.url !== (null || undefined)}
             name='facility_checklist_document'
-            defaultValue={options?.data?.facility_checklist_document ?? ''}
-            className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+            className='flex-none w-full bg-transparent border-none outline-none flex-grow placeholder-gray-500 '
           />
 
+         
+          </div>
+          :
+          
+          <input
+            type='file'
+            required
+            name='facility_checklist_document'
+            className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:border-black outline-none'
+          />
+
+
+      }          
 
 
         </div>
@@ -1622,9 +1853,9 @@ export function BasicDeatilsForm({ editMode }) {
             :
 
             <div className='flex justify-between items-center w-full'>
-              <button className='flex items-center justify-start space-x-2 p-1 border border-blue-900  px-2'>
-                <ChevronDoubleLeftIcon className='w-4 h-4 text-blue-900' />
-                <span className='text-medium font-semibold text-blue-900 '>
+              <button className='flex items-center justify-start space-x-2 p-1 border border-gray-900  px-2'>
+                <ChevronDoubleLeftIcon className='w-4 h-4 text-gray-900' />
+                <span className='text-medium font-semibold text-gray-900 '>
                   Cancel
                 </span>
               </button>

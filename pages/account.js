@@ -159,11 +159,11 @@ const Account = () => {
     return (
         <>
             <Head>
-                <title>KMHFR - {user?.name || "My account"}</title>
+                <title>KMHFR | {user?.name || "My account"}</title>
                 <link rel="icon" href="/favicon.ico" />
             </Head>
 
-            <MainLayout className="w-full grid grid-cols-5 gap-3 md:mt-3 mb-12">
+            <MainLayout className="w-full  md:w-[85%] md:mx-auto  grid grid-cols-5 gap-3 md:mt-3 mb-12">
             {open && 
 			<Modal
 				aria-labelledby="transition-modal-title"
@@ -211,7 +211,7 @@ const Account = () => {
                 <div className="w-full flex flex-col item-center col-span-5 gap-4 my-6 p-4">
                     <div className="col-span-5 flex flex-col items-start justify-start gap-3">
                         <div className="flex flex-row items-center justify-between gap-2 text-sm md:text-base py-3">
-                            <Link className="text-blue-700" href="/">Home</Link> {'/'}
+                            <Link className="text-gray-700" href="/">Home</Link> {'/'}
                             <span className="text-gray-500">Account settings</span>
                         </div>
                         <div>{status !==null && <Alert severity={status?.status} sx={{width:'100%'}}>
@@ -230,16 +230,16 @@ const Account = () => {
                             
                             </Alert> }</div>
 
-                        <div className={`col-span-5 grid grid-cols-6 gap-5 md:gap-8 py-6 w-full bg-light-grey drop-shadow  text-black p-4 md:divide-x md:divide-gray-200z items-center border border-blue-600 border-l-8 ${'border-blue-600'}`}>
+                        <div className={`col-span-5 grid grid-cols-6 gap-5 md:gap-8 py-6 w-full bg-light-grey drop-shadow  text-black p-4 md:divide-x md:divide-gray-200z items-center border border-gray-600 border-l-8 ${'border-gray-600'}`}>
                             <div className="col-span-6 md:col-span-3">
                                 <h1 className="text-4xl tracking-tight font-bold leading-tight">{user?.full_name}</h1>
                                 <div className="flex gap-2 items-center w-full justify-between">
-                                    <span className={"font-bold text-2xl " + (user?.name ? "text-blue-900" : "text-gray-500")}>#{user?.id || "NO_ID"}</span>
+                                    <span className={"font-bold text-2xl " + (user?.name ? "text-gray-900" : "text-gray-500")}>#{user?.id || "NO_ID"}</span>
                                    
                                 </div>
                             </div>
                             <div className="flex flex-wrap gap-3 items-center justify-end col-span-6 md:col-span-2">
-                                {user.is_active ? <span className="bg-blue-200 text-blue-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
+                                {user.is_active ? <span className="bg-blue-200 text-gray-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
                                     <CheckCircleIcon className="h-4 w-4" />
                                     Active
                                 </span> : <span className="bg-red-200 text-red-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
@@ -253,9 +253,9 @@ const Account = () => {
                         </div>
                     </div>
 
-                    <div className="border border-blue-600 w-full flex flex-col gap-3 mt-4">
+                    <div className="border border-gray-600 w-full flex flex-col gap-3 mt-4">
                         <Tabs.Root orientation="horizontal" className="w-full  flex flex-col bg-transparent tab-root" defaultValue="basic">
-                            <Tabs.List className="list-none flex gap-2 border-b border-blue-600 w-full flex-row justify-evenly  md:gap-3 px-4 uppercase leading-none tab-list font-semibold ">
+                            <Tabs.List className="list-none flex gap-2 border-b border-gray-600 w-full flex-row justify-evenly  md:gap-3 px-4 uppercase leading-none tab-list font-semibold ">
                                 <Tabs.Tab value="basic" className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-400 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item">
                                     Basic details
                                 </Tabs.Tab>
@@ -273,7 +273,7 @@ const Account = () => {
                                             <h3 className="text-2xl flex flex-wrap justify-between items-center leading-tight tracking-tight">
                                                 <span className="font-semibold">Basic details</span>
                                             </h3>
-                                            <button className="bg-transparent border border-blue-700 py-1 px-2 text-base  bg-light-grey  text-blue-700 font-semibold hover:bg-blue-700 hover:text-white focus:bg-blue-700 focus:text-white active:bg-blue-700 active:text-white focus:outline-none transform ease-linear transition-colors duration-75" onClick={() => setShowEditBasic(!showEditBasic)}>Edit basic details</button>
+                                            <button className="bg-transparent border border-gray-700 py-1 px-2 text-base  bg-light-grey  text-gray-700 font-semibold hover:bg-blue-700 hover:text-white focus:bg-blue-700 focus:text-white active:bg-blue-700 active:text-white focus:outline-none transform ease-linear transition-colors duration-75" onClick={() => setShowEditBasic(!showEditBasic)}>Edit basic details</button>
                                         </div>
                                         <Dialog className="fixed z-10 inset-0 overflow-y-auto" open={showEditBasic} onClose={() => setShowEditBasic(false)}>
                                             <Dialog.Overlay className="fixed inset-0 bg-black opacity-30" />
@@ -303,7 +303,7 @@ const Account = () => {
                                                                                 setFormDetails({ ...formDetails, [ev.target.name]: "" });
                                                                             }
                                                                         }}
-                                                                        className=" border border-blue-600 focus:ring-1 ring-blue-500 outline-none bg-transparent  p-2" />
+                                                                        className=" border border-gray-600 focus:ring-1 ring-blue-500 outline-none bg-transparent  p-2" />
                                                                 </div>
                                                                 <div className="flex flex-col gap-2">
                                                                     <label className="text-sm">Last name</label>
@@ -315,7 +315,7 @@ const Account = () => {
                                                                                 setFormDetails({ ...formDetails, [ev.target.name]: "" });
                                                                             }
                                                                         }}
-                                                                        className=" border border-blue-600 focus:ring-1 ring-blue-500 outline-none bg-transparent  p-2" />
+                                                                        className=" border border-gray-600 focus:ring-1 ring-blue-500 outline-none bg-transparent  p-2" />
                                                                 </div>
                                                                 <div className="flex flex-col gap-2">
                                                                     <label className="text-sm">Other names</label>
@@ -327,7 +327,7 @@ const Account = () => {
                                                                                 setFormDetails({ ...formDetails, [ev.target.name]: "" });
                                                                             }
                                                                         }}
-                                                                        className=" border border-blue-600 focus:ring-1 ring-blue-500 outline-none bg-transparent  p-2" />
+                                                                        className=" border border-gray-600 focus:ring-1 ring-blue-500 outline-none bg-transparent  p-2" />
                                                                 </div>
                                                                 <div className="flex flex-col gap-2">
                                                                     <label className="text-sm">Email</label>
@@ -337,7 +337,7 @@ const Account = () => {
                                                                                 setFormDetails({ ...formDetails, [ev.target.name]: ev.target.value });
                                                                             }
                                                                         }}
-                                                                        className=" border border-blue-600 focus:ring-1 ring-blue-500 outline-none bg-transparent  p-2" />
+                                                                        className=" border border-gray-600 focus:ring-1 ring-blue-500 outline-none bg-transparent  p-2" />
                                                                 </div>
                                                                 <div className="flex flex-col gap-2">
                                                                     <label className="text-sm">Username</label>
@@ -347,12 +347,12 @@ const Account = () => {
                                                                                 setFormDetails({ ...formDetails, [ev.target.name]: ev.target.value });
                                                                             }
                                                                         }}
-                                                                        className=" border border-blue-600 focus:ring-1 ring-blue-500 outline-none bg-transparent  p-2" />
+                                                                        className=" border border-gray-600 focus:ring-1 ring-blue-500 outline-none bg-transparent  p-2" />
                                                                 </div>
                                                             <div className="flex justify-end gap-x-3 pt-6 w-full">
                                                                 <button className="border-black border  bg-transparent outline-none py-2 px-3 hover:text-red-700 focus:text-red-700 active:text-red-700" onClick={() => {setShowEditBasic(false); setFormDetails({}); }}>Cancel</button>
                                                                 {/* <button type= "submit" className="text-white  bg-black py-2 px-4 hover:bg-blue-700 focus:bg-blue-700 active:bg-blue-700">Save changes</button> */}
-                                                                <input type="submit" value="Save changes" className="bg-black text-white  py-2 px-4 text-base font-medium hover:text-blue-300" />
+                                                                <input type="submit" value="Save changes" className="bg-black text-white  py-2 px-4 text-base font-medium hover:text-gray-300" />
                                                             </div>
                                                             </form>
                                                         </Dialog.Description>
@@ -368,7 +368,7 @@ const Account = () => {
                                             <label className=" text-gray-600">Active</label>
                                             <p className="text-black font-medium text-base flex">
                                                 {user && user.is_active ?
-                                                    <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 text-blue-900 flex gap-x-1 items-center cursor-default">
+                                                    <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 text-gray-900 flex gap-x-1 items-center cursor-default">
                                                         <CheckCircleIcon className="h-4 w-4" />
                                                         Yes
                                                     </span> : <span className="bg-red-200 text-red-900 p-1 px-2 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
@@ -381,7 +381,7 @@ const Account = () => {
                                             <label className=" text-gray-600">Staff member</label>
                                             <p className="text-black font-medium text-base flex">
                                                 {user && user.is_staff ?
-                                                    <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 text-blue-900 flex gap-x-1 items-center cursor-default">
+                                                    <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 text-gray-900 flex gap-x-1 items-center cursor-default">
                                                         <CheckCircleIcon className="h-4 w-4" />
                                                         Yes
                                                     </span> : <span className="bg-red-200 text-red-900 p-1 px-2 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
@@ -395,7 +395,7 @@ const Account = () => {
                                                 <label className=" text-gray-600">{ug[0].toLocaleUpperCase() + ug.split('_').join(' ').slice(1).toLocaleLowerCase() || ' - '}</label>
                                                 <p className="text-black font-medium text-base flex">
                                                     {user && user?.user_groups[ug] ?
-                                                        <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 text-blue-900 flex gap-x-1 items-center cursor-default">
+                                                        <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 text-gray-900 flex gap-x-1 items-center cursor-default">
                                                             <CheckCircleIcon className="h-4 w-4" />
                                                             Yes
                                                         </span> : <span className="bg-red-200 text-red-900 p-1 px-2 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
@@ -474,7 +474,7 @@ const Account = () => {
                                             <h3 className="text-2xl flex flex-wrap justify-between items-center leading-tight tracking-tight">
                                                 <span className="font-semibold">My contacts</span>
                                             </h3>
-                                            <button className="bg-transparent border border-blue-700 py-1 px-2 text-base  bg-light-grey  text-blue-700 font-semibold hover:bg-blue-700 hover:text-white focus:bg-blue-700 focus:text-white active:bg-blue-700 active:text-white focus:outline-none transform ease-linear transition-colors duration-75" onClick={() => setShowEditContacts(!showEditContacts)}>Add new contact</button>
+                                            <button className="bg-transparent border border-gray-700 py-1 px-2 text-base  bg-light-grey  text-gray-700 font-semibold hover:bg-blue-700 hover:text-white focus:bg-blue-700 focus:text-white active:bg-blue-700 active:text-white focus:outline-none transform ease-linear transition-colors duration-75" onClick={() => setShowEditContacts(!showEditContacts)}>Add new contact</button>
                                         </div>
                                         <div className="flex flex-row items-center justify-end w-full py-2">
                                             <Dialog className="fixed z-10 inset-0 overflow-y-auto" open={showEditContacts} onClose={() => setShowEditContacts(false)}>
@@ -497,7 +497,7 @@ const Account = () => {
                                                                 }}>
                                                                     <div className="flex flex-col items-start justify-start gap-1 text-left p-2">
                                                                         <label>Contact type</label>
-                                                                        <select className=" border border-blue-600 bg-transparent p-2 w-full focus:outline-none focus:ring-1 focus:ring-blue-500" name="contact_type"
+                                                                        <select className=" border border-gray-600 bg-transparent p-2 w-full focus:outline-none focus:ring-1 focus:ring-blue-500" name="contact_type"
                                                                         onChange={ev => {
                                                                             if (ev.target.value && ev.target.value.length > 0) {
                                                                                 setFormDetails({ ...formDetails, [ev.target.name]: ev.target.value });
@@ -510,7 +510,7 @@ const Account = () => {
                                                                     </div>
                                                                     <div className="flex flex-col items-start justify-start gap-1 text-left p-2">
                                                                         <label>Contact details</label>
-                                                                        <input type="text" className=" border border-blue-600 bg-transparent p-2 w-full focus:outline-none focus:ring-1 focus:ring-blue-500" name="contact" onChange={ev => {
+                                                                        <input type="text" className=" border border-gray-600 bg-transparent p-2 w-full focus:outline-none focus:ring-1 focus:ring-blue-500" name="contact" onChange={ev => {
                                                                             if (ev.target.value && ev.target.value.length > 0) {
                                                                                 setFormDetails({ ...formDetails, [ev.target.name]: ev.target.value });
                                                                             }
@@ -567,7 +567,7 @@ const Account = () => {
                                         >
                                             <div className="flex flex-col items-start justify-start gap-1 text-left p-2">
                                                 <label>Old password</label>
-                                                <input type="password" className="bg-transparent border border-blue-600 p-2 w-full focus:outline-none focus:ring-1 transparent-blue-500" placeholder="********" name="old_password" 
+                                                <input type="password" className="bg-transparent border border-gray-600 p-2 w-full focus:outline-none focus:ring-1 transparent-blue-500" placeholder="********" name="old_password" 
                                                 onChange={ev => {
                                                     if (ev.target.value && ev.target.value.length > 0) {
                                                         setFormDetails({ ...formDetails, [ev.target.name]: ev.target.value });
@@ -577,7 +577,7 @@ const Account = () => {
                                             </div>
                                             <div className="flex flex-col items-start justify-start gap-1 text-left p-2">
                                                 <label>New password</label>
-                                                <input type="password" className="bg-transparent border border-blue-600 p-2 w-full focus:outline-none focus:ring-1 transparent-blue-500" placeholder="********" name="new_password1"
+                                                <input type="password" className="bg-transparent border border-gray-600 p-2 w-full focus:outline-none focus:ring-1 transparent-blue-500" placeholder="********" name="new_password1"
                                                 passwordrules="minlength: 8; required: lower; required: upper; required: digit;"
                                                 onChange={ev => {
                                                     if (ev.target.value && ev.target.value.length > 0) {
@@ -589,7 +589,7 @@ const Account = () => {
                                             </div>
                                             <div className="flex flex-col items-start justify-start gap-1 text-left p-2">
                                                 <label>Confirm password</label>
-                                                <input type="password" className="bg-transparent border border-blue-600 p-2 w-full focus:outline-none focus:ring-1 transparent-blue-500" placeholder="********" name="new_password2" 
+                                                <input type="password" className="bg-transparent border border-gray-600 p-2 w-full focus:outline-none focus:ring-1 transparent-blue-500" placeholder="********" name="new_password2" 
                                                 onChange={ev => {
                                                     if (ev.target.value && ev.target.value.length > 0) {
                                                         setFormDetails({ ...formDetails, [ev.target.name]: ev.target.value });
@@ -601,7 +601,7 @@ const Account = () => {
                                             {formErrors.status && <div> <p className='text-red-600'>{formErrors.message}</p> </div> }
 
                                             <div className="flex flex-col items-start justify-start gap-1 text-left p-2">
-                                                <input type="submit" value="Save new password" className="bg-black text-white  py-2 px-4 text-base font-medium hover:text-blue-300" />
+                                                <input type="submit" value="Save new password" className="bg-black text-white  py-2 px-4 text-base font-medium hover:text-gray-300" />
                                             </div>
                                         </form>
                                     </div>

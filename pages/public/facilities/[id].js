@@ -45,22 +45,22 @@ const FacilityDetails = (props) => {
   return (
     <>
       <Head>
-        <title>KMHFR - {facility?.official_name ?? ""}</title>
+        <title>KMHFR | {facility?.official_name ?? ""}</title>
         <link rel="icon" href="/favicon.ico" />
        
       </Head>
       
       <MainLayout>
-        <div className="w-full grid grid-cols-1 md:grid-cols-7 gap-3 my-4 place-content-center">
+        <div className="w-full md:w-[85%] md:mx-auto grid grid-cols-1 md:grid-cols-7 gap-3 my-4 place-content-center">
           {/* Header */}
           <div className="col-span-1 md:col-span-7 flex-1 flex-col items-start justify-start gap-3">
             {/* Breadcramps */}
             <div className="flex flex-row gap-2 text-sm md:text-base md:my-3">
-              <Link className="text-blue-700" href="/public/facilities">
+              <Link className="text-gray-700" href="/public/facilities">
                 Home
               </Link>
               {"/"}
-              <Link className="text-blue-700" href="/public/facilities">
+              <Link className="text-gray-700" href="/public/facilities">
                 Facilities
               </Link>
               {"/"}
@@ -81,7 +81,7 @@ const FacilityDetails = (props) => {
             <div
               className={
                 "col-span-5 grid grid-cols-6 gap-5  md:gap-8 py-6 w-full bg-gray-50 drop-shadow  text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " +
-                (facility?.is_approved ? "border-blue-600" : "border-red-600")
+                (facility?.is_approved ? "border-gray-600" : "border-red-600")
               }  
             >
               <div className="col-span-6">
@@ -92,7 +92,7 @@ const FacilityDetails = (props) => {
                   <span
                     className={
                       "font-bold text-2xl " +
-                      (facility?.code ? "text-blue-900" : "text-gray-400")
+                      (facility?.code ? "text-gray-900" : "text-gray-400")
                     }
                   >
                     #{facility?.code || "NO_CODE"}
@@ -112,7 +112,7 @@ const FacilityDetails = (props) => {
                   {facility?.operational || facility?.operation_status_name ? (
                     <span
                       className={
-                        "leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 text-blue-900 flex gap-x-1 items-center cursor-default"
+                        "leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 text-gray-900 flex gap-x-1 items-center cursor-default"
                       }
                     >
                       <CheckCircleIcon className="h-4 w-4" />

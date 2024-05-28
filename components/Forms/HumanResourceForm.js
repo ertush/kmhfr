@@ -23,23 +23,7 @@ export function HumanResourceForm() {
 
     const setFormId = useContext(UpdateFormIdContext);
 
-    // const [formId, setFormId] = useMemo(() => {
-    //     let id = ''
-
-    //     function setId(_id) {
-    //         id = _id
-    //     }
-
-    //     if(window) {
-    //         setId(new URL(window.location.href).searchParams.get('formId'))
-    //     }
-
-    //     // console.log({id})
-
-    //     return [id, setId]
-    // }, [])
-
-    // const[facilityId, _] = useContext(FacilityIdContext);
+    
     const[facilityId, setFacilityId] = useMemo(() => {
         let id = ''
 
@@ -48,7 +32,7 @@ export function HumanResourceForm() {
         }
 
         if(window) {
-            setId(new URL(window.location.href).searchParams.get('facilityId'))
+            setId(new URL(window.location.href).searchParams.get('facilityId') ?? '')
         }
 
         // console.log({id})
@@ -91,21 +75,17 @@ export function HumanResourceForm() {
 
 
     //Event handlers
+    function handleHrPrevious(e){
 
-    const handleHrPrevious = useCallback(() => {
+    e.preventDefault()
 
-    // const url = new URL(infrastructureFormUrl)
-
-    // url.searchParams.set('formId', '5')
-
-    // url.searchParams.set('from', 'previous')
-
-    // router.push(url)
-
+   
     router.push({
         pathname: '/facilities/add',
         query: {
-            formId: 5
+            formId: 5,
+            facilityId,
+            from: "previous"
         }
     })
     .then((navigated) => {
@@ -114,11 +94,11 @@ export function HumanResourceForm() {
     
 
 
-    }, []);
+    }
 
     return (
         <>
-            <h4 className="text-lg mt-4 uppercase pb-2 border-b border-blue-600 w-full mb-4 font-semibold text-blue-900">Human resource </h4>
+            <h4 className="text-lg mt-4 uppercase pb-2 border-b border-gray-400  w-full mb-4 font-semibold text-gray-900">Human resource </h4>
             <div className='flex flex-col w-full items-start justify-start gap-3 mt-6'>
 
                 {/* Edit List With Count Container*/}

@@ -122,7 +122,7 @@ function FacilitySideMenu({ states, stateSetters, filters }) {
         setAllFctsSelected(false)
     }
 
-    const handleQuickFiltersClick = async (filter_id) => {
+    async function handleQuickFiltersClick(filter_id) {
 
         let filter = {}
         if (filter_id !== 'khis_synched' && filter_id !== 'feedback') {
@@ -131,7 +131,7 @@ function FacilitySideMenu({ states, stateSetters, filters }) {
 
             qfilter[0].forEach(({ id, value }) => { filter[id] = value })
 
-            if (filter_id === 'new_pending_validation') filter['is_complete'] = true;
+            // if (filter_id === 'new_pending_validation') filter['is_complete'] = true;
 
             if(filter_id.includes('incomplete')) filter['in_complete_details'] = false;
 
@@ -162,17 +162,30 @@ function FacilitySideMenu({ states, stateSetters, filters }) {
                 }
 
                 break;
+            case 'updated_pending_validation':
+                console.log({val: 'updated_pending_validation'})
+
+                router.push({
+                    pathname: '/facilities',
+                    query:{
+                        has_edits:true
+
+                    }
+                })
+                break;
+
             default:
                 setFacilityFeedBack([])
                 setKhisSynched(false)
 
-
                 router.push({ pathname: '/facilities', query: { qf: filter_id, ...filter } })
+
                 break;
         }
 
 
     }
+
 
     useEffect(() => {
         const url = window.history.state.as
@@ -193,11 +206,14 @@ function FacilitySideMenu({ states, stateSetters, filters }) {
 
     return (
 
-        <div className='col-span-1 flex flex-col gap-3 md:col-start-1 md:mb-12 py-0 h-full bg-gray-50 shadow-md'>
+        <div className='col-span-1 w-full flex flex-col gap-3 md:col-start-1 md:mb-12 pt-0 max-h-min rounded bg-gray-50 shadow-md'>
             <List
                 className='p-0 m-0'
                 component="nav"
                 aria-labelledby="nested-list-subheader"
+                style={{
+                    paddingTop: "0px !important"
+                }}
 
             >
                 {/* All Facilities */}

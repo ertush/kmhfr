@@ -13,7 +13,7 @@ env:
   NEXT_PUBLIC_CLIENT_USERNAME: 'public@mfltest.slade360.co.ke'
   NEXT_PUBLIC_CLIENT_PASSWORD: ${{secrets.NEXT_PUBLIC_CLIENT_PASSWORD}}
   NEXT_PUBLIC_CLIENT_PUBLIC_ID: ${{secrets.NEXT_PUBLIC_CLIENT_PUBLIC_ID}}
-  NEXT_PUBLIC_CLIENT_PUBLIC_SECRET: ${{secrets.NEXT_PUBLIC_CLIENT_PUBLIC_SECRET}}
+  CLIENT_PUBLIC_SECRET: ${{secrets.CLIENT_PUBLIC_SECRET}}
   NEXT_PUBLIC_PUBLIC_TOKEN_URL: 'https://api.kmhfl.health.go.ke/o/token/'
 
 jobs:
@@ -58,7 +58,7 @@ jobs:
         password: ${{ secrets.SERVER_KEY }}
         script: |
           set -e
-          cd /var/www/kmhflv3
+          cd /var/www/kmhfr
           export NVM_DIR=~/.nvm
           source ~/.nvm/nvm.sh
           if ! [[ -d './.git' ]]; then git init; fi

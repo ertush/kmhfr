@@ -29,7 +29,7 @@ const StyledDataGrid = styled(DataGrid)(() => ({
 }))
 
 
-const Groups = (props) => {
+function Groups(props) {
 
    
     const router = useRouter()
@@ -49,7 +49,7 @@ const Groups = (props) => {
                     href={{ pathname: `/user/groups/edit/${params.row.id}` }}
                     className="cursor-pointer"
             
-                    ><span className="cursor-pointer text-blue-600">{params.row.name}</span></Link>
+                    ><span className="cursor-pointer text-gray-600">{params.row.name}</span></Link>
                     
                   
                 )}
@@ -65,20 +65,20 @@ const Groups = (props) => {
     return (
         <div className="">
             <Head>
-                <title>KMHFR - Reports</title>
+                <title>KMHFR | Reports</title>
                 <link rel="icon" href="/favicon.ico" />
             </Head>
             <MainLayout isLoading={false} isFullWidth={false}>
-                <div className="w-full grid grid-cols-7 gap-4 p-1 md:px-4 my-2">
+                <div className="w-full  md:w-[85%] md:mx-auto grid grid-cols-7 gap-4 p-1 md:px-4 my-2">
                     <div className="col-span-7 flex flex-col gap-x-1 px-4">
                         <div className="flex flex-wrap items-center justify-between gap-2 text-sm md:text-base py-1">
                             <div className="flex flex-row items-center justify-between gap-x-2 gap-y-0 text-sm md:text-base py-1">
-                                <a className="text-blue-700" href="/">Home</a> {'/'}
-                                <a className="text-blue-700" href="/user/">Users</a> {'/'}
+                                <a className="text-gray-700" href="/">Home</a> {'/'}
+                                <a className="text-gray-700" href="/user/">Users</a> {'/'}
                                 <span className="text-gray-500">Groups</span> 
                             </div>
                             
-                            <div className={`col-span-5 flex  justify-between p-6 w-full bg-transparent drop-shadow  text-black md:divide-x md:divide-gray-200z items-center border border-blue-600 border-l-8 ${'border-blue-600'} `}>
+                            <div className={`col-span-5 flex  justify-between p-6 w-full bg-transparent drop-shadow  text-black md:divide-x md:divide-gray-200z items-center border border-gray-600 border-l-8 ${'border-gray-600'} `}>
                                 <h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
                                     <UsersIcon className='ml-2 h-5 w-5'/> 
                                     {'Manage Groups'}

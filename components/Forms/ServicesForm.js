@@ -1,4 +1,4 @@
-import {useState, useContext, useMemo} from 'react';
+import {useState, useEffect, useContext, useMemo} from 'react';
 import EditListItem from './formComponents/EditListItem';
 import { FormOptionsContext } from '../../pages/facilities/add';
 // import { FormContext } from './Form';
@@ -14,12 +14,6 @@ import {useRouter} from 'next/router'
 import { UpdateFormIdContext } from './Form';
 
 
-
-
-
-// import {Formik, Field, Form} from 'formik'
-
-
 export function ServicesForm() {
 
 
@@ -33,34 +27,17 @@ export function ServicesForm() {
         }
 
         if(window) {
-            setId(new URL(window.location.href).searchParams.get('facilityId'))
+            setId(new URL(window.location.href).searchParams.get('facilityId') ?? '')
         }
 
         // console.log({id})
 
         return [id, setId]
     }, [])
-
-    
+ 
     const [regulationFormURL, setRegulationFormURL] = useState('');
 
     const router = useRouter()
-
-    // const [formId, setFormId] = useMemo(() => {
-    //     let id = ''
-
-    //     function setId(_id) {
-    //         id = _id
-    //     }
-
-    //     if(window) {
-    //         setId(new URL(window.location.href).searchParams.get('formId'))
-    //     }
-
-    //     // console.log({id})
-
-    //     return [id, setId]
-    // }, [])
 
     const [submitting, setSubmitting] = useState(false)
     
@@ -68,7 +45,6 @@ export function ServicesForm() {
     
     const { updatedSavedChanges, updateFacilityUpdateData } = options?.data ? useContext(FacilityUpdatesContext) : {updatedSavedChanges: null, updateFacilityUpdateData: null }
  
-    
     //Options
     const serviceOptions = ((_services) => {
 
@@ -88,26 +64,21 @@ export function ServicesForm() {
 	})(options?.services ?? [])
 
     //State
-    const [services, setServices] = useState();
+    const [cachedServices, setCachedServices] = useState();
 
     const editMode = options?.data ? true : false
 
     //Event handlers
-    function handleServicePrevious() {
-        // setFormId(`${parseInt(formId) - 1}`);
-
-        // const url = new URL(regulationFormURL)
-
-        // url.searchParams.set('formId', '3')
-
-        // url.searchParams.set('from', 'previous')
-
-        // router.push(url)
+    function handleServicePrevious(e) {
+      
+        e.preventDefault()
 
         router.push({
             pathname: '/facilities/add',
             query: {
-                formId: 3
+                formId: 3,
+                facilityId,
+                from:'previous'
             }
         })
         .then((navigated) => {
@@ -115,11 +86,53 @@ export function ServicesForm() {
         })
         
 
-
   } 
 
+  useEffect(() => {
+
+    if(window) {
+        const currentUrl = new URL(window.document.location.href)
+
+        if(currentUrl.searchParams.get('from') == "previous") {
+            const servicesEnc = window.localStorage.getItem('services')
+            const servicesStr = Buffer.from(servicesEnc ?? 'e30=', 'base64').toString()
+            const services = JSON.parse(servicesStr)
+
+            // console.log(servicesEnc, services)
+
+            // setCachedServices(services)
+
+            function getServiceAttr(serviceId, prop) {
+                return options?.services?.find(({id}) => id == serviceId)[prop]
+              }
+          
+              function getServiceCategoryAttr(serviceId, prop) {
+                return serviceOptions.categories?.find(({value}) => value == getServiceAttr(serviceId, "category"))[prop]
+              }
+          
+              if (Array.isArray(services)) {
+                const result = []
+          
+                setCachedServices(() => {
+          
+                    // console.log("setting selectedItems")
+                    services?.map((service) => {
+                      result.push({ sname: getServiceAttr(service?.service, "name"), rowid: service?.service, category_id: getServiceCategoryAttr(service?.service, "value"), category_name: getServiceCategoryAttr(service?.service, "label") })
+                    })
+          
+                    return result
+          
+                })
+              }
+    
+        }
+     
+        
+    }
+  }, [])
+
     return <>
-                <h4 className="text-lg uppercase pb-2 mt-4 border-b border-blue-600 w-full mb-4 font-semibold text-blue-900">Services</h4>
+                <h4 className="text-lg uppercase pb-2 mt-4 border-b border-gray-400  w-full mb-4 font-semibold text-gray-900">Services</h4>
                 <div className='flex flex-col w-full items-start justify-start gap-3 mt-6'>
 
                 
@@ -127,7 +140,7 @@ export function ServicesForm() {
                     <div className='flex items-center w-full h-auto min-h-[300px]'>
 
                         <EditListItem
-                            itemData={options?.data ? options?.data.facility_services : null}
+                            itemData={options?.data ? options?.data.facility_services : cachedServices ?? null}
                             categoryItems={serviceOptions.categories}
                             itemId={facilityId ?? options?.data?.id}
                             options={options?.services}

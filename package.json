@@ -1,6 +1,6 @@
 {
   "name": "kmhfr",
-  "version": "1.0.0",
+  "version": "3.0.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -31,6 +31,7 @@
     "@radix-ui/react-radio-group": "^0.0.19",
     "@radix-ui/react-tabs": "0.0.5",
     "@turf/turf": "^6.5.0",
+    "@vercel/analytics": "^1.2.2",
     "ag-grid-community": "^26.2.1",
     "ag-grid-enterprise": "^26.2.1",
     "ag-grid-react": "^26.2.0",
@@ -44,7 +45,7 @@
     "highcharts-react-official": "^3.2.0",
     "leaflet-geosearch": "^3.8.0",
     "moment": "^2.29.4",
-    "next": "12.1.0",
+    "next": "13.5",
     "next-cookies": "^2.0.3",
     "react": "^18.2.0",
     "react-alert": "^7.0.3",
@@ -53,6 +54,7 @@
     "react-datepicker": "^4.16.0",
     "react-dom": "^18.2.0",
     "react-dual-listbox": "^5.0.2",
+    "react-error-boundary": "^4.0.13",
     "react-highcharts": "^16.1.0",
     "react-icons": "^4.10.1",
     "react-leaflet": "^4.2.1",

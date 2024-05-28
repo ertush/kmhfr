@@ -9,7 +9,7 @@ const Select = forwardRef(function Select(props, ref) {
           ref={ref}
           as="select"
           {...props}
-          className='flex-none w-full p-2 border border-blue-600 bg-transparent flex-grow  placeholder-gray-200  focus:border-black outline-none'>
+          className='flex-none w-full p-2 border border-gray-800 rounded bg-transparent flex-grow  placeholder-gray-200  focus:border-black outline-none'>
           {
             ((_options) => _options.map(({ value, label }, i) =>
               <option className={`py-1 hover:bg-red-300 text-normal font-normal ${i == 0 ? 'text-gray-300' : ''}`} key={i} value={value}>{label}</option>

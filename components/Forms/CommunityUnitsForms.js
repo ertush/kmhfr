@@ -19,9 +19,11 @@ import { useAlert } from 'react-alert'
 import Alert from '@mui/material/Alert';
 import Spinner from '../../components/Spinner'
 import EditListItem from '../../components/Forms/formComponents/EditListItem'
+import { KeyboardArrowRight, KeyboardArrowDown } from "@mui/icons-material";
+  
+
 
 function EditCommunityUnitsBasicDeatilsForm(props) {
-
 
   const options = useContext(ChuOptionsContext)
   const [touchedFields, setTouchedFields] = useState(new Set())
@@ -29,6 +31,9 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
   const [formError, setFormError] = useState(null)
   const [validationError, setValidationError] = useState(null)
   const [contacts, setContacts] = useState(props?.contacts ?? [{contact: '', contact_type_name: ''}]);
+
+
+  useEffect(() => {console.log({submitting})}, submitting)
 
 
   const alert = useAlert()
@@ -91,10 +96,10 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
   }
 
   function handleFormSubmit(event) {
+    setSubmitting(true)
 
     event.preventDefault()
 
-    setSubmitting(true)
 
     const payload = {}
     const formData = new FormData(event.target)
@@ -123,7 +128,7 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
     payload['basic']['contact'] && delete payload['basic']['contact']
     payload['basic']['contact_type'] && delete payload['basic']['contact_type']
 
-    // console.log(payload)
+    console.log({submitting})
 
     try {
       fetch(`${process.env.NEXT_PUBLIC_API_URL}/chul/units/${props?.id}/`, {
@@ -137,9 +142,8 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
       })
 
         .then(async resp => {
-          if (resp.status == 200 || resp.status == 204) {
+          if (resp.ok) {
 
-            setSubmitting(false)
 
             alert.success(`${props?.name} Basic Details Updated successfully`, {
               containerStyle: {
@@ -149,10 +153,12 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
             })
 
           } else {
-            // const detail = await resp.json()
+            const detail = await resp.json()
+  
+            const error = Array.isArray(Object.values(detail)) && Object.values(detail).length == 1 ? detail[Object.keys(detail)[0]][0] : ''
 
-            setSubmitting(false)
-            // setFormError(Array.isArray(Object.values(detail)) && Object.values(detail).length == 1 && typeof Object.values(detail)[0] == 'string' && detail[0][0])
+            setFormError(error)
+
             alert.error('Unable to save Community Units Basic details')
           }
         })
@@ -160,6 +166,10 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
 
     catch (e) {
       alert.error('Error Occured: ' + e.message)
+    }
+    finally {
+      setSubmitting(false)
+
     }
 
 
@@ -180,6 +190,8 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
       onSubmit={handleFormSubmit}
     >
 
+     
+
       {formError && <Alert severity="error" sx={{ width: '100%', marginY: '15px' }}>{formError}</Alert>}
 
       {/* CHU Name */}
@@ -199,7 +211,7 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
           onChange={handleFieldChange}
           id="name"
           defaultValue={props?.name}
-          className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:bg-white focus:border-black outline-none"
+          className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:bg-white focus:border-black outline-none"
         />
       </div>
 
@@ -238,7 +250,7 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
           name="facility_name"
           onChange={handleFieldChange}
           id="facility_name"
-          className='flex-none w-full  flex-grow  placeholder-gray-500 border border-blue-600 outline-none'
+          className='flex-none w-full  flex-grow  placeholder-gray-500 border border-gray-400 rounded outline-none'
 
 
         />
@@ -274,7 +286,7 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
           name="status"
           onChange={handleFieldChange}
           id="status"
-          className='flex-none w-full  flex-grow  placeholder-gray-500 border border-blue-600 outline-none'
+          className='flex-none w-full  flex-grow  placeholder-gray-500 border border-gray-400 rounded outline-none'
 
         />
       </div>
@@ -302,7 +314,7 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
                 id="date_established"
                 defaultValue={props?.date_established}
                 placeholder={'mm/dd/yyyy'}
-                className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:bg-white focus:border-black outline-none"
+                className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:bg-white focus:border-black outline-none"
               />
 
               {validationError?.date_established && <span className='text-red-500 text-sm'>{validationError?.date_established}</span>}
@@ -332,7 +344,7 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
                 defaultValue={props?.date_operational}
 
                 placeholder={'mm/dd/yyyy'}
-                className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:bg-white focus:border-black outline-none"
+                className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:bg-white focus:border-black outline-none"
               />
 
               {validationError?.date_operational && <span className='text-red-500 text-sm'>{validationError?.date_operational}</span>}
@@ -363,7 +375,7 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
           defaultValue={props?.households_monitored}
 
           min={0}
-          className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:bg-white focus:border-black outline-none"
+          className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:bg-white focus:border-black outline-none"
         />
       </div>
 
@@ -387,13 +399,13 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
           defaultValue={props?.number_of_chvs}
 
           min={0}
-          className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:bg-white focus:border-black outline-none"
+          className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:bg-white focus:border-black outline-none"
         />
       </div>
 
       {/* CHU, Linked Facility Location */}
       <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-        <div className="grid grid-cols-4 place-content-start gap-3 w-full">
+        <div className="flex flex-col md:grid md:grid-cols-4 place-content-start gap-3 w-full">
           {/* County  */}
           <div className="col-start-1 col-span-1">
             <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
@@ -416,7 +428,7 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
                 name="facility_county"
                 onChange={handleFieldChange}
                 id="facility_county"
-                className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:bg-white focus:border-black outline-none"
+                className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:bg-white focus:border-black outline-none"
               />
             </div>
           </div>
@@ -443,7 +455,7 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
                 name="facility_subcounty"
                 onChange={handleFieldChange}
                 id="facility_subcounty"
-                className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:bg-white focus:border-black outline-none"
+                className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:bg-white focus:border-black outline-none"
               />
             </div>
           </div>
@@ -468,7 +480,7 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
                 name="facility_constituency"
                 onChange={handleFieldChange}
                 id="facility_constituency"
-                className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:bg-white focus:border-black outline-none"
+                className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:bg-white focus:border-black outline-none"
               />
             </div>
           </div>
@@ -493,7 +505,7 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
                 name="facility_ward"
                 onChange={handleFieldChange}
                 id="facility_ward"
-                className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:bg-white focus:border-black outline-none"
+                className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:bg-white focus:border-black outline-none"
               />
             </div>
           </div>
@@ -516,12 +528,12 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
             placeholder="Description of the area of coverage"
             defaultValue={props?.location}
             min={0}
-            className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:bg-white focus:border-black outline-none"
+            className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:bg-white focus:border-black outline-none"
           />
         </div>
 
         <div className=" w-full flex flex-col items-start justify-start bg-transparent h-auto">
-          <h4 className="text-lg uppercase pb-2 border-b border-blue-600 w-full mb-4 font-semibold text-blue-900">
+          <h4 className="text-lg uppercase pb-2 border-b border-gray-400 w-full mb-4 font-semibold text-gray-900">
             Community Health Unit Contacts
           </h4>
 
@@ -553,7 +565,7 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
                     options={options?.contactTypes}
                     defaultValue={options?.contactTypes?.find(({ label }) => label == contact_type_name)?.value}
                     placeholder="Select Contact.."
-                    className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:bg-white focus:border-black outline-none"
+                    className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:bg-white focus:border-black outline-none"
                   />
 
                 </div>
@@ -578,7 +590,7 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
                     onChange={handleFieldChange}
                     id={`contact_${i}`}
                     defaultValue={contact}
-                    className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:bg-white focus:border-black outline-none"
+                    className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:bg-white focus:border-black outline-none"
                   />
                 </div>
               </div>
@@ -587,7 +599,7 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
         </div>
         <div className="sticky top-0 right-10 w-full flex justify-end">
           <button
-            className=" bg-blue-600 p-2 text-white flex text-md font-semibold mt-3"
+            className="bg-gray-500 rounded p-2 text-white flex text-md font-semibold mt-3"
             onClick={handleAddContact}
           >
             {`Add Contact`}
@@ -601,7 +613,8 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
 
           <button
             type="submit"
-            className="flex items-center justify-end space-x-2 bg-blue-600  p-1 px-2"
+            disabled={submitting}
+            className="flex items-center justify-end space-x-2 bg-gray-500 rounded  p-1 px-2"
           >
             <span className="text-medium font-semibold text-white">
               {
@@ -614,7 +627,7 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
             </span>
             {
               submitting &&
-              <span className='text-white'>Saving </span>
+              <span className='text-white'>Saving.. </span>
             }
 
           </button>
@@ -701,7 +714,7 @@ function EditCommunityUnitsCHEWSForm(props) {
   
               setSubmitting(false)
               // setFormError(Array.isArray(Object.values(detail)) && Object.values(detail).length == 1 && typeof Object.values(detail)[0] == 'string' && detail[0][0])
-              alert.error('Unable to update Community Units healtjh workers')
+              alert.error('Unable to update Community Units health workers')
             }
           })
       }
@@ -807,7 +820,7 @@ function EditCommunityUnitsCHEWSForm(props) {
                     id={`first_name_${index}`}
                     name={`first_name_${index}`}
                     defaultValue={first_name}
-                    className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:bg-white focus:border-black outline-none"
+                    className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:bg-white focus:border-black outline-none"
                   />
                 </div>
                 {/* Second Name */}
@@ -825,7 +838,7 @@ function EditCommunityUnitsCHEWSForm(props) {
                     name={`last_name_${index}`}
                     defaultValue={last_name}
                    
-                    className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:bg-white focus:border-black outline-none"
+                    className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:bg-white focus:border-black outline-none"
                   />
                 </div>
                 {/* In charge */}
@@ -853,7 +866,7 @@ function EditCommunityUnitsCHEWSForm(props) {
                     {/* insert red button for deleting */}
                     <button
                       onClick={(e) => handleDelete(e, index, id)}
-                      className="flex items-center justify-start space-x-2 bg-red-600  p-1 px-2"
+                      className="flex items-center justify-start space-x-2 bg-red-600 rounded  p-1 px-2"
                       data-id={props?.health_unit_workers[index]?.id}
 
                     >
@@ -886,7 +899,7 @@ function EditCommunityUnitsCHEWSForm(props) {
 
         <div className="sticky top-0 right-10 w-full flex justify-end">
           <button
-            className=" bg-blue-600 p-2 text-white flex text-md font-semibold "
+            className=" bg-gray-500 rounded p-2 text-white flex text-md font-semibold "
             onClick={(e) => {
               e.preventDefault()
               setHealthUnitWorkers(prev => [...prev, {first_name: "", last_name:"", is_incharge:""}])
@@ -903,7 +916,7 @@ function EditCommunityUnitsCHEWSForm(props) {
 
         <button
           type="submit"
-          className="flex items-center justify-end space-x-2 bg-blue-600  p-1 px-2"
+          className="flex items-center justify-end space-x-2 bg-gray-500 rounded  p-1 px-2"
         >
           <span className="text-medium font-semibold text-white">
             {
@@ -1037,7 +1050,7 @@ function EditCommunityUnitsServicesForm(props) {
 
     return (
       <>
-        <h4 className='text-lg uppercase pb-2 border-b border-blue-600 w-full mb-4 font-semibold text-blue-900'>
+        <h4 className='text-lg uppercase pb-2 border-b border-gray-400  w-full mb-4 font-semibold text-gray-900'>
           Services Offered
         </h4>
   
@@ -1079,37 +1092,26 @@ function EditCommunityUnitsServicesForm(props) {
   
   
   
-  }
+}
   
 
 
 export function CommunityUnitEditForm(props) {
 
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
 
-
-  const [isClient, setIsClient] = useState(false)
-
-
-  useEffect(() => {
-
-    setIsClient(true)
-    
-  }, []);
-
-
-  if (isClient) {
     return (
-
       <MainLayout>
-        <div className="w-full grid grid-cols-1 md:grid-cols-7 place-content-center md:grid gap-4 md:p-2 my-6">
+        <div className="w-full md:w-[85%] px-4 grid grid-cols-1 md:grid-cols-7 place-content-center md:grid gap-4 md:p-2 my-6">
           <div className="md:col-span-7 flex flex-col items-start justify-start gap-3">
+           
             {/* Breadcrumb */}
             <div className="flex flex-row gap-2 text-sm md:text-base">
-              <Link className="text-blue-700" href="/">
+              <Link className="text-gray-700" href="/">
                 Home
               </Link>
               {"  >  "}
-              <Link className="text-blue-700" href="/community-units">
+              <Link className="text-gray-700" href="/community-units">
                 Community units
               </Link>
               {"  >  "}
@@ -1122,8 +1124,8 @@ export function CommunityUnitEditForm(props) {
             {/* Header snippet */}
             <div
               className={
-                `md:col-span-7 grid grid-cols-6 gap-5 md:gap-8 py-6 w-full border ${props?.active ? "border-blue-600" : "border-red-600"} bg-transparent drop-shadow  text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " +
-              ${props?.active ? "border-blue-600" : "border-yellow-700"}
+                `md:col-span-7 grid grid-cols-6 gap-5 md:gap-8 py-6 w-full border ${props?.active ? "border-gray-400 rounded" : "border-red-600"} bg-transparent drop-shadow  text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " +
+              ${props?.active ? "border-gray-400 rounded" : "border-yellow-700"}
             `}
             >
               <div className="col-span-6 md:col-span-3">
@@ -1134,7 +1136,7 @@ export function CommunityUnitEditForm(props) {
                   <span
                     className={
                       "font-bold text-2xl " +
-                      (props?.code ? "text-blue-900" : "text-gray-500")
+                      (props?.code ? "text-gray-900" : "text-gray-500")
                     }
                   >
                     #{props?.code || "NO_CODE"}
@@ -1147,7 +1149,7 @@ export function CommunityUnitEditForm(props) {
               <div className="flex flex-wrap gap-3 items-center justify-end col-span-6 md:col-span-2">
                 <div className="flex flex-wrap gap-3 w-full items-center justify-start md:justify-center">
                   {props?.is_approved ? (
-                    <span className="bg-blue-200 text-blue-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
+                    <span className="bg-blue-200 text-gray-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
                       <CheckCircleIcon className="h-4 w-4" />
                       CHU Approved
                     </span>
@@ -1170,13 +1172,13 @@ export function CommunityUnitEditForm(props) {
                     </span>
                   )}
                   {props?.active && (
-                    <span className="bg-blue-200 text-blue-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
+                    <span className="bg-blue-200 text-gray-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
                       <CheckCircleIcon className="h-4 w-4" />
                       CHU Active
                     </span>
                   )}
                   {props?.has_edits && (
-                    <span className="bg-blue-200 text-blue-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
+                    <span className="bg-blue-200 text-gray-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
                       <InformationCircleIcon className="h-4 w-4" />
                       Has changes
                     </span>
@@ -1191,6 +1193,7 @@ export function CommunityUnitEditForm(props) {
           </div>
 
           {/* Community Unit Side Menu */}
+      
           <div className="hidden md:col-span-1 md:flex md:mt-8">
             <CommunityUnitSideMenu
               qf={'all'}
@@ -1200,15 +1203,42 @@ export function CommunityUnitEditForm(props) {
             />
           </div>
 
+          <button className='md:hidden relative p-2 border border-gray-800 rounded w-full self-start my-4' onClick={() => setIsMenuOpen(!isMenuOpen)}>
+          Community Health Unit Menu
+          {
+            !isMenuOpen &&
+            <KeyboardArrowRight className='w-8 aspect-square text-gray-800' />
+          }
+
+          {
+            isMenuOpen &&
+            <KeyboardArrowDown className='w-8 aspect-square text-gray-800' />
+          }
+
+          {
+            isMenuOpen &&
+            <CommunityUnitSideMenu
+              qf={'all'}
+              filters={[]}
+              _pathId={''}
+
+            />
+          }
+          </button>
+          
+           
+
+
+
           {/* Form */}
-          <div className="col-span-1 md:col-span-6 flex flex-col md:gap-3 mt-8 bg-gray-50 shadow-md pt-2">
+          <div className="col-span-1 md:col-span-6 flex flex-col md:gap-3 mt-2 md:mt-8 bg-gray-50 rounded shadow-md pt-2">
             <Tabs.Root
               orientation="horizontal"
               className="w-full flex flex-col tab-root"
               defaultValue="basic_details"
             >
               {/* Tabs List */}
-              <Tabs.List className="list-none  border-b border-blue-600 md:grid md:grid-cols-3 flex flex-wrap gap-2 md:gap-3 px-4 uppercase leading-none tab-list font-semibold">
+              <Tabs.List className="list-none w-full flex justify-between md:justify-start border-b border-gray-400  md:grid md:grid-cols-3  flex-wrap gap-2 md:gap-3 px-4 uppercase leading-none tab-list font-semibold">
                 <Tabs.Tab
                   value="basic_details"
                   className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
@@ -1259,8 +1289,5 @@ export function CommunityUnitEditForm(props) {
         </div>
       </MainLayout>
     )
-  } else {
-    return null
-  }
-
+  
 }

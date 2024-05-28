@@ -7,19 +7,6 @@ import { MarkerIcon } from './MarkerIcon';
 
 
 
-// function MapEventListener({coordinates}) {
-
-//     const map = useMapEvent('mouseover', () => {
-//     //   map.flyTo(coordinates, map.getZoom())
-
-//     map.invalidateSize(false);
-
-//       console.log('Loaded Map...')
-//     })
-
-//     return null
-// }
-
 function MapListener ({tabOpen}) {
     const map = useMap()
 
@@ -34,7 +21,7 @@ function MapListener ({tabOpen}) {
 }
 
 
-const WardGISMap = ({ markerCoordinates, geoJSON, center, ward, from }) => {
+const WardGISMap = ({ markerCoordinates, geoJSON, center, ward, zoom }) => {
 
 
     const isValidGeoCoordinates = /^((\-?|\+?)?\d+(\.\d+)?),\s*((\-?|\+?)?\d+(\.\d+)?)$/.test(markerCoordinates.join(','))
@@ -47,7 +34,8 @@ const WardGISMap = ({ markerCoordinates, geoJSON, center, ward, from }) => {
         color: '#000',
         weight: 1,
         fillColor: '#46f',
-        fillOpacity: 0.3
+        fillOpacity: 0.3,
+        zIndex: '0px'
     }
  
 
@@ -96,20 +84,20 @@ const WardGISMap = ({ markerCoordinates, geoJSON, center, ward, from }) => {
         <>
             {/* Map title */}
 
-            <h3 className='mb-1 px-2 text-blue-900 font-normal float-left text-lg bg-gray-300 w-full  capitalize'>{String(ward).toLowerCase()}{" ward"}</h3>
+            <h3 className='mb-1 px-2 text-gray-900 font-normal float-left text-lg bg-gray-300 w-full  capitalize'>{String(ward).toLowerCase()}{" ward"}</h3>
             {isValidGeoCoordinates && isOutOfBound && <Alert severity="error" sx={{ width: '100%' }}>The coordinates are outside the ward boundary</Alert>}
     
             {/* Ward Map */}
             {
                  markerCoordinates && center  ?
                 <MapContainer 
-                    className='w-full' 
+                    className='w-full z-0' 
                     center={center ?? [-0.818389, 37.477222]} 
-                    zoom={13.899} 
-                    maxZoom={15.70} 
+                    zoom={(zoom * 2) ?? 9.899} 
+                    maxZoom={12.70} 
                     scrollWheelZoom={false} 
                     touchZoom={false} 
-                    style={{ height: '400px', position: 'relative', backgroundColor: '#e7eae8', padding: '15px', 'overflow': 'hidden'}}>
+                    style={{ height: '400px', position: 'relative', backgroundColor: '#e7eae8', padding: '15px', zIndex: '0px', 'overflow': 'hidden'}}>
 
                         {
                             geoJSON && 
@@ -125,7 +113,7 @@ const WardGISMap = ({ markerCoordinates, geoJSON, center, ward, from }) => {
 
                 </MapContainer>
                 :
-                <Alert severity='info' className='capitalize text-lg ' style={{width: '100%'}}> Please enter  Latitude and Longitude to see {ward.toLowerCase()} map ...</Alert>
+                <Alert severity='info' className='capitalize text-lg ' style={{width: '100%'}}> Please enter  Latitude and Longitude to see {ward?.toLowerCase()} map ...</Alert>
            } 
         </>
 

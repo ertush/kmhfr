@@ -1,4 +1,4 @@
-import { useContext, useMemo, useState} from 'react';
+import { useContext, useMemo, useEffect, useState} from 'react';
 import EditListWithCount from './formComponents/EditListWithCount';
 import { FormOptionsContext } from '../../pages/facilities/add';
 import { useRouter } from 'next/router'
@@ -7,7 +7,7 @@ import { useRouter } from 'next/router'
 import {
     handleInfrastructureSubmit, handleInfrastructureUpdates,
 } from '../../controllers/facility/facilityHandlers'
-import { FacilityUpdatesContext } from '../../pages/facilities/edit/[id]';
+// import { FacilityUpdatesContext } from '../../pages/facilities/edit/[id]';
 import { UpdateFormIdContext } from './Form';
 
 
@@ -18,21 +18,7 @@ export function InfrastructureForm() {
     const options = useContext(FormOptionsContext);
     const setFormId = useContext(UpdateFormIdContext)
 
-    // const [formId, setFormId] = useMemo(() => {
-    //     let id = ''
 
-    //     function setId(_id) {
-    //         id = _id
-    //     }
-
-    //     if(window) {
-    //         setId(new URL(window.location.href).searchParams.get('formId'))
-    //     }
-
-        
-
-    //     return [id, setId]
-    // }, [])
     const[facilityId, setFacilityId] = useMemo(() => {
         let id = ''
 
@@ -41,7 +27,7 @@ export function InfrastructureForm() {
         }
 
         if(window) {
-            setId(new URL(window.location.href).searchParams.get('facilityId'))
+            setId(new URL(window.location.href).searchParams.get('facilityId') ?? '')
         }
 
         
@@ -50,11 +36,10 @@ export function InfrastructureForm() {
 
     // const [servicesFormUrl, setServicesFormUrl] = useState('')
     const [submitting, setSubmitting] = useState(false)
+    const [cachedInfrastructure, setCachedInfrastructure] = useState();
+    const [from, setFrom] = useState();
 
     const router = useRouter()
-    
-    // const { updatedSavedChanges, updateFacilityUpdateData } = options?.data ? useContext(FacilityUpdatesContext) : {updatedSavedChanges: null, updateFacilityUpdateData: null }
-
     
     const tableheaders =[
         "Name",
@@ -82,20 +67,18 @@ export function InfrastructureForm() {
 	})(options.infrastructure ?? [])
 
        //Event handlers
-       function handleInfrastructurePrevious() {
-        // setFormId(`${parseInt(formId) - 1}`);
-        // const url = new URL(servicesFormUrl)
+    function handleInfrastructurePrevious(e) {
 
-        // url.searchParams.set('formId', '4')
+        e.preventDefault()
 
-        // url.searchParams.set('from', 'previous')
-
-        // router.push(url)
-
+       
         router.push({
             pathname: '/facilities/add',
             query: {
-                formId: 4
+                formId: 4,
+                from: "previous",
+                facilityId,
+
             }
         })
         .then((navigated) => {
@@ -105,9 +88,68 @@ export function InfrastructureForm() {
 
     }
 
+    useEffect(() => {
+        if(window) {
+            const currentUrl = new URL(window.document.location.href)
 
-       return ( <>
-            <h4 className="text-lg uppercase mt-4 pb-2 border-b border-blue-600 w-full mb-4 font-semibold text-blue-900">Infrastracture</h4>
+               setFrom(currentUrl.searchParams.get('from'))
+
+            if(currentUrl.searchParams.get('from') == "previous") {
+                const infraEnc = window.localStorage.getItem('infrastructure')
+                const infraStr = Buffer.from(infraEnc ?? 'e30=', 'base64').toString()
+                const infrastructure = JSON.parse(infraStr)
+    
+                console.log({infraEnc, infrastructure})
+
+
+                function getServiceAttr(infraId, prop) {
+                return options?.infrastructure?.find(({id}) => id == infraId)[prop]
+              }
+          
+              function getServiceCategoryAttr(infraId, prop) {
+                return infrastructureOption.categories?.find(({value}) => value == getServiceAttr(infraId, "category"))[prop]
+              }
+          
+              if (Array.isArray(infrastructure)) {
+                const result = []
+          
+                setCachedInfrastructure(() => {
+
+                    /**
+                     *  rowid: element.speciality,
+                        sname: element.speciality_name,
+                        count: element.count,
+                        category_id: cat,
+                        category_name: options.filter((e) => e.id == element.speciality)[0].category_name,
+                        iscategoryvisible: false
+                     */
+          
+                    // console.log("setting selectedItems")
+                    infrastructure?.map((infrastructure) => {
+                      result.push({ 
+                        sname: getServiceAttr(infrastructure?.infrastructure, "name"), 
+                        rowid: infrastructure?.infrastructure, 
+                        category_id: getServiceCategoryAttr(infrastructure?.infrastructure, "value"), 
+                        category_name: getServiceCategoryAttr(infrastructure?.infrastructure, "label"),
+                        count: infrastructure?.count, 
+                        iscategoryvisible: false,
+
+                     })
+                    })
+          
+                    return result
+          
+                })
+              }
+            }
+        }
+    
+    }, [])
+
+
+       return (
+         <>
+            <h4 className="text-lg uppercase mt-4 pb-2 border-b border-gray-400  w-full mb-4 font-semibold text-gray-900">Infrastracture</h4>
             
             <div className='flex flex-col w-full items-start justify-start gap-3 mt-6'>
           
@@ -129,9 +171,10 @@ export function InfrastructureForm() {
                         handleItemPrevious={handleInfrastructurePrevious}
                         nextItemCategory={'human resource'}
                         previousItemCategory={'services'}
-                        itemData={options?.data ? options?.data?.facility_infrastructure : null}
+                        itemData={options?.data ? options?.data?.facility_infrastructure : cachedInfrastructure ?? null}
                         title={tableheaders}
                         setFormId={setFormId}
+                        from={from}
                     />
 
                 </div>

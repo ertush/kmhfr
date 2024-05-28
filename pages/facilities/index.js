@@ -7,7 +7,8 @@ import React, { useState, useEffect, useContext } from 'react'
 import { useRouter } from 'next/router'
 import { Menu } from '@headlessui/react'
 import { ChevronDownIcon, FilterIcon, SearchIcon } from '@heroicons/react/outline'
-import Select from 'react-select'
+import { Select as CustomSelect } from '../../components/Forms/formComponents/Select'
+
 
 // @mui imports
 import Accordion from '@mui/material/Accordion';
@@ -18,15 +19,13 @@ import Alert from '@mui/material/Alert';
 import FacilitySideMenu from '../../components/FacilitySideMenu'
 import { UserContext } from '../../providers/user'
 import {Formik, Form, Field} from 'formik';
+import { KeyboardArrowRight, KeyboardArrowDown } from "@mui/icons-material";
 
-function handleFacilityFilter() {
 
-}
 
 function FacilityHome (props){
     
     const router = useRouter()
-
 
    
     const facilities = props?.data?.results
@@ -34,7 +33,6 @@ function FacilityHome (props){
     let fltrs = filters
     const [drillDown, setDrillDown] = useState({})
     const userCtx = useContext(UserContext);
-    // console.log({userCtx})
 
     // const qf = props?.query?.qf ?? null
     if (filters && typeof filters === "object")
@@ -63,7 +61,7 @@ function FacilityHome (props){
     const [fromDate, setFromDate] = React.useState(new Date());
     const [toDate, setToDate] = React.useState(new Date());
 
-    const [isAccordionExpanded, setIsAccordionExpanded] = useState(false);
+    const [isAccordionExpanded, setIsAccordionExpanded] = useState(true);
     const [title, setTitle] = useState('Facilities') 
 
     // quick filter themes
@@ -73,6 +71,8 @@ function FacilityHome (props){
     const [allFctsSelected, setAllFctsSelected] = useState(true);
     const [isClient, setIsClient] = useState(false);
     const [user, setUser] = useState(userCtx)
+	const [isMenuOpen, setIsMenuOpen] = useState(false)
+
  
 
 
@@ -99,13 +99,13 @@ function FacilityHome (props){
     }, [facilityFeedBack, title])
 
 
-    const handleDates=(from, to) => {
+    function handleDates(from, to) {
         setFromDate(from);
         setToDate(to);
     
-     }
+    }
 
-    const handleAccordionExpand = (ev) => {
+    function handleAccordionExpand(ev) {
         if(isAccordionExpanded){
             setIsAccordionExpanded(false)
         }else{
@@ -114,36 +114,54 @@ function FacilityHome (props){
         
     }
 
+    function handleFiltersSubmit(event) {
+        event.preventDefault()
+
+        const formDataEntries = new FormData(event.target)
+
+        const formData = Object.fromEntries(formDataEntries)
+
+        router.push({
+            pathname: '/facilities',
+            query: formData
+        })
+
+    }
+
+    function handleFiltersReset(event) {
+        event.preventDefault()
+
+        const filterForm = document.querySelector('#filter-panel')
+
+       filterForm.reset()
+        
+    }
+
     if(isClient){
+
     return (
         <>
             <Head>
-                <title>KMHFR - Facilities</title>
+                <title>KMHFR | Facilities</title>
                 <link rel="icon" href="/favicon.ico" />
             </Head>
 
             <MainLayout isLoading={false} searchTerm={props?.query?.searchTerm}>
-                <div className="w-full grid grid-cols-5 gap-3 md:mt-3 mb-12">
+                <div className="w-full md:w-[85%] md:mx-auto grid grid-cols-1 md:grid-cols-5 gap-3 md:mt-3 md:mb-12 mb-6 px-4 md:px-0">
 
                     {/* Header Matters */}
-                    <div className="col-span-5 flex flex-col gap-3 ">
+                    <div className="col-sapn-1 md:col-span-5 flex flex-col gap-3 ">
 
                           {/* Buttons section */}
 
                           <div className="flex flex-wrap gap-2 text-sm md:text-base py-3 items-center justify-between">
                           
 
-                            <div className="flex w-full flex-wrap items-center justify-between gap-2 text-sm md:text-base py-1">
+                            <div className="flex w-full flex-wrap items-start md:items-center justify-between gap-2 text-sm md:text-base py-1">
                             {/* Bread Crumbs */}
 
-                            <div className="flex flex-row items-center justify-between gap-2 text-sm md:text-base py-3">
-                                <Link className="text-blue-800" href="/">Home</Link> {'/'}
-                                <span className="text-gray-500">Facilities</span>
-                            </div>
-
-
-                                <div className={"col-span-5 flex justify-between w-full bg-django-blue border drop-shadow  text-black p-4 md:divide-x md:divide-gray-200 items-center border-l-8 " + (true ? "border-blue-700" : "border-red-600")}>
-                                    <h2 className='flex items-center text-xl font-bold text-blue-900 capitalize gap-2'>
+                                <div className={"col-span-1 md:col-span-5 flex justify-between w-full bg-django-blue border drop-shadow  text-black p-4 md:divide-x md:divide-gray-200 items-start md:items-center border-l-8 " + (true ? "border-gray-700" : "border-red-600")}>
+                                    <h2 className='flex items-center text-2xl font-bold text-gray-900 capitalize gap-2'>
                                         {title}
                                      </h2>
                                      {/* dropdown options to download data */}
@@ -156,12 +174,12 @@ function FacilityHome (props){
                                     userCtx?.groups[0]?.id == 2 || // SCHRIO
                                     userCtx?.groups[0]?.id == 7    // SuperAdmin
                                     /*allFctsSelected || pathId === 'all'*/) &&
-                                <div className='flex items-center space-x-6 w-auto'>
+                                <div className='flex flex-col gap-5 md:flex-row md:items-center md:space-x-6 w-auto'>
                                     {/* Facility Button */}
                                     {
-                                       
-                                         // Display add facility button if  user belong to SCHRIO group
-                                   <Menu.Item as="div"  className="px-4 py-2 bg-blue-700 text-white text-md tracking-tighter font-semibold whitespace-nowrap  hover:bg-black focus:bg-black active:bg-black uppercase">
+                                     // Display add facility button if  user belong to SCHRIO group
+
+                                   <Menu.Item as="div"  className="px-3 py-2 bg-gray-600 rounded text-white text-md tracking-tighter font-semibold whitespace-nowrap  hover:bg-black focus:bg-black active:bg-black uppercase">
                                         <button  onClick={() => {router.push('/facilities/add?formId=0')}} className='flex items-center justify-center'>
 
                                             <span className='text-base uppercase font-semibold'>Add Facility</span>
@@ -171,7 +189,7 @@ function FacilityHome (props){
                                     }
 
                                      {/* Export Button */}
-                                     <Menu.Button as="button" className="px-4 py-2 bg-blue-700 text-white text-md tracking-tighter font-semibold flex items-center justify-center whitespace-nowrap  hover:bg-black focus:bg-black active:bg-black uppercase">
+                                     <Menu.Button as="button" className="px-3 py-2 bg-gray-600 rounded text-white text-md tracking-tighter font-semibold flex items-center justify-center whitespace-nowrap  hover:bg-black focus:bg-black active:bg-black uppercase">
                                         <DownloadIcon className="w-5 h-5 mr-1" />
                                         <span className='text-base uppercase font-semibold'>Export</span>
                                         <ChevronDownIcon className="w-4 h-4 ml-2" />
@@ -219,22 +237,26 @@ function FacilityHome (props){
 
                         </div>
 
-                        <div className="flex flex-wrap items-center justify-between gap-2 text-sm md:text-base ">
+                         {/* Hidden */}
+                        <div className="flex-wrap items-center justify-between gap-2 text-sm md:text-base ">
                   
 
                             {/* Accordion Filter */}
 
-                            <Accordion sx={{borderRadius:'none', backgroundColor:'transparent', boxShadow:'none', borderBottomLeftRadius:'0px', borderBottomRightRadius:'0px'}} className='border border-blue-600 mb-4 w-full shadow-none' expanded={isAccordionExpanded} onChange={handleAccordionExpand}>
+                            <Accordion 
+                            sx={{borderRadius:'4px', boxShadow:'none', borderBottomLeftRadius:'0px', borderBottomRightRadius:'0px'}} className='border bg-gray-50 border-gray-200  mb-4 w-full shadow-none' expanded={isAccordionExpanded} onChange={handleAccordionExpand}>
                                             <AccordionSummary
                                                 expandIcon={<ExpandMoreIcon />}
                                                 aria-controls="panel1a-content"
                                                 id="panel1a-header"
+                                                
                                                 >
                                                 
-                                                <h2 className='my-2 font-semibold text-xl text-blue-900 flex items-center space-x-2'>
-                                                <FilterIcon className='w-6 h-6 text-blue-900'/>
+                                                <h2 className='my-2 font-semibold text-xl text-gray-900 flex items-center space-x-2'>
+                                                <FilterIcon className='w-6 h-6 text-gray-900'/>
                                                     <p>Filter Facilities By ...</p></h2>
                                             </AccordionSummary>
+
                                             <AccordionDetails sx={{width:'100%', padding:4, height:'auto' }}>
                                             <div className="flex flex-col gap-2">
                                                         {filters && filters?.error ?
@@ -242,73 +264,55 @@ function FacilityHome (props){
                                                                 <p>No filters.</p>
                                                             </div>)
                                                             : (
-                                                                <div className='grid grid-cols-4 place-content-center items-content-end gap-2'>
+                                                                     <form 
+                                                                            id="filter-panel"
+                                                                            onSubmit={handleFiltersSubmit}
+                                                                            className='flex flex-col md:grid md:grid-cols-4 place-content-center items-content-end gap-2'>
                                                                     {  
                                                                         filters && Object.keys(filters).length > 0 &&
                                                                         Object.keys(fltrs).map((ft, i) => (
-                                                                            <form 
-                                                                            key={i} 
-                                                                            // onSubmit={handleFacilityFilter}
-                                                                            className="w-full flex flex-col items-start justify-start gap-1 mb-1">
+                                                                           
                                                                                 
+                                                                                <div key={i} className="w-full flex flex-col items-start justify-start gap-1 mb-1">
                                                                                 <label htmlFor={ft} className="text-gray-600 capitalize text-sm">{ft.split('_').join(' ')}</label>
                                                                                
-                                                                                <Select 
-                                                                                    isMulti={multiFilters.includes(ft)} 
-                                                                                    name={ft}
-                                                                                    defaultValue={drillDown[ft] || ""} 
-                                                                                    id={ft} 
-                                                                                    className="w-full max-w-xs  border border-gray-400"
-                                                                                    styles={{
-                                                                                        control: (baseStyles) => ({
-                                                                                            ...baseStyles,
-                                                                                            backgroundColor: 'transparent',
-                                                                                            outLine: 'none',
-                                                                                            border: 'none',
-                                                                                            outLine: 'none',
-                                                                                            textColor: 'transparent',
-                                                                                            padding: 0,
-                                                                                            height: '4px'
-                                                                                        }),
-                                        
-                                                                                    }}
-                                                                                
-                                                                                   options={
-                                                                                        Array.from(filters[ft] || [],
-                                                                                            fltopt => {
-                                                                                                return {
-                                                                                                    value: fltopt.id, label: fltopt.name
+
+                                                                                <CustomSelect
+                                                                                            options={Array.from(filters[ft] || [],
+                                                                                                fltopt => {
+                                                                                                    return {
+                                                                                                        value: fltopt.id, label: fltopt.name
+                                                                                                    }
+                                                                                                })}
+                                                                                            
+                                                                                            placeholder={`Select ${ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}`}
+                                                                                            name={ft} // facility_type
+                                                                                            onChange={sl => {
+                                                                                                let nf = {}
+                                                                                                if (Array.isArray(sl)) {
+                                                                                                    nf[ft] = (drillDown[ft] ? drillDown[ft] + ',' : '') + Array.from(sl, l_ => l_.value).join(',')
+                                                                                                } else if (sl && sl !== null && typeof sl === 'object' && !Array.isArray(sl)) {
+                                                                                                    nf[ft] = sl.value
+                                                                                                } else {
+                                                                                                    delete nf[ft]
+                                                                                                   
                                                                                                 }
-                                                                                            })
-                                                                                    }
-                                                                                    placeholder={ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}
-                                                                                    onChange={sl => {
-                                                                                        let nf = {}
-                                                                                        if (Array.isArray(sl)) {
-                                                                                            nf[ft] = (drillDown[ft] ? drillDown[ft] + ',' : '') + Array.from(sl, l_ => l_.value).join(',')
-                                                                                        } else if (sl && sl !== null && typeof sl === 'object' && !Array.isArray(sl)) {
-                                                                                            nf[ft] = sl.value
-                                                                                        } else {
-                                                                                            delete nf[ft]
-                                                                                           
-                                                                                        }
-                                                                                        setDrillDown({ ...drillDown, ...nf })
-                                                                                }} />
-                                                                            </form>
+                                                                                                setDrillDown({ ...drillDown, ...nf })
+                                                                                        }}
+
+                                                                                        /> 
+                                                                            </div>
                                                                         ))
                                                                     }
+
                                                                     {/* From and To Date Picker Components */}
 
-                                                                    {/* <NativePickers onSelected={
-                                                                        handleDates
-                                                                    }></NativePickers> */}
-                                                                    
 
                                                                     {/* Yes/No Dialog */}
-                                                                    <div className="w-full col-span-3 gap-x-3 grid grid-cols-4 mb-3">
+                                                                    <div className="w-full col-span-3 gap-x-3 grid md:grid-cols-4 grid-cols-2 mb-3">
                                                                         <div className='flex flex-col items-start justify-center gap-1'>
                                                                             <span className='inline-flex gap-2'>
-                                                                                <input type="checkbox" className="justify-self-end border border-blue-600 bg-django-blue" value={false} defaultChecked={props?.query?.has_edits === "true"} name="has_edits" id="has_edits" onChange={ev => {
+                                                                                <input type="checkbox" className="justify-self-end border border-gray-600 bg-django-blue" value={false} defaultChecked={props?.query?.has_edits === "true"} name="has_edits" id="has_edits" onChange={ev => {
                                                                                     setDrillDown({ ...drillDown, 'has_edits': true })
                                                                                 }} />
                                                                                 <label htmlFor="has_edits" className="text-gray-700 capitalize text-sm">Has edits</label>
@@ -317,7 +321,7 @@ function FacilityHome (props){
                                                                             
 
                                                                             <span className='inline-flex gap-2'>
-                                                                                <input type="checkbox" className="justify-self-end border border-blue-600 bg-django-blue" value={true} defaultChecked={props?.query?.is_approved === "true"} name="is_approved" id="is_approved" onChange={ev => {
+                                                                                <input type="checkbox" className="justify-self-end border border-gray-600 bg-django-blue" value={true} defaultChecked={props?.query?.is_approved === "true"} name="is_approved" id="is_approved" onChange={ev => {
                                                                                     setDrillDown({ ...drillDown, 'is_approved': true })
                                                                                 }} />   
                                                                                 <label htmlFor="is_approved" className="text-gray-700 capitalize text-sm">Approved</label>
@@ -329,7 +333,7 @@ function FacilityHome (props){
                                                                         <div className='flex flex-col items-start justify-center gap-1'>
                                                                                 <span className='inline-flex gap-2'>
                                                                                 
-                                                                                    <input type="checkbox" className="justify-self-end border border-blue-600 bg-django-blue" value={true} defaultChecked={props?.query?.is_complete === "true"} name="is_complete" id="is_complete" onChange={ev => {
+                                                                                    <input type="checkbox" className="justify-self-end border border-gray-600 bg-django-blue" value={true} defaultChecked={props?.query?.is_complete === "true"} name="is_complete" id="is_complete" onChange={ev => {
                                                                                         setDrillDown({ ...drillDown, 'is_complete': true })
                                                                                     }} />
                                                                                 <label htmlFor="is_complete" className="text-gray-700 capitalize text-sm">Complete</label>
@@ -339,7 +343,7 @@ function FacilityHome (props){
                                                                         
                                                                                 <span className='inline-flex gap-2'>
                                                                         
-                                                                            <input type="checkbox" className="justify-self-end border border-blue-600 bg-django-blue" value={true} defaultChecked={props?.query?.number_of_beds === "true"} name="number_of_beds" id="number_of_beds" onChange={ev => {
+                                                                            <input type="checkbox" className="justify-self-end border border-gray-600 bg-django-blue" value={true} defaultChecked={props?.query?.number_of_beds === "true"} name="number_of_beds" id="number_of_beds" onChange={ev => {
                                                                                 setDrillDown({ ...drillDown, 'number_of_beds': true })
                                                                             }} />
                                                                             <label htmlFor="number_of_beds" className="text-gray-700 capitalize text-sm">Has beds</label>
@@ -351,7 +355,7 @@ function FacilityHome (props){
                                                                         <div className='flex flex-col items-start justify-center gap-1'>
                                                                                     <span className='inline-flex gap-2'>
                                                                         
-                                                                            <input type="checkbox" className="justify-self-end border border-blue-600 bg-django-blue" value={true} defaultChecked={props?.query?.number_of_cots === "true"} name="number_of_cots" id="number_of_cots" onChange={ev => {
+                                                                            <input type="checkbox" className="justify-self-end border border-gray-600 bg-django-blue" value={true} defaultChecked={props?.query?.number_of_cots === "true"} name="number_of_cots" id="number_of_cots" onChange={ev => {
                                                                                 setDrillDown({ ...drillDown, 'number_of_cots': true })
                                                                             }} />
                                                                             <label htmlFor="number_of_cots" className="text-gray-700 capitalize text-sm">Has cots</label>
@@ -360,7 +364,7 @@ function FacilityHome (props){
                                                                         
                                                                             <span className='inline-flex gap-2'>
                                                                         
-                                                                            <input type="checkbox" className="justify-self-end border border-blue-600 bg-django-blue" value={true} defaultChecked={props?.query?.open_whole_day === "true"} name="open_whole_day" id="open_whole_day" onChange={ev => {
+                                                                            <input type="checkbox" className="justify-self-end border border-gray-600 bg-django-blue" value={true} defaultChecked={props?.query?.open_whole_day === "true"} name="open_whole_day" id="open_whole_day" onChange={ev => {
                                                                                 setDrillDown({ ...drillDown, 'open_whole_day': true })
                                                                             }} />
                                                                             <label htmlFor="open_whole_day" className="text-gray-700 capitalize text-sm">Open 24 hours</label>
@@ -371,7 +375,7 @@ function FacilityHome (props){
                                                                         <div className='flex flex-col items-start justify-center gap-1'>
                                                                                     <span className='inline-flex gap-2'>
                                                                         
-                                                                        <input type="checkbox" className="justify-self-end border border-blue-600 bg-django-blue" value={true} defaultChecked={props?.query?.open_weekends === "true"} name="open_weekends" id="open_weekends" onChange={ev => {
+                                                                        <input type="checkbox" className="justify-self-end border border-gray-600 bg-django-blue" value={true} defaultChecked={props?.query?.open_weekends === "true"} name="open_weekends" id="open_weekends" onChange={ev => {
                                                                             setDrillDown({ ...drillDown, 'open_weekends': true })
                                                                         }} />
                                                                         <label htmlFor="open_weekends" className="text-gray-700 capitalize text-sm">Open weekends</label>
@@ -380,7 +384,7 @@ function FacilityHome (props){
                                                                         
                                                                         <span className='inline-flex gap-2'>
                                                                     
-                                                                    <input type="checkbox" className="justify-self-end border border-blue-600 bg-django-blue" value={true} defaultChecked={props?.query?.open_public_holidays === "true"} name="open_public_holidays" id="open_public_holidays" onChange={ev => {
+                                                                    <input type="checkbox" className="justify-self-end border border-gray-600 bg-django-blue" value={true} defaultChecked={props?.query?.open_public_holidays === "true"} name="open_public_holidays" id="open_public_holidays" onChange={ev => {
                                                                         setDrillDown({ ...drillDown, 'open_public_holidays': true })
                                                                     }} />
                                                                         <label htmlFor="open_public_holidays" className="text-gray-700 capitalize text-sm">Open holidays</label>
@@ -391,37 +395,25 @@ function FacilityHome (props){
                                                                     
                                                                     </div>
 
-                                                                    <button onClick={ev => {
 
-                                                                        
-                                                                        if (Object.keys(drillDown).length > 0) {
-                                                                            let qry = Object.keys(drillDown).map(key => {
-                                                                                let er = ''
-                                                                                if (props?.path && !props?.path.includes(key + '=')) {
-                                                                                    er = encodeURIComponent(key) + '=' + encodeURIComponent(drillDown[key]);
-                                                                                }
-                                                                                return er
-                                                                            }).join('&')
-                                                                            let op = '?'
-                                                                            if (props?.path && props?.path.includes('?') && props?.path.includes('=')) { op = '&' }
-                                                                            
-                                                                            if (router || typeof window == 'undefined') {
-                                                                                router.push(props?.path + op + qry)
-                                                                            } else {
-                                                                                if (typeof window !== 'undefined' && window) {
-                                                                                    window.location.href = props?.path + op + qry
-                                                                                }
-                                                                            }
 
-                                                                        }
-                                                                        setIsAccordionExpanded(false)
-                                                                    }} className="bg-django-blue col-start-1  border border-blue-600  text-blue-600 hover:bg-black hover:text-white hover:border-black font-semibold px-5 py-1 text-base  w-full whitespace-nowrap text-center">Filter</button>
+                                                                    <button 
+                                                                    type="submit"
+                                                                    className="bg-django-blue col-start-1  border border-gray-600  text-gray-600 hover:bg-black hover:text-white hover:border-black font-semibold px-5 py-1 text-base  w-full whitespace-nowrap text-center">
+                                                                        Search
+                                                                    </button>
                                                                     
-                                                                    <button className="bg-blue-700 boder border-blue-700 text-white hover:bg-black hover:border-black font-semibold px-5 py-1 text-base  w-full whitespace-nowrap text-center" onClick={ev => {
-                                                                        router.push('/facilities')
-                                                                    }}>Clear filters</button>
+                                                                    <button 
+                                                                    onClick={handleFiltersReset} 
+                                                                    type='reset'
+                                                                    className="bg-blue-700 boder border-gray-700 text-white hover:bg-black hover:border-black font-semibold px-5 py-1 text-base  w-full whitespace-nowrap text-center"
+                                                                     >
+                                                                     Reset
+                                                                    </button>
                                                                     
-                                                                </div>
+
+                                                                    </form>
+                                                                    
                                                             )
                                                         }
                                              </div>
@@ -434,17 +426,41 @@ function FacilityHome (props){
                     </div>
 
                   
-                    {/* Side Menu Filters*/}
-                    <FacilitySideMenu 
-                    filters={filters ?? {}}
-                    states={[khisSynched, facilityFeedBack, pathId, allFctsSelected, title]}
-                    stateSetters={[setKhisSynched, setFacilityFeedBack, setPathId, setAllFctsSelected, setTitle]} />
-                   
+                    {/* Side Menu Filters Wide View port*/}
+                    <div className="hidden md:flex col-span-1">
+                        <FacilitySideMenu 
+                        filters={filters ?? {}}
+                        states={[khisSynched, facilityFeedBack, pathId, allFctsSelected, title]}
+                        stateSetters={[setKhisSynched, setFacilityFeedBack, setPathId, setAllFctsSelected, setTitle]} />
+                   </div>
+
+                    {/* Side Menu Filters Small View port*/}
+
+                   <button className='md:hidden relative p-2 border border-gray-800 rounded w-full self-start my-4' onClick={() => setIsMenuOpen(!isMenuOpen)}>
+							Facility Menu
+							{
+								!isMenuOpen &&
+								<KeyboardArrowRight className='w-8 aspect-square text-gray-800' />
+							}
+
+							{
+								isMenuOpen &&
+								<KeyboardArrowDown className='w-8 aspect-square text-gray-800' />
+							}
+
+							{
+								isMenuOpen &&
+								<FacilitySideMenu
+									filters={filters}
+									states={[khisSynched, facilityFeedBack, pathId, allFctsSelected, title]}
+									stateSetters={[setKhisSynched, setFacilityFeedBack, setPathId, setAllFctsSelected, setTitle]} />
+							}
+				   </button>
                     
                     {/* Main Body */}
-                    <div className="w-full md:col-span-4 mr-24 md:col-start-2 col-span-5 md:h-auto bg-gray-50 shadow-md">
+                    <div className="w-full col-span-1 md:col-span-4 mr-24 md:col-start-2  md:h-auto bg-gray-50 shadow-md">
                                     {/* Data Indicator section */}
-                                    <div className='w-full p-2 flex justify-between border-b border-blue-600'>
+                                    <div className='w-full p-2 flex justify-between items-center border-b border-gray-400'>
                                         {/* search input */}
                                     
                                         <Formik
@@ -508,22 +524,22 @@ function FacilityHome (props){
                                         <Field
                                         name="q"
                                         id="search-input"
-                                        className="flex-none bg-transparent p-2 w-3/5 md:flex-grow-0 flex-grow shadow-sm border border-blue-600 placeholder-gray-600  focus:shadow-none focus:ring-black focus:border-black outline-none"
+                                        className="flex-none bg-transparent p-2 w-3/5 md:flex-grow-0 flex-grow shadow-sm rounded-tl rounded-bl border border-gray-400 placeholder-gray-600  focus:shadow-none focus:ring-black focus:border-black outline-none"
                                         type="search"
                                         
-                                        placeholder="Search a facility"
+                                        placeholder="Search for a facility"
                                         />
                                         <button
                                         type="submit"
-                                        className="bg-transparent border-t border-r border-b border-blue-600 text-black flex items-center justify-center px-4 py-1"
+                                        className="bg-transparent border-t border-r border-b rounded-tr rounded-br border-gray-400 text-black flex items-center justify-center px-4 py-1"
                                         
                                         >
-                                        <SearchIcon className="w-5 h-5 text-blue-600" />
+                                        <SearchIcon className="w-5 h-5 text-gray-600" />
                                         </button>
                                     </Form>
-                                    </Formik>
+                                         </Formik>
 
-                                        <h5 className="text-lg font-medium text-gray-800 pr-2">      
+                                        <h5 className="text-lg text-end font-medium text-gray-800 md:pr-2">      
                                             {props?.data?.count && props?.data?.count > 0 && <small className="text-gray-500 text-base">{props?.data?.start_index ?? ''} - {props?.data?.end_index ?? ''} of {props?.data?.count ?? ''} </small>}
                                         </h5>
                                     </div>
@@ -538,29 +554,40 @@ function FacilityHome (props){
                                             facilities.map((facility, index) => (
                                                 <div key={index} 
                                                 title={`Incomplete Details : ${facility?.is_complete ? 'none' : facility?.in_complete_details}`}
-                                                className={`grid grid-cols-8 gap-2 border-b py-4 w-full ${!facility?.is_complete ? 'bg-yellow-50 border-yellow-500 hover:bg-gray-50' : 'bg-transparent border-gray-400 hover:border-yellow-100' }`}>
-                                                    <div className="px-2 col-span-8 md:col-span-8 lg:col-span-6 flex flex-col group items-center justify-start text-left">
+                                                className={`grid grid-cols-8 gap-2 border-b py-4 w-full ${!facility?.is_complete && !facility?.in_complete_details ? 'bg-yellow-50 border-yellow-500 hover:bg-gray-50' : 'bg-transparent border-gray-400 hover:border-grat-400' }`}>
+                                                    <div className="px-2 col-span-8 md:col-span-8 lg:col-span-6 gap-2 md:gap-0 flex flex-col group items-center justify-start text-left">
                                                         <h3 className="text-2xl font-semibold w-full">
-                                                            <span onClick={() => router.push({pathname: `/facilities/${facility?.id}`, query: {qf: router.query.qf}})} className={`cursor-pointer ${facility?.is_complete ? 'hover:text-blue-600' : 'hover:text-yellow-600'} group-focus:text-blue-800 active:text-blue-800`} >
+                                                            <span onClick={() => router.push({pathname: `/facilities/${facility?.id}`, query: {qf: router.query.qf}})} className={`cursor-pointer ${facility?.is_complete ? 'hover:text-gray-600' : 'hover:text-yellow-600'} group-focus:text-gray-800 active:text-gray-800`} >
                                                                 {facility?.official_name || facility?.official_name || facility?.name} 
                                                             </span>
                                                         </h3>
                                                         
-                                                        <div className="w-full grid grid-cols-4 gap-1">
+                                                        <div className="w-full grid grid-cols-2 md:grid-cols-4 gap-1">
                                                            
 
                                                             <div className="flex flex-col items-start justify-start gap-0 leading-none whitespace-pre-wrap mb-2">
                                                                 <label className="text-xs text-gray-500 ">Code:</label>
                                                                 <span className="whitespace-pre-line font-semibold"># {facility?.code ?? 'NO_CODE' }</span>
                                                             </div>
+
+                                                            <div className="flex flex-col  items-start justify-start gap-0 leading-none whitespace-pre-wrap">
+                                                                <label className="text-xs text-gray-500">Type:</label>
+                                                                <span className="whitespace-pre-line md:text-nowrap text-wrap">{facility?.facility_type_name ?? ' '}</span>
+                                                            </div>
+                                                            
                                                           
-                                                            <div className="flex flex-col col-span-2 items-start justify-start gap-0 leading-none whitespace-pre-wrap">
+                                                            <div className="flex flex-col  items-start justify-start gap-0 leading-none whitespace-pre-wrap">
                                                                 <label className="text-xs text-gray-500">Owner:</label>
-                                                                <span className="whitespace-pre-line">{facility?.owner_name ?? ' '}</span>
+                                                                <span className="whitespace-pre-line text-wrap">{facility?.owner_name ?? ' '}</span>
+                                                            </div>
+                                                            
+                                                            <div className="flex flex-col items-start justify-start gap-0 leading-none whitespace-pre-wrap">
+                                                                <label className="text-xs text-gray-500">Keph:</label>
+                                                                <span className="whitespace-pre-line">{filters?.keph_level.find(({id}) => id == facility?.keph_level)?.name ?? '-'}</span>
                                                             </div>
                                                         </div>
 
-                                                        <div className="text-base grid grid-cols-2 md:grid-cols-4 items-center justify-start gap-3 w-full">
+                                                        <div className="text-base grid grid-cols-2 md:grid-cols-4 items-center justify-start gap-1 w-full">
                                                             <div className="flex flex-col items-start justify-start gap-0 leading-none whitespace-pre-wrap">
                                                                 <label className="text-xs text-gray-500">County:</label>
                                                                 <span className="whitespace-pre-line">{facility?.county_name || facility?.county || 'N/A'}</span>
@@ -579,9 +606,10 @@ function FacilityHome (props){
                                                             </div>
                                                         </div>
                                                     </div>
+
                                                     <div className="col-span-8 md:col-span-8 lg:col-span-2 grid grid-cols-2 grid-rows-4 gap-x-2 gap-y-1 text-lg">
                                                         {/* {console.log({facility})} */}
-                                                        {(facility?.operational || facility?.operation_status_name) ? <span className={"shadow-sm col-start-2 leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 font-semibold text-blue-900"}>Operational</span> : ""}
+                                                        {/* {(facility?.operational || facility?.operation_status_name) ? <span className={"shadow-sm col-start-2 leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 font-semibold text-gray-900"}>Operational</span> : ""} */}
                                                         {!facility?.rejected ? <span className={"shadow-sm leading-none whitespace-nowrap text-sm col-start-2  py-1 px-2 " + (facility?.approved_national_level ? "bg-green-200 font-semibold text-green-900" : "bg-gray-500 font-semibold p-1 text-gray-50")}>{facility?.approved_national_level ? "Approved" : "Not approved"}</span> : <span className={"shadow-sm  col-start-2 leading-none whitespace-nowrap text-sm font-semibold py-1 px-2 bg-red-200 text-red-900"}>{facility?.rejected ? "Rejected" : ""}</span>}
                                                         {facility?.has_edits ? <span className={"shadow-sm leading-none whitespace-nowrap text-sm col-start-2 py-1 px-2 bg-yellow-200 font-semibold text-yellow-900"}>Has edits</span> : ""}
                                                         {!facility?.is_complete ? <span className={"shadow-sm leading-none whitespace-nowrap text-sm col-start-2 py-1 px-2 bg-pink-200 font-semibold text-pink-900"}>Incomplete</span> : ""}
@@ -589,14 +617,14 @@ function FacilityHome (props){
                                                 </div>
                                             ))
                                             :
-                                            <div className='w-[98%] flex my-4  rounded border border-yellow-600 items-center justify-start gap-2 bg-yellow-100  font-medium p-3'>
+                                            <div className='w-[98%] hidden my-4  rounded border border-yellow-600 items-center justify-start gap-2 bg-yellow-100  font-medium p-3'>
 												<span className='text-base text-gray-700'>
 													No Facilities found
 												</span>
 												<Link href={props.path || '/'}>
-													<a className='text-blue-700 hover:text-blue-800 group-focus:text-blue-800 active:text-blue-800'>
+													<span className='text-gray-700 hover:text-gray-800 group-focus:text-gray-800 active:text-gray-800'>
 														Refresh.
-													</a>
+													</span>
 												</Link>
 											</div>
                                             }
@@ -607,9 +635,9 @@ function FacilityHome (props){
                                                     <div key={index} className="grid grid-cols-8 gap-2 border-b py-4 hover:bg-gray-50 w-full">
                                                     <div className="col-span-8 md:col-span-8 lg:col-span-6 flex flex-col gap-1 group items-center justify-start text-left">
                                                         <h3 className="text-2xl w-full">
-                                                            <a href={'/facilities/' + facility?.id} className="hover:text-blue-800 group-focus:text-blue-800 active:text-blue-800 ">
+                                                            <Link href={'/facilities/' + facility?.id} className="hover:text-gray-800 group-focus:text-gray-800 active:text-gray-800 ">
                                                                 <small className="text-gray-500">{index + props?.data?.start_index}.</small>{' '}{facility?.facility_name}
-                                                            </a>
+                                                            </Link>
                                                         </h3>
                                                      
                                                         <div className="text-base grid grid-cols-2 md:grid-cols-4 items-center justify-start gap-3 w-full">
@@ -638,7 +666,7 @@ function FacilityHome (props){
                                                     
                                                     (facilities?.length === 0 && facilityFeedBack?.length == 0 || khisSynched) &&
                                                     // No Facility feedback data found
-                                                    <Alert severity="warning" sx={{width:'100%'}}>No facilities found <span onClick={() => {
+                                                    <Alert severity="warning" sx={{width:'100%', marginInline:'4px'}} >No facilities found <span onClick={() => {
                                                         setTitle('Facilities')
                                                         setAllFctsSelected(true)
                                                        
@@ -654,7 +682,7 @@ function FacilityHome (props){
                                             {facilities && facilities?.length >= 30 && !khisSynched && 
                                             <div className='self-end mx-2'>
                                             <ul className="list-none flex flex-row gap-2 w-full  items-center my-2">
-                                                <li className="text-base text-blue-500 cursor-pointer">
+                                                <li className="text-base text-gray-500 cursor-pointer">
                                                     <Link 
                                                     href={
                                                         (() => 
@@ -674,7 +702,7 @@ function FacilityHome (props){
                                                     </Link>
                                                 </li>
                                                 {props?.path && props?.data?.near_pages && props?.data?.near_pages.map((page, i) => (
-                                                    <li key={i} className="text-base group text-blue-500">
+                                                    <li key={i} className="text-base group text-gray-500">
                                                         <Link href={(() => 
                                                             props?.path.includes('?page') ?
                                                             props?.path.replace(/\?page=\d+/,`?page=${page}`)
@@ -688,7 +716,7 @@ function FacilityHome (props){
                                                             `${props?.path}?page=${page}`
                    
                                                         )()}>
-                                                            <span className="text-blue-800 cursor-pointer  px-2 py-1 hover:underline">{page}</span>
+                                                            <span className="text-gray-800 cursor-pointer  px-2 py-1 hover:underline">{page}</span>
                                                         </Link>
                                                     </li>
                                                 ))}
@@ -720,7 +748,6 @@ function FacilityHome (props){
 
 FacilityHome.getInitialProps = async (ctx) => {
 
-
     ctx?.res?.setHeader(
         'Cache-Control',
         'public, s-maxage=10, stale-while-revalidate=59'
@@ -730,6 +757,7 @@ FacilityHome.getInitialProps = async (ctx) => {
     const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
     function fetchFilters(token) {
+        
         let filters_url = API_URL + '/common/filtering_summaries/?fields=county%2Cfacility_type%2Cconstituency%2Cward%2Coperation_status%2Cservice_category%2Cowner_type%2Cowner%2Cservice%2Ckeph_level%2Csub_county'
 
         return fetch(filters_url, {
@@ -752,7 +780,7 @@ FacilityHome.getInitialProps = async (ctx) => {
 
     function fetchData(token) {
 
-        let url = API_URL + '/facilities/facilities/?fields=id,code,official_name,facility_type_name,owner_name,county,sub_county,constituency_name,ward_name,updated,operation_status_name,sub_county_name,name,is_complete,in_complete_details,approved_national_level,has_edits,approved,rejected,keph_level'
+        let url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/?fields=id,code,official_name,facility_type_name,owner_name,county,sub_county,constituency_name,ward_name,updated,operation_status_name,sub_county_name,name,is_complete,in_complete_details,approved_national_level,has_edits,approved,rejected,keph_level` // ?fields=id,code,official_name,facility_type_name,owner_name,county,sub_county,constituency_name,ward_name,updated,operation_status_name,sub_county_name,name,is_complete,in_complete_details,approved_national_level,has_edits,approved,rejected,keph_level`
      
         let query = { 'searchTerm': '' }
         if (ctx?.query?.qf) {
@@ -812,8 +840,6 @@ FacilityHome.getInitialProps = async (ctx) => {
         }
 
     
-
-        console.log({url});
 
         return fetch(url, {
             headers: {

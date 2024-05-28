@@ -41,7 +41,7 @@ function FacilityUpgradeModal({ subject, facilityId }) {
           }
         }>
           <span className="flex gap-2 items-center">
-            <InformationCircleIcon className="w-24 h-24 text-blue-600" />
+            <InformationCircleIcon className="w-24 h-24 text-gray-600" />
             <Typography id="transition-modal-title" variant="h6" >
               Would you like to upgrade/downgrade or save edited facility {subject}?
             </Typography>

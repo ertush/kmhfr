@@ -13,13 +13,17 @@ const Logout = props => {
 
         setIsClient(true)
 
+        // const cookieCutter = require('cookie-cutter')
+        // cookieCutter.set('access_token', '', "{}", { expires: new Date(0), httpOnly: false })
+
         // setTimeout(() => {
             if (!props?.error && !props?.detail) {
                 if (typeof window !== 'undefined') {
                     window.sessionStorage.removeItem('user')
                     window.localStorage.removeItem('user')
                     window.document.cookie = 'access_token=; expires=Thu, 01 Jan 1970 00:00:00 GMT;'
-                    router.push('/')
+                    console.log('redirecting...')
+                    router.replace('/')
 
                 } else {
                     const cookieCutter = require('cookie-cutter')
@@ -27,9 +31,9 @@ const Logout = props => {
                 }
             } else {
                 if (typeof window !== 'undefined') {
-                    router.push('/')
+                    router.replace('/')
                 } else {
-                    router.push('/')
+                    router.replace('/')
                 }
             }
         // }, 1000);
@@ -40,7 +44,7 @@ const Logout = props => {
         return (
             <>
                 <Head>
-                    <title>KMHFR - Log out</title>
+                    <title>KMHFR | Log out</title>
                     <link rel="icon" href="/favicon.ico" />
                 </Head>
                 <MainLayout>
@@ -68,7 +72,6 @@ Logout.getInitialProps = async () => {
             'Content-Type': 'application/json'
         }
     })
-        // .then(re => re.json())
         .then((response) => {
            
             if (response.error || response.detail) {

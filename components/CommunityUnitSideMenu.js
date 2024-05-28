@@ -21,8 +21,6 @@ export default function CommunityUnitSideMenu({ _pathId, filters, qf }) {
 	const [currentQuickFilter, setCurrentQuickFilter] = useState(qf);
 
 
-
-
 	const [chuPendingApproval, setCHUPendingApproval] = useState(false);
 
 
@@ -95,6 +93,9 @@ export default function CommunityUnitSideMenu({ _pathId, filters, qf }) {
 				}
 
 				break;
+			case 'new_pending_approval':
+				router.push({ pathname: '/community-units', query: { pending_approval:true} })
+				break;
 			default:
 				setCHUFeedBack([])
 
@@ -118,7 +119,7 @@ export default function CommunityUnitSideMenu({ _pathId, filters, qf }) {
 	}, [])
 
 	return (
-		<div className='col-span-1 flex flex-col gap-3 md:col-start-1  md:mb-12 py-0 h-full bg-gray-50 shadow-md'>
+		<div className='col-span-1 flex rounded flex-col gap-3 md:col-start-1  md:mb-12 py-0 h-full bg-gray-50 shadow-md'>
 			<List
 				className='p-0 m-0'
 				component="nav"
@@ -138,9 +139,11 @@ export default function CommunityUnitSideMenu({ _pathId, filters, qf }) {
 								switch (qf.name) {
 									case 'All Community Health Units':
 										return { 
-											backgroundColor: (allCHUSelected || pathId === 'all') && '#1d4ed8',
-											color: (allCHUSelected || pathId === 'all') && '#ffff',
+											backgroundColor: (allCHUSelected && pathId === 'all') && '#1d4ed8',
+											color: (allCHUSelected && pathId === 'all') && '#ffff',
 											borderBottom: 'solid 1px  rgba(156, 163, 175, 1)', 
+											borderTopLeftRadius: '4px',
+											borderTopRightRadius: '4px',
 											"&:hover": {
 											backgroundColor: "rgba(37, 99, 235, 1)",
 											color: "white"
@@ -149,8 +152,8 @@ export default function CommunityUnitSideMenu({ _pathId, filters, qf }) {
 										
 									case 'Approved Community Health Units':
 										return { 
-											backgroundColor: (approvedCHUSelected || pathId === 'approved') && '#1d4ed8',
-											color: (approvedCHUSelected || pathId === 'approved') && '#ffff',
+											backgroundColor: (approvedCHUSelected && pathId === 'approved') && '#1d4ed8',
+											color: (approvedCHUSelected && pathId === 'approved') && '#ffff',
 											borderBottom: 'solid 1px  rgba(156, 163, 175, 1)', 
 											"&:hover": {
 											backgroundColor: "rgba(37, 99, 235, 1)",
@@ -159,9 +162,9 @@ export default function CommunityUnitSideMenu({ _pathId, filters, qf }) {
 
 									case 'New Community Health Units Pending Approval':
 										return { 
-											backgroundColor: (newCHUSelected || pathId === 'new_pending_approval') && '#1d4ed8',
-											color: (newCHUSelected || pathId === 'new_pending_approval') && '#ffff',
-											borderBottom: 'solid 1px  rgba(156, 163, 175, 1)', 
+											backgroundColor: (newCHUSelected && pathId === 'new_pending_approval') && '#1d4ed8',
+											color: (newCHUSelected && pathId === 'new_pending_approval') && '#ffff',
+											borderBottom: 'solid 1px  rgba(156, 163, 175, 1)',
 											"&:hover": {
 											backgroundColor: "rgba(37, 99, 235, 1)",
 											color: "white"
@@ -169,8 +172,8 @@ export default function CommunityUnitSideMenu({ _pathId, filters, qf }) {
 
 									case 'Updated Community Health Units Pending Approval':
 										return { 
-											backgroundColor: (updatedCHUSelected || pathId === 'updated_pending_approval') && '#1d4ed8',
-											color: (updatedCHUSelected || pathId === 'updated_pending_approval') && '#ffff',
+											backgroundColor: (updatedCHUSelected && pathId === 'updated_pending_approval') && '#1d4ed8',
+											color: (updatedCHUSelected && pathId === 'updated_pending_approval') && '#ffff',
 											borderBottom: 'solid 1px  rgba(156, 163, 175, 1)', 
 											"&:hover": {
 											backgroundColor: "rgba(37, 99, 235, 1)",
@@ -180,18 +183,20 @@ export default function CommunityUnitSideMenu({ _pathId, filters, qf }) {
 									}
 									case 'Rejected Community Health Units':
 										return { 
-											backgroundColor: (rejectedCHUSelected || pathId === 'rejected') && '#1d4ed8', 
-											color: (rejectedCHUSelected || pathId === 'rejected') && '#ffff',
+											backgroundColor: (rejectedCHUSelected && pathId === 'rejected') && '#1d4ed8', 
+											color: (rejectedCHUSelected && pathId === 'rejected') && '#ffff',
 											borderBottom: 'solid 1px  rgba(156, 163, 175, 1)', 
 											"&:hover": {
 											backgroundColor: "rgba(37, 99, 235, 1)",
 											color: "white"
+
 										 }
 									}
 
 								}
 							})()}
 							name="rt"
+							
 							onClick={(evt) => {
 								switch (qf.name) {
 									case 'All Community Health Units':
@@ -279,6 +284,8 @@ export default function CommunityUnitSideMenu({ _pathId, filters, qf }) {
 										});
 									}
 								});
+
+								console.log({robj})
 
 								router.push(robj);
 							}}

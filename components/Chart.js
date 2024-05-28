@@ -6,12 +6,12 @@ import HighchartsReact from 'highcharts-react-official'
 
 
 
-const BarChart = props => {
+function Chart(props){
 
     const options = {
         chart: {
-            type: 'column',
-            backgroundColor: "#eff6ff"
+            type: props?.type,
+            backgroundColor: "#f9fafb" // "#eff6ff"
         },
         title: {
             text: props.title || ''
@@ -43,7 +43,30 @@ const BarChart = props => {
                 dataLabels: {
                     enabled: true
                 }
-            }
+            },
+            // series: {
+            //     allowPointSelect: true,
+            //     cursor: 'pointer',
+            //     dataLabels: [{
+            //       enabled: true,
+            //       distance: 20
+            //     }, {
+            //       enabled: true,
+            //       distance: -40,
+            //       format: '{point.percentage:.1f}%',
+            //       style: {
+            //         fontSize: '1.2em',
+            //         textOutline: 'none',
+            //         opacity: 0.7
+            //       },
+            //       filter: {
+            //         operator: '>',
+            //         property: '',
+            //         value: 10
+            //       }
+            //     }]
+            // }
+           
         },
         legend: {
             layout: 'vertical',
@@ -68,7 +91,7 @@ const BarChart = props => {
             <div className="flex flex-col items-center justify-center w-full p-2  bg-transparent" style={{ minHeight: '350px' }}>
                 <div className="w-full p-0">
                     {props.data.length <= 0 ? (
-                        <div className="p-2 bg-blue-200 border rounded border-blue-600 shadow-sm">
+                        <div className="p-2 bg-blue-200 border rounded border-gray-600 shadow-sm">
                             <p className="text-gray-800 text-base font-medium">Loading&hellip;</p>
                         </div>
                     ) : (
@@ -80,4 +103,4 @@ const BarChart = props => {
     );
 };
 
-export default BarChart;
+export default Chart;

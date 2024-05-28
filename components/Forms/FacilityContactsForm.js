@@ -4,11 +4,7 @@ import { FacilityContact, OfficerContactDetails } from './formComponents/Facilit
 import Select from './formComponents/FormikSelect';
 import { ChevronDoubleLeftIcon, ChevronDoubleRightIcon, PlusIcon } from '@heroicons/react/solid'
 import { FormOptionsContext } from '../../pages/facilities/add';
-// import { FormContext } from './Form';
-// import { useLocalStorageState } from './hooks/formHook';
 
-// import { object, string } from "zod";
-// import { toFormikValidationSchema } from "zod-formik-adapter";
 
 import {
     handleFacilityContactsSubmit,
@@ -58,10 +54,22 @@ export function FacilityContactsForm() {
     })
 
 
-    // console.log({facilityContactsData})
-    // State
-    // const [formId, setFormId] = useState('');
-    const [facilityId, setFacilityId] = useState('');
+    const [facilityId, setFacilityId] =  useMemo(() => {
+        let id = ''
+
+        function setId(_id) {
+            id = _id
+        }
+
+        if(window) {
+            setId(new URL(window.location.href).searchParams.get('facilityId') ?? '')
+        }
+
+        // console.log({id})
+
+        return [id, setId]
+    }, [])
+
     const [submitting, setSubmitting] = useState(false);
     const [formError, setFormError] = useState(null)
     const [geolocationUrl, setGeolocationUrl] = useState('')
@@ -105,27 +113,7 @@ export function FacilityContactsForm() {
 
         let vals = {}
 
-        if (window && !options?.data) {
-
-        const current_url =  new URL(window.location.href)
-
-        setFacilityId(current_url.searchParams.get('facilityId'))            
-
-        if(current_url.searchParams.get('from') == 'submission') setGeolocationUrl(window.location.href)
-
-        if(current_url.searchParams.get('from') == 'previous') {
-
-        // Extract form data from current url
-
-        const formDataBase64Enc = current_url.searchParams.get('formData')
-        const formData = JSON.parse(Buffer.from(formDataBase64Enc, 'base64').toString() ?? '{}')
-
-    
-
-         vals = formData
-            
-        } 
-    } else {
+        if (options?.data)  {
     
         for (let i = 0; i < facilityContacts.length; i++) {
             vals[`contact_type_${i}`] = "";
@@ -160,7 +148,24 @@ export function FacilityContactsForm() {
         const contactCount = Object.keys(initialValueObj).filter(x => /^contact_\d/.test(x)).length;
         const officerContactCount = Object.keys(initialValueObj).filter(x => x.match(/^officer_details_contact_[0-9]/)).length;
 
+        const currentUrl = new URL(window.document.location.href)
 
+        if(!options?.data){
+            if(window && currentUrl?.searchParams.get('from').includes('previous')){
+
+                const formContactsEnc = window.localStorage.getItem('facility_contacts')
+
+                const formContactsStr = Buffer.from(formContactsEnc ?? 'e30=', 'base64').toString()
+
+                const formContacts = JSON.parse(formContactsStr)
+
+
+                setFormValues(formContacts)
+
+        }
+      
+        }
+       
   
         if (contactCount > 1) {
             for (let i = 0; i < contactCount; i++) {
@@ -218,18 +223,13 @@ export function FacilityContactsForm() {
 
         event.preventDefault()
 
-        // const previous_url =  new URL(geolocationUrl)
-
-        // previous_url.searchParams.set('formId', '1')
-
-        // previous_url.searchParams.set('from', 'previous')
-
-        // window.location.url = previous_url
 
         router.push({
             pathname: '/facilities/add',
             query: {
-                formId: 1
+                formId: 1,
+                from:'previous',
+                facilityId
             }
         })
         .then((navigated) => {
@@ -291,8 +291,8 @@ export function FacilityContactsForm() {
                     :
                     handleFacilityContactsSubmit(options.token, values,  facilityId)
                         .then(resp => {
-                            console.log(JSON.stringify({token: options.token, values,  facilityId}, null , 2))
-                            if (resp.status == 204) {
+                            // console.log(JSON.stringify({token: options.token, values,  facilityId}, null , 2))
+                            if (resp.ok) {
 
                                 setSubmitting(false)
 
@@ -306,11 +306,14 @@ export function FacilityContactsForm() {
                                 alert.success('Officer Incharge Contacts Saved successfully')
 
                                 const formDataBase64Enc = Buffer.from(JSON.stringify(values)).toString('base64')
+                                
+                                if(window) {
+                                    window.localStorage.setItem('facility_contacts', formDataBase64Enc)
+                                }
 
                                 router.push({
                                     pathname: `${window.location.origin}/facilities/add`,
                                     query: { 
-                                      formData: formDataBase64Enc,
                                       formId: 3,
                                       facilityId: facilityId,
                                       from: 'submission'
@@ -382,7 +385,7 @@ export function FacilityContactsForm() {
                     return (
                         <>
                            
-                            <h4 className='text-lg uppercase pb-2 mt-4 border-b border-blue-600 w-full mb-4 font-semibold text-blue-900'>
+                            <h4 className='text-lg uppercase pb-2 mt-4 border-b border-gray-400  w-full mb-4 font-semibold text-gray-900'>
                                 Facility Contact
                             </h4>
                             <Form
@@ -397,16 +400,16 @@ export function FacilityContactsForm() {
                                 {/* Contacts */}
 
                                 <div
-                                    className='grid grid-cols-2 bg-gray-50 border border-blue-600 p-3 place-content-start gap-3 w-full bg-light-grey '
+                                    className='grid grid-cols-2 bg-gray-50 border border-gray-400 rounded p-3 place-content-start gap-3 w-full bg-light-grey '
                                 >
                                     {/* Contact Headers */}
-                                    <h3 className='text-medium font-semibold text-blue-900'>
+                                    <h3 className='text-medium font-semibold text-gray-900'>
                                         Contact Type {" *"}
                                     </h3>
-                                    <h3 className='text-medium font-semibold text-blue-900'>
+                                    <h3 className='text-medium font-semibold text-gray-900'>
                                         Contact Details {" *"}
                                     </h3>
-                                    <hr className='col-span-2 border-xs border-blue-600' />
+                                    <hr className='col-span-2 border-xs border-gray-400 rounded' />
 
                                     {/* Contact Type / Contact Details */}
 
@@ -469,7 +472,7 @@ export function FacilityContactsForm() {
 
                                 {/* Facility Officer In-charge Details */}
 
-                                <h5 className='text-lg uppercase pb-2 border-b border-blue-600 w-full mb-4 font-semibold text-blue-900'>
+                                <h5 className='text-lg uppercase pb-2 border-b border-gray-400  w-full mb-4 font-semibold text-gray-900'>
                                     Facility Officer In-Charge Details
                                 </h5>
                                 <div className='flex flex-col items-start bg-light-grey bg-gray-50 p-3 justify-start gap-1 w-full  h-auto'>
@@ -488,7 +491,7 @@ export function FacilityContactsForm() {
                                             required
                                             type='text'
                                             name='officer_name'
-                                            className='flex-none w-full  bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+                                            className='flex-none w-full  bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:border-black outline-none'
                                         />
                                     </div>
 
@@ -502,7 +505,7 @@ export function FacilityContactsForm() {
                                         <Field
                                             type='text'
                                             name='officer_reg_no'
-                                            className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+                                            className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:border-black outline-none'
                                         />
                                     </div>
 
@@ -530,16 +533,16 @@ export function FacilityContactsForm() {
                                     {/* Facility Officer Contact Type / Contact Details */}
 
                                     <div
-                                        className='grid grid-cols-2 place-content-start gap-3 w-full border border-blue-600 p-3'
+                                        className='grid grid-cols-2 place-content-start gap-3 w-full border border-gray-400 rounded p-3'
                                     >
                                         {/* Contact Headers */}
-                                        <h3 className='text-medium font-semibold text-blue-900'>
+                                        <h3 className='text-medium font-semibold text-gray-900'>
                                             Contact Type {" *"}
                                         </h3>
-                                        <h3 className='text-medium font-semibold text-blue-900'>
+                                        <h3 className='text-medium font-semibold text-gray-900'>
                                             Contact Details {" *"}
                                         </h3>
-                                        <hr className='col-span-2 border-xs border-blue-600' />
+                                        <hr className='col-span-2 border-xs border-gray-400 rounded' />
 
                                         {/* Contact Type / Contact Details */}
 
@@ -624,9 +627,9 @@ export function FacilityContactsForm() {
                                         <div className='flex justify-between items-center w-full'>
                                             <button
                                                 onClick={handleGeolocationPrevious}
-                                                className='flex items-center justify-start space-x-2 p-1 group hover:bg-blue-700 border border-blue-700 px-2'>
-                                                <ChevronDoubleLeftIcon className='w-4 h-4 group-hover:text-white text-blue-900' />
-                                                <span className='text-medium font-semibold group-hover:text-white text-blue-900 '>
+                                                className='flex items-center justify-start space-x-2 p-1 group border border-gray-700 px-2'>
+                                                <ChevronDoubleLeftIcon className='w-4 h-4 text-gray-900' />
+                                                <span className='text-medium font-semibold text-gray-900 '>
                                                     Geolocation
                                                 </span>
                                             </button>
