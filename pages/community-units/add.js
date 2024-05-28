@@ -50,6 +50,7 @@ function CommunityUnitsBasciDetailsForm(props) {
 	const [formError, setFormError] = useState(null)
 	const [validationError, setValidationError] = useState(null)
 	const setFormId = useContext(SetFormIdContext)
+	const [facilityType, setFacilityType] = useState(null)
 
 
 	function handleCUBasicDetailsSubmit (event) {
