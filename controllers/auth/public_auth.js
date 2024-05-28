@@ -43,7 +43,7 @@ const getToken = (req, res, refresh_token, creds) => {
         // console.log('Getting new token...')
         bod.grant_type = "password"
         bod.username = creds?.username || process.env.NEXT_PUBLIC_CLIENT_USERNAME
-        bod.password = creds?.password || process.env.NEXT_PUBLIC_CLIENT_PASSWORD
+        bod.password = creds?.password || process.env.CLIENT_PASSWORD
     }
     bod.client_id = process.env.NEXT_PUBLIC_CLIENT_PUBLIC_ID
     bod.client_secret = process.env.CLIENT_PUBLIC_SECRET

@@ -576,14 +576,14 @@ function CommunityUnitsBasciDetailsForm(props) {
 					<input
 						defaultValue={''}
 						type='number'
-						name='chc_present'
+						name='chcs_present'
 						className='col-start-2 flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
 					/>
 
 					<input
 						defaultValue={''}
 						type='number'
-						name='chc_trained'
+						name='chcs_trained'
 						className='col-start-3 flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
 					/>
 

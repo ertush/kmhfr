@@ -28,6 +28,7 @@
     "@mui/x-data-grid": "^6.11.0",
     "@mui/x-data-grid-pro": "^6.11.2",
     "@mui/x-date-pickers": "^5.0.20",
+    "@next/bundle-analyzer": "^14.2.3",
     "@radix-ui/react-radio-group": "^0.0.19",
     "@radix-ui/react-tabs": "0.0.5",
     "@turf/turf": "^6.5.0",
