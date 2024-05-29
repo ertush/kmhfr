@@ -159,7 +159,7 @@ export async function getServerSideProps(ctx) {
 
 const props = await getProps(token, options)
 
-console.log({props})
+// console.log({props})
 
   return {
     props 
