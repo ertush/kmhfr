@@ -530,7 +530,7 @@ function CommunityUnitsBasciDetailsForm(props) {
 					/>
 				</div>
 
-				{/* COmmunity Health Unit Workforce */}
+				{/* Community Health Unit Workforce */}
 				<div className='grid grid-cols-3 grid-rows-5 gap-3 mb-3 w-full'>
 					<h4 className='col-span-3 self-end row-start-1 text-lg uppercase  border-b border-gray-600 w-full font-semibold text-gray-900'>
 					Community Health Unit Workforce
@@ -556,35 +556,35 @@ function CommunityUnitsBasciDetailsForm(props) {
 						defaultValue={''}
 						type='number'
 						name='chps_trained'
-						className='col-start-3 flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
+						className='col-start-3 flex-none w-full bg-transparent  rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
 					/>
 					
 					<input
 						defaultValue={''}
 						type='number'
 						name='chas_present'
-						className='col-start-2 flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
+						className='col-start-2 flex-none w-full bg-transparent  rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
 					/>
 
 					<input
 						defaultValue={''}
 						type='number'
 						name='chas_trained'
-						className='col-start-3 flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
+						className='col-start-3 flex-none w-full bg-transparent  rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
 					/>
 
 					<input
 						defaultValue={''}
 						type='number'
 						name='chcs_present'
-						className='col-start-2 flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
+						className='col-start-2 flex-none w-full bg-transparent  rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
 					/>
 
 					<input
 						defaultValue={''}
 						type='number'
 						name='chcs_trained'
-						className='col-start-3 flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
+						className='col-start-3 flex-none w-full bg-transparent  rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
 					/>
 
 
@@ -643,6 +643,7 @@ function CommunityUnitsBasciDetailsForm(props) {
 					}
 
 				</div>
+
 				<div className="sticky top-0 right-10 w-full flex justify-end">
 					<button className=' bg-blue-600 p-2 text-white flex text-md font-semibold '
 						onClick={handleContactAdd}
@@ -790,6 +791,11 @@ function CommunityUnitsExtensionWorkersForm(props) {
 
 	};
 
+	function handleDelete(e, i) {
+		e.preventDefault(); 
+		setContactCHEW(prev => prev.filter((_, index) => index !== i))
+	}
+
 	return (
 		<>
 			<h4 className='text-lg uppercase pb-2 border-b border-gray-600 w-full mb-4 font-semibold text-gray-900'>
@@ -854,11 +860,7 @@ function CommunityUnitsExtensionWorkersForm(props) {
 						</div> 
 
 
-						{/* <label
-							htmlFor='last_name'
-							className='block text-sm font-medium text-gray-700'>
-							In Charge
-						</label> */}
+						
 						</div>
 
 				
@@ -943,7 +945,7 @@ function CommunityUnitsExtensionWorkersForm(props) {
 										
 										type='button'
 										className='bg-transparent group hover:bg-red-500 text-red-700 font-semibold hover:text-white p-3 hover:border-transparent '
-										onClick={(e) => { e.preventDefault(); setContactCHEW(prev => prev.filter((_, index) => index !== i))}}>
+										onClick={e => handleDelete(e, i)}>
 										<TrashIcon className="w-4 h-4 text-red-500 group-hover:text-white" />
 									</button>
 								</div>

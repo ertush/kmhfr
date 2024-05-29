@@ -11,7 +11,7 @@ import { TrashIcon } from '@heroicons/react/solid'
 import { Alert } from '@mui/lab'
 
 
-function RenderpartnersForm({index, setPartners}) {
+function RenderpartnersForm({index, setPartners, options}) {
 
  
   return (
@@ -27,7 +27,7 @@ function RenderpartnersForm({index, setPartners}) {
         type="text"
         id={`first_name_${index}`}
         name={`first_name_${index}`}
-        defaultValue={''}
+        defaultValue={options?.data && options?.data[`first_name_${index}`]}
         className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:bg-white focus:border-black outline-none"
       />
     </div>
@@ -427,7 +427,7 @@ function EditListItem({
                 type='radio'
                 name='income_generating_activities'
                 value={true}
-                // defaultChecked={options?.data?.accredited_lab_iso_15189 === true}
+                defaultChecked={options?.data?.income_generating_activities === true}
 
               />
               <small className='text-gray-700'>Yes</small>
@@ -437,7 +437,7 @@ function EditListItem({
                 type='radio'
                 name='income_generating_activities'
                 value={false}
-                // defaultChecked={options?.data?.accredited_lab_iso_15189 === false}
+                defaultChecked={options?.data?.income_generating_activities === false}
 
 
               />
@@ -457,7 +457,7 @@ function EditListItem({
                 type='radio'
                 name='education_communication_materials'
                 value={true}
-                // defaultChecked={options?.data?.accredited_lab_iso_15189 === true}
+                defaultChecked={options?.data?.education_communication_materials === true}
 
               />
               <small className='text-gray-700'>Yes</small>
@@ -467,7 +467,7 @@ function EditListItem({
                 type='radio'
                 name='education_communication_materials'
                 value={false}
-                // defaultChecked={options?.data?.accredited_lab_iso_15189 === false}
+                defaultChecked={options?.data?.education_communication_materials === false}
 
 
               />
@@ -493,7 +493,7 @@ function EditListItem({
         {
         Array.isArray(partners) && partners.length > 0  && (
           partners?.map((_, index) => {
-            return  <RenderpartnersForm index={index} setPartners={setPartners}/>
+            return  <RenderpartnersForm index={index} setPartners={setPartners} options={options}/>
             
           })
         )

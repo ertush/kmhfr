@@ -9,6 +9,7 @@ import {
   InformationCircleIcon,
   LockClosedIcon,
   XCircleIcon,
+  TrashIcon
 } from "@heroicons/react/solid";
 import { useContext, useState, useEffect } from 'react';
 import { ChuOptionsContext } from '../../pages/community-units/edit/[id]';
@@ -532,8 +533,69 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
           />
         </div>
 
+        {/* Community Health Unit Workforce */}
+				<div className='grid grid-cols-3 grid-rows-5 gap-3 mb-3 w-full'>
+					<h4 className='col-span-3 self-end row-start-1 text-lg uppercase  border-b border-gray-600 w-full font-semibold text-gray-900'>
+					Community Health Unit Workforce
+					</h4>
+					<label className='col-start-2 row-start-2 text-gray-600 self-end'>Number Present</label>
+					<label className='col-start-3 row-start-2 text-gray-600 self-end'>Number Trained</label>
+
+					{/* <div className='row-span-3'> */}
+					<label className='col-start-1 row-start-3 self-end'>Community Health Promoters (CHPs)*</label>
+					<label className='col-start-1 row-start-4 self-end'>Community Health Assistants (CHAs)*</label>
+					<label className='col-start-1 row-start-5 self-end'>Community Health Commitee Members (CHC)*</label>
+
+					{/* </div> */}
+				
+					<input
+						defaultValue={props?.chps_present}
+						type='number'
+						name='chps_present'
+						className='col-start-2 flex-none w-full bg-transparent  rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
+					/>
+
+					<input
+						defaultValue={props?.chps_trained}
+						type='number'
+						name='chps_trained'
+						className='rounded col-start-3 flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
+					/>
+					
+					<input
+						defaultValue={props?.chas_present}
+						type='number'
+						name='chas_present'
+						className='rounded col-start-2 flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
+					/>
+
+					<input
+						defaultValue={props?.chas_trained}
+						type='number'
+						name='chas_trained'
+						className='rounded col-start-3 flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
+					/>
+
+					<input
+						defaultValue={props?.chcs_present}
+						type='number'
+						name='chcs_present'
+						className='rounded col-start-2 flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
+					/>
+
+					<input
+						defaultValue={props?.chcs_trained}
+						type='number'
+						name='chcs_trained'
+						className='rounded col-start-3 flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
+					/>
+
+
+
+				</div>
+
         <div className=" w-full flex flex-col items-start justify-start bg-transparent h-auto">
-          <h4 className="text-lg uppercase pb-2 border-b border-gray-400 w-full mb-4 font-semibold text-gray-900">
+          <h4 className="text-lg uppercase  border-b border-gray-600 w-full my-4 font-semibold text-gray-900">
             Community Health Unit Contacts
           </h4>
 
@@ -597,6 +659,7 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
             );
           })}
         </div>
+
         <div className="sticky top-0 right-10 w-full flex justify-end">
           <button
             className="bg-gray-500 rounded p-2 text-white flex text-md font-semibold mt-3"
@@ -607,7 +670,6 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
         </div>
 
         {/* Cancel and Save Changes */}
-
         <div className="flex justify-end items-center w-full mt-3">
 
 
@@ -653,6 +715,7 @@ function EditCommunityUnitsCHEWSForm(props) {
   const alert = useAlert()
   const [deleteButton, setDeleteButton] = useState(props?.health_unit_workers.map((_, i) => ({[i]: false})))
 
+  console.log({deleteButton})
   
   function handleFormSubmit(event) {
       event.preventDefault()
@@ -734,9 +797,12 @@ function EditCommunityUnitsCHEWSForm(props) {
     setDeleting(true)
    
     setDeleteButton(prev => {
-      prev[index][index] = true
-
-      return prev
+      // prev[index][index] = true
+      // return prev
+      return prev.map((slot) => {
+        slot[index] = true;
+        return slot
+      })
     })
 
   
@@ -789,32 +855,83 @@ function EditCommunityUnitsCHEWSForm(props) {
     
   }
 
+
+  function handleAddCHEW(e){
+      e.preventDefault()
+      setHealthUnitWorkers(prev => [...prev, {first_name: "", last_name:"", is_incharge:""}])
+  }
+
    return (
     <form
       name="chews_form"
-      className="flex flex-col p-3 h-full bg-gray-50 w-full items-start justify-start gap-3"
+      className="flex flex-col p-3 h-full bg-gray-50 w-full items-start justify-start gap-1"
       onSubmit={handleFormSubmit}
     >
       {formError && <Alert severity='error' className={'w-full'}>Error when deleting: {formError}</Alert>}
       
-      <div className="w-full flex flex-col items-start justify-start gap-y-7 mb-3">
+      <div className='w-full flex flex-col items-between justify-start gap-1 my-2'>
+					
+				<div className="flex items-start justify-between">
+
+					<div className='w-full grid md:grid-cols-5 mx-auto place-content-start gap-x-5 flex-1 mb-2'>
+
+						<label
+							htmlFor='last_name'
+							className='block text-sm font-medium text-gray-700'>
+							First Name
+						</label>
+
+						<label
+							htmlFor='last_name'
+							className='block text-sm font-medium text-gray-700'>
+							Second Name
+						</label>
+
+						<label
+							htmlFor='mobile_no'
+							className='block text-sm font-medium text-gray-700'>
+							Mobile Phone Number*
+						</label>
+
+						<label
+							htmlFor='email'
+							className='block text-sm font-medium text-gray-700'>
+							Email
+						</label>
+
+						<label
+								htmlFor='last_name'
+								className='block text-sm font-medium text-gray-700'>
+								Delete
+							</label>
+
+							
+
+			
+					</div>
+					
+					<div className='flex flex-row justify-between gap-2'>
+							
+							<button className=' w-auto  bg-blue-600 p-2 text-white flex text-md font-semibold '
+								onClick={handleAddCHEW}
+							>
+								{`Add +`}
+
+							</button>
+						</div> 
+
+
+				</div>
+
         {Array.isArray(healthUnitWorkers) && healthUnitWorkers.length > 0 ? (
-          healthUnitWorkers?.map(({ first_name, last_name, is_incharge, id }, index) => {
+          healthUnitWorkers?.map(({ first_name, last_name, mobile_no, email, id }, index) => {
             return (
-              <div
-                className="flex flex-row items-center justify-between md:mx-1 gap-4 w-full"
-                key={id}
-              >
+              <div key={id} className="flex items-start justify-between">
+						
+              <div className='w-full grid md:grid-cols-5 mx-auto place-content-start gap-x-4'>
                 {/* First Name */}
-                <div className="flex-col gap-2">
-                  <label
-                    htmlFor={`first_name_${index}`}
-                    start
-                    className="block text-sm font-medium text-gray-700"
-                  >
-                    First Name
-                  </label>
-                  <input
+
+                <input
                     required
                     type="text"
                     id={`first_name_${index}`}
@@ -822,15 +939,8 @@ function EditCommunityUnitsCHEWSForm(props) {
                     defaultValue={first_name}
                     className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:bg-white focus:border-black outline-none"
                   />
-                </div>
-                {/* Second Name */}
-                <div className="flex-col gap-2">
-                  <label
-                    htmlFor={`last_name_${index}`}
-                    className="block text-sm font-medium text-gray-700"
-                  >
-                    Second Name
-                  </label>
+
+                  {/* Second Name */}
                   <input
                     required
                     type="text"
@@ -840,53 +950,150 @@ function EditCommunityUnitsCHEWSForm(props) {
                    
                     className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:bg-white focus:border-black outline-none"
                   />
-                </div>
-                {/* In charge */}
-                <div className="flex-col gap-2">
-                  <label
-                    htmlFor={`is_incharge_${index}`}
-                    className="block text-sm font-medium text-gray-700"
-                  >
-                    In Charge
-                  </label>
-                  
+
+                  {/* Phone Number */}
                   <input
-                    name={`is_incharge_${index}`}
-                    id={`is_incharge_${index}`}
-                    type="checkbox"
-                    defaultChecked={is_incharge}
-                    className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300"
-                  />
-                </div>
+								required
+								type='tel'
+								pattern={'[+]{1}[254]{3}[ ]{1}[0-9]{9}'}
+								placeholder={'+254 #########'}
+								name={`mobile_no_${index}`}
+								defaultValue={mobile_no}
 
-                {/* Delete CHEW */}
+								className='flex-none  md:max-w-min w-auto bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
+							/>
 
-                <div className="flex-col gap-2">
-                  <div className="flex items-center">
-                    {/* insert red button for deleting */}
-                    <button
-                      onClick={(e) => handleDelete(e, index, id)}
-                      className="flex items-center justify-start space-x-2 bg-red-600 rounded  p-1 px-2"
-                      data-id={props?.health_unit_workers[index]?.id}
+              {/* Email */}
 
+              <input
+								required
+								type='email'
+								name={`email_${index}`}
+								defaultValue={email}
+								placeholder="user@email-domain"
+								pattern="[a-z0-9]+[.]*[\-]*[a-z0-9]+@[a-z0-9]+[\-]*[.]*[a-z0-9]+[.][a-z]{2,}"
+								className='flex-none  md:max-w-min w-auto bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
+							/>
+
+              {/* Delete Button */}
+
+              {/* Delete CHEW */}
+							<div className='flex'>
+								<div className='flex items-center'>
+									{/* insert red button for deleting */}
+									<button
+										name='delete'
+										type='button'
+										className='bg-transparent group hover:bg-red-500 text-red-700 font-semibold hover:text-white p-3 hover:border-transparent '
+										onClick={(e) => handleDelete(e, index, id)}
+                    data-id={props?.health_unit_workers[index]?.id}
                     >
-                      <span className="text-medium font-semibold text-white">
-                        {
-                          deleting && deleteButton[index][index] ? 
-                          <span className='flex place-content-center gap-2'>
-                            <Spinner/>
-                            <span>Deleting...</span>
-                          </span>
-                          :
-                          'Delete'
+										<TrashIcon className="w-4 h-4 text-red-500 group-hover:text-white" />
+									</button>
+								</div>
+							</div>
+    
 
-                        }
-                        
-                      </span>
-                    </button>
-                  </div>
-                </div>
               </div>
+
+<div className='flex flex-row justify-between gap-x-2'>
+  
+  <span disabled={true} className=' w-auto bg-transparent p-1 text-white flex text-md font-semibold '
+  >
+    {`Add +`}
+
+  </span>
+</div> 
+
+</div>
+              // <div
+              // className='w-full grid md:grid-cols-5 mx-auto place-content-start gap-y-1 gap-x-5'  
+              // key={id}
+              // >
+              //   {/* First Name */}
+              //   <div className="flex-col gap-2">
+              //     <label
+              //       htmlFor={`first_name_${index}`}
+              //       start
+              //       className="block text-sm font-medium text-gray-700"
+              //     >
+              //       First Name
+              //     </label>
+              //     <input
+              //       required
+              //       type="text"
+              //       id={`first_name_${index}`}
+              //       name={`first_name_${index}`}
+              //       defaultValue={first_name}
+              //       className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:bg-white focus:border-black outline-none"
+              //     />
+              //   </div>
+              //   {/* Second Name */}
+              //   <div className="flex-col gap-2">
+              //     <label
+              //       htmlFor={`last_name_${index}`}
+              //       className="block text-sm font-medium text-gray-700"
+              //     >
+              //       Second Name
+              //     </label>
+              //     <input
+              //       required
+              //       type="text"
+              //       id={`last_name_${index}`}
+              //       name={`last_name_${index}`}
+              //       defaultValue={last_name}
+                   
+              //       className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:bg-white focus:border-black outline-none"
+              //     />
+              //   </div>
+
+                
+              //   {/* In charge */}
+              //   <div className="flex-col gap-2">
+              //     <label
+              //       htmlFor={`is_incharge_${index}`}
+              //       className="block text-sm font-medium text-gray-700"
+              //     >
+              //       In Charge
+              //     </label>
+                  
+              //     <input
+              //       name={`is_incharge_${index}`}
+              //       id={`is_incharge_${index}`}
+              //       type="checkbox"
+              //       defaultChecked={is_incharge}
+              //       className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300"
+              //     />
+              //   </div>
+
+              //   {/* Delete CHEW */}
+
+              //   <div className="flex-col gap-2">
+              //     <div className="flex items-center">
+              //       {/* insert red button for deleting */}
+              //       <button
+              //         onClick={(e) => handleDelete(e, index, id)}
+              //         className="flex items-center justify-start space-x-2 bg-red-600 rounded  p-1 px-2"
+              //         data-id={props?.health_unit_workers[index]?.id}
+
+              //       >
+              //         <span className="text-medium font-semibold text-white">
+              //           {
+              //             deleting && deleteButton[index][index] ? 
+              //             <span className='flex place-content-center gap-2'>
+              //               <Spinner/>
+              //               <span>Deleting...</span>
+              //             </span>
+              //             :
+              //             'Delete'
+
+              //           }
+                        
+              //         </span>
+              //       </button>
+              //     </div>
+              //   </div>
+              // </div>
             )
           })
         ) : (
@@ -897,7 +1104,7 @@ function EditCommunityUnitsCHEWSForm(props) {
           </>
         )}
 
-        <div className="sticky top-0 right-10 w-full flex justify-end">
+        {/* <div className="sticky top-0 right-10 w-full flex justify-end">
           <button
             className=" bg-gray-500 rounded p-2 text-white flex text-md font-semibold "
             onClick={(e) => {
@@ -906,9 +1113,8 @@ function EditCommunityUnitsCHEWSForm(props) {
             }}
           >
             {`Add +`}
-            {/* <PlusIcon className='text-white ml-2 h-5 w-5'/> */}
           </button>
-        </div>
+        </div> */}
       </div>
 
       {/* Save Changes */}
@@ -1054,9 +1260,7 @@ function EditCommunityUnitsServicesForm(props) {
           Services Offered
         </h4>
   
-        {/* {
-          JSON.stringify(props?.service_category)
-        } */}
+        
   
         <div
           name='chu_services_form'
