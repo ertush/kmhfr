@@ -868,7 +868,7 @@ export function BasicDeatilsForm({ editMode }) {
 
          {/* Out reach services */}
          <div className='flex flex-col w-full items-start'>
-          <div className='w-full flex flex-row items-center px-2 justify-start gap-1 gap-x-3 mb-3'>
+          <div className='w-full flex flex-row items-center justify-start gap-1 gap-x-3 mb-3'>
             <label
               htmlFor='out_reach_services'
               className='text-gray-700 capitalize text-sm flex-grow'>
@@ -879,7 +879,7 @@ export function BasicDeatilsForm({ editMode }) {
                 type='radio'
                 name='out_reach_services'
                 value={true}
-                // defaultChecked={options?.data?.accredited_lab_iso_15189 === true}
+                defaultChecked={options?.data?.out_reach_services === true}
 
               />
               <small className='text-gray-700'>Yes</small>
@@ -889,8 +889,7 @@ export function BasicDeatilsForm({ editMode }) {
                 type='radio'
                 name='out_reach_services'
                 value={false}
-                // defaultChecked={options?.data?.accredited_lab_iso_15189 === false}
-
+                defaultChecked={options?.data?.out_reach_services === false}
 
               />
               <small className='text-gray-700'>No</small>
@@ -902,7 +901,7 @@ export function BasicDeatilsForm({ editMode }) {
 
         {/* Is Facility accredited */}
         <div className='flex flex-col w-full items-start'>
-          <div className='w-full flex flex-row items-center px-2 justify-start gap-1 gap-x-3 mb-3'>
+          <div className='w-full flex flex-row items-center justify-start gap-1 gap-x-3 mb-3'>
             <label
               htmlFor='accredited_lab_iso_15189'
               className='text-gray-700 capitalize text-sm flex-grow'>
@@ -1264,7 +1263,7 @@ export function BasicDeatilsForm({ editMode }) {
             min={0}
             name='number_of_minor_theatres'
             onFocus={handleFocus}
-            // defaultValue={options?.data?.number_of_general_theatres ?? ''}
+            defaultValue={options?.data?.number_of_minor_theatres ?? ''}
 
             className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:border-black outline-none'
           />
@@ -1290,7 +1289,7 @@ export function BasicDeatilsForm({ editMode }) {
             min={0}
             name='number_of_eye_theatres'
             onFocus={handleFocus}
-            // defaultValue={options?.data?.number_of_general_theatres ?? ''}
+            defaultValue={options?.data?.number_of_eye_theatres ?? ''}
 
             className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:border-black outline-none'
           />
@@ -1300,7 +1299,7 @@ export function BasicDeatilsForm({ editMode }) {
 
           {/* New Born Unit */}
           <div className='flex flex-col w-full items-start'>
-          <div className='w-full flex flex-row items-center px-2 justify-start gap-1 gap-x-3 mb-3'>
+          <div className='w-full flex flex-row items-center justify-start gap-1 gap-x-3 mb-3'>
             <label
               htmlFor='new_born_unit'
               className='text-gray-700 capitalize text-sm flex-grow'>
@@ -1311,7 +1310,7 @@ export function BasicDeatilsForm({ editMode }) {
                 type='radio'
                 name='new_born_unit'
                 onFocus={handleFocus}
-                // defaultChecked={options?.data?.nhif_accreditation == true}
+                defaultChecked={options?.data?.new_born_unit == true}
                 value={true}
 
               />
@@ -1322,7 +1321,7 @@ export function BasicDeatilsForm({ editMode }) {
                 type='radio'
                 name='new_born_unit'
                 onFocus={handleFocus}
-                // defaultChecked={options?.data?.nhif_accreditation == false}
+                defaultChecked={options?.data?.new_born_unit == false}
                 value={false}
 
               />
@@ -1358,7 +1357,7 @@ export function BasicDeatilsForm({ editMode }) {
 
         {/* Is Reportsing DHIS2 */}
         <div className='flex flex-col w-full items-start'>
-          <div className='w-full flex flex-row items-center px-2 justify-start gap-1 gap-x-3 mb-3'>
+          <div className='w-full flex flex-row items-center justify-start gap-1 gap-x-3 mb-3'>
             <label
               htmlFor='reporting_in_dhis'
               className='text-gray-700 capitalize text-sm flex-grow'>
@@ -1417,7 +1416,7 @@ export function BasicDeatilsForm({ editMode }) {
 
         {/* Is NHIF accredited */}
         <div className='flex flex-col w-full items-start'>
-          <div className='w-full flex flex-row items-center px-2 justify-start gap-1 gap-x-3 mb-3'>
+          <div className='w-full flex flex-row items-center justify-start gap-1 gap-x-3 mb-3'>
             <label
               htmlFor='nhif_accreditation'
               className='text-gray-700 capitalize text-sm flex-grow'>
