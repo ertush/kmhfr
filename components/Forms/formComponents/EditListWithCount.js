@@ -525,21 +525,49 @@ function EditListWithCount(
                                                !row?.name?.includes("Main Grid") &&
                                                !row?.name?.includes("Gas") &&
                                                !row?.name?.includes("Bio-Gas") &&
+                                               !row?.name?.includes("Solar") &&
+                                               !row?.name?.includes("Bio-Gas") &&
+                                               !row?.name?.includes("Generator") &&
+                                               !row?.name?.includes("Battery Backups") &&
+
+
                                                // WATER SOURCE
                                                !row?.name?.includes("Roof Harvested Water") &&
                                                !row?.name?.includes("River / Dam / Lake") &&
                                                !row?.name?.includes("Donkey Cart / Vendor") &&
                                                !row?.name?.includes("Piped Water") &&
+                                               !row?.name?.includes("Protected Wells / Springs") &&
+                                               !row?.name?.includes("Bore Hole") &&
+
                                                // MEDICAL WASTE MANAGEMENT
                                                !row?.name?.includes("Sewer systems") &&
                                                !row?.name?.includes("Dump without burning") &&
                                                !row?.name?.includes("Open burning") &&
                                                !row?.name?.includes("Remove offsite") &&
+                                               !row?.name?.includes("Septic Tank") &&
+                                               !row?.name?.includes("Composite Pit") &&
+                                               !row?.name?.includes("Placenta Pit") &&
+                                               !row?.name?.includes("Burning incenerator") &&
+                                               !row?.name?.includes("Burning Chamber") &&
+                                               !row?.name?.includes("Incinerator") &&
+                                               !row?.name?.includes("Public Sewer system") &&
+                                               !row?.name?.includes("Biodigester") &&
+                                               !row?.name?.includes("Microwave") &&
+                                               !row?.name?.includes("Macerator") &&
+
                                                // ACCESS ROADS
                                                !row?.name?.includes("Tarmac") &&
                                                !row?.name?.includes("Earthen Road") &&
                                                !row?.name?.includes("Graded ( Murrum )") &&
-                                               !row?.name?.includes("Gravel") 
+                                               !row?.name?.includes("Gravel") &&
+
+                                               // CSSD Infrastructure
+                                               !row?.name?.includes("Central Sterile Service") &&
+                                               !row?.name?.includes("Storage room for sterile supplies") &&
+                                               !row?.name?.includes("Sluice room") &&
+                                               !row?.name?.includes("Autoclave") 
+
+
                                                ) && 
                                             <input
                                                 type="number"
