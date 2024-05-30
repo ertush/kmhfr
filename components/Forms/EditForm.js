@@ -65,7 +65,7 @@ export function EditForm() {
 
 
   return (
-    <div className='bg-gray-50 col-span-1 md:col-span-4 shadow-md flex flex-col justify-start max-h-min items-center w-full'>
+    <div className='bg-gray-50 col-span-1 md:col-span-4 place-self-start rounded shadow-md flex flex-col justify-start max-h-min items-center w-full'>
       {/* Stepper Header */}
       <Tabs.Root
         orientation="horizontal"

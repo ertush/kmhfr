@@ -247,7 +247,7 @@ function EditCommunityUnit(props){
                   value="hr_staffing"
                   className="p-2 flex-1 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
                 >
-                  HR &amp; Staffing
+                  Community Health Unit Workforce
                 </Tabs.Tab>
               </Tabs.List>
               {/*End of the vertical tabs  */}

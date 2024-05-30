@@ -66,7 +66,7 @@ export async function getServerSideProps(ctx) {
     }
   }
 
-  const count = await getFacilityCount(token)
+  // const count = await getFacilityCount(token)
 
 
   async function getProps(token, options){
