@@ -1197,15 +1197,15 @@ function EditCommunityUnitsServicesForm(props) {
     })(options?.services ?? [])
   
   
-  function handleSubmit (selectedServices, chulId) {
+  function handleSubmit (payload, selectedItems, chulId) {
       // console.log({stateSetters, chulId})
-    const _payload = selectedServices.map(({value}) => ({ service: value }))
+    const _payload = selectedItems.map(({value}) => ({ service: value }))
 
 		_payload.forEach(obj => obj['health_unit'] = chulId)
 
-    
-  
-      if(_payload) {
+     
+
+      if(_payload & payload) {
       try {
         return fetch(`${process.env.NEXT_PUBLIC_API_URL}/chul/units/${props?.id}/`, {
           headers: {
@@ -1214,7 +1214,7 @@ function EditCommunityUnitsServicesForm(props) {
             'Authorization': `Bearer ${props?.token}`
           },
           method: 'POST',
-          body: JSON.stringify({services: _payload})
+          body: JSON.stringify({services: _payload, ...payload})
         })
 
     
@@ -1228,7 +1228,7 @@ function EditCommunityUnitsServicesForm(props) {
   };
 
 
-  function handleCHUServiceUpdate (selectedServices, chulId) {
+  function handleCHUServiceUpdate (payload, selectedServices, chulId) {
 
     const _payload = selectedServices.map(({value}) => ({ service: value }))
 
@@ -1242,7 +1242,7 @@ function EditCommunityUnitsServicesForm(props) {
           'Authorization': `Bearer ${props?.token}`
         },
         method: 'PATCH',
-        body: JSON.stringify({services: _payload})
+        body: JSON.stringify({services: _payload, ...payload})
       })
 
       }
@@ -1273,7 +1273,7 @@ function EditCommunityUnitsServicesForm(props) {
   
               
               <EditListItem
-                itemData={currentServices}
+                itemData={{currentServices, ...props}}
                 categoryItems={serviceOptions[0]?.options} //serviceOptions
                 itemId={props?.id} //chulId
                 token={props?.token}

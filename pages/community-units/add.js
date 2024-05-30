@@ -1065,15 +1065,20 @@ function CommunityUnitsServicesForm(props) {
 	})(serviceCtg ?? [])
 
 
-	function handleCHUServiceSubmit (selectedServices, chulId) {
+	function handleCHUServiceSubmit (payload, selectedServices, chulId = "kdksdskd") {
 		// console.log({stateSetters, chulId})
 
-		console.log(JSON.stringify(selectedServices, null, 2))
+		// console.log(JSON.stringify(selectedServices, null, 2))
+
+		console.log({selectedServices})
 		
-		const _payload = selectedServices?.map(({value}) => ({ service: value }))
+		const _payload = selectedServices.map(({value}) => ({ service: value }))
 
 		_payload.forEach(obj => obj['health_unit'] = chulId)
 
+		console.log(JSON.stringify({services: _payload, ...payload}))
+
+		// return
 	
 
 		if(_payload && chulId) {
@@ -1085,7 +1090,7 @@ function CommunityUnitsServicesForm(props) {
 					'Authorization': `Bearer ${props?.token}`
 				},
 				method: 'PATCH',
-				body: JSON.stringify({services: _payload})
+				body: JSON.stringify({services: _payload, ...payload})
 			})
 				
 

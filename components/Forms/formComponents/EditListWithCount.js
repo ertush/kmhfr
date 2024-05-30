@@ -448,6 +448,39 @@ function EditListWithCount(
             {formError && <Alert severity='error' className={'w-full'}>{formError}</Alert>}
 
             <div className='w-full grid grid-cols-12 gap-4'>
+
+                {/* summary table */}
+                <div className="col-span-12 max-h-96 overflow-auto" >
+
+                    <table className="table-auto border border-gray-300 w-full">
+                        <thead>
+                            <tr>
+                                {title.map((t, i) => (
+                                    <th className="border border-gray-300 px-1 py-1" key={i}>{t}</th>
+                                ))}
+                            </tr>
+                        </thead>
+                        <tbody className='bg-gray-50 shadow-md'>
+                            {selectedRows.length === 0 && <tr><td colSpan={3} className="text-center">No specialities found</td></tr>}
+                            {/* {selectedRows.pop()} */}
+                            {selectedRows.map((row) => {
+                                // if(row.name !== "Vaccine Carriers" && row.name !== "Public Health Technician"){
+                                return ( <tr>
+                                        <td className="border border-gray-300 px-1 py-1">{row?.sname}</td>
+                                       {row?.iscategoryvisible ? <td className="border border-gray-300 px-1 py-1">{row?.category_name}</td> :null }
+                                        <td className="border border-gray-300 px-1 py-1">Yes</td>
+                                        <td className="border border-gray-300 px-1 py-1">{row?.count ? Number(row?.count) : null}</td>
+                                    </tr>
+                                )
+                                // }
+                            })}
+
+                        </tbody>
+                    </table>
+                </div>
+
+
+                {/* Category Input Section */}
                 <div className="col-span-5" >
                     <h4 className="text-lg uppercase mt-4 pb-2 border-b border-gray-600 w-full mb-4 font-semibold text-blue-900">Categories</h4>
                     <input type="text" onFocus={handleSearchItemFocus} onChange={(e) => onSearch(e, true, false)} className="col-span-12 border border-gray-600 p-2 placeholder-gray-500  focus:shadow-none focus:bg-white focus:border-black outline-none w-full" placeholder="Search" />
@@ -476,6 +509,7 @@ function EditListWithCount(
                     }
                 </div>
 
+                {/* Category Display Section */}
                 <div className="col-span-7" >
                     <h4 className="text-lg uppercase mt-4 pb-2 border-b border-gray-600 w-full mb-4 font-semibold text-blue-900">{itemsCategoryName.includes('human resource') ? 'Specialities' : itemsCategoryName.includes('infrastructure') ? 'Infrastructure' : null}</h4>
                     <input type="text" onChange={(e) => onSearch(e, false, true)} className="col-span-12 border border-gray-600 p-2 placeholder-gray-500  focus:shadow-none focus:bg-white focus:border-black outline-none w-full" placeholder="Search" />
@@ -591,35 +625,9 @@ function EditListWithCount(
 
                 </div>
 
-                {/* summary table */}
-                <div className="col-span-12 max-h-96 overflow-auto" >
+                
 
-                    <table className="table-auto border border-gray-300 w-full">
-                        <thead>
-                            <tr>
-                                {title.map((t, i) => (
-                                    <th className="border border-gray-300 px-1 py-1" key={i}>{t}</th>
-                                ))}
-                            </tr>
-                        </thead>
-                        <tbody className='bg-gray-50 shadow-md'>
-                            {selectedRows.length === 0 && <tr><td colSpan={3} className="text-center">No specialities found</td></tr>}
-                            {/* {selectedRows.pop()} */}
-                            {selectedRows.map((row) => {
-                                // if(row.name !== "Vaccine Carriers" && row.name !== "Public Health Technician"){
-                                return ( <tr>
-                                        <td className="border border-gray-300 px-1 py-1">{row?.sname}</td>
-                                       {row?.iscategoryvisible ? <td className="border border-gray-300 px-1 py-1">{row?.category_name}</td> :null }
-                                        <td className="border border-gray-300 px-1 py-1">Yes</td>
-                                        <td className="border border-gray-300 px-1 py-1">{row?.count ? Number(row?.count) : null}</td>
-                                    </tr>
-                                )
-                                // }
-                            })}
-
-                        </tbody>
-                    </table>
-                </div>
+                
             </div>
             {/* Save btn */}
 
