@@ -21,7 +21,8 @@ import Alert from '@mui/material/Alert';
 import Spinner from '../../components/Spinner'
 import EditListItem from '../../components/Forms/formComponents/EditListItem'
 import { KeyboardArrowRight, KeyboardArrowDown } from "@mui/icons-material";
-  
+
+import { useRouter } from 'next/router';
 
 
 function EditCommunityUnitsBasicDeatilsForm(props) {
@@ -33,8 +34,7 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
   const [validationError, setValidationError] = useState(null)
   const [contacts, setContacts] = useState(props?.contacts ?? [{contact: '', contact_type_name: ''}]);
 
-
-  useEffect(() => {console.log({submitting})}, submitting)
+  const router = useRouter()
 
 
   const alert = useAlert()
@@ -129,7 +129,8 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
     payload['basic']['contact'] && delete payload['basic']['contact']
     payload['basic']['contact_type'] && delete payload['basic']['contact_type']
 
-    console.log({submitting})
+    // console.log({submitting, payload})
+
 
     try {
       fetch(`${process.env.NEXT_PUBLIC_API_URL}/chul/units/${props?.id}/`, {
@@ -152,6 +153,8 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
                 color: "#fff"
               }
             })
+
+            router.push(`/community-units/${props?.id}`)
 
           } else {
             const detail = await resp.json()
@@ -552,6 +555,7 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
 						defaultValue={props?.chps_present}
 						type='number'
 						name='chps_present'
+            onChange={handleFieldChange}
 						className='col-start-2 flex-none w-full bg-transparent  rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
 					/>
 
@@ -559,6 +563,7 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
 						defaultValue={props?.chps_trained}
 						type='number'
 						name='chps_trained'
+            onChange={handleFieldChange}
 						className='rounded col-start-3 flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
 					/>
 					
@@ -566,6 +571,7 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
 						defaultValue={props?.chas_present}
 						type='number'
 						name='chas_present'
+            onChange={handleFieldChange}
 						className='rounded col-start-2 flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
 					/>
 
@@ -573,6 +579,7 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
 						defaultValue={props?.chas_trained}
 						type='number'
 						name='chas_trained'
+            onChange={handleFieldChange}
 						className='rounded col-start-3 flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
 					/>
 
@@ -580,6 +587,7 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
 						defaultValue={props?.chcs_present}
 						type='number'
 						name='chcs_present'
+            onChange={handleFieldChange}
 						className='rounded col-start-2 flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
 					/>
 
@@ -587,6 +595,7 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
 						defaultValue={props?.chcs_trained}
 						type='number'
 						name='chcs_trained'
+            onChange={handleFieldChange}
 						className='rounded col-start-3 flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
 					/>
 
@@ -742,11 +751,16 @@ function EditCommunityUnitsCHEWSForm(props) {
         formDataEntries.forEach((entry) => {
           if (/^first_name_[0-9]{1}/.test(entry[0])) payload[parseInt(entry[0].split('_').at(-1))]['first_name'] = entry[1];
           if (/^last_name_[0-9]{1}/.test(entry[0])) payload[parseInt(entry[0].split('_').at(-1))]['last_name'] = entry[1];
-          if (/^is_incharge_[0-9]{1}/.test(entry[0])) payload[parseInt(entry[0].split('_').at(-1))]['is_incharge'] = entry[1];
+          if (/^mobile_no_[0-9]{1}/.test(entry[0])) payload[parseInt(entry[0].split('_').at(-1))]['mobile_no'] = entry[1];
+          if (/^email_[0-9]{1}/.test(entry[0])) payload[parseInt(entry[0].split('_').at(-1))]['email'] = entry[1];
+
 
         })
 
-        payload = payload.filter(({first_name}, i) => first_name !== props?.health_unit_workers[i]?.first_name)
+
+
+        // payload = payload.filter(({first_name}, i) => first_name !== props?.health_unit_workers[i]?.first_name)
+
 
 
       try {
@@ -1006,94 +1020,7 @@ function EditCommunityUnitsCHEWSForm(props) {
 </div> 
 
 </div>
-              // <div
-              // className='w-full grid md:grid-cols-5 mx-auto place-content-start gap-y-1 gap-x-5'  
-              // key={id}
-              // >
-              //   {/* First Name */}
-              //   <div className="flex-col gap-2">
-              //     <label
-              //       htmlFor={`first_name_${index}`}
-              //       start
-              //       className="block text-sm font-medium text-gray-700"
-              //     >
-              //       First Name
-              //     </label>
-              //     <input
-              //       required
-              //       type="text"
-              //       id={`first_name_${index}`}
-              //       name={`first_name_${index}`}
-              //       defaultValue={first_name}
-              //       className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:bg-white focus:border-black outline-none"
-              //     />
-              //   </div>
-              //   {/* Second Name */}
-              //   <div className="flex-col gap-2">
-              //     <label
-              //       htmlFor={`last_name_${index}`}
-              //       className="block text-sm font-medium text-gray-700"
-              //     >
-              //       Second Name
-              //     </label>
-              //     <input
-              //       required
-              //       type="text"
-              //       id={`last_name_${index}`}
-              //       name={`last_name_${index}`}
-              //       defaultValue={last_name}
-                   
-              //       className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:bg-white focus:border-black outline-none"
-              //     />
-              //   </div>
-
-                
-              //   {/* In charge */}
-              //   <div className="flex-col gap-2">
-              //     <label
-              //       htmlFor={`is_incharge_${index}`}
-              //       className="block text-sm font-medium text-gray-700"
-              //     >
-              //       In Charge
-              //     </label>
-                  
-              //     <input
-              //       name={`is_incharge_${index}`}
-              //       id={`is_incharge_${index}`}
-              //       type="checkbox"
-              //       defaultChecked={is_incharge}
-              //       className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300"
-              //     />
-              //   </div>
-
-              //   {/* Delete CHEW */}
-
-              //   <div className="flex-col gap-2">
-              //     <div className="flex items-center">
-              //       {/* insert red button for deleting */}
-              //       <button
-              //         onClick={(e) => handleDelete(e, index, id)}
-              //         className="flex items-center justify-start space-x-2 bg-red-600 rounded  p-1 px-2"
-              //         data-id={props?.health_unit_workers[index]?.id}
-
-              //       >
-              //         <span className="text-medium font-semibold text-white">
-              //           {
-              //             deleting && deleteButton[index][index] ? 
-              //             <span className='flex place-content-center gap-2'>
-              //               <Spinner/>
-              //               <span>Deleting...</span>
-              //             </span>
-              //             :
-              //             'Delete'
-
-              //           }
-                        
-              //         </span>
-              //       </button>
-              //     </div>
-              //   </div>
-              // </div>
+            
             )
           })
         ) : (
@@ -1104,17 +1031,7 @@ function EditCommunityUnitsCHEWSForm(props) {
           </>
         )}
 
-        {/* <div className="sticky top-0 right-10 w-full flex justify-end">
-          <button
-            className=" bg-gray-500 rounded p-2 text-white flex text-md font-semibold "
-            onClick={(e) => {
-              e.preventDefault()
-              setHealthUnitWorkers(prev => [...prev, {first_name: "", last_name:"", is_incharge:""}])
-            }}
-          >
-            {`Add +`}
-          </button>
-        </div> */}
+        
       </div>
 
       {/* Save Changes */}
@@ -1122,6 +1039,7 @@ function EditCommunityUnitsCHEWSForm(props) {
 
         <button
           type="submit"
+          disabled={submitting}
           className="flex items-center justify-end space-x-2 bg-gray-500 rounded  p-1 px-2"
         >
           <span className="text-medium font-semibold text-white">
@@ -1204,7 +1122,7 @@ function EditCommunityUnitsServicesForm(props) {
 		_payload.forEach(obj => obj['health_unit'] = chulId)
 
      
-
+      
       if(_payload & payload) {
       try {
         return fetch(`${process.env.NEXT_PUBLIC_API_URL}/chul/units/${props?.id}/`, {
@@ -1233,6 +1151,9 @@ function EditCommunityUnitsServicesForm(props) {
     const _payload = selectedServices.map(({value}) => ({ service: value }))
 
 		_payload.forEach(obj => obj['health_unit'] = chulId)
+
+    // console.log({services: _payload, ...payload})
+
 
     try {
       return fetch(`${process.env.NEXT_PUBLIC_API_URL}/chul/units/${chulId}/`, {
@@ -1453,7 +1374,7 @@ export function CommunityUnitEditForm(props) {
                   value="chews"
                   className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
                 >
-                  CHPs
+                  CHAs
                 </Tabs.Tab>
                 <Tabs.Tab
                   value="services"

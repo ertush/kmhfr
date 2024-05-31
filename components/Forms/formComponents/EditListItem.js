@@ -13,7 +13,7 @@ import { Alert } from '@mui/lab'
 
 function RenderpartnersForm({ index, setPartners, partnerName }) {
 
-
+  console.log({partnerName})
   return (
     <div
       className="flex  items-center justify-between md:mx-1 gap-4 w-full"
@@ -26,7 +26,7 @@ function RenderpartnersForm({ index, setPartners, partnerName }) {
           required
           type="text"
           id={`partner_${index}`}
-          name={`partener_${index}`}
+          name={`partner_${index}`}
           defaultValue={partnerName}
           className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:bg-white focus:border-black outline-none"
         />
@@ -98,7 +98,7 @@ function EditListItem({
 
   const [formError, setFormError] = useState(null)
   const [from, setFrom] = useState("submission")
-  const [partners, setPartners] = useState(editMode ? [] : [0])
+  const [partners, setPartners] = useState(editMode ? [null] : [0])
 
   // Refs
   const [categoryOptions, setCategoryItems] = useState(() => {
@@ -257,8 +257,7 @@ function EditListItem({
     }
 
  
-
-
+    console.log({payload})
 
     if (itemData) {
 
@@ -301,7 +300,7 @@ function EditListItem({
       } else {
 
 
-        handleItemsUpdate(newSelectedItems, itemId)
+        handleItemsUpdate(payload, newSelectedItems, itemId)
           .then(resp => {
             if (resp.status == 200 || resp.status == 204 || resp.status == 201) {
               setSubmitting(false)
@@ -453,11 +452,7 @@ function EditListItem({
       {
         itemName == 'chul_services' &&
         <div className='flex flex-col w-full items-start'>
-            <pre>
-            {/* {
-              JSON.stringify(itemData, null, 2)
-            } */}
-            </pre>
+            
           <div className='w-full flex flex-row items-center px-2 justify-start gap-1 gap-x-3 mb-3'>
             <label
               htmlFor='has_iga'
@@ -469,6 +464,7 @@ function EditListItem({
               <input
                 type='radio'
                 name='has_iga'
+                value={true}
                 defaultChecked={itemData?.has_iga}
 
               />
@@ -478,6 +474,7 @@ function EditListItem({
               <input
                 type='radio'
                 name='has_iga'
+                value={false}
                 defaultChecked={itemData?.has_iga == false}
 
               />
@@ -498,6 +495,7 @@ function EditListItem({
               <input
                 type='radio'
                 name='has_iec_materials'
+                value={true}
                 defaultChecked={itemData?.has_iec_materials}
               />
               <small className='text-gray-700'>Yes</small>
@@ -506,6 +504,7 @@ function EditListItem({
               <input
                 type='radio'
                 name='has_iec_materials'
+                value={false}
                 defaultChecked={itemData?.has_iec_materials == false}
               />
               <small className='text-gray-700'>No</small>
@@ -526,17 +525,18 @@ function EditListItem({
           <div className="w-full flex flex-col items-start justify-start gap-y-7 mb-3">
             <label
               htmlFor={`partners_name`}
-              start
               className="block text-sm font-medium text-gray-700"
             >
               Partner Names
             </label>
             {
-              Array.isArray(partners) && partners.length > 0 && (
+              Array.isArray(partners) && partners.length > 0 ? (
                 partners?.map((partner, index) => {
-                  return <RenderpartnersForm key={index} index={index} setPartners={setPartners} partnerName={partner} />
+                  return <RenderpartnersForm key={index} index={index} setPartners={setPartners} partnerName={/\d/.test(partner) ? '' : partner} />
 
                 })
+              ) : (
+                editMode && <Alert severity='info' className='w-full'>No Partners found</Alert>
               )
             }
 
@@ -579,7 +579,11 @@ function EditListItem({
 
     {Array.isArray(selectedItems) && selectedItems.length === 0 && from !== "previous" && <tr><td colSpan={3} className="text-center">No services found</td></tr>}
 
-
+    {/* <pre>
+      {
+        JSON.stringify(itemData, null, 2)
+      }
+    </pre> */}
     {
       Array.isArray(itemData.currentServices) && itemData.currentServices.length > 0 && from == "previous" ?
         itemData.currentServices?.map((row, i) => (
@@ -759,6 +763,7 @@ function EditListItem({
 
             <button
               type='submit'
+              disabled={submitting}
               className='flex items-center justify-start space-x-2 bg-blue-700  p-1 px-2'>
               <span className='text-medium font-semibold text-white'>
                 {
@@ -786,6 +791,7 @@ function EditListItem({
           itemName == "facility_services" && editMode &&
           <button
             type="submit"
+            disabled={submitting}
             className="flex items-center justify-end space-x-2 bg-blue-500   p-1 px-2"
           >
             <span className="text-medium font-semibold text-white">
@@ -820,6 +826,7 @@ function EditListItem({
 
             <button
               type='submit'
+              disabled={submitting}
               className='flex items-center justify-start space-x-2 bg-blue-500  p-1 px-2'>
               <span className='text-medium font-semibold text-white'>
                 {
@@ -846,6 +853,7 @@ function EditListItem({
           itemName == "chul_services" && editMode &&
           <button
             type="submit"
+            disabled={submitting}
             className="flex items-center justify-end space-x-2 bg-blue-500  p-1 px-2"
           >
             <span className="text-medium font-semibold text-white">
