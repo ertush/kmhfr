@@ -16,6 +16,7 @@ import CommunityUnitSideMenu from '../../../components/CommunityUnitSideMenu';
 import Spinner from '../../../components/Spinner'
 import { useAlert } from 'react-alert';
 import Alert from '@mui/material/Alert'
+import { SettingsRemote } from '@mui/icons-material';
 
 
 function ApproveCommunityUnit(props) {
@@ -61,14 +62,19 @@ function ApproveCommunityUnit(props) {
 
  function approveCHU (e, token) {
 
-  // console.log({isApproveReject})
     if (isApproveReject) {
-      console.log({isApproveReject})
+      // console.log({isApproveReject})
       setIsSubmittingApproval(true);
     } else {
       setIsSubmittingRejection(true);
     }
 
+    
+
+    // return setTimeout(() => new Promise(() => {
+    //   setIsApproveReject(false)
+    //   console.log({isApproveReject})
+    // }), 4000)
   
     e.preventDefault();
 
