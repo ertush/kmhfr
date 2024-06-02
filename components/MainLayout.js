@@ -20,7 +20,7 @@ export default function MainLayout({ children, isLoading, searchTerm, isFullWidt
     // const alert = useAlert()
 
 
-    console.log({isLoggedIn})
+    // console.log({isLoggedIn})
 
 
     let API_URL = process.env.NEXT_PUBLIC_API_URL
