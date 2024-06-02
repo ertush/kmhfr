@@ -598,7 +598,7 @@ CommunityUnit.getInitialProps = async (ctx) => {
 					window.location.href = '/community-units';
 				}
 			}
-			setTimeout(() => {
+			// setTimeout(() => {
 				return {
 					error: true,
 					err: err,
@@ -607,7 +607,7 @@ CommunityUnit.getInitialProps = async (ctx) => {
 					path: ctx.asPath || '/community-units',
 					current_url: '',
 				};
-			}, 1000);
+			// }, 1000);
 		});
 };
 

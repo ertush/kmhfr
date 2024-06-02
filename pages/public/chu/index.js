@@ -676,7 +676,7 @@ Home.getInitialProps = async (ctx) => {
 					window.location.href = '/chu/community_units';
 				}
 			}
-			setTimeout(() => {
+			// setTimeout(() => {
 				return {
 					error: true,
 					err: err,
@@ -685,7 +685,7 @@ Home.getInitialProps = async (ctx) => {
 					path: ctx.asPath || '/chu/community_units',
 					current_url: '',
 				};
-			}, 1000);
+			// }, 1000);
 		});
 };
 
