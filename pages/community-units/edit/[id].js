@@ -108,7 +108,7 @@ export async function getServerSideProps(ctx) {
         // page_size=${count > 500 ? '500' : count}& ; For limiting number of CHUs
         const params = response?.cu !== undefined ? `?ward=${response?.cu?.geo_features?.properties?.ward}&fields=id,name,county,sub_county_name,constituency,ward_name` : '?fields=id,name,county,sub_county_name,constituency,ward_name';
 
-        const facilities = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${params}`,{
+        const facilities = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${params}&reporting_in_dhis=true`,{
           headers:{
             'Authorization': 'Bearer ' + token,
             'Accept': 'application/json'  
