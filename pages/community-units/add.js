@@ -1505,7 +1505,7 @@ export async function getServerSideProps({req, res, query}) {
   
 		case "facilities":
 		  
-		 const facilities = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/?page_size=${count > 500 ? '500' : count}&fields=id,name,county,sub_county_name,constituency,ward_name,closed,owner_type,owner_type_name&closed=false&owner_type=6a833136-5f50-46d9-b1f9-5f961a42249f`,{
+		 const facilities = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/?reporting_in_dhis=true&page_size=${count > 500 ? '500' : count}&fields=id,name,county,sub_county_name,constituency,ward_name,closed,owner_type,owner_type_name&closed=false&owner_type=6a833136-5f50-46d9-b1f9-5f961a42249f`,{
 			headers:{
 			  'Authorization': 'Bearer ' + token,
 			  'Accept': 'application/json'
