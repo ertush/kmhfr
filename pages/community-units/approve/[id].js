@@ -16,6 +16,7 @@ import CommunityUnitSideMenu from '../../../components/CommunityUnitSideMenu';
 import Spinner from '../../../components/Spinner'
 import { useAlert } from 'react-alert';
 import Alert from '@mui/material/Alert'
+import { SettingsRemote } from '@mui/icons-material';
 
 
 function ApproveCommunityUnit(props) {
@@ -61,89 +62,94 @@ function ApproveCommunityUnit(props) {
 
  function approveCHU (e, token) {
 
-  console.log({isApproveReject})
     if (isApproveReject) {
-      console.log({isApproveReject})
+      // console.log({isApproveReject})
       setIsSubmittingApproval(true);
     } else {
       setIsSubmittingRejection(true);
     }
 
-  
-  //   e.preventDefault();
-
-  //   const formDataEntries = new FormData(e.target)
-
-  //   const formData = Object.fromEntries(formDataEntries)
-  
-  //   let payload = {}
-
-  //   if (isApproveReject) {
-
-  //     payload = {
-  //       approval_comment: formData?.rejection_approval_reason,
-  //       is_rejected: false,
-  //       is_approved: true
-  //     }
-  //   } else {
-      
-  //     payload = {
-  //       rejection_reason: formData?.rejection_approval_reason,
-  //       is_rejected: true,
-  //       is_approved: false
-  //     }
-  //   }
-  
-  //   let url = `${process.env.NEXT_PUBLIC_API_URL}/chul/units/${cu?.id}/` // `/api/common/submit_form_data/?path=approve_chul&id=${id}`
     
-  //   try {
-  //     fetch(url, {
-  //       headers: {
-  //         'Accept': 'application/json, text/plain, */*',
-  //         'Content-Type': 'application/json;charset=utf-8',
-  //         'Authorization': `Bearer ${token}`
+
+    // return setTimeout(() => new Promise(() => {
+    //   setIsApproveReject(false)
+    //   console.log({isApproveReject})
+    // }), 4000)
   
-  //       },
-  //       method: 'PATCH',
-  //       body: JSON.stringify(payload)
-  //     })
-  //       .then(resp => resp)
-  //       .then(async(res) => {
+    e.preventDefault();
+
+    const formDataEntries = new FormData(e.target)
+
+    const formData = Object.fromEntries(formDataEntries)
   
-  //         if(res.ok) {
-  //           alert.success(`${payload.is_rejected ? 'Rejected' : 'Approved'} CHU successfully`)
-  //           router.push({
-  //             pathname: '/community-units',
-  //             query: {}
-  //           })
-  //         } else {
-  //           alert.error(`Unable to approve CHU`)
+    let payload = {}
+
+    if (isApproveReject) {
+
+      payload = {
+        approval_comment: formData?.rejection_approval_reason,
+        is_rejected: false,
+        is_approved: true
+      }
+    } else {
+      
+      payload = {
+        rejection_reason: formData?.rejection_approval_reason,
+        is_rejected: true,
+        is_approved: false
+      }
+    }
+  
+    let url = `${process.env.NEXT_PUBLIC_API_URL}/chul/units/${cu?.id}/` // `/api/common/submit_form_data/?path=approve_chul&id=${id}`
+    
+    try {
+      fetch(url, {
+        headers: {
+          'Accept': 'application/json, text/plain, */*',
+          'Content-Type': 'application/json;charset=utf-8',
+          'Authorization': `Bearer ${token}`
+  
+        },
+        method: 'PATCH',
+        body: JSON.stringify(payload)
+      })
+        .then(resp => resp)
+        .then(async(res) => {
+  
+          if(res.ok) {
+            alert.success(`${payload.is_rejected ? 'Rejected' : 'Approved'} CHU successfully`)
+            router.push({
+              pathname: '/community-units',
+              query: {}
+            })
+          } else {
+            alert.error(`Unable to approve CHU`)
              
-  //            const detail = await res.json()
+             const detail = await res.json()
   
-  //            const error = Array.isArray(Object.values(detail)) && Object.values(detail).length == 1 ? detail[Object.keys(detail)[0]][0] : ''
-  //            setFormError(error)
+             const error = Array.isArray(Object.values(detail)) && Object.values(detail).length == 1 ? detail[Object.keys(detail)[0]][0] : ''
+             setFormError(error)
   
-  //         }
+          }
          
   
-  //       })
-  //       .catch(e => {
+        })
+        .catch(e => {
   
-  //         console.error(e.message)
-  //       })
-  //   } catch (e) {
+          console.error(e.message)
+        })
+    } catch (e) {
   
-  //     // setStatus({ status: 'error', message: e })
-  //     console.error(e.message)
-  //   } finally{
-  //   if (isApproveReject) {
-  //     setIsSubmittingApproval(false)
-  //   } else {
-  //     setIsSubmittingRejection(false)
+      // setStatus({ status: 'error', message: e })
+      console.error(e.message)
+    } finally{
+    if (isApproveReject) {
+      setIsSubmittingApproval(false)
+    } else {
+      setIsSubmittingRejection(false)
       
-  //   }
-  // }
+    }
+  }
 }
 
 // approveCHUUpdates(e,  true, props?.token)}
@@ -177,7 +183,7 @@ async function approveCHUUpdates (e, status, token) {
       .then(resp => resp.json())
       .then(async (res) => {
 
-        if(res.ok) {
+        if(res) {
           alert.success(`${payload.is_rejected ? 'Rejected' : 'Approved'} CHU Updates successfully`)
 
           router.push({
@@ -344,7 +350,7 @@ async function approveCHUUpdates (e, status, token) {
               <div className="bg-gray-50  shadow-lg border border-gray-300/70 w-full p-3  flex flex-col gap-3 mt-4">
                 {CHU_MainDetails.map((dt) => (
 
-                  <div className="grid grid-cols-3 w-full md:w-11/12 leading-none items-center">
+                  <div key={dt.value} className="grid grid-cols-3 w-full md:w-11/12 leading-none items-center">
                     <label className="col-span-1 text-gray-600">
                       {dt.label}
                     </label>
@@ -393,7 +399,7 @@ async function approveCHUUpdates (e, status, token) {
               {!isCHULDetails && (
                 <div className="bg-gray-50  shadow-lg border border-gray-300/70 w-full p-3  flex flex-col gap-3 mt-6">
                   {CHULDetails.map((dt) => (
-                    <div className="grid grid-cols-3 w-full md:w-11/12  leading-none items-center">
+                    <div key={dt.value} className="grid grid-cols-3 w-full md:w-11/12  leading-none items-center">
                       <label className="col-span-1 text-gray-600">{dt.label}</label>
                       <p className="col-span-2 text-black font-medium text-base">
                         {dt.value || " - "}

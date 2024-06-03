@@ -71,6 +71,12 @@ function EditCommunityUnit(props){
 
   if(isClient) {
 
+
+    // return <pre>
+    //   {
+    //     JSON.stringify(props?.cu, null, 2)
+    //   }
+    // </pre>
  
 
   return (
@@ -191,8 +197,10 @@ function EditCommunityUnit(props){
                  (groupID == 7 || 
                   groupID == 5 ||
                   groupID == 1) &&
-                  props?.cu?.pending_updates &&
-                  props?.cu?.has_edits &&
+                  (
+                  props?.cu?.is_approved == null ||
+                  props?.cu?.has_edits 
+                ) &&
                 <button
                   onClick={() => {
                     router.push(`/community-units/approve/${props?.cu.id}`)
@@ -201,7 +209,15 @@ function EditCommunityUnit(props){
                   className={"p-2 text-center -md font-semibold rounded text-base text-white bg-gray-400"}
                 >
                   {/* Dynamic Button Rendering */}
-                  {"Approve/Reject"}
+                  {
+                    props?.cu?.is_approved == null && props?.cu?.has_edits == false &&
+                    "Approve Or Reject CHU"
+                  }
+                  {
+                   props?.cu?.has_edits &&
+                   "Approve Or Reject CHU Updates"
+
+                  }
                 </button>}
                 <button
                   onClick={() => null}
@@ -247,7 +263,7 @@ function EditCommunityUnit(props){
                   value="hr_staffing"
                   className="p-2 flex-1 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
                 >
-                  HR &amp; Staffing
+                  Community Health Unit Workforce
                 </Tabs.Tab>
               </Tabs.List>
               {/*End of the vertical tabs  */}

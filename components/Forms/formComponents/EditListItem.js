@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useAlert } from 'react-alert'
 import Spinner from '../../Spinner';
 import {
@@ -11,62 +11,62 @@ import { TrashIcon } from '@heroicons/react/solid'
 import { Alert } from '@mui/lab'
 
 
-function RenderpartnersForm({index, setPartners}) {
+function RenderpartnersForm({ index, setPartners, partnerName }) {
 
- 
+  console.log({partnerName})
   return (
     <div
-    className="flex  items-center justify-between md:mx-1 gap-4 w-full"
-    key={index + 1}
-  >
-    {/* First Name */}
-    <div className="flex-col w-full gap-2">
-      
-      <input
-        required
-        type="text"
-        id={`first_name_${index}`}
-        name={`first_name_${index}`}
-        defaultValue={''}
-        className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:bg-white focus:border-black outline-none"
-      />
-    </div>
-    
+      className="flex  items-center justify-between md:mx-1 gap-4 w-full"
+      key={index + 1}
+    >
+      {/* First Name */}
+      <div className="flex-col w-full gap-2">
 
-    {/* Delete CHEW */}
-
-    <div className="flex-col gap-2">
-      <div className="flex items-center">
-        {/* insert red button for deleting */}
-        <button
-          onClick={(e) => {
-            e.preventDefault()
-            
-             setPartners(partners => {
-
-              delete partners[index]
-
-            
-              const val = partners.filter(i => i !== undefined)
+        <input
+          required
+          type="text"
+          id={`partner_${index}`}
+          name={`partner_${index}`}
+          defaultValue={partnerName}
+          className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:bg-white focus:border-black outline-none"
+        />
+      </div>
 
 
-              console.log({val})
-              return val
+      {/* Delete CHEW */}
 
-             })
+      <div className="flex-col gap-2">
+        <div className="flex items-center">
+          {/* insert red button for deleting */}
+          <button
+            onClick={(e) => {
+              e.preventDefault()
 
-          
+              setPartners(partners => {
+
+                delete partners[index]
+
+
+                const val = partners.filter(i => i !== undefined)
+
+
+                console.log({ val })
+                return val
+
+              })
+
+
             }}
-          className="flex items-center justify-start space-x-2 bg-red-600 rounded p-1 px-2"
-        
-        >
-          <span className="text-medium font-semibold text-white">
-            Delete
-          </span>
-        </button>
+            className="flex items-center justify-start space-x-2 bg-red-600 rounded p-1 px-2"
+
+          >
+            <span className="text-medium font-semibold text-white">
+              Delete
+            </span>
+          </button>
+        </div>
       </div>
     </div>
-  </div>
   )
 }
 
@@ -98,7 +98,7 @@ function EditListItem({
 
   const [formError, setFormError] = useState(null)
   const [from, setFrom] = useState("submission")
-  const [partners, setPartners] = useState([0])
+  const [partners, setPartners] = useState(editMode ? [null] : [0])
 
   // Refs
   const [categoryOptions, setCategoryItems] = useState(() => {
@@ -133,7 +133,7 @@ function EditListItem({
   }
 
   const handleCheckboxChange = (id, name, category, category_name) => {
-    
+
     setFrom("submission")
 
     setSelectedItems((prevSelectedRows) => {
@@ -184,11 +184,13 @@ function EditListItem({
     // console.log({itemName, from: })
 
     const fromParam = currentUrl.searchParams.get("from")
-    
+
     setFrom(fromParam)
 
+    if(itemName == 'chul_services' && editMode && itemData && itemData?.partners.length > 0) setPartners(itemData?.partners)
 
-    if (Array.isArray(itemData)) {
+
+    if (Array.isArray(itemData.currentServices)) {
       const result = []
 
       setSelectedItems(() => {
@@ -197,15 +199,15 @@ function EditListItem({
         if (itemName == 'facility_services' && currentUrl.searchParams.get("from") !== "previous") {
 
           // console.log("setting selectedItems")
-          itemData?.map((service) => {
-            result.push({ sname: service.service_name , rowid: service.service_id , category_id: service.category_id , category_name: service.category_name })
+          itemData.currentServices?.map((service) => {
+            result.push({ sname: service.service_name, rowid: service.service_id, category_id: service.category_id, category_name: service.category_name })
           })
 
           return result
 
         }
         else {
-          return itemData
+          return itemData.currentServices
         }
       })
     }
@@ -228,12 +230,40 @@ function EditListItem({
 
     setSubmitting(true)
 
+    const formData = new FormData(e.target)
+
+    const payload = Object.fromEntries(formData)
+
+    delete payload['searchItem']
+
+    const partners = []
+
+    for(let [key, value] of formData.entries()){
+      
+      if(/partner_\d/.test(key)) partners.push(value)
+    }
+
+    payload['partners'] = partners
+
+
+    for(let [key, _] of formData.entries()){
+      if(/partner_\d/.test(key)) delete payload[key]
+    }
+
+    
+
+    for(let [key, value] of formData.entries()){
+      if(/has_+/.test(key)) payload[key] = value == "true"
+    }
+
+ 
+    console.log({payload})
+
     if (itemData) {
 
-      const newSelectedItems = selectedItems.filter(({ rowId }, i) => rowId == itemData[i]?.service_id)
+      const newSelectedItems = selectedItems.filter(({ rowId }, i) => rowId == itemData.currentServices[i]?.service_id)
 
-      // console.log({selectedItems})
-      
+
       if (itemName == 'facility_services') {
         handleItemsUpdate(token, [newSelectedItems, itemId])
           .then(resp => {
@@ -268,9 +298,9 @@ function EditListItem({
           })
           .catch(e => console.error('unable to update facility services. Error:', e.message))
       } else {
-        
-        
-        handleItemsUpdate(newSelectedItems, itemId)
+
+
+        handleItemsUpdate(payload, newSelectedItems, itemId)
           .then(resp => {
             if (resp.status == 200 || resp.status == 204 || resp.status == 201) {
               setSubmitting(false)
@@ -301,6 +331,8 @@ function EditListItem({
     }
     else {
       if (itemName == "facility_services") {
+        if(typeof handleItemsSubmit == 'function' && itemId){
+
         handleItemsSubmit(token, selectedItems, itemId)
           .then((resp) => {
             if (resp.ok) {
@@ -312,24 +344,24 @@ function EditListItem({
                 const payload = JSON.stringify(services)
 
                 const base64EncPayload = Buffer.from(payload).toString('base64')
-                
-                if(window){
-                    window.localStorage.setItem('services', base64EncPayload)
+
+                if (window) {
+                  window.localStorage.setItem('services', base64EncPayload)
                 }
 
                 router.push({
                   pathname: `${window.location.origin}/facilities/add`,
-                  query: { 
+                  query: {
                     // formData: base64EncPayload,
                     formId: 5,
                     facilityId: itemId,
                     from: 'submission'
 
                   }
-              })
-              .then((navigated) => {
-                if(navigated) setFormId(5)
-              })
+                })
+                  .then((navigated) => {
+                    if (navigated) setFormId(5)
+                  })
 
               } else {
                 setSubmitting(false)
@@ -372,11 +404,12 @@ function EditListItem({
             }
           })
           .catch(e => console.error('unable to submit item data. Error:', e.message))
+        }
       } else {
-        
-        // console.log({selectedItems})
 
-        handleItemsSubmit(selectedItems, itemId)
+        if(typeof handleItemsSubmit == 'function' && itemId){
+
+        handleItemsSubmit(payload, selectedItems, itemId)
           .then(resp => {
             if (resp.status == 200 || resp.status == 201) {
               setSubmitting(false)
@@ -398,6 +431,7 @@ function EditListItem({
             }
           })
           .catch(console.error)
+        }
       }
     }
 
@@ -415,19 +449,23 @@ function EditListItem({
 
       {formError && <Alert severity='error' className={'w-full'}>{formError}</Alert>}
 
-      <div className='flex flex-col w-full items-start'>
+      {
+        itemName == 'chul_services' &&
+        <div className='flex flex-col w-full items-start'>
+            
           <div className='w-full flex flex-row items-center px-2 justify-start gap-1 gap-x-3 mb-3'>
             <label
-              htmlFor='income_generating_activities'
+              htmlFor='has_iga'
               className='text-gray-700 capitalize text-sm flex-grow'>
               Does the CHU have income-generating activities{' '}
             </label>
+          {/* <pre>{JSON.stringify({has_iga: itemData?.has_iga, has_iec_materials: itemData?.has_iec_materials}, null, 2)}</pre> */}
             <span className='flex items-center gap-x-1'>
               <input
                 type='radio'
-                name='income_generating_activities'
+                name='has_iga'
                 value={true}
-                // defaultChecked={options?.data?.accredited_lab_iso_15189 === true}
+                defaultChecked={itemData?.has_iga}
 
               />
               <small className='text-gray-700'>Yes</small>
@@ -435,10 +473,9 @@ function EditListItem({
             <span className='flex items-center gap-x-1'>
               <input
                 type='radio'
-                name='income_generating_activities'
+                name='has_iga'
                 value={false}
-                // defaultChecked={options?.data?.accredited_lab_iso_15189 === false}
-
+                defaultChecked={itemData?.has_iga == false}
 
               />
               <small className='text-gray-700'>No</small>
@@ -448,28 +485,27 @@ function EditListItem({
 
           <div className='w-full flex flex-row items-center px-2 justify-start gap-1 gap-x-3 mb-3'>
             <label
-              htmlFor='education_communication_materials'
+              htmlFor='has_iec_materials'
               className='text-gray-700 capitalize text-sm flex-grow'>
               Education & Communication (IEC) materials{' '}
             </label>
+          
+           
             <span className='flex items-center gap-x-1'>
               <input
                 type='radio'
-                name='education_communication_materials'
+                name='has_iec_materials'
                 value={true}
-                // defaultChecked={options?.data?.accredited_lab_iso_15189 === true}
-
+                defaultChecked={itemData?.has_iec_materials}
               />
               <small className='text-gray-700'>Yes</small>
             </span>
             <span className='flex items-center gap-x-1'>
               <input
                 type='radio'
-                name='education_communication_materials'
+                name='has_iec_materials'
                 value={false}
-                // defaultChecked={options?.data?.accredited_lab_iso_15189 === false}
-
-
+                defaultChecked={itemData?.has_iec_materials == false}
               />
               <small className='text-gray-700'>No</small>
             </span>
@@ -477,49 +513,123 @@ function EditListItem({
           </div>
 
         </div>
+      }
 
+      {/* Partners CHU Section */}
+      {
+        itemName == 'chul_services' &&
         <div className='flex flex-col w-full items-start gap-1'>
-        <h4 className="text-lg uppercase mt-4 pb-2 border-b border-gray-600 w-full mb-4 font-semibold text-gray-900">partners(s) currently supporting CHU</h4>
-        
+          <h4 className="text-lg uppercase mt-4 pb-2 border-b border-gray-600 w-full mb-4 font-semibold text-gray-900">partners(s) currently supporting CHU</h4>
 
-        <div className="w-full flex flex-col items-start justify-start gap-y-7 mb-3">
-      <label
-                  htmlFor={`partners_name`}
-                  start
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Partner Names
-                </label>
-        {
-        Array.isArray(partners) && partners.length > 0  && (
-          partners?.map((_, index) => {
-            return  <RenderpartnersForm index={index} setPartners={setPartners}/>
-            
-          })
-        )
-        }
-       
 
-        <div className="sticky top-0 right-10 w-full flex justify-end">
-          <button
-            className=" bg-gray-500 rounded p-2 text-white flex text-md font-semibold "
-            onClick={(e) => {
-              e.preventDefault()
-              setPartners((prev) => [...prev, Number(prev[prev.length-1])+1])
-            console.log({partners})
+          <div className="w-full flex flex-col items-start justify-start gap-y-7 mb-3">
+            <label
+              htmlFor={`partners_name`}
+              className="block text-sm font-medium text-gray-700"
+            >
+              Partner Names
+            </label>
+            {
+              Array.isArray(partners) && partners.length > 0 ? (
+                partners?.map((partner, index) => {
+                  return <RenderpartnersForm key={index} index={index} setPartners={setPartners} partnerName={/\d/.test(partner) ? '' : partner} />
 
+                })
+              ) : (
+                editMode && <Alert severity='info' className='w-full'>No Partners found</Alert>
+              )
             }
-          }
-          >
-            {`Add +`}
-            {/* <PlusIcon className='text-white ml-2 h-5 w-5'/> */}
-          </button>
-        </div>
-      </div>
+
+
+            <div className="sticky top-0 right-10 w-full flex justify-end">
+              <button
+                className=" bg-gray-500 rounded p-2 text-white flex text-md font-semibold "
+                onClick={(e) => {
+                  e.preventDefault()
+                  setPartners((prev) => [...prev, Number(prev[prev.length - 1]) + 1])
+                  console.log({ partners })
+
+                }
+                }
+              >
+                {`Add +`}
+                {/* <PlusIcon className='text-white ml-2 h-5 w-5'/> */}
+              </button>
+            </div>
+          </div>
 
         </div>
+      }
 
+      {/* Selected Services */}
       <div className='w-full grid grid-cols-12 gap-4'>
+      <div className="col-span-12 h-full overflow-auto" >
+
+<table className="table-auto w-full">
+  <thead>
+    <tr>
+
+      <th className="border border-gray-300 px-1 py-1">Selected Services</th>
+      <th className="border border-gray-300 px-1 py-1">{itemName == "chul_services" ? 'Action' : 'Present'}</th>
+
+    </tr>
+  </thead>
+  <tbody className='bg-gray-50 shadow-md'>
+
+
+    {Array.isArray(selectedItems) && selectedItems.length === 0 && from !== "previous" && <tr><td colSpan={3} className="text-center">No services found</td></tr>}
+
+    {/* <pre>
+      {
+        JSON.stringify(itemData, null, 2)
+      }
+    </pre> */}
+    {
+      Array.isArray(itemData.currentServices) && itemData.currentServices.length > 0 && from == "previous" ?
+        itemData.currentServices?.map((row, i) => (
+          <tr key={i}>
+
+            <td className="border border-gray-300 px-1 py-1">{row.sname}</td>
+            <td className="border border-gray-300 px-1 py-1">
+              Yes
+            </td>
+          </tr>
+        ))
+        :
+        itemName == 'facility_services' ?
+          selectedItems?.map((row, i) => (
+            <tr key={i}>
+
+              <td className="border border-gray-300 px-1 py-1">{row.sname}</td>
+              <td className="border border-gray-300 px-1 py-1">
+                Yes
+              </td>
+            </tr>
+          ))
+          :
+          selectedItems?.map(({ label, value }) => (
+            <tr key={value}>
+              <td className="border border-gray-300 px-1 py-1">{label}</td>
+              <td className="border border-gray-300 px-1 flex place-content-center py-1">
+                <button className='bg-transparent mx-auto flex place-content-center group hover:bg-red-500 text-red-700 font-semibold hover:text-white p-3 hover:border-transparent' onClick={e => {
+                  e.preventDefault()
+                  setSelectedItems(prev => {
+                    return prev.filter(({ value: itemId }) => itemId !== value)
+                  })
+                }}>
+                  <TrashIcon className="w-4 h-4 text-red-500 group-hover:text-white" />
+
+                </button>
+              </td>
+            </tr>
+          ))
+    }
+
+
+  </tbody>
+</table>
+</div>
+
         <div className={`${itemName == "chul_services" ? 'col-span-12' : 'col-span-5'}`} >
           <h4 className="text-lg uppercase mt-4 pb-2 border-b border-gray-600 w-full mb-4 font-semibold text-gray-900">{itemName == 'chul_services' ? 'Services' : 'Categories'}</h4>
           <input name="searchItem" type="text" onFocus={handleSearchItemFocus} onChange={(e) => onSearch(e, true, false)} className="col-span-12 border border-gray-600 p-2 placeholder-gray-500  focus:shadow-none focus:bg-white focus:border-black outline-none w-full" placeholder="Search" />
@@ -531,21 +641,21 @@ function EditListItem({
             <ul className='max-h-96 overflow-auto border-r border-l border-b border-gray-500'>
 
               {
-                categoryOptions.map(({ label, value }, i) => (
-                  <>
-                    <div key={i}
+                categoryOptions.map(({ label, value }) => (
+                  <React.Fragment key={value}>
+                    <div 
                       className='card bg-gray-50 shadow-md p-2 group hover:bg-gray-500 hover:text-gray-50 hover:cursor-pointer'
 
                     >
                       <li
-                        className="flex items-center justify-start cursor-pointer space-x-2 p-1 px-2"
+                        className="flex w-full items-center justify-start cursor-pointer space-x-2 p-1 px-2"
                         onClick={() => {
                           filterSpecialities(value)
                         }}
                       >{label}</li>
                       <hr className='border-xs boredr-gray-200 group-hover:border-gray-500'></hr>
                     </div>
-                  </>
+                  </React.Fragment>
                 ))
               }
 
@@ -632,79 +742,18 @@ function EditListItem({
           </div>
         }
 
-        <div className="col-span-12 h-full overflow-auto" >
-
-          <table className="table-auto w-full">
-            <thead>
-              <tr>
-
-                <th className="border border-gray-300 px-1 py-1">Services</th>
-                <th className="border border-gray-300 px-1 py-1">{itemName == "chul_services" ? 'Action' : 'Present'}</th>
-
-              </tr>
-            </thead>
-            <tbody className='bg-gray-50 shadow-md'>
-
-
-              {Array.isArray(selectedItems) && selectedItems.length === 0 && from !== "previous" && <tr><td colSpan={3} className="text-center">No services found</td></tr>}
-
-
-              {
-                Array.isArray(itemData) && itemData.length > 0 && from == "previous" ?
-                  itemData?.map((row, i) => (
-                    <tr key={i}>
-
-                      <td className="border border-gray-300 px-1 py-1">{row.sname}</td>
-                      <td className="border border-gray-300 px-1 py-1">
-                        Yes
-                      </td>
-                    </tr>
-                  ))
-                  :
-                  itemName == 'facility_services' ?
-                  selectedItems?.map((row, i) => (
-                    <tr key={i}>
-
-                      <td className="border border-gray-300 px-1 py-1">{row.sname}</td>
-                      <td className="border border-gray-300 px-1 py-1">
-                        Yes
-                      </td>
-                    </tr>
-                  ))
-                  :
-                  selectedItems?.map(({ label, value }) => (
-                    <tr key={value}>
-                      <td className="border border-gray-300 px-1 py-1">{label}</td>
-                      <td className="border border-gray-300 px-1 flex place-content-center py-1">
-                        <button className='bg-transparent mx-auto flex place-content-center group hover:bg-red-500 text-red-700 font-semibold hover:text-white p-3 hover:border-transparent' onClick={e => {
-                          e.preventDefault()
-                          setSelectedItems(prev => {
-                            return prev.filter(({ value: itemId }) => itemId !== value)
-                          })
-                        }}>
-                          <TrashIcon className="w-4 h-4 text-red-500 group-hover:text-white" />
-
-                        </button>
-                      </td>
-                    </tr>
-                  ))
-              }
-
-
-            </tbody>
-          </table>
-        </div>
+        
       </div>
 
 
-
+        {/* Button Section */}
       <div className={`flex ${!editMode ? 'justify-between' : 'justify-end'} items-center w-full mt-4`} >
 
         {/* Facility Service Add & Edit Submit Buttons */}
         {
           // Add
           itemName == "facility_services" && !editMode &&
-          <Fragment>
+          <React.Fragment>
             <button onClick={handleItemPrevious} className='flex items-center justify-start space-x-2 p-1 border border-gray-900  px-2'>
               <ChevronDoubleLeftIcon className='w-4 h-4 text-gray-900' />
               <span className='text-medium font-semibold text-gray-900 '>
@@ -714,6 +763,7 @@ function EditListItem({
 
             <button
               type='submit'
+              disabled={submitting}
               className='flex items-center justify-start space-x-2 bg-blue-700  p-1 px-2'>
               <span className='text-medium font-semibold text-white'>
                 {
@@ -732,15 +782,16 @@ function EditListItem({
 
               }
             </button>
-          </Fragment>
+          </React.Fragment>
         }
-    
+
 
         {
           // Edit
           itemName == "facility_services" && editMode &&
           <button
             type="submit"
+            disabled={submitting}
             className="flex items-center justify-end space-x-2 bg-blue-500   p-1 px-2"
           >
             <span className="text-medium font-semibold text-white">
@@ -765,7 +816,7 @@ function EditListItem({
         {
           // Add 
           itemName == "chul_services" && !editMode &&
-          <Fragment>
+          <React.Fragment>
             <button onClick={handleItemPrevious} className='flex items-center justify-start space-x-2 p-1 border border-gray-900  px-2'>
               <ChevronDoubleLeftIcon className='w-4 h-4 text-gray-900' />
               <span className='text-medium font-semibold text-gray-900 '>
@@ -775,6 +826,7 @@ function EditListItem({
 
             <button
               type='submit'
+              disabled={submitting}
               className='flex items-center justify-start space-x-2 bg-blue-500  p-1 px-2'>
               <span className='text-medium font-semibold text-white'>
                 {
@@ -793,7 +845,7 @@ function EditListItem({
 
               }
             </button>
-          </Fragment>
+          </React.Fragment>
         }
         {
 
@@ -801,6 +853,7 @@ function EditListItem({
           itemName == "chul_services" && editMode &&
           <button
             type="submit"
+            disabled={submitting}
             className="flex items-center justify-end space-x-2 bg-blue-500  p-1 px-2"
           >
             <span className="text-medium font-semibold text-white">

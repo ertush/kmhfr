@@ -1,7 +1,7 @@
 import {CommunityUnitEditForm } from '../../../components/Forms/CommunityUnitsForms'
 import {useState, useEffect, createContext} from 'react'
 import { checkToken } from '../../../controllers/auth/auth'
-import Alert from '@mui/material/Alert'
+// import Alert from '@mui/material/Alert'
 
 
 export const ChuOptionsContext = createContext()
@@ -66,7 +66,7 @@ export async function getServerSideProps(ctx) {
     }
   }
 
-  const count = await getFacilityCount(token)
+  // const count = await getFacilityCount(token)
 
 
   async function getProps(token, options){
@@ -108,7 +108,7 @@ export async function getServerSideProps(ctx) {
         // page_size=${count > 500 ? '500' : count}& ; For limiting number of CHUs
         const params = response?.cu !== undefined ? `?ward=${response?.cu?.geo_features?.properties?.ward}&fields=id,name,county,sub_county_name,constituency,ward_name` : '?fields=id,name,county,sub_county_name,constituency,ward_name';
 
-        const facilities = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${params}`,{
+        const facilities = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${params}&reporting_in_dhis=true&owner_type=6a833136-5f50-46d9-b1f9-5f961a42249f`,{
           headers:{
             'Authorization': 'Bearer ' + token,
             'Accept': 'application/json'  
@@ -159,7 +159,7 @@ export async function getServerSideProps(ctx) {
 
 const props = await getProps(token, options)
 
-console.log({props})
+// console.log({props})
 
   return {
     props 

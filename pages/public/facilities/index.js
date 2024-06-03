@@ -797,7 +797,7 @@ export async function getServerSideProps(ctx) {
 		'public, s-maxage=10, stale-while-revalidate=59'
 	)
 
-	const token = (await checkToken(ctx.req, ctx.res, { username: process.env.NEXT_PUBLIC_CLIENT_USERNAME, password: process.env.NEXT_PUBLIC_CLIENT_PASSWORD }))?.token
+	const token = (await checkToken(ctx.req, ctx.res, { username: process.env.NEXT_PUBLIC_CLIENT_USERNAME, password: process.env.CLIENT_PASSWORD }))?.token
 
 
 	async function fetchFilters(token) {

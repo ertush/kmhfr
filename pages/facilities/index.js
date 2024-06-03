@@ -28,13 +28,13 @@ function FacilityHome (props){
     const router = useRouter()
 
    
-    const facilities = props?.data?.results
+    // const facilities = props?.data?.results
     const filters = props?.filters
-    let fltrs = filters
-    const [drillDown, setDrillDown] = useState({})
+    const fltrs = props?.filters
     const userCtx = useContext(UserContext);
 
     // const qf = props?.query?.qf ?? null
+    
     if (filters && typeof filters === "object")
      {
         filters["has_edits"] = [{ id: "has_edits", name: "Has edits" },]
@@ -55,9 +55,10 @@ function FacilityHome (props){
         delete fltrs.open_public_holidays
     }
 
-    const multiFilters = ['service_category', 'service', 'county', 'subcounty', 'ward', 'constituency']
+    // const multiFilters = ['service_category', 'service', 'county', 'subcounty', 'ward', 'constituency']
+    
 
-
+    const [drillDown, setDrillDown] = useState({})
     const [fromDate, setFromDate] = React.useState(new Date());
     const [toDate, setToDate] = React.useState(new Date());
 
@@ -72,9 +73,6 @@ function FacilityHome (props){
     const [isClient, setIsClient] = useState(false);
     const [user, setUser] = useState(userCtx)
 	const [isMenuOpen, setIsMenuOpen] = useState(false)
-
- 
-
 
 	useEffect(() => {
         setUser(userCtx)
@@ -137,7 +135,52 @@ function FacilityHome (props){
         
     }
 
+    function handleNext() {
+
+        router.push({
+            pathname:'/facilities',
+            query: {
+                next: Buffer.from(`${props?.next}`).toString('base64') //default: page_size=30
+                // next: `${props?.next}&page_size=20` 
+            }
+        })
+    }
+
+    function handlePrevious() {
+
+        router.push({
+            pathname:'/facilities',
+            query: {
+                previous: Buffer.from(`${props?.previous}`).toString('base64') //default: page_size=30
+                // previous: `${props?.previous}&page_size=20`
+            }
+        })
+    }
+
+    function handlePageLoad(e) {
+
+        const page = e.target.innerHTML
+
+        console.log({page})
+
+        router.push({
+            pathname:'/facilities',
+            query: {
+                 page
+                // previous: `${props?.previous}&page_size=20`
+            }
+        })
+    }
+
     if(isClient){
+
+        // return (
+        //     <pre>
+        //         {
+        //             JSON.stringify({props}, null, 2)
+        //         }
+        //     </pre>
+        // )
 
     return (
         <>
@@ -460,7 +503,7 @@ function FacilityHome (props){
                     {/* Main Body */}
                     <div className="w-full col-span-1 md:col-span-4 mr-24 md:col-start-2  md:h-auto bg-gray-50 shadow-md">
                                     {/* Data Indicator section */}
-                                    <div className='w-full p-2 flex justify-between items-center border-b border-gray-400'>
+                                    <div className='w-full p-2 flex flex-col md:flex-row md:justify-between md:items-center border-b border-gray-400'>
                                         {/* search input */}
                                     
                                         <Formik
@@ -520,7 +563,7 @@ function FacilityHome (props){
                                         className="inline-flex flex-row justify-start flex-grow py-2 lg:py-0"
                                         
                                     >
-                                            
+                                          
                                         <Field
                                         name="q"
                                         id="search-input"
@@ -539,8 +582,13 @@ function FacilityHome (props){
                                     </Form>
                                          </Formik>
 
-                                        <h5 className="text-lg text-end font-medium text-gray-800 md:pr-2">      
-                                            {props?.data?.count && props?.data?.count > 0 && <small className="text-gray-500 text-base">{props?.data?.start_index ?? ''} - {props?.data?.end_index ?? ''} of {props?.data?.count ?? ''} </small>}
+                                        <h5 className="text-lg  md:text-end font-medium flex  gap-2 md:gap-3 text-gray-800 md:pr-2">      
+                                            
+                                            <small className="text-gray-500 text-base"> Total facilities: {props?.count}</small>
+                                            <small className="text-gray-500 text-base"> Current page: {props?.current_page}</small>
+                                            <small className="text-gray-500 text-base"> Facility count: {props?.page_size}</small>
+                                            
+                                            
                                         </h5>
                                     </div>
                                   
@@ -550,9 +598,11 @@ function FacilityHome (props){
                                         <div className="flex flex-col justify-center items-center  w-full">
                                             {/* Facilities View */}
                                             
-                                            {facilities && facilities.length > 0 && facilityFeedBack.length === 0 && !khisSynched ?
-                                            facilities.map((facility, index) => (
-                                                <div key={index} 
+                                            {
+                                            props?.facilities.length > 0 ?
+
+                                            props?.facilities.map((facility) => (
+                                                <div key={facility?.id} 
                                                 title={`Incomplete Details : ${facility?.is_complete ? 'none' : facility?.in_complete_details}`}
                                                 className={`grid grid-cols-8 gap-2 border-b py-4 w-full ${!facility?.is_complete && !facility?.in_complete_details ? 'bg-yellow-50 border-yellow-500 hover:bg-gray-50' : 'bg-transparent border-gray-400 hover:border-grat-400' }`}>
                                                     <div className="px-2 col-span-8 md:col-span-8 lg:col-span-6 gap-2 md:gap-0 flex flex-col group items-center justify-start text-left">
@@ -664,7 +714,7 @@ function FacilityHome (props){
                                                 </div>
                                                 )):(
                                                     
-                                                    (facilities?.length === 0 && facilityFeedBack?.length == 0 || khisSynched) &&
+                                                    (props?.facilities?.length === 0 && facilityFeedBack?.length == 0 ) &&
                                                     // No Facility feedback data found
                                                     <Alert severity="warning" sx={{width:'100%', marginInline:'4px'}} >No facilities found <span onClick={() => {
                                                         setTitle('Facilities')
@@ -679,59 +729,55 @@ function FacilityHome (props){
 
                                             }
 
-                                            {facilities && facilities?.length >= 30 && !khisSynched && 
-                                            <div className='self-end mx-2'>
-                                            <ul className="list-none flex flex-row gap-2 w-full  items-center my-2">
-                                                <li className="text-base text-gray-500 cursor-pointer">
-                                                    <Link 
-                                                    href={
-                                                        (() => 
-                                                            props?.path.includes('?page') ?
-                                                            props?.path.replace(/\?page=\d+/,`?page=${props?.data?.current_page}`)
-                                                            :
-                                                            props?.path.includes('?q') && props?.path.includes('&page') ?
-                                                            props?.path.replace(/&page=\d+/, `&page=${props?.data?.current_page}`)
-                                                            :
-                                                            props?.path.includes('?q') ?
-                                                            `${props?.path}&page=${props?.data?.current_page}`                                    
-                                                            :
-                                                            `${props?.path}?page=${props?.data?.current_page}`
-                                                        )()
-                                                    }>
-                                                        <span className="text-white  bg-blue-600 cursor-pointer font-semibold px-2 py-1 underline">{props?.data?.current_page}</span>
-                                                    </Link>
-                                                </li>
-                                                {props?.path && props?.data?.near_pages && props?.data?.near_pages.map((page, i) => (
-                                                    <li key={i} className="text-base group text-gray-500">
-                                                        <Link href={(() => 
-                                                            props?.path.includes('?page') ?
-                                                            props?.path.replace(/\?page=\d+/,`?page=${page}`)
-                                                            :
-                                                            props?.path.includes('?q') && props?.path.includes('&page') ?
-                                                            props?.path.replace(/&page=\d+/, `&page=${page}`)
-                                                            :
-                                                            props?.path.includes('?q') ?
-                                                            `${props?.path}&page=${page}`
-                                                            :
-                                                            `${props?.path}?page=${page}`
-                   
-                                                        )()}>
-                                                            <span className="text-gray-800 cursor-pointer  px-2 py-1 hover:underline">{page}</span>
-                                                        </Link>
-                                                    </li>
-                                                ))}
-                                                <li className="text-sm text-gray-400 flex">
-                                                    <DotsHorizontalIcon className="h-3" />
-                                                </li>
-                                               
+                                            {props?.facilities && 
+                                            <div className='flex w-full justify-between p-2 items-center'>
+                                                <div className="flex items-center gap-2">
 
-                                            </ul>
+                                                <button className="border border-gray-800 p-1 flex place-content-center rounded" onClick={handlePrevious}>
+                                            {'<< Previous'}
+                                            </button>
+
+                                        <button className=" border border-gray-800 p-1 flex place-content-center rounded" onClick={handleNext}>
+                                            {'Next >>'}
+                                            </button>
+                                                </div>
+
+                                                <div className="flex items-center gap-2">
+
+
+
+    <button className={`border p-1 px-2 flex font-semibold place-content-center rounded ${props?.current_page == 1 ? 'bg-blue-600 text-gray-50 border-blue-600': ' border-gray-800'}`} onClick={handlePageLoad}>
+    1
+    </button>
+
+    <button className={`border p-1 px-2 flex font-semibold place-content-center rounded ${props?.current_page == 2 ? 'bg-blue-600 text-gray-50 border-blue-600': ' border-gray-800'}`} onClick={handlePageLoad}>
+    2
+    </button>
+
+    <button className={`border p-1 px-2 flex font-semibold place-content-center rounded ${props?.current_page == 3 ? 'bg-blue-600 text-gray-50 border-blue-600': ' border-gray-800'}`} onClick={handlePageLoad}>
+    3
+    </button>
+
+    <button className={`border hidden md:flex p-1 px-2 flex font-semibold place-content-center rounded ${props?.current_page == 4 ? 'bg-blue-600 text-gray-50 border-blue-600': ' border-gray-800'}`} onClick={handlePageLoad}>
+    4
+    </button>
+    <button className={`border hidden md:flex p-1 px-2 flex font-semibold place-content-center rounded ${props?.current_page == 5 ? 'bg-blue-600 text-gray-50 border-blue-600': ' border-gray-800'}`} onClick={handlePageLoad}>
+    5
+    </button>
+    <span>...</span>
+    <button className={`border p-1 px-2 flex font-semibold place-content-center rounded ${props?.current_page ==  Number(props?.total_pages) - 1 ? 'bg-blue-600 text-gray-50 border-blue-600': ' border-gray-800'}`} onClick={handlePageLoad}>
+    {Number(props?.total_pages) - 1}
+    </button>
+    <button className={`border p-1 px-2 flex font-semibold place-content-center rounded ${props?.current_page == Number(props?.total_pages) ? 'bg-blue-600 text-gray-50 border-blue-600': ' border-gray-800'}`} onClick={handlePageLoad}>
+    {props?.total_pages}
+    </button>
+</div>
                                             </div>
                                             }
                                         </div>
                                     </div>
 
-                                    {!props?.data && <h2 className='text-gray-400'>No Facilities Found ....</h2>}
+                                    {/* {!props?.facilities && <h2 className='text-gray-400'>No Facilities Found ....</h2>} */}
                              
                     </div>
                     
@@ -745,7 +791,174 @@ function FacilityHome (props){
 }
 
 
+export async function getServerSideProps(ctx) {
 
+
+	ctx?.res?.setHeader(
+		'Cache-Control',
+		'public, s-maxage=10, stale-while-revalidate=59'
+	)
+
+
+    function fetchFilters(token) {
+
+        const filtersURL = `${process.env.NEXT_PUBLIC_API_URL}/common/filtering_summaries/?fields=county,facility_type,constituency,ward,operation_status,service_category,owner_type,owner,service,keph_level,sub_county`
+
+        return fetch(filtersURL, {
+            headers: {
+                'Authorization': 'Bearer ' + token,
+                'Accept': 'application/json'
+            }
+        })
+        .then(r => r.json())
+        .then(json => {
+            return json
+        })
+        .catch(err => {
+            console.error('Error fetching filters: ', err)
+            return {
+                error: true,
+                err: err,
+                filters: []
+            }
+        })
+    }
+
+
+    const token = (await checkToken(ctx.req, ctx.res))?.token
+
+    const nextURL = ctx?.query?.next ? Buffer.from(ctx?.query?.next, 'base64').toString() : null
+
+    const page = ctx?.query?.page
+
+    // const nextURL = ctx?.query?.next
+
+    const previousURL = ctx?.query?.previous ?  Buffer.from(ctx?.query?.previous, 'base64').toString() : null
+
+    // const previousURL = ctx?.query?.previous
+
+    const defaultURL = `${`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/` + `${page ? '?page=' + page + '&': '?' }` + 'page_size=10'}`
+
+    let url = nextURL ?? previousURL ?? defaultURL
+
+    const filters = await fetchFilters(token)
+
+    let facilities 
+
+    let query = { 'searchTerm': '' }
+    if (ctx?.query?.qf) {
+        query.qf = ctx.query.qf
+    
+    }
+
+    if (ctx?.query?.q) {
+        query.searchTerm = ctx.query.q
+        url += `&search={"query":{"query_string":{"default_field":"name","query":"${query.searchTerm}"}}}`
+    }
+
+    const other_posssible_filters = [
+        "owner_type", 
+        "service", 
+        "facility_type", 
+        "county", 
+        "service_category", 
+        "sub_county", 
+        "keph_level", 
+        "owner", 
+        "operation_status", 
+        "constituency", 
+        "ward", 
+        "has_edits", 
+        "rejected_national",
+        "rejected",
+        "closed",
+        "is_approved", 
+        "is_complete", 
+        "number_of_beds", 
+        "number_of_cots", 
+        "incomplete",
+        "open_whole_day",
+        "to_publish", 
+        "dhis_synced_facilities",
+        "open_weekends",
+        "approved",
+        "reporting_in_dhis",
+        "pending_approval",
+        "approved_national_level",
+        "admitting_maternity_general", 
+        "admitting_maternity_only",
+        "open_public_holidays"]
+
+    other_posssible_filters.map(flt => {
+        if (ctx?.query[flt]) {
+            query[flt] = ctx?.query[flt]
+            url = url + "&" + flt + "=" + ctx?.query[flt]
+        }
+
+
+    })
+
+
+    let current_url = url + '&page_size=100'
+    if (ctx?.query?.page) {
+        url = `${url}&page=${ctx.query.page}`
+    }
+
+
+    try {
+        facilities = (await (await fetch(url, {
+            headers: {
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${token}`
+            }
+        })).json())
+    } catch(e) {
+        console.error('Error message:', e.message)
+    }   
+
+
+
+    if (
+        facilities?.results &&
+        Array.isArray(facilities?.results) &&
+        facilities?.results.length > 0
+    ) {
+        return {
+            props: {
+                facilities: facilities?.results,
+                next: facilities?.next,
+                previous: facilities?.previous,
+                filters,
+                path: ctx.asPath || '/facilities', 
+                current_url, 
+                current_page: facilities?.current_page,
+                total_pages: facilities?.total_pages,
+                count: facilities?.count,
+                page_size: facilities?.page_size,
+                query
+            }
+        }
+    }
+
+    return {
+        props: {
+                facilities: [],
+                next: null,
+                previous: null,
+                filters: null,
+                path:  ctx.asPath || '/facilities', 
+                current_url,
+                current_page: 0,
+                total_pages: 0,
+                count:0,
+                page_size: 0,
+                query
+            }
+    }
+}
+
+
+/*
 FacilityHome.getInitialProps = async (ctx) => {
 
     ctx?.res?.setHeader(
@@ -758,9 +971,9 @@ FacilityHome.getInitialProps = async (ctx) => {
 
     function fetchFilters(token) {
         
-        let filters_url = API_URL + '/common/filtering_summaries/?fields=county%2Cfacility_type%2Cconstituency%2Cward%2Coperation_status%2Cservice_category%2Cowner_type%2Cowner%2Cservice%2Ckeph_level%2Csub_county'
+        const filtersURL = API_URL + '/common/filtering_summaries/?fields=county,facility_type,constituency,ward,operation_status,service_category,owner_type,owner,service,keph_level,sub_county'
 
-        return fetch(filters_url, {
+        return fetch(filtersURL, {
             headers: {
                 'Authorization': 'Bearer ' + token,
                 'Accept': 'application/json'
@@ -901,6 +1114,7 @@ FacilityHome.getInitialProps = async (ctx) => {
     })
 
 }
+*/
 
 
 export default FacilityHome

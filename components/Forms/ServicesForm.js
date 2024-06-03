@@ -4,7 +4,7 @@ import { FormOptionsContext } from '../../pages/facilities/add';
 // import { FormContext } from './Form';
 
 import {
-    handleServiceDelete,
+    // handleServiceDelete,
     handleServiceSubmit,
     handleServiceUpdates
 } from '../../controllers/facility/facilityHandlers'
@@ -132,15 +132,15 @@ export function ServicesForm() {
   }, [])
 
     return <>
-                <h4 className="text-lg uppercase pb-2 mt-4 border-b border-gray-400  w-full mb-4 font-semibold text-gray-900">Services</h4>
-                <div className='flex flex-col w-full items-start justify-start gap-3 mt-6'>
+                <h4 className="text-lg uppercase pb-2 mt-2 border-b border-gray-400  w-full mb-4 font-semibold text-gray-900">Services</h4>
+                <div className='flex flex-col w-full items-start justify-start gap-3 mt-1'>
 
                 
                     {/* Edit list Container */}
                     <div className='flex items-center w-full h-auto min-h-[300px]'>
 
                         <EditListItem
-                            itemData={options?.data ? options?.data.facility_services : cachedServices ?? null}
+                            itemData={options?.data ? {currentServices: options?.data.facility_services} : {currentServices: cachedServices} ?? null}
                             categoryItems={serviceOptions.categories}
                             itemId={facilityId ?? options?.data?.id}
                             options={options?.services}

@@ -7,7 +7,7 @@ import HeaderLayout from './HeaderLayout';
 import Link from 'next/link'
 import { NorthEast } from '@mui/icons-material';
 import { Analytics } from '@vercel/analytics/react';
-
+// import { useAlert } from 'react-alert';
 
 
 
@@ -16,6 +16,12 @@ export default function MainLayout({ children, isLoading, searchTerm, isFullWidt
     const [isLoggedIn, setIsLoggedIn] = useState(false)
     const [user, setUser] = useState(null)
     const [isClient, setIsClient] = useState(false)
+
+    // const alert = useAlert()
+
+
+    // console.log({isLoggedIn})
+
 
     let API_URL = process.env.NEXT_PUBLIC_API_URL
     if (typeof window !== 'undefined' && window.location.hostname === '127.0.0.1') {
@@ -31,6 +37,23 @@ export default function MainLayout({ children, isLoading, searchTerm, isFullWidt
     } else {
         path = '/facilities'
     }
+
+
+    useEffect(() => {
+      if(!isLoggedIn){
+        // alert.info('You are currently offline. Redirecting to home page')
+
+        const timeOut = setTimeout(() => {
+          
+          router.push('/')
+
+        }, 4000)
+
+        return () => {
+          clearTimeout(timeOut)
+        }
+      }
+    }, [isLoggedIn])
   
 
     useEffect(() => {
