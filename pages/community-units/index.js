@@ -17,6 +17,7 @@ import { Formik, Form, Field } from 'formik';
 import { SearchIcon } from '@heroicons/react/outline'
 import { KeyboardArrowDown } from '@mui/icons-material';
 import { KeyboardArrowRight } from '@mui/icons-material';
+import { useSearchParams } from 'next/navigation';
 
 
 
@@ -30,9 +31,20 @@ function CommunityUnit(props) {
 	const [drillDown, setDrillDown] = useState({});
 	const qf = props?.query?.qf || 'all';
 
-	const [title, setTitle] = useState('Community Health Units')
+	// const [title, setTitle] = useState('Community Health Units')
 	const [isClient, setIsClient] = useState(false);
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+	const pageParams = useSearchParams()
+
+	const currentPageParams = ((params) => {
+		return Array.from(params.entries(), ([k, v]) => {
+			return `${k}=${v}`
+		}).join("&")
+	})(pageParams)
+	
+
+	console.log({currentPageParams})
 
 
 	useEffect(() => {
@@ -321,7 +333,7 @@ function CommunityUnit(props) {
 												<div className='px-2 col-span-8 md:col-span-8 lg:col-span-6 flex flex-col group items-center justify-start text-left'>
 													<h3 className='text-2xl  font-semibold w-full'>
 														<Link
-															href={'/community-units/' + comm_unit.id}
+															href={`/community-units/${comm_unit.id}?${currentPageParams}`}
 															className='cursor-pointer hover:text-gray-600 group-focus:text-gray-800 active:text-gray-800 '>
 
 															{comm_unit.official_name ||
@@ -466,6 +478,7 @@ function CommunityUnit(props) {
 
 CommunityUnit.getInitialProps = async (ctx) => {
 
+
 	ctx?.res?.setHeader(
 		'Cache-Control',
 		'public, s-maxage=10, stale-while-revalidate=59'
@@ -499,6 +512,7 @@ CommunityUnit.getInitialProps = async (ctx) => {
 		let filterQuery = JSON.parse(JSON.stringify(ctx.query));
 		let qry = ''
 		let url
+
 		if (ctx.query !== null) {
 			qry = Object.keys(filterQuery).map(function (key) {
 				const er = `${key}=${filterQuery[key]}`
@@ -510,11 +524,14 @@ CommunityUnit.getInitialProps = async (ctx) => {
 		} else {
 			url = `${process.env.NEXT_PUBLIC_API_URL}/chul/units/?fields=id,code,name,status_name,date_established,facility,facility_name,facility_county,facility_subcounty,facility_ward,facility_constituency`;
 		}
+
 		let query = { searchTerm: '' };
+
 		if (ctx?.query?.q) {
 			query.searchTerm = ctx.query.q;
 			url += `&search={"query":{"query_string":{"default_field":"name","query":"${query.searchTerm}"}}}`;
 		}
+
 		let other_posssible_filters = [
 			'county',
 			'constituency',
@@ -522,6 +539,7 @@ CommunityUnit.getInitialProps = async (ctx) => {
 			'status',
 			'sub_county',
 		];
+
 		other_posssible_filters.map((flt) => {
 			if (ctx?.query[flt]) {
 				query[flt] = ctx?.query[flt];
@@ -529,24 +547,14 @@ CommunityUnit.getInitialProps = async (ctx) => {
 			}
 		});
 
-		// Fetch All facility Count
-
-		const getCHUCount = async () => {
-			return (await (await fetch(`${API_URL}/units/chul?format=json`, {
-				headers: {
-					'Authorization': 'Bearer ' + token,
-					'Accept': 'application/json'
-				}
-			})).json())?.count
-		}
-
-		// const count = await getCHUCount();
+		
 
 		let current_url = url + `&page_size=11000`;
+
 		if (ctx?.query?.page) {
 			url = `${url}&page=${ctx.query.page}`;
 		}
-		// console.log('running fetchData(' + url + ')');
+
 		try {
 			const r = await fetch(url, {
 				headers: {
