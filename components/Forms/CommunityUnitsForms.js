@@ -1026,7 +1026,7 @@ function EditCommunityUnitsCHEWSForm(props) {
         ) : (
           <>
             <li className="w-full  bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base leading-none">
-              <p>No HR data listed for this </p>
+              <p>No Community health unit workforce found </p>
             </li>
           </>
         )}
