@@ -62,7 +62,7 @@ function FacilityHome (props){
     const [fromDate, setFromDate] = React.useState(new Date());
     const [toDate, setToDate] = React.useState(new Date());
 
-    const [isAccordionExpanded, setIsAccordionExpanded] = useState(true);
+    const [isAccordionExpanded, setIsAccordionExpanded] = useState(false);
     const [title, setTitle] = useState('Facilities') 
 
     // quick filter themes
