@@ -1,7 +1,7 @@
 import Head from 'next/head'
 import Link from 'next/link'
 import MainLayout from '../../components/MainLayout'
-import { DotsHorizontalIcon, DownloadIcon, PlusIcon } from '@heroicons/react/solid'
+import { DownloadIcon, PlusIcon } from '@heroicons/react/solid'
 import { checkToken } from '../../controllers/auth/auth'
 import React, { useState, useEffect, useContext } from 'react'
 import { useRouter } from 'next/router'
@@ -20,7 +20,7 @@ import FacilitySideMenu from '../../components/FacilitySideMenu'
 import { UserContext } from '../../providers/user'
 import {Formik, Form, Field} from 'formik';
 import { KeyboardArrowRight, KeyboardArrowDown } from "@mui/icons-material";
-
+import { useSearchParams } from 'next/navigation'
 
 
 function FacilityHome (props){
@@ -73,6 +73,13 @@ function FacilityHome (props){
     const [isClient, setIsClient] = useState(false);
     const [user, setUser] = useState(userCtx)
 	const [isMenuOpen, setIsMenuOpen] = useState(false)
+
+    const pageParams = useSearchParams()
+
+    const currentPageParams = {
+        filter: pageParams.get('filter')
+    }
+
 
 	useEffect(() => {
         setUser(userCtx)
@@ -607,7 +614,7 @@ function FacilityHome (props){
                                                 className={`grid grid-cols-8 gap-2 border-b py-4 w-full ${!facility?.is_complete && !facility?.in_complete_details ? 'bg-yellow-50 border-yellow-500 hover:bg-gray-50' : 'bg-transparent border-gray-400 hover:border-grat-400' }`}>
                                                     <div className="px-2 col-span-8 md:col-span-8 lg:col-span-6 gap-2 md:gap-0 flex flex-col group items-center justify-start text-left">
                                                         <h3 className="text-2xl font-semibold w-full">
-                                                            <span onClick={() => router.push({pathname: `/facilities/${facility?.id}`, query: {qf: router.query.qf}})} className={`cursor-pointer ${facility?.is_complete ? 'hover:text-gray-600' : 'hover:text-yellow-600'} group-focus:text-gray-800 active:text-gray-800`} >
+                                                            <span onClick={() => router.push({pathname: `/facilities/${facility?.id}`, query: currentPageParams})} className={`cursor-pointer ${facility?.is_complete ? 'hover:text-gray-600' : 'hover:text-yellow-600'} group-focus:text-gray-800 active:text-gray-800`} >
                                                                 {facility?.official_name || facility?.official_name || facility?.name} 
                                                             </span>
                                                         </h3>
@@ -758,19 +765,19 @@ function FacilityHome (props){
     3
     </button>
 
-    <button className={`border hidden md:flex p-1 px-2 flex font-semibold place-content-center rounded ${props?.current_page == 4 ? 'bg-blue-600 text-gray-50 border-blue-600': ' border-gray-800'}`} onClick={handlePageLoad}>
+    <button className={`border hidden md:flex p-1 px-2  font-semibold place-content-center rounded ${props?.current_page == 4 ? 'bg-blue-600 text-gray-50 border-blue-600': ' border-gray-800'}`} onClick={handlePageLoad}>
     4
     </button>
-    <button className={`border hidden md:flex p-1 px-2 flex font-semibold place-content-center rounded ${props?.current_page == 5 ? 'bg-blue-600 text-gray-50 border-blue-600': ' border-gray-800'}`} onClick={handlePageLoad}>
+    <button className={`border hidden md:flex p-1 px-2 font-semibold place-content-center rounded ${props?.current_page == 5 ? 'bg-blue-600 text-gray-50 border-blue-600': ' border-gray-800'}`} onClick={handlePageLoad}>
     5
     </button>
-    <span>...</span>
+    {/* <span>...</span>
     <button className={`border p-1 px-2 flex font-semibold place-content-center rounded ${props?.current_page ==  Number(props?.total_pages) - 1 ? 'bg-blue-600 text-gray-50 border-blue-600': ' border-gray-800'}`} onClick={handlePageLoad}>
     {Number(props?.total_pages) - 1}
     </button>
     <button className={`border p-1 px-2 flex font-semibold place-content-center rounded ${props?.current_page == Number(props?.total_pages) ? 'bg-blue-600 text-gray-50 border-blue-600': ' border-gray-800'}`} onClick={handlePageLoad}>
     {props?.total_pages}
-    </button>
+    </button> */}
 </div>
                                             </div>
                                             }
