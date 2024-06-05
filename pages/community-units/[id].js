@@ -72,12 +72,6 @@ function EditCommunityUnit(props){
   if(isClient) {
 
 
-    // return <pre>
-    //   {
-    //     JSON.stringify(props?.cu, null, 2)
-    //   }
-    // </pre>
- 
 
   return (
     <>
@@ -88,7 +82,7 @@ function EditCommunityUnit(props){
       </Head>
 
       <MainLayout>
-        <div className="w-full md:w-[85%] grid grid-cols-1 px-4 md:grid-cols-7 gap-3 my-4 place-content-center">
+        <div className="w-full md:w-[85%] grid grid-cols-1 px-4 md:grid-cols-7 my-4 md:gap-3 place-content-center">
          
           <div className="md:col-span-7 col-span-1 flex flex-col items-start justify-start gap-3">
 
@@ -111,11 +105,11 @@ function EditCommunityUnit(props){
 
             <div
               className={
-                `md:col-span-7 col-span-1 grid grid-cols-6 gap-5 md:gap-8 py-6 w-full border ${props?.cu.active ? "border-gray-600" : "border-yellow-700"} bgcenter-transparent drop-shadow  text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 
+                `md:col-span-7 col-span-1 flex justify-between items-start  gap-5  w-full border ${props?.cu.active ? "border-gray-600" : "border-yellow-700"} bgcenter-transparent drop-shadow  text-black p-4 md:divide-x md:divide-gray-200 border-l-8 
                 ${props?.cu.active ? "border-gray-600" : "border-yellow-700"}
               `}
             >
-              <div className="col-span-6 md:col-span-3">
+              <div className="col-span-1 md:col-span-3">
                 <h1 className="text-4xl tracking-tight font-bold leading-tight">
                   {props?.cu.name}
                 </h1>
@@ -133,7 +127,8 @@ function EditCommunityUnit(props){
                   </p>
                 </div>
               </div>
-              <div className="flex flex-wrap gap-3 items-center justify-end col-span-6 md:col-span-2">
+
+              <div className="col span-1 md:col-span-3 self-end ">
                 <div className="flex flex-wrap gap-3 w-full items-center justify-start md:justify-center">
                   {props?.cu.is_approved ? (
                     <span className="bg-blue-200 text-gray-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
@@ -172,6 +167,7 @@ function EditCommunityUnit(props){
                   )}
                 </div>
               </div>
+
               <div className="col-span-6 md:col-span-1 flex flex-col items-center justify-center p-2"></div>
             </div>
 

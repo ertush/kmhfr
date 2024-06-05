@@ -13,7 +13,7 @@ import { Alert } from '@mui/lab'
 
 function RenderpartnersForm({ index, setPartners, partnerName }) {
 
-  console.log({partnerName})
+  // console.log({partnerName})
   return (
     <div
       className="flex  items-center justify-between md:mx-1 gap-4 w-full"
@@ -190,7 +190,7 @@ function EditListItem({
     if(itemName == 'chul_services' && editMode && itemData && itemData?.partners.length > 0) setPartners(itemData?.partners)
 
 
-    if (Array.isArray(itemData.currentServices)) {
+    if (Array.isArray(itemData?.currentServices)) {
       const result = []
 
       setSelectedItems(() => {
@@ -569,7 +569,7 @@ function EditListItem({
   <thead>
     <tr>
 
-      <th className="border border-gray-300 px-1 py-1">Selected Services</th>
+      <th className="border border-gray-300 px-1 py-1">Current Services</th>
       <th className="border border-gray-300 px-1 py-1">{itemName == "chul_services" ? 'Action' : 'Present'}</th>
 
     </tr>
@@ -585,8 +585,8 @@ function EditListItem({
       }
     </pre> */}
     {
-      Array.isArray(itemData.currentServices) && itemData.currentServices.length > 0 && from == "previous" ?
-        itemData.currentServices?.map((row, i) => (
+      Array.isArray(itemData?.currentServices) && itemData?.currentServices.length > 0 && from == "previous" ?
+        itemData?.currentServices?.map((row, i) => (
           <tr key={i}>
 
             <td className="border border-gray-300 px-1 py-1">{row.sname}</td>

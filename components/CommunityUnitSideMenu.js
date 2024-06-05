@@ -2,27 +2,16 @@ import React from 'react'
 import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
-import { useState, useEffect } from 'react'
 import { useRouter } from 'next/router';
+import { useSearchParams } from 'next/navigation';
 
 
 export default function CommunityUnitSideMenu({ _pathId, filters, qf }) {
 
 
 	const router = useRouter()
-	const [title, setTitle] = useState('Community Health Units')
-	const [pathId, setPathId] = useState(_pathId || '')
-	const [approvedCHUSelected, setApprovedCHUSelected] = useState(false);
-	const [newCHUSelected, setNewCHUSelected] = useState(false);
-	const [updatedCHUSelected, setUpdatedCHUSelected] = useState(false);
-	const [rejectedCHUSelected, setRejectedCHUSelected] = useState(false);
-	const [chuFeedBack, setCHUFeedBack] = useState([])
-	const [allCHUSelected, setAllCHUSelected] = useState(false);
-	const [currentQuickFilter, setCurrentQuickFilter] = useState(qf);
 
-
-	const [chuPendingApproval, setCHUPendingApproval] = useState(false);
-
+	const searchParams = useSearchParams()
 
 
 	const quickFilters = [
@@ -60,63 +49,6 @@ export default function CommunityUnitSideMenu({ _pathId, filters, qf }) {
 	];
 
 
-	const handleQuickFiltersClick = async (filter_id) => {
-
-		let filter = {}
-		if (filter_id !== 'feedback') {
-
-			const qfilter = quickFilters.filter(({ id }) => id === filter_id).map(f => f.filters.map(({ id, value }) => ({ id, value })))
-
-			qfilter[0].forEach(({ id, value }) => { filter[id] = value })
-
-
-		}
-
-
-		switch (filter_id) {
-			case 'all':
-				setCHUFeedBack([])
-				router.push({ pathname: '/community-units', query: { qf: filter_id } })
-				break;
-
-			case 'feedback':
-
-				try {
-					const feedback = await fetch('/api/community_units/chu_filters/?path=chu_ratings&fields=comment,facility_id,facility_name,chu_name,created,rating&id=feedback')
-					const feedbackFacilities = (await feedback.json()).results
-
-					setCHUFeedBack(feedbackFacilities)
-
-				}
-				catch (err) {
-					console.error(err.message);
-				}
-
-				break;
-			case 'new_pending_approval':
-				router.push({ pathname: '/community-units', query: { pending_approval:true} })
-				break;
-			default:
-				setCHUFeedBack([])
-
-
-				router.push({ pathname: '/community-units', query: { qf: filter_id, ...filter } })
-				break;
-		}
-
-
-	}
-
-	useEffect(() => {
-		const url = window.history.state.as
-		if (url.includes('qf=all')) { setPathId('all'); setAllCHUSelected(true) }
-		if (url.includes('is_approved=true')) { setPathId('approved'); setApprovedCHUSelected(true) }
-		if (url.includes('qf=new_pending_approval')) { setPathId('new_pending_approval'); setNewCHUSelected(true) }
-		if (url.includes('has_edits=true')) { setPathId('has_edits'); setUpdatedCHUSelected(true) }
-		if (url.includes('is_rejected=true')) { setPathId('rejected'); setRejectedCHUSelected(true) }
-
-
-	}, [])
 
 	return (
 		<div className='col-span-1 flex rounded flex-col gap-3 md:col-start-1  md:mb-12 py-0 h-full bg-gray-50 shadow-md'>
@@ -139,8 +71,8 @@ export default function CommunityUnitSideMenu({ _pathId, filters, qf }) {
 								switch (qf.name) {
 									case 'All Community Health Units':
 										return { 
-											backgroundColor: (allCHUSelected && pathId === 'all') && '#1d4ed8',
-											color: (allCHUSelected && pathId === 'all') && '#ffff',
+											backgroundColor: (searchParams.get('filter') == 'all_chu') && '#1d4ed8',
+											color: (searchParams.get('filter') == 'all_chu') && '#ffff',
 											borderBottom: 'solid 1px  rgba(156, 163, 175, 1)', 
 											borderTopLeftRadius: '4px',
 											borderTopRightRadius: '4px',
@@ -152,8 +84,8 @@ export default function CommunityUnitSideMenu({ _pathId, filters, qf }) {
 										
 									case 'Approved Community Health Units':
 										return { 
-											backgroundColor: (approvedCHUSelected && pathId === 'approved') && '#1d4ed8',
-											color: (approvedCHUSelected && pathId === 'approved') && '#ffff',
+											backgroundColor: (searchParams.get('filter') == 'approved_chu') && '#1d4ed8',
+											color: (searchParams.get('filter') == 'approved_chu') && '#ffff',
 											borderBottom: 'solid 1px  rgba(156, 163, 175, 1)', 
 											"&:hover": {
 											backgroundColor: "rgba(37, 99, 235, 1)",
@@ -162,8 +94,8 @@ export default function CommunityUnitSideMenu({ _pathId, filters, qf }) {
 
 									case 'New Community Health Units Pending Approval':
 										return { 
-											backgroundColor: (newCHUSelected && pathId === 'new_pending_approval') && '#1d4ed8',
-											color: (newCHUSelected && pathId === 'new_pending_approval') && '#ffff',
+											backgroundColor: (searchParams.get('filter') == 'new_pending_approval_chu') && '#1d4ed8',
+											color: (searchParams.get('filter') == 'new_pending_approval_chu') && '#ffff',
 											borderBottom: 'solid 1px  rgba(156, 163, 175, 1)',
 											"&:hover": {
 											backgroundColor: "rgba(37, 99, 235, 1)",
@@ -172,8 +104,8 @@ export default function CommunityUnitSideMenu({ _pathId, filters, qf }) {
 
 									case 'Updated Community Health Units Pending Approval':
 										return { 
-											backgroundColor: (updatedCHUSelected && pathId === 'updated_pending_approval') && '#1d4ed8',
-											color: (updatedCHUSelected && pathId === 'updated_pending_approval') && '#ffff',
+											backgroundColor: (searchParams.get('filter') == 'updated_pending_approval_chu') && '#1d4ed8',
+											color: (searchParams.get('filter') == 'updated_pending_approval_chu') && '#ffff',
 											borderBottom: 'solid 1px  rgba(156, 163, 175, 1)', 
 											"&:hover": {
 											backgroundColor: "rgba(37, 99, 235, 1)",
@@ -183,8 +115,8 @@ export default function CommunityUnitSideMenu({ _pathId, filters, qf }) {
 									}
 									case 'Rejected Community Health Units':
 										return { 
-											backgroundColor: (rejectedCHUSelected && pathId === 'rejected') && '#1d4ed8', 
-											color: (rejectedCHUSelected && pathId === 'rejected') && '#ffff',
+											backgroundColor: (searchParams.get('filter') == 'rejected_chu') && '#1d4ed8', 
+											color: (searchParams.get('filter') == 'rejected_chu') && '#ffff',
 											borderBottom: 'solid 1px  rgba(156, 163, 175, 1)', 
 											"&:hover": {
 											backgroundColor: "rgba(37, 99, 235, 1)",
@@ -197,97 +129,77 @@ export default function CommunityUnitSideMenu({ _pathId, filters, qf }) {
 							})()}
 							name="rt"
 							
-							onClick={(evt) => {
+							onClick={(e) => {
+								e.preventDefault()
 								switch (qf.name) {
 									case 'All Community Health Units':
-										setTitle('All Community Health Units')
-										setPathId('all')
-										setAllCHUSelected(true)
-										setApprovedCHUSelected(false)
-										setNewCHUSelected(false)
-										setUpdatedCHUSelected(false)
-										setCHUPendingApproval(false)
-										setRejectedCHUSelected(false)
+										
+										router.push({
+											pathname:'/community-units',
+											query: {
+												filter:'all_chu'
+											}
+										})
 
 
-										handleQuickFiltersClick('all')
 										break;
 									case 'Approved Community Health Units':
-										setTitle('Approved Community Health Units')
-										setAllCHUSelected(false)
-										setPathId('approved')
-										setApprovedCHUSelected(true)
-										setNewCHUSelected(false)
-										setUpdatedCHUSelected(false)
-										setCHUPendingApproval(false)
-										setRejectedCHUSelected(false)
+										
+										router.push({
+											pathname:'/community-units',
+											query: {
+												filter:'approved_chu',
+												is_approved: true
+											}
+										})
 
-
-										handleQuickFiltersClick('approved')
 										break;
 
 									case 'New Community Health Units Pending Approval':
-										setTitle('Community Health Units Pending Approval')
-										setPathId('new_pending_approval')
-										setAllCHUSelected(false)
-										setApprovedCHUSelected(false)
-										setNewCHUSelected(true)
-										setUpdatedCHUSelected(false)
-										setCHUPendingApproval(false)
-										setRejectedCHUSelected(false)
+										
+										router.push({
+											pathname:'/community-units',
+											query: {
+												filter:'new_pending_approval_chu',
+												pending_approval: true,
+												has_edits: false
+											}
+										})
 
 
-										handleQuickFiltersClick('new_pending_approval')
+
 										break;
 									case 'Updated Community Health Units Pending Approval':
-										setTitle(' Community Health Units Pending Approval')
-										setPathId('updated_pending_approval')
-										setAllCHUSelected(false)
-										setApprovedCHUSelected(false)
-										setNewCHUSelected(false)
-										setUpdatedCHUSelected(true)
-										setCHUPendingApproval(false)
-										setRejectedCHUSelected(false)
+										
+
+										router.push({
+											pathname:'/community-units',
+											query: {
+												filter:'updated_pending_approval_chu',
+												is_approved: true,
+												has_edits: true
+											}
+										})
 
 
-										handleQuickFiltersClick('updated_pending_approval')
+
 										break;
 									case 'Rejected Community Health Units':
-										setTitle('Rejected Community Health Units')
-										setPathId('rejected')
-										setAllCHUSelected(false)
-										setApprovedCHUSelected(false)
-										setNewCHUSelected(false)
-										setUpdatedCHUSelected(false)
-										setCHUPendingApproval(false)
-										setRejectedCHUSelected(true)
+										
+										router.push({
+											pathname:'/community-units',
+											query: {
+												filter:'rejected_chu',
+												is_rejected: true
+											}
+										})
 
 
-										handleQuickFiltersClick('rejected')
+
 										break;
 
 								}
 
-								setCurrentQuickFilter(qf.id);
-								let robj = {
-									pathname: '/community-units',
-									query: {},
-								};
-								if (qf.id === 'all') {
-									router.push(robj);
-									return;
-								}
-								quickFilters.forEach((q_f) => {
-									if (q_f.id === qf.id) {
-										q_f.filters.map((sf) => {
-											robj.query[sf.id] = sf.value;
-										});
-									}
-								});
-
-								console.log({robj})
-
-								router.push(robj);
 							}}
 						>
 							<ListItemText primary={qf.name} />

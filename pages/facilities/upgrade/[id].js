@@ -592,7 +592,7 @@ function UpgradeFacility(props) {
 
                                         {/* Facility Upgrade Button */}
 
-                                        <div className='flex items-center justify-end w-full'>
+                                        <div className='flex items-center w-full'>
                                             <button
                                                 type="submit"
                                                 className="bg-blue-600 rounded mt-3 font-semibold w-auto text-white flex text-left gap-1 items-center p-2 h-auto -md">
@@ -806,7 +806,7 @@ function UpgradeFacility(props) {
 
                                         {/* Facility Upgrade Button */}
 
-                                        <div className='flex items-center justify-end w-full'>
+                                        <div className='flex items-center  w-full'>
                                             <button
                                                 type="submit"
                                                 className="bg-blue-600 rounded mt-3 font-semibold w-auto text-white flex text-left gap-1 items-center p-2 h-auto -md">

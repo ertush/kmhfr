@@ -25,6 +25,7 @@ import { useAlert } from 'react-alert'
 import { UserContext } from '../../../providers/user';
 import { Alert } from '@mui/lab'
 import Spinner from '../../../components/Spinner'
+import { useSearchParams } from 'next/navigation';
 
 function ApproveReject(props) {
   const userCtx = useContext(UserContext);
@@ -34,6 +35,8 @@ function ApproveReject(props) {
   const alert = useAlert()
   const router = useRouter()
   const [isFacDetails, setIsFacDetails] = useState(true);
+
+  const currentPageParams = useSearchParams()
 
 
 
@@ -104,7 +107,14 @@ function ApproveReject(props) {
               }
             >
               <div className="col-span-6 md:col-span-3">
-                <span onClick={() => router.push(`/facilities/${facility?.id}`)} className="text-4xl hover:text-gray-600 cursor-pointer tracking-tight font-bold leading-tight">
+                <span onClick={() => router.push(
+                  {
+                  pathname: `/facilities/${facility?.id}`,
+                  query: {
+                    filter: currentPageParams.get('filter')
+                  }
+                  }
+                )} className="text-4xl hover:text-gray-600 cursor-pointer tracking-tight font-bold leading-tight">
                   {facility?.official_name}
                 </span>
                 <div className="flex gap-2 items-center w-full justify-between">
@@ -188,7 +198,7 @@ function ApproveReject(props) {
               {
                 facility?.is_approved ?
                   'Approve/Reject Facility' :
-                  'Validate/Reject Facility'
+                  facility?.has_edits ? 'Validate/Invalidate Facility Updates' : 'Validate/Invalidate Facility'
               }
 
             </h3>
@@ -286,9 +296,9 @@ function ApproveReject(props) {
 
             {/* Comments and Updates Section  */}
 
-            <div className="bg-gray-50 rounded shadow-md w-full p-3  flex flex-col gap-1 mt-6">
+            <div className="bg-gray-50 rounded shadow-md w-full p-3  flex flex-col gap-3 mt-6">
               <h3 className="text-gray-900 text-2xl font-semibold leading-16 text-medium">
-                {facility?.has_edits ? 'Approve Updates' : facility?.is_approved ? "Approval / Reject facility" : "Comment on the validation"}
+                {facility?.has_edits ? 'Approve Or Invalidate Updates' : facility?.is_approved ? "Approval Or Reject facility" : "Comment on the validation"}
               </h3>
               {facility?.is_approved}
               <Formik
@@ -338,7 +348,7 @@ function ApproveReject(props) {
 
                   }
 
-                  <div className="flex justify-end items-center gap-4 mt-4">
+                  <div className="flex  items-center gap-4 mt-4">
 
                     <button
                       type="submit"
@@ -371,11 +381,11 @@ function ApproveReject(props) {
                         <div className='flex items-center gap-2'> 
                           <Spinner />
                           <span className='text-white'>{
-                             facility?.has_edits ? 'Declining Updates ...' : facility?.approved_national_level ? '' : 'Rejecting Facility... '
+                             facility?.has_edits ? 'Invalidating Updates ...' : facility?.approved_national_level ? '' : 'Invalidating Facility... '
                           } </span>
                         </div>
                         :
-                        facility?.has_edits ? 'Decline Updates' : facility?.approved_national_level ? '' : 'Reject Facility'
+                        facility?.has_edits ? 'Invalidate Updates' : facility?.approved_national_level ? '' : currentPageParams.get('filter').includes('pending_approval_facilities') ? 'Reject Facility': 'Invalidate Facility'
                         }
                       </button>
                     }

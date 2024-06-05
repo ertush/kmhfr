@@ -5,204 +5,95 @@ import ListItemText from '@mui/material/ListItemText';
 import router from 'next/router'
 import { hasPermission } from '../utils/checkPermissions';
 import { PermissionContext } from '../providers/permissions';
+import { useSearchParams } from 'next/navigation';
 
 function FacilitySideMenu({ states, stateSetters, filters }) {
 
     const userPermissions = useContext(PermissionContext)
 
-    const quickFilters = [
-        {
-            name: 'All',
-            id: 'all',
-            filters: Object.keys(filters),
-        },
-        {
-            name: 'Approved',
-            id: 'approved',
-            filters: [
-                { id: "approved", value: true },
-                { id: "approved_national_level", value: true },
-                { id: "rejected", value: false },
-            ],
-        },
-        {
-            name: 'New pending validation',
-            id: 'new_pending_validation',
-            filters: [
-                { id: "pending_approval", value: true },
-                { id: "has_edits", value: false },
+    const searchParams = useSearchParams()
 
-            ],
-        },
-        {
-            name: 'Updated pending validation',
-            id: 'updated_pending_validation',
-            filters: [
-                { id: "has_edits", value: true },
-                { id: "pending_approval", value: true },
-            ],
-        },
-        {
-            name: 'Facilities pending approval',
-            id: 'to_publish',
-            filters: [
-                { id: "to_publish", value: true },
-            ],
-        },
-        {
-            name: 'DHIS Synced Facilities',
-            id: 'dhis_synced_facilities',
-            filters: [
-                { id: "approved", value: true },
-                { id: "approved_national_level", value: true },
-                { id: "rejected", value: false },
-                { id: "reporting_in_dhis", value: true },
-            ]
-        },
-        {
-            name: 'Failed Validation',
-            id: 'failed_validation',
-            filters: [
-                { id: "rejected", value: true },
-            ],
-        },
-        {
-            name: 'Incomplete',
-            id: 'incomplete',
-            filters: [
-                { id: "is_complete", value: false },
-            ]
-        },
-        {
-            name: 'Rejected',
-            id: 'rejected',
-            filters: [
-                { id: "rejected_national", value: true },
-            ]
-        },
-        {
-            name: 'Closed',
-            id: 'closed',
-            filters: [
-                { id: "closed", value: true },
-            ]
-        }
-    ]
+    // const quickFilters = [
+    //     {
+    //         name: 'All',
+    //         id: 'all',
+    //         filters: Object.keys(filters),
+    //     },
+    //     {
+    //         name: 'Approved',
+    //         id: 'approved',
+    //         filters: [
+    //             { id: "approved", value: true },
+    //             { id: "approved_national_level", value: true },
+    //             { id: "rejected", value: false },
+    //         ],
+    //     },
+    //     {
+    //         name: 'New pending validation',
+    //         id: 'new_pending_validation',
+    //         filters: [
+    //             { id: "pending_approval", value: true },
+    //             { id: "has_edits", value: false },
 
-    const [
-        khisSynched,
-        facilityFeedBack,
-        pathId,
-        allFctsSelected,
-        title
-    ] = states
-
-    const [
-        setKhisSynched,
-        setFacilityFeedBack,
-        setPathId,
-        setAllFctsSelected,
-        setTitle
-    ] = stateSetters
-
-    const [approvedFctsSelected, setApprovedFctsSelected] = useState(false);
-    const [newFtsSelected, setNewFctsSelected] = useState(false);
-    const [updatedFctsSelected, setUpdatedFctsSelected] = useState(false);
-    const [failedValidationFctsSelected, setFailedValidationFctsSelected] = useState(false);
-    const [rejectedFctsSelected, setRejectedFctsSelected] = useState(false);
-    const [closedFctsSelected, setClosedFctsSelected] = useState(false);
-    const [syncRegulatedFctsSelected, setSyncRegulatedFctsSelected] = useState(false);
-    const [incompleteFctsSelected, setIncompleteFctsSelected] = useState(false);
-    const [feedBackFctsSelected, setFeedBackFctsSelected] = useState(false);
-    const [facilitiesPendingApproval, setFacilitiesPendingApproval] = useState(false);
-    const [DHISSyncedFacilities, setDHISSyncedFacilities] = useState(false);
+    //         ],
+    //     },
+    //     {
+    //         name: 'Updated pending validation',
+    //         id: 'updated_pending_validation',
+    //         filters: [
+    //             { id: "has_edits", value: true },
+    //             { id: "pending_approval", value: true },
+    //         ],
+    //     },
+    //     {
+    //         name: 'Facilities pending approval',
+    //         id: 'to_publish',
+    //         filters: [
+    //             { id: "to_publish", value: true },
+    //         ],
+    //     },
+    //     {
+    //         name: 'DHIS Synced Facilities',
+    //         id: 'dhis_synced_facilities',
+    //         filters: [
+    //             { id: "approved", value: true },
+    //             { id: "approved_national_level", value: true },
+    //             { id: "rejected", value: false },
+    //             { id: "reporting_in_dhis", value: true },
+    //         ]
+    //     },
+    //     {
+    //         name: 'Failed Validation',
+    //         id: 'failed_validation',
+    //         filters: [
+    //             { id: "rejected", value: true },
+    //         ],
+    //     },
+    //     {
+    //         name: 'Incomplete',
+    //         id: 'incomplete',
+    //         filters: [
+    //             { id: "is_complete", value: false },
+    //         ]
+    //     },
+    //     {
+    //         name: 'Rejected',
+    //         id: 'rejected',
+    //         filters: [
+    //             { id: "rejected_national", value: true },
+    //         ]
+    //     },
+    //     {
+    //         name: 'Closed',
+    //         id: 'closed',
+    //         filters: [
+    //             { id: "closed", value: true },
+    //         ]
+    //     }
+    // ]
 
 
-    if (allFctsSelected && pathId.length > 0) {
-        setAllFctsSelected(false)
-    }
 
-    async function handleQuickFiltersClick(filter_id) {
-
-        let filter = {}
-        if (filter_id !== 'khis_synched' && filter_id !== 'feedback') {
-
-            const qfilter = quickFilters.filter(({ id }) => id === filter_id).map(f => f.filters.map(({ id, value }) => ({ id, value })))
-
-            qfilter[0].forEach(({ id, value }) => { filter[id] = value })
-
-            // if (filter_id === 'new_pending_validation') filter['is_complete'] = true;
-
-            if(filter_id.includes('incomplete')) filter['in_complete_details'] = false;
-
-        }
-
-
-        switch (filter_id) {
-            case 'all':
-                setFacilityFeedBack([])
-                setKhisSynched(false)
-                router.push({ pathname: '/facilities', query: { qf: filter_id } })
-                break;
-            case 'khis_synched':
-                setFacilityFeedBack([])
-                setKhisSynched(true)
-                break;
-            case 'feedback':
-                setKhisSynched(false)
-                try {
-                    const feedback = await fetch('/api/facility/facility_filters/?path=facility_service_ratings&fields=county,sub_county,constituency,ward,comment,facility_id,facility_name,service_name,created,rating&id=feedback')
-                    const feedbackFacilities = (await feedback.json()).results
-
-                    setFacilityFeedBack(feedbackFacilities)
-
-                }
-                catch (err) {
-                    console.error(err.message);
-                }
-
-                break;
-            case 'updated_pending_validation':
-                console.log({val: 'updated_pending_validation'})
-
-                router.push({
-                    pathname: '/facilities',
-                    query:{
-                        has_edits:true
-
-                    }
-                })
-                break;
-
-            default:
-                setFacilityFeedBack([])
-                setKhisSynched(false)
-
-                router.push({ pathname: '/facilities', query: { qf: filter_id, ...filter } })
-
-                break;
-        }
-
-
-    }
-
-
-    useEffect(() => {
-        const url = window.history.state.as
-        if (url.includes('qf=all')) { setPathId('all'); setAllFctsSelected(true) }
-        if (url.includes('qf=approved')) { setPathId('approved'); setApprovedFctsSelected(true) }
-        if (url.includes('qf=new_pending_validation')) { setPathId('new_pending_validation'); setNewFctsSelected(true) }
-        if (url.includes('qf=updated_pending_validation')) { setPathId('updated_pending_validation'); setUpdatedFctsSelected(true) }
-        if (url.includes('qf=to_publish')) { setPathId('to_publish'); setFacilitiesPendingApproval(true) }
-        if (url.includes('qf=dhis_synced_facilities')) { setPathId(' dhis_synced_facilities'); setKhisSynched(true) }
-        if (url.includes('qf=failed_validation')) { setPathId('failed_validation'); setFailedValidationFctsSelected(true) }
-        if (url.includes('qf=rejected')) { setPathId('rejected'); setRejectedFctsSelected(true) }
-        if (url.includes('qf=closed')) { setPathId('closed'); setClosedFctsSelected(true) }
-        if (url.includes('qf=incomplete')) { setPathId('incomplete'); setIncompleteFctsSelected }
-        if (url.includes('qf=khis_synched')) { setPathId('khis_synched'); setKhisSynched(true) }
-        if (url.includes('qf=feedback')) { setPathId('feedback'); setFeedBackFctsSelected(true) }
-
-    }, [])
 
     return (
 
@@ -220,8 +111,8 @@ function FacilitySideMenu({ states, stateSetters, filters }) {
               
                 <ListItemButton 
                   sx={{  
-                    backgroundColor: (allFctsSelected || pathId === 'all') && '#1d4ed8',
-                    color: (allFctsSelected || pathId === 'all') && '#ffff',  
+                    backgroundColor: (searchParams.get('filter') == 'all_facilities') && '#1d4ed8',
+                    color: (searchParams.get('filter') == 'all_facilities') && '#ffff',  
                     borderBottom: 'solid 1px  rgba(156, 163, 175, 1)', 
                     "&:hover": {
                         backgroundColor: "rgba(37, 99, 235, 1)",
@@ -229,24 +120,18 @@ function FacilitySideMenu({ states, stateSetters, filters }) {
                   }}} 
                 //   className=' hover:bg-gray-50 text-gray-900 bg-transparent focus:bg-blue-600 focus:text-white' 
                  name="rt"
-                    onClick={(ev) => {
-                        setTitle('Facilities')
-                        setPathId('all')
-                        setAllFctsSelected(true)
-                        setApprovedFctsSelected(false)
-                        setNewFctsSelected(false)
-                        setUpdatedFctsSelected(false)
-                        setFacilitiesPendingApproval(false)
-                        setDHISSyncedFacilities(false)
-                        setFailedValidationFctsSelected(false)
-                        setRejectedFctsSelected(false)
-                        setClosedFctsSelected(false)
-                        setIncompleteFctsSelected(false)
-                        setSyncRegulatedFctsSelected(false)
-                        setFeedBackFctsSelected(false)
+                    onClick={(e) => {
 
-                        handleQuickFiltersClick('all')
+                        e.preventDefault()
 
+                        router.push({
+                            pathname:'/facilities',
+                            query: {
+                                filter:'all_facilities'
+                            }
+                        })
+
+                      
                     }}
                 >
                     <ListItemText primary="All Facilities" />
@@ -259,8 +144,8 @@ function FacilitySideMenu({ states, stateSetters, filters }) {
                 hasPermission(/^facilities.view_facility$/, userPermissions) &&
                 <ListItemButton 
                 sx={{  
-                    backgroundColor: (approvedFctsSelected || pathId === 'approved') && '#1d4ed8',
-                    color: (approvedFctsSelected || pathId === 'approved') && '#ffff',  
+                    backgroundColor: (searchParams.get('filter') == 'approved_facilities') && '#1d4ed8',
+                    color: (searchParams.get('filter') == 'approved_facilities') && '#ffff',  
                     borderBottom: 'solid 1px  rgba(156, 163, 175, 1)', 
                     "&:hover": {
                         backgroundColor: "rgba(37, 99, 235, 1)",
@@ -269,24 +154,19 @@ function FacilitySideMenu({ states, stateSetters, filters }) {
 
                 onClick={(ev) => {
 
-                    setTitle('Approved Facilities')
-                    setAllFctsSelected(false)
-                    setPathId('approved')
-                    setApprovedFctsSelected(true)
-                    setNewFctsSelected(false)
-                    setUpdatedFctsSelected(false)
-                    setFacilitiesPendingApproval(false)
-                    setDHISSyncedFacilities(false)
-                    setFailedValidationFctsSelected(false)
-                    setRejectedFctsSelected(false)
-                    setClosedFctsSelected(false)
-                    setIncompleteFctsSelected(false)
-                    setSyncRegulatedFctsSelected(false)
-                    setFeedBackFctsSelected(false)
-                       
-                    handleQuickFiltersClick('approved')
+                    ev.preventDefault()
 
+                    router.push({
+                        pathname:'/facilities',
+                        query: {
+                            filter:'approved_facilities',
+                            approved: true,
+                            approved_national_level: true,
+                            rejected: false
+                        }
+                    })
 
+                 
                     }}
                 >
                     <ListItemText primary="Approved Facilities" />
@@ -300,32 +180,27 @@ function FacilitySideMenu({ states, stateSetters, filters }) {
                 hasPermission(/^facilities.view_facilityapproval$/, userPermissions) &&
                 <ListItemButton 
                 sx={{  
-                    backgroundColor: (newFtsSelected || pathId === 'new_pending_validation') && '#1d4ed8',
-                    color: (newFtsSelected || pathId === 'new_pending_validation') && '#ffff',  
+                    backgroundColor: (searchParams.get('filter') == 'pending_validation_facilities') && '#1d4ed8',
+                    color: (searchParams.get('filter') == 'pending_validation_facilities') && '#ffff',  
                     borderBottom: 'solid 1px  rgba(156, 163, 175, 1)', 
                     "&:hover": {
                         backgroundColor: "rgba(37, 99, 235, 1)",
                         color: 'white'
                   }}} 
 
-                onClick={() => {
-                        setTitle('Validate New Facilities')
-                        setPathId('new_pending_validation')
-                        setAllFctsSelected(false)
-                        setApprovedFctsSelected(false)
-                        setNewFctsSelected(true)
-                        setUpdatedFctsSelected(false)
-                        setFacilitiesPendingApproval(false)
-                        setDHISSyncedFacilities(false)
-                        setFailedValidationFctsSelected(false)
-                        setRejectedFctsSelected(false)
-                        setClosedFctsSelected(false)
-                        setIncompleteFctsSelected(false)
-                        setSyncRegulatedFctsSelected(false)
-                        setFeedBackFctsSelected(false)
+                onClick={(e) => {
 
-                        handleQuickFiltersClick('new_pending_validation')
+                    e.preventDefault()
 
+                    router.push({
+                        pathname:'/facilities',
+                        query: {
+                            filter:'pending_validation_facilities',
+                            pending_approval: true,
+                            has_edits: false
+                        }
+                    })
+                 
                     }}
                 >
                     <ListItemText primary="New Facilities Pending Validation" />
@@ -339,31 +214,26 @@ function FacilitySideMenu({ states, stateSetters, filters }) {
                 <ListItemButton 
 
                   sx={{  
-                    backgroundColor: (updatedFctsSelected || pathId === 'updated_pending_validation') && '#1d4ed8',
-                    color: (updatedFctsSelected || pathId === 'updated_pending_validation') && '#ffff',  
+                    backgroundColor: (searchParams.get('filter') == 'updated_pending_validation_facilities') && '#1d4ed8',
+                    color: (searchParams.get('filter') == 'updated_pending_validation_facilities') && '#ffff',  
                     borderBottom: 'solid 1px  rgba(156, 163, 175, 1)', 
                     "&:hover": {
                         backgroundColor: "rgba(37, 99, 235, 1)",
                         color: 'white'
                   }}} 
-                    onClick={() => {
-                        setTitle('Validate Updated Facilities')
-                        setPathId('updated_pending_validation')
-                        setAllFctsSelected(false)
-                        setApprovedFctsSelected(false)
-                        setNewFctsSelected(false)
-                        setUpdatedFctsSelected(true)
-                        setFailedValidationFctsSelected(false)
-                        setFacilitiesPendingApproval(false)
-                        setDHISSyncedFacilities(false)
-                        setRejectedFctsSelected(false)
-                        setClosedFctsSelected(false)
-                        setIncompleteFctsSelected(false)
-                        setSyncRegulatedFctsSelected(false)
-                        setFeedBackFctsSelected(false)
-                        
-                        handleQuickFiltersClick('updated_pending_validation')
+                    onClick={(e) => {
 
+                        e.preventDefault()
+
+                        router.push({
+                            pathname:'/facilities',
+                            query: {
+                                filter:'updated_pending_validation_facilities',
+                                has_edits: true,
+                                pending_approval: true
+                            }
+                        })
+                 
                     }}
                 >
                     <ListItemText primary="Updated Facilities Pending Validation" />
@@ -377,32 +247,25 @@ function FacilitySideMenu({ states, stateSetters, filters }) {
                  
                 <ListItemButton 
                 sx={{  
-                    backgroundColor: (facilitiesPendingApproval || pathId === 'to_publish') && '#1d4ed8',
-                    color: (facilitiesPendingApproval || pathId === 'to_publish') && '#ffff',  
+                    backgroundColor: (searchParams.get('filter') == 'pending_approval_facilities') && '#1d4ed8',
+                    color: (searchParams.get('filter') == 'pending_approval_facilities') && '#ffff',  
                     borderBottom: 'solid 1px  rgba(156, 163, 175, 1)', 
                     "&:hover": {
                         backgroundColor: "rgba(37, 99, 235, 1)",
                         color: 'white'
                   }}} 
 
-                    onClick={() => {
-                        setTitle('Facilities Pending Approval')
-                        setPathId('to_publish')
-                        setAllFctsSelected(false)
-                        setApprovedFctsSelected(false)
-                        setNewFctsSelected(false)
-                        setUpdatedFctsSelected(false)
-                        setFacilitiesPendingApproval(true)
-                        setDHISSyncedFacilities(false)
-                        setFailedValidationFctsSelected(false)
-                        setRejectedFctsSelected(false)
-                        setClosedFctsSelected(false)
-                        setIncompleteFctsSelected(false)
-                        setSyncRegulatedFctsSelected(false)
-                        setFeedBackFctsSelected(false)
+                    onClick={(e) => {
+                        e.preventDefault()
 
-                        handleQuickFiltersClick('to_publish')
-
+                        router.push({
+                            pathname:'/facilities',
+                            query: {
+                                filter:'pending_approval_facilities',
+                                to_publish: true
+                            }
+                        })
+                      
                     }}
                 >
                     <ListItemText primary="Facilities Pending Approval" />
@@ -415,32 +278,29 @@ function FacilitySideMenu({ states, stateSetters, filters }) {
 
                 <ListItemButton 
                 sx={{  
-                    backgroundColor: (DHISSyncedFacilities || pathId === 'dhis_synced_facilities') && '#1d4ed8',
-                    color: (DHISSyncedFacilities || pathId === 'dhis_synced_facilities') && '#ffff',  
+                    backgroundColor: (searchParams.get('filter') == 'dhis_synched_facilities') && '#1d4ed8',
+                    color: (searchParams.get('filter') == 'dhis_synched_facilities') && '#ffff',  
                     borderBottom: 'solid 1px  rgba(156, 163, 175, 1)', 
                     "&:hover": {
                         backgroundColor: "rgba(37, 99, 235, 1)",
                         color: 'white'
                   }}} 
 
-                onClick={() => {
-                    setTitle('DHIS Synced Approved Facilities')
-                    setPathId('dhis_synced_facilities')
-                    setAllFctsSelected(false)
-                    setApprovedFctsSelected(false)
-                    setNewFctsSelected(false)
-                    setUpdatedFctsSelected(false)
-                    setFacilitiesPendingApproval(false)
-                    setDHISSyncedFacilities(true)
-                    setFailedValidationFctsSelected(false)
-                    setRejectedFctsSelected(false)
-                    setClosedFctsSelected(false)
-                    setIncompleteFctsSelected(false)
-                    setSyncRegulatedFctsSelected(false)
-                    setFeedBackFctsSelected(false)
+                onClick={(e) => {
 
-                    handleQuickFiltersClick('dhis_synced_facilities')
+                    e.preventDefault()
 
+                    router.push({
+                        pathname:'/facilities',
+                        query: {
+                            filter:'dhis_synched_facilities',
+                            approved: true,
+                            approved_national_level: true,
+                            rejected: false,
+                            reporting_in_dhis: true
+                        }
+                    })
+                
                     }}
                 >
                     <ListItemText primary="Approved DHIS Synced Facilities" />
@@ -453,31 +313,26 @@ function FacilitySideMenu({ states, stateSetters, filters }) {
                 hasPermission(/^facilities.view_rejected_facilities$/, userPermissions) &&
                 <ListItemButton 
                 sx={{  
-                    backgroundColor: (failedValidationFctsSelected || pathId === 'failed_validation') && '#1d4ed8',
-                    color: (failedValidationFctsSelected || pathId === 'failed_validation') && '#ffff',  
+                    backgroundColor: (searchParams.get('filter') == 'failed_validation_facilities') && '#1d4ed8',
+                    color: (searchParams.get('filter') == 'failed_validation_facilities') && '#ffff',  
                     borderBottom: 'solid 1px  rgba(156, 163, 175, 1)', 
                     "&:hover": {
                         backgroundColor: "rgba(37, 99, 235, 1)",
                         color: 'white'
                   }}} 
 
-                onClick={() => {
-                    setTitle('Failed Validation Facilities')
-                    setPathId('failed_validation')
-                    setAllFctsSelected(false)
-                    setApprovedFctsSelected(false)
-                    setNewFctsSelected(false)
-                    setUpdatedFctsSelected(false)
-                    setFailedValidationFctsSelected(true)
-                    setFacilitiesPendingApproval(false)
-                    setDHISSyncedFacilities(false)
-                    setRejectedFctsSelected(false)
-                    setClosedFctsSelected(false)
-                    setIncompleteFctsSelected(false)
-                    setSyncRegulatedFctsSelected(false)
-                    setFeedBackFctsSelected(false)
+                onClick={(e) => {
 
-                        handleQuickFiltersClick('failed_validation')
+                    e.preventDefault()
+
+                    router.push({
+                        pathname:'/facilities',
+                        query: {
+                            filter:'failed_validation_facilities',
+                            rejected: true
+                        }
+                    })
+                   
                     }}
                 >
                     <ListItemText primary="Failed Validation Facilities" />
@@ -490,32 +345,26 @@ function FacilitySideMenu({ states, stateSetters, filters }) {
                 hasPermission(/^facilities.view_rejected_facilities$/, userPermissions) &&
                 <ListItemButton 
                 sx={{  
-                    backgroundColor: (rejectedFctsSelected || pathId === 'rejected') && '#1d4ed8',
-                    color: (rejectedFctsSelected || pathId === 'rejected') && '#ffff',  
+                    backgroundColor: (searchParams.get('filter') == 'rejected_facilities') && '#1d4ed8',
+                    color: (searchParams.get('filter') == 'rejected_facilities') && '#ffff',  
                     borderBottom: 'solid 1px  rgba(156, 163, 175, 1)', 
                     "&:hover": {
                         backgroundColor: "rgba(37, 99, 235, 1)",
                         color: 'white'
                   }}}    
-                onClick={() => {
-                      
-                    setTitle('Rejected Facilities')
-                    setPathId('rejected')
-                    setAllFctsSelected(false)
-                    setApprovedFctsSelected(false)
-                    setNewFctsSelected(false)
-                    setUpdatedFctsSelected(false)
-                    setFailedValidationFctsSelected(false)
-                    setFacilitiesPendingApproval(false)
-                    setDHISSyncedFacilities(false)
-                    setRejectedFctsSelected(true)
-                    setClosedFctsSelected(false)
-                    setIncompleteFctsSelected(false)
-                    setSyncRegulatedFctsSelected(false)
-                    setFeedBackFctsSelected(false)
+                onClick={(e) => {
 
-                    handleQuickFiltersClick('rejected')
+                    e.preventDefault()
 
+                    
+                    router.push({
+                        pathname:'/facilities',
+                        query: {
+                            filter:'rejected_facilities',
+                            rejected_national_true: true
+                        }
+                    })
+                  
                     }}
                 >
                     <ListItemText primary="Rejected Facilities" />
@@ -528,32 +377,26 @@ function FacilitySideMenu({ states, stateSetters, filters }) {
                 hasPermission(/^facilities.view_closed_facilities$/, userPermissions) &&
                 <ListItemButton 
                 sx={{  
-                    backgroundColor: (closedFctsSelected || pathId === 'closed') && '#1d4ed8',
-                    color: (closedFctsSelected || pathId === 'closed') && '#ffff',  
+                    backgroundColor: (searchParams.get('filter') == 'closed_facilities') && '#1d4ed8',
+                    color: (searchParams.get('filter') == 'closed_facilities') && '#ffff',  
                     borderBottom: 'solid 1px  rgba(156, 163, 175, 1)', 
                     "&:hover": {
                         backgroundColor: "rgba(37, 99, 235, 1)",
                         color: 'white'
                   }}} 
 
-                    onClick={() => {
-                        setTitle('Closed Facilities')
-                        setPathId('closed')
-                        setAllFctsSelected(false)
-                        setApprovedFctsSelected(false)
-                        setNewFctsSelected(false)
-                        setUpdatedFctsSelected(false)
-                        setFailedValidationFctsSelected(false)
-                        setFacilitiesPendingApproval(false)
-                        setDHISSyncedFacilities(false)
-                        setRejectedFctsSelected(false)
-                        setClosedFctsSelected(true)
-                        setIncompleteFctsSelected(false)
-                        setSyncRegulatedFctsSelected(false)
-                        setFeedBackFctsSelected(false)
-                       
-                        handleQuickFiltersClick('closed')
+                    onClick={(e) => {
 
+                        e.preventDefault()
+
+                        router.push({
+                            pathname:'/facilities',
+                            query: {
+                                filter:'closed_facilities',
+                                closed: true 
+                            }
+                        })
+                  
                     }}
                 >
                 
@@ -567,31 +410,25 @@ function FacilitySideMenu({ states, stateSetters, filters }) {
                 hasPermission(/^facilities.view_facility$/, userPermissions) &&
                 <ListItemButton
                 sx={{  
-                    backgroundColor: (incompleteFctsSelected || pathId === 'incomplete') && '#1d4ed8',
-                    color: (incompleteFctsSelected || pathId === 'incomplete') && '#ffff',  
+                    backgroundColor: (searchParams.get('filter') == 'incomplete_facilities') && '#1d4ed8',
+                    color: (searchParams.get('filter') == 'incomplete_facilities') && '#ffff',  
                     borderBottom: 'solid 1px  rgba(156, 163, 175, 1)', 
                     "&:hover": {
                         backgroundColor: "rgba(37, 99, 235, 1)",
                         color: 'white'
                   }}} 
-                    onClick={() => {
-                        setTitle('Incomplete Facilities')
-                        setPathId('incomplete')
-                        setAllFctsSelected(false)
-                        setApprovedFctsSelected(false)
-                        setNewFctsSelected(false)
-                        setUpdatedFctsSelected(false)
-                        setFailedValidationFctsSelected(false)
-                        setFacilitiesPendingApproval(false)
-                        setDHISSyncedFacilities(false)
-                        setRejectedFctsSelected(false)
-                        setClosedFctsSelected(false)
-                        setIncompleteFctsSelected(true)
-                        setSyncRegulatedFctsSelected(false)
-                        setFeedBackFctsSelected(false)
+                    onClick={(e) => {
 
-                        handleQuickFiltersClick('incomplete')
+                        e.preventDefault()
 
+                        router.push({
+                            pathname:'/facilities',
+                            query: {
+                                filter:'incomplete_facilities',
+                                incomplete: true
+                            }
+                        })
+                     
                     }}
                 >
                     <ListItemText primary="Incomplete Facilities" />
@@ -604,31 +441,25 @@ function FacilitySideMenu({ states, stateSetters, filters }) {
               hasPermission(/^facilities.view_facility$/, userPermissions) &&
                <ListItemButton 
                sx={{  
-                backgroundColor: (syncRegulatedFctsSelected || pathId === 'khis_synched') && '#1d4ed8',
-                color: (syncRegulatedFctsSelected || pathId === 'khis_synched') && '#ffff',  
+                backgroundColor: (searchParams.get('filter') == 'synchronized_regulated_facilities') && '#1d4ed8',
+                color: (searchParams.get('filter') == 'synchronized_regulated_facilities') && '#ffff',  
                 borderBottom: 'solid 1px  rgba(156, 163, 175, 1)', 
                 "&:hover": {
                     backgroundColor: "rgba(37, 99, 235, 1)",
                     color: 'white'
               }}}  
-                onClick={() => {
-                            setTitle('Synchronize Regulated Facilities')
-                            setPathId('khis_synched')
-                            setAllFctsSelected(false)
-                            setApprovedFctsSelected(false)
-                            setNewFctsSelected(false)
-                            setUpdatedFctsSelected(false)
-                            setFailedValidationFctsSelected(false)
-                            setFacilitiesPendingApproval(false)
-                            setDHISSyncedFacilities(false)
-                            setRejectedFctsSelected(false)
-                            setClosedFctsSelected(false)
-                            setIncompleteFctsSelected(false)
-                            setSyncRegulatedFctsSelected(true)
-                            setFeedBackFctsSelected(false)  
+                onClick={(e) => {
 
-                            handleQuickFiltersClick('khis_synched')
+                    e.preventDefault()
 
+                    router.push({
+                        pathname:'/facilities',
+                        query: {
+                            filter:'synchronized_regulated_facilities',
+                            mfl_code_null: true
+                        }
+                    })
+                        
                         }}
                 >
                     <ListItemText primary="Synchronize Regulated Facilities" />
@@ -641,32 +472,25 @@ function FacilitySideMenu({ states, stateSetters, filters }) {
                 hasPermission(/^facilities.view_facilityservicerating$/, userPermissions) &&
                 <ListItemButton 
                 sx={{  
-                    backgroundColor: (feedBackFctsSelected || pathId === 'feedback') && '#1d4ed8',
-                    color: (feedBackFctsSelected || pathId === 'feedback') && '#ffff',  
+                    backgroundColor: (searchParams.get('filter') == 'feed_back_facilities') && '#1d4ed8',
+                    color: (searchParams.get('filter') == 'feed_back_facilities') && '#ffff',  
                     borderBottom: 'solid 1px  rgba(156, 163, 175, 1)', 
                     "&:hover": {
                         backgroundColor: "rgba(37, 99, 235, 1)",
                         color: 'white'
                   }}} 
 
-                    onClick={() => {
-                        setTitle('Facilities Feedback From Public')
-                        setPathId('feedback')
-                        setAllFctsSelected(false)
-                        setApprovedFctsSelected(false)
-                        setNewFctsSelected(false)
-                        setUpdatedFctsSelected(false)
-                        setFailedValidationFctsSelected(false)
-                        setFacilitiesPendingApproval(false)
-                        setDHISSyncedFacilities(false)
-                        setRejectedFctsSelected(false)
-                        setClosedFctsSelected(false)
-                        setIncompleteFctsSelected(false)
-                        setSyncRegulatedFctsSelected(false)
-                        setFeedBackFctsSelected(true)
+                    onClick={(e) => {
 
-                        handleQuickFiltersClick('feedback')
+                        e.preventDefault()
 
+                        router.push({
+                            pathname:'/facilities',
+                            query: {
+                                filter:'feed_back_facilities',
+                            }
+                        })
+                     
                     }}
                 >
 

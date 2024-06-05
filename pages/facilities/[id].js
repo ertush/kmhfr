@@ -35,10 +35,10 @@ import { KeyboardArrowRight, KeyboardArrowDown } from "@mui/icons-material";
 
 import { Checklist } from "@mui/icons-material";
 import { DocumentScanner } from "@mui/icons-material";
-import { FileCopy } from "@mui/icons-material";
-import { MailOutline } from "@mui/icons-material";
+
 import { Info } from "@mui/icons-material";
 import { MarkAsUnread } from "@mui/icons-material";
+import { useSearchParams } from "next/navigation";
 
 
 
@@ -46,6 +46,8 @@ function Facility(props) {
 
 
   const userCtx = useContext(UserContext)
+
+  const currentPageProps = useSearchParams()
 
 
   const Map = dynamic(
@@ -96,7 +98,6 @@ function Facility(props) {
   const alert = useAlert()
   const router = useRouter()
 
-  const pathMenu = router.asPath.split('=')[1];
 
   const [isClient, setIsClient] = useState(false)
 
@@ -378,7 +379,7 @@ function Facility(props) {
                   `}
               >
                 <div className="col-span-6 md:col-span-3">
-                  <h1 className="text-4xl tracking-tight font-bold leading-tight">
+                  <h1 className="text-4xl tracking-tight capitalize font-bold leading-tight">
                     {facility?.official_name}
                   </h1>
                   <div className="flex flex-col gap-1 w-full items-start justify-start">
@@ -397,7 +398,7 @@ function Facility(props) {
                 </div>
 
                 <div className="flex flex-wrap gap-3 items-start justify-end  md:col-span-2">
-                  <div className="flex flex-wrap gap-3 w-full items-start justify-start md:justify-center">
+                  <div className="flex flex-wrap gap-3 w-full items-start justify-start">
                     {(facility?.operational || facility?.operation_status_name) && facility?.is_complete ? (
                       <span
                         className={
@@ -427,33 +428,12 @@ function Facility(props) {
                         Has changes
                       </span>
                     )}
-                    {facility?.is_complete ? (
+                    {facility?.is_complete &&
                       <span className="bg-blue-200 text-gray-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
                         <CheckCircleIcon className="h-4 w-4" />
                         Completed{" "}
                       </span>
-                    ) : (
-
-                      <span className="bg-yellow-200  flex flex-col justify-start h-auto text-yellow-900 p-2 leading-none text-sm  whitespace-nowrap cursor-default items-start gap-2 gap-x-1">
-
-                        <span className='flex gap-1'>
-                          <CheckCircleIcon className="h-4 w-4" />
-                          <h4>Incomplete Details</h4>
-                        </span>
-
-                        {
-                          facility?.in_complete_details?.split(',')?.map((name, i) => (
-                            <span key={i} className='flex gap-1 capitalize'>
-                              <ChevronRightIcon className="h-4 w-4" />
-                              {name}
-                            </span>
-
-                          ))
-                        }
-
-
-                      </span>
-                    )}
+                    }
                     {facility?.closed && (
                       <span className="bg-gray-200 text-gray-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
                         <LockClosedIcon className="h-4 w-4" />
@@ -463,7 +443,7 @@ function Facility(props) {
                   </div>
                 </div>
 
-                <div className="col-span-6 md:col-span-1 flex flex-col items-center justify-center p-2"></div>
+                {/* <div className="col-span-6 md:col-span-1 flex flex-col items-center justify-center p-2"></div> */}
               </div>
             </div>
 
@@ -519,17 +499,25 @@ function Facility(props) {
                         userCtx?.groups[0].id == 6 ||  // National
                         userCtx?.groups[0].id == 7     // SuperAdmin
                       ) &&
-                      pathMenu?.includes('updated_pending_validation') &&
+                      currentPageProps.get('filter') == 'updated_pending_validation_facilities' &&
 
                       // Validate facility updates
                       <button
-                        onClick={() => router.push(`/facilities/approve_reject/${facility?.id}`)}
+                        onClick={() => router.push(
+                          {
+                            pathname: `/facilities/approve_reject/${facility?.id}`,
+                            query: {
+                              filter: 'updated_pending_validation_facilities'
+                            }
+                          }
+                          
+                        )}
                         className={
                           "p-2 text-center -md font-semibold text-base text-white bg-gray-600  rounded"
 
                         }
                       >
-                        Validate Facility Updates
+                        Validate or Invalidate Facility Updates
                       </button>
                     }
 
@@ -539,17 +527,25 @@ function Facility(props) {
                         userCtx?.groups[0].id == 6 ||  // National
                         userCtx?.groups[0].id == 7     // SuperAdmin
                       ) &&
-                      pathMenu?.includes('to_publish') &&
-
+                      currentPageProps.get('filter') == 'pending_approval_facilities' &&
+                      
                       // Approve / Reject Facility Button
                       <button
-                        onClick={() => router.push(`/facilities/approve_reject/${facility?.id}`)}
+                        onClick={() => router.push(
+                          {
+                            pathname:`/facilities/approve_reject/${facility?.id}`,
+                            query: {
+                              filter: 'pending_approval_facilities'
+                            }
+                        })}
                         className={
                           "p-2 text-center -md font-semibold text-base text-white bg-gray-600  rounded"
 
                         }
                       >
-                        Approve/Reject Facility
+                        
+                        Approve Or Reject Facility
+                        
                       </button>
                     }
 
@@ -560,19 +556,27 @@ function Facility(props) {
                         userCtx?.groups[0]?.id == 1 || // CHRIO
                         userCtx?.groups[0].id == 5 ||  // National
                         userCtx?.groups[0].id == 6 ||  // National
-                        userCtx?.groups[0].id == 7) &&// SuperAdmin
-                      pathMenu?.includes('new_pending_validation') &&
+                        userCtx?.groups[0].id == 7) && // SuperAdmin
+                        
+                        currentPageProps.get('filter') == 'pending_validation_facilities' &&
 
                       //  Validate new facilities
 
                       <button
-                        onClick={() => router.push(`/facilities/approve_reject/${facility?.id}`)}
+                        onClick={() => router.push(
+                          { 
+                            pathname: `/facilities/approve_reject/${facility?.id}`,
+                            query: {
+                              filter: 'pending_validation_facilities'
+                            }
+                          }
+                         )}
                         className={
                           "p-2 text-center -md font-semibold text-base text-white bg-gray-600  rounded"
 
                         }
                       >
-                        Validate/Reject Facility
+                        Validate Or Invalidate Facility
 
                       </button>
                     }
@@ -582,7 +586,11 @@ function Facility(props) {
                         userCtx?.groups[0]?.id == 2 || // SCHRIO
                         userCtx?.groups[0]?.id == 7    // SuperAdmin
                       ) &&
-                      !pathMenu?.includes('rejected') &&
+                      (
+                      currentPageProps.get('filter') !== 'closed_facilities' &&
+                      currentPageProps.get('filter') !== 'rejected_facilities' 
+                      )
+                      &&
 
                       // Edit
                       <button
@@ -595,9 +603,16 @@ function Facility(props) {
 
                     {
 
-                      (userCtx?.groups[0]?.id == 7 ||  // SuperAdmin
-                        userCtx?.groups[0]?.id == 3) && // Regulator
-                      !pathMenu?.includes('rejected') &&
+                      (
+                        userCtx?.groups[0]?.id == 7 ||  // SuperAdmin
+                        userCtx?.groups[0]?.id == 3     // Regulator
+                      ) && 
+                        
+                      (
+                        currentPageProps.get('filter') !== 'closed_facilities' &&
+                        currentPageProps.get('filter') !== 'rejected_facilities' 
+                        )
+                        &&
 
 
                       <button
@@ -613,7 +628,11 @@ function Facility(props) {
                         userCtx?.groups[0]?.id == 2 || //CHRIO
                         userCtx?.groups[0]?.id == 7   // SuperAdmin
                       ) &&
-                      !pathMenu?.includes('rejected') &&
+                      (
+                        currentPageProps.get('filter') !== 'closed_facilities' &&
+                        currentPageProps.get('filter') !== 'rejected_facilities' 
+                        )
+                        &&
 
                       <button
                         onClick={() => router.push(`/facilities/upgrade/${facility?.id}`)}
@@ -623,32 +642,22 @@ function Facility(props) {
                       </button>
                     }
                     {
-                      (!qf.includes('new_pending_validation') &&
+                      (
                         userCtx?.groups[0]?.id == 1 || // CHRIO
                         userCtx?.groups[0]?.id == 2 || // SCHRIO
                         userCtx?.groups[0]?.id == 7    // SuperAdmin 
                       ) &&
+                      currentPageProps.get('filter') !== 'closed_facilities' &&
 
                       <button
                         onClick={() => setIsClosingFacility(true)}
-                        className="p-2 text-center -md font-semibold text-base  text-white bg-gray-600  rounded"
+                        className="p-2 text-center -md font-semibold text-base  text-white bg-gray-600 rounded"
                       >
                         Close
                       </button>
                     }
-                    {
-                      // console.log({ props })
-                    }
-
-                    {/* <button
-                        onClick={() => {
-                                               
-                            router.push(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facility_detail_report/${facility?.id}/?access_token=${props['3']?.token}`)
-                        }}
-                        className="p-2 text-center -md font-semibold text-base  text-white bg-gray-600  rounded"
-                      >
-                        Print
-                      </button> */}
+               
+                    
 
                     <button onClick={() => setIsPrint(!isPrint)} id="dropdownBgHoverButton" data-dropdown-toggle="dropdownBgHover" className="text-white  relative bg-gray-600 focus:outline-none font-semibold rounded p-2 text-center inline-flex items-center" type="button">Print
                       <svg className="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
@@ -707,9 +716,7 @@ function Facility(props) {
             {/* end facility approval */}
 
             <aside className={`flex flex-col col-span-1 md:col-span-2 gap-4 rounded `}>
-              {/* <h3 className="text-2xl tracking-tight font-semibold leading-5">
-                  Map
-                </h3> */}
+              
 
               {facility?.lat_long && facility?.lat_long.length > 0 ? (
                 <div className="w-full bg-gray-200 shadow -lg flex flex-col items-center justify-center relative">
