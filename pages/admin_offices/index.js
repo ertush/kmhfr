@@ -187,7 +187,7 @@ function AdminOffices(props) {
                         </div>
                     </div>
 
-                    <div className='w-full p-2 flex justify-between items-center border-b border-gray-400'>
+                    <div className='max-w-max flex justify-end items-center  md:col-span-2 self-end'>
                     <form
                         className="inline-flex flex-row justify-start flex-grow py-2 lg:py-0"
                         onSubmit={handleSearch}>
