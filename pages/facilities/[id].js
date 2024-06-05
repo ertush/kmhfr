@@ -93,7 +93,6 @@ function Facility(props) {
   const [isPrint, setIsPrint] = useState(false)
 
 
-
   const _ = require('underscore')
   const alert = useAlert()
   const router = useRouter()
@@ -117,6 +116,8 @@ function Facility(props) {
       router.push('/auth/login')
     }
   }, [])
+
+
   if (isClient) {
 
     return (
@@ -849,6 +850,8 @@ function Facility(props) {
     return null
   }
 };
+
+
 
 Facility.getInitialProps = async (ctx) => {
   const allOptions = {};
