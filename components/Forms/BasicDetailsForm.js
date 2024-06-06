@@ -31,7 +31,9 @@ export function BasicDeatilsForm({ editMode }) {
   // State
   const [isClient, setIsClient] = useState(false)
   const [totalFunctionalBeds, setTotalFunctionalBeds] = useState(0)
+
   const [facilityId, setFacilityId] = useMemo(() => {
+    
     let id = ''
 
     function setId(_id) {
@@ -70,6 +72,7 @@ export function BasicDeatilsForm({ editMode }) {
   const [subCountyOptions, setSubCountyOptions] = useState(options?.sub_counties)
   const [constituencyOptions, setConstituencyOptions] = useState(options?.constituencies)
   const [wardOptions, setWardOptions] = useState(options?.wards)
+  
   const operationStatusOptions = [
     {
       value: '190f470f-9678-47c3-a771-de7ceebfc53c',
@@ -1361,7 +1364,7 @@ export function BasicDeatilsForm({ editMode }) {
             <label
               htmlFor='reporting_in_dhis'
               className='text-gray-700 capitalize text-sm flex-grow'>
-              *Should this facility have reporting in DHIS2?{' '}
+              *Is this facililty reporting ?{' '}
 
             </label>
             <span className='flex items-center gap-x-1'>
