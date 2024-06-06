@@ -184,7 +184,7 @@ function FacilityHome (props){
         // return (
         //     <pre>
         //         {
-        //             JSON.stringify({props}, null, 2)
+        //             JSON.stringify(props.token, null, 2)
         //         }
         //     </pre>
         // )
@@ -247,14 +247,14 @@ function FacilityHome (props){
                                 </div>
                                 }
                             
-                                <Menu.Items as="ul" className="absolute top-10 right-0 z-10 flex flex-col gap-y-1 items-center justify-start bg-white  shadow-lg border border-gray-200 p-1 w-1/2">
+                                <Menu.Items as="ul" className="absolute top-10 right-0 z-30 mb-3 flex flex-col gap-y-1 items-center justify-start bg-white  shadow-lg border border-gray-200 p-1 w-1/2">
                                    
                                     <Menu.Item as="li" className="p-0 flex items-center w-full text-center hover:bg-gray-200 focus:bg-gray-200 active:bg-gray-200">
                                         {({ active }) => (
                                             <button className={"flex items-center justify-start text-center hover:bg-gray-200 focus:bg-gray-200 text-gray-800 font-medium active:bg-gray-200 py-2 px-1 w-full " + (active ? 'bg-gray-200' : '')} onClick={() => {
                                                 let dl_url = props?.current_url
                                                 if (dl_url.includes('?')) { dl_url += `&format=csv&access_token=${props?.token}` } else { dl_url += `?format=csv&access_token=${props?.token}` }
-                                                console.log('Downloading CSV. ' + dl_url || '')
+                                                // console.log('Downloading CSV. ' + dl_url || '')
                                                 // window.open(dl_url, '_blank', 'noopener noreferrer')
                                                 window.location.href = dl_url
                                             }}>
@@ -294,7 +294,7 @@ function FacilityHome (props){
                             {/* Accordion Filter */}
 
                             <Accordion 
-                            sx={{borderRadius:'4px', boxShadow:'none', borderBottomLeftRadius:'0px', borderBottomRightRadius:'0px'}} className='border bg-gray-50 border-gray-200  mb-4 w-full shadow-none' expanded={isAccordionExpanded} onChange={handleAccordionExpand}>
+                            sx={{borderRadius:'4px', boxShadow:'none', zIndex: '0px', borderBottomLeftRadius:'0px', borderBottomRightRadius:'0px'}} className='border bg-gray-50 border-gray-200  mb-4 w-full shadow-none' expanded={isAccordionExpanded} onChange={handleAccordionExpand}>
                                             <AccordionSummary
                                                 expandIcon={<ExpandMoreIcon />}
                                                 aria-controls="panel1a-content"
@@ -942,7 +942,8 @@ export async function getServerSideProps(ctx) {
                 total_pages: facilities?.total_pages,
                 count: facilities?.count,
                 page_size: facilities?.page_size,
-                query
+                query,
+                token,
             }
         }
     }
@@ -959,7 +960,8 @@ export async function getServerSideProps(ctx) {
                 total_pages: 0,
                 count:0,
                 page_size: 0,
-                query
+                query,
+                token: null
             }
     }
 }
