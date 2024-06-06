@@ -287,7 +287,7 @@ const User = (props) => {
 								status?.status.includes("error") &&
 								<Alert severity={status?.status} sx={{ width: '100%' }}>
 
-									{status.message?.__all__[0]}
+									{status?.message?.__all__.length > 0 && status?.message?.__all__[0] }
 
 								</Alert>
 							}
@@ -572,7 +572,7 @@ const User = (props) => {
 											// console.log(x)
 
 											return (
-												<div className='w-full flex flex-row items-center gap-1 gap-x-3 mb-3' key={i}>
+												<div key={i} className='w-full flex flex-row items-center gap-1 gap-x-3 mb-3'>
 													<div className='w-full flex flex-col items-left gap-1 gap-x-3 mb-3'>
 														<label
 															htmlFor='contact_type'
@@ -712,7 +712,7 @@ const User = (props) => {
 
 									{selectedGroups?.map((grp, i) => {
 										return (
-											<>
+											<React.Fragment key={i}>
 												{(() => {
 													if (grp.id == 1 || grp.id == 12 || grp.id == 2) {
 														return (
@@ -859,7 +859,7 @@ const User = (props) => {
 														return null
 													}
 												})()}
-											</>
+											</React.Fragment>
 										)
 									})}
 
