@@ -186,13 +186,15 @@ function EditListWithCount(
             saveSelectedItems(
                 JSON.stringify(x)
             );
+
+            console.log({x})
             setSelectedRows(x)
 
 
 
         }
 
-        if(itemData) selectedRows.pop()
+        // if(itemData) selectedRows.pop()
 
 
     }, [selectedRows]);
@@ -434,6 +436,14 @@ function EditListWithCount(
         }
     });
 
+    // return (
+    //     <pre>
+    //         {
+    //             JSON.stringify({itemData}, null, 2)
+    //         }
+    //     </pre>
+    // )
+
 
     return (
 
@@ -447,6 +457,7 @@ function EditListWithCount(
             {formError && <Alert severity='error' className={'w-full'}>{formError}</Alert>}
 
             <div className='w-full grid grid-cols-12 gap-4'>
+                
 
                 {/* summary table */}
                 <div className="col-span-12 max-h-96 overflow-auto" >
