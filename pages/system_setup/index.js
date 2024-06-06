@@ -879,6 +879,7 @@ function SystemSetup(props) {
 
     const handleAdminUnitsClick = () => {
         setOpenAdminUnits(!openAdminUnits);
+
     };
 
     const handleServiceCatalogueClick = () => {
@@ -921,37 +922,19 @@ function SystemSetup(props) {
         setPage(0);
     };
     //onChange 
-    const handleFacilityOnChange = (e, path) => {
+    const handleFormSubmit = (e, path) => {
         e.preventDefault()
 
         setSubmitting(true)
 
-        const obj = {};
-        const elements = [...e.target];
-        elements.forEach((element) => {
-            if (obj[element.name] === '') {
-                delete obj[element.name];
-            }
-            if (element.name == 'contact_type' || element.name == 'contact') {
-                let data = [...contactList];
-                obj['contacts'] = {}
-                data[element.id][element.name] = element.value
-                obj['contacts'] = data.map((ct) => {
-                    return {
-                        ...ct,
-                        contact_type: ct.contact_type,
-                        contact: ct.contact
-                    }
-                })
 
-            } else {
-                element.type === 'checkbox' ? obj[element.name] = element.checked : obj[element.name] = element.value;
-            }
-        });
+        const formData = new FormData(e.target)
+
+        const payload = Object.fromEntries(formData.entries())
+
         try {
             let url = ''
             editMode ? url = `/api/system_setup/submit_form/?path=${path}&id=${editID}&resourceCategory=${resourceCategory}` : url = `/api/system_setup/submit_form/?path=${path}&resourceCategory=${resourceCategory}`
-
 
             fetch(url, {
                 headers: {
@@ -959,7 +942,7 @@ function SystemSetup(props) {
                     'Content-Type': 'application/json;charset=utf-8'
                 },
                 method: editMode ? 'PATCH' : 'POST',
-                body: JSON.stringify(obj).replace(',"":""', '')
+                body: JSON.stringify(payload)
             }).then(res => res.json()).then(data => {
 
                 setEditMode(false); setEditID(null); setIsAddForm(false); setEditData([])
@@ -1365,7 +1348,7 @@ function SystemSetup(props) {
                                             }}
                                             onClick={() => { setIsAddForm(false); setAddBtnLabel('constituency'); setFields(['id', 'name', 'code']); setTitle('Constituencies'); setResource('constituencies') }}
                                         >
-                                            {console.log({ addBtnLabel })}
+                                            {/* {console.log({ addBtnLabel })} */}
                                             <ListItemText primary="Constituencies" />
                                         </ListItemButton>
                                         {/* Wards */}
@@ -1800,7 +1783,7 @@ function SystemSetup(props) {
                                                     case 'county':
                                                         return (
                                                             <>
-                                                                <form className='w-full h-full' onSubmit={(e) => handleFacilityOnChange(e, addBtnLabel)}>
+                                                                <form className='w-full h-full' onSubmit={(e) => handleFormSubmit(e, addBtnLabel)}>
                                                                     <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
                                                                         <label
                                                                             htmlFor={`add_${addBtnLabel}`}
@@ -1970,7 +1953,7 @@ function SystemSetup(props) {
                                                     case 'sub county':
                                                         return (
                                                             <>
-                                                                <form className='w-full h-full flex-col gap-1' onSubmit={(e) => handleFacilityOnChange(e, addBtnLabel)}>
+                                                                <form className='w-full h-full flex-col gap-1' onSubmit={(e) => handleFormSubmit(e, addBtnLabel)}>
                                                                     {/* Constituency Name */}
                                                                     <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
 
@@ -2015,10 +1998,17 @@ function SystemSetup(props) {
                                                                                 className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
                                                                             />
 
-                                                                        </div>}
+                                                                        </div>
+                                                                        }
 
                                                                     {/* County */}
                                                                     <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+
+                                                                    <pre>
+                                                                        {
+                                                                            JSON.stringify(selectOptions, null, 2)
+                                                                        }
+                                                                    </pre>
 
                                                                         <label
                                                                             htmlFor={`add_${addBtnLabel}_county_field`}
@@ -2054,11 +2044,7 @@ function SystemSetup(props) {
 
                                                                     </div>
 
-                                                                    <pre>
-                                                                        {
-                                                                            JSON.stringify(selectOptions, null, 2)
-                                                                        }
-                                                                    </pre>
+                                                                   
 
                                                                     <div className='flex items-center space-x-3 mt-4'>
                                                                         <button type='submit' className='p-2 text-white border-2 border-blue-600 bg-blue-600 rounded  font-semibold'>
@@ -2133,7 +2119,7 @@ function SystemSetup(props) {
                                                     case 'constituency':
                                                         return (
                                                             <>
-                                                                <form className='w-full h-full flex-col gap-1' onSubmit={(e) => handleFacilityOnChange(e, addBtnLabel)}>
+                                                                <form className='w-full h-full flex-col gap-1' onSubmit={(e) => handleFormSubmit(e, addBtnLabel)}>
                                                                     {/* Constituency Name */}
                                                                     <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
 
@@ -2279,7 +2265,7 @@ function SystemSetup(props) {
                                                     case 'ward':
                                                         return (
 
-                                                            <form className='w-full h-full flex-col gap-1 rounded-none' onSubmit={(e) => handleFacilityOnChange(e, addBtnLabel)}>
+                                                            <form className='w-full h-full flex-col gap-1 rounded-none' onSubmit={(e) => handleFormSubmit(e, addBtnLabel)}>
                                                                 {/* Ward Name */}
                                                                 <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
 
@@ -2432,7 +2418,7 @@ function SystemSetup(props) {
                                                     case 'town':
                                                         return (
                                                             <>
-                                                                <form className='w-full h-full' onSubmit={(e) => handleFacilityOnChange(e, addBtnLabel)}>
+                                                                <form className='w-full h-full' onSubmit={(e) => handleFormSubmit(e, addBtnLabel)}>
                                                                     <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
                                                                         <label
                                                                             htmlFor={`add_${addBtnLabel}_town_field`}
@@ -2468,7 +2454,7 @@ function SystemSetup(props) {
                                                         return (
                                                             resourceCategory === 'ServiceCatalogue' ? (
                                                                 <>
-                                                                    <form className='w-full h-full flex-col gap-1' onSubmit={(e) => handleFacilityOnChange(e, addBtnLabel)}>
+                                                                    <form className='w-full h-full flex-col gap-1' onSubmit={(e) => handleFormSubmit(e, addBtnLabel)}>
                                                                         {/* Name */}
                                                                         <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
 
@@ -2588,7 +2574,7 @@ function SystemSetup(props) {
                                                             ) :
                                                                 (
                                                                     <>
-                                                                        <form className='w-full h-full' onSubmit={(e) => handleFacilityOnChange(e, addBtnLabel)}>
+                                                                        <form className='w-full h-full' onSubmit={(e) => handleFormSubmit(e, addBtnLabel)}>
 
                                                                             {/* Name */}
                                                                             <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
@@ -2833,7 +2819,7 @@ function SystemSetup(props) {
                                                     case 'service':
                                                         return (
                                                             <>
-                                                                <form className='w-full h-full' onSubmit={(e) => handleFacilityOnChange(e, addBtnLabel)}>
+                                                                <form className='w-full h-full' onSubmit={(e) => handleFormSubmit(e, addBtnLabel)}>
 
                                                                     {/* Service code */}
                                                                     <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
@@ -3046,7 +3032,7 @@ function SystemSetup(props) {
 
                                                     case 'Service Category':
                                                         return (
-                                                            <form className='w-full h-full' onSubmit={(e) => handleFacilityOnChange(e, addBtnLabel)}>
+                                                            <form className='w-full h-full' onSubmit={(e) => handleFormSubmit(e, addBtnLabel)}>
 
                                                                 {/* Name */}
                                                                 <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
@@ -3173,7 +3159,7 @@ function SystemSetup(props) {
 
                                                     case 'infrastructure':
                                                         return (
-                                                            <form className='w-full h-full' onSubmit={(e) => handleFacilityOnChange(e, addBtnLabel)}>
+                                                            <form className='w-full h-full' onSubmit={(e) => handleFormSubmit(e, addBtnLabel)}>
 
                                                                 {/* Name */}
                                                                 <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
@@ -3286,7 +3272,7 @@ function SystemSetup(props) {
 
                                                     case 'infrastructure category':
                                                         return (
-                                                            <form className='w-full h-full' onSubmit={(e) => handleFacilityOnChange(e, addBtnLabel)}>
+                                                            <form className='w-full h-full' onSubmit={(e) => handleFormSubmit(e, addBtnLabel)}>
 
                                                                 {/* Name */}
                                                                 <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
@@ -3350,7 +3336,7 @@ function SystemSetup(props) {
                                                     case 'human resource category':
                                                         return (
                                                             <>
-                                                                <form className='w-full h-full' onSubmit={(e) => handleFacilityOnChange(e, addBtnLabel)}>
+                                                                <form className='w-full h-full' onSubmit={(e) => handleFormSubmit(e, addBtnLabel)}>
 
                                                                     {/* Name */}
                                                                     <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
@@ -3410,7 +3396,7 @@ function SystemSetup(props) {
                                                         )
                                                     case 'specialty':
                                                         return (
-                                                            <form className='w-full h-full' onSubmit={(e) => handleFacilityOnChange(e, addBtnLabel)}>
+                                                            <form className='w-full h-full' onSubmit={(e) => handleFormSubmit(e, addBtnLabel)}>
 
                                                                 {/* Name */}
                                                                 <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
@@ -3508,7 +3494,7 @@ function SystemSetup(props) {
                                                     case 'contact type':
                                                         return (
                                                             <>
-                                                                <form className='w-full h-full' onSubmit={(e) => handleFacilityOnChange(e, addBtnLabel)}>
+                                                                <form className='w-full h-full' onSubmit={(e) => handleFormSubmit(e, addBtnLabel)}>
 
                                                                     {/* Name */}
                                                                     <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
@@ -3594,7 +3580,7 @@ function SystemSetup(props) {
                                                     case 'facility department':
                                                         return (
                                                             <>
-                                                                <form className='w-full h-full' onSubmit={(e) => handleFacilityOnChange(e, addBtnLabel)}>
+                                                                <form className='w-full h-full' onSubmit={(e) => handleFormSubmit(e, addBtnLabel)}>
 
                                                                     {/* Name */}
                                                                     <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
@@ -3695,7 +3681,7 @@ function SystemSetup(props) {
                                                     case 'facility type detail':
                                                         return (
                                                             <>
-                                                                <form className='w-full h-full' onSubmit={(e) => handleFacilityOnChange(e, addBtnLabel)}>
+                                                                <form className='w-full h-full' onSubmit={(e) => handleFormSubmit(e, addBtnLabel)}>
 
                                                                     {/* Facility Type */}
                                                                     <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
@@ -3735,7 +3721,7 @@ function SystemSetup(props) {
                                                     case 'facility type category':
                                                         return (
 
-                                                            <form className='w-full h-full' onSubmit={(e) => handleFacilityOnChange(e, addBtnLabel)}>
+                                                            <form className='w-full h-full' onSubmit={(e) => handleFormSubmit(e, addBtnLabel)}>
 
                                                                 {/* Facility Type */}
                                                                 <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
@@ -3815,7 +3801,7 @@ function SystemSetup(props) {
                                                     case 'facility operation status':
                                                         return (
                                                             <>
-                                                                <form className='w-full h-full ' onSubmit={(e) => handleFacilityOnChange(e, addBtnLabel)}>
+                                                                <form className='w-full h-full ' onSubmit={(e) => handleFormSubmit(e, addBtnLabel)}>
 
                                                                     {/* Facility Type */}
                                                                     <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
@@ -3877,7 +3863,7 @@ function SystemSetup(props) {
                                                     case 'facility admission status':
                                                         return (
                                                             <>
-                                                                <form className='w-full h-full' onSubmit={(e) => handleFacilityOnChange(e, addBtnLabel)}>
+                                                                <form className='w-full h-full' onSubmit={(e) => handleFormSubmit(e, addBtnLabel)}>
 
                                                                     {/* Facility Type */}
                                                                     <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
@@ -3916,7 +3902,7 @@ function SystemSetup(props) {
                                                     case 'facility owner detail':
                                                         return (
                                                             <>
-                                                                <form className='w-full h-full' onSubmit={(e) => handleFacilityOnChange(e, addBtnLabel)}>
+                                                                <form className='w-full h-full' onSubmit={(e) => handleFormSubmit(e, addBtnLabel)}>
 
                                                                     {/* Name */}
                                                                     <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
@@ -4000,7 +3986,7 @@ function SystemSetup(props) {
                                                     case 'facility owner category':
                                                         return (
                                                             <>
-                                                                <form className='w-full h-full' onSubmit={(e) => handleFacilityOnChange(e, addBtnLabel)}>
+                                                                <form className='w-full h-full' onSubmit={(e) => handleFormSubmit(e, addBtnLabel)}>
 
                                                                     {/* Name */}
                                                                     <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
@@ -4149,7 +4135,7 @@ function SystemSetup(props) {
                                                     case 'job title':
                                                         return (
                                                             <>
-                                                                <form className='w-full h-full' onSubmit={(e) => handleFacilityOnChange(e, addBtnLabel)}>
+                                                                <form className='w-full h-full' onSubmit={(e) => handleFormSubmit(e, addBtnLabel)}>
 
                                                                     {/* Name */}
                                                                     <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
@@ -4240,7 +4226,7 @@ function SystemSetup(props) {
 
                                                         return (
                                                             <>
-                                                                <form className='w-full h-full' onSubmit={e => handleFacilityOnChange(e, addBtnLabel)}>
+                                                                <form className='w-full h-full' onSubmit={e => handleFormSubmit(e, addBtnLabel)}>
                                                                     <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
 
                                                                         <label
@@ -4372,7 +4358,7 @@ function SystemSetup(props) {
                                                     case 'regulatory status':
                                                         return (
                                                             <>
-                                                                <form className='w-full h-full' onSubmit={(e) => handleFacilityOnChange(e, addBtnLabel)}>
+                                                                <form className='w-full h-full' onSubmit={(e) => handleFormSubmit(e, addBtnLabel)}>
                                                                     {/* regulatory Status */}
                                                                     <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
 
@@ -4409,7 +4395,7 @@ function SystemSetup(props) {
                                                     case 'upgrade reason':
                                                         return (
                                                             <>
-                                                                <form className='w-full h-full' onSubmit={(e) => handleFacilityOnChange(e, addBtnLabel)}>
+                                                                <form className='w-full h-full' onSubmit={(e) => handleFormSubmit(e, addBtnLabel)}>
 
                                                                     {/* Facility Change reason */}
                                                                     <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
