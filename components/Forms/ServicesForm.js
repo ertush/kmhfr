@@ -142,7 +142,7 @@ export function ServicesForm() {
                         <EditListItem
                             itemData={options?.data ? {currentServices: options?.data.facility_services} : {currentServices: cachedServices} ?? null}
                             categoryItems={serviceOptions.categories}
-                            itemId={facilityId ?? options?.data?.id}
+                            itemId={options?.data?.id}
                             options={options?.services}
                             token={options?.token}
                             itemName={'facility_services'}

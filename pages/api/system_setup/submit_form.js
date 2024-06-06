@@ -16,95 +16,95 @@ export default async function postSystemSetupData(req, res) {
         let id = req.query.id || ''
         switch (path){
             case 'hr category':
-                url = `${API_URL}/facilities/speciality_categories/${id}`
+                url = `${API_URL}/facilities/speciality_categories/${id}/`
                 contentType = 'application/json;charset=utf-8';
             break; 
             case 'category':
                 if(resourceCategory === 'ServiceCatalogue'){
-                    url = `${API_URL}/facilities/service_categories/${id}`
+                    url = `${API_URL}/facilities/service_categories/${id}/`
                 }else{
-                    url = `${API_URL}/facilities/infrastructure_categories/${id}`
+                    url = `${API_URL}/facilities/infrastructure_categories/${id}/`
                 }
                 contentType = 'application/json;charset=utf-8';
             break; 
             case 'county':
-                url = `${API_URL}/common/counties/${id}`
+                url = `${API_URL}/common/counties/${id}/`
                 contentType = 'application/json;charset=utf-8';
             break; 
             case 'ward':
-                url = `${API_URL}/common/wards/${id}`
+                url = `${API_URL}/common/wards/${id}/`
                 contentType = 'application/json;charset=utf-8';
             break; 
             case 'constituency':
-                url = `${API_URL}/common/constituencies/${id}`
+                url = `${API_URL}/common/constituencies/${id}/`
                 contentType = 'application/json;charset=utf-8';
             break;
             case 'town':
-                url = `${API_URL}/common/towns/${id}`
+                url = `${API_URL}/common/towns/${id}/`
                 contentType = 'application/json;charset=utf-8';
             break;
             case 'option group':
-                url = `${API_URL}/facilities/option_group_with_options/${id}`
+                url = `${API_URL}/facilities/option_group_with_options/${id}/`
                 contentType = 'application/json;charset=utf-8';
             break;
             case 'service':
-                url = `${API_URL}/facilities/services/${id}`
+                url = `${API_URL}/facilities/services/${id}/`
                 contentType = 'application/json;charset=utf-8';
             break;
             case 'specialty':
-                url = `${API_URL}/facilities/specialities/${id}`
+                url = `${API_URL}/facilities/specialities/${id}/`
                 contentType = 'application/json;charset=utf-8';
             break;
             case 'infrastructure':
-                url = `${API_URL}/facilities/infrastructure/${id}`
+                url = `${API_URL}/facilities/infrastructure/${id}/`
                 contentType = 'application/json;charset=utf-8';
             break;
             case 'contact type': 
-                url = `${API_URL}/common/contact_types/${id}`
+                url = `${API_URL}/common/contact_types/${id}/`
                 contentType = 'application/json;charset=utf-8';
             break;
             case 'facility department': 
-                url = `${API_URL}/facilities/facility_depts/${id}`
+                url = `${API_URL}/facilities/facility_depts/${id}/`
                 contentType = 'application/json;charset=utf-8';
             break;
             case 'facility type detail': 
-                url = `${API_URL}/facilities/facility_types/${id}`
+                url = `${API_URL}/facilities/facility_types/${id}/`
                 contentType = 'application/json;charset=utf-8';
             break;
             case 'facility type category': 
-                url = `${API_URL}/facilities/facility_types/${id}`
+                url = `${API_URL}/facilities/facility_types/${id}/`
                 contentType = 'application/json;charset=utf-8';
             break;
             case 'facility operation status': 
-                url = `${API_URL}/facilities/facility_status/${id}`
+                url = `${API_URL}/facilities/facility_status/${id}/`
                 contentType = 'application/json;charset=utf-8';
             break; 
             case 'facility admission status': 
-                url = `${API_URL}/facilities/facility_admission_status/${id}`
+                url = `${API_URL}/facilities/facility_admission_status/${id}/`
                 contentType = 'application/json;charset=utf-8';
             break;
             case 'facility owner detail': 
-                url = `${API_URL}/facilities/owner_types/${id}`
+                url = `${API_URL}/facilities/owner_types/${id}/`
                 contentType = 'application/json;charset=utf-8';
             break; 
             case 'facility owner category': 
-                url = `${API_URL}/facilities/owners/${id}`
+                url = `${API_URL}/facilities/owners/${id}/`
                 contentType = 'application/json;charset=utf-8';
             break; 
             case 'job title': 
-                url = `${API_URL}/facilities/job_titles/${id}`
+                url = `${API_URL}/facilities/job_titles/${id}/`
                 contentType = 'application/json;charset=utf-8';
             break; 
             case 'regulatory status': 
-                url = `${API_URL}/facilities/regulation_status/${id}`
+                url = `${API_URL}/facilities/regulation_status/${id}/`
                 contentType = 'application/json;charset=utf-8';
             break; 
             case 'upgrade reason': 
-                url = `${API_URL}/facilities/level_change_reasons/${id}`
+                url = `${API_URL}/facilities/level_change_reasons/${id}/`
                 contentType = 'application/json;charset=utf-8';
             break;
             case 'regulatory body': 
-                url = `${API_URL}/facilities/regulating_bodies/${id}`
+                url = `${API_URL}/facilities/regulating_bodies/${id}/`
                 contentType = 'application/json;charset=utf-8';
             break;
 
