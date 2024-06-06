@@ -217,13 +217,7 @@ function EditListWithCount(
     }, [isFormSubmit])
 
     const filterSpecialities = (ctg) => {
-        // function getCheckedCheckBoxCount() {
-        //     const checkboxes = document.querySelectorAll('input[name=itemCheckBox]')
-
-        //     console.log(checkboxes)
-        // }
-
-        // getCheckedCheckBoxCount()
+     
 
         const filteredOptions = options.filter((option) => option.category === ctg);
         setSpecialities(filteredOptions)
@@ -251,9 +245,10 @@ function EditListWithCount(
     };
 
 
-    const handleInputChange = (rowvalue, targetvalue) => {
+    function handleInputChange(rowvalue, targetvalue) {
         // Update the selected rows values
-        let category = selectedRows.filter(k => k.rowid == rowvalue)[0]
+        // let category = selectedRows.filter(k => k.rowid == rowvalue)[0]
+
         if (selectedRows.some(item => item.rowid == rowvalue)) {
             setSelectedRows(prevArray =>
                 prevArray.map(item =>
@@ -262,7 +257,8 @@ function EditListWithCount(
             );
 
         }
-        countCategoryTotalSpecialities(rowvalue, targetvalue, category.category_id)
+
+        // countCategoryTotalSpecialities(rowvalue, targetvalue, category.category_id)
     };
 
 
@@ -272,10 +268,13 @@ function EditListWithCount(
 
         setSubmitting(true)
 
+
+
         if (itemData) {
 
             const newSelectedRows = selectedRows.filter(({rowId}, i) => rowId == itemData[i]?.id) 
 
+            
 
             handleItemsUpdate(token, [newSelectedRows, itemId])
                 .then(resp => {
@@ -463,14 +462,14 @@ function EditListWithCount(
                         <tbody className='bg-gray-50 shadow-md'>
                             {selectedRows.length === 0 && <tr><td colSpan={3} className="text-center">No specialities found</td></tr>}
                             {/* {selectedRows.pop()} */}
-                            {selectedRows.map((row) => {
+                            {selectedRows.map((row, i) => {
                                 // if(row.name !== "Vaccine Carriers" && row.name !== "Public Health Technician"){
-                                return ( <tr>
-                                        <td className="border border-gray-300 px-1 py-1">{row?.sname}</td>
-                                       {row?.iscategoryvisible ? <td className="border border-gray-300 px-1 py-1">{row?.category_name}</td> :null }
-                                        <td className="border border-gray-300 px-1 py-1">Yes</td>
-                                        <td className="border border-gray-300 px-1 py-1">{row?.count ? Number(row?.count) : null}</td>
-                                    </tr>
+                                return ( <tr key={i}>
+                                            <td className="border border-gray-300 px-1 py-1">{row?.sname}</td>
+                                            {row?.iscategoryvisible ? <td className="border border-gray-300 px-1 py-1">{row?.category_name}</td> :null }
+                                            <td className="border border-gray-300 px-1 py-1">Yes</td>
+                                            <td className="border border-gray-300 px-1 py-1">{row?.count ? Number(row?.count) : null}</td>
+                                        </tr>
                                 )
                                 // }
                             })}
@@ -602,16 +601,17 @@ function EditListWithCount(
                                                !row?.name?.includes("Autoclave") 
 
 
-                                               ) && 
+                                               ) 
+                                               && 
                                             <input
                                                 type="number"
                                                 className="p-1"
-                                                 min={0}
+                                                min={0}
                                                 name={row?.id}
                                                 onChange={(e) => {
-                                                    let cid = row?.id
-                                                    handleInputChange(cid, e.target.value)
-
+                                                    e.preventDefault()
+                                                    // let cid = row?.id
+                                                    handleInputChange(row?.id, e.target.value)
                                                 }}
                                                 disabled={!selectedRows.some(item => item?.rowid?.includes(row?.id))}
                                             />

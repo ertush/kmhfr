@@ -40,7 +40,7 @@ export function HumanResourceForm() {
         return [id, setId]
     }, [])
 
-    const [infrastructureFormUrl, setInfrastructureFormUrl] = useState('')
+    // const [infrastructureFormUrl, setInfrastructureFormUrl] = useState('')
     const [submitting, setSubmitting] = useState(false)
 
     const { updatedSavedChanges, updateFacilityUpdateData } = options?.data ? useContext(FacilityUpdatesContext) : {updatedSavedChanges: null, updateFacilityUpdateData: null }
@@ -111,7 +111,7 @@ export function HumanResourceForm() {
                         itemsCategoryName={'human resource'}
                         token={options.token}
                         options={options.hr}
-                        itemId={facilityId ?? options?.data?.id}
+                        itemId={options?.data?.id}
                         item={options?.data ?? null}
                         handleItemsSubmit={handleHrSubmit}
                         handleItemsUpdate={handleHrUpdates}

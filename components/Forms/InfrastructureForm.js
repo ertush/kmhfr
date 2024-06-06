@@ -92,7 +92,8 @@ export function InfrastructureForm() {
         if(window) {
             const currentUrl = new URL(window.document.location.href)
 
-               setFrom(currentUrl.searchParams.get('from'))
+
+            setFrom(currentUrl.searchParams.get('from'))
 
             if(currentUrl.searchParams.get('from') == "previous") {
                 const infraEnc = window.localStorage.getItem('infrastructure')
@@ -163,7 +164,7 @@ export function InfrastructureForm() {
                         categoryItems={infrastructureOption.categories}
                         options={options.infrastructure}
                         token={options.token}
-                        itemId={facilityId ?? options?.data?.id}
+                        itemId={options?.data?.id}
                         handleItemsSubmit={handleInfrastructureSubmit}
                         handleItemsUpdate={handleInfrastructureUpdates}
                         setSubmitting={setSubmitting}

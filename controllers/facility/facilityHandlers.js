@@ -955,9 +955,7 @@ async function handleServiceUpdates(token, stateSetters) {
     const _payload = typeof services == 'string' ? JSON.parse(services).map(({ rowid }) => ({ service: rowid })) : services.map(({ rowid }) => ({ service: rowid }))
 
 
-    console.log({facilityId})
-   
-    return
+    
 
     try {
 
@@ -1029,6 +1027,7 @@ async function handleInfrastructureUpdates(token, stateSetters) {
 
     const payload = {infrastructure: _payload.filter(obj => obj !== undefined)}
 
+    
 
     try {
 
