@@ -187,7 +187,13 @@ function EditListItem({
 
     setFrom(fromParam)
 
-    if(itemName == 'chul_services' && editMode && itemData && itemData?.partners.length > 0) setPartners(itemData?.partners)
+    if(
+      itemName == 'chul_services' && 
+      editMode && itemData && itemData?.partners !== null && 
+      itemData?.partners.length > 0){
+      setPartners(itemData?.partners)
+
+      }
 
 
     if (Array.isArray(itemData?.currentServices)) {

@@ -59,6 +59,8 @@ function Reports(props) {
     const [selectedType, setSelectedType] = useState(null)
     const [selectedCHUStatus, setSelectedCHUStatus] = useState(null)
 
+    const [facilityTypeOptions, setFacilityTypeOptions] = useState(props?.typeOptions)
+
 
 
     const router = useRouter()
@@ -172,6 +174,22 @@ function Reports(props) {
 
         if(setSelectedCHUStatus !== null) {
             setSelectedCHUStatus(null)
+        }
+
+        if(event.target.name == "keph") {
+            setFacilityTypeOptions(() => {
+               return  props?.typeOptions.map((option) => {
+                 switch(option.label.toLowerCase().trim) {
+                    case 'dispensary' || 
+                         'medical clinics' || 
+                         'stand alone':
+                         return option
+                         
+                        
+                 }
+
+               })
+            })
         }
 
 
@@ -786,13 +804,6 @@ function Reports(props) {
                                                 NHIF Accreditation
                                             </Tabs.Tab>
 
-                                            {/* <Tabs.Tab
-                                            id={4}
-                                            value="regulatory_body"
-                                            className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
-                                            >
-                                            Facility Incharge Details
-                                            </Tabs.Tab> */}
 
                                         </Tabs.List>
 
@@ -842,7 +853,7 @@ function Reports(props) {
                                                                     <CustomSelect
                                                                         name="type"
                                                                         onChange={(e) => handleCustomSelectChange(e, 'beds_and_cots_by_all_hierachies', props?.token, 'type')}
-                                                                        options={props?.typeOptions}
+                                                                        options={facilityTypeOptions ?? props?.typeOptions}
                                                                         defaultValue={selectedType}
                                                                         placeholder='Filter by Type'
 
