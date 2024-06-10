@@ -140,7 +140,7 @@ export function ServicesForm() {
                     <div className='flex items-center w-full h-auto min-h-[300px]'>
 
                         <EditListItem
-                            itemData={options?.data ? {currentServices: options?.data.facility_services} : {currentServices: cachedServices} ?? null}
+                            itemData={(options?.data ? {currentServices: options?.data.facility_services} : {currentServices: cachedServices}) ?? null}
                             categoryItems={serviceOptions.categories}
                             itemId={options?.data?.id}
                             options={options?.services}
