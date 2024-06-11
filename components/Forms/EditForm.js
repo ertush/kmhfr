@@ -71,6 +71,7 @@ export function EditForm() {
         orientation="horizontal"
         className="w-full flex flex-wrap flex-col py-2 tab-root"
         defaultValue="basic_details"
+        
 
       >
         <Tabs.List className="list-none md:flex border-b border-gray-600 md:justify-between grid grid-cols-2  gap-2  px-2  uppercase leading-none tab-list font-semibold">

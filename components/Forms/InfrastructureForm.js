@@ -1,4 +1,4 @@
-import { useContext, useMemo, useEffect, useState} from 'react';
+import { useContext, useMemo, useEffect, createContext, useRef, useState} from 'react';
 import EditListWithCount from './formComponents/EditListWithCount';
 import { FormOptionsContext } from '../../pages/facilities/add';
 import { useRouter } from 'next/router'
@@ -10,6 +10,7 @@ import {
 // import { FacilityUpdatesContext } from '../../pages/facilities/edit/[id]';
 import { UpdateFormIdContext } from './Form';
 
+export const SubmitTypeCtxInfra = createContext(null)
 
 export function InfrastructureForm() {
 
@@ -38,6 +39,8 @@ export function InfrastructureForm() {
     const [submitting, setSubmitting] = useState(false)
     const [cachedInfrastructure, setCachedInfrastructure] = useState();
     const [from, setFrom] = useState();
+
+    const submitType = useRef()
 
     const router = useRouter()
     
@@ -158,6 +161,7 @@ export function InfrastructureForm() {
                 <div className='flex items-center w-full h-auto min-h-[300px]'>
 
                     {/* Edit List With Count*/}
+                    <SubmitTypeCtxInfra.Provider value={submitType} >
                     <EditListWithCount
                         otherItemsCategory={null}
                         itemsCategoryName={'infrastructure'}
@@ -177,6 +181,7 @@ export function InfrastructureForm() {
                         setFormId={setFormId}
                         from={from}
                     />
+                    </SubmitTypeCtxInfra.Provider>
 
                 </div>
             </div>

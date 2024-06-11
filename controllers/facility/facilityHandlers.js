@@ -806,7 +806,7 @@ async function handleFacilityContactsUpdates(token, values, facility_id, current
 }
 
 // handleRegulationUpdate
-async function handleRegulationUpdates(token, values, facilityId, licenseFileRef, setSubmitting, router, alert, setFormError) {
+async function handleRegulationUpdates(token, values, facilityId, licenseFileRef, setSubmitting, router, alert, setFormError, submitType) {
 
     let facility_name = ''
 
@@ -904,6 +904,7 @@ async function handleRegulationUpdates(token, values, facilityId, licenseFileRef
                         alert.success('Facility Regulation Details updated successfully')
                         setSubmitting(false)
 
+                        if(submitType.current == null) {
                         router.push({
                             pathname: '/facilities/facility_changes/[facility_id]',
                             query: {
@@ -911,27 +912,11 @@ async function handleRegulationUpdates(token, values, facilityId, licenseFileRef
                             }
                         })
                     }
+                    }
                     else {
                         setSubmitting(false)
                         alert.error('Unable to update regulation form')
-                    //     const response = resp.json()
-                    //     if(response) {
-                    //     response    
-                    //     .then(resp => {
-                    //         const formResponse = []
-                    //         setFormError(() => {
-                    //         if(typeof resp == 'object') {
-                    //             const respEntry = Object.entries(resp)
-
-                    //             for (let [_, v] of respEntry) {
-                    //             formResponse.push(v)
-                    //             }
-
-                    //             return `Error: ${formResponse.join(" ")}`
-                    //         }
-                    //         })
-                    //     })
-                    // }
+                    
                     }
                 }
             })

@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState, useMemo, memo, Suspense } from 'react';
+import { useContext, useEffect, useState, useMemo, memo, Suspense, useRef } from 'react';
 // import { FacilityIdContext, FormContext } from './Form';
 import { Alert } from '@mui/material';
 import dynamic from 'next/dynamic';
@@ -68,6 +68,7 @@ export function GeolocationForm({ editMode }) {
   const [wardData, setWardData] = useState({})
   const [formError, setFormError] = useState(null)
   const [from, setFrom] = useState('')
+  const submitType = useRef(null)
 
   const router = useRouter()
 
@@ -136,13 +137,15 @@ export function GeolocationForm({ editMode }) {
             if (resp.status == 200 || resp.status == 201) {
               alert.success('Geolocation Detatils saved Successfully', {timeout: 10000})
               setSubmitting(false)
-                         
+               
+              if(submitType.current == null){
               router.push({
                 pathname: '/facilities/facility_changes/[facility_id]/',
                 query: { 
                   facility_id: options?.data?.id
                 }
               })
+            }
 
             } else {
               alert.error('Unable to save Geolocation Details Successfully', {timeout: 10000})
@@ -520,9 +523,10 @@ export function GeolocationForm({ editMode }) {
       {
         editMode ?
 
-          <div className='flex justify-end items-center w-full'>
-            <button
+          <div className='flex justify-end gap-3 items-center w-full'>
+             <button
               type='submit'
+              onClick={() => {submitType.current = 'continue'}}
               disabled={submitting}
               className={`flex items-center ${submitting ? 'justify-center' : 'justify-start'} space-x-2 bg-blue-700  p-1 px-2`}>
               <span className='text-medium font-semibold text-white'>
@@ -533,7 +537,26 @@ export function GeolocationForm({ editMode }) {
                       <Spinner />
                     </span>
                     :
-                    'Save & Finish'
+                    'Save and Continue'
+
+                }
+              </span>
+              {/* <ChevronDoubleRightIcon className='w-4 h-4 text-white' /> */}
+            </button>
+
+            <button
+              type='submit'
+              disabled={submitting && submitType.current == null}
+              className={`flex items-center ${submitting ? 'justify-center' : 'justify-start'} space-x-2 bg-blue-700  p-1 px-2`}>
+              <span className='text-medium font-semibold text-white'>
+                {
+                  submitting && submitType.current == null ?
+                    <span className='flex items-center gap-2'>
+                      <span className='text-white'>Saving </span>
+                      <Spinner />
+                    </span>
+                    :
+                    'Save and Finish'
 
                 }
               </span>

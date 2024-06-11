@@ -1,4 +1,4 @@
-import {useContext, useCallback, useMemo, useState} from 'react';
+import {useContext, useRef, useMemo, useState, createContext} from 'react';
 import EditListWithCount from './formComponents/EditListWithCount';
 import { FormOptionsContext } from '../../pages/facilities/add';
 import { useRouter } from 'next/router';
@@ -10,6 +10,7 @@ import { FacilityUpdatesContext } from '../../pages/facilities/edit/[id]';
 import { UpdateFormIdContext } from './Form';
 
 
+export const SubmitTypeCtxHr = createContext(null)
 
 
 export function HumanResourceForm() {
@@ -20,6 +21,7 @@ export function HumanResourceForm() {
     // Context
     const options = useContext(FormOptionsContext);
     const router = useRouter()
+    const submitType = useRef(null)
 
     const setFormId = useContext(UpdateFormIdContext);
 
@@ -105,6 +107,7 @@ export function HumanResourceForm() {
                 <div className='flex items-center w-full h-auto min-h-[300px]'>
 
                     {/* Edit List With Count*/}
+                    <SubmitTypeCtxHr.Provider value={submitType}>
                     <EditListWithCount
                         initialSelectedItems={options?.data? options?.data.facility_specialists:[]}
                         categoryItems={hrOptions.categories}
@@ -125,6 +128,7 @@ export function HumanResourceForm() {
                         title={tableheaders}
 
                     />
+                    </SubmitTypeCtxHr.Provider>
 
                 </div>
 

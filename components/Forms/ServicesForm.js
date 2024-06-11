@@ -1,4 +1,4 @@
-import {useState, useEffect, useContext, useMemo} from 'react';
+import {useState, useEffect, useContext, createContext, useMemo, useRef} from 'react';
 import EditListItem from './formComponents/EditListItem';
 import { FormOptionsContext } from '../../pages/facilities/add';
 // import { FormContext } from './Form';
@@ -12,6 +12,9 @@ import {
 import { FacilityUpdatesContext } from '../../pages/facilities/edit/[id]';
 import {useRouter} from 'next/router'
 import { UpdateFormIdContext } from './Form';
+
+
+export const SubmitTypeCtx = createContext(null)
 
 
 export function ServicesForm() {
@@ -35,7 +38,6 @@ export function ServicesForm() {
         return [id, setId]
     }, [])
  
-    const [regulationFormURL, setRegulationFormURL] = useState('');
 
     const router = useRouter()
 
@@ -43,8 +45,8 @@ export function ServicesForm() {
     
     const options = useContext(FormOptionsContext);
     
-    const { updatedSavedChanges, updateFacilityUpdateData } = options?.data ? useContext(FacilityUpdatesContext) : {updatedSavedChanges: null, updateFacilityUpdateData: null }
- 
+    const submitType = useRef(null)
+
     //Options
     const serviceOptions = ((_services) => {
 
@@ -139,6 +141,8 @@ export function ServicesForm() {
                     {/* Edit list Container */}
                     <div className='flex items-center w-full h-auto min-h-[300px]'>
 
+                        <SubmitTypeCtx.Provider value={submitType}>
+
                         <EditListItem
                             itemData={(options?.data ? {currentServices: options?.data.facility_services} : {currentServices: cachedServices}) ?? null}
                             categoryItems={serviceOptions.categories}
@@ -152,8 +156,9 @@ export function ServicesForm() {
                             submitting={submitting}
                             editMode={editMode}
                             handleItemPrevious={handleServicePrevious}
-                            setFormId={setFormId}                          
+                            setFormId={setFormId}     
                             /> 
+                        </SubmitTypeCtx.Provider>
 
                     </div>
                 </div>

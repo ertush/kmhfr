@@ -38,6 +38,7 @@ export function RegulationForm() {
 
     const alert = useAlert()
     const router = useRouter()
+    const submitType = useRef(null)
 
  
     const [facilityId, setFacilityId] = useMemo(() => {
@@ -232,7 +233,7 @@ function handleLicenseFileChange (e) {
                 setSubmitting(true)
                 
                 options?.data ? 
-                handleRegulationUpdates(options?.token, values, options?.data?.id, fileRef.current, setSubmitting, router, alert, setFormError)
+                handleRegulationUpdates(options?.token, values, options?.data?.id, fileRef.current, setSubmitting, router, alert, setFormError, submitType)
                 :
                 handleRegulationSubmit(options.token, values, facilityId, setSubmitting, fileRef.current, alert, setFormError)
                 
@@ -436,9 +437,10 @@ function handleLicenseFileChange (e) {
                               {
                                   options?.data ?
 
-                                      <div className='flex justify-end items-center w-full'>
-                                          <button
+                                      <div className='flex justify-end gap-3 items-center w-full'>
+                                           <button
                                               type='submit'
+                                              onClick={() => {submitType.current = 'continue'}}
                                               disabled={submitting}
                                               className='flex items-center text-white justify-start space-x-2 bg-blue-700  p-1 px-2'>
                                                {
@@ -448,7 +450,22 @@ function handleLicenseFileChange (e) {
                                                             <Spinner />
                                                         </div>
                                                         :
-                                                        'Save & Finish'
+                                                        'Save and Continue'
+
+                                                }
+                                          </button>
+                                          <button
+                                              type='submit'
+                                              disabled={submitting && submitType.current == null}
+                                              className='flex items-center text-white justify-start space-x-2 bg-blue-700  p-1 px-2'>
+                                               {
+                                                    submitting && submitType.current == null ?
+                                                        <div className='flex items-center gap-2'>
+                                                            <span className='text-white'>Saving </span>
+                                                            <Spinner />
+                                                        </div>
+                                                        :
+                                                        'Save and Finish'
 
                                                 }
                                           </button>

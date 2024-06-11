@@ -72,7 +72,7 @@ export default function FacilityChanges({ facility }) {
                                         className="flex justify-center text-base font-semibold text-white bg-gray-500  py-1 px-2"
                                         onClick={() => router.push(`/facilities/edit/${facility?.data?.id}`)}
                                     >
-                                        Edit
+                                        Continue Editing
                                     </button>
                                     <button
                                         className="flex justify-center text-base font-semibold text-white bg-gray-500  py-1 px-2"
