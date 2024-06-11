@@ -38,6 +38,7 @@ export function RegulationForm() {
 
     const alert = useAlert()
     const router = useRouter()
+    const submitType = useRef(null)
 
  
     const [facilityId, setFacilityId] = useMemo(() => {
@@ -54,7 +55,7 @@ export function RegulationForm() {
         return [id, setId]
     }, [])
 
-    const [facilityContactsUrl, setFacilityContactsUrl] = useState('');
+    // const [facilityContactsUrl, setFacilityContactsUrl] = useState('');
     const [submitting, setSubmitting] = useState(false);
     const [licenseFile, setLicenseFile] = useState(null);
     const [formError, setFormError] = useState(null);
@@ -232,7 +233,7 @@ function handleLicenseFileChange (e) {
                 setSubmitting(true)
                 
                 options?.data ? 
-                handleRegulationUpdates(options?.token, values, options?.data?.id, fileRef.current, setSubmitting, router, alert, setFormError)
+                handleRegulationUpdates(options?.token, values, options?.data?.id, fileRef.current, setSubmitting, router, alert, setFormError, submitType)
                 :
                 handleRegulationSubmit(options.token, values, facilityId, setSubmitting, fileRef.current, alert, setFormError)
                 
@@ -290,11 +291,24 @@ function handleLicenseFileChange (e) {
                             <div className="w-full flex flex-col background items-start justify-start gap-1 mb-3">
                                 <label htmlFor="regulatory_body" className="text-gray-600 capitalize text-sm">Regulatory Body<span className='text-medium leading-12 font-semibold'> *</span> </label>
                                 <Select
-                                    options={((regOptions) => {
+                                    options={
+                                          ((regOptions) => {
 
-                                        return regOptions.filter(({ label }) => !(label === 'Other'))
+                                              const filteredRegOptions = regOptions.filter(({ label }) => label !== 'Other')
 
-                                    })(options.regulating_bodies || [])}
+                                              if (options?.data?.owner_type_name.toLowerCase().trim() == "ministry of health") {
+                                                  return filteredRegOptions.filter(({ label }) => {
+                                                       return label.toLowerCase().trim() == "ministry of health"
+
+                                                  })
+                                              } else {
+                                                  return filteredRegOptions
+                                              }
+                                        // return regOptions
+                                        
+
+                                    })(options.regulating_bodies || [])
+                                    }
                                     required
                                     ref={_regBodyRef}
                                     placeholder="Select Regulatory Body"
@@ -423,9 +437,10 @@ function handleLicenseFileChange (e) {
                               {
                                   options?.data ?
 
-                                      <div className='flex justify-end items-center w-full'>
-                                          <button
+                                      <div className='flex justify-end gap-3 items-center w-full'>
+                                           <button
                                               type='submit'
+                                              onClick={() => {submitType.current = 'continue'}}
                                               disabled={submitting}
                                               className='flex items-center text-white justify-start space-x-2 bg-blue-700  p-1 px-2'>
                                                {
@@ -435,7 +450,22 @@ function handleLicenseFileChange (e) {
                                                             <Spinner />
                                                         </div>
                                                         :
-                                                        'Save & Finish'
+                                                        'Save and Continue'
+
+                                                }
+                                          </button>
+                                          <button
+                                              type='submit'
+                                              disabled={submitting && submitType.current == null}
+                                              className='flex items-center text-white justify-start space-x-2 bg-blue-700  p-1 px-2'>
+                                               {
+                                                    submitting && submitType.current == null ?
+                                                        <div className='flex items-center gap-2'>
+                                                            <span className='text-white'>Saving </span>
+                                                            <Spinner />
+                                                        </div>
+                                                        :
+                                                        'Save and Finish'
 
                                                 }
                                           </button>

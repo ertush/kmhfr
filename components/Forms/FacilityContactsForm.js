@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, Fragment, createContext, useContext, useMemo } from 'react';
+import { useState, useCallback, useEffect, Fragment, createContext, useContext, useMemo, useRef } from 'react';
 import { Formik, Form, Field } from 'formik'
 import { FacilityContact, OfficerContactDetails } from './formComponents/FacilityContacts';
 import Select from './formComponents/FormikSelect';
@@ -32,6 +32,7 @@ export function FacilityContactsForm() {
     const options = useContext(FormOptionsContext);
     const contactTypeOptions = options.contact_types;
     const jobTitleOptions = options.job_titles;
+    const submitType = useRef(null)
 
     const setFormId = useContext(UpdateFormIdContext)
 
@@ -72,7 +73,7 @@ export function FacilityContactsForm() {
 
     const [submitting, setSubmitting] = useState(false);
     const [formError, setFormError] = useState(null)
-    const [geolocationUrl, setGeolocationUrl] = useState('')
+    // const [geolocationUrl, setGeolocationUrl] = useState('')
     // const [responseError, setResponseError] = useState(null);
 
 
@@ -254,12 +255,14 @@ export function FacilityContactsForm() {
                             if (resp.status == 200 || resp.status == 204) {
                                 alert.success("Updated facility contacts successfully")
 
-                                router.push({
-                                    pathname: '/facilities/facility_changes/[facility_id]',
-                                    query:{
-                                        facility_id: options?.data?.id
-                                    }
-                                })
+                                if(submitType.current == null){
+                                    router.push({
+                                        pathname: '/facilities/facility_changes/[facility_id]',
+                                        query:{
+                                            facility_id: options?.data?.id
+                                        }
+                                    })
+                            }
                             }
 
                             else {
@@ -605,9 +608,10 @@ export function FacilityContactsForm() {
                                 {
                                     options?.data ?
 
-                                        <div className='flex justify-end items-center w-full'>
+                                        <div className='flex justify-end gap-3 items-center w-full'>
                                             <button
                                                 type='submit'
+                                                onClick={() => {submitType.current = 'continue'}}
                                                 disabled={submitting}
                                                 className='flex items-center justify-start text-white space-x-2 bg-blue-700  p-1 px-2'>
                                                 {
@@ -617,7 +621,22 @@ export function FacilityContactsForm() {
                                                             <Spinner />
                                                         </div>
                                                         :
-                                                        'Save & Finish'
+                                                        'Save and Continue'
+
+                                                }
+                                            </button>
+                                            <button
+                                                type='submit'
+                                                disabled={submitting && submitType.current == null}
+                                                className='flex items-center justify-start text-white space-x-2 bg-blue-700  p-1 px-2'>
+                                                {
+                                                    submitting && submitType.current == null  ?
+                                                        <div className='flex items-center gap-2'>
+                                                            <span className='text-white'>Saving </span>
+                                                            <Spinner />
+                                                        </div>
+                                                        :
+                                                        'Save and Finish'
 
                                                 }
                                             </button>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState,  useContext } from 'react'
 import { useAlert } from 'react-alert'
 import Spinner from '../../Spinner';
 import {
@@ -9,6 +9,7 @@ import 'react-dual-listbox/lib/react-dual-listbox.css';
 import { useRouter } from 'next/router';
 import { TrashIcon } from '@heroicons/react/solid'
 import { Alert } from '@mui/lab'
+import { SubmitTypeCtx } from '../ServicesForm';
 
 
 function RenderpartnersForm({ index, setPartners, partnerName }) {
@@ -83,13 +84,15 @@ function EditListItem({
   handleItemPrevious,
   token,
   options,
-  setFormId
+  setFormId,
 
 }) {
 
 
   const alert = useAlert()
   const router = useRouter()
+
+  const submitType = useContext(SubmitTypeCtx)
 
 
   const [allServices, setallServices] = useState([])
@@ -277,12 +280,14 @@ function EditListItem({
               setSubmitting(false)
               alert.success('Updated facility services successfully');
 
-              router.push({
-                pathname: '/facilities/facility_changes/[facilityId]',
-                query: {
-                  facilityId: itemId
-                }
-              })
+              if(submitType.current == null) {
+                router.push({
+                  pathname: '/facilities/facility_changes/[facilityId]',
+                  query: {
+                    facilityId: itemId
+                  }
+                })
+            }
             } else {
               setSubmitting(false)
               resp.json()
@@ -292,11 +297,11 @@ function EditListItem({
                     if (typeof resp == 'object') {
                       const respEntry = Object.entries(resp)
 
-                      for (let [_, v] of respEntry) {
-                        formResponse.push(v)
+                      for (let [k, v] of respEntry) {
+                        formResponse.push(`${k}:['${v}']`)
                       }
 
-                      return `Error: ${formResponse.join(" ")}`
+                      return `Error: ${formResponse.join("; ")}`
                     }
                   })
                 })
@@ -322,8 +327,8 @@ function EditListItem({
                     if (typeof resp == 'object') {
                       const respEntry = Object.entries(resp)
 
-                      for (let [_, v] of respEntry) {
-                        formResponse.push(v)
+                      for (let [k, v] of respEntry) {
+                        formResponse.push(`${k}:['${v}']`)
                       }
 
                       return `Error: ${formResponse.join(" ")}`
@@ -453,7 +458,7 @@ function EditListItem({
 
     >
 
-      {formError && <Alert severity='error' className={'w-full'}>{formError}</Alert>}
+      {formError && <Alert severity='error' className={'w-full text-wrap'}><code>{formError}</code></Alert>}
 
       {
         itemName == 'chul_services' &&
@@ -753,7 +758,7 @@ function EditListItem({
 
 
         {/* Button Section */}
-      <div className={`flex ${!editMode ? 'justify-between' : 'justify-end'} items-center w-full mt-4`} >
+      <div className={`flex ${!editMode ? 'justify-between' : 'justify-end gap-3'} items-center w-full mt-4`} >
 
         {/* Facility Service Add & Edit Submit Buttons */}
         {
@@ -792,17 +797,44 @@ function EditListItem({
         }
 
 
+      {
+          // Edit
+          itemName == "facility_services" && editMode &&
+          <button
+            type="submit"
+            onClick={() => {submitType.current = 'continue'}}
+            disabled={submitting}
+            className="flex items-center justify-end space-x-2 bg-blue-600   p-1 px-2"
+          >
+            <span className="text-medium font-semibold text-white">
+              {
+                submitting ?
+                  <Spinner />
+                  :
+                  'Save and continue'
+
+              }
+            </span>
+            {
+              submitting &&
+              <span className='text-white'>Saving... </span>
+            }
+
+          </button>
+
+        }
+
         {
           // Edit
           itemName == "facility_services" && editMode &&
           <button
             type="submit"
-            disabled={submitting}
-            className="flex items-center justify-end space-x-2 bg-blue-500   p-1 px-2"
+            disabled={submitting && submitType.current == null}
+            className="flex items-center justify-end space-x-2 bg-blue-600   p-1 px-2"
           >
             <span className="text-medium font-semibold text-white">
               {
-                submitting ?
+                submitting && submitType.current == null ?
                   <Spinner />
                   :
                   'Save and Finish'
@@ -810,8 +842,8 @@ function EditListItem({
               }
             </span>
             {
-              submitting &&
-              <span className='text-white'>Saving </span>
+              submitting && submitType.current == null &&
+              <span className='text-white'>Saving... </span>
             }
 
           </button>
