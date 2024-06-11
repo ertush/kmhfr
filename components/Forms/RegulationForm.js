@@ -54,7 +54,7 @@ export function RegulationForm() {
         return [id, setId]
     }, [])
 
-    const [facilityContactsUrl, setFacilityContactsUrl] = useState('');
+    // const [facilityContactsUrl, setFacilityContactsUrl] = useState('');
     const [submitting, setSubmitting] = useState(false);
     const [licenseFile, setLicenseFile] = useState(null);
     const [formError, setFormError] = useState(null);
@@ -290,11 +290,24 @@ function handleLicenseFileChange (e) {
                             <div className="w-full flex flex-col background items-start justify-start gap-1 mb-3">
                                 <label htmlFor="regulatory_body" className="text-gray-600 capitalize text-sm">Regulatory Body<span className='text-medium leading-12 font-semibold'> *</span> </label>
                                 <Select
-                                    options={((regOptions) => {
+                                    options={
+                                          ((regOptions) => {
 
-                                        return regOptions.filter(({ label }) => !(label === 'Other'))
+                                              const filteredRegOptions = regOptions.filter(({ label }) => label !== 'Other')
 
-                                    })(options.regulating_bodies || [])}
+                                              if (options?.data?.owner_type_name.toLowerCase().trim() == "ministry of health") {
+                                                  return filteredRegOptions.filter(({ label }) => {
+                                                       return label.toLowerCase().trim() == "ministry of health"
+
+                                                  })
+                                              } else {
+                                                  return filteredRegOptions
+                                              }
+                                        // return regOptions
+                                        
+
+                                    })(options.regulating_bodies || [])
+                                    }
                                     required
                                     ref={_regBodyRef}
                                     placeholder="Select Regulatory Body"

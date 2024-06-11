@@ -103,7 +103,7 @@ function FacilityContact({contactTypeOptions, setFacilityContacts, index, fieldN
                         className="w-full flex-grow rounded flex-1 bg-transparent p-2 border placeholder-gray-500 border-gray-600 focus:shadow-none  focus:border-black outline-none" 
                         />
 
-                        <span class="tooltiptext">Invalid Input! Correct Format is +254 #########</span>
+                        <span className="tooltiptext">Invalid Input! Correct Format is +254 #########</span>
                         
 
                         </div>
@@ -124,7 +124,7 @@ function FacilityContact({contactTypeOptions, setFacilityContacts, index, fieldN
                         name={`${fieldNames[1]}_${index}`} 
                         className="w-full flex-grow  rounded flex-1 bg-transparent p-2 border placeholder-gray-500 border-gray-600 focus:shadow-none  focus:border-black outline-none" 
                         />      
-                        <span class="tooltiptext">Invalid Input! Correct Format is xxx@xxx.yy </span>
+                        <span className="tooltiptext">Invalid Input! Correct Format is xxx@xxx.yy </span>
 
                         </div>
 
@@ -145,7 +145,7 @@ function FacilityContact({contactTypeOptions, setFacilityContacts, index, fieldN
                         className="w-full flex-grow  rounded flex-1 bg-transparent p-2 border placeholder-gray-500 border-gray-600 focus:shadow-none  focus:border-black outline-none" 
                         />
 
-                        <span class="tooltiptext">Invalid Input! Correct Format is P.O BOX ##### </span>
+                        <span className="tooltiptext">Invalid Input! Correct Format is P.O BOX ##### </span>
 
 
                         </div>
@@ -271,7 +271,7 @@ function OfficerContactDetails ({contactTypeOptions, setFacilityContacts, contac
                         className="w-full flex-grow rounded flex-1 bg-transparent p-2 border placeholder-gray-500 border-gray-600 focus:shadow-none  focus:border-black outline-none" 
                         />
 
-                        <span class="tooltiptext">Invalid Input! Correct Format is +254 #########</span>
+                        <span className="tooltiptext">Invalid Input! Correct Format is +254 #########</span>
                         
 
                         </div>
@@ -292,7 +292,7 @@ function OfficerContactDetails ({contactTypeOptions, setFacilityContacts, contac
                         name={`${fieldNames[1]}_${index}`} 
                         className="w-full flex-grow  rounded flex-1 bg-transparent p-2 border placeholder-gray-500 border-gray-600 focus:shadow-none  focus:border-black outline-none" 
                         />      
-                        <span class="tooltiptext">Invalid Input! Correct Format is xxx@xxx.yy </span>
+                        <span className="tooltiptext">Invalid Input! Correct Format is xxx@xxx.yy </span>
 
                         </div>
 
@@ -313,7 +313,7 @@ function OfficerContactDetails ({contactTypeOptions, setFacilityContacts, contac
                         className="w-full flex-grow  rounded flex-1 bg-transparent p-2 border placeholder-gray-500 border-gray-600 focus:shadow-none  focus:border-black outline-none" 
                         />
 
-                        <span class="tooltiptext">Invalid Input! Correct Format is P.O BOX ##### </span>
+                        <span className="tooltiptext">Invalid Input! Correct Format is P.O BOX ##### </span>
 
 
                         </div>

@@ -292,11 +292,11 @@ function EditListItem({
                     if (typeof resp == 'object') {
                       const respEntry = Object.entries(resp)
 
-                      for (let [_, v] of respEntry) {
-                        formResponse.push(v)
+                      for (let [k, v] of respEntry) {
+                        formResponse.push(`${k}:['${v}']`)
                       }
 
-                      return `Error: ${formResponse.join(" ")}`
+                      return `Error: ${formResponse.join("; ")}`
                     }
                   })
                 })
@@ -322,8 +322,8 @@ function EditListItem({
                     if (typeof resp == 'object') {
                       const respEntry = Object.entries(resp)
 
-                      for (let [_, v] of respEntry) {
-                        formResponse.push(v)
+                      for (let [k, v] of respEntry) {
+                        formResponse.push(`${k}:['${v}']`)
                       }
 
                       return `Error: ${formResponse.join(" ")}`
@@ -453,7 +453,7 @@ function EditListItem({
 
     >
 
-      {formError && <Alert severity='error' className={'w-full'}>{formError}</Alert>}
+      {formError && <Alert severity='error' className={'w-full text-wrap'}><code>{formError}</code></Alert>}
 
       {
         itemName == 'chul_services' &&

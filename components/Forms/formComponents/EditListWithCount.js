@@ -45,26 +45,6 @@ function EditListWithCount(
     const [formError, setFormError] = useState(null)
 
 
-    function countCategoryTotalSpecialities(specialityid, newvalue, category) {
-        let total = 0;
-        categoryOptions.forEach(item => {
-            if (item.value == category) {
-                selectedRows.filter(k => k.category_id == category).forEach(element => {
-                    if (element.rowid == specialityid) {
-                        element.count = newvalue;
-                    }
-                    total = total + parseInt(element.count);
-                });
-            }
-        });
-        if (categoryOptions.some(item => item.value == category)) {
-            setCategoryItems(prevArray =>
-                prevArray.map(item =>
-                    item.value === category ? { ...item, catcount: Number(total) } : item
-                )
-            );
-        }
-    }
 
 
     //console.log(options)
@@ -112,92 +92,124 @@ function EditListWithCount(
 
     const selectedCountByNames = selectedRows.reduce((acc, sc) => {
         const { category_id, count } = sc;
-        acc[category_id] = (acc[category_id] && 0) + count;
+        const counter = 0
+        if(category_id && count) acc[category_id] = counter + 1
         return acc;
     }, {})
+    
+
 
     const [categoryOptions, setCategoryItems] = useState(() => {
 
         let newarray = [];
+        console.log({categoryItems})
         categoryItems.forEach(element => {
-            let customitem = {}
-            if (selectedCountByNames.hasOwnProperty(element.value)) {
-                customitem = { value: element.value, label: element.label, catcount: selectedCountByNames[element.value] }
-            } else {
-                customitem = { value: element.value, label: element.label, catcount: 0 }
-            }
-
-            newarray.push(customitem);
+            newarray.push({ 
+                value: element.value, 
+                label: element.label, 
+                catcount: selectedCountByNames[element.value] ?? 0
+            });
         });
         return newarray;
     });
 
+   
+   
+
     const editItem = itemsCategoryName.includes('human resource') ? itemData?.map((it) => { return { id: it.id, name: it.speciality_name, count: it.count } }) : itemData?.map(({ infrastructure_name: name, infrastructure: id, count }) => ({ id, name, count }));
 
-    const [savedItems, saveSelectedItems] = useState(itemData ? editItem : [])
+    const [savedItems] = useState(itemData ? editItem : [])
 
     const [showItemCategory, setShowItemCategory] = useState(false)
+
+
+    function countCategoryTotalSpecialities(newValue, category) {
+        let total = 1;
+        
+        categoryOptions.forEach(item => {
+            if (item.value == category) {
+                selectedRows.filter(k => k.category_id == category).forEach(element => {
+                    if(newValue) {
+                        total += 1
+                     } else {
+                        console.log({total})
+                        total = item.catcount - 1
+                    }
+                      //parseInt(element.count);
+                });
+            }
+        });
+
+
+        if (categoryOptions.some(item => item.value == category)) {
+            console.log({total})
+            setCategoryItems(prevArray =>
+                prevArray.map(item =>
+                    item.value === category ? { ...item, catcount: Number(total) } : item
+                )
+            );
+        }
+    }
   
-    const [items, setItems] = useState(typeof savedItems === 'string' && savedItems.length > 0 ? JSON.parse(savedItems) : savedItems)
+    // const [items, setItems] = useState(typeof savedItems === 'string' && savedItems.length > 0 ? JSON.parse(savedItems) : savedItems)    
 
     // Refs
 
 
     //Effects 
-    useEffect(() => {
-        //store service when service is added
+    // useEffect(() => {
+    //     //store service when service is added
 
-        if (selectedRows.length !== 0) {
+    //     // if (selectedRows.length !== 0) {
 
-            const x = selectedRows;
+    //     //     const x = selectedRows;
 
-            if (editItem && editItem.length > 1) {
-                if (editItem[0]?.id === items[0]?.id) x.push(editItem[0]);
-            }
+    //     //     if (editItem && editItem.length > 1) {
+    //     //         if (editItem[0]?.id === items[0]?.id) x.push(editItem[0]);
+    //     //     }
 
-            //Check if infrastructure has count
+    //     //     //Check if infrastructure has count
 
-            x.forEach(obj => {
-                if (
-                    obj?.sname?.includes("Main Grid") &&
-                    obj?.sname?.includes("Gas") &&
-                    obj?.sname?.includes("Bio-Gas") &&
-                    // WATER SOURCE
-                    obj?.sname?.includes("Roof Harvested Water") &&
-                    obj?.sname?.includes("River / Dam / Lake") &&
-                    obj?.sname?.includes("Donkey Cart / Vendor") &&
-                    obj?.sname?.includes("Piped Water") &&
-                    // MEDICAL WASTE MANAGEMENT
-                    obj?.sname?.includes("Sewer systems") &&
-                    obj?.sname?.includes("Dump without burning") &&
-                    obj?.sname?.includes("Open burning") &&
-                    obj?.sname?.includes("Remove offsite") &&
-                    // ACCESS ROADS
-                    obj?.sname?.includes("Tarmac") &&
-                    obj?.sname?.includes("Earthen Road") &&
-                    obj?.sname?.includes("Graded ( Murrum )") &&
-                    obj?.sname?.includes("Gravel")
-                ) {
-                    delete obj['count']
-                }
-            })
-
-
-            saveSelectedItems(
-                JSON.stringify(x)
-            );
-
-            console.log({x})
-            setSelectedRows(x)
+    //     //     x.forEach(obj => {
+    //     //         if (
+    //     //             obj?.sname?.includes("Main Grid") &&
+    //     //             obj?.sname?.includes("Gas") &&
+    //     //             obj?.sname?.includes("Bio-Gas") &&
+    //     //             // WATER SOURCE
+    //     //             obj?.sname?.includes("Roof Harvested Water") &&
+    //     //             obj?.sname?.includes("River / Dam / Lake") &&
+    //     //             obj?.sname?.includes("Donkey Cart / Vendor") &&
+    //     //             obj?.sname?.includes("Piped Water") &&
+    //     //             // MEDICAL WASTE MANAGEMENT
+    //     //             obj?.sname?.includes("Sewer systems") &&
+    //     //             obj?.sname?.includes("Dump without burning") &&
+    //     //             obj?.sname?.includes("Open burning") &&
+    //     //             obj?.sname?.includes("Remove offsite") &&
+    //     //             // ACCESS ROADS
+    //     //             obj?.sname?.includes("Tarmac") &&
+    //     //             obj?.sname?.includes("Earthen Road") &&
+    //     //             obj?.sname?.includes("Graded ( Murrum )") &&
+    //     //             obj?.sname?.includes("Gravel")
+    //     //         ) {
+    //     //             delete obj['count']
+    //     //         }
+    //     //     })
 
 
+    //     //     saveSelectedItems(
+    //     //         JSON.stringify(x)
+    //     //     );
 
-        }
+    //     //     // console.log({x})
+    //     //     setSelectedRows(x)
 
-        // if(itemData) selectedRows.pop()
 
 
-    }, [selectedRows]);
+    //     // }
+
+
+
+    // }, [selectedRows]);
 
 
 
@@ -234,7 +246,9 @@ function EditListWithCount(
         }
       }
 
-    const handleCheckboxChange = (id, name, category, category_name) => {
+    function handleCheckboxChange (id, name, category, category_name, checked) {
+        // const selectedCategory = selectedRows.filter(k => k.rowid == id)[0]
+
         setSelectedRows((prevSelectedRows) => {
             if (prevSelectedRows?.filter((row) => row?.rowid == id).length > 0) {
                 return prevSelectedRows?.filter((row) => row?.rowid !== id);
@@ -244,12 +258,14 @@ function EditListWithCount(
                 return [...prevSelectedRows, customitem];
             }
         });
+
+        countCategoryTotalSpecialities(checked, category)
+
     };
 
 
     function handleInputChange(rowvalue, targetvalue) {
         // Update the selected rows values
-        // let category = selectedRows.filter(k => k.rowid == rowvalue)[0]
 
         if (selectedRows.some(item => item.rowid == rowvalue)) {
             setSelectedRows(prevArray =>
@@ -260,7 +276,6 @@ function EditListWithCount(
 
         }
 
-        // countCategoryTotalSpecialities(rowvalue, targetvalue, category.category_id)
     };
 
 
@@ -303,11 +318,11 @@ function EditListWithCount(
                             if(typeof resp == 'object') {
                                 const respEntry = Object.entries(resp)
           
-                                for (let [_, v] of respEntry) {
-                                formResponse.push(v)
+                                for (let [k, v] of respEntry) {
+                                formResponse.push(`${k}:['${v}']`)
                                 }
           
-                                return `Error: ${formResponse.join(" ")}`
+                                return `Error: ${formResponse.join("\n  ")}`
                             }
                             })
                         })
@@ -414,7 +429,7 @@ function EditListWithCount(
 
 
 
-    const onSearch = ((event, issearchcategory, issearchspeciality) => {
+    function onSearch (event, issearchcategory, issearchspeciality) {
 
         
         const _query = event.target.value;
@@ -434,12 +449,12 @@ function EditListWithCount(
             }
             setCategoryItems(categoryItems);
         }
-    });
+    }
 
     // return (
     //     <pre>
     //         {
-    //             JSON.stringify({itemData}, null, 2)
+    //             JSON.stringify({selectedRows}, null, 2)
     //         }
     //     </pre>
     // )
@@ -454,7 +469,7 @@ function EditListWithCount(
             onSubmit={handleSubmit}
         >
 
-            {formError && <Alert severity='error' className={'w-full'}>{formError}</Alert>}
+            {formError && <Alert severity='error' className={'w-full text-wrap'}><code>{formError}</code></Alert>}
 
             <div className='w-full grid grid-cols-12 gap-4'>
                 
@@ -470,6 +485,7 @@ function EditListWithCount(
                                 ))}
                             </tr>
                         </thead>
+                       
                         <tbody className='bg-gray-50 shadow-md'>
                             {selectedRows.length === 0 && <tr><td colSpan={3} className="text-center">No specialities found</td></tr>}
                             {/* {selectedRows.pop()} */}
@@ -500,7 +516,7 @@ function EditListWithCount(
                     {
                     showItemCategory &&
                     <ul className='max-h-96 overflow-auto border-r border-l border-b border-gray-500'>
-                        {categoryOptions.map(({ label, value, catcount }) => (
+                        {categoryOptions.map(({ label, value, catcount}) => (
                             <div key={value}
                                 className='card bg-gray-50 shadow-md p-2 group hover:bg-gray-500 hover:text-gray-50 hover:cursor-pointer'
                             >
@@ -510,7 +526,7 @@ function EditListWithCount(
                                         filterSpecialities(value)
                                     }}
                                     key={value}>{label}</li>
-                                <span>({catcount} selected)</span>
+                                <span>({`${catcount}` == 'NaN' ? 0 : catcount} selected)</span>
                                 <hr className='border-xs boredr-gray-200 group-hover:border-gray-500'></hr>
                             </div>
 
@@ -549,11 +565,11 @@ function EditListWithCount(
                                                 className="p-1 w-5 h-5"
                                                 checked={selectedRows.some(item => item?.rowid?.includes(row?.id))}
                                                 onChange={(e) => handleCheckboxChange(
-                                                    itemsCategoryName?.includes('human resource') ? row?.id : itemsCategoryName.includes('infrastructure') ? row?.id : "",
+                                                    row?.id,//itemsCategoryName?.includes('human resource') ? row?.id : itemsCategoryName.includes('infrastructure') ? row?.id : "",
                                                     row?.name,
                                                     row?.category,
                                                     row?.category_name,
-                                                    row?.count ? row?.count : 0,
+                                                    // row?.count ? row?.count : 0,
                                                     e.target.checked)
                                                 }
                                             /> Yes
