@@ -44,6 +44,7 @@ function EditListWithCount(
     const [query, setQuery] = useState('')
     const [isActive, setIsActive] = useState(null);
     const [formError, setFormError] = useState(null)
+    
 
     const submitType = itemsCategoryName.includes('infrastructure') ? useContext(SubmitTypeCtxInfra) : useContext(SubmitTypeCtxHr)
 
@@ -90,6 +91,7 @@ function EditListWithCount(
 
     })() : []))
 
+
     const selectedCountByNames = selectedRows.reduce((acc, sc) => {
         const { category_id, count } = sc;
         const counter = 0
@@ -102,7 +104,6 @@ function EditListWithCount(
     const [categoryOptions, setCategoryItems] = useState(() => {
 
         let newarray = [];
-        console.log({ categoryItems })
         categoryItems.forEach(element => {
             newarray.push({
                 value: element.value,
