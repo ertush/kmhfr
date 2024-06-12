@@ -97,13 +97,13 @@ function FacilityContact({contactTypeOptions, setFacilityContacts, index, fieldN
                         required
                         id={`facility-contact-detail-${index}`} 
                         type="tel"
-                        placeholder={'+254 #########'} 
-                        pattern={'[+]{1}[254]{3}[ ]{1}[0-9]{9}'}
+                        placeholder={'07XXXXXXXX'} 
+                        pattern={'[0-9]{10}'}
                         name={`${fieldNames[1]}_${index}`} 
                         className="w-full flex-grow rounded flex-1 bg-transparent p-2 border placeholder-gray-500 border-gray-600 focus:shadow-none  focus:border-black outline-none" 
                         />
 
-                        <span className="tooltiptext">Invalid Input! Correct Format is +254 #########</span>
+                        <span className="tooltiptext">Invalid Input! Correct Format is 07XXXXXXXX</span>
                         
 
                         </div>
@@ -265,13 +265,13 @@ function OfficerContactDetails ({contactTypeOptions, setFacilityContacts, contac
                         required
                         id={`officer-contact-detail-${index}`} 
                         type="tel"
-                        placeholder={'+254 #########'} 
-                        pattern={'[+]{1}[254]{3}[ ]{1}[0-9]{9}'}
+                        placeholder={'07XXXXXXXX'} 
+                        pattern={'[0-9]{10}'}
                         name={`${fieldNames[1]}_${index}`} 
                         className="w-full flex-grow rounded flex-1 bg-transparent p-2 border placeholder-gray-500 border-gray-600 focus:shadow-none  focus:border-black outline-none" 
                         />
 
-                        <span className="tooltiptext">Invalid Input! Correct Format is +254 #########</span>
+                        <span className="tooltiptext">Invalid Input! Correct Format is 07XXXXXXXX</span>
                         
 
                         </div>
