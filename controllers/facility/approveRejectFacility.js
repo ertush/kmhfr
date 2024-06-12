@@ -21,7 +21,7 @@ function validateRejectFacility (facility_id, reject, comment, alert, token, set
         })
          .then(resp => {
 
-                if (resp.status == 200 || resp.status == 201) {
+                if (resp.ok) {
                     setSubmitting(false)
                     if (!reject) {
                         alert.success("Facility validated successfully")
@@ -30,6 +30,7 @@ function validateRejectFacility (facility_id, reject, comment, alert, token, set
                     }
                     router.push('/facilities?qf=new_pending_validation&pending_approval=true&has_edits=false&is_complete=true') // redirect to New Facilties Pending Validation
                 } else {
+                    setSubmitting(false)
                     setRejecting(false)
 
                     resp.json()
@@ -39,11 +40,11 @@ function validateRejectFacility (facility_id, reject, comment, alert, token, set
                           if(typeof resp == 'object') {
                             const respEntry = Object.entries(resp)
             
-                            for (let [_, v] of respEntry) {
-                              formResponse.push(v)
+                            for (let [k, v] of respEntry) {
+                              formResponse.push(`${k}:${v}`)
                             }
             
-                            return `Error: ${formResponse.join(" ")}`
+                            return `Error: ${formResponse.join("; ")}`
                           }
                         })
                     })
@@ -56,6 +57,8 @@ function validateRejectFacility (facility_id, reject, comment, alert, token, set
     
 
 }
+
+
 
 function approveRejectFacility (facility_id, comment, alert, reject, token, setSubmitting, setRejecting, setFormError) {
 
@@ -76,7 +79,7 @@ function approveRejectFacility (facility_id, comment, alert, reject, token, setS
         })
             .then(resp => {
 
-                if (resp.status == 200 || resp.status == 201) {
+                if (resp.ok) {
                     setSubmitting(false)
                     if (reject) {
                         alert.success(`Facility Approved successfully`)
@@ -86,19 +89,22 @@ function approveRejectFacility (facility_id, comment, alert, reject, token, setS
                     
                     router.push('/facilities?qf=approved&approved=true&approved_national_level=true&rejected=false') // redirect Facilties Pending Approval
                 } else {
+                    setSubmitting(false)
                     setRejecting(false)
                     resp.json()
                     .then(resp => {
+                        setSubmitting(false)
+
                         const formResponse = []
                         setFormError(() => {
                           if(typeof resp == 'object') {
                             const respEntry = Object.entries(resp)
             
-                            for (let [_, v] of respEntry) {
-                              formResponse.push(v)
+                            for (let [k, v] of respEntry) {
+                              formResponse.push(`${k}:${v}`)
                             }
             
-                            return `Error: ${formResponse.join(" ")}`
+                            return `Error: ${formResponse.join("; ")}`
                           }
                         })
                     })
@@ -131,7 +137,7 @@ function approveRejectFacilityUpdates (reject, alert, update_id, token, setSubmi
             })
         })
             .then(resp => {
-                if (resp.status == 200 || resp.status == 204) {
+                if (resp.ok) {
 
                     if (reject) {
                         setSubmitting(false)
@@ -140,8 +146,16 @@ function approveRejectFacilityUpdates (reject, alert, update_id, token, setSubmi
                         alert.success("Facility updates rejected successfully")
                     }
 
-                    router.push('/facilities?qf=updated_pending_validation&has_edits=true&pending_approval=true') // redirect to New Facilties Pending Validation
+                    router.push({
+                        pathname: '/facilities',
+                        query: {
+                            filter: 'updated_pending_validation_facilities',
+                            has_edits: true
+                        }
+                    }) // redirect to New Facilties Pending Validation
+                        
                 } else {
+                    setSubmitting(false)
                     setRejecting(false)
 
                     resp.json()
@@ -151,11 +165,11 @@ function approveRejectFacilityUpdates (reject, alert, update_id, token, setSubmi
                           if(typeof resp == 'object') {
                             const respEntry = Object.entries(resp)
             
-                            for (let [_, v] of respEntry) {
-                              formResponse.push(v)
+                            for (let [k, v] of respEntry) {
+                              formResponse.push(`${k}:${v}`)
                             }
             
-                            return `Error: ${formResponse.join(" ")}`
+                            return `Error: ${formResponse.join("; ")}`
                           }
                         })
                     })

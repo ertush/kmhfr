@@ -527,11 +527,11 @@ export function GeolocationForm({ editMode }) {
              <button
               type='submit'
               onClick={() => {submitType.current = 'continue'}}
-              disabled={submitting}
+              disabled={submitting && submitType.current == 'continue'}
               className={`flex items-center ${submitting ? 'justify-center' : 'justify-start'} space-x-2 bg-blue-700  p-1 px-2`}>
               <span className='text-medium font-semibold text-white'>
                 {
-                  submitting ?
+                  submitting && submitType.current == 'continue'?
                     <span className='flex items-center gap-2'>
                       <span className='text-white'>Saving </span>
                       <Spinner />

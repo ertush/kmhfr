@@ -441,10 +441,10 @@ function handleLicenseFileChange (e) {
                                            <button
                                               type='submit'
                                               onClick={() => {submitType.current = 'continue'}}
-                                              disabled={submitting}
+                                              disabled={submitting && submitType.current == 'continue'}
                                               className='flex items-center text-white justify-start space-x-2 bg-blue-700  p-1 px-2'>
                                                {
-                                                    submitting ?
+                                                    submitting && submitType.current == 'continue'?
                                                         <div className='flex items-center gap-2'>
                                                             <span className='text-white'>Saving </span>
                                                             <Spinner />

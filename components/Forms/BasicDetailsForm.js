@@ -1735,26 +1735,7 @@ export function BasicDeatilsForm({ editMode }) {
           />
         </div>
 
-        {/* Nearest landmark */}
-        {/* <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-          <label
-            htmlFor='nearest_landmark'
-            className='text-gray-600 capitalize text-sm'>
-            Nearest landmark
-            <span className='text-medium leading-12 font-semibold'>
-              {' '}
-
-            </span>
-          </label>
-          <input
-
-            type='text'
-            name='nearest_landmark'
-            defaultValue={options?.data?.nearest_landmark ?? ''}
-            onFocus={handleFocus}
-            className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:border-black outline-none'
-          />
-        </div> */}
+        
 
         {/* Location Description */}
         <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
@@ -1838,11 +1819,11 @@ export function BasicDeatilsForm({ editMode }) {
               <button
                 type='submit'
                 onClick={() => {submitType.current = "continue"}}
-                disabled={submitting}
+                disabled={submitting && submitType.current == "continue"}
                 className={`flex items-center ${submitting ? 'justify-center' : 'justify-start'} space-x-2 bg-blue-700  p-1 px-2`}>
                 <span className='text-medium font-semibold text-white'>
                   {
-                    submitting ?
+                    submitting && submitType.current == "continue" ?
                       <div className='flex items-center gap-2'>
                         <span className='text-white'>Saving.. </span>
                         <Spinner />

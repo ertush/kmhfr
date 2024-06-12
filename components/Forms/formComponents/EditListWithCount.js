@@ -589,10 +589,14 @@ function EditListWithCount(
                 savedItems.length > 0 && itemData !== null &&
 
                 <div className="w-full flex justify-end gap-3 h-auto mt-3">
-                     <button type='submit' onClick={() => {submitType.current = 'continue'}} className='p-2 text-white bg-blue-600  font-semibold'>
+                     <button 
+                     type='submit'  
+                     disabled={submitting && submitType.current == 'continue'}
+                     onClick={() => {submitType.current = 'continue'}} 
+                     className='p-2 text-white bg-blue-600  font-semibold'>
                         <span className='text-medium font-semibold text-white'>
                             {
-                                submitting ?
+                                submitting && submitType.current == 'continue' ?
                                     <div className='flex items-center gap-2'>
                                         <span className='text-white'>Saving </span>
                                         <Spinner />

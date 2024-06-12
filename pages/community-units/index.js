@@ -44,7 +44,7 @@ function CommunityUnit(props) {
 	})(pageParams)
 	
 
-	console.log({currentPageParams})
+	// console.log({currentPageParams})
 
 
 	useEffect(() => {
@@ -554,6 +554,7 @@ CommunityUnit.getInitialProps = async (ctx) => {
 		if (ctx?.query?.page) {
 			url = `${url}&page=${ctx.query.page}`;
 		}
+
 
 		try {
 			const r = await fetch(url, {
