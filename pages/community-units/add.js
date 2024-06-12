@@ -898,8 +898,8 @@ function CommunityUnitsExtensionWorkersForm(props) {
 							<input
 								required
 								type='tel'
-								pattern={'[+]{1}[254]{3}[ ]{1}[0-9]{9}'}
-								placeholder={'+254 #########'}
+								pattern={'[0-9]{10}'}
+								placeholder={'07XXXXXXXX'}
 								name='mobile_no'
 								defaultValue={''}
 
