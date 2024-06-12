@@ -63,13 +63,14 @@ function ApproveCommunityUnit(props) {
 
     e.preventDefault();
 
+    
+
     if (e.target.name == 'btn_approve_chu') setIsSubmittingApproval(true);
     if (e.target.name == 'btn_reject_chu') setIsSubmittingRejection(true);
     
 
 
     const rejection_approval_reason = document.getElementsByName('rejection_approval_reason')[0].value
-
 
   
     let payload = {}
@@ -90,11 +91,12 @@ function ApproveCommunityUnit(props) {
       }
     }
 
-   
   
     let url = `${process.env.NEXT_PUBLIC_API_URL}/chul/units/${cu?.id}/` // `/api/common/submit_form_data/?path=approve_chul&id=${id}`
     
-    try {
+
+    
+
       fetch(url, {
         headers: {
           'Accept': 'application/json, text/plain, */*',
@@ -130,15 +132,12 @@ function ApproveCommunityUnit(props) {
   
           console.error(e.message)
         })
-    } catch (e) {
-  
-      // setStatus({ status: 'error', message: e })
-      console.error(e.message)
-    } finally{
-    
-      if (e.target.name == 'btn_approve_chu') setIsSubmittingApproval(false);
-      if (e.target.name == 'btn_reject_chu') setIsSubmittingRejection(false);
-  }
+        .finally(() => {
+
+          if (e.target.name == 'btn_approve_chu') setIsSubmittingApproval(false);
+          if (e.target.name == 'btn_reject_chu') setIsSubmittingRejection(false);
+        })
+   
 }
 
 // approveCHUUpdates(e,  true, props?.token)}
@@ -574,7 +573,7 @@ async function approveCHUUpdates (e, token) {
                     <div className="flex flex-row justify-start items-center space-x-3 p-3">
                       <button
                         type="submit"
-                        disabled={isSubmittingApproval}
+                        disabled={(isSubmittingApproval || isSubmittingRejection)}
                         name="btn_approve_chu_updates"
                         className={"p-2 text-center font-semibold text-base text-white bg-blue-700"}
                         onClick={(e) => approveCHUUpdates(e, props?.token)}
@@ -593,7 +592,7 @@ async function approveCHUUpdates (e, token) {
                       </button>
                       <button
                         type="submit"
-                        disabled={isSubmittingRejection}
+                        disabled={(isSubmittingRejection || isSubmittingApproval)}
                         name="btn_reject_chu_updates"
                         className={"p-2 text-center font-semibold text-base text-white bg-black"}
                         onClick={(e) => approveCHUUpdates(e, props?.token)}

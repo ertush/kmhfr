@@ -307,6 +307,7 @@ function ApproveReject(props) {
                 }}
                 onSubmit={async ({ comment }) => {
                   
+                  
                   // if facility is not validated and has no edits
                   if (!facility?.approved && !facility?.has_edits) {
                     validateRejectFacility(facility?.id, reject, comment, alert, props?.token, setSubmitting, setRejecting, setFormError)
@@ -318,6 +319,7 @@ function ApproveReject(props) {
                   // if facility is not approved and is validated
                   if (!facility?.approved_national_level && facility?.approved) {
                     // console.log('FACILITY WILL BE APPROVED')
+                    
                     approveRejectFacility(facility?.id, comment, alert, reject, props?.token, setSubmitting, setRejecting, setFormError)
                   }
                 }
@@ -328,7 +330,7 @@ function ApproveReject(props) {
                 >
                    {/* Alert Section */}
             
-                  {formError && <Alert severity='error' className='w-full border-2 border-red-500 rounded-none'>{formError}</Alert>}
+                  {formError && <Alert severity='error' className='w-full border-2 border-red-500 rounded-none'><code>{formError}</code></Alert>}
 
 
                   {
@@ -403,6 +405,7 @@ function ApproveReject(props) {
     return null
   }
 }
+
 
 ApproveReject.getInitialProps = async (ctx) => {
   const allOptions = {};

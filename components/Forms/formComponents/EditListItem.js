@@ -798,12 +798,12 @@ function EditListItem({
           <button
             type="submit"
             onClick={() => {submitType.current = 'continue'}}
-            disabled={submitting}
+            disabled={submitting && submitType.current == 'continue'}
             className="flex items-center justify-end space-x-2 bg-blue-600   p-1 px-2"
           >
             <span className="text-medium font-semibold text-white">
               {
-                submitting ?
+                submitting && submitType.current == 'continue' ?
                   <Spinner />
                   :
                   'Save and continue'
@@ -825,7 +825,7 @@ function EditListItem({
           <button
             type="submit"
             disabled={submitting && submitType.current == null}
-            className="flex items-center justify-end space-x-2 bg-blue-600   p-1 px-2"
+            className="flex items-center justify-end space-x-2 bg-blue-600  p-1 px-2"
           >
             <span className="text-medium font-semibold text-white">
               {
