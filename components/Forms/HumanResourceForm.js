@@ -1,4 +1,4 @@
-import {useContext, useRef, useMemo, useState, createContext} from 'react';
+import {useContext, useRef, useState, createContext} from 'react';
 import EditListWithCount from './formComponents/EditListWithCount';
 import { FormOptionsContext } from '../../pages/facilities/add';
 import { useRouter } from 'next/router';
@@ -8,6 +8,9 @@ import {
 } from '../../controllers/facility/facilityHandlers';
 import { FacilityUpdatesContext } from '../../pages/facilities/edit/[id]';
 import { UpdateFormIdContext } from './Form';
+
+import { useSearchParams } from 'next/navigation';
+
 
 
 export const SubmitTypeCtxHr = createContext(null)
@@ -25,22 +28,10 @@ export function HumanResourceForm() {
 
     const setFormId = useContext(UpdateFormIdContext);
 
-    
-    const[facilityId, setFacilityId] = useMemo(() => {
-        let id = ''
+    const pageParams = useSearchParams()
 
-        function setId(_id) {
-            id = _id
-        }
-
-        if(window) {
-            setId(new URL(window.location.href).searchParams.get('facilityId') ?? '')
-        }
-
-        // console.log({id})
-
-        return [id, setId]
-    }, [])
+    const facilityId = pageParams.get('facilityId')
+      
 
     // const [infrastructureFormUrl, setInfrastructureFormUrl] = useState('')
     const [submitting, setSubmitting] = useState(false)
@@ -114,7 +105,7 @@ export function HumanResourceForm() {
                         itemsCategoryName={'human resource'}
                         token={options.token}
                         options={options.hr}
-                        itemId={options?.data?.id}
+                        itemId={options?.data?.id ?? facilityId}
                         item={options?.data ?? null}
                         handleItemsSubmit={handleHrSubmit}
                         handleItemsUpdate={handleHrUpdates}

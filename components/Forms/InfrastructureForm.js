@@ -1,4 +1,4 @@
-import { useContext, useMemo, useEffect, createContext, useRef, useState} from 'react';
+import { useContext, useEffect, createContext, useRef, useState} from 'react';
 import EditListWithCount from './formComponents/EditListWithCount';
 import { FormOptionsContext } from '../../pages/facilities/add';
 import { useRouter } from 'next/router'
@@ -9,31 +9,20 @@ import {
 } from '../../controllers/facility/facilityHandlers'
 // import { FacilityUpdatesContext } from '../../pages/facilities/edit/[id]';
 import { UpdateFormIdContext } from './Form';
+import { useSearchParams } from 'next/navigation';
 
 export const SubmitTypeCtxInfra = createContext(null)
 
 export function InfrastructureForm() {
 
-
     // Context
     const options = useContext(FormOptionsContext);
     const setFormId = useContext(UpdateFormIdContext)
 
+    const pageParams = useSearchParams()
 
-    const[facilityId, setFacilityId] = useMemo(() => {
-        let id = ''
-
-        function setId(_id) {
-            id = _id
-        }
-
-        if(window) {
-            setId(new URL(window.location.href).searchParams.get('facilityId') ?? '')
-        }
-
-        
-        return [id, setId]
-    }, [])
+    const facilityId = pageParams.get('facilityId')
+      
 
     // const [servicesFormUrl, setServicesFormUrl] = useState('')
     const [submitting, setSubmitting] = useState(false)
@@ -168,7 +157,7 @@ export function InfrastructureForm() {
                         categoryItems={infrastructureOption.categories}
                         options={options.infrastructure}
                         token={options.token}
-                        itemId={options?.data?.id}
+                        itemId={options?.data?.id ?? facilityId}
                         handleItemsSubmit={handleInfrastructureSubmit}
                         handleItemsUpdate={handleInfrastructureUpdates}
                         setSubmitting={setSubmitting}

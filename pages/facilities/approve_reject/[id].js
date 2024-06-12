@@ -335,7 +335,7 @@ function ApproveReject(props) {
                     !facility?.has_edits ?
                       <Field
                         as="textarea"
-                        cols="135"
+                        cols="123"
                         rows="auto"
                         name="comment"
                         className="flex rounded col-span-2 bg-transparent border focus:ring-1 focus:ring-blue-900 border-gray-600 text-gray-600 font-normal text-medium p-2"
