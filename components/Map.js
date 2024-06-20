@@ -1,6 +1,6 @@
 import { memo } from 'react'
 import { MapContainer, Marker, Popup, TileLayer, GeoJSON } from 'react-leaflet'
-import { MarkerIcon } from './MarkerIcon'
+import   MarkerIcon  from './MarkerIcon'
 
 
 const Map = ({ operational, lat, long, name, ward_name, code, geoJSON }) => {
