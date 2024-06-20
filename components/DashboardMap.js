@@ -60,7 +60,6 @@ countryBounds = countryBounds.map(arr => arr.reverse())
         });
 
         if (!response.ok) {
-          console.log(response.status);
           throw new Error(`Error: ${response.status} - Unable to fetch boundaries`);
         }
 
@@ -80,7 +79,6 @@ countryBounds = countryBounds.map(arr => arr.reverse())
         });
 
         if (!response.ok) {
-          console.log(response.status);
           throw new Error(`Error: ${response.status} - Unable to fetch boundaries`);
         }
         var geodata = await response.json();
@@ -89,7 +87,6 @@ countryBounds = countryBounds.map(arr => arr.reverse())
           feature.properties.admlevel = "county";
         });
 
-        console.log({country: geodata?.results})
 
         setData(geodata.geojson);
       }
@@ -103,7 +100,6 @@ countryBounds = countryBounds.map(arr => arr.reverse())
         });
 
         if (!response.ok) {
-          console.log(response.status);
           throw new Error(`Error: ${response.status} - Unable to fetch boundaries`);
         }
 
@@ -143,7 +139,6 @@ countryBounds = countryBounds.map(arr => arr.reverse())
         
 
         if (!response.ok) {
-          console.log(response.status);
           throw new Error(`Error: ${response.status} - Unable to fetch boundaries`);
         }
 
@@ -224,7 +219,6 @@ countryBounds = countryBounds.map(arr => arr.reverse())
 
     const handleClick = (e) => { 
       
-    //   console.log(e.layer.feature.properties.name, "has been clicked") 
       map.fitBounds(e.layer.getBounds());
       if (e.layer.feature.properties.admlevel) {
         if (e.layer.feature.properties.admlevel=="bigcountry") {
@@ -252,7 +246,6 @@ countryBounds = countryBounds.map(arr => arr.reverse())
 
    
 
-    // console.log({data: getFacilityName('1cdb792d-e9d6-485d-b7d4-e0e25b37bfe2')})
 
     return (
       <>
