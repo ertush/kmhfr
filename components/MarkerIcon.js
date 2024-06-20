@@ -11,4 +11,4 @@ const MarkerIcon = new L.Icon({
   className: "leaflet-divs-icon",
 });
 
-export { MarkerIcon };
+export default MarkerIcon

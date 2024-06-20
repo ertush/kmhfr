@@ -15,6 +15,9 @@
 # production
 /build
 pages/test.js
+pages/testmap.js
+components/TestLeafletMap.js
+
 
 # misc
 .DS_Store

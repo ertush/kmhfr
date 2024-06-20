@@ -28,19 +28,23 @@ export default async function postSystemSetupData(req, res) {
                 contentType = 'application/json;charset=utf-8';
             break; 
             case 'county':
-                url = `${API_URL}/common/counties/${id}/`
+                url = req.method == 'PATCH' ? `${API_URL}/common/counties/${id}/` : `${API_URL}/common/counties/`
                 contentType = 'application/json;charset=utf-8';
             break; 
             case 'ward':
-                url = `${API_URL}/common/wards/${id}/`
+                url = req.method == 'PATCH' ? `${API_URL}/common/wards/${id}/` : `${API_URL}/common/wards/` 
                 contentType = 'application/json;charset=utf-8';
             break; 
+            case 'sub county':
+                url = req.method == 'PATCH' ? `${API_URL}/common/sub_counties/${id}/` : `${API_URL}/common/sub_counties/`
+                contentType = 'application/json;charset=utf-8';
+            break;
             case 'constituency':
-                url = `${API_URL}/common/constituencies/${id}/`
+                url = req.method == 'PATCH' ? `${API_URL}/common/constituencies/${id}/` : `${API_URL}/common/constituencies/`
                 contentType = 'application/json;charset=utf-8';
             break;
             case 'town':
-                url = `${API_URL}/common/towns/${id}/`
+                url = req.method == 'PATCH' ? `${API_URL}/common/towns/${id}/` : `${API_URL}/common/towns/${id}/`
                 contentType = 'application/json;charset=utf-8';
             break;
             case 'option group':
@@ -111,9 +115,11 @@ export default async function postSystemSetupData(req, res) {
             default:
             break;
         }
+
+
         
         try {
-          
+
             const resp = await fetch(url, {
                 headers: {
                     'Authorization': 'Bearer ' + token,
@@ -121,7 +127,7 @@ export default async function postSystemSetupData(req, res) {
                     'Content-Type': contentType
   
                 },
-                method: method,
+                method,
                 body: method == 'DELETE' ? null:JSON.stringify(req.body)
 
             })

@@ -152,15 +152,13 @@ function SystemSetup(props) {
 
 
 
-    const groupID = userCtx?.groups[0]?.id
+    // const groupID = userCtx?.groups[0]?.id
+
 
 
     // Refs
     const { inputsContainerRef, inputsContainerRef2 } = useRef(null);
 
-    const handleChange = useCallback((event, newValue) => {
-        setValue(newValue);
-    }, []);
 
     useEffect(() => {
 
@@ -187,7 +185,7 @@ function SystemSetup(props) {
             fetch(url)
                 .then(res => res.json())
                 .then(_data => {
-                    if (_data.results.length > 0) {
+                    if (_data?.results?.length > 0) {
                         // update columns
                         // console.log({resourceCategory})
                         switch (resourceCategory) {
@@ -217,7 +215,7 @@ function SystemSetup(props) {
                                             }
                                         ])
 
-                                        setRows(Array.from(_data.results, ({ id, name, code }) => ({ name, code, id })))
+                                        setRows(Array.from(_data?.results, ({ id, name, code }) => ({ name, code, id })))
 
                                         break;
                                     // Check and fix the data
@@ -242,7 +240,7 @@ function SystemSetup(props) {
                                             }
                                         ])
 
-                                        setRows(Array.from(_data.results, ({ id, name, code }) => ({ name, code, id })))
+                                        setRows(Array.from(_data?.results, ({ id, name, code }) => ({ name, code, id })))
 
                                         break;
 
@@ -267,7 +265,7 @@ function SystemSetup(props) {
                                             }
                                         ])
 
-                                        setRows(Array.from(_data.results, ({ id, name, code }) => ({ name, code, id })))
+                                        setRows(Array.from(_data?.results, ({ id, name, code }) => ({ name, code, id })))
 
                                         break;
 
@@ -296,7 +294,7 @@ function SystemSetup(props) {
                                             }
                                         ])
 
-                                        setRows(Array.from(_data.results, ({ id, name, code, sub_county_name, constituency_name, county_name }) => ({ id, name, code, sub_county_name, constituency_name, county_name })))
+                                        setRows(Array.from(_data?.results, ({ id, name, code, sub_county_name, constituency_name, county_name }) => ({ id, name, code, sub_county_name, constituency_name, county_name })))
 
                                         break;
                                     case 'towns':
@@ -321,7 +319,7 @@ function SystemSetup(props) {
                                             }
                                         ])
 
-                                        setRows(Array.from(_data.results, ({ id, name }) => ({ id, name })))
+                                        setRows(Array.from(_data?.results, ({ id, name }) => ({ id, name })))
                                         break;
                                     default:
 
@@ -331,7 +329,7 @@ function SystemSetup(props) {
                                             { field: 'action', label: 'Action', flex: 1 }
                                         ])
 
-                                        setRows(Array.from(_data.results, ({ id, name, code }) => ({ id, name, code })))
+                                        setRows(Array.from(_data?.results, ({ id, name, code }) => ({ id, name, code })))
                                 }
 
                                 break;
@@ -357,7 +355,7 @@ function SystemSetup(props) {
                                     }
                                 ])
 
-                                setRows(Array.from(_data.results, ({ id, name }) => ({ id, name })))
+                                setRows(Array.from(_data?.results, ({ id, name }) => ({ id, name })))
 
                                 break;
                             case 'HealthInfrastructure':
@@ -385,7 +383,7 @@ function SystemSetup(props) {
                                     ])
 
 
-                                    setRows(Array.from(_data.results, ({ id, name, category_name, numbers }) => ({ id, name, category_name, numbers })))
+                                    setRows(Array.from(_data?.results, ({ id, name, category_name, numbers }) => ({ id, name, category_name, numbers })))
                                 }
                                 else {
                                     setColumns([
@@ -408,7 +406,7 @@ function SystemSetup(props) {
                                         }
                                     ])
 
-                                    setRows(Array.from(_data.results, ({ id, name }) => ({ id, name })))
+                                    setRows(Array.from(_data?.results, ({ id, name }) => ({ id, name })))
                                 }
 
                                 break;
@@ -433,7 +431,7 @@ function SystemSetup(props) {
                                     }
                                 ])
 
-                                setRows(Array.from(_data.results, ({ id, name }) => ({ id, name })))
+                                setRows(Array.from(_data?.results, ({ id, name }) => ({ id, name })))
 
                                 break;
                             case 'Contacts':
@@ -458,7 +456,7 @@ function SystemSetup(props) {
                                     }
                                 ])
 
-                                setRows(Array.from(_data.results, ({ id, name }, i) => ({ id, num: i + 1, name })))
+                                setRows(Array.from(_data?.results, ({ id, name }, i) => ({ id, num: i + 1, name })))
 
                                 break;
                             case 'Facilities':
@@ -487,7 +485,7 @@ function SystemSetup(props) {
 
 
 
-                                        setRows(Array.from(_data.results, ({ id, name, description }) => ({ id, name, description })))
+                                        setRows(Array.from(_data?.results, ({ id, name, description }) => ({ id, name, description })))
                                         break;
 
                                     case 'facility_types':
@@ -516,7 +514,7 @@ function SystemSetup(props) {
                                                 ])
 
 
-                                                setRows(Array.from(_data.results, ({ id, name }) => ({ id, name })))
+                                                setRows(Array.from(_data?.results, ({ id, name }) => ({ id, name })))
                                                 break;
 
                                             case 'facility type category':
@@ -542,7 +540,7 @@ function SystemSetup(props) {
                                                 ])
 
 
-                                                setRows(Array.from(_data.results, ({ id, name, sub_division }) => ({ id, name, sub_division })))
+                                                setRows(Array.from(_data?.results, ({ id, name, sub_division }) => ({ id, name, sub_division })))
                                                 break;
 
                                         }
@@ -573,7 +571,7 @@ function SystemSetup(props) {
 
 
 
-                                        setRows(Array.from(_data.results, ({ id, name, is_public_visible }) => ({ id, name, is_public_visible: is_public_visible ? 'Yes' : 'No' })))
+                                        setRows(Array.from(_data?.results, ({ id, name, is_public_visible }) => ({ id, name, is_public_visible: is_public_visible ? 'Yes' : 'No' })))
 
                                         break;
 
@@ -600,7 +598,7 @@ function SystemSetup(props) {
 
 
 
-                                        setRows(Array.from(_data.results, ({ id, name, is_public_visible }) => ({ id, name, is_public_visible: is_public_visible ? 'Yes' : 'No' })))
+                                        setRows(Array.from(_data?.results, ({ id, name, is_public_visible }) => ({ id, name, is_public_visible: is_public_visible ? 'Yes' : 'No' })))
                                         break;
 
                                     case 'facility_service_ratings':
@@ -614,7 +612,7 @@ function SystemSetup(props) {
                                         ])
 
 
-                                        setRows(Array.from(_data.results, ({ id, facility_name, service_name, comment, rating, date }) => ({ id, facility_name, service_name, comment, rating, date })))
+                                        setRows(Array.from(_data?.results, ({ id, facility_name, service_name, comment, rating, date }) => ({ id, facility_name, service_name, comment, rating, date })))
                                         break;
 
                                     case 'owner_types':
@@ -639,7 +637,7 @@ function SystemSetup(props) {
                                             }
                                         ])
 
-                                        setRows(Array.from(_data.results, ({ id, name }) => ({ id, name })))
+                                        setRows(Array.from(_data?.results, ({ id, name }) => ({ id, name })))
 
                                         break;
 
@@ -668,7 +666,7 @@ function SystemSetup(props) {
                                             }
                                         ])
 
-                                        setRows(Array.from(_data.results, ({ id, code, name, abbreviation, owner_type_name }) => ({ id, code, name, abbreviation, owner_type_name })))
+                                        setRows(Array.from(_data?.results, ({ id, code, name, abbreviation, owner_type_name }) => ({ id, code, name, abbreviation, owner_type_name })))
 
                                         break;
 
@@ -695,7 +693,7 @@ function SystemSetup(props) {
                                             }
                                         ])
 
-                                        setRows(Array.from(_data.results, ({ id, name }) => ({ id, name })))
+                                        setRows(Array.from(_data?.results, ({ id, name }) => ({ id, name })))
 
                                         break;
 
@@ -722,7 +720,7 @@ function SystemSetup(props) {
                                             }
                                         ])
 
-                                        setRows(Array.from(_data.results, ({ id, abbreviation, name }) => ({ id, abbreviation, name })))
+                                        setRows(Array.from(_data?.results, ({ id, abbreviation, name }) => ({ id, abbreviation, name })))
 
                                         break;
 
@@ -748,7 +746,7 @@ function SystemSetup(props) {
                                             }
                                         ])
 
-                                        setRows(Array.from(_data.results, ({ id, name }) => ({ id, name })))
+                                        setRows(Array.from(_data?.results, ({ id, name }) => ({ id, name })))
 
                                         break;
 
@@ -791,7 +789,7 @@ function SystemSetup(props) {
 
                                         ])
 
-                                        setRows(Array.from(_data.results, ({ id, reason, description }) => ({ id, reason, description })))
+                                        setRows(Array.from(_data?.results, ({ id, reason, description }) => ({ id, reason, description })))
 
                                         break;
 
@@ -826,7 +824,7 @@ function SystemSetup(props) {
                                     }
                                 ])
 
-                                setRows(Array.from(_data.results, ({ id, facility_name, chu_name, comment, rating, date }) => ({ id, facility_name, chu_name, comment, rating, date })))
+                                setRows(Array.from(_data?.results, ({ id, facility_name, chu_name, comment, rating, date }) => ({ id, facility_name, chu_name, comment, rating, date })))
                                 break;
 
                             case 'Documents':
@@ -853,7 +851,7 @@ function SystemSetup(props) {
                                     }
                                 ])
 
-                                setRows(Array.from(_data.results, ({ id, name, description, fyl }) => ({ id, name, description, fyl })))
+                                setRows(Array.from(_data?.results, ({ id, name, description, fyl }) => ({ id, name, description, fyl })))
 
                                 break;
 
@@ -910,17 +908,7 @@ function SystemSetup(props) {
         setOpenDocuments(!openDocuments);
     };
 
-    const [page, setPage] = useState(0);
-    const [rowsPerPage, setRowsPerPage] = useState(10);
 
-    const handleChangePage = (event, newPage) => {
-        setPage(newPage);
-    };
-
-    const handleChangeRowsPerPage = (event) => {
-        setRowsPerPage(+event.target.value);
-        setPage(0);
-    };
     //onChange 
     const handleFormSubmit = (e, path) => {
         e.preventDefault()
@@ -932,10 +920,12 @@ function SystemSetup(props) {
 
         const payload = Object.fromEntries(formData.entries())
 
-        try {
-            let url = ''
-            editMode ? url = `/api/system_setup/submit_form/?path=${path}&id=${editID}&resourceCategory=${resourceCategory}` : url = `/api/system_setup/submit_form/?path=${path}&resourceCategory=${resourceCategory}`
+        let url = ''
+        editMode ? url = `/api/system_setup/submit_form/?path=${path}&id=${editID}&resourceCategory=${resourceCategory}` : url = `/api/system_setup/submit_form/?path=${path}&resourceCategory=${resourceCategory}`
 
+
+        try {
+            
             fetch(url, {
                 headers: {
                     'Accept': 'application/json, text/plain, */*',
@@ -1207,7 +1197,7 @@ function SystemSetup(props) {
                         .then(_data => {
                             setEditData(_data)
                             addBtnLabel === 'regulatory body' ? setContactList([..._data.contacts]) : addBtnLabel === 'option group' ? setOptionGroup([..._data.options]) : null
-                            addBtnLabel === 'ward' ? fetchSbctyConstituency(_data.county.id) : null
+                            addBtnLabel === 'ward' ? fetchSbctyConstituency(_data?.county?.id) : null
 
                         })
 
@@ -1222,7 +1212,8 @@ function SystemSetup(props) {
         }
 
     }, [addBtnLabel, editID, editMode])
-    // console.log(editData, editMode, editID);
+    
+
     if (isClient) {
         return (
             <>
@@ -1255,9 +1246,10 @@ function SystemSetup(props) {
                                             left: '50%',
                                             transform: 'translate(-50%, -50%)',
                                             width: 700,
-                                            bgcolor: 'rgba(255, 251, 235, 1)',
+                                            bgcolor: 'rgb(239 246 255)',
                                             boxShadow: 24,
-                                            p: 4,
+                                            borderRadius: '4px',
+                                            p: 2,
                                         }
                                     }>
                                         <span className="flex gap-2">
@@ -1737,10 +1729,7 @@ function SystemSetup(props) {
                                 <>
                                     {/* Table Section */}
                                     <div className='col-span-4 w-full h-auto'>
-                                        {/* <form className="flex items-center space-x-3 m-3" onSubmit={e => {e.preventDefault()}}>
-                                        <TextField id="search_table_data" label="Search anything" variant="standard" />
-                                        <button type= "submit" className='bg-gray-500  p-2 text-base font-semibold text-white'>Export</button>
-                                    </form> */}
+                                        
                                         <Paper className="shadow-md rounded " >
                                             <StyledDataGrid
                                                 columns={columns}
@@ -1748,7 +1737,6 @@ function SystemSetup(props) {
                                                 className="w-full justify-evenly"
                                                 getRowClassName={() => `super-app-theme--Row`}
                                                 rowSpacingType="border"
-                                                // sx={{alignItems: 'center', width:'100%', display: 'flex', justifyContent: 'center'}}
                                                 showColumnRightBorder
                                                 showCellRightBorder
                                                 rowSelection={false}
@@ -1829,7 +1817,7 @@ function SystemSetup(props) {
                                                                         </div>}
 
                                                                     <div className='flex items-center space-x-3 mt-4'>
-                                                                        <button type='submit' className='p-2 text-white border-2 border-blue-600 bg-blue-600 rounded  font-semibold'>
+                                                                        <button type='submit' disabled={submitting} className='p-2 text-white border-2 border-blue-600 bg-blue-600 rounded  font-semibold'>
                                                                             {
                                                                                 submitting ?
                                                                                     <div className='flex items-center gap-2'>
@@ -1957,6 +1945,11 @@ function SystemSetup(props) {
                                                                     {/* Constituency Name */}
                                                                     <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
 
+                                                                        {/* <pre>
+                                                                            {
+                                                                                JSON.stringify(editData, null, 2)
+                                                                            }
+                                                                        </pre> */}
                                                                         <label
                                                                             htmlFor={`add_${addBtnLabel}_sub_county_field`}
                                                                             className='text-gray-600 capitalize text-sm'>
@@ -1972,7 +1965,7 @@ function SystemSetup(props) {
                                                                             placeholder='Sub County Name'
                                                                             id={`add_${addBtnLabel}_sub_county_field`}
                                                                             name='name'
-                                                                            defaultValue={editData[0]?.name}
+                                                                            defaultValue={editData?.name}
                                                                             className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
                                                                         />
                                                                     </div>
@@ -1989,12 +1982,11 @@ function SystemSetup(props) {
                                                                                 </span>
                                                                             </label>
                                                                             <input
-                                                                                readOnly
                                                                                 type='text'
                                                                                 placeholder='Sub County Code'
                                                                                 id={`add_${addBtnLabel}`}
                                                                                 name='code'
-                                                                                defaultValue={editData[0]?.code}
+                                                                                defaultValue={editData?.code}
                                                                                 className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
                                                                             />
 
@@ -2003,12 +1995,8 @@ function SystemSetup(props) {
 
                                                                     {/* County */}
                                                                     <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-
-                                                                    <pre>
-                                                                        {
-                                                                            JSON.stringify(selectOptions, null, 2)
-                                                                        }
-                                                                    </pre>
+                                                                    
+                                                                   
 
                                                                         <label
                                                                             htmlFor={`add_${addBtnLabel}_county_field`}
@@ -2031,14 +2019,13 @@ function SystemSetup(props) {
                                                                                 }),
 
                                                                             }}
-                                                                            options={selectOptions}
+                                                                            options={props?.data?.results?.map(({id, name}) => ({label: name, value: id}))}
                                                                             required
                                                                             placeholder='Select '
                                                                             id={`add_${addBtnLabel}_county_field`}
                                                                             name='county'
-                                                                            key={editData[0]?.county}
-                                                                            defaultValue={{ value: editData[0]?.county, label: editData[0]?.county_name }}
-                                                                            className='flex-none rounded w-full border border-gray-600 bg-transparent flex-grow  placeholder-gray-500 focus:border-gray-600 outline-none'
+                                                                            defaultValue={{value: editData?.county, label: editData?.name}}
+                                                                            className='flex-none rounded w-full border border-gray-600 bg-transparent flex-grow placeholder-gray-500 focus:border-gray-600 outline-none'
                                                                         />
 
 
@@ -2047,7 +2034,7 @@ function SystemSetup(props) {
                                                                    
 
                                                                     <div className='flex items-center space-x-3 mt-4'>
-                                                                        <button type='submit' className='p-2 text-white border-2 border-blue-600 bg-blue-600 rounded  font-semibold'>
+                                                                        <button type='submit' disabled={submitting} className='p-2 text-white border-2 border-blue-600 bg-blue-600 rounded  font-semibold'>
                                                                             {
                                                                                 submitting ?
                                                                                     <div className='flex items-center gap-2'>
@@ -2059,7 +2046,7 @@ function SystemSetup(props) {
 
                                                                             }
                                                                         </button>
-                                                                        <button onClick={(e) => { e.preventDefault(); setIsAddForm(false); setAddBtnLabel('sub county'); setTitle('Sub Counties'); setFields(['id', 'name', 'code']); setResource('sub_counties') }} className='p-2 text-gray-600 border-2 border-gray-600 rounded  font-semibold' >cancel</button>
+                                                                        <button  onClick={(e) => { e.preventDefault(); setIsAddForm(false); setAddBtnLabel('sub county'); setTitle('Sub Counties'); setFields(['id', 'name', 'code']); setResource('sub_counties') }} className='p-2 text-gray-600 border-2 border-gray-600 rounded  font-semibold' >cancel</button>
                                                                     </div>
                                                                 </form>
                                                                 &nbsp;
@@ -2204,7 +2191,7 @@ function SystemSetup(props) {
                                                                     </div>
 
                                                                     <div className='flex items-center space-x-3 mt-4'>
-                                                                        <button type='submit' className='p-2 text-white bg-blue-600  font-semibold'>save</button>
+                                                                        <button type='submit'  className='p-2 text-white bg-blue-600  font-semibold'>save</button>
                                                                         <button className='p-2 text-white bg-indigo-500  font-semibold'>cancel</button>
                                                                     </div>
                                                                 </form>
@@ -2315,7 +2302,7 @@ function SystemSetup(props) {
                                                                             }),
 
                                                                         }}
-                                                                        options={selectOptions}
+                                                                        options={props?.data?.results?.map(({id, name}) => ({label: name, value: id}))}
                                                                         required
                                                                         placeholder='Select county'
                                                                         onChange={(e) => fetchSbctyConstituency(e.value)}

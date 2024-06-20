@@ -3,7 +3,7 @@ import { MapContainer, Marker, GeoJSON,  } from 'react-leaflet'
 import Alert from '@mui/material/Alert';
 import { useMap } from 'react-leaflet/hooks'
 import { TabContext } from '../components/Forms/EditForm'
-import { MarkerIcon } from './MarkerIcon';
+import MarkerIcon from './MarkerIcon';
 
 
 

@@ -4,7 +4,7 @@ import { MapContainer, Marker, Popup, TileLayer, GeoJSON } from "react-leaflet";
 import MapData from "../assets/maps/counties.min.json";
 // import MapCenters from "../assets/maps/county-centers-coordinates";
 import Box from "@mui/material/Box";
-import { MarkerIcon } from "./MarkerIcon";
+import  MarkerIcon  from "./MarkerIcon";
 
 const GISMap = ({ data }) => {
   const [geoJSON, setGeoJSON] = useState(MapData);
@@ -62,9 +62,7 @@ const GISMap = ({ data }) => {
             attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
             url="http://{s}.tile.osm.org/{z}/{x}/{y}.png"
             style={{
-              
               zIndex: "0"
-              
             }}
           />
           <GeoJSON
