@@ -71,7 +71,6 @@ function FacilityHome (props){
     const [pathId, setPathId] = useState(props?.path?.split('id=')[1] || '') 
     const [allFctsSelected, setAllFctsSelected] = useState(true);
     const [isClient, setIsClient] = useState(false);
-    const [user, setUser] = useState(userCtx)
 	const [isMenuOpen, setIsMenuOpen] = useState(false)
 
     const pageParams = useSearchParams()
@@ -82,9 +81,7 @@ function FacilityHome (props){
 
 
 	useEffect(() => {
-        setUser(userCtx)
-        // console.log({user})
-		if(user.id === 6){
+		if(userCtx.id === 6){
 			router.push('/auth/login')
 		}
 	  setIsClient(true)

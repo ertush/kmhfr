@@ -110,19 +110,15 @@ function Users (props) {
 
     useEffect(()=>{
     if(userCtx){
+        if (userCtx.id === 6) {
+			router.push('/auth/login')
+		}
         if(userPermissions.find((r)=> r === 'auth.add_group') == undefined) setShowGroup(true)
     }
     else {
         router.push('/auth/login')
     }
 
-    // if( groupID !== 7 ||
-    //     groupID !== 5 ||
-    //     groupID !== 1 
-    //     ) {
-    //         router.push('/unauthorized')
-    //     }
-    
     setIsClient(true)
         
     },[])
