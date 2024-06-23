@@ -8,7 +8,7 @@ import {CheckCircleIcon,LockClosedIcon} from "@heroicons/react/solid";
 import dynamic from "next/dynamic";
 import { UserContext } from "../../../providers/user";
 import FacilityDetailsTabsPulic from "../../../components/FacilityDetailsTabsPublic";
-import { useAlert } from "react-alert";
+// import { useAlert } from "react-alert";
 
 
 const FacilityDetails = (props) => {
@@ -33,7 +33,7 @@ const FacilityDetails = (props) => {
   const wardName = props["0"]?.data.ward_name;
   const center = props["1"]?.geoLocation.center;
 
-  const [isViewChangeLog, setIsViewChangeLog] = useState(false)
+  // const [isViewChangeLog, setIsViewChangeLog] = useState(false)
 
   const router = useRouter()
 
@@ -68,14 +68,7 @@ const FacilityDetails = (props) => {
                 {facility?.official_name ?? ""} ( #
                 <i className="text-black">{facility?.code || "NO_CODE"}</i> )
               </span>
-              {/* <div className="flex flex-row gap-2 items-center ml-auto">
-                <button
-                 onClick={()=>handlePrint(props['4'].token, facility.id)}
-                  className="p-2 text-center -md font-semibold text-base  text-white bg-indigo-500 justify-end mr-2"
-                >
-                 Print
-                </button>
-                </div> */}
+             
             </div>
             {/* Header Bunner  */}
             <div
@@ -181,6 +174,7 @@ const FacilityDetails = (props) => {
 };
 
 FacilityDetails.getInitialProps = async (ctx) => {
+  
   const allOptions = [];
 
   if (ctx.query.q) {

@@ -2,12 +2,30 @@ import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import MainLayout from '../components/MainLayout'
+import useSWR from 'swr'
 
-const Logout = props => {
+function Logout () {
     const router = useRouter()
 
     const [isClient, setIsClient] = useState(false)
 
+    async function logout(url) {
+        return await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then((response) => {
+           
+                    if (response.error || response.detail) {
+                        return { error: true, ...response }
+                    }
+                    return response
+                })
+}
+
+    const {data} = useSWR(`${process.env.NEXT_PUBLIC_API_URL}/rest-auth/logout/`, logout)
     
     useEffect(() => {
 
@@ -17,24 +35,23 @@ const Logout = props => {
         // cookieCutter.set('access_token', '', "{}", { expires: new Date(0), httpOnly: false })
 
         // setTimeout(() => {
-            if (!props?.error && !props?.detail) {
+            if (!data?.error && !data?.detail) {
                 if (typeof window !== 'undefined') {
                     window.sessionStorage.removeItem('user')
                     window.localStorage.removeItem('user')
+                    window.localStorage.clear()
                     window.document.cookie = 'access_token=; expires=Thu, 01 Jan 1970 00:00:00 GMT;'
-                    console.log('redirecting...')
-                    router.replace('/')
+                    router.push('/')
 
                 } else {
                     const cookieCutter = require('cookie-cutter')
                     cookieCutter.set('access_token', '', "{}", { expires: new Date(0), httpOnly: false })
                 }
             } else {
-                if (typeof window !== 'undefined') {
+                    window.localStorage.clear()
                     router.replace('/')
-                } else {
-                    router.replace('/')
-                }
+
+
             }
         // }, 1000);
 
@@ -63,23 +80,23 @@ const Logout = props => {
     }
 }
 
-Logout.getInitialProps = async () => {
-    const cookieCutter = require('cookie-cutter')
-    const API_URL = process.env.NEXT_PUBLIC_API_URL
-    return fetch(API_URL + '/rest-auth/logout/', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    })
-        .then((response) => {
+// Logout.getInitialProps = async () => {
+//     // const cookieCutter = require('cookie-cutter')
+//     const API_URL = process.env.NEXT_PUBLIC_API_URL
+//     return fetch(API_URL + '/rest-auth/logout/', {
+//         method: 'POST',
+//         headers: {
+//             'Content-Type': 'application/json'
+//         }
+//     })
+//         .then((response) => {
            
-            if (response.error || response.detail) {
-                return { error: true, ...response }
-            }
-            return response
-        })
-}
+//             if (response.error || response.detail) {
+//                 return { error: true, ...response }
+//             }
+//             return response
+//         })
+// }
 
 export default Logout
 

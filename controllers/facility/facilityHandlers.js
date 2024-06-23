@@ -385,29 +385,29 @@ async function handleRegulationSubmit(token, values, facilityId, setSubmitting, 
 
                     const formDataBase64Enc = Buffer.from(JSON.stringify(payload)).toString('base64')
 
-                    if(window) {
-                        window.localStorage.setItem('regulation', formDataBase64Enc)
-                    }
+                    // if(window) {
+                    //     window.localStorage.setItem('regulation', formDataBase64Enc)
+                    // }
 
-                    // router.push({
-                    //     pathname: `${window.location.origin}/facilities/add`,
-                    //     query: { 
-                    //       formData: formDataBase64Enc,
-                    //       formId: 4,
-                    //       facility_id: facilityId,
-                    //       from: 'submission'
+                    router.push({
+                        pathname: `${window.location.origin}/facilities/add`,
+                        query: { 
+                          regulation: formDataBase64Enc,
+                          formId: 4,
+                          facilityId: facilityId,
+                          from: 'submission'
     
-                    //     }
-                    // })
-                    const url = new URL(`${window.location.origin}/facilities/add`)
+                        }
+                    })
+                    // const url = new URL(`${window.location.origin}/facilities/add`)
 
-                    url.searchParams.set('formId', '4')
+                    // url.searchParams.set('formId', '4')
 
-                    url.searchParams.set('facilityId', facilityId)
+                    // url.searchParams.set('facilityId', facilityId)
 
-                    url.searchParams.set('from', 'submission')
+                    // url.searchParams.set('from', 'submission')
 
-                    window.location.href = url
+                    // window.location.href = url
 
                 } else {
                     setSubmitting(false)
