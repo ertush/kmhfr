@@ -36,7 +36,7 @@ export default function App(props) {
  
   const router = useRouter()
   const [isNavigating, setIsNavigating] = useState(false)
-  const  { Component, pageProps, ctx } = props
+  const  { Component, pageProps } = props
 
 
   useEffect(() => {

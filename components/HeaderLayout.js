@@ -8,10 +8,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { Menu } from "@headlessui/react";
 import { getUserDetails } from "../controllers/auth/auth";
 import LoadingAnimation from "./LoadingAnimation";
-// import { PermissionContext } from "../providers/permissions";
-// import {
-//   hasPermission
-// } from "../utils/checkPermissions"
+
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
 import { UserContext } from "../providers/user";
 import Image from 'next/image';
@@ -44,8 +41,8 @@ export function DelayedLoginButton() {
 
   if (delayed) {
     return (
-      <div className='text-lg group hover:border hover:border-gray-800 hover:text-gray-100 rounded max-h-min px-3 flex gap-x-2 items-center text-gray-100 md:text-gray-800 capitalize font-semibold'>
-        <Login className='w-6 h-6 text-gray-100 md:text-gray-800 group-hover:text-gray-100' />
+      <div className='text-lg group hover:border hover:border-gray-800 hover:text-gray-800 rounded max-h-min px-3 flex gap-x-2 items-center text-gray-100 md:text-gray-800 capitalize font-semibold'>
+        <Login className='w-6 h-6 text-gray-800 md:text-gray-800 group-hover:text-gray-800' />
         <Link href="/auth/login">
           log in
         </Link>

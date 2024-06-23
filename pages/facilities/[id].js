@@ -103,7 +103,7 @@ function Facility(props) {
   useEffect(() => {
     setIsClient(true)
 
-    if (userCtx) setUser(userCtx); console.log({ userCtx })
+    if (userCtx) setUser(userCtx); // console.log({ userCtx })
     return () => {
     };
   }, [isClosingFacility, isReasonRejected]);
@@ -721,11 +721,12 @@ function Facility(props) {
 
               {facility?.lat_long && facility?.lat_long.length > 0 ? (
                 <div className="w-full bg-gray-200 shadow -lg flex flex-col items-center justify-center relative">
+                  
                   <Map
                     ward_name={wardName}
-                    operational={
-                      facility?.operational ?? facility?.operation_status_name ?? ""
-                    }
+                    // operational={
+                    //   facility?.operational ?? facility?.operation_status_name ?? ""
+                    // }
                     code={facility?.code || "NO_CODE"}
                     lat={facility?.lat_long[0]}
                     center={center}

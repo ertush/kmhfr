@@ -296,7 +296,7 @@ function ApproveReject(props) {
 
             {/* Comments and Updates Section  */}
 
-            <div className="bg-gray-50 rounded shadow-md w-full p-3  flex flex-col gap-3 mt-6">
+            <div className="bg-gray-50 rounded shadow-md w-full p-4  flex flex-col gap-3 mt-6">
               <h3 className="text-gray-900 text-2xl font-semibold leading-16 text-medium">
                 {facility?.has_edits ? 'Approve Or Invalidate Updates' : facility?.is_approved ? "Approval Or Reject facility" : "Comment on the validation"}
               </h3>
@@ -337,10 +337,9 @@ function ApproveReject(props) {
                     !facility?.has_edits ?
                       <Field
                         as="textarea"
-                        cols="123"
                         rows="auto"
                         name="comment"
-                        className="flex rounded col-span-2 bg-transparent border focus:ring-1 focus:ring-blue-900 border-gray-600 text-gray-600 font-normal text-medium p-2"
+                        className="flex rounded col-span-2 w-full bg-transparent border focus:ring-1 focus:ring-blue-900 border-gray-600 text-gray-600 font-normal text-medium p-2"
                         placeholder="Enter a comment"
 
                       ></Field>

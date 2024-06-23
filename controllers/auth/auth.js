@@ -3,7 +3,7 @@ const Cookies = require('cookies')
 const cookieCutter = require('cookie-cutter')
 
 
-const getToken = (req, res, refresh_token, creds) => {
+const   getToken = (req, res, refresh_token, creds) => {
     const cookies = new Cookies(req, res)
     // console.log('running getToken')
     // // console.log('------------getToken: ', creds)
@@ -22,8 +22,8 @@ const getToken = (req, res, refresh_token, creds) => {
             return ct
         } else {
             // console.log('Refreshing the page...')
-          
         }
+        
     } else if (isServer) {
         // console.log('running getToken in the SERVER')
         ct = cookies?.get('access_token')

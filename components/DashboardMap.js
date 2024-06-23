@@ -1,15 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { MapContainer, TileLayer, GeoJSON, useMap, Marker, Tooltip } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import MarkerIcon from './MarkerIcon'
 
-export default function Map({token}) {
+export default function Map({token, groupID, user}) {
 
- 
 
   const [selected, setSelected] = useState({});
   const [data, setData] = useState(null);
   const [_, setkenyaData] = useState(null);
+  const [center, setCenter] = useState(null)
+  const [zoom, setZoom] = useState(null)
 
   let countryBounds = [
     [
@@ -91,7 +92,33 @@ countryBounds = countryBounds.map(arr => arr.reverse())
         setData(geodata.geojson);
       }
 
-      else if (admlevel == "county") {
+      else if (admlevel == "county" && target?.feature?.id) {
+
+
+        if(groupID == 1) {
+
+          const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/gis/drilldown/country/`, {
+            headers: {
+              'Accept': 'application/json',
+              'Authorization': `Bearer ${token}`
+            }
+          });
+  
+          if (!response.ok) {
+            throw new Error(`Error: ${response.status} - Unable to fetch boundaries`);
+          }
+          
+           const counties = await response.json();
+
+
+           const countyCenter = counties?.geojson?.features?.find(({id}) => id == target.feature.id)?.properties?.center?.coordinates?.reverse()
+
+
+           setCenter(countyCenter)
+           setZoom(11.3)
+
+        }
+
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/gis/drilldown/county/${target.feature.id}/`, {
           headers: {
             'Accept': 'application/json',
@@ -104,12 +131,51 @@ countryBounds = countryBounds.map(arr => arr.reverse())
         }
 
         const geodata = await response.json();
+
         geodata.geojson.features.forEach(feature => {
           feature.properties.admlevel = "constituency";
         });
+
+        if(groupID == 2) {
+          
+         const constituency = geodata?.geojson?.features?.find(({properties}) => properties?.name?.toLowerCase().trim() == user?.user_sub_counties[0]?.sub_county_name?.toLowerCase().trim())
+         
+         setData(constituency ?? geodata?.geojson)
+         setZoom(12.3)
+         setCenter(constituency?.properties?.center?.coordinates?.reverse())
+
+        }
+        else{
+      
+        
         setData(geodata.geojson);
       }
-      else if (admlevel == "constituency") {
+      }
+      else if (admlevel == "constituency" && target?.feature?.id) {
+
+        // if(groupID == 2) {
+
+        //   const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/gis/drilldown/county/${target.feature.id}/`, {
+        //     headers: {
+        //       'Accept': 'application/json',
+        //       'Authorization': `Bearer ${token}`
+        //     }
+        //   });
+  
+        //   if (!response.ok) {
+        //     throw new Error(`Error: ${response.status} - Unable to fetch boundaries`);
+        //   }
+
+        //    const constituencies = await response.json();
+
+        //    const constituencyCenter = constituencies?.geojson?.features?.find(({id}) => id == target.feature.id)?.properties?.center?.coordinates?.reverse()
+
+
+        //    setCenter(constituencyCenter)
+        //    setZoom(11.3)
+
+        // }
+
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/gis/drilldown/constituency/${target.feature.id}/`, {
           headers: {
             'Accept': 'application/json',
@@ -122,13 +188,14 @@ countryBounds = countryBounds.map(arr => arr.reverse())
         }
 
         const geodata = await response.json();
+        
         geodata.geojson.features.forEach(feature => {
           feature.properties.admlevel = "ward";
         });
 
         setData(geodata.geojson);
       }
-      else if (admlevel == "ward") {
+      else if (admlevel == "ward" && target?.feature?.id) {
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/gis/facility_coordinates/?ward=${target?.feature?.properties?.area_id}`, {
           headers: {
             'Accept': 'application/json',
@@ -172,9 +239,6 @@ countryBounds = countryBounds.map(arr => arr.reverse())
     }
   }
 
-
-
-
 //   async function getFacilityName(facilityId) {
 //      return  await (await fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${facilityId}/`,{
 //           headers: {
@@ -189,15 +253,54 @@ countryBounds = countryBounds.map(arr => arr.reverse())
 
 
   useEffect(() => {
-    GetBoundaries("country", "");
+    
+    if (groupID == 2) {
+      // console.log(user)
+      // GetBoundaries("constituency", {
+      //     feature: {
+      //       id: user?.user_constituencies[0]?.constituency_code
+      //     }
+      // })
+      // return
+      GetBoundaries("county", {
+        feature: {
+          id: user?.user_counties[0]?.county_code
+        }
+    })
+    return
+    }
+    else if (groupID == 1) {
+      GetBoundaries("county", {
+          feature: {
+            id: user?.user_counties[0]?.county_code
+          }
+      })
+      return
+    } 
+    else if (groupID == 7 || groupID == 5) {
+      GetBoundaries("country", "");
+      setCenter([0.5, 38])
+      setZoom(7.3)
+      return
+    } 
+    else {
+      GetBoundaries("country", "");
+      setCenter([0.5, 38])
+      setZoom(7.3)
+      return
+
+    }
+
   }, []);
 
-  const FeatureHandler = () => {
+
+  const FeatureHandler = useCallback(() => {
+
     const map = useMap();
      
     mapRef=map
 
-    const handleMouseOver = (e) => {
+    const handleMouseOver = useCallback((e) => {
 
       const layer = e.layer;
       
@@ -208,16 +311,15 @@ countryBounds = countryBounds.map(arr => arr.reverse())
         fillOpacity: 1
       });
     
-    };
+    });
 
-    const resetHighlight = (e) => {
+    const resetHighlight = useCallback((e) => {
       
       setSelected({});
       e.layer.setStyle(style());
-    };
+    });
 
-
-    const handleClick = (e) => { 
+    const handleClick = useCallback((e) => { 
       
       map.fitBounds(e.layer.getBounds());
       if (e.layer.feature.properties.admlevel) {
@@ -232,7 +334,7 @@ countryBounds = countryBounds.map(arr => arr.reverse())
           return; // Skip the base tile layer
         }
         map.removeLayer(layer);
-      });
+      })
 
       // Create a new GeoJSON layer and add it to the map
       const geojsonLayer = L.geoJSON(data).addTo(map);
@@ -242,16 +344,12 @@ countryBounds = countryBounds.map(arr => arr.reverse())
       }
 
       
-    };
+    });
 
-   
-
-
+  
     return (
       <>
       {/* onEachFeature={onEachFeature} */}
-
-      
 
         {data && <GeoJSON data={data} style={style} eventHandlers={{ click: handleClick ,mouseover:handleMouseOver, mouseout:resetHighlight}}  />}
         {
@@ -274,8 +372,16 @@ countryBounds = countryBounds.map(arr => arr.reverse())
         }
       </>
     );
-  };
+  })
 
+
+  // return (
+    
+  //     <pre>
+  //       {JSON.stringify(data, null, 2)}
+  //     </pre>
+    
+  // )
 
   return (
     <div className="panel">
@@ -284,6 +390,8 @@ countryBounds = countryBounds.map(arr => arr.reverse())
           onClick={() => {
             if (mapRef) {
               GetBoundaries("country", "")
+              setCenter([0.5, 38])
+              setZoom(7.3)
               mapRef.flyToBounds(countryBounds);
             }
           }}
@@ -294,24 +402,30 @@ countryBounds = countryBounds.map(arr => arr.reverse())
         {!selected.province && (
           <div className="hover-info">zoom out</div>
         )}
-       
+
+      
+
+       {
+        center &&
+             
         <MapContainer
           style={{ height: "100%", width: "100%", position: 'relative', zIndex: '1', backgroundColor: '#e7eae8', padding: '15px' }}
-          zoom={7.3}
+          zoom={zoom} // county: 11.3, country: 7.3
           zoomControl={false}
           maxZoom={14}
-          center={[0.5, 38]}
+          center={center} // country: [0.5, 38]
           scrollWheelZoom={false}
            
         >
           <TileLayer
             attribution="Map tiles by Carto, under CC BY 3.0. Data by OpenStreetMap, under ODbL."
-            url="https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png"
+            url="https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png"
             // url="http://{s}.tile.osm.org/{z}/{x}/{y}.png"
           />
            
             <FeatureHandler />
         </MapContainer>
+      }
       </div>
     </div>
   );

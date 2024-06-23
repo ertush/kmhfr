@@ -16,7 +16,7 @@ import CommunityUnitSideMenu from '../../../components/CommunityUnitSideMenu';
 import Spinner from '../../../components/Spinner'
 import { useAlert } from 'react-alert';
 import Alert from '@mui/material/Alert'
-import { SettingsRemote } from '@mui/icons-material';
+// import { SettingsRemote } from '@mui/icons-material';
 
 
 function ApproveCommunityUnit(props) {

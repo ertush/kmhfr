@@ -85,11 +85,7 @@ const EditFacility = withErrorBoundary(
 
 		if (isClient) {
 
-			// return <pre className='font-semibold'>
-			// 		{
-			// 			JSON.stringify(props?.data?.facility_checklist_document, null, 2)
-			// 		}
-			// 		</pre>
+		
 			return (
 				<>
 					<Head>

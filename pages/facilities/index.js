@@ -83,7 +83,7 @@ function FacilityHome (props){
 
 	useEffect(() => {
         setUser(userCtx)
-        console.log({user})
+        // console.log({user})
 		if(user.id === 6){
 			router.push('/auth/login')
 		}
@@ -181,15 +181,7 @@ function FacilityHome (props){
 
     if(isClient){
 
-        // return (
-        //     <pre>
-        //         {
-        //             JSON.stringify(props.token, null, 2)
-        //         }
-        //     </pre>
-        // )
-
-    return (
+      return (
         <>
             <Head>
                 <title>KMHFR | Facilities</title>
@@ -667,9 +659,12 @@ function FacilityHome (props){
                                                     <div className="col-span-8 md:col-span-8 lg:col-span-2 grid grid-cols-2 grid-rows-4 gap-x-2 gap-y-1 text-lg">
                                                         {/* {console.log({facility})} */}
                                                         {/* {(facility?.operational || facility?.operation_status_name) ? <span className={"shadow-sm col-start-2 leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 font-semibold text-gray-900"}>Operational</span> : ""} */}
-                                                        {!facility?.rejected ? <span className={"shadow-sm leading-none whitespace-nowrap text-sm col-start-2  py-1 px-2 " + (facility?.approved_national_level ? "bg-green-200 font-semibold text-green-900" : "bg-gray-500 font-semibold p-1 text-gray-50")}>{facility?.approved_national_level ? "Approved" : "Not approved"}</span> : <span className={"shadow-sm  col-start-2 leading-none whitespace-nowrap text-sm font-semibold py-1 px-2 bg-red-200 text-red-900"}>{facility?.rejected ? "Rejected" : ""}</span>}
+                                                        {!facility?.rejected ? <span className={"shadow-sm leading-none whitespace-nowrap text-sm col-start-2  py-1 px-2 " + (facility?.approved_national_level ? "bg-green-200 font-semibold text-green-900" : "bg-gray-500 font-semibold p-1 text-gray-50")}>{facility?.approved_national_level ? "Approved" : "Not Approved"}</span> : <span className={"shadow-sm  col-start-2 leading-none whitespace-nowrap text-sm font-semibold py-1 px-2 bg-red-200 text-red-900"}>{facility?.rejected ? "Rejected" : ""}</span>}
                                                         {facility?.has_edits ? <span className={"shadow-sm leading-none whitespace-nowrap text-sm col-start-2 py-1 px-2 bg-yellow-200 font-semibold text-yellow-900"}>Has edits</span> : ""}
                                                         {!facility?.is_complete ? <span className={"shadow-sm leading-none whitespace-nowrap text-sm col-start-2 py-1 px-2 bg-pink-200 font-semibold text-pink-900"}>Incomplete</span> : ""}
+                                                        {facility?.is_approved ? <span className={"shadow-sm leading-none whitespace-nowrap text-sm col-start-2 py-1 px-2 bg-purple-200 font-semibold text-purple-900"}>Validated</span> : <span className={"shadow-sm leading-none whitespace-nowrap text-sm col-start-2 py-1 px-2 bg-gray-500 font-semibold text-gray-50"}>Not Validated</span>}
+
+
                                                     </div>
                                                 </div>
                                             ))
@@ -791,7 +786,8 @@ function FacilityHome (props){
                 </div>
             </MainLayout >
         </>
-    )
+        )
+
     } else {
         return null
     }
@@ -967,163 +963,6 @@ export async function getServerSideProps(ctx) {
 }
 
 
-/*
-FacilityHome.getInitialProps = async (ctx) => {
-
-    ctx?.res?.setHeader(
-        'Cache-Control',
-        'public, s-maxage=10, stale-while-revalidate=59'
-      )
-
-
-    const API_URL = process.env.NEXT_PUBLIC_API_URL;
-
-    function fetchFilters(token) {
-        
-        const filtersURL = API_URL + '/common/filtering_summaries/?fields=county,facility_type,constituency,ward,operation_status,service_category,owner_type,owner,service,keph_level,sub_county'
-
-        return fetch(filtersURL, {
-            headers: {
-                'Authorization': 'Bearer ' + token,
-                'Accept': 'application/json'
-            }
-        }).then(r => r.json())
-            .then(json => {
-                return json
-            }).catch(err => {
-                console.log('Error fetching filters: ', err)
-                return {
-                    error: true,
-                    err: err,
-                    filters: []
-                }
-            })
-    }
-
-    function fetchData(token) {
-
-        let url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/?fields=id,code,official_name,facility_type_name,owner_name,county,sub_county,constituency_name,ward_name,updated,operation_status_name,sub_county_name,name,is_complete,in_complete_details,approved_national_level,has_edits,approved,rejected,keph_level` // ?fields=id,code,official_name,facility_type_name,owner_name,county,sub_county,constituency_name,ward_name,updated,operation_status_name,sub_county_name,name,is_complete,in_complete_details,approved_national_level,has_edits,approved,rejected,keph_level`
-     
-        let query = { 'searchTerm': '' }
-        if (ctx?.query?.qf) {
-            query.qf = ctx.query.qf
-        
-        }
-        if (ctx?.query?.q) {
-            query.searchTerm = ctx.query.q
-            url += `&search={"query":{"query_string":{"default_field":"name","query":"${query.searchTerm}"}}}`
-        }
-        let other_posssible_filters = [
-            "owner_type", 
-            "service", 
-            "facility_type", 
-            "county", 
-            "service_category", 
-            "sub_county", 
-            "keph_level", 
-            "owner", 
-            "operation_status", 
-            "constituency", 
-            "ward", 
-            "has_edits", 
-            "rejected_national",
-            "rejected",
-            "closed",
-            "is_approved", 
-            "is_complete", 
-            "number_of_beds", 
-            "number_of_cots", 
-            "incomplete",
-            "open_whole_day",
-            "to_publish", 
-            "dhis_synced_facilities",
-            "open_weekends",
-            "approved",
-            "reporting_in_dhis",
-            "pending_approval",
-            "approved_national_level",
-            "admitting_maternity_general", 
-            "admitting_maternity_only",
-            "open_public_holidays"]
-
-        other_posssible_filters.map(flt => {
-            if (ctx?.query[flt]) {
-                query[flt] = ctx?.query[flt]
-                url = url + "&" + flt + "=" + ctx?.query[flt]
-            }
-
-
-        })
-
-
-        let current_url = url + '&page_size=100'
-        if (ctx?.query?.page) {
-            url = `${url}&page=${ctx.query.page}`
-        }
-
-    
-
-        return fetch(url, {
-            headers: {
-                'Authorization': 'Bearer ' + token,
-                'Accept': 'application/json'
-            }
-        }).then(r => r.json())
-            .then(json => {
-                return fetchFilters(token).then(ft => {
-                    return {
-                        data: json, 
-                        query,
-                        token, 
-                        filters: { ...ft }, 
-                        path: ctx.asPath || '/facilities', 
-                        current_url: current_url
-                    }
-                })
-            }).catch(err => {
-                console.log('Error fetching facilities: ', err)
-                return {
-                    error: true,
-                    err: err,
-                    data: [],
-                    query: {},
-                    path: ctx.asPath || '/facilities',
-                    current_url: ''
-                }
-            })
-    }
-
-    return checkToken(ctx.req, ctx.res).then(t => {
-        if (t.error) {
-            throw new Error('Error checking token')
-        } else {
-            let token = t.token
-            return fetchData(token).then(t => t)
-        }
-    }).catch(err => {
-        console.log('Error checking token: ', err)
-        if (typeof window !== 'undefined' && window) {
-            if (ctx?.asPath) {
-                window.location.href = ctx?.asPath
-            } else {
-                window.location.href = '/facilities'
-            }
-        }
-        
-        setTimeout(() => {
-            return {
-                error: true,
-                err: err,
-                data: [],
-                query: {},
-                path: ctx.asPath || '/facilities',
-                current_url: ''
-            }
-        }, 1000);
-    })
-
-}
-*/
 
 
 export default FacilityHome

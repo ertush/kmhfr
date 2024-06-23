@@ -1,7 +1,7 @@
 import Head from 'next/head'
 import MainLayout from '../../components/MainLayout'
 import { checkToken } from '../../controllers/auth/auth'
-import React, { useState, useEffect, useRef, useContext } from 'react'
+import React, { useState, useEffect, useRef, useContext, memo } from 'react'
 import { useRouter } from 'next/router'
 import Chart from '../../components/Chart'
 import Select from 'react-select'
@@ -12,7 +12,7 @@ import propTypes from 'prop-types'
 import dynamic from 'next/dynamic'
 
 
-const Map = dynamic(
+const Map = memo(dynamic(
     () => import('../../components/DashboardMap'),
     {
         loading: () => (
@@ -22,7 +22,7 @@ const Map = dynamic(
         ),
         ssr: false, // This line is important. It's what prevents server-side render
     }
-)
+))
 
 
 function Dashboard(props) {
@@ -191,7 +191,7 @@ function Dashboard(props) {
 
         setIsClient(true)
 
-        console.log({ groupID })
+        // console.log({ groupID })
 
         if (groupID == 2) fetchWards(user?.user_sub_counties[0]?.sub_county ?? null)
         if (groupID == 1) fetchSubCounties(props?.filters?.county[0]?.id)
@@ -1337,7 +1337,7 @@ function Dashboard(props) {
                             </div>
                         }
 
-                        <Map token={props?.token} />
+                        <Map token={props?.token} groupID={groupID} user={user} />
 
                         {/* Facility owners & categories - national summary - FILTERABLE (bar) 1/2 */}
                         {/* <div className="no-print col-span-6 md:col-span-3 flex flex-col items-start justify-start p-3 shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>

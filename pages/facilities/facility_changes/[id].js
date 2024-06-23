@@ -23,9 +23,9 @@ export default function FacilityChanges({ facility }) {
 
 
     useEffect(() => {
-        console.log({
-            facility
-        })
+        // console.log({
+        //     facility
+        // })
 
         setIsClient(true)
     }, [])

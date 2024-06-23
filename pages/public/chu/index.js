@@ -165,8 +165,6 @@ function Home(props) {
 			url += `&search={"query":{"query_string":{"default_field":"name","query":"${formDataObject?.name || formDataObject?.code || formDataObject?.status}"}}}`
 		
 
-			console.log({ url })
-
 			fetch(url, {
 				headers: {
 					Authorization: 'Bearer ' + props?.token,
