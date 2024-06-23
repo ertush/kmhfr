@@ -152,7 +152,6 @@ function Dashboard(props) {
 
 
     useEffect(() => {
-        // setUser(userCtx)
 
         let mtd = true
         if (mtd) {
@@ -188,6 +187,10 @@ function Dashboard(props) {
 
     // Check for user authentication
     useEffect(() => {
+
+        if(user.id === 6){
+			router.push('/auth/login')
+		}
 
         setIsClient(true)
 

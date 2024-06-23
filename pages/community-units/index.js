@@ -24,7 +24,6 @@ import { useSearchParams } from 'next/navigation';
 function CommunityUnit(props) {
 
 	const userCtx = React.useContext(UserContext);
-	const [user, setUser] = useState(userCtx);
 	const router = useRouter();
 	const cus = props?.data?.results;
 	const filters = props?.filters;
@@ -63,8 +62,7 @@ function CommunityUnit(props) {
 	// Check user for authentication
 	useEffect(() => {
 
-		setUser(userCtx)
-		if (user.id === 6) {
+		if (userCtx.id === 6) {
 			router.push('/auth/login')
 		}
 

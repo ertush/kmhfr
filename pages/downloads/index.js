@@ -5,9 +5,21 @@ import { checkToken } from '../../controllers/auth/public_auth'
 import { Download } from '@mui/icons-material'
 import Link from 'next/link'
 import * as Tabs from "@radix-ui/react-tabs";
+import { UserContext } from '../../providers/user'
+import { useRouter } from 'next/router'
 
 
 function Downloads(props) {
+
+    const userCtx = useContext(UserContext)
+
+    const router = useRouter()
+
+    React.useEffect(() => {
+        if (userCtx.id === 6) {
+			router.push('/auth/login')
+		}
+    }, [])
 
     // return (
     //     <pre>
