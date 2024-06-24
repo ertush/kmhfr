@@ -608,7 +608,7 @@ function FacilityHome (props){
                                                             </span>
                                                         </h3>
                                                         
-                                                        <div className="w-full grid grid-cols-2 md:grid-cols-4 gap-1">
+                                                        <div className="w-full grid grid-cols-2 md:grid-cols-5 gap-1">
                                                            
 
                                                             <div className="flex flex-col items-start justify-start gap-0 leading-none whitespace-pre-wrap mb-2">
@@ -618,7 +618,7 @@ function FacilityHome (props){
 
                                                             <div className="flex flex-col  items-start justify-start gap-0 leading-none whitespace-pre-wrap">
                                                                 <label className="text-xs text-gray-500">Type:</label>
-                                                                <span className="whitespace-pre-line md:text-nowrap text-wrap">{facility?.facility_type_name ?? ' '}</span>
+                                                                <span className="whitespace-pre-line text-wrap">{facility?.facility_type_name ?? ' '}</span>
                                                             </div>
                                                             
                                                           
@@ -631,9 +631,14 @@ function FacilityHome (props){
                                                                 <label className="text-xs text-gray-500">Keph:</label>
                                                                 <span className="whitespace-pre-line">{filters?.keph_level.find(({id}) => id == facility?.keph_level)?.name ?? '-'}</span>
                                                             </div>
+
+                                                            <div className="flex flex-col items-start col-start-2 row-start-1 md:col-start-5 justify-start gap-0 leading-none whitespace-pre-wrap">
+                                                                <label className="text-xs text-gray-500">Updated:</label>
+                                                                <span className="whitespace-pre-line">{new Date(facility?.updated).toDateString()}{", "}{new Date(facility?.updated).toLocaleTimeString()}</span>
+                                                            </div>
                                                         </div>
 
-                                                        <div className="text-base grid grid-cols-2 md:grid-cols-4 items-center justify-start gap-1 w-full">
+                                                        <div className="text-base grid grid-cols-2 md:grid-cols-5 items-center justify-start gap-1 w-full">
                                                             <div className="flex flex-col items-start justify-start gap-0 leading-none whitespace-pre-wrap">
                                                                 <label className="text-xs text-gray-500">County:</label>
                                                                 <span className="whitespace-pre-line">{facility?.county_name || facility?.county || 'N/A'}</span>
