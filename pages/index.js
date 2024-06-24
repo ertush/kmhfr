@@ -61,9 +61,11 @@ function Home() {
 
     setIsClient(true)
 
-    // if(userID !== 6) {
-    //   router.replace('/dashboard')
-    // }
+    if(Number(userID) !== 6) {
+      window.localStorage.removeItem('user')
+      window.localStorage.clear()
+    }
+
     let mtd = true;
 
 

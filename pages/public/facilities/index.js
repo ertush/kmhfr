@@ -5,7 +5,7 @@ import { DotsHorizontalIcon } from '@heroicons/react/solid';
 import { checkToken } from '../../../controllers/auth/public_auth';
 import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
-import { SearchIcon } from "@heroicons/react/solid";
+// import { SearchIcon } from "@heroicons/react/solid";
 import Select from 'react-select'
 import { Alert } from '@mui/lab'
 import Spinner from '../../../components/Spinner'
@@ -595,7 +595,7 @@ function Home(props) {
 
 						{/* Main body */}
 						{/* <div className='col-span-5 md:col-span-4 flex flex-col items-center gap-4 mt-2 order-last md:order-none'> */}
-						<div className={`${(Array.isArray(facilities) && facilities?.length == 0) || (!formError || !submitting) && 'p-4'} col-span-1 rounded bg-gray-50 md:h-[1670px] md:px-0 overflow-y-scroll shadow-md md:col-span-4 flex flex-col md:gap-4 order-last md:order-none`}> {/* CHANGED colspan */}
+						<div className={`${(Array.isArray(facilities) && facilities?.length == 0) || (!formError || !submitting) && 'p-4'} col-span-1 rounded bg-gray-50 md:h-[1670px] md:px-0 overflow-y-scroll p-4 shadow-md md:col-span-4 flex flex-col items-center justify-start md:gap-4 order-last md:order-none`}> {/* CHANGED colspan */}
 
 							{
 								formError && <Alert severity='error' className='w-full border-2 border-red-500 rounded-none'>{formError}</Alert>
@@ -603,7 +603,7 @@ function Home(props) {
 
 
 							{
-								submitting && <Alert severity='info' className='w-full border-2 border-gray-500 rounded-none'>Loading...</Alert>
+								submitting && <Alert severity='info' className='w-[95%] mt-3 border-2 border-gray-500 rounded-none'>Loading...</Alert>
 							}
 
 							
@@ -714,7 +714,7 @@ function Home(props) {
 										</div>
 									))
 								) : (
-									<div className='w-full px-4 mb-6'>{!formError && !submitting && <Alert severity='warning' className='border-2 border-yellow-500 rounded-none'>No facility found </Alert>}</div>
+									<div className='w-full px-4 my-6'>{!formError && !submitting && <Alert severity='warning' className='border-2 border-yellow-500 rounded-none'>No facility found </Alert>}</div>
 								)}
 								{viewAll && facilities?.results && facilities?.results.length >= 30 && (
 									<ul className='list-none flex p-2 flex-row gap-2 w-full items-center my-2'>
@@ -776,6 +776,7 @@ function Home(props) {
 
 					</div>
 				</MainLayout>
+
 			</div>
 		)
 	}
