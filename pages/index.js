@@ -18,9 +18,8 @@ import { Menu } from '@mui/icons-material'
 import Alert from '@mui/material/Alert'
 import { UserContext } from '../providers/user'
 import useSWR from 'swr'
-// import Spinner from '../components/Spinner'
 
-function Skeleton({w, h, bg}) {
+function Skeleton() {
   return (
     <div className="p-4 w-[250px] h-[150px] rounded flex flex-col bg-gray-300/45 shadow-sm ">
     <div className='flex w-full h-full animate-pulse justify-center items-center'>

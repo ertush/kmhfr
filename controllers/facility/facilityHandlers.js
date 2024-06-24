@@ -399,16 +399,7 @@ async function handleRegulationSubmit(token, values, facilityId, setSubmitting, 
     
                         }
                     })
-                    // const url = new URL(`${window.location.origin}/facilities/add`)
-
-                    // url.searchParams.set('formId', '4')
-
-                    // url.searchParams.set('facilityId', facilityId)
-
-                    // url.searchParams.set('from', 'submission')
-
-                    // window.location.href = url
-
+                    
                 } else {
                     setSubmitting(false)
                     alert.error('Unable to create Facility Department units', {
@@ -767,13 +758,6 @@ async function handleFacilityContactsUpdates(token, values, facility_id, current
 
     //Omit old values and only include new fields or fields that have changed
 
-    // filteredOfficerDetails['name'] = (officerDetails.name !== currentOfficerContacts.name && officerDetails.name) ?? null
-    // filteredOfficerDetails['reg_no'] = (officerDetails.reg_no !== currentOfficerContacts.reg_no && officerDetails.reg_no) ?? null
-    // filteredOfficerDetails['title'] = (officerDetails.title !== currentOfficerContacts.title && officerDetails.title) ?? null
-
-    // !filteredOfficerDetails['name'] && delete filteredOfficerDetails['name'] 
-    // !filteredOfficerDetails['reg_no'] && delete filteredOfficerDetails['reg_no'] 
-    // !filteredOfficerDetails['title'] && delete filteredOfficerDetails['title']
     
     
     filteredOfficerDetails['name'] = officerDetails['name'] 
@@ -899,7 +883,7 @@ async function handleRegulationUpdates(token, values, facilityId, licenseFileRef
 
                 if (i == 1) {
                     // console.log({resp})
-                    if (resp.status == 200 || resp.status == 204) {
+                    if (resp.ok) {
 
                         alert.success('Facility Regulation Details updated successfully')
                         setSubmitting(false)
@@ -916,6 +900,22 @@ async function handleRegulationUpdates(token, values, facilityId, licenseFileRef
                     else {
                         setSubmitting(false)
                         alert.error('Unable to update regulation form')
+                        
+                        resp.json()
+                        .then(resp => {
+                          const formResponse = []
+                          setFormError(() => {
+                            if (typeof resp == 'object') {
+                              const respEntry = Object.entries(resp)
+            
+                              for (let [k, v] of respEntry) {
+                                formResponse.push(`${k}:${v}`)
+                              }
+            
+                              return `Error: ${formResponse.join("; ")}`
+                            }
+                          })
+                        })
                     
                     }
                 }

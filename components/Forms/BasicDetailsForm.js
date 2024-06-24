@@ -347,7 +347,7 @@ export function BasicDeatilsForm({ editMode }) {
       body: JSON.stringify(data/*payload*/)
     })
       .then(res => {
-        if (res.status == 204 || res.status == 200) {
+        if (res.ok) {
           alert.success('Facility Updated Successfully')
           setSubmitting(false)
 
@@ -370,11 +370,11 @@ export function BasicDeatilsForm({ editMode }) {
                 if (typeof resp == 'object') {
                   const respEntry = Object.entries(resp)
 
-                  for (let [_, v] of respEntry) {
-                    formResponse.push(v)
+                  for (let [k, v] of respEntry) {
+                    formResponse.push(`${k}:${v}`)
                   }
 
-                  return `Error: ${formResponse.join(" ")}`
+                  return `Error: ${formResponse.join("; ")}`
                 }
               })
             })
