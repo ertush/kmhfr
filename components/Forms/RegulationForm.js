@@ -41,7 +41,7 @@ export function RegulationForm() {
     const submitType = useRef(null)
 
  
-    const [facilityId, setFacilityId] = useMemo(() => {
+    const [facilityId, __] = useMemo(() => {
         let id = ''
     
         function setId(_id) {
@@ -57,7 +57,7 @@ export function RegulationForm() {
 
     // const [facilityContactsUrl, setFacilityContactsUrl] = useState('');
     const [submitting, setSubmitting] = useState(false);
-    const [licenseFile, setLicenseFile] = useState(null);
+    const [_, setLicenseFile] = useState(null);
     const [formError, setFormError] = useState(null);
 
 

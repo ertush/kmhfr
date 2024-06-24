@@ -157,11 +157,11 @@ export function GeolocationForm({ editMode }) {
                   if(typeof resp == 'object') {
                     const respEntry = Object.entries(resp)
 
-                    for (let [_, v] of respEntry) {
-                      formResponse.push(v)
+                    for (let [k, v] of respEntry) {
+                      formResponse.push(`${k}:${v}`)
                     }
 
-                    return `Error: ${formResponse.join(" ")}`
+                    return `Error: ${formResponse.join("; ")}`
                   }
                 })
               })
