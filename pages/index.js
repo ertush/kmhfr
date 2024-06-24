@@ -4,7 +4,6 @@ import Image from 'next/image'
 import { useEffect, useState, useContext } from 'react'
 import { useRouter } from 'next/router'
 import { getUserDetails } from "../controllers/auth/public_auth";
-import { checkToken } from '../controllers/auth/public_auth';
 import { CloseOutlined, Login } from '@mui/icons-material'
 import { NorthEast } from '@mui/icons-material'
 import propTypes from 'prop-types'
@@ -18,11 +17,11 @@ import { Menu } from '@mui/icons-material'
 import Alert from '@mui/material/Alert'
 import { UserContext } from '../providers/user'
 import useSWR from 'swr'
+import Skeleton from '../components/Skeleton'
 
 function Home() {
  
   const {data: props, isLoading} = useSWR('/api/dashboard', async (url) =>  await (await fetch(url)).json())
-  // console.log({data, isLoading, error})
 
   const router = useRouter()
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -41,6 +40,9 @@ function Home() {
 
   let API_URL = process.env.NEXT_PUBLIC_API_URL;
 
+
+
+ 
 
  
 
@@ -422,54 +424,54 @@ function Home() {
           
           <div className="md:w-[80%] w-full md:mx-auto flex justify-center md:justify-between flex-wrap gap-8 h-auto mt-6">
 
+              
             <div className="p-4 w-[250px] h-[150px] rounded flex flex-col bg-gray-300/45 shadow-sm ">
               <div className='flex w-full h-full justify-center items-center'>
-               
-                <h1 className='text-5xl text-gray-600 font-bold'>{isLoading ? '-' : props?.data?.facilities }</h1>
+                <h1 className='text-5xl text-gray-600 font-bold'>{isLoading ? <Skeleton w={'150px'} h={'34px'} bg={'bg-gray-300'}/> : props?.data?.facilities }</h1>
               </div>
 
               <div className='flex self-start'>
-                <h1 className='text-lg text-gray-900 font-semibold capitalize'>all facilities</h1>
+                <h1 className='text-lg text-gray-900 font-semibold capitalize'>{isLoading ? <Skeleton w={'150px'} h={'34px'} bg={'bg-gray-300'}/> : 'all facilities'}</h1>
               </div>
             </div>
             
             <div className="p-4 w-[250px] h-[150px] rounded flex flex-col bg-gray-300/45 shadow-sm ">
               <div className='flex w-full h-full justify-center items-center'>
-                <h1 className='text-5xl text-gray-600 font-bold'>{isLoading ? '-' : props?.data?.moh }</h1>
+                <h1 className='text-5xl text-gray-600 font-bold'>{isLoading ? <Skeleton w={'150px'} h={'34px'} bg={'bg-gray-300'}/> : props?.data?.moh }</h1>
               </div>
 
               <div className='flex self-start'>
-                <h1 className='text-lg text-gray-900 font-semibold capitalize'>ministry of health</h1>
+                <h1 className='text-lg text-gray-900 font-semibold capitalize'>{isLoading ? <Skeleton w={'150px'} h={'34px'} bg={'bg-gray-300'}/> : 'ministry of health'}</h1>
               </div>
             </div>
 
             <div className="p-4 w-[250px] h-[150px] rounded flex flex-col bg-gray-300/45 shadow-sm ">
               <div className='flex w-full h-full justify-center items-center'>
-                <h1 className='text-5xl text-gray-600 font-bold'>{isLoading ? '-' : props?.data?.faith_based }</h1>
+                <h1 className='text-5xl text-gray-600 font-bold'>{isLoading ? <Skeleton w={'150px'} h={'34px'} bg={'bg-gray-300'}/> : props?.data?.faith_based }</h1>
               </div>
 
               <div className='flex self-start'>
-                <h1 className='text-lg text-gray-900 font-semibold capitalize'>faith based</h1>
+                <h1 className='text-lg text-gray-900 font-semibold capitalize'>{isLoading ? <Skeleton w={'150px'} h={'34px'} bg={'bg-gray-300'}/> : 'faith based'}</h1>
               </div>
             </div>
 
             <div className="p-4 w-[250px] h-[150px] rounded flex flex-col bg-gray-300/45 shadow-sm ">
               <div className='flex w-full h-full justify-center items-center'>
-                <h1 className='text-5xl text-gray-600 font-bold'>{isLoading ? '-' : props?.data?.private_facilities }</h1>
+                <h1 className='text-5xl text-gray-600 font-bold'>{isLoading ? <Skeleton w={'150px'} h={'34px'} bg={'bg-gray-300'}/> : props?.data?.private_facilities }</h1>
               </div>
 
               <div className='flex self-start'>
-                <h1 className='text-lg text-gray-900 font-semibold capitalize'>private</h1>
+                <h1 className='text-lg text-gray-900 font-semibold capitalize'>{isLoading ? <Skeleton w={'150px'} h={'34px'} bg={'bg-gray-300'}/> : 'private'}</h1>
               </div>
             </div>
 
             <div className="p-4 w-[250px] h-[150px] rounded flex flex-col bg-gray-300/45 shadow-sm ">
               <div className='flex w-full h-full justify-center items-center'>
-                <h1 className='text-5xl text-gray-600 font-bold'>{isLoading ? '-' : props?.data?.ngo }</h1>
+                <h1 className='text-5xl text-gray-600 font-bold'>{isLoading ? <Skeleton w={'150px'} h={'34px'} bg={'bg-gray-300'}/> : props?.data?.ngo }</h1>
               </div>
 
               <div className='flex self-start'>
-                <h1 className='text-lg text-gray-900 font-semibold capitalize'>non-govermental</h1>
+                <h1 className='text-lg text-gray-900 font-semibold capitalize'>{isLoading ? <Skeleton w={'150px'} h={'34px'} bg={'bg-gray-300'}/> : 'non-govermental'}</h1>
               </div>
             </div>
 
@@ -485,41 +487,41 @@ function Home() {
 
             <div className="p-4 w-[250px] h-[150px] rounded flex flex-col bg-gray-300/45 shadow-sm ">
               <div className='flex w-full h-full justify-center items-center'>
-                <h1 className='text-5xl text-gray-600 font-bold'>{isLoading ? '-' : props?.data?.chus }</h1>
+                <h1 className='text-5xl text-gray-600 font-bold'>{isLoading ? <Skeleton w={'150px'} h={'34px'} bg={'bg-gray-300'}/> : props?.data?.chus }</h1>
               </div>
 
               <div className='flex self-start'>
-                <h1 className='text-lg text-gray-900 font-semibold capitalize'>all CHUs</h1>
+                <h1 className='text-lg text-gray-900 font-semibold capitalize'>{isLoading ? <Skeleton w={'150px'} h={'34px'} bg={'bg-gray-300'}/> : 'all CHUs'}</h1>
               </div>
             </div>
               
               <div className="p-4 w-[250px] h-[150px] rounded flex flex-col bg-gray-300/45 shadow-sm ">
               <div className='flex w-full h-full justify-center items-center'>
-                <h1 className='text-5xl text-gray-600 font-bold'>{isLoading ? '-' : props?.data?.chu_fully_functional }</h1>
+                <h1 className='text-5xl text-gray-600 font-bold'>{isLoading ? <Skeleton w={'150px'} h={'34px'} bg={'bg-gray-300'}/> : props?.data?.chu_fully_functional }</h1>
               </div>
 
               <div className='flex self-start'>
-                <h1 className='text-lg text-gray-900 font-semibold capitalize'>fully functional</h1>
+                <h1 className='text-lg text-gray-900 font-semibold capitalize'>{isLoading ? <Skeleton w={'150px'} h={'34px'} bg={'bg-gray-300'}/> : 'fully functional'}</h1>
               </div>
             </div>
 
             <div className="p-4 w-[250px] h-[150px] rounded flex flex-col bg-gray-300/45 shadow-sm ">
               <div className='flex w-full h-full justify-center items-center'>
-                <h1 className='text-5xl text-gray-600 font-bold'>{isLoading ? '-' : props?.data?.chu_semi_functional }</h1>
+                <h1 className='text-5xl text-gray-600 font-bold'>{isLoading ? <Skeleton w={'150px'} h={'34px'} bg={'bg-gray-300'}/> : props?.data?.chu_semi_functional }</h1>
               </div>
 
               <div className='flex self-start'>
-                <h1 className='text-lg text-gray-900 font-semibold capitalize'>semi functional</h1>
+                <h1 className='text-lg text-gray-900 font-semibold capitalize'>{isLoading ? <Skeleton w={'150px'} h={'34px'} bg={'bg-gray-300'}/> : 'semi functional'}</h1>
               </div>
             </div>
 
             <div className="p-4 w-[250px] h-[150px] rounded flex flex-col bg-gray-300/45 shadow-sm ">
               <div className='flex w-full h-full justify-center items-center'>
-                <h1 className='text-5xl text-gray-600 font-bold'>{isLoading ? '-' : props?.data?.chu_non_functional }</h1>
+                <h1 className='text-5xl text-gray-600 font-bold'>{isLoading ? <Skeleton w={'150px'} h={'34px'} bg={'bg-gray-300'}/> : props?.data?.chu_non_functional }</h1>
               </div>
 
               <div className='flex self-start'>
-                <h1 className='text-lg text-gray-900 font-semibold capitalize'>Non functional</h1>
+                <h1 className='text-lg text-gray-900 font-semibold capitalize'>{isLoading ? <Skeleton w={'150px'} h={'34px'} bg={'bg-gray-300'}/> : 'Non functional'}</h1>
               </div>
             </div>
 
