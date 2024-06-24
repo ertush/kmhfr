@@ -57,11 +57,6 @@ function Home() {
   let API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 
-
- 
-
- 
-
   useEffect(() => {
 
     setIsClient(true)
