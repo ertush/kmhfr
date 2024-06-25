@@ -18,10 +18,10 @@ Currently, this uses the test API available through [api.kmhfr.health.go.ke](htt
 
 ## Setting up local instance
 
-- Clone this repository ```git clone https://github.com/uonafya/kmhfl-upgrade-alpha-ui mfl3```
-- cd into the folder ```cd mfl3```
+- Clone this repository ```git clone https://github.com/uonafya/kmhfr```
+- cd into the folder ```cd kmhfr```
 - Make a copy of the ```.env``` file and add your environment variables as detailed ```cp .env.local.example .env.local && nano .env.local```
-- Install dependencies ```npm install``` or ```yarn``` or ```(preferred) pnpm install```
-- For local development, run ```npm run dev``` or ```yarn dev``` or ```(preferred) pnpm dev```
+- Install dependencies ```npm install``` or ```yarn``` or ```pnpm install```
+- For local development, run ```npm run dev``` or ```yarn dev``` or ```pnpm dev```
 
 
