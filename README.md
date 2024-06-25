@@ -12,18 +12,16 @@ This is the frontend application for KMHFL with new features (GIS, Dynamic Repor
 
 ## API
 
-Currently, this uses the test API available through [api.kmhfltest.health.go.ke](https://api.kmhfltest.health.go.ke).
+Currently, this uses the test API available through [api.kmhfr.health.go.ke](https://api.kmhfr.health.go.ke).
 
-## Preview
 
-An on-premise test server is needed. Currently, you can preview the example live on [kmhfl3.vercel.app](https://kmhfl3.vercel.app):
 
 ## Setting up local instance
 
-- Clone this repository ```git clone https://github.com/uonafya/kmhfl-upgrade-alpha-ui mfl3```
-- cd into the folder ```cd mfl3```
+- Clone this repository ```git clone https://github.com/uonafya/kmhfr```
+- cd into the folder ```cd kmhfr```
 - Make a copy of the ```.env``` file and add your environment variables as detailed ```cp .env.local.example .env.local && nano .env.local```
-- Install dependencies ```npm install``` or ```yarn``` or ```(preferred) pnpm install```
-- For local development, run ```npm run dev``` or ```yarn dev``` or ```(preferred) pnpm dev```
+- Install dependencies ```npm install``` or ```yarn``` or ```pnpm install```
+- For local development, run ```npm run dev``` or ```yarn dev``` or ```pnpm dev```
 
 
