@@ -12,11 +12,9 @@ This is the frontend application for KMHFL with new features (GIS, Dynamic Repor
 
 ## API
 
-Currently, this uses the test API available through [api.kmhfltest.health.go.ke](https://api.kmhfltest.health.go.ke).
+Currently, this uses the test API available through [api.kmhfr.health.go.ke](https://api.kmhfr.health.go.ke).
 
-## Preview
 
-An on-premise test server is needed. Currently, you can preview the example live on [kmhfl3.vercel.app](https://kmhfl3.vercel.app):
 
 ## Setting up local instance
 
