@@ -32,6 +32,7 @@ function FacilityHome (props){
     const filters = props?.filters
     const fltrs = props?.filters
     const userCtx = useContext(UserContext);
+    
 
     // const qf = props?.query?.qf ?? null
     
@@ -238,36 +239,36 @@ function FacilityHome (props){
                                 </div>
                                 
                             
-                                <Menu.Items as="ul" className="absolute top-0 left-[100%] w-full flex flex-col gap-y-1 items-center justify-start bg-white  shadow-lg border border-gray-200 p-1">
+                                <Menu.Items as="ul" className="absolute top-0 left-[100%] w-auto flex flex-col gap-y-1 items-center justify-start bg-white  shadow-lg border border-gray-200 p-1">
                                    
                                     <Menu.Item as="li" className="p-0 flex items-center w-full text-center hover:bg-gray-200 focus:bg-gray-200 active:bg-gray-200">
                                         {({ active }) => (
                                             <button className={"flex items-center justify-start text-center hover:bg-gray-200 focus:bg-gray-200 text-gray-800 font-medium active:bg-gray-200 py-2 px-1 w-full " + (active ? 'bg-gray-200' : '')} onClick={() => {
-                                                let dl_url = props?.current_url
-                                                if (dl_url.includes('?')) { dl_url += `&format=csv&access_token=${props?.token}` } else { dl_url += `?format=csv&access_token=${props?.token}` }
-                                                // console.log('Downloading CSV. ' + dl_url || '')
-                                                // window.open(dl_url, '_blank', 'noopener noreferrer')
-                                                window.location.href = dl_url
+                                                  
+                                                window.location.href = `${process.env.NEXT_PUBLIC_FACILITY_EXPORT_URL}?&access_token=${props?.token}&format=csv&page_size=${props?.count}&page=1`
+                                              
                                             }}>
                                                 <DownloadIcon className="w-4 h-4 mr-1" />
                                                 <span className='text-base uppercase font-semibold'>CSV</span>
                                             </button>
                                         )}
                                     </Menu.Item>
+
                                     <Menu.Item as="li" className="p-0 flex items-center w-full text-center hover:bg-gray-200 focus:bg-gray-200 active:bg-gray-200">
                                         {({ active }) => (
-                                            <button className={"flex items-center justify-start text-center hover:bg-gray-200 focus:bg-gray-200 text-gray-800 font-medium active:bg-gray-200 py-2 px-1 w-full " + (active ? 'bg-gray-200' : '')} onClick={() => {
-                                                let dl_url = props?.current_url
-                                                if (dl_url.includes('?')) { dl_url += `&format=excel&access_token=${props?.token}` } else { dl_url += `?format=excel&access_token=${props?.token}` }
-                                                console.log('Downloading Excel. ' + dl_url || '')
-                                                // window.open(dl_url, '_blank', 'noopener noreferrer')
-                                                window.location.href = dl_url
+                                            <button className={"flex items-center justify-start text-center hover:bg-gray-200 focus:bg-gray-200 text-gray-800 font-medium active:bg-gray-200 py-2 px-1 w-full " + (active ? 'bg-gray-200' : '')} 
+                                            onClick={() => {
+                                               
+                                                
+                                                 window.location.href = `${process.env.NEXT_PUBLIC_FACILITY_EXPORT_URL}?access_token=${props?.token}&format=excel&page_size=${props?.count}&page=1`
+                                               
                                             }}>
                                                 <DownloadIcon className="w-4 h-4 mr-1" />
                                                 <span className='text-base uppercase font-semibold'>Excel</span>
                                             </button>
                                         )}
                                     </Menu.Item>
+
                                 </Menu.Items>
                             </Menu>
                             }
