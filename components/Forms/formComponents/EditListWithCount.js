@@ -586,7 +586,7 @@ function EditListWithCount(
             {/* Save btn */}
 
             {
-                savedItems.length > 0 && itemData !== null &&
+                itemData !== null &&
 
                 <div className="w-full flex justify-end gap-3 h-auto mt-3">
                      <button 
