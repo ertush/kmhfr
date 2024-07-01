@@ -702,7 +702,7 @@ function Dashboard(props) {
 
 
 
-                                <div className="w-full flex justify-between">
+                                <div className="w-full flex md:flex-row flex-col gap-4 md:gap-0 justify-between">
                                     {/* <pre>
                                         {
                                             getTitle()

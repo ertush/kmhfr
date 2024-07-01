@@ -246,23 +246,13 @@ countryBounds = countryBounds.map(arr => arr.reverse())
 //             'Authorization': `Bearer ${token}`
 //           }
 //         }))?.json()
-        
-
-    
 //   }
 
 
   useEffect(() => {
     
     if (groupID == 2) {
-      // console.log(user)
-      // GetBoundaries("constituency", {
-      //     feature: {
-      //       id: user?.user_constituencies[0]?.constituency_code
-      //     }
-      // })
-      // return
-      GetBoundaries("county", {
+        GetBoundaries("county", {
         feature: {
           id: user?.user_counties[0]?.county_code
         }
@@ -375,16 +365,8 @@ countryBounds = countryBounds.map(arr => arr.reverse())
   })
 
 
-  // return (
-    
-  //     <pre>
-  //       {JSON.stringify(data, null, 2)}
-  //     </pre>
-    
-  // )
-
   return (
-    <div className="panel">
+    <div className="panel w-[90vw] md:w-[85vw]">
       <div className="panel__map">
         <button
           onClick={() => {
