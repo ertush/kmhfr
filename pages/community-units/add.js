@@ -1315,7 +1315,7 @@ function AddCommunityUnit(props) {
 
 export async function getServerSideProps({req, res}) {
 
-	ctx?.res?.setHeader(
+	res?.setHeader(
 		'Cache-Control',
 		'public, s-maxage=10, stale-while-revalidate=59'
 	)
