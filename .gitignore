@@ -16,6 +16,7 @@
 /build
 pages/test.js
 pages/testmap.js
+pages/system_setup/test.js
 components/TestLeafletMap.js
 
 

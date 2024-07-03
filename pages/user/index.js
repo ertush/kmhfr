@@ -38,8 +38,6 @@ const StyledDataGrid = styled(DataGrid)(() => ({
 
 function Users (props) {
 
-  
-
     LicenseManager.setLicenseKey("test");
 
     const userPermissions = useContext(PermissionContext)
@@ -62,6 +60,7 @@ function Users (props) {
             is_active:user.is_active == true ? "Yes" : "No"
         }
     )) ?? []
+
     
     const columns = [
         {headerName: "Name", field: "name",  renderCell: (params) => {
@@ -83,8 +82,7 @@ function Users (props) {
         {headerName: "Active", field: "is_active", flex: 1}
     ]
 
- 
-    
+
 
     const [usersTheme, setUsersTheme] = useState(true)
     const [inactiveUsersTheme, setInactiveUsersTheme] = useState(false)
@@ -97,11 +95,6 @@ function Users (props) {
 
     useEffect(()=>{
 
-        if(!hasPermission(/^users.view_mfluser$/, userPermissions)){
-            router.push('/unauthorized')
-        }
-        
-        
         if(Object.keys(router.query).length > 0 && router.query.status !== undefined){
             setShow(true)
         }
@@ -109,16 +102,25 @@ function Users (props) {
     },[props.data.results, router.query])
 
     useEffect(()=>{
-    if(userCtx){
-        if (userCtx.id === 6) {
-			router.push('/auth/login')
-		}
-        if(userPermissions.find((r)=> r === 'auth.add_group') == undefined) setShowGroup(true)
-    }
-    else {
-        router.push('/auth/login')
-    }
+        if(
+            groupID == 5 || // National
+            groupID == 7 || // SuperAdmin
+            groupID == 6 || // National
+            groupID == 1    // CHRIO
+        )
+        {
+            if(userPermissions.find((r)=> r === 'auth.add_group') == undefined) setShowGroup(true)
+        } 
+        else if(groupID == 4) { // public user
+             router.push('/auth/login')
+        } 
+        else {
+            router.push('/unauthorized')
 
+            
+        }
+
+  
     setIsClient(true)
         
     },[])

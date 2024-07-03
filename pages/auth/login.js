@@ -21,7 +21,9 @@ function handleLogin(ev) {
 
     ev.preventDefault()
     setLoading(true)
+
     setError('')
+
     if (
         (username && username.length > 0) &&
         (password && password.length > 0)
@@ -40,7 +42,6 @@ function handleLogin(ev) {
             .then(r => r.json())
             .then(rsp => {
                 getUserDetails(rsp?.token, `${process.env.NEXT_PUBLIC_API_URL}/rest-auth/user/`)
-               
                  
                 if (rsp.error) {
                     setLoading(false)
