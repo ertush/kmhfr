@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect, useCallback, useRef } from 'react'
+import React, { useState, useContext, useEffect, useRef } from 'react'
 
 // component / controllers imports
 import MainLayout from '../../components/MainLayout'
@@ -71,8 +71,6 @@ function SystemSetup(props) {
 
     const userCtx = useContext(UserContext)
 
-
-
     // const userPermissions = useContext(PermissionContext)
     const [title, setTitle] = useState('Counties')
     const [addBtnLabel, setAddBtnLabel] = useState('county')
@@ -104,7 +102,7 @@ function SystemSetup(props) {
     const [open, setOpen] = useState(false);
     const handleClose = () => setOpen(false);
     const [sbcty_constituency, setSbctyConstituency] = useState([]);
-    const [value, setValue] = React.useState('1');
+    // const [value, setValue] = React.useState('1');
     const [user, setUser] = useState(userCtx);
 
     const [isClient, setIsClient] = useState(false)
@@ -151,11 +149,7 @@ function SystemSetup(props) {
     ]);
 
 
-
     // const groupID = userCtx?.groups[0]?.id
-
-
-
     // Refs
     const { inputsContainerRef, inputsContainerRef2 } = useRef(null);
 
@@ -171,7 +165,6 @@ function SystemSetup(props) {
 
         setIsClient(true)
     }, [])
-
 
     const fetchDataCategory = () => {
 
@@ -375,7 +368,7 @@ function SystemSetup(props) {
 
                                                 >
                                                     <p className="text-gray-900 font-semibold">Edit</p>
-                                                    {console.log({ params })}
+                                                    {/* {console.log({ params })} */}
                                                     <PencilAltIcon className="h-5 w-5 text-gray-900" />
                                                 </button>
                                             )
@@ -399,7 +392,7 @@ function SystemSetup(props) {
 
                                                 >
                                                     <p className="text-gray-900 font-semibold">Edit</p>
-                                                    {console.log({ params })}
+                                                    {/* {console.log({ params })} */}
                                                     <PencilAltIcon className="h-5 w-5 text-gray-900" />
                                                 </button>
                                             )
@@ -424,7 +417,7 @@ function SystemSetup(props) {
 
                                             >
                                                 <p className="text-gray-900 font-semibold">Edit</p>
-                                                {console.log({ params })}
+                                                {/* {console.log({ params })} */}
                                                 <PencilAltIcon className="h-5 w-5 text-gray-900" />
                                             </button>
                                         )
@@ -449,7 +442,7 @@ function SystemSetup(props) {
 
                                             >
                                                 <p className="text-gray-900 font-semibold">Edit</p>
-                                                {console.log({ params })}
+                                                {/* {console.log({ params })} */}
                                                 <PencilAltIcon className="h-5 w-5 text-gray-900" />
                                             </button>
                                         )
@@ -506,7 +499,7 @@ function SystemSetup(props) {
 
                                                             >
                                                                 <p className="text-gray-900 font-semibold">Edit</p>
-                                                                {console.log({ params })}
+                                                                {/* {console.log({ params })} */}
                                                                 <PencilAltIcon className="h-5 w-5 text-gray-900" />
                                                             </button>
                                                         )
@@ -532,7 +525,7 @@ function SystemSetup(props) {
 
                                                             >
                                                                 <p className="text-gray-900 font-semibold">Edit</p>
-                                                                {console.log({ params })}
+                                                                {/* {console.log({ params })} */}
                                                                 <PencilAltIcon className="h-5 w-5 text-gray-900" />
                                                             </button>
                                                         )
@@ -562,7 +555,7 @@ function SystemSetup(props) {
 
                                                     >
                                                         <p className="text-gray-900 font-semibold">Edit</p>
-                                                        {console.log({ params })}
+                                                        {/* {console.log({ params })} */}
                                                         <PencilAltIcon className="h-5 w-5 text-gray-900" />
                                                     </button>
                                                 )
@@ -589,7 +582,7 @@ function SystemSetup(props) {
 
                                                     >
                                                         <p className="text-gray-900 font-semibold">Edit</p>
-                                                        {console.log({ params })}
+                                                        {/* {console.log({ params })} */}
                                                         <PencilAltIcon className="h-5 w-5 text-gray-900" />
                                                     </button>
                                                 )
@@ -630,7 +623,7 @@ function SystemSetup(props) {
 
                                                     >
                                                         <p className="text-gray-900 font-semibold">Edit</p>
-                                                        {console.log({ params })}
+                                                        {/* {console.log({ params })} */}
                                                         <PencilAltIcon className="h-5 w-5 text-gray-900" />
                                                     </button>
                                                 )
@@ -659,7 +652,7 @@ function SystemSetup(props) {
 
                                                     >
                                                         <p className="text-gray-900 font-semibold">Edit</p>
-                                                        {console.log({ params })}
+                                                        {/* {console.log({ params })} */}
                                                         <PencilAltIcon className="h-5 w-5 text-gray-900" />
                                                     </button>
                                                 )
@@ -686,7 +679,7 @@ function SystemSetup(props) {
 
                                                     >
                                                         <p className="text-gray-900 font-semibold">Edit</p>
-                                                        {console.log({ params })}
+                                                        {/* {console.log({ params })} */}
                                                         <PencilAltIcon className="h-5 w-5 text-gray-900" />
                                                     </button>
                                                 )
@@ -713,7 +706,7 @@ function SystemSetup(props) {
 
                                                     >
                                                         <p className="text-gray-900 font-semibold">Edit</p>
-                                                        {console.log({ params })}
+                                                        {/* {console.log({ params })} */}
                                                         <PencilAltIcon className="h-5 w-5 text-gray-900" />
                                                     </button>
                                                 )
@@ -739,7 +732,7 @@ function SystemSetup(props) {
 
                                                     >
                                                         <p className="text-gray-900 font-semibold">Edit</p>
-                                                        {console.log({ params })}
+                                                        {/* {console.log({ params })} */}
                                                         <PencilAltIcon className="h-5 w-5 text-gray-900" />
                                                     </button>
                                                 )
@@ -765,7 +758,7 @@ function SystemSetup(props) {
 
                                                     >
                                                         <p className="text-gray-900 font-semibold">Edit</p>
-                                                        {console.log({ params })}
+                                                        {/* {console.log({ params })} */}
                                                         <PencilAltIcon className="h-5 w-5 text-gray-900" />
                                                     </button>
                                                 )
@@ -781,7 +774,7 @@ function SystemSetup(props) {
 
                                                     >
                                                         <p className="text-gray-900 font-semibold">Edit</p>
-                                                        {console.log({ params })}
+                                                        {/* {console.log({ params })} */}
                                                         <PencilAltIcon className="h-5 w-5 text-gray-900" />
                                                     </button>
                                                 )
@@ -817,7 +810,7 @@ function SystemSetup(props) {
 
                                             >
                                                 <p className="text-gray-900 font-semibold">Edit</p>
-                                                {console.log({ params })}
+                                                {/* {console.log({ params })} */}
                                                 <PencilAltIcon className="h-5 w-5 text-gray-900" />
                                             </button>
                                         )
@@ -844,7 +837,7 @@ function SystemSetup(props) {
 
                                             >
                                                 <p className="text-gray-900 font-semibold">Edit</p>
-                                                {console.log({ params })}
+                                                {/* {console.log({ params })} */}
                                                 <PencilAltIcon className="h-5 w-5 text-gray-900" />
                                             </button>
                                         )
@@ -875,39 +868,38 @@ function SystemSetup(props) {
 
     useDidMountEffect(fetchDataCategory, [resource, isAddForm, is_parent]);
 
-    const handleAdminUnitsClick = () => {
+    function handleAdminUnitsClick (){
         setOpenAdminUnits(!openAdminUnits);
 
     };
 
-    const handleServiceCatalogueClick = () => {
+    function handleServiceCatalogueClick() {
         setOpenServiceCatalogue(!openServiceCatalogue);
     };
 
-    const handleHealthInfrClick = () => {
+    function handleHealthInfrClick(){
         setOpenHealthInfr(!openHealthInfr);
     };
 
-    const handleHRClick = () => {
+    function handleHRClick() {
         setOpenHR(!openHR);
     };
 
-    const hanldeConactsClick = () => {
+    function hanldeConactsClick() {
         setOpenContacts(!openContacts);
     };
 
-    const handleFacilitiesClick = () => {
+    function handleFacilitiesClick() {
         setOpenFacilities(!openFacilities);
     };
 
-    const handleCHUClick = () => {
+    function handleCHUClick(){
         setOpenCHU(!openCHU);
     };
 
     const handleDocumentsClick = () => {
         setOpenDocuments(!openDocuments);
     };
-
 
     //onChange 
     const handleFormSubmit = (e, path) => {
@@ -1026,9 +1018,7 @@ function SystemSetup(props) {
                                     </TableRow>
                                 </TableHead>
                                 <TableBody sx={{ paddingX: 4 }}>
-                                    {logsRows
-                                        // .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                        .map((row) => {
+                                    {logsRows.map((row) => {
                                             return (
                                                 <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
                                                     {logsColumns.map((column, i) => {
@@ -1085,12 +1075,14 @@ function SystemSetup(props) {
             if (addBtnLabel === 'constituency' || addBtnLabel === 'ward') {
                 url = `/api/system_setup/data/?resource=counties&resourceCategory=AdminUnits&fields=id,name`
             }
-
-            if (addBtnLabel === 'sub county') {
+            
+                if (addBtnLabel === 'sub county') {
                 url = `/api/system_setup/data/?resource=counties&resourceCategory=Counties&fields=id,name`
                 console.log("url: ", {url})
                 
             }
+
+           
 
             fetch(url, {
                 headers: {
@@ -1100,7 +1092,7 @@ function SystemSetup(props) {
                 .then(res => res?.json())
                 .then(res => {
 
-                    setSelectOptions(res.results.map(({ id, name }) => ({ value: id, label: name })))
+                    setSelectOptions(res?.results?.map(({ id, name }) => ({ value: id, label: name })))
                 })
                 .catch(e => console.error("Error: ", e.message))
 
@@ -1112,7 +1104,7 @@ function SystemSetup(props) {
                 fetch(`/api/system_setup/data/?resource=${item}&resourceCategory=ServiceCatalogue&fields=id,name`)
                     .then(res => res.json())
                     .then(res => {
-                        const results = res.results.map(({ id, name }) => ({ value: id, label: name }));
+                        const results = res?.results?.map(({ id, name }) => ({ value: id, label: name }));
                         options.push(results)
                         setSelectOptions(options)
 
@@ -1190,6 +1182,25 @@ function SystemSetup(props) {
 
 
                     break;
+
+                // case 'Service Category':
+                //     //     url = `/api/system_setup/data/?resource=service_categories&resourceCategory=ServiceCatalogue&fields=parent,name`
+                //     //     console.log("url: ", {url})
+                //     // }
+                //     url = [`/api/system_setup/data/?resource=${resource}&resourceCategory=${resourceCategory}&id=${editID}`,
+                //         `/api/system_setup/data/?resource=wards&resourceCategory=${resourceCategory}&constituency=${editID}`,
+                //         ]
+                //         Promise.all(url.map(url => fetch(url)))
+                //             .then(resp => {
+                //                 Promise.all(resp.map(r => r.json()))
+                //                     .then(
+                //                         data => {
+    
+                //                             setEditData(data)
+                //                             setIsLoading(false)
+                //                         }
+                //                     )
+                //             })
 
                 default:
                     fetch(`/api/system_setup/data/?resource=${resource}&resourceCategory=${resourceCategory}&id=${editID}`)
@@ -1725,6 +1736,7 @@ function SystemSetup(props) {
                             </List>
                         </div>
                         {
+                            // Edit forms
                             !isAddForm ? (
                                 <>
                                     {/* Table Section */}
@@ -1760,7 +1772,7 @@ function SystemSetup(props) {
                                     </div>
                                 </>
                             ) : (
-
+                            // Add forms
                                 <div className='col-span-4 flex items-start justify-start h-auto w-full'>
                                     {/* Add Form */}
                                     <div className="w-full h-auto p-3 bg-gray-50 shadow-md" >
@@ -1945,11 +1957,7 @@ function SystemSetup(props) {
                                                                     {/* Constituency Name */}
                                                                     <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
 
-                                                                        {/* <pre>
-                                                                            {
-                                                                                JSON.stringify(editData, null, 2)
-                                                                            }
-                                                                        </pre> */}
+                                                                        
                                                                         <label
                                                                             htmlFor={`add_${addBtnLabel}_sub_county_field`}
                                                                             className='text-gray-600 capitalize text-sm'>
@@ -2477,6 +2485,7 @@ function SystemSetup(props) {
 
                                                                                 </span>
                                                                             </label>
+                                                                           
                                                                             <Select
                                                                                 styles={{
                                                                                     control: (baseStyles) => ({
@@ -2621,7 +2630,6 @@ function SystemSetup(props) {
                                                                     </>
                                                                 )
                                                         )
-
                                                     case 'option group':
                                                         const handleAddOptionGroup = (e, path) => {
                                                             e.preventDefault()
@@ -2802,7 +2810,6 @@ function SystemSetup(props) {
 
                                                             </>
                                                         )
-
                                                     case 'service':
                                                         return (
                                                             <>
@@ -3016,7 +3023,6 @@ function SystemSetup(props) {
                                                                 <ChangeLog />
                                                             </>
                                                         )
-
                                                     case 'Service Category':
                                                         return (
                                                             <form className='w-full h-full' onSubmit={(e) => handleFormSubmit(e, addBtnLabel)}>
@@ -3059,6 +3065,11 @@ function SystemSetup(props) {
 
 
                                                                     </label>
+                                                                    <pre>
+                                                                        {
+                                                                        JSON.stringify(selectOptions, null, 2)
+                                                                        }
+                                                                    </pre>
                                                                     <Select
                                                                         styles={{
                                                                             control: (baseStyles) => ({
@@ -3073,7 +3084,7 @@ function SystemSetup(props) {
                                                                             }),
 
                                                                         }}
-                                                                        options={selectOptions[1]}
+                                                                        options={selectOptions}
                                                                         required
                                                                         placeholder={'Select a Category'}
                                                                         key={editData.category}
@@ -3143,7 +3154,6 @@ function SystemSetup(props) {
 
                                                             </form>
                                                         )
-
                                                     case 'infrastructure':
                                                         return (
                                                             <form className='w-full h-full' onSubmit={(e) => handleFormSubmit(e, addBtnLabel)}>
@@ -3256,7 +3266,6 @@ function SystemSetup(props) {
 
                                                             </form>
                                                         )
-
                                                     case 'infrastructure category':
                                                         return (
                                                             <form className='w-full h-full' onSubmit={(e) => handleFormSubmit(e, addBtnLabel)}>
@@ -3319,7 +3328,6 @@ function SystemSetup(props) {
 
                                                             </form>
                                                         )
-
                                                     case 'human resource category':
                                                         return (
                                                             <>
@@ -3477,7 +3485,6 @@ function SystemSetup(props) {
 
                                                             </form>
                                                         )
-
                                                     case 'contact type':
                                                         return (
                                                             <>
@@ -4516,9 +4523,6 @@ function SystemSetup(props) {
                                                         )
 
 
-
-
-
                                                 }
 
                                             })()
@@ -4607,7 +4611,6 @@ SystemSetup.getInitialProps = async (ctx) => {
         }
     }).catch(err => {
 
-        // console.log('Error checking token: ', err)
         if (typeof window !== 'undefined' && window) {
             if (ctx?.asPath) {
                 window.location.href = ctx?.asPath
@@ -4616,7 +4619,6 @@ SystemSetup.getInitialProps = async (ctx) => {
             }
         }
 
-        // setTimeout(() => {  
         return {
             error: true,
             err: err,
@@ -4625,7 +4627,6 @@ SystemSetup.getInitialProps = async (ctx) => {
             path: ctx.asPath || '/system_setup',
             current_url: ''
         }
-        // }, 1000);
     })
 
 }

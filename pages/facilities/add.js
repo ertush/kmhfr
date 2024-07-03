@@ -7,6 +7,7 @@ import FacilitySideMenu from "../../components/FacilitySideMenu";
 import { useState, useEffect, createContext, useContext } from 'react';
 import { UserContext } from "../../providers/user";
 import { KeyboardArrowRight, KeyboardArrowDown } from "@mui/icons-material";
+import { useRouter } from "next/router";
 
 export const FormOptionsContext = createContext({});
 
@@ -24,9 +25,11 @@ export default function AddFacility(props) {
 	const [user, setUser] = useState(userCtx)
 	const [isMenuOpen, setIsMenuOpen] = useState(false)
 
+	const router = useRouter()
+
 	useEffect(() => {
 		setUser(userCtx)
-		if (user && user.id === 6) {
+		if (user && user.id == 6) {
 			router.push('/auth/login')
 		}
 		setIsClient(true)
