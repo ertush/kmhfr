@@ -24,6 +24,7 @@ import { useSearchParams } from 'next/navigation';
 function CommunityUnit(props) {
 
 	const userCtx = React.useContext(UserContext);
+	const groupID = userCtx?.groups[0]?.id
 	const router = useRouter();
 	const cus = props?.data?.results;
 	const filters = props?.filters;
@@ -44,6 +45,17 @@ function CommunityUnit(props) {
 	
 
 	// console.log({currentPageParams})
+
+	const orgUnitFilter = (() => {
+        if(groupID == 1) { //CHHIO
+            return `&county=${userCtx?.county ?? userCtx?.user_counties[0]?.county}`
+        }else if(groupID == 2){ //SCHRIO
+            return `&sub_county=${userCtx?.user_sub_counties[0]?.sub_county}`
+        }else if(groupID == 5 || groupID == 7 || groupID == 6){ // National & Admin
+            return ""
+        }
+    })()
+
 
 
 	useEffect(() => {
@@ -70,6 +82,7 @@ function CommunityUnit(props) {
 
 	}, [])
 
+
 	if (isClient) {
 		return (
 			<div className=''>
@@ -92,8 +105,8 @@ function CommunityUnit(props) {
 									</h2>
 
 									{props?.current_url && props?.current_url.length > 5 && (
-										<Menu as='div' className='relative'>
-											<div className='flex mt-4 md:mt-0 flex-col items-start md:flex-row md:items-center gap-3 md:gap-0 md:space-x-6 w-auto '>
+										<Menu as='div' >
+											<div className='flex mt-4 md:mt-0 relative flex-col items-start md:flex-row md:items-center gap-3 md:gap-0 md:space-x-6 w-auto '>
 												<Menu.Item
 													as='div'
 													className='px-4 py-2 bg-gray-600 rounded text-white text-sm tracking-tighter font-semibold whitespace-nowrap  hover:bg-black focus:bg-black active:bg-black uppercase'>
@@ -118,7 +131,7 @@ function CommunityUnit(props) {
 
 											<Menu.Items
 												as='ul'
-												className='absolute top-10 left-0 flex flex-col gap-y-1 items-center justify-start bg-white  shadow-lg border border-gray-200 p-1 w-full'>
+												className='absolute top-[80%] right-4 flex flex-col gap-y-1 items-center justify-start bg-white  shadow-lg border border-gray-200 p-1 w-auto'>
 												<Menu.Item
 													as='li'
 													className='p-0 flex items-center w-full text-center hover:bg-gray-200 focus:bg-gray-200 active:bg-gray-200'>
@@ -129,11 +142,7 @@ function CommunityUnit(props) {
 																(active ? 'bg-gray-200' : '')
 															}
 															onClick={() => {
-																let dl_url = props?.current_url;
-																if (dl_url.includes('?')) { dl_url += `&format=csv&access_token=${props.token}` } else { dl_url += `?format=csv&access_token=${props.token}` }
-																console.log('Downloading CSV. ' + dl_url || '');
-																// window.open(dl_url, '_blank', 'noopener noreferrer')
-																window.location.href = dl_url;
+																window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/chul/units/?format=csv&access_token=${props.token}&page_size=${props?.count}&page=1${orgUnitFilter}`;
 															}}>
 															<DownloadIcon className='w-4 h-4 mr-1' />
 															<span>CSV</span>
@@ -150,11 +159,7 @@ function CommunityUnit(props) {
 																(active ? 'bg-gray-200' : '')
 															}
 															onClick={() => {
-																let dl_url = props?.current_url;
-																if (dl_url.includes('?')) { dl_url += `&format=excel&access_token=${props.token}` } else { dl_url += `?format=excel&access_token=${props.token}` }
-																console.log('Downloading Excel. ' + dl_url || '');
-																// window.open(dl_url, '_blank', 'noopener noreferrer')
-																window.location.href = dl_url;
+																window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/chul/units/?format=excel&access_token=${props.token}&page_size=${props?.count}&page=1${orgUnitFilter}`;
 															}}>
 															<DownloadIcon className='w-4 h-4 mr-1' />
 															<span>Excel</span>
@@ -568,6 +573,7 @@ CommunityUnit.getInitialProps = async (ctx) => {
 				query,
 				token,
 				filters: { ...ft },
+				count: json?.count,
 				path: ctx.asPath || '/community-units',
 				current_url: current_url,
 			};
@@ -580,6 +586,7 @@ CommunityUnit.getInitialProps = async (ctx) => {
 				query: {},
 				token: null,
 				filters: {},
+				count:0,
 				path: ctx.asPath || '/community-units',
 				current_url: '',
 			};
