@@ -217,7 +217,7 @@ function Dashboard(props) {
     ]
 
     const chuSummary = [
-        { name: 'Total community health units', count: `${props?.data?.total_chus || 0}` },
+        { name: 'Total CHUs', count: `${props?.data?.total_chus || 0}` },
         { name: 'Total CHUs rejected', count: `${props?.data?.rejected_chus || 0}` },
         { name: 'New CHUs pending approval', count: `${props?.data?.recently_created_chus || 0}` },
         { name: 'Updated CHUs pending approval', count: `${props?.data?.chus_pending_approval || 0}` },
@@ -752,7 +752,7 @@ function Dashboard(props) {
 
                                             {
                                                 (groupID == 5 || groupID == 7) &&
-                                                props?.filters && props?.filters?.county.length > 0 &&
+                                                props?.filters?.county && props?.filters?.county.length > 0 &&
                                                 Object.keys(props?.filters)?.map(ft => (
                                                     <Select
                                                         key={ft}
@@ -936,9 +936,11 @@ function Dashboard(props) {
                             </div>
                         </div>
 
-                        {/* <div id="dashboard" className="w-full grid grid-cols-6 gap-4 px-1 md:px-4 py-2 my-4"> */}
+
+                        {/* Facility Owners Chart */}
                         <div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
                             <h4 className="text-lg uppercase pt-4 text-center border-b border-gray-100 w-full mb-4 font-semibold text-gray-900">Facility owners </h4>
+                            
                             {
                                 ownerPresentationType !== 'table' ?
 
@@ -990,6 +992,7 @@ function Dashboard(props) {
 
                         </div>
 
+                        {/* Facility Types Chart */}
                         <div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
                             <h4 className="text-lg uppercase pt-4 text-center border-b border-gray-100 w-full mb-4 font-semibold text-gray-900">Facility Types </h4>
                             {
@@ -1038,7 +1041,7 @@ function Dashboard(props) {
                                 className='self-end' />
                         </div>
 
-                        {/* Facilities summary 1/3 - FILTERABLE */}
+                        {/* Facilities Summary chart */}
                         <div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
                             <h4 className="text-lg uppercase pt-4 text-center border-b border-gray-100 w-full mb-4 font-semibold text-gray-900">Facilities summary</h4>
                             {
@@ -1085,17 +1088,18 @@ function Dashboard(props) {
                                 title="Select Presentation Type"
                                 className='self-end' />
                         </div>
-                        {/* CUs summary - FILTERABLE 1/3 */}
+
+                        {/* Community Unit Summary */}
                         <div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
                             <h4 className="text-lg uppercase pt-4 text-center border-b border-gray-100 w-full mb-4 font-semibold text-gray-900">Community Units summary</h4>
                             {
                                 chuSummaryPresentationType !== 'table' ?
                                     <Chart
                                         title=""
-                                        categories={Array?.from(totalSummary ?? [], cs => cs.name) || []}
+                                        categories={Array?.from(chuSummary ?? [], cs => cs.name) || []}
                                         tooltipsuffix="#"
                                         xaxistitle={chuSummaryPresentationType.includes('pie') ? null : "Community Unit Summary"}
-                                        getFullYearaxistitle={chuSummaryPresentationType.includes('pie') ? null : "Count"}
+                                        yaxistitle={chuSummaryPresentationType.includes('pie') ? null : "Count"}
                                         type={chuSummaryPresentationType}
                                         data={(() => {
                                             let data = [];
@@ -1133,7 +1137,8 @@ function Dashboard(props) {
                                 className='self-end' />
 
                         </div>
-                        {/* Recent changes 1/3 - FILTERABLE */}
+
+                        {/* Recent Facility  Changes Chart */}
                         <div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
                             <h4 className="text-lg uppercase pt-4 text-center border-b border-gray-100 w-full mb-4 font-semibold text-gray-900">Recent changes</h4>
                             {
@@ -1193,7 +1198,8 @@ function Dashboard(props) {
                             </div>
 
                         </div>
-                        {/* facilities by keph level */}
+
+                        {/* Facilities by keph level  Chart*/}
                         <div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
                             <h4 className="text-lg uppercase pt-4 text-center border-b border-gray-100 w-full mb-4 font-semibold text-gray-900">Facility KEPH Level </h4>
                             {
@@ -1242,7 +1248,8 @@ function Dashboard(props) {
 
 
                         </div>
-                        {/* Facilities & CHUs by county (bar) 1/1 */}
+
+                        {/* Facilities & CHUs by County Chart */}
                         {(groupID === 7 || groupID === 5) &&
                             <div className="no-print col-span-6 flex flex-col items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
                                 <h4 className="text-lg uppercase pt-4 border-b text-center border-gray-100 w-full mb-2 font-semibold text-gray-900">Facilities &amp; CHUs by County</h4>
@@ -1274,11 +1281,11 @@ function Dashboard(props) {
                                     onChange={value => handlePresentationChange(value, 'facility_chu_chart')}
                                     placeholder="presentation type"
                                     title="Select Presentation Type"
-                                    className='self-end' />
+                                    className='self-end z-40' />
 
                             </div>
                         }
-                        {/* Facilities & CHUs by subCounties (bar) 1/1 */}
+                        {/* Facilities & CHUs by Sub Counties Chart*/}
                         {groupID === 1 &&
                             <div className="no-print col-span-6 flex flex-col items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
                                 <h4 className="text-lg uppercase pt-4 text-center border-b border-gray-100 w-full mb-2 font-semibold text-gray-900">Facilities &amp; CHUs by Subcounty</h4>
@@ -1309,12 +1316,12 @@ function Dashboard(props) {
                                     onChange={value => handlePresentationChange(value, 'facility_chu_chart')}
                                     placeholder="presentation type"
                                     title="Select Presentation Type"
-                                    className='self-end' />
+                                    className='self-end z-40' />
 
                             </div>
 
                         }
-                        {/* Facilities & CHUs by ward (bar) 1/1 */}
+                        {/* Facilities & CHUs by Ward Chart */}
                         {groupID === 2 &&
                             <div className="no-print col-span-6 flex flex-col items-start justify-start p-3 shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
                                 <h4 className="text-lg uppercase pt-4 text-center border-b border-gray-100 w-full mb-2 font-semibold text-gray-900">Facilities &amp; CHUs by Ward</h4>
@@ -1340,63 +1347,10 @@ function Dashboard(props) {
                             </div>
                         }
 
+                        {/* Dashbord Map */}
                         <Map token={props?.token} groupID={groupID} user={user} />
 
-                        {/* Facility owners & categories - national summary - FILTERABLE (bar) 1/2 */}
-                        {/* <div className="no-print col-span-6 md:col-span-3 flex flex-col items-start justify-start p-3 shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
-                            <h4 className="text-lg uppercase pt-4 text-center border-b border-gray-100 w-full mb-2 font-semibold text-gray-900">Facility owners</h4>
-                            <Chart
-                                title=""
-                                categories={Array.from(props?.data?.owner_types ?? [], ot => ot.name) || []}
-                                tooltipsuffix="#"
-                                xaxistitle="Owner"
-                                yaxistitle="Number"
-                                type="column"
-                                data={(() => {
-                                    return [{ name: "Owner", data: Array.from(props?.data?.owner_types ?? [], ot => parseFloat(ot.count)) || [] }];
-                                })() || []} />
-                        </div> */}
-                        {/* Facility types - national summary - FILTERABLE (bar) 1/2 */}
-                        {/* <div className="no-print col-span-6 md:col-span-3 flex flex-col items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
-                            <h4 className="text-lg uppercase pt-4 text-center border-b border-gray-100 w-full mb-2 font-semibold text-gray-900">Facility types</h4>
-                            <Chart
-                                title=""
-                                categories={Array.from(props?.data?.types_summary ?? [], ts => ts.name) || []}
-                                tooltipsuffix="#"
-                                xaxistitle="Type"
-                                yaxistitle="Number"
-                                type="column"
-                                data={(() => {
-                                    return [{ name: "Type", data: Array.from(props?.data?.types_summary ?? [], ts => parseFloat(ts.count)) || [] }];
-                                })() || []} />
-                        </div> */}
-
-
-                        {/* Floating div at bottom right of page */}
-
-
-                        {/* <style jsx global>
-                            {`
-                        @media print {
                         
-                        .no-print {
-                            display: none;
-                        }
-                        .main{
-                            display:inline-block;
-                            width:100%;
-                        }
-                        .card{
-                            width:100%;
-                            background-color: #fff;
-                            border: 1px solid #e4e7ea;
-                            margin: 20px;
-                            padding: 20px;
-                            box-shadow:0 0 0 0;
-                            
-                        }
-                        }
-                    `}</style> */}
                     </div>
                 </MainLayout>
             </div>
@@ -1466,10 +1420,6 @@ export async function getServerSideProps(ctx) {
 
 
         let url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/dashboard/`
-
-        // let other_posssible_filters = ["datefrom", "dateto", "county", "sub_county", "ward"]
-        //ensure county and subCounties parameters are passed if the user is countyuser or subcountyuser respectively
-
 
         if (ctx?.query) {
             let i = 0
