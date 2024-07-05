@@ -14,8 +14,6 @@ This is the frontend application for KMHFL with new features (GIS, Dynamic Repor
 
 Currently, this uses the test API available through [api.kmhfr.health.go.ke](https://api.kmhfr.health.go.ke).
 
-
-
 ## Setting up local instance
 
 - Clone this repository ```git clone https://github.com/uonafya/kmhfr```
