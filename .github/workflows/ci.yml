@@ -15,7 +15,7 @@ env:
   NEXT_PUBLIC_CLIENT_PUBLIC_ID: ${{secrets.NEXT_PUBLIC_CLIENT_PUBLIC_ID}}
   CLIENT_PUBLIC_SECRET: ${{secrets.CLIENT_PUBLIC_SECRET}}
   NEXT_PUBLIC_PUBLIC_TOKEN_URL: 'https://api.kmhfr.health.go.ke/o/token/'
-  NEXT_PUBLIC_FACILITY_EXPORT_URL: 'https://api.kmhfltest.health.go.ke/api/facilities/material/'
+  NEXT_PUBLIC_FACILITY_EXPORT_URL: 'https://api.kmhfr.health.go.ke/api/facilities/material/'
 
 jobs:
 

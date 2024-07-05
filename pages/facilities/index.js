@@ -770,20 +770,14 @@ function FacilityHome (props){
     <button className={`border hidden md:flex p-1 px-2 font-semibold place-content-center rounded ${props?.current_page == 5 ? 'bg-blue-600 text-gray-50 border-blue-600': ' border-gray-800'}`} onClick={handlePageLoad}>
     5
     </button>
-    {/* <span>...</span>
-    <button className={`border p-1 px-2 flex font-semibold place-content-center rounded ${props?.current_page ==  Number(props?.total_pages) - 1 ? 'bg-blue-600 text-gray-50 border-blue-600': ' border-gray-800'}`} onClick={handlePageLoad}>
-    {Number(props?.total_pages) - 1}
-    </button>
-    <button className={`border p-1 px-2 flex font-semibold place-content-center rounded ${props?.current_page == Number(props?.total_pages) ? 'bg-blue-600 text-gray-50 border-blue-600': ' border-gray-800'}`} onClick={handlePageLoad}>
-    {props?.total_pages}
-    </button> */}
+   
 </div>
                                             </div>
                                             }
                                         </div>
                                     </div>
 
-                                    {/* {!props?.facilities && <h2 className='text-gray-400'>No Facilities Found ....</h2>} */}
+                                   
                              
                     </div>
                     
