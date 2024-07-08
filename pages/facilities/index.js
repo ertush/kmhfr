@@ -113,11 +113,11 @@ function FacilityHome (props){
     }, [facilityFeedBack, title])
 
 
-    function handleDates(from, to) {
-        setFromDate(from);
-        setToDate(to);
+    // function handleDates(from, to) {
+    //     setFromDate(from);
+    //     setToDate(to);
     
-    }
+    // }
 
     function handleAccordionExpand(ev) {
         if(isAccordionExpanded){
@@ -529,44 +529,49 @@ function FacilityHome (props){
                                             onSubmit={(values) => {
 
                                                 const query = values.q.split(' ').join('+');
-                                                
-
+                                                const href = new URL(window.location.href)
+                                                const filter = href.searchParams.get('filter')
                                                 // console.log({values})
-                                                switch((new URL(window.location.href))?.searchParams.get('qf')){
-                                                    case "all":
-                                                        router.push(`/facilities/?q=${query}&qf=all&closed=false`)
+                                                switch(filter){
+                                                    case "all_facilities":
+                                                        router.push(`/facilities/?q=${query}&filter=all_facilities`)
                                                         break;
-                                                    case "approved":
-                                                        router.push(`/facilities/?q=${query}&qf=approved&approved=true&approved_national_level=true&rejected=false`)
+                                                    case "approved_facilities":
+                                                        router.push(`/facilities/?q=${query}&filter=approved_facilities&approved=true&approved_national_level=true&rejected=false`)
                                                         break;
-                                                    case "new_pending_validation":
-                                                        router.push(`/facilities/?q=${query}&qf=new_pending_validation&pending_approval=true&has_edits=false&is_complete=true`)
+                                                    case "pending_validation_facilities":
+                                                        router.push(`/facilities/?q=${query}&filter=pending_validation_facilities&pending_approval=true&has_edits=false`)
                                                         break;
-                                                    case "updated_pending_validation":
-                                                        router.push(`/facilities/?q=${query}&qf=updated_pending_validation&has_edits=true&pending_approval=true`)
+                                                    case "updated_pending_validation_facilities":
+                                                        router.push(`/facilities/?q=${query}&filter=updated_pending_validation_facilities&has_edits=true`)
                                                         break;
-                                                    case "to_publish":
-                                                        router.push(`/facilities/?q=${query}&qf=to_publish&to_publish=true`)
+                                                    case "pending_approval_facilities":
+                                                        router.push(`/facilities/?q=${query}&filter=pending_approval_facilities&to_publish=true`)
                                                         break;
-                                                    case "dhis_synced_facilities":
-                                                        router.push(`/facilities/?q=${query}qf=dhis_synced_facilities&approved=true&approved_national_level=true&rejected=false&reporting_in_dhis=true`)
+                                                    case "dhis_synched_facilities":
+                                                        router.push(`/facilities/?q=${query}&filter=dhis_synched_facilities&approved=true&approved_national_level=true&rejected=false&reporting_in_dhis=true`)
                                                         break;
-                                                    case "failed_validation":
-                                                        router.push(`/facilities/?q=${query}&qf=failed_validation&rejected=true`)
+                                                    case "failed_validation_facilities":
+                                                        router.push(`/facilities/?q=${query}&filter=failed_validation_facilities&rejected=true`)
                                                         break;
-                                                    case "rejected":
-                                                        router.push(`/facilities/?q=${query}&qf=rejected&rejected_national=true`)
+                                                    case "rejected_facilities":
+                                                        router.push(`/facilities/?q=${query}&filter=rejected_facilities&rejected_national_true=true`)
                                                         break;
                                                     case "closed":
-                                                        router.push(`/facilities/?q=${query}&qf=closed&closed=true`)
+                                                        router.push(`/facilities/?q=${query}&filter=closed_facilities&closed=true`)
                                                         break;
                                                     case "incomplete":
-                                                        router.push(`/facilities/?q=${query}&qf=incomplete&is_complete=false&in_complete_details=false`)
+                                                        router.push(`/facilities/?q=${query}&filter=incomplete_facilities&is_complete=true`)
+                                                        break;
+                                                    case "synchronized_regulated_facilities":
+                                                        router.push(`/facilities/?q=${query}&filter=synchronized_regulated_facilities&mfl_code_null=true`)
+                                                        break;
+                                                    case "feed_back_facilities":
+                                                        router.push(`/facilities/?q=${query}&filter=feed_back_facilities`)
                                                         break;
                                                     default:
-                                                        router.push(`/facilities/?q=${query}&qf=all&closed=false`)
+                                                        router.push(`/facilities/?q=${query}&filter=all_facilities`)
                                                         break;
-
                                                 
                                                 }
 
