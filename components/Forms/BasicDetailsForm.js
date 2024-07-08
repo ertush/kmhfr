@@ -74,6 +74,8 @@ export function BasicDeatilsForm({ editMode }) {
   const [subCountyOptions, setSubCountyOptions] = useState(options?.sub_counties)
   const [constituencyOptions, setConstituencyOptions] = useState(options?.constituencies)
   const [wardOptions, setWardOptions] = useState(options?.wards)
+
+  const facilityTypeValue = options?.facility_types?.find(({label}) => label.toLowerCase().trim() == options?.data?.facility_type_parent.toLowerCase().trim())?.value
   
   const operationStatusOptions = [
     {
@@ -161,7 +163,7 @@ export function BasicDeatilsForm({ editMode }) {
           })
 
 
-          setFacilityTypeDetailOptions(facilityType ?? options?.facility_type_details)
+          setFacilityTypeDetailOptions(options?.facility_type_details ?? facilityType)
 
         }
         catch (e) {
@@ -775,6 +777,7 @@ export function BasicDeatilsForm({ editMode }) {
 
         {/* Facility Type */}
         <div className={`w-full flex flex-col items-start justify-start gap-1 mb-3`}>
+         
           <label
             htmlFor='facility_type_parent' // facility_type
             className='text-gray-600 capitalize text-sm'>
@@ -787,9 +790,7 @@ export function BasicDeatilsForm({ editMode }) {
 
           <CustomSelect
             options={options?.facility_types}
-            defaultValue={options?.data?.facility_type_parent /*options?.facility_types?.map(({ value }) => value).includes(options?.data?.facility_type) ? options?.data?.facility_type : (() => {
-              return options?.facility_types?.find(({ label }) => label == options?.data?.facility_type_parent)?.value
-            })()*/}
+            defaultValue={facilityTypeValue}
             placeholder="Select a facility type..."
             required
             name='facility_type_parent' // facility_type
