@@ -16,6 +16,7 @@ import { hasPermission } from '../../../utils/checkPermissions';
 import Alert from '@mui/material/Alert';
 import Link from 'next/link';
 import { WarningOutlined } from '@mui/icons-material';
+import { XCircleIcon } from '@heroicons/react/outline'
 
 const User = (props) => {
 	
@@ -315,8 +316,8 @@ const User = (props) => {
 					</div>
 
 					<div className='col-span-5 flex flex-col justify-center items-start px-1 md:px-4 w-full '>
-						<div className=' w-full flex flex-col items-start p-3  border shadow-md'
-							style={{ minHeight: '250px', backgroundColor: '#eff6ff' }}>
+						<div className=' w-full flex flex-col bg-gray-50 items-start p-3  border shadow-md'
+							style={{ minHeight: '250px'}}>
 
 							<>
 								<h4 className='text-lg uppercase pb-2 border-b border-gray-600 w-full mb-4 font-semibold text-gray-900'>
@@ -563,7 +564,7 @@ const User = (props) => {
 									</div>}
 									{/* Contacts */}
 
-									<div className=' w-full flex flex-col items-start justify-start py-3  border border-gray-300/70 bg-transparent h-auto'>
+									<div className=' w-full flex flex-col items-start justify-start py-3   bg-transparent h-auto'>
 										<h4 className='text-lg uppercase pb-2 border-b border-gray-600 w-full mb-4 font-semibold text-gray-900'>
 											Contacts
 										</h4>
@@ -573,6 +574,7 @@ const User = (props) => {
 
 											return (
 												<div key={i} className='w-full flex flex-row items-center gap-1 gap-x-3 mb-3'>
+
 													<div className='w-full flex flex-col items-left gap-1 gap-x-3 mb-3'>
 														<label
 															htmlFor='contact_type'
@@ -621,6 +623,7 @@ const User = (props) => {
 
 														/>
 													</div>
+
 													<div className='w-full flex flex-col items-left px-2 justify-  gap-1 gap-x-3 mb-3'>
 														<label
 															htmlFor='contact_text'
@@ -641,15 +644,32 @@ const User = (props) => {
 																	cont_name: "contact_text", value, id: i
 																})
 															}}
-															// value={(()=>{
-															// 	 ((person_details.contacts)[i])?.contact_text 
-															// })()}
 															value={
 																(userData.contacts[i])?.contact_text || ''
 															}
 															className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
 														/>
 													</div>
+
+													     {/* Delete Btn */}
+													<button
+														id={`delete-btn-${i}`}
+														onClick={async ev => {
+															ev.preventDefault();
+
+															if (contactList.length >= 0) {
+
+
+																// contacts.splice(index, 1);
+																// setFacilityContacts(contacts);
+																// contactList.splice(index, 1);
+																// delete contactList[index]
+																setContactList(contactList.filter((_, index) => i !== index));
+															}
+
+														}}
+													><XCircleIcon className='w-7 h-7 text-red-400' /></button>
+
 
 												</div>)
 										})
@@ -668,7 +688,7 @@ const User = (props) => {
 									</div>
 
 									{/* Group Details */}
-									<div className=' w-full flex flex-col items-start justify-start py-3  border border-gray-300/70 bg-transparent h-auto'>
+									<div className=' w-full flex flex-col items-start justify-start py-3   bg-transparent h-auto'>
 										<h4 className='text-lg uppercase pb-2 border-b border-gray-600 w-full mb-4 font-semibold text-gray-900'>
 											Group
 										</h4>
@@ -717,7 +737,7 @@ const User = (props) => {
 													if (grp.id == 1 || grp.id == 12 || grp.id == 2) {
 														return (
 															// Administrative area 
-															<div key={i} className=' w-full flex flex-col items-start justify-start py-3  border border-gray-300/70 bg-transparent h-auto'>
+															<div key={i} className=' w-full flex flex-col items-start justify-start py-3   bg-transparent h-auto'>
 																<h4 className='text-lg uppercase pb-2 border-b border-gray-600 w-full mb-4 font-semibold text-gray-900'>
 																	Administrative Areas
 																</h4>
@@ -813,7 +833,7 @@ const User = (props) => {
 													else if (grp.id == 3) {
 														return (
 															//  Regulatory body 
-															<div className=' w-full flex flex-col items-start justify-start p-3  border border-gray-300/70 bg-transparent h-auto'>
+															<div className=' w-full flex flex-col items-start justify-start p-3   bg-transparent h-auto'>
 																<h4 className='text-lg uppercase pb-2 border-b border-gray-600 w-full mb-4 font-semibold text-gray-900'>
 																	Regulatory Body
 																</h4>

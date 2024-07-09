@@ -162,7 +162,7 @@ export async function getServerSideProps(ctx) {
 							try {
 
 								const _facilityTypeData = await fetch(url, {
-									headers: {
+										headers: {
 										Authorization: 'Bearer ' + token,
 										Accept: 'application/json',
 									},

@@ -498,7 +498,8 @@ function Facility(props) {
                         userCtx?.groups[0].id == 1 ||  // CHRIO
                         userCtx?.groups[0].id == 5 ||  // National
                         userCtx?.groups[0].id == 6 ||  // National
-                        userCtx?.groups[0].id == 7     // SuperAdmin
+                        userCtx?.groups[0].id == 7 ||    // SuperAdmin
+                        userCtx?.groups[0].id == 11 // Data cleaning National
                       ) &&
                       currentPageProps.get('filter') == 'updated_pending_validation_facilities' &&
 
@@ -526,7 +527,8 @@ function Facility(props) {
                       (
                         userCtx?.groups[0].id == 5 ||  // National
                         userCtx?.groups[0].id == 6 ||  // National
-                        userCtx?.groups[0].id == 7     // SuperAdmin
+                        userCtx?.groups[0].id == 7 ||    // SuperAdmin
+                        userCtx?.groups[0].id == 11 // Data cleaning National
                       ) &&
                       currentPageProps.get('filter') == 'pending_approval_facilities' &&
                       
@@ -557,6 +559,7 @@ function Facility(props) {
                         userCtx?.groups[0]?.id == 1 || // CHRIO
                         userCtx?.groups[0].id == 5 ||  // National
                         userCtx?.groups[0].id == 6 ||  // National
+                        userCtx?.groups[0].id == 11 || // Data cleaning National
                         userCtx?.groups[0].id == 7) && // SuperAdmin
                         
                         currentPageProps.get('filter') == 'pending_validation_facilities' &&
@@ -585,11 +588,12 @@ function Facility(props) {
                     {
                       (
                         userCtx?.groups[0]?.id == 2 || // SCHRIO
-                        userCtx?.groups[0]?.id == 7    // SuperAdmin
+                        userCtx?.groups[0]?.id == 7 ||   // SuperAdmin
+                        userCtx?.groups[0].id == 11 // Data cleaning National
                       ) &&
                       (
-                      currentPageProps.get('filter') !== 'closed_facilities' &&
-                      currentPageProps.get('filter') !== 'rejected_facilities' 
+                        currentPageProps.get('filter') !== 'closed_facilities' &&
+                        currentPageProps.get('filter') !== 'rejected_facilities' 
                       )
                       &&
 
@@ -606,7 +610,8 @@ function Facility(props) {
 
                       (
                         userCtx?.groups[0]?.id == 7 ||  // SuperAdmin
-                        userCtx?.groups[0]?.id == 3     // Regulator
+                        userCtx?.groups[0]?.id == 3 ||
+                        userCtx?.groups[0].id == 11 // Data cleaning National    // Regulator
                       ) && 
                         
                       (
@@ -627,7 +632,8 @@ function Facility(props) {
 
                       (
                         userCtx?.groups[0]?.id == 2 || //CHRIO
-                        userCtx?.groups[0]?.id == 7   // SuperAdmin
+                        userCtx?.groups[0]?.id == 7 ||  // SuperAdmin
+                        userCtx?.groups[0].id == 11  // Data cleaning National
                       ) &&
                       (
                         currentPageProps.get('filter') !== 'closed_facilities' &&
@@ -646,7 +652,8 @@ function Facility(props) {
                       (
                         userCtx?.groups[0]?.id == 1 || // CHRIO
                         userCtx?.groups[0]?.id == 2 || // SCHRIO
-                        userCtx?.groups[0]?.id == 7    // SuperAdmin 
+                        userCtx?.groups[0]?.id == 7 ||   // SuperAdmin 
+                        userCtx?.groups[0].id == 11 // Data cleaning National
                       ) &&
                       currentPageProps.get('filter') !== 'closed_facilities' &&
 
