@@ -106,6 +106,7 @@ function Users (props) {
             groupID == 5 || // National
             groupID == 7 || // SuperAdmin
             groupID == 6 || // National
+            groupID == 11 || // Data Cleaning National
             groupID == 1    // CHRIO
         )
         {

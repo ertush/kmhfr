@@ -24,9 +24,9 @@ export default async function fetchSystemSetupData(req, res) {
         switch (resCat){
             case 'AdminUnits':
                 if(_id== undefined){
-                    url = `${API_URL}/common/${res}/?${qry}`
+                    url = `${API_URL}/common/${res}/?${qry}&page_size=1000`
                 }else{
-                    url = `${API_URL}/common/${res}/${_id}/?${qry}`
+                    url = `${API_URL}/common/${res}/${_id}/?${qry}&page_size=1000`
                 }
             break;
             case 'ServiceCatalogue':
@@ -58,7 +58,7 @@ export default async function fetchSystemSetupData(req, res) {
                 }
             break;
             case 'Counties':
-                url = `${API_URL}/common/${res}/`
+                url = `${API_URL}/common/${res}/?page_size=1000`
             break;
             case 'Facilities':
                 if(_id== undefined){ 

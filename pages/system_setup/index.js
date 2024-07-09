@@ -1073,11 +1073,11 @@ function SystemSetup(props) {
                 url = `/api/system_setup/data/?resource=service_categories&resourceCategory=ServiceCatalogue&fields=id,name`
             }
             if (addBtnLabel === 'constituency' || addBtnLabel === 'ward') {
-                url = `/api/system_setup/data/?resource=counties&resourceCategory=AdminUnits&fields=id,name`
+                url = `/api/system_setup/data/?resource=constituencies&resourceCategory=Counties&fields=id,name`
             }
             
                 if (addBtnLabel === 'sub county') {
-                url = `/api/system_setup/data/?resource=counties&resourceCategory=Counties&fields=id,name`
+                url = `/api/system_setup/data/?resource=sub_counties&resourceCategory=Counties&fields=id,name`
                 console.log("url: ", {url})
                 
             }
@@ -4559,7 +4559,7 @@ SystemSetup.getInitialProps = async (ctx) => {
 
     function fetchData(token) {
 
-        let url = process.env.NEXT_PUBLIC_API_URL + '/common/counties/?fields=id,code,name'
+        let url = `${process.env.NEXT_PUBLIC_API_URL}/common/counties/?fields=id,code,name&page_size=47`
         let query = { 'searchTerm': '' }
         if (ctx?.query?.qf) {
             query.qf = ctx.query.qf
@@ -4572,7 +4572,7 @@ SystemSetup.getInitialProps = async (ctx) => {
 
 
 
-        let current_url = url + '&page_size=50'
+        let current_url = `${url}&page_size=47`
         if (ctx?.query?.page) {
             url = `${url}&page=${ctx.query.page}`
         }
