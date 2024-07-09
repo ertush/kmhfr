@@ -73,8 +73,6 @@ function FacilityContact({contactTypeOptions, setFacilityContacts, index, fieldN
                     {
                         (_contactType == null || _contactType == "FAX" ) && 
 
-
-
                         <Field 
                         as="input"
                         required
@@ -139,13 +137,13 @@ function FacilityContact({contactTypeOptions, setFacilityContacts, index, fieldN
                         required
                         id={`facility-contact-detail-${index}`} 
                         type="text"
-                        placeholder="P.O BOX #####"
-                        pattern={'[P.O BOX]{7}[ ]{1}[0-9]{5,6}'} 
+                        placeholder="Postal Address"
+                        // pattern={'[P.O BOX]{7}[ ]{1}[0-9]{5,6}'} 
                         name={`${fieldNames[1]}_${index}`} 
                         className="w-full flex-grow  rounded flex-1 bg-transparent p-2 border placeholder-gray-500 border-gray-600 focus:shadow-none  focus:border-black outline-none" 
                         />
 
-                        <span className="tooltiptext">Invalid Input! Correct Format is P.O BOX ##### </span>
+                        {/* <span className="tooltiptext">Invalid Input! Correct Format is P.O BOX ##### </span> */}
 
 
                         </div>
@@ -307,13 +305,13 @@ function OfficerContactDetails ({contactTypeOptions, setFacilityContacts, contac
                         required
                         id={`officer-contact-detail-${index}`} 
                         type="text"
-                        placeholder="P.O BOX #####"
-                        pattern={'[P.O BOX]{7}[ ]{1}[0-9]{5,6}'} 
+                        placeholder="Postal Address"
+                        // pattern={'[P.O BOX]{7}[ ]{1}[0-9]{5,6}'} 
                         name={`${fieldNames[1]}_${index}`} 
                         className="w-full flex-grow  rounded flex-1 bg-transparent p-2 border placeholder-gray-500 border-gray-600 focus:shadow-none  focus:border-black outline-none" 
                         />
 
-                        <span className="tooltiptext">Invalid Input! Correct Format is P.O BOX ##### </span>
+                        {/* <span className="tooltiptext">Invalid Input! Correct Format is P.O BOX ##### </span> */}
 
 
                         </div>
