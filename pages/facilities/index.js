@@ -34,6 +34,7 @@ function FacilityHome (props){
     const userCtx = useContext(UserContext);
     const groupID = userCtx?.groups[0]?.id
 
+
     // const qf = props?.query?.qf ?? null
     
     if (filters && typeof filters === "object")
@@ -153,27 +154,34 @@ function FacilityHome (props){
 
     function handleNext() {
 
+        const params = Object.fromEntries(pageParams.entries())
+
         router.push({
             pathname:'/facilities',
             query: {
-                next: Buffer.from(`${props?.next}`).toString('base64') //default: page_size=30
-                // next: `${props?.next}&page_size=20` 
+                next: Buffer.from(`${props?.next}`).toString('base64'), //default: page_size=30
+                ...params
             }
         })
     }
 
     function handlePrevious() {
-
+        const params = Object.fromEntries(pageParams.entries())
+        
         router.push({
             pathname:'/facilities',
             query: {
-                previous: Buffer.from(`${props?.previous}`).toString('base64') //default: page_size=30
+                previous: Buffer.from(`${props?.previous}`).toString('base64'),
+                ...params
+                 //default: page_size=30
                 // previous: `${props?.previous}&page_size=20`
             }
         })
     }
 
     function handlePageLoad(e) {
+
+        const params = Object.fromEntries(pageParams.entries())
 
         const page = e.target.innerHTML
 
@@ -182,7 +190,8 @@ function FacilityHome (props){
         router.push({
             pathname:'/facilities',
             query: {
-                 page
+                 page,
+                 ...params
                 // previous: `${props?.previous}&page_size=20`
             }
         })
