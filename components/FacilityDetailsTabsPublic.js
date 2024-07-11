@@ -367,7 +367,7 @@ function FacilityDetailsTabsPulic({ facility }) {
                 </div>
               </div>
 
-              <div className="w-full flex flex-col gap-3">
+              {/* <div className="w-full flex flex-col gap-3">
                 <h3 className="text-lg leading-tight underline text-gray-700 font-medium">
                   Contacts:
                 </h3>
@@ -425,7 +425,7 @@ function FacilityDetailsTabsPulic({ facility }) {
                       </div>
                     </div>
                   ))}
-              </div>
+              </div> */}
             </div>
 
             </div>

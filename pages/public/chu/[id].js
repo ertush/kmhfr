@@ -291,7 +291,7 @@ function CommunityUnit(props) {
                         )}
                       </div>
 
-                      <div className=" w-full p-3  flex flex-col gap-3  mt-4">
+                      {/* <div className=" w-full p-3  flex flex-col gap-3  mt-4">
                         <h3 className="text-lg leading-tight underline text-gray-700 font-medium">
                           Contacts:
                         </h3>
@@ -328,25 +328,8 @@ function CommunityUnit(props) {
                             </p>
                           </div>
                         )}
-                        {/* {cu.officer_in_charge && cu.officer_in_charge.contacts.length > 0 &&
-                          cu.officer_in_charge.contacts.map((contact, i) => (
-                            <div
-                              key={i}
-                              className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center"
-                            >
-                              <label className="col-span-1 text-gray-600 capitalize">
-                                In charge{" "}
-                                {contact.contact_type_name[0].toLocaleUpperCase() +
-                                  contact.contact_type_name
-                                    .slice(1)
-                                    .toLocaleLowerCase() || "Contact"}
-                              </label>
-                              <p className="col-start-3 text-black font-medium text-base">
-                                {contact.contact || " - "}
-                              </p>
-                            </div>
-                          ))} */}
-                      </div>
+                        
+                      </div> */}
                       {/* <div> */}
 
                       {/* </div> */}
