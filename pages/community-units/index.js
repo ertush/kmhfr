@@ -25,6 +25,7 @@ function CommunityUnit(props) {
 
 	const userCtx = React.useContext(UserContext);
 	const groupID = userCtx?.groups[0]?.id
+
 	const router = useRouter();
 	const cus = props?.data?.results;
 	const filters = props?.filters;
@@ -47,13 +48,16 @@ function CommunityUnit(props) {
 	// console.log({currentPageParams})
 
 	const orgUnitFilter = (() => {
-        if(groupID == 1) { //CHHIO
-            return `&county=${userCtx?.county ?? userCtx?.user_counties[0]?.county}`
-        }else if(groupID == 2){ //SCHRIO
-            return `&sub_county=${userCtx?.user_sub_counties[0]?.sub_county}`
-        }else if(groupID == 5 || groupID == 7 || groupID == 6){ // National & Admin
-            return ""
-        }
+		
+		if(groupID == 1) { //CHHIO
+			return `&county=${userCtx?.county ?? userCtx?.user_counties[0]?.county}`
+		}else if(groupID == 2){ //SCHRIO
+			return `&sub_county=${userCtx?.user_sub_counties[0]?.sub_county}`
+		}else if(groupID == 5 || groupID == 7 || groupID == 6 || groupID == 11){ // National & Admin
+			return ""
+		}
+
+       
     })()
 
 
