@@ -7,7 +7,7 @@ import Link from 'next/link'
 import * as Tabs from "@radix-ui/react-tabs";
 import { UserContext } from '../../providers/user'
 import { useRouter } from 'next/router'
-
+import { useContext } from 'react'
 
 function Downloads(props) {
 
@@ -21,15 +21,8 @@ function Downloads(props) {
 		}
     }, [])
 
-    // return (
-    //     <pre>
-    //         {
-    //             JSON.stringify(props, null, 2)
-    //         }
-    //     </pre>
-    // )
+  
 
-    console.log({ props })
 
     return (
         <React.Fragment>
