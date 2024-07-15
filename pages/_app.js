@@ -42,7 +42,15 @@ export default function App(props) {
   useEffect(() => {
     router.events.on('routeChangeStart', () => {setIsNavigating(true)}); 
     router.events.on('routeChangeComplete', () => {setIsNavigating(false)}); 
-    router.events.on('routeChangeError', () => {setIsNavigating(false)});  
+    router.events.on('routeChangeError', () => {setIsNavigating(false)}); 
+    
+    // Logout after 20 mins of inactivity
+    const time = 60 * 1000 * 20
+    const timeOut = setTimeout(() => {
+      router.push('/logout')
+    }, time)
+
+    return () => clearTimeout(timeOut)
 
   }, [])
 
