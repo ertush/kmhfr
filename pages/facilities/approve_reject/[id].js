@@ -317,7 +317,7 @@ function ApproveReject(props) {
                     approveRejectFacilityUpdates(reject, alert, facility?.latest_update, props?.token, setSubmitting, setRejecting, setFormError)
                   }
                   // if facility is not approved and is validated
-                  if (!facility?.approved_national_level && facility?.approved) {
+                  if (!facility?.approved_national_level && facility?.approved && !facility?.has_edits) {
                     // console.log('FACILITY WILL BE APPROVED')
                     
                     approveRejectFacility(facility?.id, comment, alert, reject, props?.token, setSubmitting, setRejecting, setFormError)

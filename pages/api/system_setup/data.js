@@ -26,33 +26,33 @@ export default async function fetchSystemSetupData(req, res) {
                 if(_id== undefined){
                     url = `${API_URL}/common/${res}/?${qry}&page_size=1000`
                 }else{
-                    url = `${API_URL}/common/${res}/${_id}/?${qry}&page_size=1000`
+                    url = `${API_URL}/common/${res}/${_id}/?${qry}`
                 }
             break;
             case 'ServiceCatalogue':
                 if(_id== undefined){
-                    url = `${API_URL}/facilities/${res}/?${qry}`
+                    url = `${API_URL}/facilities/${res}/?${qry}&page_size=1000`
                 }else{
                     url = `${API_URL}/facilities/${res}/${_id}/?${qry}`
                 }
             break;
             case 'HealthInfrastructure':
                 if(_id== undefined){
-                    url = `${API_URL}/facilities/${res}/?${qry}`
+                    url = `${API_URL}/facilities/${res}/?${qry}&page_size=1000`
                 }else{
                     url = `${API_URL}/facilities/${res}/${_id}/?${qry}`
                 }
             break;
             case 'HR':
                 if(_id== undefined){
-                    url = `${API_URL}/facilities/${res}/?${qry}`
+                    url = `${API_URL}/facilities/${res}/?${qry}&page_size=1000`
                 }else{
                     url = `${API_URL}/facilities/${res}/${_id}/?${qry}`
                 }
             break;
             case 'Contacts':
                 if(_id== undefined){
-                    url = `${API_URL}/common/${res}/?${qry}`
+                    url = `${API_URL}/common/${res}/?${qry}&page_size=1000`
                 }else{
                     url = `${API_URL}/common/${res}/${_id}/?${qry}`
                 }
@@ -62,16 +62,16 @@ export default async function fetchSystemSetupData(req, res) {
             break;
             case 'Facilities':
                 if(_id== undefined){ 
-                    url = `${API_URL}/facilities/${res}/?${qry}`
+                    url = `${API_URL}/facilities/${res}/?${qry}&page_size=1000`
                 }else{
                     url = `${API_URL}/facilities/${res}/${_id}/?${qry}`
                 }
             break;
             case 'CHU':
-                url = `${API_URL}/chul/${res}/?${qry}`
+                url = `${API_URL}/chul/${res}/?${qry}&page_size=1000`
             break;
             case 'Documents':
-                url = `${API_URL}/common/${res}/?${qry}`
+                url = `${API_URL}/common/${res}/?${qry}&page_size=1000`
             break;
             default:
             break;
