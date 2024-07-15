@@ -1,7 +1,8 @@
 
 import MainLayout from '../MainLayout';
 import CommunityUnitSideMenu from '../CommunityUnitSideMenu';
-import { Select as CustomSelect } from './formComponents/Select'
+import { Select as CustomSelect } from './formComponents/Select';
+
 import Link from 'next/link';
 import * as Tabs from "@radix-ui/react-tabs";
 import {
@@ -654,6 +655,7 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
                       *
                     </span>
                   </label>
+                  <div className='flex gap-2 w-full'>
                   <input
                     required
                     type="text"
@@ -661,8 +663,20 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
                     onChange={handleFieldChange}
                     id={`contact_${i}`}
                     defaultValue={contact}
-                    className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:bg-white focus:border-black outline-none"
+                    className="flex-none w-auto bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:bg-white focus:border-black outline-none"
                   />
+
+                    <button 
+                    id={`delete-btn-${i}`}
+                    onClick={ev => {
+                        ev.preventDefault();
+                        setContacts(contacts.filter((_, index) => index !== i))
+                     
+                    }}
+                    >
+                      <XCircleIcon className='w-7 h-7 text-red-400'/>
+                      </button>
+                      </div>
                 </div>
               </div>
             );
