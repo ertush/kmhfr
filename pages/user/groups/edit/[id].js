@@ -13,7 +13,7 @@ import Backdrop from '@mui/material/Backdrop';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import Fade from '@mui/material/Fade';
-import Alert from '@mui/material/Alert';
+// import Alert from '@mui/material/Alert';
 import 'react-dual-listbox/lib/react-dual-listbox.css';
 
 
@@ -31,7 +31,7 @@ function EditGroup (props) {
 	const [status, setStatus] = useState(null);
 	const [delete_permission, setDeletePermission] = useState(false)
 
-	const handleOnChange =(val)=>{
+	const handleOnChange = (val) => {
 		// console.log(val);
 		if (val.target && val.target != undefined && val.target != null) {
 			const newObj = {}
@@ -48,8 +48,10 @@ function EditGroup (props) {
 		}
 	}
 
-	const handleGroupSubmit =(event)=>{
+	const handleGroupSubmit = (event) => {
 		event.preventDefault()
+		console.log({groupData})
+		 return
 		try{
 			 fetch(`/api/common/submit_form_data/?path=edit&id=${props.data.id}`, {
 				headers:{
@@ -73,7 +75,7 @@ function EditGroup (props) {
 			setStatus({status:'error', message: e})
 		}
 	}
-	const deleteGroup =(event)=>{
+	const deleteGroup = (event) => {
 		console.log('delete group');
 		event.preventDefault()
 		try {
@@ -130,7 +132,7 @@ function EditGroup (props) {
                                     left: '50%',
                                     transform: 'translate(-50%, -50%)',
                                     width: 700,
-                                    bgcolor: 'rgba(255, 251, 235, 1)',
+                                    // bgcolor: 'rgba(255, 251, 235, 1)',
                                     boxShadow: 24,
                                     p: 4,
                                 }
@@ -155,7 +157,7 @@ function EditGroup (props) {
                                 <span className="text-gray-500">Edit group</span>
                             </div>
                         </div>
-						<div>{status !==null && <Alert severity={status.status} sx={{width:'100%'}}>{status.message?.email || status.message?.contacts || status.message?.county|| status.message?.password || status?.message}</Alert>}</div>
+						{/* <div>{status !==null && <Alert severity={status.status} sx={{width:'100%'}}>{status.message?.email || status.message?.contacts || status.message?.county|| status.message?.password || status?.message}</Alert>}</div> */}
                         <div className={`col-span-5 flex items-center justify-between p-6 w-full bg-transparent drop-shadow  text-black md:divide-x md:divide-gray-200 border border-gray-600 border-l-8  ${'border-gray-600'}`}>
                                 <h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
                                     <PencilAltIcon className='ml-2 h-5 w-5' />
@@ -174,7 +176,7 @@ function EditGroup (props) {
                     </div>
 
 					<div className=' col-span-5 flex flex-col justify-center items-start px-1 md:px-4 w-full'>
-							<div className=' w-full flex flex-col items-start p-3  border border-gray-300/70 shadow-md' style={{backgroundColor:'#eff6ff'}}>
+							<div className=' w-full flex flex-col items-start p-3  border border-gray-300/70 shadow-md bg-gray-50'>
 							
 												<>
 													<h4 className='text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-gray-900'>
@@ -199,12 +201,7 @@ function EditGroup (props) {
 																required
 																type='text'
 																name='name'
-																onChange={ev => {
-																	// console.log(ev);
-																	handleOnChange(
-																		ev
-																	)
-																}}
+																onChange={handleOnChange}
 																value={group_details?.name || ''}
 																className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
 															/>
@@ -218,11 +215,7 @@ function EditGroup (props) {
 																	value={false}
 																	name='is_regulator'
 																	id='open_24hrs'
-																	onChange={(ev) => {
-																		handleOnChange(
-                                                                            ev
-                                                                        )
-																	}}
+																	onChange={handleOnChange}
 																/>
 																<label
 																	htmlFor='is_regulator'
@@ -243,11 +236,7 @@ function EditGroup (props) {
 																	value={false}
 																	name='is_national'
 																	id='is_national'
-																	onChange={(ev) => {
-																		handleOnChange(
-                                                                            ev
-                                                                        )
-																	}}
+																	onChange={handleOnChange}
 																/>
 																<label
 																	htmlFor='is_national'
@@ -265,20 +254,16 @@ function EditGroup (props) {
 															
                                                           
                                                         </div>
-                                                        <div className='w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3'>
+                                                        <div className='w-full flex flex-row items-center px-2  gap-1 gap-x-3 mb-3'>
                                                             
-                                                            <div className='w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3'>
+                                                            <div className='w-full flex flex-row items-center px-2  gap-1 gap-x-3 mb-3'>
 																<input
 																	type='checkbox'
 																	defaultChecked={group_details?.is_administrator}
 																	value={false}
 																	name='is_administrator'
 																	id='is_administrator'
-																	onChange={(ev) => {
-																		handleOnChange(
-                                                                            ev
-                                                                        )
-																	}}
+																	onChange={handleOnChange}
 																/>
 																<label
 																	htmlFor='is_administrator'
@@ -299,11 +284,7 @@ function EditGroup (props) {
 																	value={false}
 																	name='is_county_level'
 																	id='is_county_level'
-																	onChange={(ev) => {
-																		handleOnChange(
-                                                                            ev
-                                                                        )
-																	}}
+																	onChange={handleOnChange}
 																/>
 																<label
 																	htmlFor='is_county_level'
@@ -326,11 +307,7 @@ function EditGroup (props) {
 																	value={false}
 																	name='is_sub_county_level'
 																	id='is_sub_county_level'
-																	onChange={(ev) => {
-																		handleOnChange(
-                                                                            ev
-                                                                        )
-																	}}
+																	onChange={handleOnChange}
 																/>
 																<label
 																	htmlFor='is_sub_county_level'
