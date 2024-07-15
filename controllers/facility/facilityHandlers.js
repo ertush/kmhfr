@@ -307,7 +307,7 @@ function handleFacilityContactsSubmit(token, values, facilityId) {
 };
 
 // handleRegulationSubmit
-async function handleRegulationSubmit(token, values, facilityId, setSubmitting, licenseFile, alert, setFormError) {
+async function handleRegulationSubmit(token, values, facilityId, setSubmitting, licenseFile, alert, setFormError, router) {
 
     // console.log({license: licenseFileRef.current})
 
@@ -405,6 +405,19 @@ async function handleRegulationSubmit(token, values, facilityId, setSubmitting, 
                     alert.error('Unable to create Facility Department units', {
                         timeout: 10000
                     })
+
+                    const formDataBase64Enc = Buffer.from(JSON.stringify(payload)).toString('base64')
+
+                    router.push({
+                        pathname: `${window.location.origin}/facilities/add`,
+                        query: { 
+                          regulation: formDataBase64Enc,
+                          formId: 4,
+                          facilityId: facilityId,
+                          from: 'submission'
+    
+                        }
+                    })
                 }
             })
             .catch(console.error)
@@ -414,6 +427,20 @@ async function handleRegulationSubmit(token, values, facilityId, setSubmitting, 
                 timeout: 10000
             })
 
+            const formDataBase64Enc = Buffer.from(JSON.stringify(payload)).toString('base64')
+
+            router.push({
+                pathname: `${window.location.origin}/facilities/add`,
+                query: { 
+                  regulation: formDataBase64Enc,
+                  formId: 4,
+                  facilityId: facilityId,
+                  from: 'submission'
+
+                }
+            })
+
+            
             resp.json()
             .then(resp => {
                 const formResponse = []

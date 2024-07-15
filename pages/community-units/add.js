@@ -10,7 +10,8 @@ import StepLabel from '@mui/material/StepLabel';
 import CommunityUnitSideMenu from '../../components/CommunityUnitSideMenu';
 import { 
 	ChevronDoubleRightIcon, 
-	ChevronDoubleLeftIcon, 
+	ChevronDoubleLeftIcon,
+	XCircleIcon, 
 	TrashIcon } from '@heroicons/react/solid';
 import { Select as CustomSelect } from '../../components/Forms/formComponents/Select';
 import Select from 'react-select'
@@ -619,6 +620,7 @@ function CommunityUnitsBasciDetailsForm(props) {
 										defaultValue={Array.isArray(formData?.contacts) ? formData?.contacts[i]?.contact_type : ''}
 									/>
 								</div>
+								<div className='flex w-full gap-2 items-center'>
 								<div className='w-full flex flex-col items-left px-2 justify-  gap-1 gap-x-3 mb-3' >
 									<label
 										htmlFor={`contact_${i}`}
@@ -634,8 +636,27 @@ function CommunityUnitsBasciDetailsForm(props) {
 										type='text'
 										name={`contact_${i}`}
 										defaultValue={Array.isArray(formData?.contacts) ? formData?.contacts[i]?.contact : '' }
-										className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
+										className='flex-none flex-grow bg-transparent  p-2 w-auto border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
 									/>
+								</div>
+
+								<button 
+                    id={`delete-btn-${i}`}
+                    onClick={ev => {
+                        ev.preventDefault();
+						
+						if(Array.isArray(formData?.contacts) && formData.length >= 1) {
+							setFormData({contact: formData?.contact.filter((_, index) => index !== i)})
+						} else {
+							setContactList(contactList.filter((_, index) => index !== i))
+						}
+
+                        
+                     
+                    }}
+                    >
+                      <XCircleIcon className='w-7 h-7 text-red-400'/>
+                      </button>
 								</div>
 
 							</div>)

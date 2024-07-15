@@ -235,7 +235,7 @@ function handleLicenseFileChange (e) {
                 options?.data ? 
                 handleRegulationUpdates(options?.token, values, options?.data?.id, fileRef.current, setSubmitting, router, alert, setFormError, submitType)
                 :
-                handleRegulationSubmit(options.token, values, facilityId, setSubmitting, fileRef.current, alert, setFormError)
+                handleRegulationSubmit(options.token, values, facilityId, setSubmitting, fileRef.current, alert, setFormError, router)
                 
 
             }}
