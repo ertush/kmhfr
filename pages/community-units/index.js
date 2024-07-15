@@ -146,7 +146,7 @@ function CommunityUnit(props) {
 																(active ? 'bg-gray-200' : '')
 															}
 															onClick={() => {
-																window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/chul/units/?format=csv&access_token=${props.token}&page_size=${props?.count}&page=1${orgUnitFilter}`;
+																window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/chul/units/?format=csv&access_token=${props.token}&page_size=${orgUnitFilter !== "" ? props?.count : 30}&page=1${orgUnitFilter}`;
 															}}>
 															<DownloadIcon className='w-4 h-4 mr-1' />
 															<span>CSV</span>
