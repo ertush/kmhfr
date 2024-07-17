@@ -26,6 +26,8 @@ import { UserContext } from '../../../providers/user';
 import { Alert } from '@mui/lab'
 import Spinner from '../../../components/Spinner'
 import { useSearchParams } from 'next/navigation';
+import {z} from 'zod'
+
 
 function ApproveReject(props) {
   const userCtx = useContext(UserContext);
@@ -409,6 +411,13 @@ function ApproveReject(props) {
 ApproveReject.getInitialProps = async (ctx) => {
   const allOptions = {};
 
+  const zSchema = z.object({
+    id: z.string().uuid('Should be a uuid string'),
+  })
+
+
+const queryId = zSchema.parse(ctx.query).id
+
   if (ctx.query.q) {
     const query = ctx.query.q;
     if (typeof window !== "undefined" && query.length > 2) {
@@ -433,7 +442,7 @@ ApproveReject.getInitialProps = async (ctx) => {
         let url =
           process.env.NEXT_PUBLIC_API_URL +
           "/facilities/facilities/" +
-          ctx.query.id +
+          queryId +
           "/";
         return fetch(url, {
           headers: {

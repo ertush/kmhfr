@@ -17,6 +17,7 @@ import Alert from '@mui/material/Alert';
 import Link from 'next/link';
 import { WarningOutlined } from '@mui/icons-material';
 import { XCircleIcon } from '@heroicons/react/outline'
+import {z} from 'zod'
 
 const User = (props) => {
 	
@@ -928,8 +929,16 @@ const User = (props) => {
 }
 
 User.getInitialProps = async (ctx) => {
+	const zSchema = z.object({
+		id: z.string().uuid('Should be a uuid string'),
+	  })
+	
+	
+	const queryId = zSchema.parse(ctx.query).id
+
 	const API_URL = process.env.NEXT_PUBLIC_API_URL
-	const person_id = ctx.query.id
+
+	
 	const allOptions = []
 	const options = [
 		'groups',
@@ -1073,8 +1082,8 @@ User.getInitialProps = async (ctx) => {
 						}
 						break;
 					case 'individual_details':
-						if (person_id !== null && person_id !== '') {
-							url = `${API_URL}/users/${person_id}/`
+						if (queryId !== null && queryId !== '') {
+							url = `${API_URL}/users/${queryId}/`
 							try {
 
 								const _data = await fetch(url, {

@@ -14,7 +14,7 @@ import Link from 'next/link';
 import CommunityUnitSideMenu from "../../components/CommunityUnitSideMenu";
 import { UserContext } from "../../providers/user";
 import { Avatar} from "@mui/material";
-
+import {z} from 'zod'
 
 function EditCommunityUnit(props){
 
@@ -746,12 +746,20 @@ EditCommunityUnit.getInitialProps = async (ctx) => {
   const token = (await checkToken(ctx?.req, ctx?.res))?.token
 
 
+  const zSchema = z.object({
+    id: z.string().uuid('Should be a uuid string'),
+  })
+
+
+const queryId = zSchema.parse(ctx.query).id
+
+
   const props = {
     cu: [],
     activity_log: []
   }
 
-  return fetch(`${process.env.NEXT_PUBLIC_API_URL}/chul/units/${ctx?.query?.id}/`, {
+  return fetch(`${process.env.NEXT_PUBLIC_API_URL}/chul/units/${queryId}/`, {
     headers: {
       'Accept': 'application/json',
       'Authorization': `Bearer ${token}`
@@ -762,7 +770,7 @@ EditCommunityUnit.getInitialProps = async (ctx) => {
 
       props['cu'] = await res.json()
 
-      return fetch(`${process.env.NEXT_PUBLIC_API_URL}/chul/units/${ctx?.query?.id}/?fields=__rev__&include_audit=true`, {
+      return fetch(`${process.env.NEXT_PUBLIC_API_URL}/chul/units/${queryId}/?fields=__rev__&include_audit=true`, {
         headers: {
           'Accept': 'application/json',
           'Authorization': `Bearer ${token}`
@@ -784,7 +792,7 @@ EditCommunityUnit.getInitialProps = async (ctx) => {
   })
   
   .catch(e => {
-    console.error('Error when fetching props?.cu details for: ', ctx?.query?.id, e.message)
+    console.error('Error when fetching props?.cu details for: ', queryId, e.message)
   })
 
 

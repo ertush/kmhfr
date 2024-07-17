@@ -15,7 +15,7 @@ import { KeyboardArrowRight, KeyboardArrowDown } from "@mui/icons-material"
 import { withErrorBoundary } from 'react-error-boundary'
 import Backdrop from '@mui/material/Backdrop';
 import Alert from '@mui/material/Alert'
-
+import {z} from 'zod'
 
 
 export const FacilityUpdatesContext = createContext(null)
@@ -282,6 +282,13 @@ EditFacility.getInitialProps = async (ctx) => {
 		'collection_date',
 		'facility_data'
 	]
+
+	const zSchema = z.object({
+		id: z.string().uuid('Should be a uuid string'),
+	  })
+	
+	
+	const queryId = zSchema.parse(ctx.query).id
 
 	const allOptions = {};
 
@@ -673,7 +680,7 @@ EditFacility.getInitialProps = async (ctx) => {
 						case "collection_date":
 							try {
 								const _collection_date = await fetch(
-									`${process.env.NEXT_PUBLIC_API_URL}/gis/facility_coordinates/?facility=${ctx.query.id}&format=json`,
+									`${process.env.NEXT_PUBLIC_API_URL}/gis/facility_coordinates/?facility=${queryId}&format=json`,
 									{
 										headers: {
 											Authorization: 'Bearer ' + token,
@@ -701,7 +708,7 @@ EditFacility.getInitialProps = async (ctx) => {
 
 							try {
 								const _facility_data = await fetch(
-									`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${ctx.query.id}/`,
+									`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${queryId}/`,
 									{
 										headers: {
 											Authorization: 'Bearer ' + token,

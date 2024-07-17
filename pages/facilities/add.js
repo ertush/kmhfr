@@ -8,6 +8,7 @@ import { useState, useEffect, createContext, useContext } from 'react';
 import { UserContext } from "../../providers/user";
 import { KeyboardArrowRight, KeyboardArrowDown } from "@mui/icons-material";
 import { useRouter } from "next/router";
+import {z} from 'zod'
 
 export const FormOptionsContext = createContext({});
 
@@ -117,6 +118,13 @@ export async function getServerSideProps(ctx) {
 		'Cache-Control',
 		'public, s-maxage=10, stale-while-revalidate=59'
 	)
+
+	const zSchema = z.object({
+		id: z.string().uuid('Should be a uuid string'),
+	  })
+	
+	
+	const queryId = zSchema.parse(ctx.query).id
 
 
 
@@ -533,7 +541,7 @@ export async function getServerSideProps(ctx) {
 						case "collection_date":
 							try {
 								const _collection_date = await fetch(
-									`${process.env.NEXT_PUBLIC_API_URL}/gis/facility_coordinates/?facility=${ctx.query.id}&format=json`,
+									`${process.env.NEXT_PUBLIC_API_URL}/gis/facility_coordinates/?facility=${queryId}&format=json`,
 									{
 										headers: {
 											Authorization: 'Bearer ' + token,

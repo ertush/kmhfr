@@ -16,6 +16,7 @@ import { hasPermission } from '../../utils/checkPermissions';
 import Alert from '@mui/material/Alert';
 import Link from 'next/link'
 import Spinner from '../../components/Spinner'
+import {z} from 'zod'
 
 function User(props){
 
@@ -918,8 +919,15 @@ function User(props){
 }
 
 User.getInitialProps = async (ctx) => {
+	const zSchema = z.object({
+		id: z.string().uuid('Should be a uuid string'),
+	  })
+	
+	
+	const queryId = zSchema.parse(ctx.query).id
+
 	const API_URL = process.env.NEXT_PUBLIC_API_URL
-	const person_id = ctx.query.id
+	
 
 	const allOptions = {
 		groups:[],
@@ -939,6 +947,8 @@ User.getInitialProps = async (ctx) => {
 		'job_titles',
 		'individual_details'
 	]
+
+	
 
 	const token = (await checkToken(ctx.req, ctx.res))?.token
 
@@ -1052,8 +1062,8 @@ User.getInitialProps = async (ctx) => {
 						}
 						break;
 					case 'individual_details':
-						if (person_id !== null && person_id !== '') {
-							url = `${API_URL}/users/${person_id}/`
+						if (queryId !== null && queryId !== '') {
+							url = `${API_URL}/users/${queryId}/`
 							try {
 
 								const _data = await fetch(url, {

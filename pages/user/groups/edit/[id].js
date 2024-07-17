@@ -15,7 +15,7 @@ import Modal from '@mui/material/Modal';
 import Fade from '@mui/material/Fade';
 // import Alert from '@mui/material/Alert';
 import 'react-dual-listbox/lib/react-dual-listbox.css';
-
+import {z} from 'zod'
 
 function EditGroup (props) {
     
@@ -50,8 +50,7 @@ function EditGroup (props) {
 
 	const handleGroupSubmit = (event) => {
 		event.preventDefault()
-		console.log({groupData})
-		 return
+
 		try{
 			 fetch(`/api/common/submit_form_data/?path=edit&id=${props.data.id}`, {
 				headers:{
@@ -75,6 +74,7 @@ function EditGroup (props) {
 			setStatus({status:'error', message: e})
 		}
 	}
+	
 	const deleteGroup = (event) => {
 		console.log('delete group');
 		event.preventDefault()
@@ -395,7 +395,14 @@ function EditGroup (props) {
 
 EditGroup.getInitialProps = async (ctx) => {
     const API_URL = process.env.NEXT_PUBLIC_API_URL
- console.log(ctx.query.id);
+
+	const zSchema = z.object({
+		id: z.string().uuid('Should be a uuid string'),
+	  })
+	
+	
+	const queryId = zSchema.parse(ctx.query).id
+ 
     const fetchPermissions = token => {
         let filters_url = API_URL + '/users/permissions/?page_size=500&ordering=name'
         return fetch(filters_url, {
@@ -417,7 +424,7 @@ EditGroup.getInitialProps = async (ctx) => {
     }
 	//permissions
 	const fetchData = async (token) => {
-		 let url = API_URL + `/users/groups/${ctx.query.id}/`
+		 let url = API_URL + `/users/groups/${queryId}/`
 		  let query = { 'searchTerm': '' }
 		  if (ctx?.query?.qf) {
 			  query.qf = ctx.query.qf

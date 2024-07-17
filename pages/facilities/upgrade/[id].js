@@ -17,7 +17,7 @@ import Spinner from '../../../components/Spinner'
 import { Alert } from '@mui/lab'
 import * as Tabs from "@radix-ui/react-tabs";
 import { Select as CustomSelect } from '../../../components/Forms/formComponents/Select';
-
+import {z} from 'zod'
 
 
 function UpgradeFacility(props) {
@@ -861,6 +861,14 @@ export async function getServerSideProps(ctx) {
 
     const token = (await checkToken(ctx.req, ctx.res))?.token
 
+    const zSchema = z.object({
+        id: z.string().uuid('Should be a uuid string'),
+      })
+    
+    
+    const queryId = zSchema.parse(ctx.query).id
+    
+
 
     const options = [
         'keph',
@@ -915,7 +923,7 @@ export async function getServerSideProps(ctx) {
             case 'facility_services':
                 try {
 
-                    const _data = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facility_services/?facility=${ctx.query.id}`, {
+                    const _data = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facility_services/?facility=${queryId}`, {
                         headers: {
                             Authorization: 'Bearer ' + token,
                             Accept: 'application/json',
@@ -938,7 +946,7 @@ export async function getServerSideProps(ctx) {
 
                 try {
 
-                    const _data = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${ctx.query.id}/`, {
+                    const _data = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${queryId}/`, {
                         headers: {
                             Authorization: 'Bearer ' + token,
                             Accept: 'application/json',

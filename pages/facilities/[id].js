@@ -13,6 +13,7 @@ import {
   LockClosedIcon,
   XCircleIcon,
 } from "@heroicons/react/solid";
+import {z} from 'zod'
 
 
 import dynamic from "next/dynamic";
@@ -864,6 +865,13 @@ function Facility(props) {
 Facility.getInitialProps = async (ctx) => {
   const allOptions = {};
 
+  const zSchema = z.object({
+    id: z.string().uuid('Should be a uuid string'),
+  })
+
+
+const queryId = zSchema.parse(ctx.query).id
+
   if (ctx.query.q) {
     const query = ctx.query.q;
     if (typeof window !== "undefined" && query.length > 2) {
@@ -888,7 +896,7 @@ Facility.getInitialProps = async (ctx) => {
         let url =
           process.env.NEXT_PUBLIC_API_URL +
           "/facilities/facilities/" +
-          ctx.query.id +
+          queryId +
           "/";
         return fetch(url, {
           headers: {
