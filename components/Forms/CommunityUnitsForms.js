@@ -736,7 +736,7 @@ function EditCommunityUnitsCHEWSForm(props) {
 
   const [healthUnitWorkers, setHealthUnitWorkers] = useState(props?.health_unit_workers)
   const alert = useAlert()
-  const [deleteButton, setDeleteButton] = useState(props?.health_unit_workers.map((_, i) => ({[i]: false})))
+  const [deleteButton, setDeleteButton] = useState(props?.health_unit_workers?.map((_, i) => ({[i]: false})))
 
   console.log({deleteButton})
   

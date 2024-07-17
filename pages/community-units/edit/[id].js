@@ -1,6 +1,7 @@
 import { CommunityUnitEditForm } from '../../../components/Forms/CommunityUnitsForms'
 import { useState, useEffect, createContext } from 'react'
 import { checkToken } from '../../../controllers/auth/auth'
+import {z} from 'zod'
 // import Alert from '@mui/material/Alert'
 
 
@@ -50,7 +51,12 @@ export async function getServerSideProps(ctx) {
     "services"
   ]
 
+  const zSchema = z.object({
+    id: z.string().uuid('Should be a uuid string'),
+  })
 
+
+  const queryId = zSchema.parse(ctx.query).id
 
 
   function fetchFacilities(url) {
@@ -93,7 +99,7 @@ export async function getServerSideProps(ctx) {
         switch (option) {
 
           case "cu":
-            const cu = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/chul/units/${ctx?.query.id}/`, {
+            const cu = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/chul/units/${queryId}/`, {
               headers: {
                 'Authorization': 'Bearer ' + token,
                 'Accept': 'application/json'
@@ -119,7 +125,7 @@ export async function getServerSideProps(ctx) {
 
           case "facilities":
 
-            const url = `${process.env.NEXT_PUBLIC_API_URL}/common/sub_counties/?name=${response?.cu?.facility_subcounty.split(' ').join('+')}`
+            const url =  `${process.env.NEXT_PUBLIC_API_URL}/common/sub_counties/?name=${response?.cu?.facility_subcounty.split(' ').join('+')}` 
 
             response['facilities'] = await fetchFacilities(url)
 
