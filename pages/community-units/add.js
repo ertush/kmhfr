@@ -259,6 +259,11 @@ function CommunityUnitsBasciDetailsForm(props) {
 
 				{/* CHU linked facility */}
 				<div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+					{/* <pre>
+						{
+							JSON.stringify(facilities, null, 2)
+						}
+					</pre> */}
 					<label
 						htmlFor='facility'
 						className='text-gray-600 capitalize text-sm'>
@@ -1341,7 +1346,6 @@ export async function getServerSideProps({req, res}) {
 		'public, s-maxage=10, stale-while-revalidate=59'
 	)
 
-
 	const {token} = await checkToken(req, res)
   
 	const response = {}
@@ -1354,23 +1358,77 @@ export async function getServerSideProps({req, res}) {
 	  "services"
 	]
   
-  
-	async function getFacilityCount(token) {
-	  try {
-	  return (await (await fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/`, {
-		headers:{
-		  'Authorization': 'Bearer ' + token,
-		  'Accept': 'application/json'
-		}
-  
-	  })).json())?.count
-	  }
-	  catch (e) {
-		console.error(e.message)
-	  }
+ 
+	 function fetchFacilities(url) {
+		return fetch(url, {
+			headers: {
+				'Accept': 'application/json',
+				'Authorization': `Bearer ${token}`
+			}
+		})
+		.then(resp => resp.json())
+		.then( (resp) => {
+
+			const userSubCountyID = resp?.user_sub_counties[0]?.sub_county
+			const userCountyID = resp?.county
+			const userGroup = resp?.groups[0]?.id
+
+
+			if(userGroup == 2 && userSubCountyID){
+			
+			const subCountyFacilitiesURL = `${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/?sub_county=${userSubCountyID}&reporting_in_dhis=true&closed=false&owner_type=6a833136-5f50-46d9-b1f9-5f961a42249f&fields=id,name,county,sub_county_name,constituency,ward_name`
+
+		   return fetch(subCountyFacilitiesURL, {
+				headers:{
+				  'Authorization': 'Bearer ' + token,
+				  'Accept': 'application/json'
+				}
+				
+			  })
+			  .then(resp => resp.json())
+			  .then(resp => {
+				return resp?.results
+			  })
+			
+			  
+
+			}
+
+			else if(userGroup == 1 && userCountyID) {
+
+			 return fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/?county=${userCountyID}&reporting_in_dhis=true&closed=false&owner_type=6a833136-5f50-46d9-b1f9-5f961a42249f&fields=id,name,county,sub_county_name,constituency,ward_name`,{
+					headers:{
+					  'Authorization': 'Bearer ' + token,
+					  'Accept': 'application/json'
+					}
+				  }).then(resp => resp.json())
+				  .then(resp => {
+					return resp?.results
+				  })
+
+
+			} 
+			else if(userGroup == 7 || userGroup == 11 || userGroup == 5) {
+				 return fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/?reporting_in_dhis=true&closed=false&owner_type=6a833136-5f50-46d9-b1f9-5f961a42249f&fields=id,name,county,sub_county_name,constituency,ward_name`,{
+					headers:{
+					  'Authorization': 'Bearer ' + token,
+					  'Accept': 'application/json'
+					}
+					
+				  })
+				  .then(resp => resp.json())
+				  .then(resp => {
+					return resp?.results
+				  })
+				  
+			} else {
+				console.log('default case')
+				return []
+			}
+			
+		})
+		.catch(e => console.error('Error rest-auth user :', e.message))
 	}
-  
-	const count = await getFacilityCount(token)
   
   
 	try {
@@ -1394,18 +1452,12 @@ export async function getServerSideProps({req, res}) {
 		  break;
   
 		case "facilities":
-		  
-		 const facilities = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/?reporting_in_dhis=true&page_size=${count > 500 ? '500' : count}&fields=id,name,county,sub_county_name,constituency,ward_name,closed,owner_type,owner_type_name&closed=false&owner_type=6a833136-5f50-46d9-b1f9-5f961a42249f`,{
-			headers:{
-			  'Authorization': 'Bearer ' + token,
-			  'Accept': 'application/json'
-			}
-			
-		  })
-  
-		  response["facilities"] =  (await (await facilities.json()))?.results
-		  break;
-  
+
+		const url = `${process.env.NEXT_PUBLIC_API_URL}/rest-auth/user/`
+
+		response['facilities'] = await fetchFacilities(url)
+		 
+		break;
 		case "contact_types":
 		  const contact_types = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/common/contact_types/?fields=id,name`,{
 			headers:{
@@ -1434,7 +1486,6 @@ export async function getServerSideProps({req, res}) {
   
 		response['token'] = token
 	   
-  
 		return {
 		  props: response 
 		}
