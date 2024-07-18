@@ -61,8 +61,8 @@ function FacilityHome (props){
     
 
     const [drillDown, setDrillDown] = useState({})
-    const [fromDate, setFromDate] = React.useState(new Date());
-    const [toDate, setToDate] = React.useState(new Date());
+    // const [fromDate, setFromDate] = React.useState(new Date());
+    // const [toDate, setToDate] = React.useState(new Date());
 
     const [isAccordionExpanded, setIsAccordionExpanded] = useState(false);
     const [title, setTitle] = useState('Facilities') 
@@ -114,13 +114,7 @@ function FacilityHome (props){
     }, [facilityFeedBack, title])
 
 
-    // function handleDates(from, to) {
-    //     setFromDate(from);
-    //     setToDate(to);
-    
-    // }
-
-    function handleAccordionExpand(ev) {
+     function handleAccordionExpand(ev) {
         if(isAccordionExpanded){
             setIsAccordionExpanded(false)
         }else{
@@ -173,8 +167,7 @@ function FacilityHome (props){
             query: {
                 previous: Buffer.from(`${props?.previous}`).toString('base64'),
                 ...params
-                 //default: page_size=30
-                // previous: `${props?.previous}&page_size=20`
+               
             }
         })
     }
@@ -192,7 +185,7 @@ function FacilityHome (props){
             query: {
                  page,
                  ...params
-                // previous: `${props?.previous}&page_size=20`
+                
             }
         })
     }
@@ -693,10 +686,40 @@ function FacilityHome (props){
                                                     <div className="col-span-8 md:col-span-8 lg:col-span-2 grid grid-cols-2 grid-rows-4 gap-x-2 gap-y-1 text-lg">
                                                         {/* {console.log({facility})} */}
                                                         {/* {(facility?.operational || facility?.operation_status_name) ? <span className={"shadow-sm col-start-2 leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 font-semibold text-gray-900"}>Operational</span> : ""} */}
-                                                        {!facility?.rejected ? <span className={"shadow-sm leading-none whitespace-nowrap text-sm col-start-2  py-1 px-2 " + (facility?.approved_national_level ? "bg-green-200 font-semibold text-green-900" : "bg-gray-500 font-semibold p-1 text-gray-50")}>{facility?.approved_national_level ? "Approved" : "Not Approved"}</span> : <span className={"shadow-sm  col-start-2 leading-none whitespace-nowrap text-sm font-semibold py-1 px-2 bg-red-200 text-red-900"}>{facility?.rejected ? "Rejected" : ""}</span>}
-                                                        {facility?.has_edits ? <span className={"shadow-sm leading-none whitespace-nowrap text-sm col-start-2 py-1 px-2 bg-yellow-200 font-semibold text-yellow-900"}>Has edits</span> : ""}
-                                                        {!facility?.is_complete ? <span className={"shadow-sm leading-none whitespace-nowrap text-sm col-start-2 py-1 px-2 bg-pink-200 font-semibold text-pink-900"}>Incomplete</span> : ""}
-                                                        {facility?.is_approved ? <span className={"shadow-sm leading-none whitespace-nowrap text-sm col-start-2 py-1 px-2 bg-purple-200 font-semibold text-purple-900"}>Validated</span> : <span className={"shadow-sm leading-none whitespace-nowrap text-sm col-start-2 py-1 px-2 bg-gray-500 font-semibold text-gray-50"}>Not Validated</span>}
+                                                        {
+                                                        !facility?.rejected ? 
+                                                        <span className={"shadow-sm leading-none whitespace-nowrap text-sm col-start-2  py-1 px-2 " + (facility?.approved_national_level ? "bg-green-200 font-semibold text-green-900" : 
+                                                        "bg-gray-500 font-semibold p-1 text-gray-50")}>
+                                                        
+                                                        
+                                                        {
+                                                        facility?.approved_national_level ? 
+                                                        "Approved" : "Not Approved"}</span> : 
+                                                        <span className={"shadow-sm  col-start-2 leading-none whitespace-nowrap text-sm font-semibold py-1 px-2 bg-red-200 text-red-900"}>{facility?.rejected ? "Rejected" : ""}</span>
+                                                        }
+                                                        
+                                                        {
+                                                        facility?.has_edits ? 
+                                                        <span className={"shadow-sm leading-none whitespace-nowrap text-sm col-start-2 py-1 px-2 bg-yellow-200 font-semibold text-yellow-900"}>Has edits</span> : 
+                                                        ""
+                                                        }
+                                                        
+                                                        {
+                                                        !facility?.is_complete ? 
+                                                        <span className={"shadow-sm leading-none whitespace-nowrap text-sm col-start-2 py-1 px-2 bg-pink-200 font-semibold text-pink-900"}>Incomplete</span> : 
+                                                        ""
+                                                        }
+                                                        
+                                                        {
+                                                        facility?.is_approved ? 
+                                                        <span className={"shadow-sm leading-none whitespace-nowrap text-sm col-start-2 py-1 px-2 bg-purple-200 font-semibold text-purple-900"}>Validated</span> : 
+                                                        <span className={"shadow-sm leading-none whitespace-nowrap text-sm col-start-2 py-1 px-2 bg-gray-500 font-semibold text-gray-50"}>Not Validated</span>
+                                                        }
+
+                                                        {
+                                                        facility?.closed &&
+                                                        <span className={"shadow-sm leading-none whitespace-nowrap text-sm col-start-2 py-1 px-2 bg-red-200 font-semibold text-red-900"}>Closed</span>  
+                                                        }
 
 
                                                     </div>
@@ -779,29 +802,26 @@ function FacilityHome (props){
                                                 </div>
 
                                                 <div className="flex items-center gap-2">
+                                                        <button className={`border p-1 px-2 flex font-semibold place-content-center rounded ${props?.current_page == 1 ? 'bg-blue-600 text-gray-50 border-blue-600': ' border-gray-800'}`} onClick={handlePageLoad}>
+                                                        1
+                                                        </button>
 
+                                                        <button className={`border p-1 px-2 flex font-semibold place-content-center rounded ${props?.current_page == 2 ? 'bg-blue-600 text-gray-50 border-blue-600': ' border-gray-800'}`} onClick={handlePageLoad}>
+                                                        2
+                                                        </button>
 
+                                                        <button className={`border p-1 px-2 flex font-semibold place-content-center rounded ${props?.current_page == 3 ? 'bg-blue-600 text-gray-50 border-blue-600': ' border-gray-800'}`} onClick={handlePageLoad}>
+                                                        3
+                                                        </button>
 
-    <button className={`border p-1 px-2 flex font-semibold place-content-center rounded ${props?.current_page == 1 ? 'bg-blue-600 text-gray-50 border-blue-600': ' border-gray-800'}`} onClick={handlePageLoad}>
-    1
-    </button>
+                                                        <button className={`border hidden md:flex p-1 px-2  font-semibold place-content-center rounded ${props?.current_page == 4 ? 'bg-blue-600 text-gray-50 border-blue-600': ' border-gray-800'}`} onClick={handlePageLoad}>
+                                                        4
+                                                        </button>
+                                                        <button className={`border hidden md:flex p-1 px-2 font-semibold place-content-center rounded ${props?.current_page == 5 ? 'bg-blue-600 text-gray-50 border-blue-600': ' border-gray-800'}`} onClick={handlePageLoad}>
+                                                        5
+                                                        </button>
+                                                </div>
 
-    <button className={`border p-1 px-2 flex font-semibold place-content-center rounded ${props?.current_page == 2 ? 'bg-blue-600 text-gray-50 border-blue-600': ' border-gray-800'}`} onClick={handlePageLoad}>
-    2
-    </button>
-
-    <button className={`border p-1 px-2 flex font-semibold place-content-center rounded ${props?.current_page == 3 ? 'bg-blue-600 text-gray-50 border-blue-600': ' border-gray-800'}`} onClick={handlePageLoad}>
-    3
-    </button>
-
-    <button className={`border hidden md:flex p-1 px-2  font-semibold place-content-center rounded ${props?.current_page == 4 ? 'bg-blue-600 text-gray-50 border-blue-600': ' border-gray-800'}`} onClick={handlePageLoad}>
-    4
-    </button>
-    <button className={`border hidden md:flex p-1 px-2 font-semibold place-content-center rounded ${props?.current_page == 5 ? 'bg-blue-600 text-gray-50 border-blue-600': ' border-gray-800'}`} onClick={handlePageLoad}>
-    5
-    </button>
-   
-</div>
                                             </div>
                                             }
                                         </div>

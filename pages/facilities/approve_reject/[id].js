@@ -372,7 +372,7 @@ function ApproveReject(props) {
                       }
                     </button>
 
-                    {!facility?.approved_national_level &&
+                    {/* {facility?.approved_national_level && */}
                       <button
                         type="submit"
                         className="bg-red-600 rounded text-gray-100 -md p-2 font-semibold"
@@ -391,7 +391,7 @@ function ApproveReject(props) {
                         facility?.has_edits ? 'Invalidate Updates' : facility?.approved_national_level ? '' : currentPageParams.get('filter').includes('pending_approval_facilities') ? 'Reject Facility': 'Invalidate Facility'
                         }
                       </button>
-                    }
+                    {/* } */}
                   </div>
                 </Form>
               </Formik>
