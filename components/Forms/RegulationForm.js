@@ -172,26 +172,26 @@ function handleLicenseFileChange (e) {
             
             const regulationDataEnc = window.localStorage.getItem('regulation')
             const regulationDataStr = Buffer.from(regulationDataEnc ?? 'e30=' , 'base64').toString()
-            const regulationData = JSON.parse(regulationDataStr)
+            const regulationData = JSON.parse(regulationDataStr) 
 
             const regData = {}
             
-            console.log({regulationDataEnc, regulationData})
-
             let i = 0
 
-            for (const data of regulationData){
-                for(const [k, v] of Object.entries(data)) {
-                    if(k == "units"){
-                        for(const unit of v){
-                            for(const [_k, _v] of Object.entries(unit)){
-                                regData[`facility_${_k}_${i}`] = _v
-                            }
-                            i += 1
-                        } 
-                    } else {
-                         regData[k] = v
+            if(!regulationData) {
+                for (const data of regulationData){
+                    for(const [k, v] of Object.entries(data)) {
+                        if(k == "units"){
+                            for(const unit of v){
+                                for(const [_k, _v] of Object.entries(unit)){
+                                    regData[`facility_${_k}_${i}`] = _v
+                                }
+                                i += 1
+                            } 
+                        } else {
+                            regData[k] = v
 
+                        }
                     }
                 }
             }

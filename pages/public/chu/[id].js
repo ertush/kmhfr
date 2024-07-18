@@ -10,6 +10,7 @@ import {
 import dynamic from "next/dynamic";
 import Link from 'next/link';
 import StarRatingComponent from 'react-star-rating-component';
+import {z} from 'zod'
 
 function CommunityUnit(props) {
   const Map = dynamic(
@@ -512,6 +513,14 @@ CommunityUnit.getInitialProps = async (ctx) => {
 
   const alldata = {}
   let _data;
+
+  const zSchema = z.object({
+    id: z.string().uuid('Should be a uuid string'),
+  })
+
+
+  const queryId = zSchema.parse(ctx.query).id
+
   if (ctx.query.q) {
     const query = ctx.query.q;
 
@@ -534,7 +543,7 @@ CommunityUnit.getInitialProps = async (ctx) => {
         throw new Error("Error checking token");
       } else {
         let token = t.token;
-        let url = process.env.NEXT_PUBLIC_API_URL + "/chul/units/" + ctx.query.id + "/";
+        let url = process.env.NEXT_PUBLIC_API_URL + "/chul/units/" + queryId + "/";
 
         return fetch(url, {
           headers: {

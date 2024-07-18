@@ -37,10 +37,11 @@ export default function FacilityDepartmentUnits({facilityDeptOptions,  setFacili
             id={`delete-btn-${index}`}
             onClick={(ev) => {
                 ev.preventDefault();
-                facilityDepts.splice(index, 1);
-                // setFacilityDepts(prev => {
-                //     return prev.filter(({id}) => id )
-                // });
+                // facilityDepts.splice(index, 1);
+                setFacilityDepts(prev => {
+                    delete prev[index]
+                    return prev.filter((v, i) => v !== undefined)
+                });
                 return facilityDepts
 
             }}><XCircleIcon className='w-7 h-7 text-red-400' /></button>

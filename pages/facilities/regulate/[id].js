@@ -17,7 +17,7 @@ import { UserContext } from "../../../providers/user";
 import FacilitySideMenu from '../../../components/FacilitySideMenu'
 import Spinner from '../../../components/Spinner'
 import { useAlert } from 'react-alert'
-
+import {z} from 'zod'
 
 function RegulateFacility (props) {
     const userCtx = useContext(UserContext)
@@ -892,6 +892,13 @@ RegulateFacility.getInitialProps = async (ctx) => {
 
     ]
 
+    const zSchema = z.object({
+        id: z.string().uuid('Should be a uuid string'),
+      })
+    
+    
+    const queryId = zSchema.parse(ctx.query).id
+
     if (ctx.query.q) {
         const query = ctx.query.q;
         if (typeof window !== "undefined" && query.length > 2) {
@@ -916,7 +923,7 @@ RegulateFacility.getInitialProps = async (ctx) => {
                 allOptions['token'] = token
 
                 // let _data;
-                let url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${ctx.query.id}/`
+                let url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${queryId}/`
                 return fetch(url, {
                     headers: {
                         Authorization: "Bearer " + token,

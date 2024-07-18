@@ -589,8 +589,6 @@ export function FacilityContactsForm() {
                                                                     contacts={[null, null, null]}
                                                                     fieldNames={['officer_details_contact_type', 'officer_details_contact']}
                                                                     index={(officerContactDetails.length + 1) - 1}
-
-
                                                                 />
                                                             </FacilityContactsContext.Provider>
                                                         ))()

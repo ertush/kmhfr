@@ -16,6 +16,7 @@ import CommunityUnitSideMenu from '../../../components/CommunityUnitSideMenu';
 import Spinner from '../../../components/Spinner'
 import { useAlert } from 'react-alert';
 import Alert from '@mui/material/Alert'
+import {z} from 'zod'
 // import { SettingsRemote } from '@mui/icons-material';
 
 
@@ -694,6 +695,14 @@ async function approveCHUUpdates (e, token) {
 
 
 ApproveCommunityUnit.getInitialProps = async (ctx) => {
+
+  const zSchema = z.object({
+    id: z.string().uuid('Should be a uuid string'),
+  })
+
+
+  const queryId = zSchema.parse(ctx.query).id
+
   if (ctx.query.q) {
     const query = ctx.query.q;
 
@@ -754,7 +763,7 @@ ApproveCommunityUnit.getInitialProps = async (ctx) => {
         }
 
         // Fetching the details of the quieried chu
-        let url = process.env.NEXT_PUBLIC_API_URL + '/chul/units/' + ctx.query.id + '/';
+        let url = process.env.NEXT_PUBLIC_API_URL + '/chul/units/' + queryId + '/';
 
         return fetch(url, {
           headers: {
@@ -789,7 +798,7 @@ ApproveCommunityUnit.getInitialProps = async (ctx) => {
         }
         else {
           let token = t.token;
-          let url = process.env.NEXT_PUBLIC_API_URL + '/chul/units/' + ctx.query.id + '/';
+          let url = process.env.NEXT_PUBLIC_API_URL + '/chul/units/' + queryId + '/';
           return fetch(url, {
             headers: {
               Authorization: 'Bearer ' + token,

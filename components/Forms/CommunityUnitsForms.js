@@ -669,8 +669,13 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
                     <button 
                     id={`delete-btn-${i}`}
                     onClick={ev => {
+                      
                         ev.preventDefault();
-                        setContacts(contacts.filter((_, index) => index !== i))
+
+                        setContacts(prev => {
+                          delete prev[i]
+                          return prev.filter((v, _) => v !== undefined)
+                        })
                      
                     }}
                     >

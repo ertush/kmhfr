@@ -8,7 +8,7 @@ import {CheckCircleIcon,LockClosedIcon} from "@heroicons/react/solid";
 import dynamic from "next/dynamic";
 import { UserContext } from "../../../providers/user";
 import FacilityDetailsTabsPulic from "../../../components/FacilityDetailsTabsPublic";
-// import { useAlert } from "react-alert";
+import {z} from 'zod'
 
 
 const FacilityDetails = (props) => {
@@ -177,6 +177,13 @@ FacilityDetails.getInitialProps = async (ctx) => {
   
   const allOptions = [];
 
+  const zSchema = z.object({
+    id: z.string().uuid('Should be a uuid string'),
+  })
+
+
+  const queryId = zSchema.parse(ctx.query).id
+
   if (ctx.query.q) {
     const query = ctx.query.q;
     if (typeof window !== "undefined" && query.length > 2) {
@@ -201,7 +208,7 @@ FacilityDetails.getInitialProps = async (ctx) => {
         let url =
           process.env.NEXT_PUBLIC_API_URL +
           "/facilities/facilities/" +
-          ctx.query.id +
+          queryId +
           "/";
         return await fetch(url, {
             headers: {

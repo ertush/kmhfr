@@ -269,26 +269,52 @@ function CommunityUnit(props) {
 									onSubmit={(values) => {
 
 										const query = values.q.split(' ').join('+');
-										// console.log({values})
-										switch ((new URL(window.location.href))?.searchParams.get('qf')) {
-											case "all":
-												router.push(`/community-units/?q=${query}&qf=all`)
-												break;
-											case "approved":
+										
+										switch (pageParams.get('filter')) {
+											case "all_chu":
 												router.push({
 													pathname: '/community-units',
 													query: {
-														is_approved: true,
-														q: query
-														// qf: 'approved'
+														q: query,
+														...Object.fromEntries(pageParams)
 													}
 												})
 												break;
-											case "new_pending_approval":
-												router.push(`/community-units/?q=${query}&qf=new_pending_approval&has_edits=false&pending_approval=true`)
+											case "approved_chu":
+												router.push({
+													pathname: '/community-units',
+													query: {
+														q: query,
+														...Object.fromEntries(pageParams)
+													}
+												})
 												break;
-											case "updated_pending_approval":
-												router.push(`/community-units/?q=${query}&qf=updated_pending_approval&has_edits=true&is_approved=true`)
+											case "new_pending_approval_chu":
+												router.push({
+													pathname: '/community-units',
+													query: {
+														q: query,
+														...Object.fromEntries(pageParams)
+													}
+												})
+												break;
+											case "updated_pending_approval_chu":
+												router.push({
+													pathname: '/community-units',
+													query: {
+														q: query,
+														...Object.fromEntries(pageParams)
+													}
+												})
+												break;
+											case "rejected_chu":
+												router.push({
+													pathname: '/community-units',
+													query: {
+														q: query,
+														...Object.fromEntries(pageParams)
+													}
+												})
 												break;
 											default:
 												router.push(`/community-units/?q=${query}&qf=is_rejected&is_rejected=true`)

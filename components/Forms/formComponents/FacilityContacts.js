@@ -1,5 +1,5 @@
 
-import { useRef, useContext, useEffect, useState } from "react" // useContext 
+import { useRef, useContext, useEffect, useMemo, useState } from "react" // useContext 
 import { XCircleIcon } from '@heroicons/react/outline'
 import { FacilityContactsContext } from "../../../components/Forms/FacilityContactsForm"
 // import { EditFacilityContactsContext } from "../../../pages/facilities/edit/[id]"
@@ -15,7 +15,6 @@ function FacilityContact({contactTypeOptions, setFacilityContacts, index, fieldN
 
     const contactTypes = useContext(FacilityContactsContext);
 
- 
 
     const alert = useAlert()
 
@@ -161,10 +160,13 @@ function FacilityContact({contactTypeOptions, setFacilityContacts, index, fieldN
                  
                         if(!contacts.includes(undefined)){
 
-                       
-                            contactTypes.splice(index, 1);
-                            delete contactTypes[index]
-                            setFacilityContacts(contactTypes); 
+                           
+                            setFacilityContacts(prev => {
+                                delete prev[index]
+                                return prev?.filter((v, _) => v !== undefined)
+                            }); 
+
+                            
 
                             try{
                                 if(contactTypeRef?.current) {
@@ -324,9 +326,15 @@ function OfficerContactDetails ({contactTypeOptions, setFacilityContacts, contac
                     onClick={ev => {
                         console.log('delete...');
                         ev.preventDefault();
-                        contactTypes.splice(index, 1);
-                        delete contactTypes[index]
-                        setFacilityContacts(contactTypes);                    }}
+                        // contactTypes.splice(index, 1);
+                        // delete contactTypes[index]
+                        // setFacilityContacts(contactTypes); 
+                        setFacilityContacts(prev => {
+                            delete prev[index]
+                            return prev?.filter((v, _) => v !== undefined)
+                        }); 
+
+                    }}
                     ><XCircleIcon className='w-7 h-7 text-red-400'/></button>
                 
                 </div>

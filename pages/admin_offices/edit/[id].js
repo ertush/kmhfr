@@ -9,6 +9,7 @@ import {
 } from '@heroicons/react/solid';
 import Select from 'react-select';
 import { UserContext } from '../../../providers/user';
+import {z} from 'zod'
 
 const _ = require('underscore')
 
@@ -406,6 +407,13 @@ EditAdminOffice.getInitialProps = async (ctx) => {
         'admin_offices',
     ]
 
+    const zSchema = z.object({
+        id: z.string().uuid('Should be a uuid string'),
+      })
+    
+    
+    const queryId = zSchema.parse(ctx.query).id
+
 
     if (ctx.query.q) {
         const query = ctx.query.q
@@ -423,6 +431,7 @@ EditAdminOffice.getInitialProps = async (ctx) => {
     }
 
 return checkToken(ctx.req, ctx.res).then(async (t) => {
+
         if (t.error) {
             throw new Error('Error checking token')
         } else {
@@ -499,7 +508,7 @@ return checkToken(ctx.req, ctx.res).then(async (t) => {
                         break;
                     case 'admin_offices':
 
-                        url = `/api/common/fetch_form_data/?path=admin_offices&id=${ctx.query.id}`
+                        url = `/api/common/fetch_form_data/?path=admin_offices&id=${queryId}`
 
                         try{
 

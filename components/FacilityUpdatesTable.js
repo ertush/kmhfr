@@ -94,6 +94,7 @@ function FacilityUpdatesTable({ facilityUpdatedJson, originalData }) {
                             {
 
                                 facilityUpdatedJson?.geo_codes && facilityUpdatedJson?.geo_codes?.coordinates?.coordinates.length > 0 &&
+
                                 Object.keys(facilityUpdatedJson?.geo_codes).map((key, i) => {
                                     
                                     if(!key.includes('coordinates')) {
@@ -103,7 +104,7 @@ function FacilityUpdatesTable({ facilityUpdatedJson, originalData }) {
                                             {key}
                                         </TableCell>
                                         <TableCell>
-                                            {originalData?.lat_long[i]}
+                                            {/* {originalData?.lat_long[i]} */}
                                         </TableCell>
                                         <TableCell>
                                             {facilityUpdatedJson?.geo_codes[key]}

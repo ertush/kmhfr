@@ -26,6 +26,8 @@ import { UserContext } from '../../../providers/user';
 import { Alert } from '@mui/lab'
 import Spinner from '../../../components/Spinner'
 import { useSearchParams } from 'next/navigation';
+import {z} from 'zod'
+
 
 function ApproveReject(props) {
   const userCtx = useContext(UserContext);
@@ -370,7 +372,7 @@ function ApproveReject(props) {
                       }
                     </button>
 
-                    {!facility?.approved_national_level &&
+                    {/* {facility?.approved_national_level && */}
                       <button
                         type="submit"
                         className="bg-red-600 rounded text-gray-100 -md p-2 font-semibold"
@@ -389,7 +391,7 @@ function ApproveReject(props) {
                         facility?.has_edits ? 'Invalidate Updates' : facility?.approved_national_level ? '' : currentPageParams.get('filter').includes('pending_approval_facilities') ? 'Reject Facility': 'Invalidate Facility'
                         }
                       </button>
-                    }
+                    {/* } */}
                   </div>
                 </Form>
               </Formik>
@@ -408,6 +410,13 @@ function ApproveReject(props) {
 
 ApproveReject.getInitialProps = async (ctx) => {
   const allOptions = {};
+
+  const zSchema = z.object({
+    id: z.string().uuid('Should be a uuid string'),
+  })
+
+
+const queryId = zSchema.parse(ctx.query).id
 
   if (ctx.query.q) {
     const query = ctx.query.q;
@@ -433,7 +442,7 @@ ApproveReject.getInitialProps = async (ctx) => {
         let url =
           process.env.NEXT_PUBLIC_API_URL +
           "/facilities/facilities/" +
-          ctx.query.id +
+          queryId +
           "/";
         return fetch(url, {
           headers: {

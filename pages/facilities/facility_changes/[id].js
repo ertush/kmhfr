@@ -6,6 +6,7 @@ import FacilitySideMenu from "../../../components/FacilitySideMenu"
 import { useAlert } from "react-alert";
 import { useRouter } from "next/router";
 import FacilityUpdatesTable from "../../../components/FacilityUpdatesTable";
+import {z} from 'zod'
 
 export default function FacilityChanges({ facility }) {
 
@@ -148,6 +149,13 @@ export async function getServerSideProps(ctx) {
 
     const token = (await checkToken(ctx.req, ctx.res))?.token
 
+    const zSchema = z.object({
+        id: z.string().uuid('Should be a uuid string'),
+      })
+    
+    
+    const queryId = zSchema.parse(ctx.query).id
+
     async function fetchFacility(facilityId) {
         return fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${facilityId}/`, {
             headers: {
@@ -173,7 +181,7 @@ export async function getServerSideProps(ctx) {
 
     }
 
-    const facility = await fetchFacility(ctx?.query?.id)
+    const facility = await fetchFacility(queryId)
 
     // console.log(JSON.stringify(facility?.latest_update, null, 2))
 
