@@ -88,6 +88,7 @@ function CommunityUnitsBasciDetailsForm(props) {
 		}
 
 
+		
 		// Posting CHU basic details 
 		try {
 			fetch(`${process.env.NEXT_PUBLIC_API_URL}/chul/units/`, {
