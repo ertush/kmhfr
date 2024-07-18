@@ -46,7 +46,7 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
 
 
     setTouchedFields(prev => {
-      prev.add(event?.target?.name ?? 'facility_name')
+      prev.add(event?.target?.name ?? 'facility')
       return prev
     })
   }
@@ -98,16 +98,17 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
   }
 
   function handleFormSubmit(event) {
-    setSubmitting(true)
 
     event.preventDefault()
+
+    setSubmitting(true)
 
 
     const payload = {}
     const formData = new FormData(event.target)
     const formDataObject = Object.fromEntries(formData)
+    payload['basic'] = {}
 
-    // console.log([...touchedFields.values()])
 
     if (Array(touchedFields.values()).length >= 1) {
       for (let field of [...touchedFields.values()]) {
@@ -116,24 +117,25 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
             payload['contact_type'] = formDataObject[field]
           } else if (/contact_\d/.test(field)) {
             payload['contact'] = formDataObject[field]
+          } else if (/chcs_.+/.test(field) || /chas_.+/.test(field) || /chps_.+/.test(field)){
+            payload[field] = formDataObject[field]
           }
           else {
-            payload[field] = formDataObject[field]
+            payload['basic'][field] = formDataObject[field]
 
           }
         }
       }
     }
 
-    payload['basic'] = {}
 
     payload['basic']['contact'] && delete payload['basic']['contact']
     payload['basic']['contact_type'] && delete payload['basic']['contact_type']
 
-    // console.log({submitting, payload})
-
+    
 
     try {
+
       fetch(`${process.env.NEXT_PUBLIC_API_URL}/chul/units/${props?.id}/`, {
         headers: {
           'Accept': 'application/json, text/plain, */*',
@@ -225,7 +227,7 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
       <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
 
         <label
-          htmlFor="facility_name"
+          htmlFor="facility"
           className="text-gray-600 capitalize text-sm"
         >
           Community Health Unit Linked Facility{" "}
@@ -252,9 +254,9 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
           options={options?.facilities}
           defaultValue={options?.facilities?.find(({ value }) => value == props?.facility)}
           placeholder="Select Link facility ..."
-          name="facility_name"
+          name="facility"
+          id="facility"
           onChange={handleFieldChange}
-          id="facility_name"
           className='flex-none w-full  flex-grow  placeholder-gray-500 border border-gray-400 rounded outline-none'
 
 
@@ -453,7 +455,6 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
               </label>
               <input
                 readOnly
-
                 defaultValue={props?.facility_subcounty}
 
                 type="text"
