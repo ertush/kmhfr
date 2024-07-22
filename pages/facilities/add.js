@@ -463,7 +463,7 @@ export async function getServerSideProps(ctx) {
 							break;
 						case 'services':
 
-							url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/${option}/?page_size=100&ordering=name`;
+							url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/${option}/?page_size=300&ordering=name`;
 
 							try {
 
@@ -489,7 +489,7 @@ export async function getServerSideProps(ctx) {
 							break;
 						case 'infrastructure':
 
-							url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/${option}/?page_size=100&page=1`;
+							url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/${option}/?page_size=300&page=1`;
 
 							try {
 
@@ -514,7 +514,7 @@ export async function getServerSideProps(ctx) {
 
 							break;
 						case 'specialities':
-							url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/${option}/?page_size=2000&ordering=name`;
+							url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/${option}/?page_size=300&ordering=name`;
 
 							try {
 
