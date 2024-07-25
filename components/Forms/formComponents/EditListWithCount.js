@@ -56,7 +56,7 @@ function EditListWithCount(
         if (itemData.length > 0 && from !== "previous") {
             itemData.forEach((element) => {
                 if (itemsCategoryName.includes('human resource')) {
-                    const cat = options.filter((e) => e.id == element.speciality)[0].category
+                    const cat = options?.filter((e) => e.id == element.speciality)[0].category
                     result.push({
                         rowid: element.speciality,
                         sname: element.speciality_name,

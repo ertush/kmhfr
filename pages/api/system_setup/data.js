@@ -5,6 +5,13 @@ import { checkToken } from "../../../controllers/auth/auth";
 export default async function fetchSystemSetupData(req, res) {
 
     
+    // res.setHeader(
+    //     'Cache-Control',
+    //     'public, s-maxage=10, stale-while-revalidate=59'
+    // )
+
+    
+
     const fetchData = async (token) => {
 
         const API_URL = process.env.NEXT_PUBLIC_API_URL
@@ -26,35 +33,35 @@ export default async function fetchSystemSetupData(req, res) {
                 if(_id== undefined){
                     url = `${API_URL}/common/${res}/?${qry}&page_size=1000`
                 }else{
-                    url = `${API_URL}/common/${res}/${_id}/?${qry}`
+                    url = `${API_URL}/common/${res}/${_id}/`
                 }
             break;
             case 'ServiceCatalogue':
-                if(_id== undefined){
+                if(_id == undefined){
                     url = `${API_URL}/facilities/${res}/?${qry}&page_size=1000`
                 }else{
-                    url = `${API_URL}/facilities/${res}/${_id}/?${qry}`
+                    url = `${API_URL}/facilities/${res}/${_id}/`
                 }
             break;
             case 'HealthInfrastructure':
                 if(_id== undefined){
                     url = `${API_URL}/facilities/${res}/?${qry}&page_size=1000`
                 }else{
-                    url = `${API_URL}/facilities/${res}/${_id}/?${qry}`
+                    url = `${API_URL}/facilities/${res}/${_id}/`
                 }
             break;
             case 'HR':
                 if(_id== undefined){
                     url = `${API_URL}/facilities/${res}/?${qry}&page_size=1000`
                 }else{
-                    url = `${API_URL}/facilities/${res}/${_id}/?${qry}`
+                    url = `${API_URL}/facilities/${res}/${_id}/`
                 }
             break;
             case 'Contacts':
                 if(_id== undefined){
                     url = `${API_URL}/common/${res}/?${qry}&page_size=1000`
                 }else{
-                    url = `${API_URL}/common/${res}/${_id}/?${qry}`
+                    url = `${API_URL}/common/${res}/${_id}/}`
                 }
             break;
             case 'Counties':
@@ -64,7 +71,7 @@ export default async function fetchSystemSetupData(req, res) {
                 if(_id== undefined){ 
                     url = `${API_URL}/facilities/${res}/?${qry}&page_size=1000`
                 }else{
-                    url = `${API_URL}/facilities/${res}/${_id}/?${qry}`
+                    url = `${API_URL}/facilities/${res}/${_id}/`
                 }
             break;
             case 'CHU':
@@ -76,8 +83,8 @@ export default async function fetchSystemSetupData(req, res) {
             default:
             break;
         }
-        console.log(url);
 
+        
         try {
           
             const resp = await fetch(url, {
@@ -87,8 +94,9 @@ export default async function fetchSystemSetupData(req, res) {
                     
                 }
             })
+
             
-            return resp.json()
+            return await resp.json()
         }
         catch(err) {
             console.error('Error fetching system setup data: ', err)

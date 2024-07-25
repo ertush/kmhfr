@@ -9,9 +9,14 @@ import  Select  from './FormikSelect'
 import { Field, useFormikContext } from 'formik'
 
 
-function FacilityContact({contactTypeOptions, setFacilityContacts, index, fieldNames, contacts}) {
-
-
+function FacilityContact(
+    {
+    contactTypeOptions, 
+    setFacilityContacts, 
+    index, 
+    fieldNames, 
+    contacts
+}) {
 
     const contactTypes = useContext(FacilityContactsContext);
 
@@ -22,6 +27,7 @@ function FacilityContact({contactTypeOptions, setFacilityContacts, index, fieldN
     const contactDetailsRef = useRef(null)
     
     const [contact, contact_type_name, id] = contacts
+
     const [_contactType, setContactType] = useState(null)
 
     const {values, _} = useFormikContext()
@@ -35,6 +41,7 @@ function FacilityContact({contactTypeOptions, setFacilityContacts, index, fieldN
 
 
     useEffect(() => {
+
 
         if(contactTypeRef.current && contact_type_name && id){
             
@@ -80,9 +87,7 @@ function FacilityContact({contactTypeOptions, setFacilityContacts, index, fieldN
                         name={`${fieldNames[1]}_${index}`} 
                         className="w-full flex-grow  rounded flex-1 bg-transparent p-2 border placeholder-gray-500 border-gray-600 focus:shadow-none  focus:border-black outline-none" 
                         />
-
     
-
                     }
 
                     {
@@ -153,6 +158,7 @@ function FacilityContact({contactTypeOptions, setFacilityContacts, index, fieldN
 
                     
                         {/* Delete Btn */}
+                    
                     <button 
                     id={`delete-btn-${index}`}
                     onClick={async ev => {
@@ -162,28 +168,28 @@ function FacilityContact({contactTypeOptions, setFacilityContacts, index, fieldN
 
                            
                             setFacilityContacts(prev => {
+                                
                                 delete prev[index]
-                                return prev?.filter((v, _) => v !== undefined)
+                                return prev?.filter(({id}) => id !== index)
                             }); 
 
-                            
+                
+                            // try{
+                            //     if(contactTypeRef?.current) {
+                            //     const resp = await fetch(`/api/common/submit_form_data/?path=delete_contact&id=${contactTypeRef?.current?.state?.value[0].id ?? null}`)
+                            //     if(resp.status == 204) alert.success('Deleted Facility Contact Successfully')      
+                            //     }
+                            // }catch(e){
+                            //     console.error(e.message)
+                            // }
 
-                            try{
-                                if(contactTypeRef?.current) {
-                                const resp = await fetch(`/api/common/submit_form_data/?path=delete_contact&id=${contactTypeRef?.current?.state?.value[0].id ?? null}`)
-                                if(resp.status == 204) alert.success('Deleted Facility Contact Successfully')
-
-                    
-                                }
-                            }catch(e){
-                                console.error(e.message)
-                            }
                         }else{
-                            // contacts.splice(index, 1);
-                            // setFacilityContacts(contacts);
-                            contactTypes.splice(index, 1);
-                            delete contactTypes[index]
-                            setFacilityContacts(contactTypes); 
+                            setFacilityContacts(prev => {
+                                
+                                delete prev[index]
+                                return prev?.filter(({id}) => id !== index)
+                            }); 
+
                         }
 
                     }}
@@ -198,10 +204,26 @@ function FacilityContact({contactTypeOptions, setFacilityContacts, index, fieldN
     )
 }
 
-function OfficerContactDetails ({contactTypeOptions, setFacilityContacts, contacts, index, fieldNames}) {
+function OfficerContactDetails (
+    {
+        contactTypeOptions, 
+        setFacilityContacts,
+        index, 
+        fieldNames,
+        contacts
+    }) {
 
 
     const contactTypes = useContext(FacilityContactsContext)
+
+    const alert = useAlert()
+
+
+    const contactTypeRef = useRef(null)
+    const contactDetailsRef = useRef(null)
+    
+    const [contact, contact_type_name, id] = contacts
+
     const [_contactType, setContactType] = useState(null)
 
     const {values, _} = useFormikContext()
@@ -210,10 +232,28 @@ function OfficerContactDetails ({contactTypeOptions, setFacilityContacts, contac
     useEffect(() => {
         if(values) {
             setContactType(contactTypeOptions?.find(type => type?.value == values[`officer_details_contact_type_${index}`])?.label)
-            console.log({values})
         }
     }, [values[`officer_details_contact_type_${index}`]])
 
+
+
+    useEffect(() => {
+
+        if(contactTypeRef.current && contact_type_name && id){
+            
+            if (contactTypeRef?.current){ 
+                contactTypeRef.current.state.value = contactTypeOptions.filter(({label}) => label === contact_type_name).map(obj => {obj['id'] = id; return obj})
+            }
+
+        }
+
+        if(contactDetailsRef.current ){
+            contactDetailsRef.current.value = contact ?? null;
+        }
+
+     
+
+    }, [])
 
 
     return (
@@ -323,16 +363,36 @@ function OfficerContactDetails ({contactTypeOptions, setFacilityContacts, contac
                     {/* Delete Btn */}
                     <button 
                     id={`delete-btn-${index}`}
-                    onClick={ev => {
+                    onClick={async (ev) => {
                         console.log('delete...');
                         ev.preventDefault();
-                        // contactTypes.splice(index, 1);
-                        // delete contactTypes[index]
-                        // setFacilityContacts(contactTypes); 
+
+                        if(!contacts.includes(undefined)){
+
+                       
                         setFacilityContacts(prev => {
                             delete prev[index]
-                            return prev?.filter((v, _) => v !== undefined)
+                             return prev?.filter(({id}) => id !== index)
+
                         }); 
+
+                        // try{
+                        //     if(contactTypeRef?.current) {
+                        //     const resp = await fetch(`/api/common/submit_form_data/?path=delete_contact&id=${contactTypeRef?.current?.state?.value[0].id ?? null}`)
+                        //     if(resp.status == 204) alert.success('Deleted Facility Contact Successfully')      
+                        //     }
+                        // }catch(e){
+                        //     console.error(e.message)
+                        // }
+                    } else {
+
+                        setFacilityContacts(prev => {
+                            delete prev[index]
+                             return prev?.filter(({id}) => id !== index)
+
+                        }); 
+
+                    }
 
                     }}
                     ><XCircleIcon className='w-7 h-7 text-red-400'/></button>
