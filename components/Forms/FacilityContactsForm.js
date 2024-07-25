@@ -4,7 +4,7 @@ import { FacilityContact, OfficerContactDetails } from './formComponents/Facilit
 import Select from './formComponents/FormikSelect';
 import { ChevronDoubleLeftIcon, ChevronDoubleRightIcon, PlusIcon } from '@heroicons/react/solid'
 import { FormOptionsContext } from '../../pages/facilities/add';
-
+import {v4 as uuid} from 'uuid'
 
 import {
     handleFacilityContactsSubmit,
@@ -34,6 +34,11 @@ export function FacilityContactsForm() {
     const jobTitleOptions = options.job_titles;
     const submitType = useRef(null)
 
+    const facilityContactUuid = uuid()
+    const officerContactUuid = uuid()
+
+
+
     const setFormId = useContext(UpdateFormIdContext)
 
     const facilityContactsData = {}
@@ -43,15 +48,15 @@ export function FacilityContactsForm() {
     facilityContactsData['officer_title'] = options?.data?.officer_in_charge?.title;
 
 
-    options?.data?.facility_contacts?.forEach((contact, i) => {
-        facilityContactsData[`contact_${i}`] = contact.contact
-        facilityContactsData[`contact_type_${i}`] = options.contact_types?.find(({ label }) => label == contact?.contact_type_name)?.value;
+    options?.data?.facility_contacts?.forEach((contact) => {
+        facilityContactsData[`contact_${facilityContactUuid}`] = contact.contact
+        facilityContactsData[`contact_type_${facilityContactUuid}`] = options.contact_types?.find(({ label }) => label == contact?.contact_type_name)?.value;
     })
 
 
-    options?.data?.officer_in_charge?.contacts?.forEach((contact, i) => {
-        facilityContactsData[`officer_details_contact_${i}`] = contact?.contact
-        facilityContactsData[`officer_details_contact_type_${i}`] = options.contact_types?.find(({ label }) => label == contact?.contact_type_name)?.value;
+    options?.data?.officer_in_charge?.contacts?.forEach((contact) => {
+        facilityContactsData[`officer_details_contact_${officerContactUuid}`] = contact?.contact
+        facilityContactsData[`officer_details_contact_type_${officerContactUuid}`] = options.contact_types?.find(({ label }) => label == contact?.contact_type_name)?.value;
     })
 
 
@@ -83,32 +88,11 @@ export function FacilityContactsForm() {
     const { updatedSavedChanges, updateFacilityUpdateData } = options?.data ? useContext(FacilityUpdatesContext) : { updatedSavedChanges: null, updateFacilityUpdateData: null }
 
 
-    const [facilityContacts, setFacilityContacts] = useState([
-        (() => (
-            <FacilityContact
-                contactTypeOptions={contactTypeOptions}
-                fieldNames={['contact_type', 'contact']}
-                setFacilityContacts={() => null}
-                contacts={[null, null, null]}
-                erros={null}
-                index={0}
-            />
-        ))()
-    ])
+    const [facilityContacts, setFacilityContacts] = useState([])
 
 
 
-    const [officerContactDetails, setOfficerContactDetails] = useState([
-        (() => (
-            <OfficerContactDetails
-                contactTypeOptions={contactTypeOptions}
-                fieldNames={['officer_details_contact_type', 'officer_details_contact']}
-                contacts={[null, null, null]}
-                setFacilityContacts={() => null}
-                index={0}
-            />
-        ))()
-    ])
+    const [officerContactDetails, setOfficerContactDetails] = useState([])
 
     const formFields = useMemo(() => {
 
@@ -116,9 +100,9 @@ export function FacilityContactsForm() {
 
         if (options?.data)  {
     
-        for (let i = 0; i < facilityContacts.length; i++) {
-            vals[`contact_type_${i}`] = "";
-            vals[`contact_${i}`] = "";
+        for (let contact of facilityContacts) {
+            vals[`contact_type_${contact?.id}`] = "";
+            vals[`contact_${contact?.id}`] = "";
         }
 
         vals['officer_in_charge'] = "";
@@ -150,6 +134,59 @@ export function FacilityContactsForm() {
         const officerContactCount = Object.keys(initialValueObj).filter(x => x.match(/^officer_details_contact_[0-9]/)).length;
 
         const currentUrl = new URL(window.document.location.href)
+
+        if(options?.data?.facility_contacts.length > 0){
+            setFacilityContacts(
+                options?.data?.facility_contacts?.map(() => (
+                    {
+                        id: facilityContactUuid,
+                        contact:(() => (
+                            <FacilityContactsContext.Provider 
+                                value={facilityContacts} 
+                                key={facilityContactUuid}
+                            >
+                            <FacilityContact
+                                contactTypeOptions={contactTypeOptions}
+                                fieldNames={['contact_type', 'contact']}
+                                setFacilityContacts={setFacilityContacts}
+                                contacts={[null, null, null]}
+                                index={facilityContactUuid}
+                            />
+                            </FacilityContactsContext.Provider>
+                        ))()
+                }))
+                ??
+                []
+            )
+    }
+
+  
+
+    if(options?.data?.officer_in_charge?.contacts.length > 0 ) {
+        setOfficerContactDetails(
+            options?.data?.officer_in_charge?.contacts?.map(() => (
+            {
+                id: officerContactUuid,
+                contact: (() => (
+                    <FacilityContactsContext.Provider
+                    value={officerContactDetails}
+                    key={officerContactUuid}>
+
+                    <OfficerContactDetails
+                        contactTypeOptions={contactTypeOptions}
+                        fieldNames={['officer_details_contact_type', 'officer_details_contact']}
+                        contacts={[null, null, null]}
+                        setFacilityContacts={setOfficerContactDetails}
+                        index={officerContactUuid}
+                    />
+                    </ FacilityContactsContext.Provider >
+                ))()
+        }
+        ))
+        ??
+        []
+    )
+    }
 
         if(!options?.data){
             if(window && currentUrl?.searchParams.get('from').includes('previous')){
@@ -216,7 +253,6 @@ export function FacilityContactsForm() {
     }, [])
 
     
-
     // Event handlers
 
     const handleGeolocationPrevious = useCallback((event) => {
@@ -240,6 +276,7 @@ export function FacilityContactsForm() {
 
     }, [])
 
+    
   
     return (
         <Formik
@@ -318,7 +355,7 @@ export function FacilityContactsForm() {
                                     pathname: `${window.location.origin}/facilities/add`,
                                     query: { 
                                       formId: 3,
-                                      facilityId: facilityId,
+                                      facilityId,
                                       from: 'submission'
                         
                                     }
@@ -334,7 +371,6 @@ export function FacilityContactsForm() {
                                 // url.searchParams.set('facilityId', facilityId)
 
                                 // url.searchParams.set('from', 'submission')
-
 
                                 // window.location.href = url
 
@@ -402,6 +438,7 @@ export function FacilityContactsForm() {
 
                                 {/* Contacts */}
 
+                               
                                 <div
                                     className='grid grid-cols-2 bg-gray-50 border border-gray-400 rounded p-3 place-content-start gap-3 w-full bg-light-grey '
                                 >
@@ -415,21 +452,21 @@ export function FacilityContactsForm() {
                                     <hr className='col-span-2 border-xs border-gray-400 rounded' />
 
                                     {/* Contact Type / Contact Details */}
+                                   
+
 
                                     {/* add other fields */}
                                     <div className='col-span-2 flex-col w-full items-start justify-start gap-y-3 '>
-
-
-
+                                        
                                         {
-                                            facilityContacts.map((facilityContact, i) => (
+                                            facilityContacts.map(({contact, id}) => (
 
-                                                <Fragment key={i}>
+                                                <Fragment key={id}>
 
-                                                    {facilityContact}
+                                                    {contact}
                                                     <div className='grid grid-cols-2 w-full'>
-                                                        {errors[`contact_type_${i}`] && <span className='font-normal text-sm text-red-500 text-start'>{errors[`contact_type_${i}`]}</span>}
-                                                        {errors[`contact_${i}`] && <span className='font-normal col-start-2 text-sm text-red-500 text-start'>{errors[`contact_${i}`]}</span>}
+                                                        {errors[`contact_type_${id}`] && <span className='font-normal text-sm text-red-500 text-start'>{errors[`contact_type_${id}`]}</span>}
+                                                        {errors[`contact_${id}`] && <span className='font-normal col-start-2 text-sm text-red-500 text-start'>{errors[`contact_${id}`]}</span>}
                                                     </div>
                                                 </Fragment>
 
@@ -443,24 +480,29 @@ export function FacilityContactsForm() {
                                     <button
                                         onClick={(e) => {
                                             e.preventDefault();
-
-                                            // console.log({initialValues});
+                                            const _uuid = uuid()
 
 
                                             setFacilityContacts([
                                                 ...facilityContacts,
-                                                (() => (
-                                                    <FacilityContactsContext.Provider value={facilityContacts} key={(facilityContacts.length + 1) - 1}>
+                                                {
+                                                id: _uuid,
+                                                contact: (() => (
+                                                    <FacilityContactsContext.Provider 
+                                                        value={facilityContacts} 
+                                                        key={_uuid}
+                                                        >
                                                         <FacilityContact
                                                             contactTypeOptions={contactTypeOptions}
                                                             setFacilityContacts={setFacilityContacts}
                                                             contacts={[null, null, null]}
                                                             fieldNames={['contact_type', 'contact']}
-                                                            index={(facilityContacts.length + 1) - 1}
+                                                            index={_uuid}
 
                                                         />
                                                     </FacilityContactsContext.Provider>
                                                 ))()
+                                            }
 
 
                                             ])
@@ -553,16 +595,16 @@ export function FacilityContactsForm() {
 
                                         <div className='col-span-2 flex-col w-full items-start justify-start gap-y-3 '>
                                             {
-                                                officerContactDetails.map((officerDetailContact, i) => (
+                                                officerContactDetails.map(({contact, id}) => (
 
-                                                    <Fragment key={i}>
+                                                    <Fragment key={id}>
 
                                                         {
-                                                            officerDetailContact
+                                                            contact
                                                         }
                                                         <div className='w-full grid grid-cols-2'>
-                                                            {errors[`officer_details_contact_${i}`] && <span className='font-normal text-sm text-red-500 text-start'>{errors[`officer_details_contact_${i}`]}</span>}
-                                                            {errors[`officer_details_contact_type_${i}`] && <span className='font-normal col-start-2 text-sm text-red-500 text-start'>{errors[`officer_details_contact_type_${i}`]}</span>}
+                                                            {errors[`officer_details_contact_${id}`] && <span className='font-normal text-sm text-red-500 text-start'>{errors[`officer_details_contact_${id}`]}</span>}
+                                                            {errors[`officer_details_contact_type_${id}`] && <span className='font-normal col-start-2 text-sm text-red-500 text-start'>{errors[`officer_details_contact_type_${id}`]}</span>}
                                                         </div>
                                                     </Fragment>
 
@@ -577,21 +619,28 @@ export function FacilityContactsForm() {
                                             onClick={
                                                 (e) => {
                                                     e.preventDefault();
+
+                                                    const _uuid = uuid();
+
                                                     setOfficerContactDetails([
                                                         ...officerContactDetails,
-                                                        (() => (
+                                                        {
+                                                        id: _uuid,
+                                                        contact: (() => (
                                                             <FacilityContactsContext.Provider
                                                                 value={officerContactDetails}
-                                                                key={(officerContactDetails.length + 1) - 1}>
+                                                                key={_uuid}>
+
                                                                 <OfficerContactDetails
                                                                     contactTypeOptions={contactTypeOptions}
                                                                     setFacilityContacts={setOfficerContactDetails}
                                                                     contacts={[null, null, null]}
                                                                     fieldNames={['officer_details_contact_type', 'officer_details_contact']}
-                                                                    index={(officerContactDetails.length + 1) - 1}
+                                                                    index={_uuid}
                                                                 />
                                                             </FacilityContactsContext.Provider>
                                                         ))()
+                                                    }
                                                     ])
                                                 }}
                                             className='flex items-center space-x-1 bg-blue-700 p-1 '>

@@ -693,6 +693,8 @@ export function BasicDeatilsForm({ editMode }) {
       getFacilityTypeDetailsParent(options?.data?.facility_type, options?.token)
         .then(facilityTypeDetails => {
 
+          if(facilityTypeDetails) {
+
           parent=facilityTypeDetails[0]?.parent; 
           if(parent)
           {
@@ -701,16 +703,23 @@ export function BasicDeatilsForm({ editMode }) {
             // console.log({typeParent: facilityTypeParent["value"]})
 
           }
-         })
+         }
+        }
+        )
 
         getFacilityTypeDetails(parent, options?.token)
         .then(facilityTypeDetails => {
+          if(facilityTypeDetails) {
 
            const _options = facilityTypeDetails?.map(({ id: value, name: label }) => ({ label, value }))
 
           setFacilityTypeDetailOptions(_options)
-        })
+        }
+      }
+      )
+        
     }
+  
 
     setIsClient(true)
 

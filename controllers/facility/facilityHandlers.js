@@ -237,47 +237,70 @@ function handleGeolocationSubmit(token, values, stateSetters) {
 // handleFacilityContactsSubmit
 function handleFacilityContactsSubmit(token, values, facilityId) {
 
-    // console.log({values})
-    const facilityContacts = []
-    const contactEntries = Object.entries(values).filter(arr => ((/^contact_[0-9]{1}/.test(arr[0])) || (/^contact_type_[0-9]{1}/.test(arr[0]))));
-    const contact_temp = contactEntries.filter(contact => /^contact_\d/.test(contact[0])).map(() => ({}))
+    
+    const facilityContacts = [];
+    const contactEntries = Object.entries(values).filter(arr => ((/^contact_.*/.test(arr[0])) || (/^contact_type_.*/.test(arr[0]))));
+    const officerContactEntries = Object.entries(values).filter(arr => ((/^officer_details_contact_.*/.test(arr[0])) || (/^officer_details_contact_type_.*/.test(arr[0]))));
 
-    contactEntries.forEach((contact, i) => {
+    const contact_temp = []
 
-        if (/^contact_[0-9]{1}/.test(contact[0])) contact_temp[parseInt(contact[0].split('_').reverse()[0])]['contact'] = contact[1];
-        if (/^contact_type_[0-9]{1}/.test(contact[0])) contact_temp[parseInt(contact[0].split('_').reverse()[0])]['contact_type'] = contact[1];
+    let i = 0
+    let temp = {}
+    for( let [k, v] of contactEntries) {
+        if (/^contact_.*/.test(k)) temp[k.split('_').length <= 2 ? 'contact' : 'contact_type'] = v 
+        contact_temp.push(temp)
+        temp = {};
+        i++;
+    }
 
-        if (Object.keys(contact_temp[parseInt(contact[0].split('_').reverse()[0])]).length == 2) facilityContacts.push(contact_temp[parseInt(contact[0].split('_').reverse()[0])]);
-
-    })
-
+    for (let i = 0 ; i < contact_temp.length; i++) {
+        facilityContacts.push(
+            {
+                ...contact_temp[i],
+                ...contact_temp[i+1]
+            }
+        )
+        i += 1
+    }
 
     const officerContacts = []
-    const officerContactEntries = Object.entries(values).filter(arr => ((/^officer_details_contact_[0-9]{1}/.test(arr[0])) || (/^officer_details_contact_type_[0-9]{1}/.test(arr[0]))));
-    const officer_contact_temp = officerContactEntries.filter(contact => /^officer_details_contact_\d/.test(contact[0])).map(() => ({}))
+    const officer_contact_temp = []
 
-    officerContactEntries.forEach((contact, i) => {
+    let j = 0
+    let _temp = {}
+    for( let [k, v] of officerContactEntries) {
+        if (/^officer_details_contact_.*/.test(k)) _temp[k.split('_').length <= 4 ? 'contact' : 'contact_type'] = v 
+        officer_contact_temp.push(_temp)
+        _temp = {};
+        j++;
+    }
 
-        if (/^officer_details_contact_[0-9]{1}/.test(contact[0])) officer_contact_temp[parseInt(contact[0].split('_').reverse()[0])]['contact'] = contact[1];
-        if (/^officer_details_contact_type_[0-9]{1}/.test(contact[0])) officer_contact_temp[parseInt(contact[0].split('_').reverse()[0])]['contact_type'] = contact[1];
-
-        if (Object.keys(officer_contact_temp[parseInt(contact[0].split('_').reverse()[0])]).length == 2) officerContacts.push(officer_contact_temp[parseInt(contact[0].split('_').reverse()[0])]);
-
-    })
-
-
-    const officerDetails = { contacts: officerContacts }
-
-    officerDetails['name'] = values.officer_name;
-    officerDetails['reg_no'] = values.officer_reg_no;
-    officerDetails['title'] = values.officer_title;
+    for (let k = 0 ; k < officer_contact_temp.length; k++) {
+        officerContacts.push(
+            {
+                ...officer_contact_temp[k],
+                ...officer_contact_temp[k+1]
+            }
+        )
+        k += 1
+    }
 
 
+    const officerDetails = {}
 
+
+    for( let [k, v] of Object.entries(values)) {
+        if(k == 'officer_name') officerDetails['name'] = v
+        if(k == 'officer_reg_no') officerDetails['reg_no'] = v
+        if(k == 'officer_title') officerDetails['title'] = v
+    }
+
+    officerDetails['contacts'] = officerContacts
+
+  
     const payload = { contacts: facilityContacts, officer_in_charge: officerDetails };
 
-
-       console.log(JSON.stringify(payload, null, 2))
+    //    console.log(JSON.stringify(payload, null, 2))
 
     if (facilityId && token) {
         try {
@@ -320,10 +343,10 @@ async function handleRegulationSubmit(token, values, facilityId, setSubmitting, 
 
     deptUnitsEntries.forEach((unit, i) => {
 
-        if (/^facility_unit_[0-9]{1}/.test(unit[0])) dept_units_temp[parseInt(unit[0].split('_').reverse()[0])]['unit'] = unit[1];
-        if (/^facility_regulating_body_name_[0-9]{1}/.test(unit[0])) dept_units_temp[parseInt(unit[0].split('_').reverse()[0])]['regulating_body_name'] = unit[1];
-        if (/^facility_license_number_[0-9]{1}/.test(unit[0])) dept_units_temp[parseInt(unit[0].split('_').reverse()[0])]['license_number'] = unit[1];
-        if (/^facility_registration_number_[0-9]{1}/.test(unit[0])) dept_units_temp[parseInt(unit[0].split('_').reverse()[0])]['registration_number'] = unit[1];
+        if (/^facility_unit_.*/.test(unit[0])) dept_units_temp[parseInt(unit[0].split('_').reverse()[0])]['unit'] = unit[1];
+        if (/^facility_regulating_body_name_.*/.test(unit[0])) dept_units_temp[parseInt(unit[0].split('_').reverse()[0])]['regulating_body_name'] = unit[1];
+        if (/^facility_license_number_.*/.test(unit[0])) dept_units_temp[parseInt(unit[0].split('_').reverse()[0])]['license_number'] = unit[1];
+        if (/^facility_registration_number_.*/.test(unit[0])) dept_units_temp[parseInt(unit[0].split('_').reverse()[0])]['registration_number'] = unit[1];
 
         if (Object.keys(dept_units_temp[parseInt(unit[0].split('_').reverse()[0])]).length == 4) facilityDetpUnits.push(dept_units_temp[parseInt(unit[0].split('_').reverse()[0])]);
 
@@ -740,59 +763,68 @@ async function handleFacilityContactsUpdates(token, values, facility_id, current
 
 
     const facilityContacts = [];
-    const contactEntries = Object.entries(values).filter(arr => ((/^contact_[0-9]{1}/.test(arr[0])) || (/^contact_type_[0-9]{1}/.test(arr[0]))));
-    const contact_temp = contactEntries.filter(contact => /^contact_\d/.test(contact[0])).map(() => ({}));
+    const contactEntries = Object.entries(values).filter(arr => ((/^contact_.*/.test(arr[0])) || (/^contact_type_.*/.test(arr[0]))));
+    const officerContactEntries = Object.entries(values).filter(arr => ((/^officer_details_contact_.*/.test(arr[0])) || (/^officer_details_contact_type_.*/.test(arr[0]))));
 
-    contactEntries.forEach((contact, i) => {
+    const contact_temp = []
 
-        if (/^contact_[0-9]{1}/.test(contact[0])) contact_temp[parseInt(contact[0].split('_').reverse()[0])]['contact'] = contact[1];
-        if (/^contact_type_[0-9]{1}/.test(contact[0])) contact_temp[parseInt(contact[0].split('_').reverse()[0])]['contact_type'] = contact[1];
+    let i = 0
+    let temp = {}
+    for( let [k, v] of contactEntries) {
+        if (/^contact_.*/.test(k)) temp[k.split('_').length <= 2 ? 'contact' : 'contact_type'] = v 
+        contact_temp.push(temp)
+        temp = {};
+        i++;
+    }
 
-        if (Object.keys(contact_temp[parseInt(contact[0].split('_').reverse()[0])]).length == 2) facilityContacts.push(contact_temp[parseInt(contact[0].split('_').reverse()[0])]);
-
-    })
-
+    for (let i = 0 ; i < contact_temp.length; i++) {
+        facilityContacts.push(
+            {
+                ...contact_temp[i],
+                ...contact_temp[i+1]
+            }
+        )
+        i += 1
+    }
 
     const officerContacts = []
-    const officerContactEntries = Object.entries(values).filter(arr => ((/^officer_details_contact_[0-9]{1}/.test(arr[0])) || (/^officer_details_contact_type_[0-9]{1}/.test(arr[0]))));
-    const officer_contact_temp = officerContactEntries.filter(contact => /^officer_details_contact_\d/.test(contact[0])).map(() => ({}))
+    const officer_contact_temp = []
 
-    officerContactEntries.forEach((contact, i) => {
+    let j = 0
+    let _temp = {}
+    for( let [k, v] of officerContactEntries) {
+        if (/^officer_details_contact_.*/.test(k)) _temp[k.split('_').length <= 4 ? 'contact' : 'contact_type'] = v 
+        officer_contact_temp.push(_temp)
+        _temp = {};
+        j++;
+    }
 
-        if (/^officer_details_contact_[0-9]{1}/.test(contact[0])) officer_contact_temp[parseInt(contact[0].split('_').reverse()[0])]['contact'] = contact[1];
-        if (/^officer_details_contact_type_[0-9]{1}/.test(contact[0])) officer_contact_temp[parseInt(contact[0].split('_').reverse()[0])]['contact_type'] = contact[1];
+    for (let k = 0 ; k < officer_contact_temp.length; k++) {
+        officerContacts.push(
+            {
+                ...officer_contact_temp[k],
+                ...officer_contact_temp[k+1]
+            }
+        )
+        k += 1
+    }
 
-        if (Object.keys(officer_contact_temp[parseInt(contact[0].split('_').reverse()[0])]).length == 2) officerContacts.push(officer_contact_temp[parseInt(contact[0].split('_').reverse()[0])]);
 
-    })
+    const officerDetails = {}
 
 
-    const officerDetails = { contacts: officerContacts }
+    for( let [k, v] of Object.entries(values)) {
+        if(k == 'officer_name') officerDetails['name'] = v
+        if(k == 'officer_reg_no') officerDetails['reg_no'] = v
+        if(k == 'officer_title') officerDetails['title'] = v
+    }
 
-    officerDetails['name'] = values.officer_name;
-    officerDetails['reg_no'] = values.officer_reg_no;
-    officerDetails['title'] = values.officer_title;
+    officerDetails['contacts'] = officerContacts
 
-    const filteredFacilityContacts = facilityContacts?.filter(({contact}, i) => {
-        return contact !== currentFacilityContacts[i]?.contact
-    })
+  
+    const payload = { contacts: facilityContacts, officer_in_charge: officerDetails };
 
-    const filteredOfficerDetails = {}
-
-    filteredOfficerDetails['contacts'] = officerDetails.contacts?.filter(({contact}, i) => {
-        return contact !== currentOfficerContacts?.contacts[i]?.contact
-    })
-
-    //Omit old values and only include new fields or fields that have changed
-
-    
-    
-    filteredOfficerDetails['name'] = officerDetails['name'] 
-    filteredOfficerDetails['reg_no'] = officerDetails['reg_no'] 
-    filteredOfficerDetails['title'] = officerDetails['title'] 
-
-    const payload = { contacts: filteredFacilityContacts, officer_in_charge: filteredOfficerDetails };
-    
+    // console.log({payload, officerDetails, officerContacts})
 
     try {
         const resp = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${facility_id}/`, {
@@ -835,10 +867,10 @@ async function handleRegulationUpdates(token, values, facilityId, licenseFileRef
 
     deptUnitsEntries.forEach((unit, i) => {
 
-        if (/^facility_unit_[0-9]{1}/.test(unit[0])) dept_units_temp[parseInt(unit[0].split('_').reverse()[0])]['unit'] = unit[1];
-        if (/^facility_regulating_body_name_[0-9]{1}/.test(unit[0])) dept_units_temp[parseInt(unit[0].split('_').reverse()[0])]['regulating_body_name'] = unit[1];
-        if (/^facility_license_number_[0-9]{1}/.test(unit[0])) dept_units_temp[parseInt(unit[0].split('_').reverse()[0])]['license_number'] = unit[1];
-        if (/^facility_registration_number_[0-9]{1}/.test(unit[0])) dept_units_temp[parseInt(unit[0].split('_').reverse()[0])]['registration_number'] = unit[1];
+        if (/^facility_unit_.*/.test(unit[0])) dept_units_temp[parseInt(unit[0].split('_').reverse()[0])]['unit'] = unit[1];
+        if (/^facility_regulating_body_name_.*/.test(unit[0])) dept_units_temp[parseInt(unit[0].split('_').reverse()[0])]['regulating_body_name'] = unit[1];
+        if (/^facility_license_number_.*/.test(unit[0])) dept_units_temp[parseInt(unit[0].split('_').reverse()[0])]['license_number'] = unit[1];
+        if (/^facility_registration_number_.*/.test(unit[0])) dept_units_temp[parseInt(unit[0].split('_').reverse()[0])]['registration_number'] = unit[1];
 
         if (Object.keys(dept_units_temp[parseInt(unit[0].split('_').reverse()[0])]).length == 4) facilityDetpUnits.push(dept_units_temp[parseInt(unit[0].split('_').reverse()[0])]);
 

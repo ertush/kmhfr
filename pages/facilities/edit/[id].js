@@ -284,7 +284,7 @@ EditFacility.getInitialProps = async (ctx) => {
 	]
 
 	const zSchema = z.object({
-		id: z.string().uuid('Should be a uuid string'),
+		id: z.string().optional('Should be a uuid string'),
 	  })
 	
 	
@@ -300,6 +300,14 @@ EditFacility.getInitialProps = async (ctx) => {
 
 				let token = t.token;
 				let url = '';
+
+				// return {
+				// 	owners: [],
+				// 	data: {
+				// 		owner_type_name: "",
+				// 		facility_type_details: [null]
+				// 	}
+				// }
 
 				for (let i = 0; i < options.length; i++) {
 					const option = options[i]
