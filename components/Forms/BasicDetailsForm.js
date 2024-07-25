@@ -14,6 +14,7 @@ import Spinner from '../Spinner'
 import { useRouter } from 'next/router';
 import { Alert } from '@mui/lab';
 import { UpdateFormIdContext } from './Form';
+
 // import { indexOf } from 'underscore';
 
 // import { FacilityIdContext, FacilityWardDataContext } from './Form';
@@ -31,6 +32,7 @@ export function BasicDeatilsForm({ editMode }) {
   // State
   const [isClient, setIsClient] = useState(false)
   const [totalFunctionalBeds, setTotalFunctionalBeds] = useState(0)
+  const [isFieldValidationError, setIsFieldValdiationError] = useState(false)
 
   const submitType = useRef(null)
 
@@ -764,14 +766,23 @@ export function BasicDeatilsForm({ editMode }) {
               *
             </span>
           </label>
+          {
+          isFieldValidationError &&
+          <span className="tooltiptext">Facility Unique Name cannot be more than 50 characters</span>
+          }
+
           <input
             required
             type='text'
             name='name'
+            pattern={'^.{0,50}$'}
+            onChange={e => e.currentTarget.value.match(e.currentTarget.pattern) !== null ? setIsFieldValdiationError(false) : setIsFieldValdiationError(true)}
             defaultValue={options?.data?.name ?? ''}
             onFocus={handleFocus}
             className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:border-black outline-none'
           />
+
+
 
         </div>
 
