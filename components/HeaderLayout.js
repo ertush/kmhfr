@@ -264,7 +264,12 @@ export default function HeaderLayout({
                         >
                           {({ active }) => (
                             <button
-                              onClick={() => router.push('/logout')}
+                              onClick={() => router.push({
+                                pathname:'/logout',
+                                query: {
+                                  previous_path: router.asPath
+                                }
+                              })}
                               data-testid="logout"
                               className={`w-full cursor-pointer flex items-center text-gray-800 font-medium ${active && "text-gray-400"
                                 }`}

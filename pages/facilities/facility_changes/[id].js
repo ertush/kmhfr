@@ -7,8 +7,9 @@ import { useAlert } from "react-alert";
 import { useRouter } from "next/router";
 import FacilityUpdatesTable from "../../../components/FacilityUpdatesTable";
 import {z} from 'zod'
+import withAuth from "../../../components/ProtectedRoute";
 
-export default function FacilityChanges({ facility }) {
+function FacilityChanges({ facility }) {
 
     const filters = [];
     const alert = useAlert()
@@ -196,3 +197,5 @@ export async function getServerSideProps(ctx) {
         }
     }
 }
+
+export default withAuth(FacilityChanges)

@@ -18,13 +18,13 @@ import { Alert } from '@mui/lab'
 import * as Tabs from "@radix-ui/react-tabs";
 import { Select as CustomSelect } from '../../../components/Forms/formComponents/Select';
 import {z} from 'zod'
-
+import withAuth from '../../../components/ProtectedRoute'
 
 function UpgradeFacility(props) {
 
 
-    const userCtx = React.useContext(UserContext)
-    const [user, setUser] = useState(userCtx)
+    // const userCtx = React.useContext(UserContext)
+    // const [user, setUser] = useState(userCtx)
 
     const alert = useAlert()
     const router = useRouter()
@@ -316,10 +316,10 @@ function UpgradeFacility(props) {
     }
 
     useEffect(() => {
-        setUser(userCtx);
-        if (user.id === 6) {
-            router.push('/auth/login')
-        }
+        // setUser(userCtx);
+        // if (user.id === 6) {
+        //     router.push('/auth/login')
+        // }
 
         setIsClient(true)
     }, [])
@@ -1027,4 +1027,4 @@ export async function getServerSideProps(ctx) {
 
 }
 
-export default UpgradeFacility
+export default withAuth(UpgradeFacility)

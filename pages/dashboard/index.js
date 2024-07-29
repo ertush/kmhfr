@@ -1,6 +1,6 @@
 import Head from 'next/head'
 import MainLayout from '../../components/MainLayout'
-import { checkToken } from '../../controllers/auth/auth'
+import { checkToken, getUserDetails } from '../../controllers/auth/auth'
 import React, { useState, useEffect, useRef, useContext, memo } from 'react'
 import { useRouter } from 'next/router'
 import Chart from '../../components/Chart'
@@ -10,6 +10,7 @@ import { UserContext } from '../../providers/user'
 import 'react-datepicker/dist/react-datepicker.css';
 import propTypes from 'prop-types'
 import dynamic from 'next/dynamic'
+import withAuth from '../../components/ProtectedRoute'
 
 
 const Map = memo(dynamic(
@@ -117,6 +118,7 @@ function Dashboard(props) {
 
     const groupID = userCtx?.groups[0]?.id
     const user = userCtx
+  
 
     async function fetchCounties() {
 
@@ -185,17 +187,13 @@ function Dashboard(props) {
     }, [filters, subCounties, wards])
 
 
+
+
     // Check for user authentication
     useEffect(() => {
 
-        if(user.id === 6){
-			router.push('/auth/login')
-		}
-
         setIsClient(true)
-
-        // console.log({ groupID })
-
+       // console.log({ groupID })
         if (groupID == 2) fetchWards(user?.user_sub_counties[0]?.sub_county ?? null)
         if (groupID == 1) fetchSubCounties(props?.filters?.county[0]?.id)
         if (groupID == 7) fetchCounties();
@@ -238,7 +236,6 @@ function Dashboard(props) {
         { name: 'New CHUs added', count: `${props?.data?.recently_created_chus || 0}` },
         { name: 'CHUs updated', count: `${props?.data?.recently_updated_chus || 0}` }
     ]
-
 
 
     function countyOptions(filters, ft) {
@@ -338,10 +335,6 @@ function Dashboard(props) {
             value: 'table'
         }
     ]
-
-
-
-
 
     function handleYearChange(value) {
 
@@ -674,88 +667,57 @@ function Dashboard(props) {
     }
 
 
+
     if (isClient) {
 
         return (
-            <div className="">
-                <Head>
-                    <title>KMHFR | Dashboardboard</title>
-                    <link rel="icon" href="/favicon.ico" />
-                </Head>
+                <>
+                    <Head>
+                        <title>KMHFR | Dashboardboard</title>
+                        <link rel="icon" href="/favicon.ico" />
+                    </Head>
+                
+                    <MainLayout isLoading={false} searchTerm={props?.query?.searchTerm}>
 
-                <MainLayout isLoading={false} searchTerm={props?.query?.searchTerm}>
+                        <div className="w-full md:w-[85%] md:mx-auto grid grid-cols-1 md:grid-cols-6 gap-3 md:mt-3 md:mb-12 mb-6 px-4 md:px-0">
+                            <div className="col-span-6 flex flex-col gap-3 md:gap-5 mb-8 ">
+                                {/* Debug */}
 
-                    <div className="w-full md:w-[85%] md:mx-auto grid grid-cols-1 md:grid-cols-6 gap-3 md:mt-3 md:mb-12 mb-6 px-4 md:px-0">
-                        <div className="col-span-6 flex flex-col gap-3 md:gap-5 mb-8 ">
-                            {/* Debug */}
+                                <div className="no-print flex flex-row gap-2 md:text-base py-3">
 
-                            <div className="no-print flex flex-row gap-2 md:text-base py-3">
-
-                            </div>
-
-
-
-                            <div className="flex flex-col w-full md:flex-wrap lg:flex-row xl:flex-row gap-1 text-sm md:text-base items-center justify-between">
+                                </div>
 
 
+
+                                <div className="flex flex-col w-full md:flex-wrap lg:flex-row xl:flex-row gap-1 text-sm md:text-base items-center justify-between">
 
 
 
 
-                                <div className="w-full flex md:flex-row flex-col gap-4 md:gap-0 justify-between">
-                                    {/* <pre>
-                                        {
-                                            getTitle()
-                                        }
-                                    </pre> */}
 
 
-                                    <h1 className="w-full md:w-auto text-4xl tracking-tight font-bold leading-3 flex items-start justify-center gap-x-1 gap-y-2 flex-grow mb-4 md:mb-2 flex-col">
-                                        {
-                                            getTitle()
-                                        }
-                                    </h1>
-
-
-
-
-                                    {user &&
-                                        <div className="w-auto flex items-center gap-3">
-
-                                            <div className='w-auto flex realtive'>
-                                                <Select
-                                                    className="max-w-max md:w-[250px] rounded border border-gray-400"
-                                                    styles={{
-                                                        control: (baseStyles) => ({
-                                                            ...baseStyles,
-                                                            backgroundColor: 'transparent',
-                                                            outLine: 'none',
-                                                            border: 'none',
-                                                            outLine: 'none',
-                                                            textColor: 'transparent',
-                                                            padding: 0,
-                                                            height: '4px'
-                                                        }),
-
-                                                    }}
-
-                                                    options={Years}
-                                                    placeholder='Select Year'
-                                                    name='year'
-                                                    id="year-filter"
-                                                    onChange={handleYearChange}
-                                                />
-                                                <span className='absolute inset-y-0 right-0'>x</span>
-                                            </div>
-
-                                            {/* County Select */}
-
+                                    <div className="w-full flex md:flex-row flex-col gap-4 md:gap-0 justify-between">
+                                        {/* <pre>
                                             {
-                                                (groupID == 5 || groupID == 7) &&
-                                                props?.filters?.county && props?.filters?.county.length > 0 &&
-                                                Object.keys(props?.filters)?.map(ft => (
+                                                getTitle()
+                                            }
+                                        </pre> */}
+
+
+                                        <h1 className="w-full md:w-auto text-4xl tracking-tight font-bold leading-3 flex items-start justify-center gap-x-1 gap-y-2 flex-grow mb-4 md:mb-2 flex-col">
+                                            {
+                                                getTitle()
+                                            }
+                                        </h1>
+
+
+
+
+                                        {user &&
+                                            <div className="w-auto flex items-center gap-3">
+
+                                                <div className='w-auto flex realtive'>
                                                     <Select
-                                                        key={ft}
                                                         className="max-w-max md:w-[250px] rounded border border-gray-400"
                                                         styles={{
                                                             control: (baseStyles) => ({
@@ -771,589 +733,621 @@ function Dashboard(props) {
 
                                                         }}
 
-                                                        name={ft}
-                                                        id={"county-filter"}
-                                                        options={countyOptions(filters, ft)}
-                                                        placeholder={`Select ${ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}`}
-                                                        onChange={handleCountyOrgUnitChange} />
-                                                ))}
-
-                                            {/* county user */}
-
-                                            {groupID === 1 &&
-                                                <div className="max-w-min">
-                                                    {Array.isArray(subCounties?.subCounties) && subCounties?.subCounties.length > 0 &&
-                                                        Object.keys(subCounties)?.map(ft => (
-                                                            <Select
-                                                                key={ft}
-                                                                className="max-w-max md:w-[250px] rounded border border-gray-400"
-                                                                styles={{
-                                                                    control: (baseStyles) => ({
-                                                                        ...baseStyles,
-                                                                        backgroundColor: 'transparent',
-                                                                        outLine: 'none',
-                                                                        border: 'none',
-                                                                        outLine: 'none',
-                                                                        textColor: 'transparent',
-                                                                        padding: 0,
-                                                                        height: '4px'
-                                                                    }),
-
-                                                                }}
-
-                                                                name={ft}
-                                                                id="sub-county-filter"
-                                                                options={
-                                                                    subCountyOptions(filters, ft)
-                                                                }
-                                                                placeholder={`Select ${ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(" ").slice(1)}`}
-                                                                onChange={handleSubCountyOrgUnitChange} />
-
-                                                        ))}
+                                                        options={Years}
+                                                        placeholder='Select Year'
+                                                        name='year'
+                                                        id="year-filter"
+                                                        onChange={handleYearChange}
+                                                    />
+                                                    <span className='absolute inset-y-0 right-0'>x</span>
                                                 </div>
-                                            }
-                                            {/* sub_county user */}
 
-                                            {groupID === 2 &&
-                                                <div className="flex">
+                                                {/* County Select */}
 
-                                                    {wards && Object.keys(wards).length > 0 &&
-                                                        Object.keys(wards)?.map(ft => (
-                                                            <Select name={ft}
-                                                                className="max-w-max md:w-[250px] rounded border border-gray-400"
-                                                                styles={{
-                                                                    control: (baseStyles) => ({
-                                                                        ...baseStyles,
-                                                                        backgroundColor: 'transparent',
-                                                                        outLine: 'none',
-                                                                        border: 'none',
-                                                                        outLine: 'none',
-                                                                        textColor: 'transparent',
-                                                                        padding: 0,
-                                                                        height: '4px'
-                                                                    }),
+                                                {
+                                                    (groupID == 5 || groupID == 7) &&
+                                                    props?.filters?.county && props?.filters?.county.length > 0 &&
+                                                    Object.keys(props?.filters)?.map(ft => (
+                                                        <Select
+                                                            key={ft}
+                                                            className="max-w-max md:w-[250px] rounded border border-gray-400"
+                                                            styles={{
+                                                                control: (baseStyles) => ({
+                                                                    ...baseStyles,
+                                                                    backgroundColor: 'transparent',
+                                                                    outLine: 'none',
+                                                                    border: 'none',
+                                                                    outLine: 'none',
+                                                                    textColor: 'transparent',
+                                                                    padding: 0,
+                                                                    height: '4px'
+                                                                }),
 
-                                                                }}
+                                                            }}
 
-                                                                id="ward-filter"
-                                                                options={wardOptions(filters, ft)}
-                                                                placeholder={`Select ${ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}`}
-                                                                onChange={handleWardOrgUnitChange} />
+                                                            name={ft}
+                                                            id={"county-filter"}
+                                                            options={countyOptions(filters, ft)}
+                                                            placeholder={`Select ${ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}`}
+                                                            onChange={handleCountyOrgUnitChange} />
+                                                    ))}
 
-                                                        ))}
-                                                </div>
-                                            }
+                                                {/* county user */}
+
+                                                {groupID === 1 &&
+                                                    <div className="max-w-min">
+                                                        {Array.isArray(subCounties?.subCounties) && subCounties?.subCounties.length > 0 &&
+                                                            Object.keys(subCounties)?.map(ft => (
+                                                                <Select
+                                                                    key={ft}
+                                                                    className="max-w-max md:w-[250px] rounded border border-gray-400"
+                                                                    styles={{
+                                                                        control: (baseStyles) => ({
+                                                                            ...baseStyles,
+                                                                            backgroundColor: 'transparent',
+                                                                            outLine: 'none',
+                                                                            border: 'none',
+                                                                            outLine: 'none',
+                                                                            textColor: 'transparent',
+                                                                            padding: 0,
+                                                                            height: '4px'
+                                                                        }),
+
+                                                                    }}
+
+                                                                    name={ft}
+                                                                    id="sub-county-filter"
+                                                                    options={
+                                                                        subCountyOptions(filters, ft)
+                                                                    }
+                                                                    placeholder={`Select ${ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(" ").slice(1)}`}
+                                                                    onChange={handleSubCountyOrgUnitChange} />
+
+                                                            ))}
+                                                    </div>
+                                                }
+                                                {/* sub_county user */}
+
+                                                {groupID === 2 &&
+                                                    <div className="flex">
+
+                                                        {wards && Object.keys(wards).length > 0 &&
+                                                            Object.keys(wards)?.map(ft => (
+                                                                <Select name={ft}
+                                                                    className="max-w-max md:w-[250px] rounded border border-gray-400"
+                                                                    styles={{
+                                                                        control: (baseStyles) => ({
+                                                                            ...baseStyles,
+                                                                            backgroundColor: 'transparent',
+                                                                            outLine: 'none',
+                                                                            border: 'none',
+                                                                            outLine: 'none',
+                                                                            textColor: 'transparent',
+                                                                            padding: 0,
+                                                                            height: '4px'
+                                                                        }),
+
+                                                                    }}
+
+                                                                    id="ward-filter"
+                                                                    options={wardOptions(filters, ft)}
+                                                                    placeholder={`Select ${ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}`}
+                                                                    onChange={handleWardOrgUnitChange} />
+
+                                                            ))}
+                                                    </div>
+                                                }
 
 
-                                            <div className="relative">
-                                                {/* Modal overlay */}
-                                                {isOpen && (
-                                                    <div className="fixed z-50 inset-0 bg-gray-500 bg-opacity-50 flex justify-center items-center">
-                                                        {/* Modal content */}
-                                                        <div className="bg-white p-4 -md">
-                                                            <h1 className="text-lg font-bold mb-2 ">Select Date Range</h1>
+                                                <div className="relative">
+                                                    {/* Modal overlay */}
+                                                    {isOpen && (
+                                                        <div className="fixed z-50 inset-0 bg-gray-500 bg-opacity-50 flex justify-center items-center">
+                                                            {/* Modal content */}
+                                                            <div className="bg-white p-4 -md">
+                                                                <h1 className="text-lg font-bold mb-2 ">Select Date Range</h1>
 
-                                                            <div className='grid grid-cols-2 gap-4'>
-                                                                <div>
-                                                                    <label>Start Date</label>
-                                                                    <br />
-                                                                    <input id='startdate'
-                                                                        type="date"
-                                                                        className="border border-gray-400 p-2 -md"
-                                                                    />
+                                                                <div className='grid grid-cols-2 gap-4'>
+                                                                    <div>
+                                                                        <label>Start Date</label>
+                                                                        <br />
+                                                                        <input id='startdate'
+                                                                            type="date"
+                                                                            className="border border-gray-400 p-2 -md"
+                                                                        />
+                                                                    </div>
+                                                                    <div>
+                                                                        <label>End Date</label>
+                                                                        <br />
+                                                                        <input id='enddate'
+                                                                            type="date"
+                                                                            className="border border-gray-400 p-2 -md"
+                                                                        />
+                                                                    </div>
                                                                 </div>
-                                                                <div>
-                                                                    <label>End Date</label>
-                                                                    <br />
-                                                                    <input id='enddate'
-                                                                        type="date"
-                                                                        className="border border-gray-400 p-2 -md"
-                                                                    />
+                                                                <div className="mt-4 flex justify-center">
+                                                                    <button
+                                                                        onClick={() => {
+                                                                            setIsOpen(false)
+                                                                        }
+                                                                        }
+                                                                        className="w-full px-4 py-2 bg-gray-400 text-white -md mr-2"
+                                                                    >
+                                                                        Cancel
+                                                                    </button>
+                                                                    <button
+                                                                        onClick={() => {
+                                                                            setIsOpen(false)
+                                                                            let parameters = "?"
+                                                                            if (document.getElementById('startdate').value && document.querySelector('#startdate').value) {
+                                                                                parameters += "datefrom=" + document.querySelector('#startdate').value
+                                                                                parameters += "&dateto=" + document.querySelector('#enddate').value
+
+                                                                            }
+                                                                            else {
+                                                                                alert("You must select Start Date and End Date")
+                                                                                return;
+                                                                            }
+
+                                                                            if (props?.query?.county) {
+                                                                                parameters += "&county=" + props?.query?.county
+                                                                            }
+                                                                            if (props?.query?.sub_county) {
+                                                                                parameters += "&sub_county=" + props?.query?.sub_county
+                                                                            }
+                                                                            if (props?.query?.ward) {
+                                                                                parameters += "&ward=" + props?.query?.ward
+                                                                            }
+                                                                            router.push(`/dashboard/${encodeURI(parameters)}`)
+                                                                        }
+                                                                        }
+                                                                        className="w-full px-4 py-2 bg-gray-500 text-white -md"
+                                                                    >
+                                                                        Set
+                                                                    </button>
                                                                 </div>
-                                                            </div>
-                                                            <div className="mt-4 flex justify-center">
-                                                                <button
-                                                                    onClick={() => {
-                                                                        setIsOpen(false)
-                                                                    }
-                                                                    }
-                                                                    className="w-full px-4 py-2 bg-gray-400 text-white -md mr-2"
-                                                                >
-                                                                    Cancel
-                                                                </button>
-                                                                <button
-                                                                    onClick={() => {
-                                                                        setIsOpen(false)
-                                                                        let parameters = "?"
-                                                                        if (document.getElementById('startdate').value && document.querySelector('#startdate').value) {
-                                                                            parameters += "datefrom=" + document.querySelector('#startdate').value
-                                                                            parameters += "&dateto=" + document.querySelector('#enddate').value
-
-                                                                        }
-                                                                        else {
-                                                                            alert("You must select Start Date and End Date")
-                                                                            return;
-                                                                        }
-
-                                                                        if (props?.query?.county) {
-                                                                            parameters += "&county=" + props?.query?.county
-                                                                        }
-                                                                        if (props?.query?.sub_county) {
-                                                                            parameters += "&sub_county=" + props?.query?.sub_county
-                                                                        }
-                                                                        if (props?.query?.ward) {
-                                                                            parameters += "&ward=" + props?.query?.ward
-                                                                        }
-                                                                        router.push(`/dashboard/${encodeURI(parameters)}`)
-                                                                    }
-                                                                    }
-                                                                    className="w-full px-4 py-2 bg-gray-500 text-white -md"
-                                                                >
-                                                                    Set
-                                                                </button>
                                                             </div>
                                                         </div>
-                                                    </div>
-                                                )}
+                                                    )}
+                                                </div>
+
+
+                                                {/* </div> */}
+                                                {/* ~~~F L T R S~~~ */}
                                             </div>
 
-
-                                            {/* </div> */}
-                                            {/* ~~~F L T R S~~~ */}
-                                        </div>
-
-                                    }
+                                        }
 
 
-                                    {/* filter by organizational units  */}
-                                    {/* national */}
+                                        {/* filter by organizational units  */}
+                                        {/* national */}
 
+
+
+                                    </div>
 
 
                                 </div>
-
-
                             </div>
-                        </div>
 
 
-                        {/* Facility Owners Chart */}
-                        <div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
-                            <h4 className="text-lg uppercase pt-4 text-center border-b border-gray-100 w-full mb-4 font-semibold text-gray-900">Facility owners </h4>
-                            
-                            {
-                                ownerPresentationType !== 'table' ?
-
-                                    <Chart
-                                        title=""
-                                        categories={Array?.from(props?.data?.owner_types ?? [], cs => cs.name) || []}
-                                        tooltipsuffix="#"
-                                        xaxistitle={ownerPresentationType.includes('pie') ? null : "Owner Type"}
-                                        yaxistitle={ownerPresentationType.includes('pie') ? null : "Count"}
-                                        type={ownerPresentationType}
-                                        data={(() => {
-                                            let data = [];
-                                            data?.push({
-                                                name: 'Facilities',
-                                                data: Array.from(props?.data?.owner_types ?? [], cs => ({ name: cs.name, y: parseFloat(cs.count) })) || []
-                                            });
-                                            return data;
-                                        })() || []} />
-
-                                    :
-                                    <table className="w-full h-full text-sm md:text-base p-2">
-                                        <thead className="border-b border-gray-300">
-                                            <tr>
-                                                <th className="text-left text-gray-800 p-2 text-sm uppercase">Metric</th>
-                                                <th className="text-right text-gray-800 p-2 text-sm uppercase">Value</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody className="text-lg">
-                                            {props?.data?.owner_types?.map((ts, i) => (
-                                                <tr key={i}>
-                                                    <><td className="table-cell text-left text-gray-900 p-2">{ts.name}</td>
-                                                        <td className="table-cell text-right font-semibold text-gray-900 p-2">{ts.count || 0}</td></>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                            }
-                            <Select
-                                name="owner_chart_type"
-                                options={chartPresentationOptions}
-                                value={defaultPresentation('owner_chart')}
-                                onChange={value => handlePresentationChange(value, 'owner_chart')}
-                                placeholder="presentation type"
-                                title="Select Presentation Type"
-                                className='self-end' />
-
-
-
-
-                        </div>
-
-                        {/* Facility Types Chart */}
-                        <div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
-                            <h4 className="text-lg uppercase pt-4 text-center border-b border-gray-100 w-full mb-4 font-semibold text-gray-900">Facility Types </h4>
-                            {
-                                facilityTypePresentationType !== 'table' ?
-
-                                    <Chart
-                                        title=""
-                                        categories={Array?.from(props?.data?.types_summary ?? [], cs => cs.name) || []}
-                                        tooltipsuffix="#"
-                                        xaxistitle={facilityTypePresentationType.includes('pie') ? null : "Facility Type"}
-                                        yaxistitle={facilityTypePresentationType.includes('pie') ? null : "Count"}
-                                        type={facilityTypePresentationType}
-                                        data={(() => {
-                                            let data = [];
-                                            data?.push({
-                                                name: 'Facilities',
-                                                data: Array.from(props?.data?.types_summary ?? [], cs => ({ name: cs.name, y: parseFloat(cs.count) })) || []
-                                            });
-                                            return data;
-                                        })() || []} />
-                                    :
-                                    <table className="w-full h-full text-sm md:text-base p-2">
-                                        <thead className="border-b border-gray-300">
-                                            <tr>
-                                                <th className="text-left text-gray-800 p-2 text-sm uppercase">Metric</th>
-                                                <th className="text-right text-gray-800 p-2 text-sm uppercase">Value</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody className="text-lg">
-                                            {props?.data?.types_summary?.map((ts, i) => (
-                                                <tr key={i}>
-                                                    <><td className="table-cell text-left text-gray-900 p-2">{ts.name}</td>
-                                                        <td className="table-cell text-right font-semibold text-gray-900 p-2">{ts.count || 0}</td></>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                            }
-                            <Select
-                                name="facility_type_chart"
-                                options={chartPresentationOptions}
-                                value={defaultPresentation('facility_type_chart')}
-                                onChange={value => handlePresentationChange(value, 'facility_type_chart')}
-                                placeholder="presentation type"
-                                title="Select Presentation Type"
-                                className='self-end' />
-                        </div>
-
-                        {/* Facilities Summary chart */}
-                        <div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
-                            <h4 className="text-lg uppercase pt-4 text-center border-b border-gray-100 w-full mb-4 font-semibold text-gray-900">Facilities summary</h4>
-                            {
-                                summaryPresentationType !== 'table' ?
-                                    <Chart
-                                        title=""
-                                        categories={Array?.from(totalSummary ?? [], cs => cs.name) || []}
-                                        tooltipsuffix="#"
-                                        xaxistitle={summaryPresentationType.includes('pie') ? null : "Facility Summaries"}
-                                        yaxistitle={summaryPresentationType.includes('pie') ? null : "Count"}
-                                        type={summaryPresentationType}
-                                        data={(() => {
-                                            let data = [];
-                                            data?.push({
-                                                name: 'Facilities',
-                                                data: Array.from(totalSummary ?? [], cs => ({ name: cs.name, y: parseFloat(cs.count) })) || []
-                                            });
-                                            return data;
-                                        })() || []} />
-                                    :
-                                    <table className="w-full h-full text-sm md:text-base p-2">
-                                        <thead className="border-b border-gray-300">
-                                            <tr>
-                                                <th className="text-left text-gray-800 p-2 text-sm uppercase">Metric</th>
-                                                <th className="text-right text-gray-800 p-2 text-sm uppercase">Value</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody className="text-lg">
-                                            {totalSummary?.map((ts, i) => (
-                                                <tr key={i}>
-                                                    <><td className="table-cell text-left text-gray-900 p-2">{ts.name}</td>
-                                                        <td className="table-cell text-right font-semibold text-gray-900 p-2">{ts.count || 0}</td></>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                            }
-                            <Select
-                                name="facility_summary_chart"
-                                options={chartPresentationOptions}
-                                value={defaultPresentation('facility_summary_chart')}
-                                onChange={value => handlePresentationChange(value, 'facility_summary_chart')}
-                                placeholder="presentation type"
-                                title="Select Presentation Type"
-                                className='self-end' />
-                        </div>
-
-                        {/* Community Unit Summary */}
-                        <div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
-                            <h4 className="text-lg uppercase pt-4 text-center border-b border-gray-100 w-full mb-4 font-semibold text-gray-900">Community Units summary</h4>
-                            {
-                                chuSummaryPresentationType !== 'table' ?
-                                    <Chart
-                                        title=""
-                                        categories={Array?.from(chuSummary ?? [], cs => cs.name) || []}
-                                        tooltipsuffix="#"
-                                        xaxistitle={chuSummaryPresentationType.includes('pie') ? null : "Community Unit Summary"}
-                                        yaxistitle={chuSummaryPresentationType.includes('pie') ? null : "Count"}
-                                        type={chuSummaryPresentationType}
-                                        data={(() => {
-                                            let data = [];
-                                            data?.push({
-                                                name: 'Community Units',
-                                                data: Array.from(chuSummary ?? [], cs => ({ name: cs.name, y: parseFloat(cs.count) })) || []
-                                            });
-                                            return data;
-                                        })() || []} />
-                                    :
-                                    <table className="w-full h-full text-sm md:text-base p-2">
-                                        <thead className="border-b border-gray-300">
-                                            <tr>
-                                                <th className="text-left text-gray-800 p-2 text-sm uppercase">Metric</th>
-                                                <th className="text-right text-gray-800 p-2 text-sm uppercase">Value</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody className="text-lg">
-                                            {chuSummary?.map((ts, i) => (
-                                                <tr key={i}>
-                                                    <><td className="table-cell text-left text-gray-900 p-2">{ts.name}</td>
-                                                        <td className="table-cell text-right font-semibold text-gray-900 p-2">{ts.count || 0}</td></>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                            }
-                            <Select
-                                name="chu_summary_chart"
-                                options={chartPresentationOptions}
-                                value={defaultPresentation('chu_summary_chart')}
-                                onChange={value => handlePresentationChange(value, 'chu_summary_chart')}
-                                placeholder="presentation type"
-                                title="Select Presentation Type"
-                                className='self-end' />
-
-                        </div>
-
-                        {/* Recent Facility  Changes Chart */}
-                        <div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
-                            <h4 className="text-lg uppercase pt-4 text-center border-b border-gray-100 w-full mb-4 font-semibold text-gray-900">Recent changes</h4>
-                            {
-                                recentChangesPresentationType !== 'table' ?
-                                    <Chart
-                                        title=""
-                                        categories={Array?.from(totalSummary ?? [], cs => cs.name) || []}
-                                        tooltipsuffix="#"
-                                        xaxistitle={recentChangesPresentationType.includes('pie') ? null : "Recent Changes"}
-                                        yaxistitle={recentChangesPresentationType.includes('pie') ? null : "Count"}
-                                        type={recentChangesPresentationType}
-                                        data={(() => {
-                                            let data = [];
-                                            data?.push({
-                                                name: 'Community Units',
-                                                data: Array.from(recentChanges ?? [], cs => ({ name: cs.name, y: parseFloat(cs.count) })) || []
-                                            });
-                                            return data;
-                                        })() || []} />
-                                    :
-                                    <table className="w-full h-full text-sm md:text-base p-2">
-                                        <thead className="border-b border-gray-300">
-                                            <tr>
-                                                <th className="text-left text-gray-800 p-2 text-sm uppercase">Metric</th>
-                                                <th className="text-right text-gray-800 p-2 text-sm uppercase">Value</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody className="text-lg">
-                                            {recentChanges?.map((ts, i) => (
-                                                <tr key={i}>
-                                                    <><td className="table-cell text-left text-gray-900 p-2">{ts.name}</td>
-                                                        <td className="table-cell text-right font-semibold text-gray-900 p-2">{ts.count || 0}</td></>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                            }
-                            <div className='flex gap-2 self-end'>
+                            {/* Facility Owners Chart */}
+                            <div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
+                                <h4 className="text-lg uppercase pt-4 text-center border-b border-gray-100 w-full mb-4 font-semibold text-gray-900">Facility owners </h4>
                                 
-                                <Select 
-                            id={"recency_period"}
-                            ref={recencyRef}
-                            options={recencyOptions} 
-                            onChange={handleRecencyChange}
-                            placeholder="Select Period"
-                            title="Select Recency Period" 
-                            />
-                            
+                                {
+                                    ownerPresentationType !== 'table' ?
+
+                                        <Chart
+                                            title=""
+                                            categories={Array?.from(props?.data?.owner_types ?? [], cs => cs.name) || []}
+                                            tooltipsuffix="#"
+                                            xaxistitle={ownerPresentationType.includes('pie') ? null : "Owner Type"}
+                                            yaxistitle={ownerPresentationType.includes('pie') ? null : "Count"}
+                                            type={ownerPresentationType}
+                                            data={(() => {
+                                                let data = [];
+                                                data?.push({
+                                                    name: 'Facilities',
+                                                    data: Array.from(props?.data?.owner_types ?? [], cs => ({ name: cs.name, y: parseFloat(cs.count) })) || []
+                                                });
+                                                return data;
+                                            })() || []} />
+
+                                        :
+                                        <table className="w-full h-full text-sm md:text-base p-2">
+                                            <thead className="border-b border-gray-300">
+                                                <tr>
+                                                    <th className="text-left text-gray-800 p-2 text-sm uppercase">Metric</th>
+                                                    <th className="text-right text-gray-800 p-2 text-sm uppercase">Value</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody className="text-lg">
+                                                {props?.data?.owner_types?.map((ts, i) => (
+                                                    <tr key={i}>
+                                                        <><td className="table-cell text-left text-gray-900 p-2">{ts.name}</td>
+                                                            <td className="table-cell text-right font-semibold text-gray-900 p-2">{ts.count || 0}</td></>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                }
                                 <Select
-                                    name="recent_changes_chart"
+                                    name="owner_chart_type"
                                     options={chartPresentationOptions}
-                                    value={defaultPresentation('recent_changes_chart')}
-                                    onChange={value => handlePresentationChange(value, 'recent_changes_chart')}
+                                    value={defaultPresentation('owner_chart')}
+                                    onChange={value => handlePresentationChange(value, 'owner_chart')}
                                     placeholder="presentation type"
                                     title="Select Presentation Type"
-                                />
+                                    className='self-end' />
+
+
+
+
                             </div>
 
-                        </div>
+                            {/* Facility Types Chart */}
+                            <div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
+                                <h4 className="text-lg uppercase pt-4 text-center border-b border-gray-100 w-full mb-4 font-semibold text-gray-900">Facility Types </h4>
+                                {
+                                    facilityTypePresentationType !== 'table' ?
 
-                        {/* Facilities by keph level  Chart*/}
-                        <div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
-                            <h4 className="text-lg uppercase pt-4 text-center border-b border-gray-100 w-full mb-4 font-semibold text-gray-900">Facility KEPH Level </h4>
-                            {
-                                facilityKephPresentationType !== 'table' ?
+                                        <Chart
+                                            title=""
+                                            categories={Array?.from(props?.data?.types_summary ?? [], cs => cs.name) || []}
+                                            tooltipsuffix="#"
+                                            xaxistitle={facilityTypePresentationType.includes('pie') ? null : "Facility Type"}
+                                            yaxistitle={facilityTypePresentationType.includes('pie') ? null : "Count"}
+                                            type={facilityTypePresentationType}
+                                            data={(() => {
+                                                let data = [];
+                                                data?.push({
+                                                    name: 'Facilities',
+                                                    data: Array.from(props?.data?.types_summary ?? [], cs => ({ name: cs.name, y: parseFloat(cs.count) })) || []
+                                                });
+                                                return data;
+                                            })() || []} />
+                                        :
+                                        <table className="w-full h-full text-sm md:text-base p-2">
+                                            <thead className="border-b border-gray-300">
+                                                <tr>
+                                                    <th className="text-left text-gray-800 p-2 text-sm uppercase">Metric</th>
+                                                    <th className="text-right text-gray-800 p-2 text-sm uppercase">Value</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody className="text-lg">
+                                                {props?.data?.types_summary?.map((ts, i) => (
+                                                    <tr key={i}>
+                                                        <><td className="table-cell text-left text-gray-900 p-2">{ts.name}</td>
+                                                            <td className="table-cell text-right font-semibold text-gray-900 p-2">{ts.count || 0}</td></>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                }
+                                <Select
+                                    name="facility_type_chart"
+                                    options={chartPresentationOptions}
+                                    value={defaultPresentation('facility_type_chart')}
+                                    onChange={value => handlePresentationChange(value, 'facility_type_chart')}
+                                    placeholder="presentation type"
+                                    title="Select Presentation Type"
+                                    className='self-end' />
+                            </div>
+
+                            {/* Facilities Summary chart */}
+                            <div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
+                                <h4 className="text-lg uppercase pt-4 text-center border-b border-gray-100 w-full mb-4 font-semibold text-gray-900">Facilities summary</h4>
+                                {
+                                    summaryPresentationType !== 'table' ?
+                                        <Chart
+                                            title=""
+                                            categories={Array?.from(totalSummary ?? [], cs => cs.name) || []}
+                                            tooltipsuffix="#"
+                                            xaxistitle={summaryPresentationType.includes('pie') ? null : "Facility Summaries"}
+                                            yaxistitle={summaryPresentationType.includes('pie') ? null : "Count"}
+                                            type={summaryPresentationType}
+                                            data={(() => {
+                                                let data = [];
+                                                data?.push({
+                                                    name: 'Facilities',
+                                                    data: Array.from(totalSummary ?? [], cs => ({ name: cs.name, y: parseFloat(cs.count) })) || []
+                                                });
+                                                return data;
+                                            })() || []} />
+                                        :
+                                        <table className="w-full h-full text-sm md:text-base p-2">
+                                            <thead className="border-b border-gray-300">
+                                                <tr>
+                                                    <th className="text-left text-gray-800 p-2 text-sm uppercase">Metric</th>
+                                                    <th className="text-right text-gray-800 p-2 text-sm uppercase">Value</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody className="text-lg">
+                                                {totalSummary?.map((ts, i) => (
+                                                    <tr key={i}>
+                                                        <><td className="table-cell text-left text-gray-900 p-2">{ts.name}</td>
+                                                            <td className="table-cell text-right font-semibold text-gray-900 p-2">{ts.count || 0}</td></>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                }
+                                <Select
+                                    name="facility_summary_chart"
+                                    options={chartPresentationOptions}
+                                    value={defaultPresentation('facility_summary_chart')}
+                                    onChange={value => handlePresentationChange(value, 'facility_summary_chart')}
+                                    placeholder="presentation type"
+                                    title="Select Presentation Type"
+                                    className='self-end' />
+                            </div>
+
+                            {/* Community Unit Summary */}
+                            <div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
+                                <h4 className="text-lg uppercase pt-4 text-center border-b border-gray-100 w-full mb-4 font-semibold text-gray-900">Community Units summary</h4>
+                                {
+                                    chuSummaryPresentationType !== 'table' ?
+                                        <Chart
+                                            title=""
+                                            categories={Array?.from(chuSummary ?? [], cs => cs.name) || []}
+                                            tooltipsuffix="#"
+                                            xaxistitle={chuSummaryPresentationType.includes('pie') ? null : "Community Unit Summary"}
+                                            yaxistitle={chuSummaryPresentationType.includes('pie') ? null : "Count"}
+                                            type={chuSummaryPresentationType}
+                                            data={(() => {
+                                                let data = [];
+                                                data?.push({
+                                                    name: 'Community Units',
+                                                    data: Array.from(chuSummary ?? [], cs => ({ name: cs.name, y: parseFloat(cs.count) })) || []
+                                                });
+                                                return data;
+                                            })() || []} />
+                                        :
+                                        <table className="w-full h-full text-sm md:text-base p-2">
+                                            <thead className="border-b border-gray-300">
+                                                <tr>
+                                                    <th className="text-left text-gray-800 p-2 text-sm uppercase">Metric</th>
+                                                    <th className="text-right text-gray-800 p-2 text-sm uppercase">Value</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody className="text-lg">
+                                                {chuSummary?.map((ts, i) => (
+                                                    <tr key={i}>
+                                                        <><td className="table-cell text-left text-gray-900 p-2">{ts.name}</td>
+                                                            <td className="table-cell text-right font-semibold text-gray-900 p-2">{ts.count || 0}</td></>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                }
+                                <Select
+                                    name="chu_summary_chart"
+                                    options={chartPresentationOptions}
+                                    value={defaultPresentation('chu_summary_chart')}
+                                    onChange={value => handlePresentationChange(value, 'chu_summary_chart')}
+                                    placeholder="presentation type"
+                                    title="Select Presentation Type"
+                                    className='self-end' />
+
+                            </div>
+
+                            {/* Recent Facility  Changes Chart */}
+                            <div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
+                                <h4 className="text-lg uppercase pt-4 text-center border-b border-gray-100 w-full mb-4 font-semibold text-gray-900">Recent changes</h4>
+                                {
+                                    recentChangesPresentationType !== 'table' ?
+                                        <Chart
+                                            title=""
+                                            categories={Array?.from(totalSummary ?? [], cs => cs.name) || []}
+                                            tooltipsuffix="#"
+                                            xaxistitle={recentChangesPresentationType.includes('pie') ? null : "Recent Changes"}
+                                            yaxistitle={recentChangesPresentationType.includes('pie') ? null : "Count"}
+                                            type={recentChangesPresentationType}
+                                            data={(() => {
+                                                let data = [];
+                                                data?.push({
+                                                    name: 'Community Units',
+                                                    data: Array.from(recentChanges ?? [], cs => ({ name: cs.name, y: parseFloat(cs.count) })) || []
+                                                });
+                                                return data;
+                                            })() || []} />
+                                        :
+                                        <table className="w-full h-full text-sm md:text-base p-2">
+                                            <thead className="border-b border-gray-300">
+                                                <tr>
+                                                    <th className="text-left text-gray-800 p-2 text-sm uppercase">Metric</th>
+                                                    <th className="text-right text-gray-800 p-2 text-sm uppercase">Value</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody className="text-lg">
+                                                {recentChanges?.map((ts, i) => (
+                                                    <tr key={i}>
+                                                        <><td className="table-cell text-left text-gray-900 p-2">{ts.name}</td>
+                                                            <td className="table-cell text-right font-semibold text-gray-900 p-2">{ts.count || 0}</td></>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                }
+                                <div className='flex gap-2 self-end'>
+                                    
+                                    <Select 
+                                id={"recency_period"}
+                                ref={recencyRef}
+                                options={recencyOptions} 
+                                onChange={handleRecencyChange}
+                                placeholder="Select Period"
+                                title="Select Recency Period" 
+                                />
+                                
+                                    <Select
+                                        name="recent_changes_chart"
+                                        options={chartPresentationOptions}
+                                        value={defaultPresentation('recent_changes_chart')}
+                                        onChange={value => handlePresentationChange(value, 'recent_changes_chart')}
+                                        placeholder="presentation type"
+                                        title="Select Presentation Type"
+                                    />
+                                </div>
+
+                            </div>
+
+                            {/* Facilities by keph level  Chart*/}
+                            <div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
+                                <h4 className="text-lg uppercase pt-4 text-center border-b border-gray-100 w-full mb-4 font-semibold text-gray-900">Facility KEPH Level </h4>
+                                {
+                                    facilityKephPresentationType !== 'table' ?
+                                        <Chart
+                                            title=""
+                                            categories={Array?.from(props?.data?.keph_level ?? [], cs => cs.name) || []}
+                                            tooltipsuffix="#"
+                                            xaxistitle=""
+                                            yaxistitle=""
+                                            type={facilityKephPresentationType}
+                                            data={(() => {
+                                                let data = [];
+                                                data?.push({
+                                                    name: 'Facilities',
+                                                    data: Array.from(props?.data?.keph_level ?? [], cs => ({ name: cs.name, y: parseFloat(cs.count) })) || []
+                                                });
+                                                return data;
+                                            })() || []} />
+                                        :
+                                        <table className="w-full h-full text-sm md:text-base p-2">
+                                            <thead className="border-b border-gray-300">
+                                                <tr>
+                                                    <th className="text-left text-gray-800 p-2 text-sm uppercase">Metric</th>
+                                                    <th className="text-right text-gray-800 p-2 text-sm uppercase">Value</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody className="text-lg">
+                                                {props?.data?.keph_level?.map((ts, i) => (
+                                                    <tr key={i}>
+                                                        <><td className="table-cell text-left text-gray-900 p-2">{ts.name}</td>
+                                                            <td className="table-cell text-right font-semibold text-gray-900 p-2">{ts.count || 0}</td></>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                }
+                                <Select
+                                    name="facility_keph_chart"
+                                    options={chartPresentationOptions}
+                                    value={defaultPresentation('facility_keph_chart')}
+                                    onChange={value => handlePresentationChange(value, 'facility_keph_chart')}
+                                    placeholder="presentation type"
+                                    title="Select Presentation Type"
+                                    className='self-end' />
+
+
+                            </div>
+
+                            {/* Facilities & CHUs by County Chart */}
+                            {(groupID === 7 || groupID === 5) &&
+                                <div className="no-print col-span-6 flex flex-col items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
+                                    <h4 className="text-lg uppercase pt-4 border-b text-center border-gray-100 w-full mb-2 font-semibold text-gray-900">Facilities &amp; CHUs by County</h4>
+
                                     <Chart
                                         title=""
-                                        categories={Array?.from(props?.data?.keph_level ?? [], cs => cs.name) || []}
+                                        categories={Array?.from(props?.data?.county_summary ?? [], cs => cs.name) || []}
                                         tooltipsuffix="#"
-                                        xaxistitle=""
-                                        yaxistitle=""
-                                        type={facilityKephPresentationType}
+                                        xaxistitle="County"
+                                        yaxistitle="Number"
+                                        type={facilityCHUsPresentationType}
                                         data={(() => {
                                             let data = [];
                                             data?.push({
                                                 name: 'Facilities',
-                                                data: Array.from(props?.data?.keph_level ?? [], cs => ({ name: cs.name, y: parseFloat(cs.count) })) || []
+                                                data: Array.from(props?.data?.county_summary ?? [], cs => parseFloat(cs.count)) || []
+                                            });
+                                            data?.push({
+                                                name: 'CHUs',
+                                                data: Array.from(props?.data?.county_summary ?? [], cs => parseFloat(cs.chu_count)) || []
                                             });
                                             return data;
                                         })() || []} />
-                                    :
-                                    <table className="w-full h-full text-sm md:text-base p-2">
-                                        <thead className="border-b border-gray-300">
-                                            <tr>
-                                                <th className="text-left text-gray-800 p-2 text-sm uppercase">Metric</th>
-                                                <th className="text-right text-gray-800 p-2 text-sm uppercase">Value</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody className="text-lg">
-                                            {props?.data?.keph_level?.map((ts, i) => (
-                                                <tr key={i}>
-                                                    <><td className="table-cell text-left text-gray-900 p-2">{ts.name}</td>
-                                                        <td className="table-cell text-right font-semibold text-gray-900 p-2">{ts.count || 0}</td></>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
+
+                                    <Select
+                                        name="facility_chu_chart"
+                                        options={chartPresentationOptions.filter(({ value }) => (value !== 'pie' && value !== 'table'))}
+                                        value={defaultPresentation('facility_chu_chart')}
+                                        onChange={value => handlePresentationChange(value, 'facility_chu_chart')}
+                                        placeholder="presentation type"
+                                        title="Select Presentation Type"
+                                        className='self-end z-40' />
+
+                                </div>
                             }
-                            <Select
-                                name="facility_keph_chart"
-                                options={chartPresentationOptions}
-                                value={defaultPresentation('facility_keph_chart')}
-                                onChange={value => handlePresentationChange(value, 'facility_keph_chart')}
-                                placeholder="presentation type"
-                                title="Select Presentation Type"
-                                className='self-end' />
+                            {/* Facilities & CHUs by Sub Counties Chart*/}
+                            {groupID === 1 &&
+                                <div className="no-print col-span-6 flex flex-col items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
+                                    <h4 className="text-lg uppercase pt-4 text-center border-b border-gray-100 w-full mb-2 font-semibold text-gray-900">Facilities &amp; CHUs by Subcounty</h4>
+                                    <Chart
+                                        title=""
+                                        categories={Array?.from(props?.data?.constituencies_summary ?? [], cs => cs.name) || []}
+                                        tooltipsuffix="#"
+                                        xaxistitle="Subcounty"
+                                        yaxistitle="Number"
+                                        type={facilityCHUsPresentationType}
+                                        data={(() => {
+                                            let data = [];
+                                            data?.push({
+                                                name: 'Facilities',
+                                                data: Array.from(props?.data?.constituencies_summary ?? [], cs => parseFloat(cs.count)) || []
+                                            });
+                                            data?.push({
+                                                name: 'CHUs',
+                                                data: Array.from(props?.data?.constituencies_summary ?? [], cs => parseFloat(cs.chu_count)) || []
+                                            });
+                                            return data;
+                                        })() || []} />
 
+                                    <Select
+                                        name="facility_chu_chart"
+                                        options={chartPresentationOptions.filter(({ value }) => (value !== 'pie' && value !== 'table'))}
+                                        value={defaultPresentation('facility_chu_chart')}
+                                        onChange={value => handlePresentationChange(value, 'facility_chu_chart')}
+                                        placeholder="presentation type"
+                                        title="Select Presentation Type"
+                                        className='self-end z-40' />
 
+                                </div>
+
+                            }
+                            {/* Facilities & CHUs by Ward Chart */}
+                            {groupID === 2 &&
+                                <div className="no-print col-span-6 flex flex-col items-start justify-start p-3 shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
+                                    <h4 className="text-lg uppercase pt-4 text-center border-b border-gray-100 w-full mb-2 font-semibold text-gray-900">Facilities &amp; CHUs by Ward</h4>
+                                    <Chart
+                                        title=""
+                                        categories={Array?.from(props?.data?.wards_summary ?? [], cs => cs.name) || []}
+                                        tooltipsuffix="#"
+                                        xaxistitle="Ward"
+                                        yaxistitle="Number"
+                                        type="bar"
+                                        data={(() => {
+                                            let data = [];
+                                            data?.push({
+                                                name: 'Facilities',
+                                                data: Array.from(props?.data?.wards_summary ?? [], cs => parseFloat(cs.count)) || []
+                                            });
+                                            data?.push({
+                                                name: 'CHUs',
+                                                data: Array.from(props?.data?.wards_summary ?? [], cs => parseFloat(cs.chu_count)) || []
+                                            });
+                                            return data;
+                                        })() || []} />
+                                </div>
+                            }
+
+                            {/* Dashbord Map */}
+                            <Map token={props?.token} groupID={groupID} user={user} />
+
+                            
                         </div>
-
-                        {/* Facilities & CHUs by County Chart */}
-                        {(groupID === 7 || groupID === 5) &&
-                            <div className="no-print col-span-6 flex flex-col items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
-                                <h4 className="text-lg uppercase pt-4 border-b text-center border-gray-100 w-full mb-2 font-semibold text-gray-900">Facilities &amp; CHUs by County</h4>
-
-                                <Chart
-                                    title=""
-                                    categories={Array?.from(props?.data?.county_summary ?? [], cs => cs.name) || []}
-                                    tooltipsuffix="#"
-                                    xaxistitle="County"
-                                    yaxistitle="Number"
-                                    type={facilityCHUsPresentationType}
-                                    data={(() => {
-                                        let data = [];
-                                        data?.push({
-                                            name: 'Facilities',
-                                            data: Array.from(props?.data?.county_summary ?? [], cs => parseFloat(cs.count)) || []
-                                        });
-                                        data?.push({
-                                            name: 'CHUs',
-                                            data: Array.from(props?.data?.county_summary ?? [], cs => parseFloat(cs.chu_count)) || []
-                                        });
-                                        return data;
-                                    })() || []} />
-
-                                <Select
-                                    name="facility_chu_chart"
-                                    options={chartPresentationOptions.filter(({ value }) => (value !== 'pie' && value !== 'table'))}
-                                    value={defaultPresentation('facility_chu_chart')}
-                                    onChange={value => handlePresentationChange(value, 'facility_chu_chart')}
-                                    placeholder="presentation type"
-                                    title="Select Presentation Type"
-                                    className='self-end z-40' />
-
-                            </div>
-                        }
-                        {/* Facilities & CHUs by Sub Counties Chart*/}
-                        {groupID === 1 &&
-                            <div className="no-print col-span-6 flex flex-col items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
-                                <h4 className="text-lg uppercase pt-4 text-center border-b border-gray-100 w-full mb-2 font-semibold text-gray-900">Facilities &amp; CHUs by Subcounty</h4>
-                                <Chart
-                                    title=""
-                                    categories={Array?.from(props?.data?.constituencies_summary ?? [], cs => cs.name) || []}
-                                    tooltipsuffix="#"
-                                    xaxistitle="Subcounty"
-                                    yaxistitle="Number"
-                                    type={facilityCHUsPresentationType}
-                                    data={(() => {
-                                        let data = [];
-                                        data?.push({
-                                            name: 'Facilities',
-                                            data: Array.from(props?.data?.constituencies_summary ?? [], cs => parseFloat(cs.count)) || []
-                                        });
-                                        data?.push({
-                                            name: 'CHUs',
-                                            data: Array.from(props?.data?.constituencies_summary ?? [], cs => parseFloat(cs.chu_count)) || []
-                                        });
-                                        return data;
-                                    })() || []} />
-
-                                <Select
-                                    name="facility_chu_chart"
-                                    options={chartPresentationOptions.filter(({ value }) => (value !== 'pie' && value !== 'table'))}
-                                    value={defaultPresentation('facility_chu_chart')}
-                                    onChange={value => handlePresentationChange(value, 'facility_chu_chart')}
-                                    placeholder="presentation type"
-                                    title="Select Presentation Type"
-                                    className='self-end z-40' />
-
-                            </div>
-
-                        }
-                        {/* Facilities & CHUs by Ward Chart */}
-                        {groupID === 2 &&
-                            <div className="no-print col-span-6 flex flex-col items-start justify-start p-3 shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
-                                <h4 className="text-lg uppercase pt-4 text-center border-b border-gray-100 w-full mb-2 font-semibold text-gray-900">Facilities &amp; CHUs by Ward</h4>
-                                <Chart
-                                    title=""
-                                    categories={Array?.from(props?.data?.wards_summary ?? [], cs => cs.name) || []}
-                                    tooltipsuffix="#"
-                                    xaxistitle="Ward"
-                                    yaxistitle="Number"
-                                    type="bar"
-                                    data={(() => {
-                                        let data = [];
-                                        data?.push({
-                                            name: 'Facilities',
-                                            data: Array.from(props?.data?.wards_summary ?? [], cs => parseFloat(cs.count)) || []
-                                        });
-                                        data?.push({
-                                            name: 'CHUs',
-                                            data: Array.from(props?.data?.wards_summary ?? [], cs => parseFloat(cs.chu_count)) || []
-                                        });
-                                        return data;
-                                    })() || []} />
-                            </div>
-                        }
-
-                        {/* Dashbord Map */}
-                        <Map token={props?.token} groupID={groupID} user={user} />
-
-                        
-                    </div>
-                </MainLayout>
-            </div>
+                    </MainLayout>
+                </>
         )
     }
     else {
@@ -1478,6 +1472,7 @@ export async function getServerSideProps(ctx) {
 
 }
 
-export default Dashboard
+
+export default withAuth(Dashboard)
 
 

@@ -51,7 +51,7 @@ function handleLogin(ev) {
                     setMsg('Log-in successful. Redirecting...')
                     setTimeout(() => {
                         router.push({
-                            pathname: props.was
+                            pathname: props.was ?? '/dashboard'
                         })
                     }, 2000);
                 } else {

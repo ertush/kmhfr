@@ -27,11 +27,11 @@ import { Alert } from '@mui/lab'
 import Spinner from '../../../components/Spinner'
 import { useSearchParams } from 'next/navigation';
 import {z} from 'zod'
-
+import withAuth from '../../../components/ProtectedRoute';
 
 function ApproveReject(props) {
   const userCtx = useContext(UserContext);
-  const [user, setUser] = useState(userCtx);
+  // const [user, setUser] = useState(userCtx);
   // console.log({props})
 
   const alert = useAlert()
@@ -62,10 +62,10 @@ function ApproveReject(props) {
   const [reject, setReject] = useState(null)
 
   useEffect(() => {
-    setUser(userCtx)
-    if (user.id === 6) {
-      router.push('/auth/login')
-    }
+    // setUser(userCtx)
+    // if (user.id === 6) {
+    //   router.push('/auth/login')
+    // }
 
     setIsClient(true)
   }, [])
@@ -535,4 +535,5 @@ const queryId = zSchema.parse(ctx.query).id
     });
 
 }
-export default ApproveReject
+
+export default withAuth(ApproveReject)

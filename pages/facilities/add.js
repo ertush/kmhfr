@@ -5,16 +5,17 @@ import Link from "next/link";
 import Head from "next/head";
 import FacilitySideMenu from "../../components/FacilitySideMenu";
 import { useState, useEffect, createContext, useContext } from 'react';
-import { UserContext } from "../../providers/user";
+// import { UserContext } from "../../providers/user";
 import { KeyboardArrowRight, KeyboardArrowDown } from "@mui/icons-material";
 import { useRouter } from "next/router";
 import {z} from 'zod'
+import withAuth from "../../components/ProtectedRoute";
 
 export const FormOptionsContext = createContext({});
 
-export default function AddFacility(props) {
+function AddFacility(props) {
 
-	const userCtx = useContext(UserContext);
+	// const userCtx = useContext(UserContext);
 
 	const filters = [];
 	const [khisSynched, setKhisSynched] = useState(false);
@@ -23,16 +24,14 @@ export default function AddFacility(props) {
 	const [allFctsSelected, setAllFctsSelected] = useState(false);
 	const [title, setTitle] = useState('');
 	const [isClient, setIsClient] = useState(false)
-	const [user, setUser] = useState(userCtx)
 	const [isMenuOpen, setIsMenuOpen] = useState(false)
 
 	const router = useRouter()
 
 	useEffect(() => {
-		setUser(userCtx)
-		if (user && user.id == 6) {
-			router.push('/auth/login')
-		}
+		// if (user && user.id == 6) {
+		// 	router.push('/auth/login')
+		// }
 		setIsClient(true)
 	}, [])
 
@@ -628,3 +627,5 @@ export async function getServerSideProps(ctx) {
 
 
 }
+
+export default withAuth(AddFacility)
