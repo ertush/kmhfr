@@ -31,7 +31,6 @@ const StyledDataGrid = styled(DataGrid)(() => ({
 
 function Groups(props) {
 
-   
     const router = useRouter()
 
     const rows = props?.data?.results.map(({id, name})=>{return {id, name}})
@@ -139,7 +138,7 @@ function Groups(props) {
     }
 }   
 
-Groups.getInitialProps = async (ctx) => {
+export async function getServerSideProps(ctx) {
     const API_URL = process.env.NEXT_PUBLIC_API_URL 
 // console.log(ctx.query.is_active);
 
@@ -198,7 +197,7 @@ Groups.getInitialProps = async (ctx) => {
             })
     }
 
-    return checkToken(ctx.req, ctx.res).then(t => {
+    const response = (() => checkToken(ctx.req, ctx.res).then(t => {
         if (t.error) {
             throw new Error('Error checking token')
         } else {
@@ -224,7 +223,13 @@ Groups.getInitialProps = async (ctx) => {
                 current_url: ''
             }
         }, 1000);
-    })
+    }))()
+
+    return {
+        props: response
+    }
+
+
 
 }
 

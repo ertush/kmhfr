@@ -978,7 +978,7 @@ const queryId = zSchema.parse(ctx.query).id
 
             allOptions["token"] = token
 
-            allOptions["filter"] = ctx.query.filter
+            allOptions["filter"] = ctx.query.filter ?? null
 
             return allOptions;
           })

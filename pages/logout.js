@@ -5,6 +5,8 @@ import MainLayout from '../components/MainLayout'
 import useSWR from 'swr'
 import { checkToken } from '../controllers/auth/public_auth'
 import { useSearchParams } from 'next/navigation'
+import withAuth from '../components/ProtectedRoute'
+
 
 function Logout (props) {
     const router = useRouter()
@@ -134,5 +136,5 @@ export async function getServerSideProps(ctx) {
     }
 }
 
-export default Logout
+export default withAuth(Logout)
 

@@ -393,7 +393,7 @@ function EditGroup (props) {
   )
 }
 
-EditGroup.getInitialProps = async (ctx) => {
+export async function getServerSideProps (ctx){
     const API_URL = process.env.NEXT_PUBLIC_API_URL
 
 	const zSchema = z.object({
@@ -469,7 +469,7 @@ EditGroup.getInitialProps = async (ctx) => {
 			  })
 	  }
   
-	  return checkToken(ctx.req, ctx.res).then(t => {
+   const response = (() => checkToken(ctx.req, ctx.res).then(t => {
 		  if (t.error) {
 			  throw new Error('Error checking token')
 		  } else {
@@ -495,7 +495,11 @@ EditGroup.getInitialProps = async (ctx) => {
 				  current_url: ''
 			  }
 		  }, 1000);
-	  })
+	}))()
+
+	return {
+		props: response
+	}
   
 }
   

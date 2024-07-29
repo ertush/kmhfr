@@ -8,13 +8,13 @@ import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import { LicenseManager } from '@ag-grid-enterprise/core';
 import ListItemIcon from '@mui/material/ListItemIcon';
-
+import withAuth from '../../components/ProtectedRoute';
 
 import { Groups, HomeWork, LocalHospital } from '@mui/icons-material';
 
 
 
-const ReportsSideMenu = () => {
+function ReportsSideMenu() {
     // require('ag-grid-enterprise')
     LicenseManager.setLicenseKey("test");
     const router = useRouter();
@@ -227,4 +227,4 @@ const ReportsSideMenu = () => {
 }
 
 
-export default ReportsSideMenu
+export default withAuth(ReportsSideMenu)

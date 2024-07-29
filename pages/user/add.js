@@ -919,7 +919,7 @@ function User(props){
 }
 
 
-User.getInitialProps = async (ctx) => {
+export async function getServerSideProps(ctx) {
 	const zSchema = z.object({
 		id: z.string().optional(),
 	  })
@@ -1087,10 +1087,14 @@ User.getInitialProps = async (ctx) => {
 
 				allOptions['token'] = token
 			}
-			return allOptions
+			return {
+				props:allOptions
+			}
 		
 	} else {
-		return allOptions
+		return {
+			props: allOptions
+		}
 	}
 
 }

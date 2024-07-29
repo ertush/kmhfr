@@ -220,31 +220,31 @@ function RegulateFacility (props) {
                                     </button>
                                 </div>
                                 {!isFacDetails &&
-                                    <div className="col-span-5 md:col-span-3 flex flex-col gap-3 ">
+                                    <div className="col-span-5 md:col-span-3 flex w-full flex-col gap-3 ">
                                         <Tabs.Root
                                             orientation="horizontal"
                                             className="w-full flex flex-col tab-root"
                                             defaultValue="overview"
                                         >
-                                            <Tabs.List className="list-none flex flex-wrap gap-2 md:gap-3 px-4 uppercase leading-none tab-list font-semibold border-b">
+                                            <Tabs.List className="list-none flex w-full flex-wrap gap-2 md:gap-3 px-4 uppercase leading-none tab-list font-semibold border-b">
                                                 <Tabs.Tab
                                                     id={1}
                                                     value="overview"
-                                                    className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-400 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
+                                                    className="p-2 whitespace-nowrap flex-grow focus:outline:none flex items-center justify-center text-gray-400 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
                                                 >
                                                     Facility Basic Details
                                                 </Tabs.Tab>
                                                 <Tabs.Tab
                                                     id={2}
                                                     value="services"
-                                                    className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-400 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
+                                                    className="p-2 whitespace-nowrap flex-grow focus:outline:none flex items-center justify-center text-gray-400 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
                                                 >
                                                     Facility Health Services
                                                 </Tabs.Tab>
                                                 <Tabs.Tab
                                                     id={3}
                                                     value="infrastructure"
-                                                    className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-400 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
+                                                    className="p-2 whitespace-nowrap flex-grow focus:outline:none flex items-center justify-center text-gray-400 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
                                                 >
                                                     Regulation
                                                 </Tabs.Tab>
@@ -885,7 +885,7 @@ function RegulateFacility (props) {
 }
 
 
-RegulateFacility.getInitialProps = async (ctx) => {
+export async function getServerSideProps (ctx) {
 
     const allOptions = {
         data: [],
@@ -920,7 +920,7 @@ RegulateFacility.getInitialProps = async (ctx) => {
         }
     }
 
-    return checkToken(ctx.req, ctx.res)
+    const response = (() => checkToken(ctx.req, ctx.res)
         .then((t) => {
             if (t.error) {
                 throw new Error("Error checking token");
@@ -994,7 +994,11 @@ RegulateFacility.getInitialProps = async (ctx) => {
             setTimeout(() => {
                 return allOptions;
             }, 1000);
-        });
+        }))()
+
+    return {
+        props: response
+    }
 };
 
 export default withAuth(RegulateFacility)

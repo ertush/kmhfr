@@ -17,19 +17,20 @@ import Spinner from '../../../components/Spinner'
 import { useAlert } from 'react-alert';
 import Alert from '@mui/material/Alert'
 import {z} from 'zod'
+import withAuth from '../../../components/ProtectedRoute';
 // import { SettingsRemote } from '@mui/icons-material';
 
 
 function ApproveCommunityUnit(props) {
 
   const router = useRouter();
-  const userCtx = useContext(UserContext);
+  // const userCtx = useContext(UserContext);
   let cu = props.data;
 
   const alert = useAlert()
 
   // Reference hooks for the services section
-  const [user, setUser] = useState(userCtx);
+  // const [user, setUser] = useState(userCtx);
   const [isCHULDetails, setIsCHULDetails] = useState(true);
   const [isClient, setIsClient] = useState(false);
   const [formError, setFormError] = useState(null)
@@ -210,19 +211,14 @@ async function approveCHUUpdates (e, token) {
 
   let reject = ''
 
-  useEffect(() => {
-    if (userCtx) setUser(userCtx);
-
-    return () => { };
-
-  }, [cu, reject]);
+ 
 
 
   useEffect(() => {
-    setUser(userCtx);
-    if (user.id === 6) {
-      router.push('/auth/login')
-    }
+    // setUser(userCtx);
+    // if (user.id === 6) {
+    //   router.push('/auth/login')
+    // }
 
     setIsClient(true)
   }, [])
@@ -694,14 +690,14 @@ async function approveCHUUpdates (e, token) {
 };
 
 
-ApproveCommunityUnit.getInitialProps = async (ctx) => {
+export async function getServerSideProps(ctx) {
 
   const zSchema = z.object({
     id: z.string().uuid('Should be a uuid string'),
   })
 
-
   const queryId = zSchema.parse(ctx.query).id
+
 
   if (ctx.query.q) {
     const query = ctx.query.q;
@@ -719,7 +715,7 @@ ApproveCommunityUnit.getInitialProps = async (ctx) => {
     }
   }
 
-  return checkToken(ctx.req, ctx.res)
+  const response = (() => checkToken(ctx.req, ctx.res)
     .then(async (t) => {
       if (t.error) {
         throw new Error('Error checking token');
@@ -830,7 +826,13 @@ ApproveCommunityUnit.getInitialProps = async (ctx) => {
         err: err,
         data: [],
       };
-    });
-};
+    })
+  )();
 
-export default ApproveCommunityUnit;
+  return {
+    props: response
+  }
+
+}
+
+export default withAuth(ApproveCommunityUnit);

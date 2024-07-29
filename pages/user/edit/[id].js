@@ -19,7 +19,7 @@ import { WarningOutlined } from '@mui/icons-material';
 import { XCircleIcon } from '@heroicons/react/outline'
 import {z} from 'zod'
 
-const User = (props) => {
+function User(props) {
 	
 	const [subCountyOptions, setSubCountyOptions] = useState([])
 	const [editMode, setEditMode] = useState(false)
@@ -44,7 +44,7 @@ const User = (props) => {
 	
 
 	
-	console.log({props})
+	// console.log({props})
 
 	const [userData, setUserData] = useState({
 		first_name: '',
@@ -928,7 +928,7 @@ const User = (props) => {
 	}
 }
 
-User.getInitialProps = async (ctx) => {
+export async function getServerSideProps(ctx) {
 	const zSchema = z.object({
 		id: z.string().uuid('Should be a uuid string'),
 	  })
@@ -949,7 +949,7 @@ User.getInitialProps = async (ctx) => {
 		'individual_details'
 	]
 
-	return checkToken(ctx.req, ctx.res).then(async t => {
+	const response = (() => checkToken(ctx.req, ctx.res).then(async t => {
 		if (t.error) {
 			throw new Error('Error checking token')
 		} else {
@@ -1134,7 +1134,12 @@ User.getInitialProps = async (ctx) => {
 				current_url: ''
 			}
 		}, 1000);
-	})
+	}))()
+
+
+	return {
+		props: response
+	}
 
 }
 
