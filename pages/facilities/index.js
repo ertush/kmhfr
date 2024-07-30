@@ -21,6 +21,7 @@ import { UserContext } from '../../providers/user'
 import {Formik, Form, Field} from 'formik';
 import { KeyboardArrowRight, KeyboardArrowDown } from "@mui/icons-material";
 import { useSearchParams } from 'next/navigation'
+import withAuth from '../../components/ProtectedRoute'
 
 
 function FacilityHome (props){
@@ -57,13 +58,8 @@ function FacilityHome (props){
         delete fltrs.open_public_holidays
     }
 
-    // const multiFilters = ['service_category', 'service', 'county', 'subcounty', 'ward', 'constituency']
-    
-
     const [drillDown, setDrillDown] = useState({})
-    // const [fromDate, setFromDate] = React.useState(new Date());
-    // const [toDate, setToDate] = React.useState(new Date());
-
+  
     const [isAccordionExpanded, setIsAccordionExpanded] = useState(false);
     const [title, setTitle] = useState('Facilities') 
 
@@ -94,9 +90,9 @@ function FacilityHome (props){
 
 
 	useEffect(() => {
-		if(userCtx.id === 6){
-			router.push('/auth/login')
-		}
+		// if(userCtx.id === 6){
+		// 	router.push('/auth/login')
+		// }
 	  setIsClient(true)
 	}, [])
 
@@ -1013,4 +1009,4 @@ export async function getServerSideProps(ctx) {
 
 
 
-export default FacilityHome
+export default withAuth(FacilityHome)

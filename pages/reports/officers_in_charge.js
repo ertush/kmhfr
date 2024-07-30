@@ -4,18 +4,18 @@ import MainLayout from '../../components/MainLayout'
 import { DownloadIcon } from '@heroicons/react/outline'
 import React, { useState, useEffect } from 'react'
 import { checkToken } from '../../controllers/auth/auth'
-import { useRouter } from 'next/router'
+// import { useRouter } from 'next/router'
 import { DotsHorizontalIcon } from "@heroicons/react/solid";
 import { AgGridReact } from 'ag-grid-react';
 import { LicenseManager } from '@ag-grid-enterprise/core';
 import ReportsSideMenu from './reportsSideMenu'
-
+import withAuth from '../../components/ProtectedRoute'
 
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
 
 
-const OfficersInCharge = (props) => { 
+function OfficersInCharge(props) { 
     // require('ag-grid-enterprise')
     LicenseManager.setLicenseKey("test");
     // const router = useRouter()
@@ -178,7 +178,7 @@ const OfficersInCharge = (props) => {
     }
 }   
 
-OfficersInCharge.getInitialProps = async (ctx) => {
+export async function getServerSideProps (ctx) {
     const API_URL = process.env.NEXT_PUBLIC_API_URL 
     
     const fetchData = async (token) => {
@@ -223,7 +223,7 @@ OfficersInCharge.getInitialProps = async (ctx) => {
         }
     }
 
-    return checkToken(ctx.req, ctx.res).then(t => {
+    const response = (() => checkToken(ctx.req, ctx.res).then(t => {
         if (t.error) {
             throw new Error('Error checking token')
         } else {
@@ -249,8 +249,13 @@ OfficersInCharge.getInitialProps = async (ctx) => {
                 current_url: ''
             }
         }, 1000);
-    })
+    }))()
+
+
+    return {
+        props: response
+    }
 
 }
 
-export default OfficersInCharge
+export default withAuth(OfficersInCharge)

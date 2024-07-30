@@ -42,7 +42,8 @@ import Fade from '@mui/material/Fade';
 import Select from 'react-select';
 import { AddLocationAlt, Article, GroupAdd, LocalHospital, MapsHomeWork, MiscellaneousServices, Phone, ReduceCapacity } from '@mui/icons-material';
 import { useAlert } from "react-alert";
-import router from 'next/router';
+// import router from 'next/router';
+import withAuth from '../../components/ProtectedRoute';
 
 import {
     DataGrid,
@@ -69,7 +70,7 @@ const StyledDataGrid = styled(DataGrid)(() => ({
 
 function SystemSetup(props) {
 
-    const userCtx = useContext(UserContext)
+    // const userCtx = useContext(UserContext)
 
     // const userPermissions = useContext(PermissionContext)
     const [title, setTitle] = useState('Counties')
@@ -103,7 +104,7 @@ function SystemSetup(props) {
     const handleClose = () => setOpen(false);
     const [sbcty_constituency, setSbctyConstituency] = useState([]);
     // const [value, setValue] = React.useState('1');
-    const [user, setUser] = useState(userCtx);
+    // const [user, setUser] = useState(userCtx);
 
     const [isClient, setIsClient] = useState(false)
     const [columns, setColumns] = useState([
@@ -155,14 +156,6 @@ function SystemSetup(props) {
 
 
     useEffect(() => {
-
-        setUser(userCtx);
-        if (user.id === 6) {
-            router.push('/auth/login')
-        }
-
-
-
         setIsClient(true)
     }, [])
 
@@ -2386,7 +2379,7 @@ function SystemSetup(props) {
                                                                                 }),
 
                                                                             }}
-                                                                            options={sbcty_constituency[0].results.map(({ id, name }) => ({ value: id, label: name }))}
+                                                                            options={sbcty_constituency[0]?.results?.map(({ id, name }) => ({ value: id, label: name }))}
                                                                             required
                                                                             placeholder='Select Constituency'
                                                                             key={editData?.constituency}
@@ -4550,7 +4543,7 @@ function SystemSetup(props) {
 }
 
 
-SystemSetup.getInitialProps = async (ctx) => {
+export async function getServerSideProps(ctx) {
 
     ctx?.res?.setHeader(
         'Cache-Control',
@@ -4593,7 +4586,7 @@ SystemSetup.getInitialProps = async (ctx) => {
                 console.log('Error fetching facilities: ', err)
                 return {
                     error: true,
-                    err: err,
+                    err: err ?? null,
                     data: [],
                     query: {},
                     path: ctx.asPath || '/system_setup',
@@ -4602,7 +4595,7 @@ SystemSetup.getInitialProps = async (ctx) => {
             })
     }
 
-    return checkToken(ctx.req, ctx.res).then(t => {
+    const response = (() => checkToken(ctx.req, ctx.res).then(t => {
         if (t.error) {
             throw new Error('Error checking token')
         } else {
@@ -4621,14 +4614,18 @@ SystemSetup.getInitialProps = async (ctx) => {
 
         return {
             error: true,
-            err: err,
+            err: err ?? null,
             data: [],
             query: {},
             path: ctx.asPath || '/system_setup',
             current_url: ''
         }
-    })
+    }))()
+
+    return {
+        props: response
+    }
 
 }
 
-export default SystemSetup
+export default withAuth(SystemSetup)

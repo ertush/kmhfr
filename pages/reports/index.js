@@ -14,6 +14,8 @@ import { UserContext } from '../../providers/user';
 // import Select from 'react-select';
 import { useRouter } from 'next/router';
 import { Select as CustomSelect } from '../../components/Forms/formComponents/Select'
+import withAuth from '../../components/ProtectedRoute';
+
 
 
 const StyledDataGrid = styled(DataGrid)(() => ({
@@ -31,8 +33,8 @@ const StyledDataGrid = styled(DataGrid)(() => ({
 
 function Reports(props) {
 
-    const userCtx = useContext(UserContext);
-    const [user, setUser] = useState(userCtx);
+    // const userCtx = useContext(UserContext);
+    // const [user, setUser] = useState(userCtx);
     // const [orgUnitFilter, setOrgUnitFilter] = useState('county')
     // const [fileteredReports, setFilteredReports] = useState({})
 
@@ -74,10 +76,10 @@ function Reports(props) {
     }, [reportTitle])
 
     useEffect(() => {
-        setUser(userCtx)
-        if (user.id === 6) {
-            router.push('/auth/login')
-        }
+        // setUser(userCtx)
+        // if (user.id === 6) {
+        //     router.push('/auth/login')
+        // }
 
         setIsClient(true);
 
@@ -2173,7 +2175,7 @@ function Reports(props) {
 }
 
 
-Reports.getInitialProps = async (ctx) => {
+export async function getServerSideProps (ctx) {
 
     ctx?.res?.setHeader(
         'Cache-Control',
@@ -2662,10 +2664,12 @@ Reports.getInitialProps = async (ctx) => {
 
     allReports["token"] = token
 
-    return allReports
+    return {
+        props:allReports
+    }
 }
 
 
 
 
-export default Reports
+export default withAuth(Reports)

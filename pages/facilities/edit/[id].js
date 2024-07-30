@@ -16,7 +16,7 @@ import { withErrorBoundary } from 'react-error-boundary'
 import Backdrop from '@mui/material/Backdrop';
 import Alert from '@mui/material/Alert'
 import {z} from 'zod'
-
+import withAuth from "../../../components/ProtectedRoute";
 
 export const FacilityUpdatesContext = createContext(null)
 
@@ -40,7 +40,7 @@ function FallBack() {
 const EditFacility = withErrorBoundary(
 	(props) => {
 		const userCtx = React.useContext(UserContext);
-		const [user, setUser] = useState(userCtx);
+		// const [user, setUser] = useState(userCtx);
 
 		const filters = [];
 		const [khisSynched, setKhisSynched] = useState(false);
@@ -74,10 +74,10 @@ const EditFacility = withErrorBoundary(
 
 			// console.log({allOptions: props})
 
-			setUser(userCtx)
-			if (user?.id === 6) {
-				router.push('/auth/login')
-			}
+			// setUser(userCtx)
+			// if (user?.id === 6) {
+			// 	router.push('/auth/login')
+			// }
 
 			setIsClient(true)
 
@@ -253,12 +253,11 @@ const EditFacility = withErrorBoundary(
 
 )
 
-export default EditFacility
+export default withAuth(EditFacility)
 
 
-EditFacility.getInitialProps = async (ctx) => {
+export async function getServerSideProps (ctx){
 
-	// const allOptions = []
 
 	const options = [
 		'facility_types',
@@ -292,7 +291,7 @@ EditFacility.getInitialProps = async (ctx) => {
 
 	const allOptions = {};
 
-	return checkToken(ctx.req, ctx.res)
+	const response = (() => checkToken(ctx.req, ctx.res)
 		.then(async (t) => {
 			if (t.error) {
 				throw new Error('Error checking token');
@@ -859,5 +858,10 @@ EditFacility.getInitialProps = async (ctx) => {
 					data: [],
 				};
 			}, 1000);
-		});
+		})
+	)()
+
+	return {
+		props: response
+	}
 }

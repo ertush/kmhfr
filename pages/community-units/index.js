@@ -18,7 +18,7 @@ import { SearchIcon } from '@heroicons/react/outline'
 import { KeyboardArrowDown } from '@mui/icons-material';
 import { KeyboardArrowRight } from '@mui/icons-material';
 import { useSearchParams } from 'next/navigation';
-
+import withAuth from '../../components/ProtectedRoute';
 
 
 function CommunityUnit(props) {
@@ -78,9 +78,9 @@ function CommunityUnit(props) {
 	// Check user for authentication
 	useEffect(() => {
 
-		if (userCtx.id === 6) {
-			router.push('/auth/login')
-		}
+		// if (userCtx.id === 6) {
+		// 	router.push('/auth/login')
+		// }
 
 		setIsClient(true);
 
@@ -509,7 +509,7 @@ function CommunityUnit(props) {
 };
 
 
-CommunityUnit.getInitialProps = async (ctx) => {
+export async function getServerSideProps(ctx) {
 
 
 	ctx?.res?.setHeader(
@@ -603,15 +603,15 @@ CommunityUnit.getInitialProps = async (ctx) => {
 				query,
 				token,
 				filters: { ...ft },
-				count: json?.count,
+				count: json?.count ?? null,
 				path: ctx.asPath || '/community-units',
 				current_url: current_url,
 			};
 		} catch (err) {
-			console.log('Error fetching community units: ', err);
+			// console.log('Error fetching community units: ', err);
 			return {
 				error: true,
-				err: err,
+				err: err ?? null,
 				data: [],
 				query: {},
 				token: null,
@@ -624,7 +624,7 @@ CommunityUnit.getInitialProps = async (ctx) => {
 	};
 
 
-	return checkToken(ctx.req, ctx.res)
+	const response = (() => checkToken(ctx.req, ctx.res)
 		.then((t) => {
 			if (t.error) {
 				throw new Error('Error checking token');
@@ -652,7 +652,12 @@ CommunityUnit.getInitialProps = async (ctx) => {
 					current_url: '',
 				};
 			// }, 1000);
-		});
+	}))()
+
+
+	return {
+		props: response
+	}
 };
 
-export default CommunityUnit;
+export default withAuth(CommunityUnit)

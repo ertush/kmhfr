@@ -1,5 +1,5 @@
-import { PermissionContext } from '../../providers/permissions'
-import { hasPermission } from '../../utils/checkPermissions'
+// import { PermissionContext } from '../../providers/permissions'
+// import { hasPermission } from '../../utils/checkPermissions'
 import { PencilAltIcon } from '@heroicons/react/outline'
 import { useState, useEffect, useContext } from 'react'
 import { checkToken } from '../../controllers/auth/auth'
@@ -8,10 +8,10 @@ import {  PlusIcon } from "@heroicons/react/solid";
 import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
-import { UserContext } from '../../providers/user';
+// import { UserContext } from '../../providers/user';
 // import {Formik, Form, Field} from 'formik';
-import { SearchIcon } from '@heroicons/react/outline'
-
+// import { SearchIcon } from '@heroicons/react/outline'
+import withAuth from '../../components/ProtectedRoute'
 
 import {
     DataGrid,
@@ -46,20 +46,15 @@ function AdminOffices(props) {
   
     const router = useRouter()
 
-    const userPermissions = useContext(PermissionContext)
-    const userCtx = useContext(UserContext)
+    // const userPermissions = useContext(PermissionContext)
     const [isClient, setIsClient] = useState(false)
-    const [adminOffice, setAdminOffice] = useState(props?.data)
-    const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
-    const groupID = userCtx?.groups[0]?.id
 
-    // const rows = props?.data?.results?.map(({ id, county_name, sub_county_name, name, is_national, phone_number, email }) => ({ id, county_name, sub_county_name, name, is_national: is_national == true ? 'Yes' : 'No', phone_number, email })) ?? []
-    
     const filters = props?.filters
 
-    const rows = adminOffice?.results?.length > 0 ? adminOffice?.results.map(({ id, county_name, sub_county_name, name, is_national, phone_number, email }) => ({ id, county_name, sub_county_name, name, is_national: is_national ? 'Yes' : 'No', phone_number, email })) : []
+    const rows = props?.data?.results?.length > 0 ? props?.data?.results.map(({ id, county_name, sub_county_name, name, is_national, phone_number, email }) => ({ id, county_name, sub_county_name, name, is_national: is_national ? 'Yes' : 'No', phone_number, email })) : []
     
+
     const columns = [
         { headerName: "County", field: "county_name", flex:1},
         { headerName: "Sub County", field: "sub_county_name", flex:1 },
@@ -89,77 +84,14 @@ function AdminOffices(props) {
     , }
     ]
 
-    const [user, setUser] = useState(userCtx)
-  
 
     useEffect(() => {
         setIsClient(true)
-        setUser(userCtx)
-        if(user.id === 6){
-            router.push('/auth/login')
-        }
-        
-        // if (/*hasPermission(/^admin_office.view_.*$/, userPermissions)*/
-        // groupID !== 7 ||
-        // groupID !== 5
-        //     ) { // hasPermission should be negated with !
-        //     router.push('/unauthorized')
-        // }
+      
+       
     }, [])
  
     const [officeTheme, setOfficeTheme] = useState([]);
-
-
-    function handleSearch(e){
-
-        e.preventDefault()
-
-        let url = API_URL+ `/admin_offices/?fields=id,name,county_name,county,sub_county,sub_county_name,phone_number,email,is_national`
-
-        const formData = new FormData(e.target)
-		const formDataObject = Object.fromEntries(formData)
-
-        // const query = values.q.split(' ').join('+');
-        // console.log("data vale:",formData)
-
-        const qry = Object.keys(formDataObject).map(function (key) {
-            if (formDataObject[key] !== '') {
-                const er = (key) + '=' + (formDataObject[key]).split(' ').join('+');
-
-                console.log("data object:",(formDataObject[key]))
-                return er
-            }
-        }).filter(Boolean).join('&')
-
-
-        if (qry !== '') {
-            url += `&${qry}`
-            console.log("Constructed URL:", url + `&${qry}`);
-        }
-
-        fetch(url, {
-            headers: {
-                Authorization: 'Bearer ' + props?.token,
-                Accept: 'application/json',
-            },
-
-        })
-            .then(resp => {
-
-                return resp.json()
-            })
-            .then(adminOffice => {
-                // console.log({ adminOffice })
-                setAdminOffice(adminOffice)
-
-            })
-            .catch(e => {
-                console.error(e.message)
-                setAdminOffice([])
-            })
-
-    }
-
 
 
 
@@ -193,7 +125,7 @@ function AdminOffices(props) {
                         </div>
                     </div>
 
-                    <div className='max-w-max flex justify-end items-center  md:col-span-2 self-end'>
+                    {/* <div className='max-w-max flex justify-end items-center  md:col-span-2 self-end'>
                     <form
                         className="inline-flex flex-row justify-start  flex-grow py-2 lg:py-0"
                         onSubmit={handleSearch}>
@@ -212,7 +144,7 @@ function AdminOffices(props) {
                         <SearchIcon className="w-5 h-5 text-gray-600" />
                         </button>
                     </form>
-                    </div>
+                    </div> */}
                     
                     <div className='col-span-1 w-full col-start-1 h-auto shadow-sm bg-gray-50'>
 
@@ -243,6 +175,9 @@ function AdminOffices(props) {
                             </ListItemButton>
                         </List>
                     </div>
+
+                  
+                    
                     <main className="col-span-6 md:col-span-6 flex flex-col gap-4 order-last md:order-none"> {/* CHANGED colspan */}
 
 
@@ -293,7 +228,7 @@ function AdminOffices(props) {
     }
 }
 
-AdminOffices.getInitialProps = async (ctx) => {
+export async function getServerSideProps (ctx) {
 
     ctx?.res?.setHeader(
         'Cache-Control',
@@ -358,8 +293,8 @@ AdminOffices.getInitialProps = async (ctx) => {
                     query, 
                     filters: { ...ft }, 
                     token, 
-                    path: ctx.asPath, 
-                    tok: token || '/admin_offices', 
+                    path: ctx.asPath ?? '/admin_offices', 
+                    tok: token, 
                     current_url: current_url, 
                     api_url: API_URL
                 }
@@ -372,17 +307,19 @@ AdminOffices.getInitialProps = async (ctx) => {
                 err: err,
                 data: [],
                 query: {},
-                path: ctx.asPath || '/admin_offices',
+                path: ctx.asPath ?? '/admin_offices',
                 current_url: ''
             }
         }
     }
 
-    return checkToken(ctx.req, ctx.res).then(t => {
+    let token = ''
+
+    const response = (() => checkToken(ctx.req, ctx.res).then(t => {
         if (t.error) {
             throw new Error('Error checking token')
         } else {
-            let token = t.token
+            token = t.token
             return fetchData(token).then(t => t)
         }
     }).catch(err => {
@@ -400,13 +337,17 @@ AdminOffices.getInitialProps = async (ctx) => {
                 err: err,
                 data: [],
                 query: {},
-                path: ctx.asPath || '/admin_offices',
+                path: ctx.asPath ?? '/admin_offices',
                 current_url: ''
             }
         }, 1000);
-    })
+    }))()
 
+    return {
+        props: response
+            
+    }  
 }
 
 
-export default AdminOffices
+export default withAuth(AdminOffices)

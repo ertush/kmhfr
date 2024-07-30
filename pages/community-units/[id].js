@@ -14,7 +14,8 @@ import Link from 'next/link';
 import CommunityUnitSideMenu from "../../components/CommunityUnitSideMenu";
 import { UserContext } from "../../providers/user";
 import { Avatar} from "@mui/material";
-import {z} from 'zod'
+import {z} from 'zod';
+import withAuth from "../../components/ProtectedRoute";
 
 function EditCommunityUnit(props){
 
@@ -32,7 +33,7 @@ function EditCommunityUnit(props){
 
 
   useEffect(() => {
-    console.log(props?.activityLog)
+    // console.log(props?.activityLog)
     setActivityLog(props?.activity_log)
   }, [])
 
@@ -741,25 +742,23 @@ function EditCommunityUnit(props){
   }
 }
 
-EditCommunityUnit.getInitialProps = async (ctx) => {
+export async function getServerSideProps (ctx) {
 
   const token = (await checkToken(ctx?.req, ctx?.res))?.token
 
 
   const zSchema = z.object({
-    id: z.string().uuid('Should be a uuid string'),
+    id: z.string('Should be a uuid string').optional(),
   })
 
-
-const queryId = zSchema.parse(ctx.query).id
-
+  const queryId = zSchema.parse(ctx.query).id
 
   const props = {
     cu: [],
     activity_log: []
   }
 
-  return fetch(`${process.env.NEXT_PUBLIC_API_URL}/chul/units/${queryId}/`, {
+  const response = (() => fetch(`${process.env.NEXT_PUBLIC_API_URL}/chul/units/${queryId}/`, {
     headers: {
       'Accept': 'application/json',
       'Authorization': `Bearer ${token}`
@@ -777,26 +776,28 @@ const queryId = zSchema.parse(ctx.query).id
         }
       })
       .then(async res => {
-        props["activity_log"] = (await res.json())?.revisions
+        props["activity_log"] = (await res.json())?.revisions ?? null
         
-        return props
+        return props;
 
       })
-
-    
-      
+   
       .catch(e => {
         console.error('Error when fetching activity log: ', e.message)
       })
     }
   })
-  
   .catch(e => {
     console.error('Error when fetching props?.cu details for: ', queryId, e.message)
-  })
+  }))();
+
+
+  return {
+    props: response
+  }
 
 
   
-};
+}
 
-export default EditCommunityUnit;
+export default withAuth(EditCommunityUnit)

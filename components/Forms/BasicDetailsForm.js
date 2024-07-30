@@ -62,7 +62,7 @@ export function BasicDeatilsForm({ editMode }) {
   const formContext = useContext(FormOptionsContext);
   const [options, setOptions] = useState(formContext)
   const [facilityTypeDetailOptions, setFacilityTypeDetailOptions] = useState(options?.facility_type_details)
-  const [ownerTypeDetailsOptions, setOwnerTypeDetailsOptions] = useState(Array.from(options?.owners, o => {
+  const [ownerTypeDetailsOptions, setOwnerTypeDetailsOptions] = useState(Array.from(options?.owners ?? [], o => {
     if (o?.owner_type_name || o?.created_by || o?.updated_by) {
       return {
         label: o?.name,

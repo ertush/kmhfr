@@ -154,6 +154,7 @@ export default async function submitFormData(req, res) {
                 method = 'POST'
                 break
             case `delete_admin_office`:
+                console.log('Deleting...')
                 url = `${API_URL}/admin_offices/${req.query.id}`
                 contentType = 'application/json;charset=utf-8';
                 method = 'DELETE';
@@ -186,11 +187,24 @@ export default async function submitFormData(req, res) {
                 url = `${API_URL}/facilities/facility_service_ratings/`
                 contentType = 'application/json;charset=utf-8';
                 method = 'POST';
+                break;
+            case `edit_admin_offices`:
+                console.log('Editting...')
+                url = `${API_URL}/admin_offices/${req.query.id}/`
+                contentType = 'application/json;charset=utf-8';
+                method = 'PATCH';
+                break;
             default:
 
 
                 break;
         }
+
+
+        const body = method == 'DELETE' ? null : JSON.stringify(req.body)
+
+        console.log({url, body, method})
+
 
         try {
             const resp = await fetch(url,
@@ -211,7 +225,7 @@ export default async function submitFormData(req, res) {
                             'Content-Type': contentType
                         },
                         method,
-                        body: method == 'DELETE' ? null : JSON.stringify(req.body)
+                        body
                     }
             )
 
@@ -247,6 +261,7 @@ export default async function submitFormData(req, res) {
 
                     return fetchData(token).then(dt => dt).then(data => {
 
+                        console.log({data})
                         res.status(200).json(data)
                         return
                     })

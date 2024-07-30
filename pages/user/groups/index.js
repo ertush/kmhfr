@@ -4,13 +4,15 @@ import MainLayout from '../../../components/MainLayout'
 import { useEffect, useState } from 'react'
 import { checkToken } from '../../../controllers/auth/auth'
 import { useRouter } from 'next/router'
-import {  DotsHorizontalIcon,PlusIcon,UsersIcon } from "@heroicons/react/solid";
+import { PlusIcon,UsersIcon } from "@heroicons/react/solid";
+import withAuth from '../../../components/ProtectedRoute'
 // import { LicenseManager } from '@ag-grid-enterprise/core';
 
 import {
     DataGrid,
     GridToolbar
 } from '@mui/x-data-grid'
+
 import { styled } from '@mui/material/styles';
 
 
@@ -31,7 +33,6 @@ const StyledDataGrid = styled(DataGrid)(() => ({
 
 function Groups(props) {
 
-   
     const router = useRouter()
 
     const rows = props?.data?.results.map(({id, name})=>{return {id, name}})
@@ -70,15 +71,15 @@ function Groups(props) {
             </Head>
             <MainLayout isLoading={false} isFullWidth={false}>
                 <div className="w-full  md:w-[85%] md:mx-auto grid grid-cols-7 gap-4 p-1 md:px-4 my-2">
-                    <div className="col-span-7 flex flex-col gap-x-1 px-4">
-                        <div className="flex flex-wrap items-center justify-between gap-2 text-sm md:text-base py-1">
+                    <div className="col-span-7 w-full flex flex-col gap-x-1 px-4">
+                        <div className="flex w-full flex-wrap items-center justify-between gap-2 text-sm md:text-base py-1">
                             <div className="flex flex-row items-center justify-between gap-x-2 gap-y-0 text-sm md:text-base py-1">
                                 <a className="text-gray-700" href="/">Home</a> {'/'}
                                 <a className="text-gray-700" href="/user/">Users</a> {'/'}
                                 <span className="text-gray-500">Groups</span> 
                             </div>
                             
-                            <div className={`col-span-5 flex  justify-between p-6 w-full bg-transparent drop-shadow  text-black md:divide-x md:divide-gray-200z items-center border border-gray-600 border-l-8 ${'border-gray-600'} `}>
+                            <div className={`col-span-7 flex w-full justify-between p-6 bg-transparent drop-shadow  text-black items-center border border-gray-600 border-l-8 ${'border-gray-600'} `}>
                                 <h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
                                     <UsersIcon className='ml-2 h-5 w-5'/> 
                                     {'Manage Groups'}
@@ -93,12 +94,12 @@ function Groups(props) {
                         </div>
                     </div>
                 
-                    <main className="col-span-7 flex flex-col gap-4 order-last md:order-none"> {/* CHANGED colspan */}
+                    <main className="col-span-7 flex flex-col gap-y-4 order-last md:order-none"> {/* CHANGED colspan */}
                         
             
                         <div className="flex-col justify-center items-center w-full mx-4">
                       
-                            <div style={{ height:'auto', width: '100%', backgroundColor:'#eff6ff'}} className='shadow-md'>
+                            <div style={{ height:'auto', width: '100%'}} className='bg-gray-50 rounded shadow-md'>
                                
                                     <StyledDataGrid
                                         columns={columns}
@@ -139,7 +140,7 @@ function Groups(props) {
     }
 }   
 
-Groups.getInitialProps = async (ctx) => {
+export async function getServerSideProps(ctx) {
     const API_URL = process.env.NEXT_PUBLIC_API_URL 
 // console.log(ctx.query.is_active);
 
@@ -198,7 +199,7 @@ Groups.getInitialProps = async (ctx) => {
             })
     }
 
-    return checkToken(ctx.req, ctx.res).then(t => {
+    const response = (() => checkToken(ctx.req, ctx.res).then(t => {
         if (t.error) {
             throw new Error('Error checking token')
         } else {
@@ -224,8 +225,14 @@ Groups.getInitialProps = async (ctx) => {
                 current_url: ''
             }
         }, 1000);
-    })
+    }))()
+
+    return {
+        props: response
+    }
+
+
 
 }
 
-export default Groups
+export default withAuth(Groups)

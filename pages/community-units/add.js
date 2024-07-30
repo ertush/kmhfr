@@ -25,6 +25,8 @@ import {
 	KeyboardArrowDown
 
 } from '@mui/icons-material'
+import withAuth from '../../components/ProtectedRoute';
+
 
 
 const SetFormIdContext = createContext(null)
@@ -1192,8 +1194,6 @@ function CommunityUnitsServicesForm(props) {
 
 function AddCommunityUnit(props) {
 
-
-	
 	const [formId, setFormId] = useState(0);
 	const [isMenuOpen, setIsMenuOpen] = useState(false)
 
@@ -1497,6 +1497,6 @@ export async function getServerSideProps({req, res}) {
 	  console.error(e.message)
 	}
   
-  }
+}
 
-export default AddCommunityUnit; 
+export default withAuth(AddCommunityUnit)

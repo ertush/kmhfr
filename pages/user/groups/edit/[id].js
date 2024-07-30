@@ -16,6 +16,7 @@ import Fade from '@mui/material/Fade';
 // import Alert from '@mui/material/Alert';
 import 'react-dual-listbox/lib/react-dual-listbox.css';
 import {z} from 'zod'
+import withAuth from '../../../../components/ProtectedRoute';
 
 function EditGroup (props) {
     
@@ -393,11 +394,11 @@ function EditGroup (props) {
   )
 }
 
-EditGroup.getInitialProps = async (ctx) => {
+export async function getServerSideProps (ctx){
     const API_URL = process.env.NEXT_PUBLIC_API_URL
 
 	const zSchema = z.object({
-		id: z.string().uuid('Should be a uuid string'),
+		id: z.string('Should be a uuid string').optional(),
 	  })
 	
 	
@@ -469,7 +470,7 @@ EditGroup.getInitialProps = async (ctx) => {
 			  })
 	  }
   
-	  return checkToken(ctx.req, ctx.res).then(t => {
+   const response = (() => checkToken(ctx.req, ctx.res).then(t => {
 		  if (t.error) {
 			  throw new Error('Error checking token')
 		  } else {
@@ -495,8 +496,12 @@ EditGroup.getInitialProps = async (ctx) => {
 				  current_url: ''
 			  }
 		  }, 1000);
-	  })
+	}))()
+
+	return {
+		props: response
+	}
   
 }
   
-  export default EditGroup
+  export default withAuth(EditGroup)

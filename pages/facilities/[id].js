@@ -40,7 +40,7 @@ import { DocumentScanner } from "@mui/icons-material";
 import { Info } from "@mui/icons-material";
 import { MarkAsUnread } from "@mui/icons-material";
 import { useSearchParams } from "next/navigation";
-
+import withAuth from "../../components/ProtectedRoute";
 
 
 function Facility(props) {
@@ -101,21 +101,23 @@ function Facility(props) {
 
   const [isClient, setIsClient] = useState(false)
 
+  // useEffect(() => {
+
+  //   // if (userCtx) setUser(userCtx); // console.log({ userCtx })
+  //   return () => {
+  //   };
+
+  // }, [isClosingFacility, isReasonRejected]);
+
+
   useEffect(() => {
+    // setUser(userCtx);
     setIsClient(true)
 
-    if (userCtx) setUser(userCtx); // console.log({ userCtx })
-    return () => {
-    };
-  }, [isClosingFacility, isReasonRejected]);
-
-
-  useEffect(() => {
-    setUser(userCtx);
     setActivityLog(props?.activityLog)
-    if (user.id === 6) {
-      router.push('/auth/login')
-    }
+    // if (user.id === 6) {
+    //   router.push('/auth/login')
+    // }
   }, [])
 
 
@@ -862,12 +864,11 @@ function Facility(props) {
 };
 
 
-
-Facility.getInitialProps = async (ctx) => {
+export async function getServerSideProps(ctx) {
   const allOptions = {};
 
   const zSchema = z.object({
-    id: z.string().uuid('Should be a uuid string'),
+    id: z.string('Should be a uuid string').optional(),
   })
 
 
@@ -887,7 +888,7 @@ const queryId = zSchema.parse(ctx.query).id
       }
     }
   }
-  return checkToken(ctx.req, ctx.res)
+  const response = (() => checkToken(ctx.req, ctx.res)
     .then((t) => {
       if (t.error) {
         throw new Error("Error checking token");
@@ -977,7 +978,7 @@ const queryId = zSchema.parse(ctx.query).id
 
             allOptions["token"] = token
 
-            allOptions["qf"] = ctx.query.qf
+            allOptions["filter"] = ctx.query.filter ?? null
 
             return allOptions;
           })
@@ -1007,7 +1008,12 @@ const queryId = zSchema.parse(ctx.query).id
           data: [],
         };
       }, 1000);
-    });
+    })
+  )();
+
+  return {
+    props: response
+  }
 };
 
-export default Facility;
+export default withAuth(Facility);

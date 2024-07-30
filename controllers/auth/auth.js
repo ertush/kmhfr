@@ -113,10 +113,11 @@ const checkToken = async (req, res, isProtected, creds) => {
         if (ct && ct != null && ct != undefined && new Date(ct.expires) > Date.now()) {
             // console.log('B Token is valid')
             return ct
-        } else {
-            // console.log('Refreshing entire page...')
+        } 
+        // else {
+        //     // console.log('Refreshing entire page...')
           
-        }
+        // }
     } else if (isServer) {
         // console.log('running checkToken in the SERVER')
         if(cookies){
@@ -184,30 +185,25 @@ const logUserIn = (req, res, creds, was) => {
 
 function getUserDetails (token, url) {
     if (typeof window != "undefined") {
-        // let savedSession = window.sessionStorage.getItem('user')
-        // if (savedSession && savedSession.length > 0) {
-        //     savedSession = JSON.parse(window.sessionStorage.getItem('user'))
-        // }
-        // if (savedSession && savedSession?.id && savedSession?.id.length > 0) {
-        //     // console.log('Saved session: ', savedSession)
-        //     return savedSession
-        // }
+       
         let savedSession = window.localStorage.getItem('user')
         if (savedSession && savedSession.length > 0) {
             savedSession = JSON.parse(window.localStorage.getItem('user'))
         }
-        if (savedSession && savedSession?.id && savedSession?.id.length > 0) {
+        if (savedSession && savedSession?.id.length > 0 && savedSession?.id !== 6 ) {
             // console.log('Saved session: ', savedSession)
             return savedSession
         }
         // // console.log('W getUserDetails URL: ',url)
     }
 
+
+
     return fetch(url, {
         'method': 'GET',
         'headers': {
             "Accept": "application/json",
-            'cache-control': "no-cache",
+            'Cache-Control': 'public, s-maxage=10, stale-while-revalidate=59',
             "Authorization": "Bearer " + token
         }
     })

@@ -1,10 +1,9 @@
 import Head from 'next/head'
 import Link from 'next/link'
 import Image from 'next/image'
-import { useEffect, useState, useContext } from 'react'
+import { useEffect, useState, useContext, createContext } from 'react'
 import { useRouter } from 'next/router'
-import { getUserDetails } from "../controllers/auth/public_auth";
-import { checkToken } from '../controllers/auth/public_auth';
+
 import { CloseOutlined, Login } from '@mui/icons-material'
 import { NorthEast } from '@mui/icons-material'
 import propTypes from 'prop-types'
@@ -18,6 +17,8 @@ import { Menu } from '@mui/icons-material'
 import Alert from '@mui/material/Alert'
 import { UserContext } from '../providers/user'
 import useSWR from 'swr'
+// import { checkToken } from '../controllers/auth/public_auth';
+
 
 function Skeleton() {
   return (
@@ -34,13 +35,15 @@ function Skeleton() {
   )
 }
 
+
+export const IsUserLoggedInCtx = createContext(null)
 function Home() {
  
   const {data: props, isLoading} = useSWR('/api/dashboard', async (url) =>  await (await fetch(url)).json())
 
   const router = useRouter()
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [_, setUser] = useState(null);
+
+  // const [_, setUser] = useState(null);
   const [isClient, setIsClient] = useState(null);
   const [searchOption, setSearchOption] = useState('Facilities');
   const [isContacts, setIsContacts] = useState(false)
@@ -48,92 +51,23 @@ function Home() {
   const [isOffline, setIsOffline] = useState(props?.offline)
   const currentPath = router.asPath.split("?", 1)[0];
 
+  // const isLoggedIn = useContext(IsUserLoggedInCtx)
+
   const userCtx = useContext(UserContext)
 
   const userID = userCtx?.id
   
 
-  let API_URL = process.env.NEXT_PUBLIC_API_URL;
-
-
   useEffect(() => {
 
     setIsClient(true)
 
-    if(Number(userID) !== 6) {
-      window.localStorage.removeItem('user')
-      window.localStorage.clear()
-    }
+    // if(userID !== 6){
+    //   router.push('/dashboard')
+    // }
+    
 
-    let mtd = true;
-
-
-    function initializePage() {
-
-      if (mtd) {
-        let is_user_logged_in =
-          (typeof window !== "undefined" &&
-            window.document.cookie.indexOf("access_token=") > -1) ||
-          false;
-        let session_token = null;
-        if (is_user_logged_in) {
-          session_token = JSON.parse(
-            window.document.cookie.split("access_token=")[1].split(";")[0]
-          );
-        }
-  
-        if (
-          is_user_logged_in &&
-          typeof window !== "undefined" &&
-          session_token !== null
-        ) {
-  
-  
-          getUserDetails(session_token.token, `${API_URL}/rest-auth/user/`).then(
-            (usr) => {
-  
-              if (usr.error || usr.detail) {
-                setIsLoggedIn(false);
-                setUser(null);
-              } else {
-                
-                if(usr.type !== undefined) {
-                   usr.type == 6  ? setIsLoggedIn(false) : setIsLoggedIn(true);
-                }
-  
-                setUser(usr);
-  
-              }
-            }
-          );
-        } else {
-          console.log("no session. Refreshing...");
-          // router.push('/auth/login')
-        }
-      }
-    }
-
-   initializePage()
-
-    return () => {
-      mtd = false;
-    };
   }, []);
-
-
-
-  useEffect(() => {
-    let mtd = true
-
-
-    if (mtd) {
-      if(isLoggedIn) router.push('/dashboard') 
-    }
-
-    return () => {
-      mtd = false
-    }
-  }, [isLoggedIn])
 
 
 

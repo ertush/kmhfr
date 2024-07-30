@@ -21,6 +21,7 @@ import {
     GridToolbar
 } from '@mui/x-data-grid'
 import { styled } from '@mui/material/styles';
+import withAuth from '../../components/ProtectedRoute'
 
 
 const StyledDataGrid = styled(DataGrid)(() => ({
@@ -112,14 +113,14 @@ function Users (props) {
         {
             if(userPermissions.find((r)=> r === 'auth.add_group') == undefined) setShowGroup(true)
         } 
-        else if(groupID == 4) { // public user
-             router.push('/auth/login')
-        } 
-        else {
-            router.push('/unauthorized')
+        // else if(groupID == 4) { // public user
+        //      router.push('/auth/login')
+        // } 
+        // else {
+        //     router.push('/unauthorized')
 
             
-        }
+        // }
 
   
     setIsClient(true)
@@ -282,7 +283,7 @@ function Users (props) {
     }
 }   
 
-Users.getInitialProps = async (ctx) => {
+export async function getServerSideProps(ctx) {
 
     ctx?.res?.setHeader(
         'Cache-Control',
@@ -347,7 +348,7 @@ Users.getInitialProps = async (ctx) => {
             })
     }
 
-    return checkToken(ctx.req, ctx.res).then(t => {
+    const response = (() => checkToken(ctx.req, ctx.res).then(t => {
         if (t.error) {
             throw new Error('Error checking token')
         } else {
@@ -373,8 +374,12 @@ Users.getInitialProps = async (ctx) => {
                 current_url: ''
             }
         }, 1000);
-    })
+    }))()
+
+    return {
+        props: response
+    }
 
 }
 
-export default Users
+export default withAuth(Users)

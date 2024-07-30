@@ -27,11 +27,11 @@ import { Alert } from '@mui/lab'
 import Spinner from '../../../components/Spinner'
 import { useSearchParams } from 'next/navigation';
 import {z} from 'zod'
-
+import withAuth from '../../../components/ProtectedRoute';
 
 function ApproveReject(props) {
   const userCtx = useContext(UserContext);
-  const [user, setUser] = useState(userCtx);
+  // const [user, setUser] = useState(userCtx);
   // console.log({props})
 
   const alert = useAlert()
@@ -62,10 +62,10 @@ function ApproveReject(props) {
   const [reject, setReject] = useState(null)
 
   useEffect(() => {
-    setUser(userCtx)
-    if (user.id === 6) {
-      router.push('/auth/login')
-    }
+    // setUser(userCtx)
+    // if (user.id === 6) {
+    //   router.push('/auth/login')
+    // }
 
     setIsClient(true)
   }, [])
@@ -408,11 +408,11 @@ function ApproveReject(props) {
 }
 
 
-ApproveReject.getInitialProps = async (ctx) => {
+export async function getServerSideProps (ctx) {
   const allOptions = {};
 
   const zSchema = z.object({
-    id: z.string().uuid('Should be a uuid string'),
+    id: z.string('Should be a uuid string').optional(),
   })
 
 
@@ -432,107 +432,113 @@ const queryId = zSchema.parse(ctx.query).id
       }
     }
   }
-  return checkToken(ctx.req, ctx.res)
-    .then((t) => {
-      if (t.error) {
-        throw new Error("Error checking token");
-      } else {
-        let token = t.token;
-        let _data;
-        let url =
-          process.env.NEXT_PUBLIC_API_URL +
-          "/facilities/facilities/" +
-          queryId +
-          "/";
-        return fetch(url, {
-          headers: {
-            Authorization: "Bearer " + token,
-            Accept: "application/json",
-          },
+
+  const response = (() => checkToken(ctx.req, ctx.res)
+  .then((t) => {
+    if (t.error) {
+      throw new Error("Error checking token");
+    } else {
+      let token = t.token;
+      let _data;
+      let url =
+        process.env.NEXT_PUBLIC_API_URL +
+        "/facilities/facilities/" +
+        queryId +
+        "/";
+      return fetch(url, {
+        headers: {
+          Authorization: "Bearer " + token,
+          Accept: "application/json",
+        },
+      })
+        .then((r) => r.json())
+        .then(async (json) => {
+          allOptions['data'] = json;
+          allOptions['token'] = token;
+
+
+          // fetch ward boundaries
+          if (json) {
+            try {
+              const response = await fetch(
+                `${process.env.NEXT_PUBLIC_API_URL}/common/wards/${json.ward}/`,
+                {
+                  headers: {
+                    Authorization: "Bearer " + token,
+                    Accept: "application/json",
+                  },
+                }
+              );
+
+              _data = await response.json();
+
+              const [lng, lat] =
+                _data?.ward_boundary.properties.center.coordinates;
+
+              allOptions['ward'] = {
+                geoLocation: JSON.parse(JSON.stringify(_data?.ward_boundary)),
+                center: [lat, lng],
+              };
+            } catch (e) {
+              console.error("Error in fetching ward boundaries", e.message);
+            }
+          }
+
+          // fetch facility updates
+          if (json) {
+            try {
+              const facilityUpdateData = await (await fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facility_updates/${json.latest_update}/`,
+                {
+                  headers: {
+                    Authorization: "Bearer " + token,
+                    Accept: "application/json",
+                  },
+                }
+              )).json()
+
+              allOptions['updates'] = facilityUpdateData;
+              
+
+            }
+            catch (e) {
+              console.error('Encountered error while fetching facility update data', e.message)
+            }
+          }
+
+          return allOptions;
         })
-          .then((r) => r.json())
-          .then(async (json) => {
-            allOptions['data'] = json;
-            allOptions['token'] = token;
-
-
-            // fetch ward boundaries
-            if (json) {
-              try {
-                const response = await fetch(
-                  `${process.env.NEXT_PUBLIC_API_URL}/common/wards/${json.ward}/`,
-                  {
-                    headers: {
-                      Authorization: "Bearer " + token,
-                      Accept: "application/json",
-                    },
-                  }
-                );
-
-                _data = await response.json();
-
-                const [lng, lat] =
-                  _data?.ward_boundary.properties.center.coordinates;
-
-                allOptions['ward'] = {
-                  geoLocation: JSON.parse(JSON.stringify(_data?.ward_boundary)),
-                  center: [lat, lng],
-                };
-              } catch (e) {
-                console.error("Error in fetching ward boundaries", e.message);
-              }
-            }
-
-            // fetch facility updates
-            if (json) {
-              try {
-                const facilityUpdateData = await (await fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facility_updates/${json.latest_update}/`,
-                  {
-                    headers: {
-                      Authorization: "Bearer " + token,
-                      Accept: "application/json",
-                    },
-                  }
-                )).json()
-
-                allOptions['updates'] = facilityUpdateData;
-                
-
-              }
-              catch (e) {
-                console.error('Encountered error while fetching facility update data', e.message)
-              }
-            }
-
-            return allOptions;
-          })
-          .catch((err) => {
-            console.log("Error fetching facilities: ", err);
-            return {
-              error: true,
-              err: err,
-              data: [],
-            };
-          });
+        .catch((err) => {
+          console.log("Error fetching facilities: ", err);
+          return {
+            error: true,
+            err: err,
+            data: [],
+          };
+        });
+    }
+  })
+  .catch((err) => {
+    console.log("Error checking token: ", err);
+    if (typeof window !== "undefined" && window) {
+      if (ctx?.asPath) {
+        window.location.href = ctx?.asPath;
+      } else {
+        window.location.href = "/facilities";
       }
-    })
-    .catch((err) => {
-      console.log("Error checking token: ", err);
-      if (typeof window !== "undefined" && window) {
-        if (ctx?.asPath) {
-          window.location.href = ctx?.asPath;
-        } else {
-          window.location.href = "/facilities";
-        }
-      }
-      setTimeout(() => {
-        return {
-          error: true,
-          err: err,
-          data: [],
-        };
-      }, 1000);
-    });
+    }
+    setTimeout(() => {
+      return {
+        error: true,
+        err: err,
+        data: [],
+      };
+    }, 1000);
+  }))()
+
+  return {
+    props: response
+  }
 
 }
-export default ApproveReject
+
+export default withAuth(ApproveReject)
