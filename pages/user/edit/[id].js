@@ -262,7 +262,7 @@ function User(props) {
 								</div>
 								
 								<div className='flex justify-start gap-4 mt-4'>
-									<button className="bg-red-400 text-white font-semibold  p-2 text-center" type="button" disabled={!delete_user} onClick={(e) => { deleteUser(e, props['6']?.token); setOpen(false) }} >Deactivate</button>
+									<button className="bg-red-400 text-white font-semibold  p-2 text-center" type="button" disabled={!delete_user} onClick={(e) => { deleteUser(e, props?.token); setOpen(false) }} >Deactivate</button>
 									<button className="bg-gray-500 text-white font-semibold  p-2 text-center"
 										onClick={() => { setOpen(false) }}
 									>Cancel</button>
@@ -287,7 +287,15 @@ function User(props) {
 								status?.status.includes("error") &&
 								<Alert severity={status?.status} sx={{ width: '100%' }}>
 
-									{status?.message?.__all__.length > 0 && status?.message?.__all__[0] }
+									<pre>
+										{
+										JSON.stringify(
+											status?.message ? status?.message : 'An Error occured when saving',
+											null,
+											2
+										)
+									}
+									</pre>
 
 								</Alert>
 							}
@@ -324,7 +332,7 @@ function User(props) {
 								</h4>
 								<form
 									className='flex flex-col w-full items-start justify-start gap-3'
-									onSubmit={e => handleBasicDetailsSubmit(e, props['6']?.token)}
+									onSubmit={e => handleBasicDetailsSubmit(e, props?.token)}
 								>
 									{/* first name*/}
 									<div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
