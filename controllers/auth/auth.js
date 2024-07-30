@@ -185,14 +185,7 @@ const logUserIn = (req, res, creds, was) => {
 
 function getUserDetails (token, url) {
     if (typeof window != "undefined") {
-        // let savedSession = window.sessionStorage.getItem('user')
-        // if (savedSession && savedSession.length > 0) {
-        //     savedSession = JSON.parse(window.sessionStorage.getItem('user'))
-        // }
-        // if (savedSession && savedSession?.id && savedSession?.id.length > 0) {
-        //     // console.log('Saved session: ', savedSession)
-        //     return savedSession
-        // }
+       
         let savedSession = window.localStorage.getItem('user')
         if (savedSession && savedSession.length > 0) {
             savedSession = JSON.parse(window.localStorage.getItem('user'))
@@ -204,11 +197,13 @@ function getUserDetails (token, url) {
         // // console.log('W getUserDetails URL: ',url)
     }
 
+
+
     return fetch(url, {
         'method': 'GET',
         'headers': {
             "Accept": "application/json",
-            'cache-control': "cache",
+            'Cache-Control': 'public, s-maxage=10, stale-while-revalidate=59',
             "Authorization": "Bearer " + token
         }
     })

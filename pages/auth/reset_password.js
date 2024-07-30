@@ -3,6 +3,7 @@ import { useRouter } from 'next/router'
 import React from 'react'
 
 const ResetPassword = (props) => {
+    
     const router = useRouter()
     const [email, setEmail] = React.useState('')
     const [error, setError] = React.useState(props.error)

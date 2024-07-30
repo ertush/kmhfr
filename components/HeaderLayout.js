@@ -6,7 +6,7 @@ import {
 import { UserCircleIcon } from "@heroicons/react/outline";
 import React, { useState, useEffect, useContext } from "react";
 import { Menu } from "@headlessui/react";
-import { getUserDetails } from "../controllers/auth/auth";
+// import { getUserDetails } from "../controllers/auth/auth";
 import LoadingAnimation from "./LoadingAnimation";
 
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
@@ -19,6 +19,7 @@ import Backdrop from '@mui/material/Backdrop';
 import { CancelRounded } from '@mui/icons-material'
 import { Menu as MenuIcon } from '@mui/icons-material'
 import { groupBy } from "underscore";
+import { IsUserLoggedInCtx } from "../pages";
 
 
 export function DelayedLoginButton() {
@@ -73,9 +74,9 @@ export default function HeaderLayout({
 
   const currentPath = router.asPath.split("?", 1)[0];
 
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  // const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  const [user, setUser] = useState(null);
+  // const [user, setUser] = useState(userCtx);
 
   const [isMobileMenu, setIsMobileMenu] = useState(false)
 
@@ -84,7 +85,7 @@ export default function HeaderLayout({
 
   const [groupID, setGroupID] = useState(userCtx?.groups[0]?.id)
 
-  let API_URL = process.env.NEXT_PUBLIC_API_URL;
+  // const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
   if (
     typeof window !== "undefined" &&
@@ -103,53 +104,54 @@ export default function HeaderLayout({
     path = "/facilities";
   }
 
-  useEffect(() => {
-    let mtd = true;
-    if (mtd) {
-      let is_user_logged_in =
-        (typeof window !== "undefined" &&
-          window.document.cookie.indexOf("access_token=") > -1) ||
-        false;
+  const isLoggedIn = useContext(IsUserLoggedInCtx)
+  // useEffect(() => {
+  //   let mtd = true;
+  //   if (mtd) {
+  //     let is_user_logged_in =
+  //       (typeof window !== "undefined" &&
+  //         window.document.cookie.indexOf("access_token=") > -1) ||
+  //       false;
 
-      let session_token = null;
-      if (is_user_logged_in) {
-        session_token = JSON.parse(
-          window.document.cookie.split("access_token=")[1].split(";")[0]
-        );
-      }
+  //     let session_token = null;
+  //     if (is_user_logged_in) {
+  //       session_token = JSON.parse(
+  //         window.document.cookie.split("access_token=")[1].split(";")[0]
+  //       );
+  //     }
 
-      if (
-        is_user_logged_in &&
-        typeof window !== "undefined" &&
-        session_token !== null
-      ) {
-
-
-        getUserDetails(session_token.token, `${API_URL}/rest-auth/user/`).then(
-          (usr) => {
-
-            console.log('Checking if user is authenticated...')
-            if (usr.error || usr.detail) {
-              setIsLoggedIn(false);
-              setUser(null);
-            } else {
-              usr.id == 6 ? setIsLoggedIn(false) : setIsLoggedIn(true);
-              setUser(usr);
+  //     if (
+  //       is_user_logged_in &&
+  //       typeof window !== "undefined" &&
+  //       session_token !== null
+  //     ) {
 
 
-            }
-          }
-        );
-      } else {
-        console.log("no session. Refreshing...");
+  //       getUserDetails(session_token.token, `${API_URL}/rest-auth/user/`).then(
+  //         (usr) => {
 
-      }
-    }
+  //           console.log('Checking if user is authenticated...')
+  //           if (usr.error || usr.detail) {
+  //             setIsLoggedIn(false);
+  //             setUser(null);
+  //           } else {
+  //             usr.id == 6 ? setIsLoggedIn(false) : setIsLoggedIn(true);
+  //             setUser(usr);
 
-    return () => {
-      mtd = false;
-    };
-  }, []);
+
+  //           }
+  //         }
+  //       );
+  //     } else {
+  //       console.log("no session. Refreshing...");
+
+  //     }
+  //   }
+
+  //   return () => {
+  //     mtd = false;
+  //   };
+  // }, []);
 
 
   useEffect(() => {
@@ -177,11 +179,11 @@ export default function HeaderLayout({
 
 
     <header className='w-full max-h-min flex'>
-      {
+      {/* {
         <pre className="hidden">{
           JSON.stringify({ isLoggedIn, userCtx }, null, 2)
         }</pre>
-      }
+      } */}
       <Head>
         {/*   <title>KMHFR | Home</title> */}
         <link rel="icon" href="/favicon.ico" />
@@ -231,7 +233,7 @@ export default function HeaderLayout({
                           <UserCircleIcon className="h-6 w-6 text-gray-800" />
                         </span>
                         <span className="leading-none text-gray-800 p-0 hidden sm:inline">
-                          {user.full_name || "My account"}
+                          {userCtx?.full_name || "My account"}
                         </span>
                         <span className="leading-none p-0">
                           <ChevronDownIcon className="h-4 w-5" />
@@ -643,7 +645,7 @@ export default function HeaderLayout({
                             <UserCircleIcon className="h-6 w-6" />
                           </span>
                           <span className="leading-none p-0 sm:inline">
-                            {user.full_name || "My account"}
+                            {userCtx?.full_name || "My account"}
                           </span>
                           <span className="leading-none p-0">
                             <ChevronDownIcon className="h-4 w-5" />

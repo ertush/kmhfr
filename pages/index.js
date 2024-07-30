@@ -51,7 +51,7 @@ function Home() {
   const [isOffline, setIsOffline] = useState(props?.offline)
   const currentPath = router.asPath.split("?", 1)[0];
 
-  const isLoggedIn = useContext(IsUserLoggedInCtx)
+  // const isLoggedIn = useContext(IsUserLoggedInCtx)
 
   const userCtx = useContext(UserContext)
 
@@ -62,9 +62,9 @@ function Home() {
 
     setIsClient(true)
 
-    if(userID !== 6){
-      router.push('/dashboard')
-    }
+    // if(userID !== 6){
+    //   router.push('/dashboard')
+    // }
     
 
   }, []);

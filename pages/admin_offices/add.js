@@ -7,22 +7,22 @@ import {
 } from '@heroicons/react/solid';
 import Select from 'react-select';
 import Link from 'next/link'
-import { UserContext } from '../../providers/user';
+import withAuth from '../../components/ProtectedRoute';
+
 
 const FormData = require('form-data');
 
 function AddAdminOffice(props) {
 
-    const userCtx = React.useContext(UserContext);
+    
     // Form drop down options
-    const countyOptions = props['0']?.counties;
-    const subCountyOptions = props['1']?.sub_counties;
+    const countyOptions = props?.counties;
+    const subCountyOptions = props?.sub_counties;
     const [status, setStatus] = useState(null)
     const [isClient, setIsClient] = useState(false)
 
     const [county, setCounty] = useState('');
     const [hide, setHide] = useState(false)
-    const [user, setUser] = useState(userCtx)
 
     // Drop down select options data
     const formRef = useRef(null)
@@ -35,17 +35,20 @@ function AddAdminOffice(props) {
     }
 
 
-    const [subCountyOpt, setSubCountyOpt] = useState('');
+    const [subCountyOpt, setSubCountyOpt] = useState(null);
     const handleSubmit = async (event) => {
         // Stop the form from submitting and refreshing the page.
         event.preventDefault()
         let _payload = {}
-        const formData = new FormData(formRef.current)
+        const formData = new FormData(event.target)
+
         formData.forEach((v, k) => {
             _payload[k] = v
         })
-        _payload['county'] = countyRef.current.state?.value?.value
-        _payload['sub_county'] = subCountyRef.current.state?.value?.value
+        // _payload['county'] = countyRef.current.state?.value?.value
+        // _payload['sub_county'] = subCountyRef.current.state?.value?.value
+
+
 
         let url = '/api/common/submit_form_data/?path=admin_offices'
         try {
@@ -78,10 +81,7 @@ function AddAdminOffice(props) {
 
     useEffect(() => {
         setIsClient(true)
-        setUser(userCtx)
-        if(user.id === 6){
-            router.push('/auth/login')
-        }
+       
     }, [])
 
 
@@ -283,15 +283,14 @@ function AddAdminOffice(props) {
                                 </div>
 
                                 {/* Cancel & Save */}
-                                <div className='flex justify-between items-center w-full'>
-                                    <button type='submit' className='text-gray bg-blue-600 p-2 text-white flex text-md font-semibold'
+                                <div className='flex gap-3 items-center w-full'>
+                                    <button type='submit' className='text-gray bg-blue-600 border-2 border-blue-600 p-2 text-white flex text-md font-semibold'
                                     >
                                         <span className='text-medium font-semibold text-white'>
                                             Save
                                         </span>
                                     </button>
-                                    <button className='flex items-center justify-start space-x-2 p-1 border-2 border-black text-gray px-2'>
-                                        <ChevronDoubleLeftIcon className='w-4 h-4 text-black' />
+                                    <button className='flex items-center justify-start p-2 border-2 border-black text-gray'>
                                         <span className='text-medium font-semibold text-black ' onClick={() => { router.push('admin_offices') }}>
                                             Cancel
                                         </span>
@@ -312,9 +311,9 @@ function AddAdminOffice(props) {
     }
 }
 
-AddAdminOffice.getInitialProps = async (ctx) => {
+export async function getServerSideProps(ctx){
 
-    const allOptions = []
+    const allOptions = {}
 
     const options = [
         'counties',
@@ -323,7 +322,7 @@ AddAdminOffice.getInitialProps = async (ctx) => {
 
 
 
-    return checkToken(ctx.req, ctx.res)
+    const response = (() => checkToken(ctx.req, ctx.res)
         .then(async (t) => {
             if (t.error) {
                 throw new Error('Error checking token');
@@ -336,7 +335,6 @@ AddAdminOffice.getInitialProps = async (ctx) => {
                 for (let i = 0; i < options.length; i++) {
                     const option = options[i]
                     let fields = ''
-                    let _obj = {}
 
                     if (option === 'counties') fields = 'id,name&page_size=47'
                     if (option === 'sub_counties') fields = 'id,name,county'
@@ -356,20 +354,17 @@ AddAdminOffice.getInitialProps = async (ctx) => {
                             },
                         })
 
-                        _obj[option] = (await _data.json()).results.map(({ id, name }) => ({ value: id, label: name }))
-
-
-                        allOptions.push(_obj)
+                        allOptions[option] = (await _data.json()).results.map(({ id, name }) => ({ value: id, label: name }))
 
 
                     }
                     catch (err) {
                         console.log(`Error fetching ${option}: `, err);
-                        allOptions.push({
+                        allOptions[option] ={
                             error: true,
                             err: err,
                             data: []
-                        });
+                        };
                     }
 
                 }
@@ -397,7 +392,12 @@ AddAdminOffice.getInitialProps = async (ctx) => {
                     data: [],
                 };
             }, 1000);
-        });
-};
+    }))()
 
-export default AddAdminOffice;
+    return {
+        props: response
+    }
+
+}
+
+export default withAuth(AddAdminOffice)

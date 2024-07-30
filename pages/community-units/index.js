@@ -603,7 +603,7 @@ export async function getServerSideProps(ctx) {
 				query,
 				token,
 				filters: { ...ft },
-				count: json?.count,
+				count: json?.count ?? null,
 				path: ctx.asPath || '/community-units',
 				current_url: current_url,
 			};
@@ -611,7 +611,7 @@ export async function getServerSideProps(ctx) {
 			// console.log('Error fetching community units: ', err);
 			return {
 				error: true,
-				err: err,
+				err: err ?? null,
 				data: [],
 				query: {},
 				token: null,

@@ -3,7 +3,7 @@ import React, { useEffect, useState, useContext } from 'react';
 import router from 'next/router';
 import MainLayout from '../../components/MainLayout';
 import { checkToken } from '../../controllers/auth/auth';
-import { ChevronDoubleLeftIcon, UserAddIcon, PlusIcon, PencilAltIcon } from '@heroicons/react/solid';
+import { UserAddIcon, PlusIcon, PencilAltIcon } from '@heroicons/react/solid';
 import Select from 'react-select';
 import { withRouter } from 'next/router';
 import Backdrop from '@mui/material/Backdrop';
@@ -311,8 +311,8 @@ function User(props){
 					</div>
 
 					<div className='col-span-5 flex flex-col justify-center items-start px-1 md:px-4 w-full '>
-						<div className=' w-full flex flex-col items-start p-3  border shadow-md'
-							style={{ minHeight: '250px', backgroundColor: '#eff6ff' }}>
+						<div className=' w-full flex flex-col items-start bg-gray-50 rounded p-3  border shadow-md'
+							style={{ minHeight: '250px' }}>
 
 							<>
 								<h4 className='text-lg uppercase pb-2 border-b border-gray-600 w-full mb-4 font-semibold text-gray-900'>
@@ -861,7 +861,6 @@ function User(props){
 									{/* Cancel & Save */}
 									<div className='flex justify-between items-center w-full'>
 										<button className='flex items-center justify-start space-x-2 p-1 border-2 border-black  px-2'>
-											<ChevronDoubleLeftIcon className='w-4 h-4 text-black' />
 											<span className='text-medium font-semibold text-black '>
 												Cancel
 											</span>
@@ -920,6 +919,13 @@ function User(props){
 
 
 export async function getServerSideProps(ctx) {
+
+
+	ctx?.res?.setHeader(
+		'Cache-Control',
+		'public, s-maxage=10, stale-while-revalidate=59'
+	)
+	
 	const zSchema = z.object({
 		id: z.string().optional(),
 	  })

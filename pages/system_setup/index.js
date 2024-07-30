@@ -156,14 +156,6 @@ function SystemSetup(props) {
 
 
     useEffect(() => {
-
-        // setUser(userCtx);
-        // if (user.id === 6) {
-        //     router.push('/auth/login')
-        // }
-
-
-
         setIsClient(true)
     }, [])
 
@@ -2387,7 +2379,7 @@ function SystemSetup(props) {
                                                                                 }),
 
                                                                             }}
-                                                                            options={sbcty_constituency[0].results.map(({ id, name }) => ({ value: id, label: name }))}
+                                                                            options={sbcty_constituency[0]?.results?.map(({ id, name }) => ({ value: id, label: name }))}
                                                                             required
                                                                             placeholder='Select Constituency'
                                                                             key={editData?.constituency}
@@ -4594,7 +4586,7 @@ export async function getServerSideProps(ctx) {
                 console.log('Error fetching facilities: ', err)
                 return {
                     error: true,
-                    err: err,
+                    err: err ?? null,
                     data: [],
                     query: {},
                     path: ctx.asPath || '/system_setup',
@@ -4622,7 +4614,7 @@ export async function getServerSideProps(ctx) {
 
         return {
             error: true,
-            err: err,
+            err: err ?? null,
             data: [],
             query: {},
             path: ctx.asPath || '/system_setup',

@@ -10,6 +10,7 @@ import 'react-dual-listbox/lib/react-dual-listbox.css';
 import { useAlert } from "react-alert";
 import { UserContext } from '../../../providers/user';
 import { hasPermission } from '../../../utils/checkPermissions';
+import withAuth from '../../../components/ProtectedRoute';
 
 function AddGroup(props){
 	const [selPermissions, setselPermissions] = useState([])
@@ -365,7 +366,7 @@ export async function getServerSideProps(ctx) {
 
 	//permissions
 	const fetchData = async (token) => {
-		 let url = API_URL + '/user/permissions/?page_size=500&ordering=name'
+		 let url = API_URL + '/users/permissions/?page_size=500&ordering=name'
 		  let query = { 'searchTerm': '' }
 		  if (ctx?.query?.qf) {
 			  query.qf = ctx.query.qf
@@ -385,31 +386,40 @@ export async function getServerSideProps(ctx) {
 				  'Authorization': 'Bearer ' + token,
 				  'Accept': 'application/json'
 			  }
-		  }).then(r => r.json())
-			  .then(json => {
+		  })
+		.then(r => r.json())
+		.then(json => {
 					return {
-						data: json, query, token, path: ctx.asPath || '/add_group', current_url: current_url 
+						data: json, 
+						query, 
+						token, 
+						path: ctx.asPath ?? '/add_group', 
+						current_url: current_url ?? null
 					}
 				  
 			  }).catch(err => {
 				  console.log('Error fetching permissions: ', err)
 				  return {
 					  error: true,
-					  err: err,
-					  data: [],
-					  query: {},
+					  data: ['Error while fetching Data'],
+					  query: {url},
 					  path: ctx.asPath || '/add_group',
 					  current_url: ''
 				  }
 			  })
 	  }
   
-	const response = (() => checkToken(ctx.req, ctx.res).then(t => {
+	const response = (() => checkToken(ctx.req, ctx.res).then(async (t) => {
 		  if (t.error) {
 			  throw new Error('Error checking token')
 		  } else {
 			  let token = t.token
-			  return fetchData(token).then(t => t)
+			  const data = await fetchData(token)
+
+			  console.log({data})
+
+			  return data
+
 		  }
 	  }).catch(err => {
 		  console.log('Error checking token: ', err)
@@ -423,7 +433,7 @@ export async function getServerSideProps(ctx) {
 		  setTimeout(() => {
 			  return {
 				  error: true,
-				  err: err,
+				  err: err ?? null,
 				  data: [],
 				  query: {},
 				  path: ctx.asPath || '/add_group',
@@ -438,4 +448,4 @@ export async function getServerSideProps(ctx) {
   
 }
   
-  export default AddGroup
+  export default withAuth(AddGroup)

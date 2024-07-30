@@ -16,6 +16,7 @@ import Fade from '@mui/material/Fade';
 // import Alert from '@mui/material/Alert';
 import 'react-dual-listbox/lib/react-dual-listbox.css';
 import {z} from 'zod'
+import withAuth from '../../../../components/ProtectedRoute';
 
 function EditGroup (props) {
     
@@ -397,7 +398,7 @@ export async function getServerSideProps (ctx){
     const API_URL = process.env.NEXT_PUBLIC_API_URL
 
 	const zSchema = z.object({
-		id: z.string().uuid('Should be a uuid string'),
+		id: z.string('Should be a uuid string').optional(),
 	  })
 	
 	
@@ -503,4 +504,4 @@ export async function getServerSideProps (ctx){
   
 }
   
-  export default EditGroup
+  export default withAuth(EditGroup)

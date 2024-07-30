@@ -178,7 +178,7 @@ FacilityDetails.getInitialProps = async (ctx) => {
   const allOptions = [];
 
   const zSchema = z.object({
-    id: z.string().uuid('Should be a uuid string'),
+    id: z.string('Should be a uuid string').optional(),
   })
 
 

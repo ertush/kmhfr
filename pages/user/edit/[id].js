@@ -3,7 +3,7 @@ import React, { useEffect, useState, useContext } from 'react';
 import router from 'next/router';
 import MainLayout from '../../../components/MainLayout';
 import { checkToken } from '../../../controllers/auth/auth';
-import { ChevronDoubleLeftIcon, UserAddIcon, PlusIcon, PencilAltIcon } from '@heroicons/react/solid';
+import { UserAddIcon, PlusIcon, PencilAltIcon } from '@heroicons/react/solid';
 import Select from 'react-select';
 import { withRouter } from 'next/router';
 import Backdrop from '@mui/material/Backdrop';
@@ -24,12 +24,12 @@ function User(props) {
 	const [subCountyOptions, setSubCountyOptions] = useState([])
 	const [editMode, setEditMode] = useState(false)
 	const alert = useAlert()
-	let groups = props[0]?.groups
-	let contact_types = props[1]?.contact_type
-	let counties = props[2]?.counties	
-	let regbodies = props[3]?.regulating_bodies
-	let jobs = props[4]?.job_titles
-	let person_details = props[5]?.person_details
+	const groups = props?.groups
+	const contact_types = props?.contact_type
+	const counties = props?.counties	
+	const regbodies = props?.regulating_bodies
+	const jobs = props?.job_titles
+	const person_details = props?.person_details
 	const userCtx = useContext(UserContext);
 	const [contactList, setContactList] = useState([{}])
 	const [status, setStatus] = useState(null)
@@ -40,8 +40,6 @@ function User(props) {
 	const [isCPasswordDirty, setIsCPasswordDirty] = useState(false);
 	const [isClient, setIsClient] = useState(false);
 
-   
-	
 
 	
 	// console.log({props})
@@ -887,7 +885,6 @@ function User(props) {
 									{/* Cancel & Save */}
 									<div className='flex justify-between items-center w-full'>
 										<button className='flex items-center justify-start space-x-2 p-1 border-2 border-black  px-2'>
-											<ChevronDoubleLeftIcon className='w-4 h-4 text-black' />
 											<span className='text-medium font-semibold text-black '>
 												Cancel
 											</span>
@@ -929,17 +926,19 @@ function User(props) {
 }
 
 export async function getServerSideProps(ctx) {
+
 	const zSchema = z.object({
-		id: z.string().uuid('Should be a uuid string'),
+		id: z.string('Should be a uuid string').optional(),
 	  })
 	
-	
+	  
 	const queryId = zSchema.parse(ctx.query).id
 
 	const API_URL = process.env.NEXT_PUBLIC_API_URL
 
 	
-	const allOptions = []
+	const allOptions = {}
+
 	const options = [
 		'groups',
 		'contact_type',
@@ -969,18 +968,18 @@ export async function getServerSideProps(ctx) {
 								},
 							})
 
-							let results = (await _data.json()).results.map(({ id, name }) => { return { value: id, label: name } })
+							allOptions['groups'] = (await _data.json()).results.map(({ id, name }) => { return { value: id, label: name } })
 
-							allOptions.push({ groups: results })
+							
 
 						}
 						catch (err) {
 							console.log(`Error fetching ${option}: `, err);
-							allOptions.push({
+							allOptions['groups'] = {
 								error: true,
 								err: err,
 								groups: [],
-							});
+							}
 						}
 						break;
 					case 'contact_type':
@@ -994,18 +993,16 @@ export async function getServerSideProps(ctx) {
 								},
 							})
 
-							let results = (await _data.json()).results.map(({ id, name }) => { return { value: id, label: name } })
-
-							allOptions.push({ contact_type: results })
+							allOptions['contact_type'] = (await _data.json()).results.map(({ id, name }) => { return { value: id, label: name } })		
 
 						}
 						catch (err) {
 							console.log(`Error fetching ${option}: `, err);
-							allOptions.push({
+							allOptions['contact_type'] = {
 								error: true,
 								err: err,
 								contact_type: [],
-							});
+							}
 						}
 						break;
 					case 'counties':
@@ -1019,18 +1016,18 @@ export async function getServerSideProps(ctx) {
 								},
 							})
 
-							let results = (await _data.json()).results.map(({ id, name }) => { return { value: id, label: name } })
+							allOptions['counties'] = (await _data.json()).results.map(({ id, name }) => { return { value: id, label: name } })
 
-							allOptions.push({ counties: results })
+							
 
 						}
 						catch (err) {
 							console.log(`Error fetching ${option}: `, err);
-							allOptions.push({
+							allOptions['contact_type'] = {
 								error: true,
 								err: err,
 								counties: [],
-							});
+							}
 						}
 						break;
 					case 'regulating_bodies':
@@ -1044,18 +1041,18 @@ export async function getServerSideProps(ctx) {
 								},
 							})
 
-							let results = (await _data.json()).results.map(({ id, name }) => { return { value: id, label: name } })
+							allOptions['regulating_bodies'] = (await _data.json()).results.map(({ id, name }) => { return { value: id, label: name } })
 
-							allOptions.push({ regulating_bodies: results })
+							
 
 						}
 						catch (err) {
 							console.log(`Error fetching ${option}: `, err);
-							allOptions.push({
+							allOptions['regulating_bodies'] = {
 								error: true,
 								err: err,
 								regulating_bodies: [],
-							});
+							}
 						}
 						break;
 					case 'job_titles':
@@ -1068,17 +1065,17 @@ export async function getServerSideProps(ctx) {
 									Accept: 'application/json',
 								},
 							})
-							let results = (await _data.json()).results.map(({ id, name }) => { return { value: id, label: name } })
-							allOptions.push({ job_titles: results })
+							allOptions['job_titles'] = (await _data.json()).results.map(({ id, name }) => { return { value: id, label: name } })
+							
 
 						}
 						catch (err) {
 							console.log(`Error fetching ${option}: `, err);
-							allOptions.push({
+							allOptions['job_titles'] = {
 								error: true,
 								err: err,
 								job_titles: [],
-							});
+							}
 						}
 						break;
 					case 'individual_details':
@@ -1093,15 +1090,15 @@ export async function getServerSideProps(ctx) {
 									},
 								}).then(r => r.json()).then(resp => { return resp })
 
-								allOptions.push({ person_details: _data })
+								allOptions['person_details'] = _data
 							}
 							catch (err) {
 								console.log(`Error fetching ${option}: `, err);
-								allOptions.push({
+								allOptions['person_details'] = {
 									error: true,
 									err: err,
 									job_titles: [],
-								});
+								}
 							}
 						}
 						break;
@@ -1109,9 +1106,8 @@ export async function getServerSideProps(ctx) {
 				}
 			}
 
-			allOptions.push({
-				token
-			})
+			allOptions['token'] = token
+			
 
 			return allOptions
 		}

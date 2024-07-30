@@ -8,18 +8,17 @@ import {
     ChevronDoubleLeftIcon,
 } from '@heroicons/react/solid';
 import Select from 'react-select';
-import { UserContext } from '../../../providers/user';
 import {z} from 'zod'
+import withAuth from '../../../components/ProtectedRoute';
 
 const _ = require('underscore')
 
 function EditAdminOffice(props) {
 
-    const userCtx = React.useContext(UserContext);
 
     // Form drop down options
-    const  counties = props['0']?.counties ?? {counties: []};
-    const  sub_counties = props['1']?.sub_counties ?? {sub_counties: []};
+    const  counties = props?.counties ?? {counties: []};
+    const  sub_counties = props?.sub_counties ?? {sub_counties: []};
     const  {
         id,
         name,
@@ -30,7 +29,7 @@ function EditAdminOffice(props) {
         county_name,
         sub_county,
         sub_county_name,
-    } = props['2']?.admin_offices ?? {admin_offices: []}
+    } = props?.admin_offices ?? {admin_offices: []}
 
 
 
@@ -49,25 +48,50 @@ function EditAdminOffice(props) {
             sub_county_name,
 
         }
-    const [FormData, setFormData] = useState('');
     const [status, setStatus]=useState(null)
-    const [subCountyOpt, setSubCountyOpt] = useState('');
-    const [hide, setHide]=useState(is_national)
+    const [subCountyOpt, setSubCountyOpt] = useState(null);
+    const [hide, setHide] = useState(is_national)
+    const [isClient, setIsClient] = useState(false)
 
 
-    function onCheck(e) {
-        const checked = e.target.checked;
-        setHide(!hide)
+    function handleCheck(e) {
+
+        if(e.target.checked){
+            setHide(true)
+        } else {
+            setHide(false)
+        }
     }
 
-    const [user, setUser] = useState(userCtx)
     //Form Field data
 
-    const formRef = useRef(null)
+    // const formRef = useRef(null)
     const countyRef = useRef(null)
     const subCountyRef = useRef(null)
 
-    const handleSubmit = async (_payload) => {
+    function handleSubmit (event) {
+        event.preventDefault()
+
+        const values = [];
+
+        const payload = {};
+
+        for(let child of event.target) {
+            if(child.value !== ''){
+                if(child.name == 'is_national') {
+                    values.push([child.name, child.checked])
+                } else {
+                    values.push([child.name, child.value])
+                }
+            }
+        }
+
+        for(let [k, v] of values) {
+              payload[k] = v
+        }
+
+        console.log(JSON.stringify(payload))
+
 
         let url=`/api/common/submit_form_data/?path=edit_admin_offices&id=${id}`
         try{
@@ -77,14 +101,13 @@ function EditAdminOffice(props) {
                     'Content-Type': 'application/json;charset=utf-8'
 
                 },
-                method:'PATCH',
-                body: JSON.stringify(_payload)
+                method:'POST',
+                body: JSON.stringify(payload)
             })
-                .then(resp =>resp)
-                .then(res =>{
+                .then(resp => resp)
+                .then(res => {
 
-
-                    if(res.status==200){
+                    if(res.ok){
                         router.push('/admin_offices')
                     }
                 })
@@ -98,15 +121,8 @@ function EditAdminOffice(props) {
         }
      
     }
+
     useEffect(() => {
-
-        if (typeof window !== 'undefined') {
-            let usr = window.sessionStorage.getItem('user')
-            if (usr && usr.length > 0) {
-                setUser(JSON.parse(usr))
-            }
-        }
-
         // Pre-fetch values for drop down
             if(countyRef.current){
                 countyRef.current.state.value = countyOptions.filter(({value}) => value === county)[0] || ''
@@ -117,6 +133,7 @@ function EditAdminOffice(props) {
             }
 
     }, [])
+
     const deleteOffice=(event)=>{
         event.preventDefault()
         try {
@@ -142,12 +159,11 @@ function EditAdminOffice(props) {
     }
 
     useEffect(() => {
-        setUser(userCtx)
-        if(user.id === 6){
-            router.push('/auth/login')
-        }
+       setIsClient(true)
     }, [])
 
+
+    if(isClient){
     return (
         <MainLayout isLoading={false} searchTerm={props?.query?.searchTerm}>
             <div className="w-full  md:w-[85%] md:mx-auto grid grid-cols-5 gap-4 px-4 md:px-0 py-2 my-4">
@@ -175,33 +191,15 @@ function EditAdminOffice(props) {
 
                 </div>
 
+
                 <div className='col-span-5 flex flex-col justify-center items-start px-1 md:px-4 w-full '>
-                    <div className=' w-full flex flex-col items-start p-3 shadow-md'
-                         style={{ minHeight: '250px', backgroundColor: '#eff6ff' }}>
+                    <div className=' w-full flex flex-col items-start bg-gray-50 rounded p-4 shadow-md'
+                         style={{ minHeight: '250px'}}>
 
-                        <Formik
-                            initialValues={{
-                                name: name ?? '',
-                                is_national: is_national ?? false,
-                                email: email ?? '',
-                                phone_number: phone_number ?? '',
-                            }}
-                            onSubmit={ async (values) =>{
-                                let formData = values
-                                formData['county'] = countyRef.current.state?.value?.value
-                                formData['sub_county'] = subCountyRef.current.state?.value?.value
-
-                                let payload={}
-                                const _payload =_.omit(values, function (v, k){
-                                    return officeData[k] === v})
-                                await handleSubmit(_payload)
-
-                            }}
-
-                        >
                             {/*    Bio Details*/}
-                            <Form
+                            <form
                                 className='flex flex-col w-full items-start justify-start gap-3'
+                                onSubmit={handleSubmit}
                             >
                                 {/* Office Name*/}
                                 <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
@@ -214,10 +212,11 @@ function EditAdminOffice(props) {
                                             *
                                                 </span>
                                     </label>
-                                    <Field
+                                    <input
                                         required
                                         type='text'
                                         name='name'
+                                        defaultValue={name}
                                         className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                     />
                                 </div>
@@ -225,11 +224,12 @@ function EditAdminOffice(props) {
                                 {/* national */}
                                 <div className='w-full flex flex-row items-center justify-start gap-1 mb-3'>
                                     
-                                    <Field
+                                    <input
                                             type ="checkbox"
                                             name='is_national'
                                             id='is_national'
-                                            onClick={onCheck}
+                                            onChange={handleCheck}
+                                            defaultChecked={is_national}
 
                                         />
                                     <label
@@ -269,13 +269,16 @@ function EditAdminOffice(props) {
 
                                         }}
                                         options={countyOptions || []}
-                                        ref={countyRef}
                                         // required
+                                        defaultValue={{
+                                            value: county,
+                                            label: county_name
+                                        }}
                                         placeholder='Select County'
                                         onChange={async (ev) => {
                                             if( ev.value.length > 0){
 
-                                                setFormData(String(ev.label).toLocaleUpperCase())
+                                                // setFormData(String(ev.label).toLocaleUpperCase())
 
                                                 try{
                                                     const resp = await fetch(`/api/filters/subcounty/?county=${ev.value}${"&fields=id,name,county&page_size=30"}`)
@@ -293,7 +296,6 @@ function EditAdminOffice(props) {
                                             }
                                         }}
                                         name='county'
-
                                         className='flex-none w-full bg-transparent border border-gray-600 flex-grow  placehold-gray-500 focus:border-gray-200 outline-none'
                                     />
                                 </div>
@@ -306,7 +308,7 @@ function EditAdminOffice(props) {
                                         Sub-County
                                         <span className='text-medium leading-12 font-semibold'>
                                             *
-                                                </span>
+                                        </span>
                                     </label>
                                     <Select
                                      styles={{
@@ -323,12 +325,15 @@ function EditAdminOffice(props) {
 
                                     }}
                                         options={subCountyOpt ?? subCountyOptions}
+                                        defaultValue={
+                                            {
+                                                value: sub_county,
+                                                label: sub_county_name
+                                            }
+                                        }
                                         // required
-                                        ref={subCountyRef}
                                         placeholder='Select Sub County'
                                         name='sub_county'
-
-
                                         className='flex-none w-full bg-transparent border border-gray-600 flex-grow  placehold-gray-500  focus:eenr6er-gray-200 outline-none'
                                     />
                                 </div>
@@ -345,10 +350,11 @@ function EditAdminOffice(props) {
                                             *
                                                 </span>
                                     </label>
-                                    <Field
+                                    <input
                                         required
                                         type='email'
                                         name='email'
+                                        defaultValue={email}
                                         className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                     />
                                 </div>
@@ -363,31 +369,31 @@ function EditAdminOffice(props) {
                                             *
                                                 </span>
                                     </label>
-                                    <Field
+                                    <input
                                         required
                                         type='number'
+                                        defaultValue={phone_number}
                                         name='phone_number'
                                         className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                     />
                                 </div>
 
                                 {/* Cancel & Save */}
-                                <div className='flex justify-between items-center w-full'>
-                                    <button type='submit' className=' bg-blue-600 p-2 text-white flex text-md font-semibold '
+                                <div className='flex gap-3 items-center w-full'>
+                                    <button type='submit' className=' bg-blue-600 p-2 text-white border-2 border-blue-600 flex text-md font-semibold '
                                     >
                                  <span className='text-medium font-semibold text-white'>
                                     Update
                                  </span>
                                     </button>
-                                    <button className='flex items-center justify-start space-x-2 p-1 border border-black  px-2'>
-                                        <ChevronDoubleLeftIcon className='w-4 h-4 text-black' />
+                                    <button className='flex items-center justify-start  p-2 border border-black '>
                                         <span className='text-medium font-semibold text-black 'onClick={() => {router.push('admin_offices')}} >
                                                    Cancel
                                                 </span>
                                     </button>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
                                 </div>
-                            </Form>
-                        </Formik>
+                            </form>
+                        
 
                     </div>
                 </div>
@@ -395,12 +401,16 @@ function EditAdminOffice(props) {
         </MainLayout>
 
     )
+    }
+    else {
+        return null
+    }
 }
 
-EditAdminOffice.getInitialProps = async (ctx) => {
+export async function getServerSideProps (ctx) {
    
 
-    const allOptions = []
+    const allOptions = {}
     const options = [
 
         'filtering_summaries',
@@ -408,7 +418,7 @@ EditAdminOffice.getInitialProps = async (ctx) => {
     ]
 
     const zSchema = z.object({
-        id: z.string().uuid('Should be a uuid string'),
+        id: z.string('Should be a uuid string').optional(),
       })
     
     
@@ -430,142 +440,143 @@ EditAdminOffice.getInitialProps = async (ctx) => {
         }
     }
 
-return checkToken(ctx.req, ctx.res).then(async (t) => {
+    const response = (() => checkToken(ctx.req, ctx.res).then(async (t) => {
 
-        if (t.error) {
-            throw new Error('Error checking token')
-        } else {
+            if (t.error) {
+                throw new Error('Error checking token')
+            } else {
 
-            let token = t.token;
-            let url = '';
-
-
-
-            for(let i = 0; i < options.length; i++) {
-                const option = options[i]
-
-                switch(option) {
-                    case 'filtering_summaries':
-
-                        // fetch counties
-
-                        url = `${process.env.NEXT_PUBLIC_API_URL}/common/counties/?page_size=50&page=1`;
-
-                        try{
-                            
-
-                            const _data = await fetch(url, {
-                                headers: {
-                                    Authorization: 'Bearer ' + token,
-                                    Accept: 'application/json',
-                                },
-                            })
-
-                            let counties = (await _data.json())?.results
-
-                            allOptions.push({counties})
-
-                            // fetch sub counties
-
-                            if(_data.statusText == 'OK'){
-
-                                try {
+                let token = t.token;
+                let url = '';
 
 
-                                    url = `${process.env.NEXT_PUBLIC_API_URL}/common/sub_counties/?page_size=20000&page=1`;
-                                        
 
-                                    const __data = await fetch(url, {
-                                        headers: {
-                                            Authorization: 'Bearer ' + token,
-                                            Accept: 'application/json',
-                                        },
-                                    })
+                for(let i = 0; i < options.length; i++) {
+                    const option = options[i]
 
-                                    let sub_counties = (await __data.json())?.results
+                    switch(option) {
+                        case 'filtering_summaries':
 
-                                    allOptions.push({sub_counties})
+                            // fetch counties
 
-                                }
+                            url = `${process.env.NEXT_PUBLIC_API_URL}/common/counties/?page_size=50&page=1`;
 
-                                catch (e) {
-                                    console.error('Unable to fetch sub counties: ', e.message)
-                                }
-                        
-                                  
+                            try{
                                 
-                            }
 
-                        }
-                        catch(err) {
-                            console.log(`Error fetching ${option}: `, err);
-                            allOptions.push({
-                                error: true,
-                                err: err.message,
-                                filtering_summaries: [],
-                            });
-                        }
-                        break;
-                    case 'admin_offices':
-
-                        url = `/api/common/fetch_form_data/?path=admin_offices&id=${queryId}`
-
-                        try{
-
-                            const _data = await fetch(url,
-                                {
-									headers: {
-										Authorization: 'Bearer ' + token,
-										Accept: 'application/json',
-									}
+                                const _data = await fetch(url, {
+                                    headers: {
+                                        Authorization: 'Bearer ' + token,
+                                        Accept: 'application/json',
+                                    },
                                 })
 
-                            let admin_offices  = (await _data.json())
-                           
+                                allOptions['counties'] = (await _data.json())?.results
 
-                            allOptions.push({admin_offices})
+                                
+                                // fetch sub counties
+
+                                if(_data.statusText == 'OK'){
+
+                                    try {
 
 
-                        }
-                        catch(err) {
-                            console.log(`Error fetching ${option}: `, err);
-                            allOptions.push({
-                                error: true,
-                                err: err.message,
-                                admin_offices: [],
-                            });
-                        }
-                        break;
-                    default:
-                        break;
+                                        url = `${process.env.NEXT_PUBLIC_API_URL}/common/sub_counties/?page_size=20000&page=1`;
+                                            
 
+                                        const __data = await fetch(url, {
+                                            headers: {
+                                                Authorization: 'Bearer ' + token,
+                                                Accept: 'application/json',
+                                            },
+                                        })
+
+                                        allOptions['sub_counties'] = (await __data.json())?.results
+
+
+                                    }
+
+                                    catch (e) {
+                                        console.error('Unable to fetch sub counties: ', e.message)
+                                    }
+                            
+                                    
+                                    
+                                }
+
+                            }
+                            catch(err) {
+                                console.log(`Error fetching ${option}: `, err);
+                                allOptions[option] = {
+                                    error: true,
+                                    err: err.message,
+                                    filtering_summaries: [],
+                                }
+                            }
+                            break;
+                        case 'admin_offices':
+
+                            url = `${process.env.NEXT_PUBLIC_API_URL}/admin_offices/${queryId}/`
+
+                            // console.log({url, token})
+                            try{
+
+                                const _data = await fetch(url,
+                                    {
+                                        headers: {
+                                            'Authorization': `Bearer ${token}`,
+                                            'Accept': 'application/json',
+                                        }
+                                    })
+
+                                    allOptions['admin_offices'] = (await _data.json())
+                                    
+
+
+
+                            }
+                            catch(err) {
+                                console.log(`Error fetching ${option}: `, err);
+                                allOptions[option] = {
+                                    error: true,
+                                    err: err.message,
+                                    admin_offices: [],
+                                }
+                            }
+                            break;
+                        default:
+                            break;
+
+                    }
+                }
+
+
+
+                return allOptions
+
+            }
+        }).catch(err => {
+            console.log('Error checking token: ', err)
+            if (typeof window !== 'undefined' && window) {
+                if (ctx?.asPath) {
+                    window.location.href = ctx?.asPath
+                } else {
+                    window.location.href = '/admin_offices'
                 }
             }
+            setTimeout(() => {
+                return {
+                    error: true,
+                    err: err.message,
+                    data: [],
+                }
+            }, 1000);
+        }))()
 
 
-
-            return allOptions
-
-        }
-    }).catch(err => {
-        console.log('Error checking token: ', err)
-        if (typeof window !== 'undefined' && window) {
-            if (ctx?.asPath) {
-                window.location.href = ctx?.asPath
-            } else {
-                window.location.href = '/admin_offices'
-            }
-        }
-        setTimeout(() => {
-            return {
-                error: true,
-                err: err.message,
-                data: [],
-            }
-        }, 1000);
-    })
-
-
+    return {
+        props: response
+    }
 }
 
-export default EditAdminOffice;
+export default withAuth(EditAdminOffice)
