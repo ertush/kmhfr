@@ -11,6 +11,8 @@ import 'react-datepicker/dist/react-datepicker.css';
 import propTypes from 'prop-types'
 import dynamic from 'next/dynamic'
 import withAuth from '../../components/ProtectedRoute'
+import {v4 as uuid} from 'uuid'
+// import uuid from 'react-use-uuid'
 
 
 const Map = memo(dynamic(
@@ -406,7 +408,7 @@ function Dashboard(props) {
         const subCounty = document.querySelector("#sub-county-filter")
         const ward = document.querySelector("#ward-filter")
 
-        console.log({ value })
+        // console.log({ value })
         router.push({
             pathname: '/dashboard',
             query: {
@@ -699,7 +701,7 @@ function Dashboard(props) {
                                     <div className="w-full flex md:flex-row flex-col gap-4 md:gap-0 justify-between">
                                         {/* <pre>
                                             {
-                                                getTitle()
+                                                JSON.stringify({props}, null, 2)
                                             }
                                         </pre> */}
 
@@ -747,9 +749,11 @@ function Dashboard(props) {
                                                 {
                                                     (groupID == 5 || groupID == 7) &&
                                                     props?.filters?.county && props?.filters?.county.length > 0 &&
-                                                    Object.keys(props?.filters)?.map(ft => (
+                                                    Object.keys(props?.filters)?.map(ft => {
+                                                        const id = uuid()
+                                                        return(
                                                         <Select
-                                                            key={ft}
+                                                            key={id}
                                                             className="max-w-max md:w-[250px] rounded border border-gray-400"
                                                             styles={{
                                                                 control: (baseStyles) => ({
@@ -770,16 +774,19 @@ function Dashboard(props) {
                                                             options={countyOptions(filters, ft)}
                                                             placeholder={`Select ${ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}`}
                                                             onChange={handleCountyOrgUnitChange} />
-                                                    ))}
+                                                        )
+                                                })}
 
                                                 {/* county user */}
 
                                                 {groupID === 1 &&
                                                     <div className="max-w-min">
                                                         {Array.isArray(subCounties?.subCounties) && subCounties?.subCounties.length > 0 &&
-                                                            Object.keys(subCounties)?.map(ft => (
+                                                            Object.keys(subCounties)?.map((ft) => {
+                                                        const id = uuid()
+                                                        return  (
                                                                 <Select
-                                                                    key={ft}
+                                                                    key={id}
                                                                     className="max-w-max md:w-[250px] rounded border border-gray-400"
                                                                     styles={{
                                                                         control: (baseStyles) => ({
@@ -803,7 +810,8 @@ function Dashboard(props) {
                                                                     placeholder={`Select ${ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(" ").slice(1)}`}
                                                                     onChange={handleSubCountyOrgUnitChange} />
 
-                                                            ))}
+                                                            )
+                                                            })}
                                                     </div>
                                                 }
                                                 {/* sub_county user */}
@@ -812,8 +820,11 @@ function Dashboard(props) {
                                                     <div className="flex">
 
                                                         {wards && Object.keys(wards).length > 0 &&
-                                                            Object.keys(wards)?.map(ft => (
+                                                            Object.keys(wards)?.map(ft => {
+                                                                const id = uuid()
+                                                                return (
                                                                 <Select name={ft}
+                                                                     key={id}
                                                                     className="max-w-max md:w-[250px] rounded border border-gray-400"
                                                                     styles={{
                                                                         control: (baseStyles) => ({
@@ -834,7 +845,7 @@ function Dashboard(props) {
                                                                     placeholder={`Select ${ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}`}
                                                                     onChange={handleWardOrgUnitChange} />
 
-                                                            ))}
+                                                            )})}
                                                     </div>
                                                 }
 
@@ -1376,7 +1387,6 @@ Dashboard.defaultProps = {
 
 export async function getServerSideProps(ctx) {
 
-
     ctx?.res?.setHeader(
         'Cache-Control',
         'public, s-maxage=10, stale-while-revalidate=59'
@@ -1445,6 +1455,7 @@ export async function getServerSideProps(ctx) {
 
     const dashboard = await fetchDashboardData(token)
 
+    console.log({dashboard: dashboard?.data})
 
     if (dashboard?.data) {      // console.log({ft, query})
         return {

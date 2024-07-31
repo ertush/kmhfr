@@ -1,7 +1,7 @@
 // import Link from 'next/link'
-import { useRouter } from 'next/router'
+// import { useRouter } from 'next/router'
 import React, { useState, useEffect } from 'react';
-import { getUserDetails } from '../controllers/auth/auth'
+// import { getUserDetails } from '../controllers/auth/auth'
 // import LoadingAnimation from './LoadingAnimation';
 import HeaderLayout from './HeaderLayout';
 import Link from 'next/link'
@@ -11,10 +11,11 @@ import { Analytics } from '@vercel/analytics/react';
 
 
 
-export default function MainLayout({ children, isLoading, searchTerm, isFullWidth, classes }) {
-    const router = useRouter()
-    const [isLoggedIn, setIsLoggedIn] = useState(false)
-    const [user, setUser] = useState(null)
+export default function MainLayout({ children, searchTerm }) {
+
+    // const router = useRouter()
+    // const [isLoggedIn, setIsLoggedIn] = useState(false)
+    // const [user, setUser] = useState(null)
     const [isClient, setIsClient] = useState(false)
 
     // const alert = useAlert()
@@ -23,70 +24,75 @@ export default function MainLayout({ children, isLoading, searchTerm, isFullWidt
     // console.log({isLoggedIn})
 
 
-    let API_URL = process.env.NEXT_PUBLIC_API_URL
-    if (typeof window !== 'undefined' && window.location.hostname === '127.0.0.1') {
-        API_URL = 'http://localhost:8000/api'
-    }
+    // let API_URL = process.env.NEXT_PUBLIC_API_URL
+    // if (typeof window !== 'undefined' && window.location.hostname === '127.0.0.1') {
+    //     API_URL = 'http://localhost:8000/api'
+    // }
 
     //check if a session cookie is set
-    let path = router.asPath
-    if (path.includes('facilities') || path.includes('facility')) {
-        path = '/facilities'
-    } else if (path.includes('community')) {
-        path = '/community-units'
-    } else {
-        path = '/facilities'
-    }
+    // let path = router.asPath
+    // if (path.includes('facilities') || path.includes('facility')) {
+    //     path = '/facilities'
+    // } else if (path.includes('community')) {
+    //     path = '/community-units'
+    // } else {
+    //     path = '/facilities'
+    // }
 
 
-    useEffect(() => {
-      if(!isLoggedIn){
-        // alert.info('You are currently offline. Redirecting to home page')
+    // useEffect(() => {
+    //   if(!isLoggedIn){
+    //     // alert.info('You are currently offline. Redirecting to home page')
 
-        const timeOut = setTimeout(() => {
+    //     const timeOut = setTimeout(() => {
           
-          router.push('/')
+    //       router.push('/')
 
-        }, 4000)
+    //     }, 4000)
 
-        return () => {
-          clearTimeout(timeOut)
-        }
-      }
-    }, [isLoggedIn])
+    //     return () => {
+    //       clearTimeout(timeOut)
+    //     }
+    //   }
+    // }, [isLoggedIn])
   
 
-    useEffect(() => {
+    // useEffect(() => {
 
-      setIsClient(true)
-        let mtd = true
-        if (mtd) {
-            let is_user_logged_in = (typeof window !== 'undefined' && window.document.cookie.indexOf('access_token=') > -1) || false
-            setIsLoggedIn(is_user_logged_in)
-            let session_token = null
-            if (is_user_logged_in) {
-                session_token = JSON.parse(window.document.cookie.split('access_token=')[1].split(';')[0])
-            }
+    //   setIsClient(true)
+    //     let mtd = true
+    //     if (mtd) {
+    //         let is_user_logged_in = (typeof window !== 'undefined' && window.document.cookie.indexOf('access_token=') > -1) || false
+    //         setIsLoggedIn(is_user_logged_in)
+    //         let session_token = null
+    //         if (is_user_logged_in) {
+    //             session_token = JSON.parse(window.document.cookie.split('access_token=')[1].split(';')[0])
+    //         }
 
-            if (is_user_logged_in && typeof window !== 'undefined' && session_token !== null) {
-                console.log('active session found')
+    //         if (is_user_logged_in && typeof window !== 'undefined' && session_token !== null) {
+    //             console.log('active session found')
               
-                getUserDetails(session_token.token, `${API_URL}/rest-auth/user/`).then(usr => {
-                    if (usr.error || usr.detail) {
-                        setIsLoggedIn(false)
-                        setUser(null)
-                    } else {
-                        setIsLoggedIn(true)
-                        setUser(usr)
-                    }
-                })
-            } else {
-                console.log('no session. Refreshing...')
+    //             getUserDetails(session_token.token, `${API_URL}/rest-auth/user/`).then(usr => {
+    //                 if (usr.error || usr.detail) {
+    //                     setIsLoggedIn(false)
+    //                     setUser(null)
+    //                 } else {
+    //                     setIsLoggedIn(true)
+    //                     setUser(usr)
+    //                 }
+    //             })
+    //         } else {
+    //             console.log('no session. Refreshing...')
             
-            }
-        }
-        return () => { mtd = false }
+    //         }
+    //     }
+    //     return () => { mtd = false }
+    // }, [])
+
+    useEffect(() => {
+      setIsClient(true)
     }, [])
+
 
     if(isClient){
     return (

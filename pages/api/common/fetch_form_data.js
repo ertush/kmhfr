@@ -32,7 +32,7 @@ export default async function fetchFormData(req, res) {
             }
 
             try {
-                console.log({url})
+                // console.log({url})
                 const resp = await fetch(url, {
                     headers: {
                         'Authorization': 'Bearer ' + token,

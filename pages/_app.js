@@ -11,7 +11,7 @@ import AlertTemplate from "react-alert-template-basic";
 import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
 import { useEffect, useState } from 'react';
-import { getUserDetails } from "../controllers/auth/public_auth";
+// import { getUserDetails } from "../controllers/auth/public_auth";
 import { IsUserLoggedInCtx } from '.';
 
 function LoadAnimation({open}) {
@@ -37,15 +37,16 @@ export default function App(props) {
  
   const router = useRouter()
   const [isNavigating, setIsNavigating] = useState(false)
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [user, setUser] = useState(null);
+
+  // const [isLoggedIn, setIsLoggedIn] = useState(false);
+  // const [user, setUser] = useState(null);
 
  
-
   const  { Component, pageProps } = props
 
 
   useEffect(() => {
+
     router.events.on('routeChangeStart', () => {setIsNavigating(true)}); 
     router.events.on('routeChangeComplete', () => {setIsNavigating(false)}); 
     router.events.on('routeChangeError', () => {setIsNavigating(false)}); 
@@ -61,61 +62,66 @@ export default function App(props) {
     let mtd = true;
 
 
-    function initializePage() {
+    // function initializePage() {
 
-       const API_URL = process.env.NEXT_PUBLIC_API_URL;
+      //  const API_URL = process.env.NEXT_PUBLIC_API_URL;
        
       //  console.log(router.asPath)
 
       if (mtd) {
 
         // console.log(' Checking if user is logged in ..')
-        const is_user_logged_in = (typeof window !== "undefined" && window.document.cookie.indexOf("access_token=") > -1) || false;
+       
+        // if (typeof window !== "undefined") {
+            
 
-        setIsLoggedIn(is_user_logged_in)
-        
-        let session_token = null;
+          // }
 
-        if (is_user_logged_in) {
-          session_token = JSON.parse(
-            window.document.cookie.split("access_token=")[1].split(";")[0]
-          );
-        }
-  
-        if (
-            // !is_user_logged_in
-            typeof window == "undefined" &&
-            session_token == null
+        // (typeof window !== "undefined" && window.document.cookie.indexOf("access_token=") > -1) || false;
+
         
-        ) {
-          console.log('Fetching User....')
-          getUserDetails(session_token.token, `${API_URL}/rest-auth/user/`).then(
-            (usr) => {
+        // let session_token = null;
+
+        // if (is_user_logged_in) {
+        //   session_token = JSON.parse(
+        //     window.document.cookie.split("access_token=")[1].split(";")[0]
+        //   );
+        // }
   
-              if (usr.error || usr.detail) {
-                setIsLoggedIn(false);
-                setUser(null);
-              } else {
+        // if (
+        //     // !is_user_logged_in
+        //     typeof window == "undefined" &&
+        //     session_token == null
+        
+        // ) {
+        //   console.log('Fetching User....')
+        //   getUserDetails(session_token.token, `${API_URL}/rest-auth/user/`).then(
+        //     (usr) => {
+  
+        //       if (usr.error || usr.detail) {
+        //         setIsLoggedIn(false);
+        //         setUser(null);
+        //       } else {
                 
-                if(usr.type !== undefined) {
-                   console.log({usr})
-                   usr.type == 6  ? setIsLoggedIn(false) : setIsLoggedIn(true);
-                }
+        //         if(usr.type !== undefined) {
+        //            console.log({usr})
+        //            usr.type == 6  ? setIsLoggedIn(false) : setIsLoggedIn(true);
+        //         }
   
-                setUser(usr);
+        //         setUser(usr);
   
-              }
-            }
-          );
-        } else {
+        //       }
+        //     }
+        //   );
+        // } else {
 
-          console.log("no session. Refreshing...");
-          // router.push('/auth/login')
-        }
+        //   console.log("no session. Refreshing...");
+        //   // router.push('/auth/login')
+        // }
       }
-    }
+    // }
 
-   initializePage()
+  //  initializePage()
     
     // Logout after 20 mins of inactivity
     const time = 60 * 1000 * 20
@@ -134,18 +140,29 @@ export default function App(props) {
     
     <Provider template={AlertTemplate} {...options}>
       <IsUserLoggedInCtx.Provider value={
-        isLoggedIn
+        (() => {
+        if (typeof window !== "undefined") {
+          
+            const _user = JSON.parse(window.localStorage.getItem('user'))
+
+            console.log({_user})
+
+            if(_user && _user?.id !== 6) {
+                return true
+            } else {
+              return false
+            }
+        }
+        })()
       }>
         <UserContext.Provider value={(() => {
-            let _user
-            if (typeof window !== "undefined") {
-                  
-                  _user = JSON.parse(window.localStorage.getItem('user'))
-            }
-            
-          return _user ?? user
-          
-          })()}>
+           
+        if (typeof window !== "undefined") {
+                
+          return  JSON.parse(window.localStorage.getItem('user'))     
+
+        }
+        })()}>
 
           <UserGroupContext.Provider value={(() => {
             let userGroup
@@ -153,7 +170,7 @@ export default function App(props) {
                   //  userGroup = JSON.parse(window.sessionStorage.getItem('user'))?.groups[0]?.name
                   userGroup = JSON.parse(window.localStorage.getItem('user'))?.groups[0]?.name
           }
-            return userGroup ?? user?.groups[0]?.name
+            return userGroup
           })()}>
 
           <PermissionContext.Provider value={(() => {
@@ -162,8 +179,9 @@ export default function App(props) {
                   // userPermissions = JSON.parse(window.sessionStorage.getItem('user'))?.all_permissions
                   userPermissions = JSON.parse(window.localStorage.getItem('user'))?.all_permissions
           }
-          return userPermissions ?? user?.all_permissions
-          
+
+          return userPermissions  
+
           })()}>
             {
               isNavigating && <LoadAnimation open={true} />
