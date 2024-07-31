@@ -184,9 +184,10 @@ const logUserIn = (req, res, creds, was) => {
 }
 
 function getUserDetails (token, url) {
+    let savedSession = null
     if (typeof window != "undefined") {
        
-        let savedSession = window.localStorage.getItem('user')
+        savedSession = window.localStorage.getItem('user')
         if (savedSession && savedSession.length > 0) {
             savedSession = JSON.parse(window.localStorage.getItem('user'))
         }
@@ -196,7 +197,6 @@ function getUserDetails (token, url) {
         }
         // // console.log('W getUserDetails URL: ',url)
     }
-
 
 
     return fetch(url, {
@@ -229,8 +229,8 @@ function getUserDetails (token, url) {
                 error: true, message: err.message || err
             }
         })
+    }
 
-}
 
 const getUserContacts = async (token, url) => {
     return fetch(url, {
