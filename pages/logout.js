@@ -3,17 +3,18 @@ import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import MainLayout from '../components/MainLayout'
 import useSWR from 'swr'
-import { checkToken } from '../controllers/auth/public_auth'
+// import { checkToken } from '../controllers/auth/public_auth'
 import { useSearchParams } from 'next/navigation'
 import withAuth from '../components/ProtectedRoute'
 
 
-function Logout (props) {
+function Logout (/*props*/) {
+
     const router = useRouter()
 
     const [isClient, setIsClient] = useState(false)
 
-    const pageParams = useSearchParams()
+    // const pageParams = useSearchParams()
 
     async function logout(url) {
 
@@ -42,26 +43,24 @@ function Logout (props) {
 
         
                 if (!data?.error && !data?.detail /*&& props?.response*/) {
+                    console.log('Logging Out...')
                     if (typeof window !== 'undefined') {
+                        console.log('Logging out user ...')
                         window.sessionStorage.removeItem('user')
                         window.localStorage.removeItem('user')
                         window.localStorage.clear()
                         window.document.cookie = 'access_token=; expires=Thu, 01 Jan 1970 00:00:00 GMT;'
                         router.push('/')
-
                     } else {
+                        console.log('Clearing Cookies Out...')
+                        window.sessionStorage.removeItem('user')
+                        window.localStorage.removeItem('user')
+                        window.localStorage.clear();
                         const cookieCutter = require('cookie-cutter')
                         cookieCutter.set('access_token', '', "{}", { expires: new Date(0), httpOnly: false })
                     }
-                } else {
-                        // window.localStorage.clear()  
-                        router.replace(pageParams.get('previous_path'))
-
-
                 }
-            
-    
-        // }, 1000);
+      
 
     }, [])
 

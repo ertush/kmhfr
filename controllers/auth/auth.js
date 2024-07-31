@@ -219,7 +219,7 @@ function getUserDetails (token, url) {
             if (typeof window !== "undefined") {
                 // // console.log('getUserDetails returning ', response)
                 // window.sessionStorage.setItem('user', JSON.stringify(response))
-                console.log('[+] Storing user details on localstorage')
+                console.log('[+] Storing user details on localstorage......')
                 window.localStorage.setItem('user', JSON.stringify(response))
             }
             return response

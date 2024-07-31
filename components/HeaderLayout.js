@@ -18,7 +18,7 @@ import { CloseOutlined, Login, Logout } from '@mui/icons-material'
 import Backdrop from '@mui/material/Backdrop';
 import { CancelRounded } from '@mui/icons-material'
 import { Menu as MenuIcon } from '@mui/icons-material'
-import { groupBy } from "underscore";
+// import { groupBy } from "underscore";
 import { IsUserLoggedInCtx } from "../pages";
 
 
@@ -105,6 +105,8 @@ export default function HeaderLayout({
   }
 
   const isLoggedIn = useContext(IsUserLoggedInCtx)
+
+  
   // useEffect(() => {
   //   let mtd = true;
   //   if (mtd) {
@@ -220,6 +222,10 @@ export default function HeaderLayout({
                 </Link>
 
                 {/* Title */}
+
+                {/* <pre>{
+                  JSON.stringify({isLoggedIn}, null, 2)
+                  }</pre> */}
 
                 {/* Login / Logout button */}
                 {isLoggedIn ? (
