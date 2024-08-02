@@ -34,8 +34,8 @@ export function FacilityContactsForm() {
     const jobTitleOptions = options.job_titles;
     const submitType = useRef(null)
 
-    const facilityContactUuid = uuid()
-    const officerContactUuid = uuid()
+    // const facilityContactUuid = uuid()
+    // const officerContactUuid = uuid()
 
 
 
@@ -47,16 +47,21 @@ export function FacilityContactsForm() {
     facilityContactsData['officer_reg_no'] = options?.data?.officer_in_charge?.reg_no;
     facilityContactsData['officer_title'] = options?.data?.officer_in_charge?.title;
 
-
+    const editContactsUids = [];
     options?.data?.facility_contacts?.forEach((contact) => {
-        facilityContactsData[`contact_${facilityContactUuid}`] = contact.contact
-        facilityContactsData[`contact_type_${facilityContactUuid}`] = options.contact_types?.find(({ label }) => label == contact?.contact_type_name)?.value;
+        const uid = uuid()
+        editContactsUids.push(uid)
+        facilityContactsData[`contact_${uid}`] = contact.contact
+        facilityContactsData[`contact_type_${uid}`] = options.contact_types?.find(({ label }) => label == contact?.contact_type_name)?.value;
     })
 
 
+    const editOfficerContactsUids = [];
     options?.data?.officer_in_charge?.contacts?.forEach((contact) => {
-        facilityContactsData[`officer_details_contact_${officerContactUuid}`] = contact?.contact
-        facilityContactsData[`officer_details_contact_type_${officerContactUuid}`] = options.contact_types?.find(({ label }) => label == contact?.contact_type_name)?.value;
+        const uid = uuid()
+        editOfficerContactsUids.push(uid)
+        facilityContactsData[`officer_details_contact_${uid}`] = contact?.contact
+        facilityContactsData[`officer_details_contact_type_${uid}`] = options.contact_types?.find(({ label }) => label == contact?.contact_type_name)?.value;
     })
 
 
@@ -136,21 +141,22 @@ export function FacilityContactsForm() {
         const currentUrl = new URL(window.document.location.href)
 
         if(options?.data?.facility_contacts.length > 0){
+            // const uid = uuid()
             setFacilityContacts(
-                options?.data?.facility_contacts?.map(() => (
+                options?.data?.facility_contacts?.map((_, i) => (
                     {
-                        id: facilityContactUuid,
+                        id: editContactsUids[i],
                         contact:(() => (
                             <FacilityContactsContext.Provider 
                                 value={facilityContacts} 
-                                key={facilityContactUuid}
+                                key={editContactsUids[i]}
                             >
                             <FacilityContact
                                 contactTypeOptions={contactTypeOptions}
                                 fieldNames={['contact_type', 'contact']}
                                 setFacilityContacts={setFacilityContacts}
                                 contacts={[null, null, null]}
-                                index={facilityContactUuid}
+                                index={editContactsUids[i]}
                             />
                             </FacilityContactsContext.Provider>
                         ))()
@@ -164,20 +170,20 @@ export function FacilityContactsForm() {
 
     if(options?.data?.officer_in_charge?.contacts.length > 0 ) {
         setOfficerContactDetails(
-            options?.data?.officer_in_charge?.contacts?.map(() => (
+            options?.data?.officer_in_charge?.contacts?.map((_, i) => (
             {
-                id: officerContactUuid,
+                id: editOfficerContactsUids[i],
                 contact: (() => (
                     <FacilityContactsContext.Provider
                     value={officerContactDetails}
-                    key={officerContactUuid}>
+                    key={editOfficerContactsUids[i]}>
 
                     <OfficerContactDetails
                         contactTypeOptions={contactTypeOptions}
                         fieldNames={['officer_details_contact_type', 'officer_details_contact']}
                         contacts={[null, null, null]}
                         setFacilityContacts={setOfficerContactDetails}
-                        index={officerContactUuid}
+                        index={editOfficerContactsUids[i]}
                     />
                     </ FacilityContactsContext.Provider >
                 ))()
@@ -290,6 +296,7 @@ export function FacilityContactsForm() {
                         .then((resp) => {
                             defer(() => updatedSavedChanges(true));
                             if (resp.status == 200 || resp.status == 204) {
+                                setSubmitting(false)
                                 alert.success("Updated facility contacts successfully")
 
                                 if(submitType.current == null){

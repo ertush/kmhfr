@@ -1,9 +1,9 @@
 
-import { useRef, useContext, useEffect, useMemo, useState } from "react" // useContext 
+import { useRef,/* useContext, */ useEffect, useMemo, useState } from "react" // useContext 
 import { XCircleIcon } from '@heroicons/react/outline'
-import { FacilityContactsContext } from "../../../components/Forms/FacilityContactsForm"
+// import { FacilityContactsContext } from "../../../components/Forms/FacilityContactsForm"
 // import { EditFacilityContactsContext } from "../../../pages/facilities/edit/[id]"
-import { useAlert } from "react-alert"
+// import { useAlert } from "react-alert"
 import  Select  from './FormikSelect'
 // import  {Select as CustomSelect} from '../formComponents/Select'
 import { Field, useFormikContext } from 'formik'
@@ -18,10 +18,8 @@ function FacilityContact(
     contacts
 }) {
 
-    const contactTypes = useContext(FacilityContactsContext);
-
-
-    const alert = useAlert()
+    // const contactTypes = useContext(FacilityContactsContext);
+    // const alert = useAlert()
 
     const contactTypeRef = useRef(null)
     const contactDetailsRef = useRef(null)
@@ -41,8 +39,6 @@ function FacilityContact(
 
 
     useEffect(() => {
-
-
         if(contactTypeRef.current && contact_type_name && id){
             
             if (contactTypeRef?.current){ 
@@ -69,7 +65,6 @@ function FacilityContact(
                 id={`facility-contact-type-${index}`}
                 placeholder="Select Contact Type"
                 name={`${fieldNames[0]}_${index}`} 
-               
                 />
 
             <div className="w-full col-start-2 flex items-center gap-x-3 justify-between">
@@ -78,7 +73,6 @@ function FacilityContact(
                     
                     {
                         (_contactType == null || _contactType == "FAX" ) && 
-
                         <Field 
                         as="input"
                         required
@@ -92,7 +86,6 @@ function FacilityContact(
 
                     {
                         ( _contactType == 'LANDLINE' || _contactType == 'MOBILE') && 
-                        
                         <div className=" flex flex-col w-full gap-1 relative max-h-min">
                         <Field 
                         as="input"
@@ -115,7 +108,6 @@ function FacilityContact(
                     {
                         _contactType == 'EMAIL' && 
                         <div className=" flex flex-col w-full gap-1 relative max-h-min">
-
                         <Field 
                         as="input"
                         reuired
@@ -165,23 +157,12 @@ function FacilityContact(
                         ev.preventDefault();
                  
                         if(!contacts.includes(undefined)){
-
-                           
                             setFacilityContacts(prev => {
                                 
                                 delete prev[index]
                                 return prev?.filter(({id}) => id !== index)
                             }); 
 
-                
-                            // try{
-                            //     if(contactTypeRef?.current) {
-                            //     const resp = await fetch(`/api/common/submit_form_data/?path=delete_contact&id=${contactTypeRef?.current?.state?.value[0].id ?? null}`)
-                            //     if(resp.status == 204) alert.success('Deleted Facility Contact Successfully')      
-                            //     }
-                            // }catch(e){
-                            //     console.error(e.message)
-                            // }
 
                         }else{
                             setFacilityContacts(prev => {
@@ -214,9 +195,9 @@ function OfficerContactDetails (
     }) {
 
 
-    const contactTypes = useContext(FacilityContactsContext)
+    // const contactTypes = useContext(FacilityContactsContext)
 
-    const alert = useAlert()
+    // const alert = useAlert()
 
 
     const contactTypeRef = useRef(null)
@@ -376,14 +357,6 @@ function OfficerContactDetails (
 
                         }); 
 
-                        // try{
-                        //     if(contactTypeRef?.current) {
-                        //     const resp = await fetch(`/api/common/submit_form_data/?path=delete_contact&id=${contactTypeRef?.current?.state?.value[0].id ?? null}`)
-                        //     if(resp.status == 204) alert.success('Deleted Facility Contact Successfully')      
-                        //     }
-                        // }catch(e){
-                        //     console.error(e.message)
-                        // }
                     } else {
 
                         setFacilityContacts(prev => {

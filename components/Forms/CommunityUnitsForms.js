@@ -107,21 +107,34 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
     const payload = {}
     const formData = new FormData(event.target)
     const formDataObject = Object.fromEntries(formData)
-    payload['basic'] = {}
+    // payload['basic'] = {}
+    const contacts = []
+    let contact = {}
 
 
     if (Array(touchedFields.values()).length >= 1) {
       for (let field of [...touchedFields.values()]) {
         if (props[field] !== formDataObject[field]) {
           if (/contact_type_\d/.test(field)) {
-            payload['contact_type'] = formDataObject[field]
+            contact = {...contact, contact_type: formDataObject[field]}
+           
           } else if (/contact_\d/.test(field)) {
-            payload['contact'] = formDataObject[field]
+            contact = {...contact, contact: formDataObject[field]}
+            contacts.push(
+              contact
+            )
+            payload['contacts'] = contacts
           } else if (/chcs_.+/.test(field) || /chas_.+/.test(field) || /chps_.+/.test(field)){
             payload[field] = formDataObject[field]
           }
           else {
-            payload['basic'][field] = formDataObject[field]
+            if(field == 'facility') {
+              payload['basic'] = {[field]: formDataObject[field]}
+
+            } else {
+              payload[field] = formDataObject[field]
+
+            }
 
           }
         }
@@ -132,6 +145,7 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
     payload['basic']['contact'] && delete payload['basic']['contact']
     payload['basic']['contact_type'] && delete payload['basic']['contact_type']
 
+   
     
 
     try {
@@ -1261,30 +1275,38 @@ export function CommunityUnitEditForm(props) {
               </Link>
               {"  >  "}
               <span className="text-gray-500">
-                {props?.name} ( #
-                <i className="text-black">{props?.code || "NO_CODE"}</i> )
+                {props?.props?.name} ( #
+                <i className="text-black">{props?.props?.code || "NO_CODE"}</i> )
               </span>
             </div>
 
             {/* Header snippet */}
             <div
               className={
-                `md:col-span-7 grid grid-cols-6 gap-5 md:gap-8 py-6 w-full border ${props?.active ? "border-gray-400 rounded" : "border-red-600"} bg-transparent drop-shadow  text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " +
-              ${props?.active ? "border-gray-400 rounded" : "border-yellow-700"}
+                `md:col-span-7 grid grid-cols-6 gap-5 md:gap-8 py-6 w-full border ${props?.props?.active ? "border-gray-400 rounded" : "border-red-600"} bg-transparent drop-shadow  text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " +
+              ${props?.props?.active ? "border-gray-400 rounded" : "border-yellow-700"}
             `}
             >
+
+              {/* <pre>
+                {
+                  JSON.stringify(props?.props?.name, null, 2)
+                }
+              </pre> */}
+
+                    
               <div className="col-span-6 md:col-span-3">
-                <h1 className="text-4xl tracking-tight font-bold leading-tight">
-                  {props?.name}
-                </h1>
+                    <Link  href={`/community-units/${props?.props?.id}`} className="text-4xl tracking-tight font-bold leading-tight">
+                  {props?.props?.name}
+                </Link>
                 <div className="flex gap-2 items-center w-full justify-between">
                   <span
                     className={
                       "font-bold text-2xl " +
-                      (props?.code ? "text-gray-900" : "text-gray-500")
+                      (props?.props?.code ? "text-gray-900" : "text-gray-500")
                     }
                   >
-                    #{props?.code || "NO_CODE"}
+                    #{" "}{props?.props?.code ?? "NO_CODE"} 
                   </span>
 
                 </div>
@@ -1293,7 +1315,7 @@ export function CommunityUnitEditForm(props) {
               {/* Info snippet */}
               <div className="flex flex-wrap gap-3 items-center justify-end col-span-6 md:col-span-2">
                 <div className="flex flex-wrap gap-3 w-full items-center justify-start md:justify-center">
-                  {props?.is_approved ? (
+                  {props?.props?.is_approved ? (
                     <span className="bg-blue-200 text-gray-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
                       <CheckCircleIcon className="h-4 w-4" />
                       CHU Approved
@@ -1304,25 +1326,25 @@ export function CommunityUnitEditForm(props) {
                       Not approved
                     </span>
                   )}
-                  {props?.is_closed && (
+                  {props?.props?.is_closed && (
                     <span className="bg-gray-200 text-gray-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
                       <LockClosedIcon className="h-4 w-4" />
                       CHU Closed
                     </span>
                   )}
-                  {props?.deleted && (
+                  {props?.props?.deleted && (
                     <span className="bg-gray-200 text-gray-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
                       <XCircleIcon className="h-4 w-4" />
                       CHU Deleted
                     </span>
                   )}
-                  {props?.active && (
+                  {props?.props?.active && (
                     <span className="bg-blue-200 text-gray-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
                       <CheckCircleIcon className="h-4 w-4" />
                       CHU Active
                     </span>
                   )}
-                  {props?.has_edits && (
+                  {props?.props?.has_edits && (
                     <span className="bg-blue-200 text-gray-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
                       <InformationCircleIcon className="h-4 w-4" />
                       Has changes

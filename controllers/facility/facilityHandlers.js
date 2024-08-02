@@ -741,9 +741,9 @@ async function handleBasicDetailsUpdates(token, formData, facility_id, updatedSa
         })
 
 
-        if (resp.ok) {
-            localStorage.clear()
-        }
+        // if (resp.ok) {
+        //     localStorage.clear()
+        // }
 
 
 
@@ -836,9 +836,9 @@ async function handleFacilityContactsUpdates(token, values, facility_id, current
             body: JSON.stringify(payload)
         })
 
-        if (resp.ok) {
-            localStorage.clear()
-        }
+        // if (resp.ok) {
+        //     localStorage.clear()
+        // }
 
         return resp
 
@@ -1114,9 +1114,9 @@ async function handleInfrastructureDelete(token, event, facility_infrastructure_
 
         })
 
-        if (resp.ok) {
-            localStorage.clear()
-        }
+        // if (resp.ok) {
+        //     localStorage.clear()
+        // }
 
         return resp
 
