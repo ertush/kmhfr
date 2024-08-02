@@ -21,7 +21,7 @@ export const useLocalStorageState = ({ key, value }) => {
 	const resetLocalStorage = useCallback(() => {
 
 		// Reset locaalstorage
-		localStorage.clear()
+		// localStorage.clear()
 		// [
 		// 	'basic_details_form',
 		// 	'facility_contacts_form',

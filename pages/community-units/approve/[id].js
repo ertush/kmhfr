@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, /*useContext*/ } from 'react';
 import Head from 'next/head';
 import MainLayout from '../../../components/MainLayout';
 import { checkToken } from '../../../controllers/auth/auth';
@@ -11,26 +11,23 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import { useRouter } from 'next/router'
-import { UserContext } from '../../../providers/user';
 import CommunityUnitSideMenu from '../../../components/CommunityUnitSideMenu';
 import Spinner from '../../../components/Spinner'
 import { useAlert } from 'react-alert';
 import Alert from '@mui/material/Alert'
 import {z} from 'zod'
 import withAuth from '../../../components/ProtectedRoute';
-// import { SettingsRemote } from '@mui/icons-material';
+import {v4 as uuid} from 'uuid'
+import Link from 'next/link';
 
 
 function ApproveCommunityUnit(props) {
 
   const router = useRouter();
-  // const userCtx = useContext(UserContext);
   let cu = props.data;
 
   const alert = useAlert()
 
-  // Reference hooks for the services section
-  // const [user, setUser] = useState(userCtx);
   const [isCHULDetails, setIsCHULDetails] = useState(true);
   const [isClient, setIsClient] = useState(false);
   const [formError, setFormError] = useState(null)
@@ -208,17 +205,8 @@ async function approveCHUUpdates (e, token) {
 } 
 
 
-
-  let reject = ''
-
- 
-
-
   useEffect(() => {
-    // setUser(userCtx);
-    // if (user.id === 6) {
-    //   router.push('/auth/login')
-    // }
+  
 
     setIsClient(true)
   }, [])
@@ -259,7 +247,7 @@ async function approveCHUUpdates (e, token) {
                 className={`col-span-5 grid grid-cols-6 gap-5 md:gap-8 py-6 w-full border ${cu.active ? 'border-gray-600' : 'border-yellow-600'} bg-transparent drop-shadow text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 ${cu.active ? 'border-gray-600' : 'border-yellow-600'}`}
               >
                 <div className='col-span-6 md:col-span-3'>
-                  <h1 className='text-4xl tracking-tight font-bold leading-tight'> {cu.name} </h1>
+                  <Link href={`/community-units/${cu.id}`} className='text-4xl tracking-tight font-bold leading-tight'> {cu.name} </Link>
                   <div className='flex gap-2 items-center w-full justify-between'>
                     <span className={'font-bold text-2xl ' + (cu.code ? 'text-gray-900' : 'text-gray-400')}> #{cu.code || 'NO_CODE'} </span>
                     <p className='text-gray-600 leading-tight'>
@@ -330,9 +318,12 @@ async function approveCHUUpdates (e, token) {
 
               {/* CHU details */}
               <div className="bg-gray-50  shadow-lg border border-gray-300/70 w-full p-3  flex flex-col gap-3 mt-4">
-                {CHU_MainDetails.map((dt) => (
+                {CHU_MainDetails.map((dt) => {
+                  
+                  const id = uuid()
+                  return (
 
-                  <div key={dt.value} className="grid grid-cols-3 w-full md:w-11/12 leading-none items-center">
+                  <div key={id} className="grid grid-cols-3 w-full md:w-11/12 leading-none items-center">
                     <label className="col-span-1 text-gray-600">
                       {dt.label}
                     </label>
@@ -340,7 +331,7 @@ async function approveCHUUpdates (e, token) {
                       {dt.value || " - "}
                     </p>
                   </div>
-                ))}
+                )})}
 
                 {cu.date_established && (
                   <div className="grid grid-cols-3 w-full md:w-11/12 leading-none items-center">
@@ -380,14 +371,17 @@ async function approveCHUUpdates (e, token) {
 
               {!isCHULDetails && (
                 <div className="bg-gray-50  shadow-lg border border-gray-300/70 w-full p-3  flex flex-col gap-3 mt-6">
-                  {CHULDetails.map((dt) => (
-                    <div key={dt.value} className="grid grid-cols-3 w-full md:w-11/12  leading-none items-center">
+                  {CHULDetails.map((dt) => {
+                    const id = uuid()
+
+                    return (
+                    <div key={id} className="grid grid-cols-3 w-full md:w-11/12  leading-none items-center">
                       <label className="col-span-1 text-gray-600">{dt.label}</label>
                       <p className="col-span-2 text-black font-medium text-base">
                         {dt.value || " - "}
                       </p>
                     </div>
-                  ))}
+                  )})}
                 </div>
               )
               }
@@ -396,6 +390,11 @@ async function approveCHUUpdates (e, token) {
               {/* Pending updates approval */}
               {cu?.pending_updates && Object.keys(cu?.pending_updates).length > 0 && (
                 <div className="bg-gray-50  shadow-lg border border-gray-300/70 w-full p-3  flex flex-col gap-3 mt-6">
+                  <pre>
+                    {
+                      JSON.stringify(cu.pending_updates, null, 2)
+                    }
+                  </pre>
                   <h3 className="text-gray-900 font-semibold leading-16 text-medium">
                     Pending Updates
                   </h3>
@@ -405,25 +404,32 @@ async function approveCHUUpdates (e, token) {
                   >
                     <div className='col-span-4 w-full h-auto'>
                       {
-                        Object.keys(cu.pending_updates).reverse().map((key, index) => {
-                          if (key == 'basic') {
+                        Object.keys(cu.pending_updates).reverse().map((key) => {
+                          const id = uuid()
+
+                          if (key == 'basic' && JSON.stringify(cu.pending_updates?.basic) !== '{}') {
                             return (
-                              <React.Fragment key={index}>
+                              <React.Fragment key={id}>
+
 
                                 <h5 className='col-span-1 text-gray-900 pb-2 font-semibold leading-16 text-medium mt-5'>{'Basic :'}</h5>
                                 <TableContainer sx={{ maxHeight: 440 }}>
                                   <Table stickyHeader aria-label="sticky table" className='bg-transparent'>
                                     <TableHead >
                                       <TableRow >
-                                        {columns.map((column, i) => (
+                                        {columns.map((column) => {
+                                          
+                                          const id = uuid()
+
+                                          return (
                                           <TableCell
-                                            key={i}
+                                            key={id}
                                             align={column.align}
                                             style={{ minWidth: column.minWidth, fontWeight: 600 }}
                                           >
                                             {column.label}
                                           </TableCell>
-                                        ))}
+                                        )})}
                                       </TableRow>
                                     </TableHead>
                                     <TableBody sx={{ paddingX: 4 }}>
@@ -540,25 +546,28 @@ async function approveCHUUpdates (e, token) {
                           }
                           if (key == 'services') {
 
-                            const services = cu.pending_updates['services'].map((item, i) => {
-                              return <div className='col-span-4 w-full h-auto ml-7 mt-2' key={i} >
+                            const services = cu.pending_updates['services'].map((item) => {
+                              const id = uuid()
+                              return <div className='col-span-4 w-full h-auto ml-7 mt-2' key={id} >
                                 <div className='grid grid-cols-2 w-full'>
                                   <p className='col-span-2 text-gray-600 font-medium text-base'>{item.name}</p>
                                 </div>
                               </div>
                             })
-                            return <><h5 className='col-span-1 text-gray-900 italic font-semibold leading-16 text-medium mt-5'>{'Services :'}</h5><hr />{services}</>
+                            return <><h5 className='col-span-1 text-gray-900  font-semibold leading-16 text-medium mt-5'>{'Services :'}</h5><hr />{services}</>
 
                           }
                           if (key == 'workers') {
-                            const workers = cu.pending_updates['workers'].map((item, i) => {
-                              return <div className='col-span-4 w-full h-auto ml-7 mt-2' key={i}>
+                            const workers = cu.pending_updates['workers'].map((item) => {
+                              const id = uuid()
+
+                              return <div className='col-span-4 w-full h-auto ml-7 mt-2' key={id}>
                                 <div className='grid grid-cols-2 w-full'>
                                   <p className='col-span-2 text-gray-600 font-medium text-base'>{item.first_name} {' '} {item.last_name} {'(In Charge)'}</p>
                                 </div>
                               </div>
                             })
-                            return <><h5 className='col-span-1 text-gray-900 italic font-semibold leading-16 text-medium mt-5'>{'Workers :'}</h5><hr />{workers}</>
+                            return <><h5 className='col-span-1 text-gray-900  font-semibold leading-16 text-medium mt-5'>{'Workers :'}</h5><hr />{workers}</>
                           }
 
 
