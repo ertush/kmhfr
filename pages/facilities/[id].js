@@ -986,7 +986,7 @@ const queryId = zSchema.parse(ctx.query).id
             console.log("Error fetching facilities: ", err);
             return {
               error: true,
-              err: err,
+              err: err.message,
               data: [],
             };
           });
@@ -1004,7 +1004,7 @@ const queryId = zSchema.parse(ctx.query).id
       setTimeout(() => {
         return {
           error: true,
-          err: err,
+          err: err.message,
           data: [],
         };
       }, 1000);

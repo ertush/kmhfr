@@ -588,6 +588,8 @@ export async function getServerSideProps(ctx) {
 			url = `${url}&page=${ctx.query.page}`;
 		}
 
+		// console.log({url})	
+
 
 		try {
 			const r = await fetch(url, {

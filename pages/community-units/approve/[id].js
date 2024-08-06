@@ -44,7 +44,6 @@ function ApproveCommunityUnit(props) {
   const CHULDetails = [
     { value: `${cu.facility_subcounty}`, label: 'Sub County ' },
     { value: `${cu.facility_constituency}`, label: 'Constituency' },
-    { value: `${cu.facility_constituency}`, label: 'Constituency' },
     { value: `${cu.facility_ward}`, label: 'Ward' },
     { value: `${cu.households_monitored}`, label: 'Households Monitored' },
   ];
@@ -170,7 +169,7 @@ async function approveCHUUpdates (e, token) {
       .then(resp => resp.json())
       .then(async (res) => {
 
-        if(res) {
+        if(res.ok) {
           alert.success(`${payload.is_rejected ? 'Rejected' : 'Approved'} CHU Updates successfully`)
 
           router.push({
@@ -390,11 +389,11 @@ async function approveCHUUpdates (e, token) {
               {/* Pending updates approval */}
               {cu?.pending_updates && Object.keys(cu?.pending_updates).length > 0 && (
                 <div className="bg-gray-50  shadow-lg border border-gray-300/70 w-full p-3  flex flex-col gap-3 mt-6">
-                  <pre>
+                  {/* <pre>
                     {
                       JSON.stringify(cu.pending_updates, null, 2)
                     }
-                  </pre>
+                  </pre> */}
                   <h3 className="text-gray-900 font-semibold leading-16 text-medium">
                     Pending Updates
                   </h3>
@@ -649,7 +648,7 @@ async function approveCHUUpdates (e, token) {
                         type="submit"
                         disabled={isSubmittingApproval}
                         name="btn_approve_chu"
-                        className={cu.is_approved ? '' : "p-2 text-center  font-semibold text-base text-white bg-blue-700"}
+                        className={"p-2 text-center  font-semibold text-base text-white bg-blue-700"}
                         onClick={(e) => approveCHU(e, props?.token)}
                       >
                         {
@@ -786,10 +785,10 @@ export async function getServerSideProps(ctx) {
             };
           })
           .catch((err) => {
-            console.log('Error fetching facilities: ', err);
+            console.error('Error fetching facilities: ', err);
             return {
               error: true,
-              err: err,
+              err: err.message,
               data: [],
             };
           });
@@ -819,10 +818,10 @@ export async function getServerSideProps(ctx) {
               };
             })
             .catch((err) => {
-              console.log('Error fetching facilities: ', err);
+              console.error('Error fetching facilities: ', err);
               return {
                 error: true,
-                err: err,
+                err: err.message,
                 data: [],
               };
             });
@@ -832,7 +831,7 @@ export async function getServerSideProps(ctx) {
 
       return {
         error: true,
-        err: err,
+        err: err.message,
         data: [],
       };
     })
