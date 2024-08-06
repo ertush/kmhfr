@@ -30,7 +30,7 @@ import {z} from 'zod'
 import withAuth from '../../../components/ProtectedRoute';
 
 function ApproveReject(props) {
-  const userCtx = useContext(UserContext);
+  // const userCtx = useContext(UserContext);
   // const [user, setUser] = useState(userCtx);
   // console.log({props})
 
@@ -321,7 +321,6 @@ function ApproveReject(props) {
                   // if facility is not approved and is validated
                   if (!facility?.approved_national_level && facility?.approved && !facility?.has_edits) {
                     // console.log('FACILITY WILL BE APPROVED')
-                    
                     approveRejectFacility(facility?.id, comment, alert, reject, props?.token, setSubmitting, setRejecting, setFormError)
                   }
                 }
@@ -368,11 +367,12 @@ function ApproveReject(props) {
                          } </span>
                        </div>
                        :
-                      facility?.has_edits ? 'Approve Updates' : facility?.is_approved ? facility?.approved_national_level ? "Reject Facility" : "Approve Facility" : "Validate Facility"
+                      facility?.has_edits ? 'Approve Updates' : facility?.is_approved ? facility?.approved_national_level ? "Approve Facility" : "Approve Facility" : "Validate Facility"
                       }
                     </button>
 
                     {/* {facility?.approved_national_level && */}
+
                       <button
                         type="submit"
                         className="bg-red-600 rounded text-gray-100 -md p-2 font-semibold"
@@ -388,7 +388,7 @@ function ApproveReject(props) {
                           } </span>
                         </div>
                         :
-                        facility?.has_edits ? 'Invalidate Updates' : facility?.approved_national_level ? '' : currentPageParams.get('filter').includes('pending_approval_facilities') ? 'Reject Facility': 'Invalidate Facility'
+                        facility?.has_edits ? 'Invalidate Updates' : facility?.approved_national_level ? 'Reject Facility' : currentPageParams.get('filter').includes('pending_approval_facilities') ? 'Reject Facility': 'Invalidate Facility'
                         }
                       </button>
                     {/* } */}

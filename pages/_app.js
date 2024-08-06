@@ -123,17 +123,20 @@ export default function App(props) {
 
   //  initializePage()
     
-    // Logout after 20 mins of inactivity
-    const time = 60 * 1000 * 20
+    // Logout after 30 mins of inactivity
+    const time = 60 * 1000 * 30
+
     const timeOut = setTimeout(() => {
       router.push('/logout')
     }, time)
+
 
     return () =>  {
       mtd = false
       clearTimeout(timeOut)
     }
   }, [])
+
 
 //  console.log({pageProps, ctx})
   return (
