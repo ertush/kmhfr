@@ -908,7 +908,7 @@ const queryId = zSchema.parse(ctx.query).id
         })
           .then((r) => r.json())
           .then(async (json) => {
-            allOptions["data"] = json
+            allOptions["data"] = json ?? null
 
 
             // fetch ward boundaries
@@ -926,10 +926,9 @@ const queryId = zSchema.parse(ctx.query).id
 
                 _data = await response.json();
 
-                const [lng, lat] =
-                  _data?.ward_boundary.properties.center.coordinates;
+                const [lng, lat] = _data?.ward_boundary.properties.center.coordinates ?? null;
 
-                allOptions["geoLocation"] = JSON.parse(JSON.stringify(_data?.ward_boundary));
+                allOptions["geoLocation"] = JSON.parse(JSON.stringify(_data?.ward_boundary)) ?? null;
                 allOptions["center"] = [lat, lng];
 
               } catch (e) {
@@ -949,7 +948,7 @@ const queryId = zSchema.parse(ctx.query).id
                   }
                 )).json()
 
-                allOptions["updates"] = facilityUpdateData
+                allOptions["updates"] = facilityUpdateData ?? null
 
 
               }
@@ -967,7 +966,7 @@ const queryId = zSchema.parse(ctx.query).id
                   }
                 })
 
-                allOptions["activityLog"] = (await resp.json()).revisions
+                allOptions["activityLog"] = (await resp.json())?.revisions ?? null
 
               }
               catch (e) {

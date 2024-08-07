@@ -6,25 +6,19 @@ import { useRouter } from 'next/router'
 import Link from 'next/link'
 import FacilitySideMenu from '../../../components/FacilitySideMenu'
 import { checkToken } from "../../../controllers/auth/auth"
-// import { Formik, Form, Field } from 'formik'
 import Select from 'react-select'
 import { ChevronRightIcon, ChevronDownIcon } from '@heroicons/react/solid'
 import { Table, TableBody, TableCell, TableRow } from '@mui/material';
 import { useAlert } from 'react-alert'
 import { handleKephLevelChange } from '../../../controllers/facility/facilityHandlers'
-import { UserContext } from '../../../providers/user'
 import Spinner from '../../../components/Spinner'
 import { Alert } from '@mui/lab'
 import * as Tabs from "@radix-ui/react-tabs";
 import { Select as CustomSelect } from '../../../components/Forms/formComponents/Select';
-import {z} from 'zod'
+import { z } from 'zod'
 import withAuth from '../../../components/ProtectedRoute'
 
 function UpgradeFacility(props) {
-
-
-    // const userCtx = React.useContext(UserContext)
-    // const [user, setUser] = useState(userCtx)
 
     const alert = useAlert()
     const router = useRouter()
@@ -60,6 +54,7 @@ function UpgradeFacility(props) {
     const formFields = {
         facility: "",
         facility_type: "",
+        facility_type_details: "",
         keph_level: "",
         reason: ""
 
@@ -76,9 +71,10 @@ function UpgradeFacility(props) {
 
     const formValues = props['facilityData'] ? facilityUpgradeData : formFields;
 
-
     const [isClient, setIsClient] = useState(false)
     const [submitting, setSubmitting] = useState(false)
+    const [facilityTypeDetailOptions, setFacilityTypeDetailOptions] = useState(props?.facility_type_details)
+
 
 
     function handleSubmit(event) {
@@ -95,6 +91,7 @@ function UpgradeFacility(props) {
             facility: facility_id,
             reason: formDataObject?.reason_upgrade,
             facility_type: formDataObject?.facility_type,
+            facility_type_details: formDataObject?.facility_type_details,
             keph_level: formDataObject?.keph_level
         }
 
@@ -105,7 +102,7 @@ function UpgradeFacility(props) {
 
                     setSubmitting(false)
 
-                    if(event.target.name == "upgrade_form") {
+                    if (event.target.name == "upgrade_form") {
                         alert.success('Facility Upgraded Successfully', {
                             timeout: 10000
                         })
@@ -114,7 +111,7 @@ function UpgradeFacility(props) {
                             timeout: 10000
                         })
                     }
-                    
+
 
                     router.push(`/facilities/${facility_id}`)
                 } else {
@@ -143,12 +140,12 @@ function UpgradeFacility(props) {
             })
     }
 
-    function handleUpdateToFacilityType(value, updateType) {
+   async function handleUpdateToFacilityType(value, updateType) {
 
         const updateToKephSelect = document.getElementsByName('keph_level')
         const updateToKephInput = document.getElementsByName('keph_level_display')
 
-        // console.log({value})
+        
 
         if (value?.label) {
             const facilityTypeLabel = value?.label
@@ -313,6 +310,38 @@ function UpgradeFacility(props) {
 
             }
         }
+
+        if (value?.value) {
+            try {
+              const facilityTypeDetails = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facility_types_details/?is_parent=false&parent=${value?.value}`, {
+                headers: {
+                  'Accept': 'application/json',
+                  'Authorization': `Bearer ${props?.token}`
+                }
+              })
+    
+              const filteredFacilityType = (await facilityTypeDetails.json())?.results
+    
+              if (!filteredFacilityType) throw Error('Unable to Fetch Facility Type Details')
+    
+    
+              const facilityType = Array.from(filteredFacilityType, ({ id, name }) => {
+                return {
+                  label: name,
+                  value: id
+                }
+              })
+    
+    
+              setFacilityTypeDetailOptions(facilityType ?? props?.facility_type_details)
+    
+            }
+            catch (e) {
+              console.error(e.message)
+            }
+          }
+
+   
     }
 
     useEffect(() => {
@@ -376,10 +405,9 @@ function UpgradeFacility(props) {
                                 states={[khisSynched, facilityFeedBack, pathId, allFctsSelected, title]}
                                 stateSetters={[setKhisSynched, setFacilityFeedBack, setPathId, setAllFctsSelected, setTitle]} />
                         </div>
+                       
 
                         {/* Facility Upgrade View */}
-
-
                         <Tabs.Root
                             orientation="horizontal"
                             className="w-full flex flex-col bg-gray-50 max-h-min rounded col-span-1 md:col-span-6 tab-root"
@@ -413,8 +441,7 @@ function UpgradeFacility(props) {
                                 <div className='rounded w-full h-auto flex flex-col p-2'>
 
                                     {/* Upgrade form */}
-
-
+                                   
                                     <form
                                         onSubmit={handleSubmit}
                                         name="upgrade_form"
@@ -502,7 +529,7 @@ function UpgradeFacility(props) {
                                                     }),
 
                                                 }}
-                                                options={props?.facilityTypes}
+                                                options={props?.facility_types}
                                                 onChange={v => handleUpdateToFacilityType(v, 'upgrade')}
                                                 required
                                                 placeholder="Select a facility type..."
@@ -510,6 +537,31 @@ function UpgradeFacility(props) {
                                                 className="flex-none w-full bg-transparent border border-gray-600 flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none rounded" />
                                         </div>
 
+                                        {/* New Facility Type Details */}
+                                        <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                                            <label htmlFor="facility_type_details" className="text-gray-600 capitalize text-sm">Update to Facility Type Details {" *"}</label>
+
+                                            <Select
+                                                styles={{
+                                                    control: (baseStyles) => ({
+                                                        ...baseStyles,
+                                                        backgroundColor: 'transparent',
+                                                        outLine: 'none',
+                                                        border: 'none',
+                                                        outLine: 'none',
+                                                        textColor: 'transparent',
+                                                        padding: 0,
+                                                        height: '4px'
+                                                    }),
+
+                                                }}
+                                                options={facilityTypeDetailOptions}
+                                                onChange={v => handleUpdateToFacilityType(v, 'upgrade')}
+                                                required
+                                                placeholder="Select a facility type..."
+                                                name="facility_type_details"
+                                                className="flex-none w-full bg-transparent border border-gray-600 flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none rounded" />
+                                        </div>
 
 
                                         {/* Reason for Upgrade */}
@@ -716,7 +768,7 @@ function UpgradeFacility(props) {
                                                     }),
 
                                                 }}
-                                                options={props?.facilityTypes}
+                                                options={props?.facility_types}
                                                 onChange={v => handleUpdateToFacilityType(v, 'downgrade')}
                                                 required
                                                 placeholder="Select a facility type..."
@@ -724,7 +776,31 @@ function UpgradeFacility(props) {
                                                 className="flex-none w-full bg-transparent border border-gray-600 flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none rounded" />
                                         </div>
 
+                                        {/* New Facility Type Details */}
+                                        <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                                            <label htmlFor="facility_type_details" className="text-gray-600 capitalize text-sm">Update to Facility Type Details {" *"}</label>
 
+                                            <Select
+                                                styles={{
+                                                    control: (baseStyles) => ({
+                                                        ...baseStyles,
+                                                        backgroundColor: 'transparent',
+                                                        outLine: 'none',
+                                                        border: 'none',
+                                                        outLine: 'none',
+                                                        textColor: 'transparent',
+                                                        padding: 0,
+                                                        height: '4px'
+                                                    }),
+
+                                                }}
+                                                options={facilityTypeDetailOptions}
+                                                onChange={v => handleUpdateToFacilityType(v, 'upgrade')}
+                                                required
+                                                placeholder="Select a facility type..."
+                                                name="facility_type_details"
+                                                className="flex-none w-full bg-transparent border border-gray-600 flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none rounded" />
+                                        </div>
 
                                         {/* Reason for Upgrade */}
                                         <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
@@ -863,11 +939,11 @@ export async function getServerSideProps(ctx) {
 
     const zSchema = z.object({
         id: z.string('Should be a uuid string').optional(),
-      })
-    
-    
+    })
+
+
     const queryId = zSchema.parse(ctx.query).id
-    
+
 
 
     const options = [
@@ -875,8 +951,11 @@ export async function getServerSideProps(ctx) {
         'facility_services',
         'facilities',
         'facility_types',
-        'level_change_reasons'
+        'facility_type_details',
+        'level_change_reasons',
+
     ]
+
 
     if (ctx.query.q) {
         const query = ctx.query.q
@@ -910,7 +989,7 @@ export async function getServerSideProps(ctx) {
                         },
                     })
 
-                    allOptions["kephOptions"] = (await _data.json()).results.map(({ id, name }) => ({ value: id, label: name }))
+                    allOptions["kephOptions"] = (await _data.json()).results.map(({ id, name }) => ({ value: id, label: name })) ?? null
 
                 }
                 catch (err) {
@@ -930,7 +1009,7 @@ export async function getServerSideProps(ctx) {
                         }
                     })
 
-                    allOptions["services"] = (await _data.json()).results.map(({ id, service_name, service, facility }) => ({ id, service_name, service, facility }))
+                    allOptions["services"] = (await _data.json()).results.map(({ id, service_name, service, facility }) => ({ id, service_name, service, facility })) ?? null;
 
                 }
                 catch (err) {
@@ -942,8 +1021,6 @@ export async function getServerSideProps(ctx) {
                 break;
 
             case 'facilities':
-
-
                 try {
 
                     const _data = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${queryId}/`, {
@@ -953,7 +1030,7 @@ export async function getServerSideProps(ctx) {
                         }
                     })
 
-                    allOptions["facilityData"] = await _data.json()
+                    allOptions["facilityData"] = await _data.json() ?? null;
 
                 }
                 catch (err) {
@@ -965,24 +1042,70 @@ export async function getServerSideProps(ctx) {
 
             case 'facility_types':
 
+                
+
                 try {
 
-                    const _data = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facility_types/`, {
+                    const _facilityTypeData = await fetch(
+                        `${process.env.NEXT_PUBLIC_API_URL}/facilities/${option}/?is_parent=true`,
+                        {
+                            headers: {
+                                Authorization: 'Bearer ' + token,
+                                Accept: 'application/json',
+                            },
+                        })
+
+                    if (!_facilityTypeData) throw Error('Unable facility type data')
+
+
+                    let facilityTypeData = (await _facilityTypeData.json())
+
+                    facilityTypeData = Array.from(facilityTypeData?.results, ({ id, name }) => {
+                        return {
+                            label: name,
+                            value: id
+                        }
+
+                    })
+
+
+
+                    allOptions['facility_types'] = facilityTypeData ?? null;
+
+
+                }
+                catch (err) {
+                    console.error(`Error fetching ${option}: `, err);
+
+                }
+
+                break;
+            case 'facility_type_details':
+                
+
+                try {
+
+                    const _facilityTypeDetails = await fetch(
+                        `${process.env.NEXT_PUBLIC_API_URL}/facilities/facility_types/?is_parent=false`,
+                        {
                         headers: {
                             Authorization: 'Bearer ' + token,
                             Accept: 'application/json',
                         },
                     })
 
+                    if (!_facilityTypeDetails) throw Error("Unable to fetch facility type details")
 
-                    const results = (await _data.json()).results.map(({ id, name }) => ({ value: id, label: name }))
+
+                    const facilityTypeDetails = (await _facilityTypeDetails.json()).results.map(({ id, name }) => ({ value: id, label: name }))
 
 
-                    allOptions["facilityTypes"] = results
+                    allOptions['facility_type_details'] = facilityTypeDetails ?? null;
+
 
                 }
                 catch (err) {
-                    console.log(`Error fetching ${option}: `, err);
+                    console.error(`Error fetching ${option}: `, err);
 
                 }
                 break;
@@ -1003,7 +1126,7 @@ export async function getServerSideProps(ctx) {
                     const results = (await _data.json()).results.map(({ id, reason }) => ({ value: id, label: reason }))
 
 
-                    allOptions["levelChangeReasons"] = results
+                    allOptions["levelChangeReasons"] = results ?? null
 
                 }
                 catch (err) {
@@ -1015,7 +1138,7 @@ export async function getServerSideProps(ctx) {
         }
     }
 
-    allOptions['token'] = token
+    allOptions['token'] = token ?? null
 
     return {
         props: {
