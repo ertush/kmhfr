@@ -938,10 +938,13 @@ export async function getServerSideProps(ctx) {
         if (ctx?.query[flt]) {
             query[flt] = ctx?.query[flt]
             url = url + "&" + flt + "=" + ctx?.query[flt]
+
         }
 
 
     })
+
+ 
 
 
     let current_url = url + '&page_size=100'
@@ -949,7 +952,6 @@ export async function getServerSideProps(ctx) {
         url = `${url}&page=${ctx.query.page}`
     }
 
-    console.log({url})
 
 
     try {
@@ -970,18 +972,23 @@ export async function getServerSideProps(ctx) {
         Array.isArray(facilities?.results) &&
         facilities?.results.length > 0
     ) {
+
+        if(ctx?.query?.has_edits) {
+            facilities = { results: facilities?.results?.filter(({latest_update}) => latest_update !== null), ...facilities }
+        }
+
         return {
             props: {
-                facilities: facilities?.results,
-                next: facilities?.next,
-                previous: facilities?.previous,
+                facilities: facilities?.results ?? null,
+                next: facilities?.next ?? null,
+                previous: facilities?.previous ?? null,
                 filters,
                 path: ctx.asPath || '/facilities', 
                 current_url, 
-                current_page: facilities?.current_page,
-                total_pages: facilities?.total_pages,
-                count: facilities?.count,
-                page_size: facilities?.page_size,
+                current_page: facilities?.current_page ?? null,
+                total_pages: facilities?.total_pages ?? null,
+                count: facilities?.count ?? null,
+                page_size: facilities?.page_size ?? null,
                 query,
                 token,
             }
