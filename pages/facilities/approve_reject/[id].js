@@ -22,7 +22,6 @@ import Link from 'next/link'
 import FacilityDetailsTabs from '../../../components/FacilityDetailsTabs';
 import { Formik, Form, Field } from 'formik';
 import { useAlert } from 'react-alert'
-import { UserContext } from '../../../providers/user';
 import { Alert } from '@mui/lab'
 import Spinner from '../../../components/Spinner'
 import { useSearchParams } from 'next/navigation';
@@ -30,9 +29,7 @@ import {z} from 'zod'
 import withAuth from '../../../components/ProtectedRoute';
 
 function ApproveReject(props) {
-  // const userCtx = useContext(UserContext);
-  // const [user, setUser] = useState(userCtx);
-  // console.log({props})
+
 
   const alert = useAlert()
   const router = useRouter()
@@ -55,18 +52,12 @@ function ApproveReject(props) {
   const facility = props?.data;
   const { facility_updated_json } = props?.updates ?? { facility_updated_json: null };
   const filters = []
-  // const [reject, setReject] = useState(null)
 
 
   const [isClient, setIsClient] = useState(false)
   const [reject, setReject] = useState(null)
 
   useEffect(() => {
-    // setUser(userCtx)
-    // if (user.id === 6) {
-    //   router.push('/auth/login')
-    // }
-
     setIsClient(true)
   }, [])
   
@@ -346,6 +337,12 @@ function ApproveReject(props) {
                       ></Field>
                       :
                       // Facility Updates Table
+                      // <pre>
+                      //   {
+                      //     JSON.stringify(facility_updated_json, null, 2)
+                      //   }
+                      // </pre>
+                      
                       <FacilityUpdatesTable facilityUpdatedJson={facility_updated_json} originalData={facility ?? { data: null }} />
 
                   }

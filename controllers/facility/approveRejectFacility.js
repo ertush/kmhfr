@@ -123,6 +123,7 @@ function approveRejectFacility (facility_id, comment, alert, reject, token, setS
 
 function approveRejectFacilityUpdates (reject, alert, update_id, token, setSubmitting, setRejecting, setFormError) {
 
+    if(update_id){
  
         fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facility_updates/${update_id}/`, {
             headers: {
@@ -180,6 +181,10 @@ function approveRejectFacilityUpdates (reject, alert, update_id, token, setSubmi
                 setSubmitting(false)
                 console.error(e.message)
             })
+    } else {
+        setSubmitting(false)
+        setFormError('Facility latest_update id is missing.')
+    }
  
 }
 
