@@ -951,6 +951,8 @@ export async function getServerSideProps(ctx) {
         url = `${url}&page=${ctx.query.page}`
     }
 
+    console.log({url})
+
 
     try {
         facilities = (await (await fetch(url, {
