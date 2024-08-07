@@ -90,9 +90,7 @@ function FacilityHome (props){
 
 
 	useEffect(() => {
-		// if(userCtx.id === 6){
-		// 	router.push('/auth/login')
-		// }
+	
 	  setIsClient(true)
 	}, [])
 

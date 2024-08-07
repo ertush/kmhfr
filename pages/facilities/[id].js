@@ -68,11 +68,10 @@ function Facility(props) {
   const wardName = props?.data?.ward_name;
   const center = props?.geoLocation?.center;
   const geoLocationData = props?.geoLocation;
-  const qf = props?.qf ?? '';
+  // const qf = props?.qf ?? '';
   const filters = []
 
-
-  const [user, setUser] = useState(userCtx);
+  // const [user, setUser] = useState(userCtx);
 
   const [open, setOpen] = useState(true);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -101,23 +100,11 @@ function Facility(props) {
 
   const [isClient, setIsClient] = useState(false)
 
-  // useEffect(() => {
-
-  //   // if (userCtx) setUser(userCtx); // console.log({ userCtx })
-  //   return () => {
-  //   };
-
-  // }, [isClosingFacility, isReasonRejected]);
-
-
+ 
   useEffect(() => {
-    // setUser(userCtx);
     setIsClient(true)
-
     setActivityLog(props?.activityLog)
-    // if (user.id === 6) {
-    //   router.push('/auth/login')
-    // }
+ 
   }, [])
 
 
@@ -505,6 +492,7 @@ function Facility(props) {
                         userCtx?.groups[0].id == 11 // Data cleaning National
                       ) &&
                       currentPageProps.get('filter') == 'updated_pending_validation_facilities' &&
+                      facility?.latest_update && facility?.has_edits &&
 
                       // Validate facility updates
                       <button

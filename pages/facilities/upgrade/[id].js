@@ -363,7 +363,7 @@ function UpgradeFacility(props) {
                     <link rel="icon" href="/favicon.ico" />
                 </Head>
                 <MainLayout isLoading={false} searchTerm={props?.query?.searchTerm}>
-                    <div className="w-full md:w-[85%] md:mx-auto grid md:grid-cols-7 gap-4 px-1 bg-transparent md:px-4 py-2 my-1">
+                    <div className="w-full md:w-[85%] md:mx-auto max-h-min grid md:grid-cols-7 gap-4 px-1 bg-transparent md:px-4 py-2 my-1">
                         {/* Header */}
 
                         <div className="md:col-span-7 flex flex-col gap-3 md:gap-5 bg-transparent">
@@ -410,8 +410,9 @@ function UpgradeFacility(props) {
                         {/* Facility Upgrade View */}
                         <Tabs.Root
                             orientation="horizontal"
-                            className="w-full flex flex-col bg-gray-50 max-h-min rounded col-span-1 md:col-span-6 tab-root"
+                            className="w-full flex flex-col bg-gray-50 min-h-min rounded col-span-1 md:col-span-6 tab-root"
                             defaultValue="upgrade"
+                           
                         >
                             <Tabs.List className="list-none flex justify-evenly uppercase leading-none tab-list font-semibold border-b border-gray-400">
                                 <Tabs.Tab
