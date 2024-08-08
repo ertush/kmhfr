@@ -973,9 +973,9 @@ export async function getServerSideProps(ctx) {
         facilities?.results.length > 0
     ) {
 
-        if(ctx?.query?.has_edits) {
-            facilities = { results: facilities?.results?.filter(({latest_update}) => latest_update !== null), ...facilities }
-        }
+        // if(ctx?.query?.has_edits) {
+        //     facilities = { results: facilities?.results?.filter(({latest_update}) => latest_update !== null), ...facilities }
+        // }
 
         return {
             props: {
