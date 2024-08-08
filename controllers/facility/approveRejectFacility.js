@@ -151,7 +151,7 @@ function approveRejectFacilityUpdates (reject, alert, update_id, token, setSubmi
                         pathname: '/facilities',
                         query: {
                             filter: 'updated_pending_validation_facilities',
-                            has_edits: true
+                            have_updates: true
                         }
                     }) // redirect to New Facilties Pending Validation
                         
