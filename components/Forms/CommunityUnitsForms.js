@@ -141,12 +141,8 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
       }
     }
 
-
-    payload['basic']['contact'] && delete payload['basic']['contact']
-    payload['basic']['contact_type'] && delete payload['basic']['contact_type']
-
-   
-    
+    // payload['basic']['contact'] && delete payload['basic']['contact']
+    // payload['basic']['contact_type'] && delete payload['basic']['contact_type']
 
     try {
 
@@ -540,7 +536,7 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
             Area of coverage
           </label>
           <input
-            required
+            // required
             type="number"
             name="location"
             onChange={handleFieldChange}
