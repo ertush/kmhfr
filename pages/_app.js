@@ -148,7 +148,7 @@ export default function App(props) {
           
             const _user = JSON.parse(window.localStorage.getItem('user'))
 
-            console.log({_user})
+            // console.log({_user})
 
             if(_user && _user?.id !== 6) {
                 return true

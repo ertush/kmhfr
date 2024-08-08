@@ -209,6 +209,8 @@ function getUserDetails (token, url) {
     })
         .then(j => j.json())
         .then(response => {
+
+            let isLoggedIn = false
             // // console.log('=================== getUserDetails returned: ', response)
             if (response.detail || response.error) {
                 // console.log('Error in getUserDetails: ', response)
@@ -221,8 +223,12 @@ function getUserDetails (token, url) {
                 // window.sessionStorage.setItem('user', JSON.stringify(response))
                 console.log('[+] Storing user details on localstorage......')
                 window.localStorage.setItem('user', JSON.stringify(response))
+                
+                if(JSON.parse(window.localStorage.getItem('user'))?.id !== 6) {
+                    isLoggedIn = true
+                }
             }
-            return response
+            return {response, isLoggedIn}
         }).catch(err => {
             // console.log('Error in getUserDetails: ', err)
             return {

@@ -40,20 +40,37 @@ function handleLogin(ev) {
             })
         })
             .then(r => r.json())
-            .then(rsp => {
-                getUserDetails(rsp?.token, `${process.env.NEXT_PUBLIC_API_URL}/rest-auth/user/`)
+            .then((rsp) => {
                  
                 if (rsp.error) {
                     setLoading(false)
                     setError(rsp.error)
                 } else if (rsp?.access_token || rsp?.token) {
-                    setLoading(false)
-                    setMsg('Log-in successful. Redirecting...')
-                    setTimeout(() => {
-                        router.push({
-                            pathname: props.was ?? '/dashboard'
-                        })
-                    }, 2000);
+                    
+
+                    getUserDetails(rsp?.token, `${process.env.NEXT_PUBLIC_API_URL}/rest-auth/user/`)
+                    .then(({isLoggedIn}) => {
+                        if(isLoggedIn) {
+                            setLoading(false)
+                            setMsg('Log-in successful. Redirecting...')
+                            router.push({
+                                pathname: props.was ?? '/dashboard'
+                            })
+                        } else {
+                        setLoading(false)
+                        setMsg('Unable to login. Redirecting to login...')
+                        setTimeout(() => {
+                            router.push({
+                                pathname: '/auth/login'
+                            })
+                        }, 2000)
+                        setError('Encountered network challengs. Please try again')
+
+                           
+                        }
+                    })
+                    
+                
                 } else {
                     setError(error)
                     setLoading(false)

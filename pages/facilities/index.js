@@ -681,9 +681,8 @@ function FacilityHome (props){
                                                         {/* {console.log({facility})} */}
                                                         {/* {(facility?.operational || facility?.operation_status_name) ? <span className={"shadow-sm col-start-2 leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 font-semibold text-gray-900"}>Operational</span> : ""} */}
                                                         {
-                                                        !facility?.rejected ? 
-                                                        <span className={"shadow-sm leading-none whitespace-nowrap text-sm col-start-2  py-1 px-2 " + (facility?.approved_national_level ? "bg-green-200 font-semibold text-green-900" : 
-                                                        "bg-gray-500 font-semibold p-1 text-gray-50")}>
+                                                        !facility?.rejected ?
+                                                        <span className={"shadow-sm leading-none whitespace-nowrap text-sm col-start-2  py-1 px-2 " + (facility?.approved_national_level ? "bg-green-200 font-semibold text-green-900" :"bg-gray-500 font-semibold p-1 text-gray-50")}>
                                                         
                                                         
                                                         {
@@ -693,15 +692,13 @@ function FacilityHome (props){
                                                         }
                                                         
                                                         {
-                                                        facility?.has_edits ? 
-                                                        <span className={"shadow-sm leading-none whitespace-nowrap text-sm col-start-2 py-1 px-2 bg-yellow-200 font-semibold text-yellow-900"}>Has edits</span> : 
-                                                        ""
+                                                        facility?.has_edits && facility?.latest_update &&
+                                                        <span className={"shadow-sm leading-none whitespace-nowrap text-sm col-start-2 py-1 px-2 bg-yellow-200 font-semibold text-yellow-900"}>Has edits</span> 
                                                         }
                                                         
                                                         {
-                                                        !facility?.is_complete ? 
-                                                        <span className={"shadow-sm leading-none whitespace-nowrap text-sm col-start-2 py-1 px-2 bg-pink-200 font-semibold text-pink-900"}>Incomplete</span> : 
-                                                        ""
+                                                        !facility?.is_complete &&
+                                                        <span className={"shadow-sm leading-none whitespace-nowrap text-sm col-start-2 py-1 px-2 bg-pink-200 font-semibold text-pink-900"}>Incomplete</span> 
                                                         }
                                                         
                                                         {
