@@ -539,7 +539,7 @@ function FacilityHome (props){
                                                         router.push(`/facilities/?q=${query}&filter=pending_validation_facilities&pending_approval=true&has_edits=false`)
                                                         break;
                                                     case "updated_pending_validation_facilities":
-                                                        router.push(`/facilities/?q=${query}&filter=updated_pending_validation_facilities&has_edits=true`)
+                                                        router.push(`/facilities/?q=${query}&filter=updated_pending_validation_facilities&have_updates=true`)
                                                         break;
                                                     case "pending_approval_facilities":
                                                         router.push(`/facilities/?q=${query}&filter=pending_approval_facilities&to_publish=true`)
@@ -913,6 +913,7 @@ export async function getServerSideProps(ctx) {
         "operation_status", 
         "constituency", 
         "ward", 
+        "have_updates",
         "has_edits", 
         "rejected_national",
         "rejected",
@@ -972,10 +973,6 @@ export async function getServerSideProps(ctx) {
         Array.isArray(facilities?.results) &&
         facilities?.results.length > 0
     ) {
-
-        // if(ctx?.query?.has_edits) {
-        //     facilities = { results: facilities?.results?.filter(({latest_update}) => latest_update !== null), ...facilities }
-        // }
 
         return {
             props: {
