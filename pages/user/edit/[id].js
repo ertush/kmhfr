@@ -17,16 +17,18 @@ import Alert from '@mui/material/Alert';
 import Link from 'next/link';
 import { WarningOutlined } from '@mui/icons-material';
 import { XCircleIcon } from '@heroicons/react/outline'
-import {z} from 'zod'
+import { z } from 'zod'
+import Spinner from '../../../components/Spinner'
+
 
 function User(props) {
-	
+
 	const [subCountyOptions, setSubCountyOptions] = useState([])
 	const [editMode, setEditMode] = useState(false)
 	const alert = useAlert()
 	const groups = props?.groups
 	const contact_types = props?.contact_type
-	const counties = props?.counties	
+	const counties = props?.counties
 	const regbodies = props?.regulating_bodies
 	const jobs = props?.job_titles
 	const person_details = props?.person_details
@@ -39,9 +41,10 @@ function User(props) {
 	const [delete_user, setDeleteUserPermission] = useState(false);
 	const [isCPasswordDirty, setIsCPasswordDirty] = useState(false);
 	const [isClient, setIsClient] = useState(false);
+	const [submitting, setSubmitting] = useState(false);
 
 
-	
+
 	// console.log({props})
 
 	const [userData, setUserData] = useState({
@@ -102,11 +105,14 @@ function User(props) {
 	})
 
 
-	const handleBasicDetailsSubmit = async (event, token) => {
-		
+	async function handleBasicDetailsSubmit(event, token) {
+
 		event.preventDefault()
+
+		setSubmitting(true)
+
 		let url = ''
-		url = editMode ?  `${process.env.NEXT_PUBLIC_API_URL}/users/${person_details.id}/` : `${process.env.NEXT_PUBLIC_API_URL}/users/`
+		url = editMode ? `${process.env.NEXT_PUBLIC_API_URL}/users/${person_details.id}/` : `${process.env.NEXT_PUBLIC_API_URL}/users/`
 		try {
 			fetch(url, {
 				headers: {
@@ -122,27 +128,32 @@ function User(props) {
 				.then(res => {
 
 					if (res.id !== undefined) {
-
+						setSubmitting(false)
 						router.push({ pathname: '/user' })
 						alert.success(editMode ? 'User updated successfully' : 'User added successfully')
 
 					} else {
+						setSubmitting(false)
 						setStatus({ status: 'error', message: res })
 					}
 				})
 				.catch(e => {
+					setSubmitting(false)
 					setStatus({ status: 'error', message: e.message })
 				})
 		} catch (e) {
-
+			setSubmitting(false)
 			setStatus({ status: 'error', message: e.message })
 		}
 	}
 
-	const deleteUser = (event, token) => {
+	function deleteUser(event, token) {
 		event.preventDefault()
+
+		setSubmitting(true)
+
 		try {
-			fetch( `${process.env.NEXT_PUBLIC_API_URL}/users/${person_details.id}/`, {
+			fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/${person_details.id}/`, {
 				headers: {
 					'Content-Type': 'application/json;charset=utf-8',
 					'Authorization': 'Bearer ' + token,
@@ -152,16 +163,18 @@ function User(props) {
 			})
 				.then(resp => resp)
 				.then(res => {
-
+					setSubmitting(false)
 					router.push('/user/')
 					alert.success('User Account Deactivated successfully')
 				})
 
 		} catch (error) {
+			setSubmitting(false)
 			setStatus({ status: 'error', message: e })
 		}
 
 	}
+
 
 	useEffect(() => {
 		if (!person_details.detail) {
@@ -251,19 +264,30 @@ function User(props) {
 									bgcolor: 'background.paper',
 									borderRadius: '6px',
 									boxShadow: 24,
-									p: 4,
+									p: 2,
 								}
 							}>
 								<div className='flex gap-2'>
-									<WarningOutlined className='text-red-400 w-5 aspect-square'/>
+									<WarningOutlined className='text-red-400 w-5 aspect-square' />
 									<span className="flex gap-2">
-										Are you sure you want to deactivate<b>{userData?.first_name + ' ' + userData?.last_name + ' ' + userData?.other_names}</b> ?
+										Are you sure you want to deactivate user account for<b>{userData?.first_name + ' ' + userData?.last_name + ' ' + userData?.other_names}</b> !
 									</span>
 								</div>
-								
+
 								<div className='flex justify-start gap-4 mt-4'>
-									<button className="bg-red-400 text-white font-semibold  p-2 text-center" type="button" disabled={!delete_user} onClick={(e) => { deleteUser(e, props?.token); setOpen(false) }} >Deactivate</button>
-									<button className="bg-gray-500 text-white font-semibold  p-2 text-center"
+									<button className="bg-red-400 text-white font-semibold rounded p-2 text-center" type="button" disabled={!delete_user} onClick={(e) => { deleteUser(e, props?.token); setOpen(false) }} >
+										{
+											submitting ?
+												<div className='flex items-center gap-2'>
+													<span className='text-white'>Deactivating... </span>
+													<Spinner />
+												</div>
+												:
+												'Deactivate'
+
+										}
+									</button>
+									<button className="bg-gray-500 text-white font-semibold rounded  p-2 text-center"
 										onClick={() => { setOpen(false) }}
 									>Cancel</button>
 								</div>
@@ -289,12 +313,12 @@ function User(props) {
 
 									<pre>
 										{
-										JSON.stringify(
-											status?.message ? status?.message : 'An Error occured when saving',
-											null,
-											2
-										)
-									}
+											JSON.stringify(
+												status?.message ? status?.message : 'An Error occured when saving',
+												null,
+												2
+											)
+										}
 									</pre>
 
 								</Alert>
@@ -312,7 +336,7 @@ function User(props) {
 								<button
 									type='button'
 									onClick={() => setOpen(true)}
-									className=' bg-black p-2 text-white flex text-md font-semibold '>
+									className=' bg-black p-2 rounded text-white flex text-md font-semibold '>
 									<span className='text-medium font-semibold text-white'>
 										Disable
 									</span>
@@ -320,11 +344,11 @@ function User(props) {
 							}
 						</div>
 
-					</div>
+					</div>	
 
 					<div className='col-span-5 flex flex-col justify-center items-start px-1 md:px-4 w-full '>
 						<div className=' w-full flex flex-col bg-gray-50 items-start p-3  border shadow-md'
-							style={{ minHeight: '250px'}}>
+							style={{ minHeight: '250px' }}>
 
 							<>
 								<h4 className='text-lg uppercase pb-2 border-b border-gray-600 w-full mb-4 font-semibold text-gray-900'>
@@ -355,7 +379,7 @@ function User(props) {
 													ev
 												)
 											}}
-											value={userData.first_name || ''}
+											defaultValue={userData.first_name}
 											className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
 										/>
 									</div>
@@ -379,7 +403,7 @@ function User(props) {
 													ev
 												)
 											}}
-											value={userData.last_name || ''}
+											defaultValue={userData.last_name}
 											className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
 										/>
 									</div>
@@ -399,7 +423,7 @@ function User(props) {
 													ev
 												)
 											}}
-											value={userData.other_names || ''}
+											defaultValue={userData.other_names}
 											className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
 										/>
 									</div>
@@ -424,7 +448,7 @@ function User(props) {
 													ev
 												)
 											}}
-											value={userData.email || ''}
+											defaultValue={userData.email}
 											className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
 										/>
 									</div>
@@ -449,7 +473,7 @@ function User(props) {
 													ev
 												)
 											}}
-											value={userData.employee_number || ''}
+											defaultValue={userData.employee_number}
 											className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
 										/>
 									</div>
@@ -542,7 +566,7 @@ function User(props) {
 													ev
 												)
 											}}
-											value={userData.conf_password || ''}
+											defaultValue={userData.conf_password}
 											className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
 										/>
 										{showErrorMessage && isCPasswordDirty ? <div> <p className='text-red-600'>Passwords did not match</p> </div> : ''}
@@ -615,14 +639,11 @@ function User(props) {
 															onChange={value => {
 																handleOnChange({ cont_name: "contact_type", value, id: i })
 															}}
-															// value={(()=>{
 
-															// 	( {value: person_details.contacts[i]?.contact_type, label:person_details.contacts[i]?.contact_type_name })
-															// })()}
-															value={
+															defaultValue={
 																{
-																	value: userData?.contacts[i]?.contact_type || '',
-																	label: contact_types.find(ct => ct.value == userData?.contacts[i]?.contact_type)?.label || ''
+																	value: userData?.contacts[i]?.contact_type,
+																	label: contact_types.find(ct => ct.value == userData?.contacts[i]?.contact_type)?.label
 																}
 															}
 															name='contact_type'
@@ -651,14 +672,14 @@ function User(props) {
 																	cont_name: "contact_text", value, id: i
 																})
 															}}
-															value={
-																(userData.contacts[i])?.contact_text || ''
+															defaultValue={
+																(userData.contacts[i])?.contact_text
 															}
 															className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
 														/>
 													</div>
 
-													     {/* Delete Btn */}
+													{/* Delete Btn */}
 													<button
 														id={`delete-btn-${i}`}
 														onClick={async ev => {
@@ -724,10 +745,10 @@ function User(props) {
 														handleOnChange({ name: 'groups', ev })
 													}}
 
-													value={userData.groups?.map((value) => ({
-														value: value.id || '',
-														label: value.name || ''
-													})) || ''}
+													defaultValue={userData.groups?.map((value) => ({
+														value: value.id,
+														label: value.name
+													}))}
 													className='flex-none w-full  flex-grow  placeholder-gray-500 border border-gray-600 outline-none'
 
 												/>
@@ -789,47 +810,47 @@ function User(props) {
 
 
 																			}}
-																			value={userData.user_counties?.map((value) => ({
-																				value: value.county || '',
-																				label: value.county_name || value.name || ''
-																			})) || ''}
+																			defaultValue={userData.user_counties?.map((value) => ({
+																				value: value.county,
+																				label: value.county_name || value.name,
+																			}))}
 																			name='county'
 																			className='flex-none w-full  flex-grow  placeholder-gray-500 border border-gray-600 outline-none'
 
 																		/>
 																		{
-																		
-																		grp.id !== 1 &&
 
-																		<Select 
-																			styles={{
-																				control: (baseStyles) => ({
-																					...baseStyles,
-																					backgroundColor: 'transparent',
-																					outLine: 'none',
-																					border: 'none',
-																					outLine: 'none',
-																					textColor: 'transparent',
-																					padding: 0,
-																					height: '4px'
-																				}),
+																			grp.id !== 1 &&
 
-																			}}
-																			options={subCountyOptions || []}
-																			isMulti
-																			required
-																			placeholder='Select a sub county..'
-																			onChange={ev => {
-																				handleOnChange({ name: 'user_sub_counties', ev })
-																			}}
-																			value={userData.user_sub_counties?.map((value) => ({
-																				value: value.id || '',
-																				label: value.sub_county_name || value.name || ''
-																			})) || ''}
+																			<Select
+																				styles={{
+																					control: (baseStyles) => ({
+																						...baseStyles,
+																						backgroundColor: 'transparent',
+																						outLine: 'none',
+																						border: 'none',
+																						outLine: 'none',
+																						textColor: 'transparent',
+																						padding: 0,
+																						height: '4px'
+																					}),
 
-																			name='sub_county'
-																			className='flex-none w-full  flex-grow  placeholder-gray-500 border border-gray-600 outline-none'
-																		/>
+																				}}
+																				options={subCountyOptions || []}
+																				isMulti
+																				required
+																				placeholder='Select a sub county..'
+																				onChange={ev => {
+																					handleOnChange({ name: 'user_sub_counties', ev })
+																				}}
+																				defaultValue={userData.user_sub_counties?.map((value) => ({
+																					value: value.id,
+																					label: value.sub_county_name || value.name,
+																				}))}
+
+																				name='sub_county'
+																				className='flex-none w-full  flex-grow  placeholder-gray-500 border border-gray-600 outline-none'
+																			/>
 																		}
 																	</div>
 
@@ -868,10 +889,10 @@ function User(props) {
 																			onChange={ev => {
 																				handleOnChange({ name: 'regulatory_users', ev })
 																			}}
-																			value={userData.regulatory_users?.map((value) => ({
+																			defaultValue={userData.regulatory_users?.map((value) => ({
 																				value: value.id,
 																				label: value.name
-																			})) || ''}
+																			}))}
 																			name='regulatory_body'
 																			className='flex-none w-full bg-transparent  flex-grow  placeholder-gray-5 focus:bg-white focus:border-gray-600 outline-none'
 																		/>
@@ -902,7 +923,18 @@ function User(props) {
 											type='submit'
 											className=' bg-blue-600 p-2 text-white flex text-md font-semibold '>
 											<span className='text-medium font-semibold text-white'>
-												{editMode ? 'Update' : ' Save'}
+												{
+													submitting ?
+														<div className='flex items-center gap-2'>
+															<span className='text-white'>{
+																editMode ? 'Updating...' : ' Saving...'
+															}
+															</span>
+															<Spinner />
+														</div>
+														:
+														editMode ? 'Update' : ' Save'
+												}
 											</span>
 										</button>
 									</div>
@@ -937,14 +969,14 @@ export async function getServerSideProps(ctx) {
 
 	const zSchema = z.object({
 		id: z.string('Should be a uuid string').optional(),
-	  })
-	
-	  
+	})
+
+
 	const queryId = zSchema.parse(ctx.query).id
 
 	const API_URL = process.env.NEXT_PUBLIC_API_URL
 
-	
+
 	const allOptions = {}
 
 	const options = [
@@ -978,7 +1010,7 @@ export async function getServerSideProps(ctx) {
 
 							allOptions['groups'] = (await _data.json()).results.map(({ id, name }) => { return { value: id, label: name } })
 
-							
+
 
 						}
 						catch (err) {
@@ -1001,7 +1033,7 @@ export async function getServerSideProps(ctx) {
 								},
 							})
 
-							allOptions['contact_type'] = (await _data.json()).results.map(({ id, name }) => { return { value: id, label: name } })		
+							allOptions['contact_type'] = (await _data.json()).results.map(({ id, name }) => { return { value: id, label: name } })
 
 						}
 						catch (err) {
@@ -1014,6 +1046,7 @@ export async function getServerSideProps(ctx) {
 						}
 						break;
 					case 'counties':
+
 						url = `${API_URL}/common/counties/?page_size=500&ordering=name`
 						try {
 
@@ -1026,7 +1059,7 @@ export async function getServerSideProps(ctx) {
 
 							allOptions['counties'] = (await _data.json()).results.map(({ id, name }) => { return { value: id, label: name } })
 
-							
+
 
 						}
 						catch (err) {
@@ -1039,6 +1072,7 @@ export async function getServerSideProps(ctx) {
 						}
 						break;
 					case 'regulating_bodies':
+
 						url = `${API_URL}/facilities/regulating_bodies/`
 						try {
 
@@ -1051,7 +1085,7 @@ export async function getServerSideProps(ctx) {
 
 							allOptions['regulating_bodies'] = (await _data.json()).results.map(({ id, name }) => { return { value: id, label: name } })
 
-							
+
 
 						}
 						catch (err) {
@@ -1074,7 +1108,7 @@ export async function getServerSideProps(ctx) {
 								},
 							})
 							allOptions['job_titles'] = (await _data.json()).results.map(({ id, name }) => { return { value: id, label: name } })
-							
+
 
 						}
 						catch (err) {
@@ -1115,7 +1149,7 @@ export async function getServerSideProps(ctx) {
 			}
 
 			allOptions['token'] = token
-			
+
 
 			return allOptions
 		}
