@@ -424,7 +424,7 @@ function FacilitySideMenu({ states, stateSetters, filters }) {
                             pathname:'/facilities',
                             query: {
                                 filter:'incomplete_facilities',
-                                is_complete: true
+                                incomplete: true
                             }
                         })
                      
