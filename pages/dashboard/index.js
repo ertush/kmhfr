@@ -1455,7 +1455,7 @@ export async function getServerSideProps(ctx) {
 
     const dashboard = await fetchDashboardData(token)
 
-    console.log({dashboard: dashboard?.data})
+    // console.log({dashboard: dashboard?.data})
 
     if (dashboard?.data) {      // console.log({ft, query})
         return {

@@ -36,31 +36,31 @@ function ApproveCommunityUnit(props) {
 
 
   const columns = [
-    { label: 'Field', minWidth: 100 },
-    { label: 'Old Value', minWidth: 100 },
-    { label: 'New Value', minWidth: 100, }
+    { label: 'Field', minWidth: 100, id: uuid()},
+    { label: 'Old Value', minWidth: 100, id: uuid() },
+    { label: 'New Value', minWidth: 100, id: uuid()}
   ];
 
   const CHULDetails = [
-    { value: `${cu.facility_subcounty}`, label: 'Sub County ' },
-    { value: `${cu.facility_constituency}`, label: 'Constituency' },
-    { value: `${cu.facility_ward}`, label: 'Ward' },
-    { value: `${cu.households_monitored}`, label: 'Households Monitored' },
+    { value: `${cu.facility_subcounty}`, label: 'Sub County ', id: uuid()},
+    { value: `${cu.facility_constituency}`, label: 'Constituency', id: uuid()  },
+    { value: `${cu.facility_ward}`, label: 'Ward', id: uuid()  },
+    { value: `${cu.households_monitored}`, label: 'Households Monitored', id: uuid()  },
   ];
 
   const CHU_MainDetails = [
-    { value: `${cu.status_name}`, label: 'Functional Status' },
-    { value: `${cu.code}`, label: 'CHU Code' },
-    { value: `${cu.number_of_chvs}`, label: 'Number of CHVs' },
-    { value: `${cu.facility_name}`, label: 'Linked Facility' },
-    { value: `${cu.facility_county}`, label: 'County' },
+    { value: `${cu.status_name}`, label: 'Functional Status', id: uuid()},
+    { value: `${cu.code}`, label: 'CHU Code', id: uuid()},
+    { value: `${cu.number_of_chvs}`, label: 'Number of CHVs', id: uuid() },
+    { value: `${cu.facility_name}`, label: 'Linked Facility', id: uuid() },
+    { value: `${cu.facility_county}`, label: 'County', id: uuid() },
   ]
+
 
 
  function approveCHU (e, token) {
 
     e.preventDefault();
-
     
 
     if (e.target.name == 'btn_approve_chu') setIsSubmittingApproval(true);
@@ -118,16 +118,19 @@ function ApproveCommunityUnit(props) {
             alert.error(`Unable to approve CHU`)
              
              const detail = await res.json()
+
+             const error = Object.entries(detail)?.map(([k, v]) => ([k, v]))?.join(":")
+
+             if(error) throw new Error(error.replace(',', ':'))
   
-             const error = Array.isArray(Object.values(detail)) && Object.values(detail).length == 1 ? detail[Object.keys(detail)[0]][0] : ''
-             setFormError(error)
+            //  const error = Array.isArray(Object.values(detail)) && Object.values(detail).length == 1 ? detail[Object.keys(detail)[0]][0] : ''
   
           }
          
   
         })
         .catch(e => {
-  
+          setFormError(e.message)
           console.error(e.message)
         })
         .finally(() => {
@@ -144,6 +147,10 @@ async function approveCHUUpdates (e, token) {
   e.preventDefault();
 
   // console.log({status})
+
+  console.log(formError)
+
+
   let payload = ''
   if (e.target.name == 'btn_approve_chu_updates') {
     setIsSubmittingApproval(true)
@@ -166,10 +173,12 @@ async function approveCHUUpdates (e, token) {
       method: 'PATCH',
       body: JSON.stringify(payload)
     })
-      .then(resp => resp.json())
-      .then(async (res) => {
+      .then(resp => ({resp, data: resp.json()}))
+      .then(async ({resp, data}) => {
 
-        if(res.ok) {
+
+        if(resp.ok) {
+
           alert.success(`${payload.is_rejected ? 'Rejected' : 'Approved'} CHU Updates successfully`)
 
           router.push({
@@ -180,17 +189,17 @@ async function approveCHUUpdates (e, token) {
         } else {
           alert.error(`Unable to approve CHU Updates`)
              
-             const detail = await res.json()
-  
-             const error = Array.isArray(Object.values(detail)) && Object.values(detail).length == 1 ? detail[Object.keys(detail)[0]][0] : ''
-             
-             setFormError(error)
+             const detail = await data
+
+             const error = Object.entries(detail)?.map(([k, v]) => ([k, v]))?.join(":")
+
+             if(error) throw new Error(error.replace(',', ':'))
 
         }
         
       })
       .catch(e => {
-        console.log(e.message)
+        setFormError(e.message)
       })
   } catch (e) {
 
@@ -317,17 +326,16 @@ async function approveCHUUpdates (e, token) {
 
               {/* CHU details */}
               <div className="bg-gray-50  shadow-lg border border-gray-300/70 w-full p-3  flex flex-col gap-3 mt-4">
-                {CHU_MainDetails.map((dt) => {
-                  
-                  const id = uuid()
+                {CHU_MainDetails.map(({label, value, id}) => {
+              
                   return (
 
                   <div key={id} className="grid grid-cols-3 w-full md:w-11/12 leading-none items-center">
                     <label className="col-span-1 text-gray-600">
-                      {dt.label}
+                      {label}
                     </label>
                     <p className="col-span-2 text-black font-medium text-base">
-                      {dt.value || " - "}
+                      {value || " - "}
                     </p>
                   </div>
                 )})}
@@ -370,14 +378,13 @@ async function approveCHUUpdates (e, token) {
 
               {!isCHULDetails && (
                 <div className="bg-gray-50  shadow-lg border border-gray-300/70 w-full p-3  flex flex-col gap-3 mt-6">
-                  {CHULDetails.map((dt) => {
-                    const id = uuid()
-
+                  {CHULDetails.map(({label, value, id}) => {
+                    
                     return (
                     <div key={id} className="grid grid-cols-3 w-full md:w-11/12  leading-none items-center">
-                      <label className="col-span-1 text-gray-600">{dt.label}</label>
+                      <label className="col-span-1 text-gray-600">{label}</label>
                       <p className="col-span-2 text-black font-medium text-base">
-                        {dt.value || " - "}
+                        {value || " - "}
                       </p>
                     </div>
                   )})}
@@ -397,6 +404,9 @@ async function approveCHUUpdates (e, token) {
                   <h3 className="text-gray-900 font-semibold leading-16 text-medium">
                     Pending Updates
                   </h3>
+
+                  {formError && <Alert severity="error" sx={{ width: '100%', marginY: '15px' }}>{formError}</Alert>}
+
                   <form
                     className="space-y-3"
                     name="chu_approve_reject_updates"
@@ -418,11 +428,9 @@ async function approveCHUUpdates (e, token) {
                                       <TableRow >
                                         {columns.map((column) => {
                                           
-                                          const id = uuid()
-
                                           return (
                                           <TableCell
-                                            key={id}
+                                            key={column.id}
                                             align={column.align}
                                             style={{ minWidth: column.minWidth, fontWeight: 600 }}
                                           >
@@ -558,9 +566,9 @@ async function approveCHUUpdates (e, token) {
                           }
                           if (key == 'workers') {
                             const workers = cu.pending_updates['workers'].map((item) => {
-                              const id = uuid()
+                              // const id = uuid()
 
-                              return <div className='col-span-4 w-full h-auto ml-7 mt-2' key={id}>
+                              return <div className='col-span-4 w-full h-auto ml-7 mt-2' key={item.id}>
                                 <div className='grid grid-cols-2 w-full'>
                                   <p className='col-span-2 text-gray-600 font-medium text-base'>{item.first_name} {' '} {item.last_name} {'(In Charge)'}</p>
                                 </div>
@@ -625,7 +633,7 @@ async function approveCHUUpdates (e, token) {
                 <div className="bg-gray-50  shadow-lg border border-gray-300/70 w-full p-3  flex flex-col gap-3 mt-6">
                   <h3 className="text-gray-900 font-semibold leading-16 text-medium">Approval comment: </h3>
                   {/* {cu.is_approved} */}
-                  {formError && <Alert severity="error" sx={{ width: '100%', marginY: '15px' }}>{formError}</Alert>}
+                  {formError !== null && <Alert severity="error" sx={{ width: '100%', marginY: '15px' }}>{formError}</Alert>}
                   <form
                     className="space-y-3"
                     name="chu_approve_reject_form"

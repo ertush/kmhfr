@@ -43,7 +43,7 @@ function Home() {
 
   const router = useRouter()
 
-  // const [_, setUser] = useState(null);
+  
   const [isClient, setIsClient] = useState(null);
   const [searchOption, setSearchOption] = useState('Facilities');
   const [isContacts, setIsContacts] = useState(false)
@@ -62,27 +62,22 @@ function Home() {
 
     setIsClient(true)
 
-    // if(userID !== 6){
-    //   router.push('/dashboard')
-    // }
-    
-
   }, []);
 
 
 
-  function animateValue(event, start, end, duration) {
-    let startTimestamp = null;
-    const step = (timestamp) => {
-      if (!startTimestamp) startTimestamp = timestamp;
-      const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-      event.target.innerHTML = Math.floor(progress * (end - start) + start);
-      if (progress < 1) {
-        window.requestAnimationFrame(step);
-      }
-    };
-    window.requestAnimationFrame(step);
-  }
+  // function animateValue(event, start, end, duration) {
+  //   let startTimestamp = null;
+  //   const step = (timestamp) => {
+  //     if (!startTimestamp) startTimestamp = timestamp;
+  //     const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+  //     event.target.innerHTML = Math.floor(progress * (end - start) + start);
+  //     if (progress < 1) {
+  //       window.requestAnimationFrame(step);
+  //     }
+  //   };
+  //   window.requestAnimationFrame(step);
+  // }
 
 
 
