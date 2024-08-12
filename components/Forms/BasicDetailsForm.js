@@ -165,7 +165,7 @@ export function BasicDeatilsForm({ editMode }) {
           })
 
 
-          setFacilityTypeDetailOptions(options?.facility_type_details ?? facilityType)
+          setFacilityTypeDetailOptions(facilityType ?? options?.facility_type_details)
 
         }
         catch (e) {
