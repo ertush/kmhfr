@@ -12,9 +12,10 @@ import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
 import { useEffect, useState } from 'react';
 // import { getUserDetails } from "../controllers/auth/public_auth";
+import { SWRConfig } from 'swr'
 import { IsUserLoggedInCtx } from '.';
 
-function LoadAnimation({open}) {
+function LoadAnimation({open}) {  
   return (
       <Backdrop
         sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
@@ -52,76 +53,9 @@ export default function App(props) {
     router.events.on('routeChangeError', () => {setIsNavigating(false)}); 
 
     
-    // if(Number(userID) !== 6) {
-    //   // window.localStorage.removeItem('user')
-    //   // window.localStorage.clear()
-    //   router.push('/logout')
-
-    // }
-
     let mtd = true;
 
 
-    // function initializePage() {
-
-      //  const API_URL = process.env.NEXT_PUBLIC_API_URL;
-       
-      //  console.log(router.asPath)
-
-      if (mtd) {
-
-        // console.log(' Checking if user is logged in ..')
-       
-        // if (typeof window !== "undefined") {
-            
-
-          // }
-
-        // (typeof window !== "undefined" && window.document.cookie.indexOf("access_token=") > -1) || false;
-
-        
-        // let session_token = null;
-
-        // if (is_user_logged_in) {
-        //   session_token = JSON.parse(
-        //     window.document.cookie.split("access_token=")[1].split(";")[0]
-        //   );
-        // }
-  
-        // if (
-        //     // !is_user_logged_in
-        //     typeof window == "undefined" &&
-        //     session_token == null
-        
-        // ) {
-        //   console.log('Fetching User....')
-        //   getUserDetails(session_token.token, `${API_URL}/rest-auth/user/`).then(
-        //     (usr) => {
-  
-        //       if (usr.error || usr.detail) {
-        //         setIsLoggedIn(false);
-        //         setUser(null);
-        //       } else {
-                
-        //         if(usr.type !== undefined) {
-        //            console.log({usr})
-        //            usr.type == 6  ? setIsLoggedIn(false) : setIsLoggedIn(true);
-        //         }
-  
-        //         setUser(usr);
-  
-        //       }
-        //     }
-        //   );
-        // } else {
-
-        //   console.log("no session. Refreshing...");
-        //   // router.push('/auth/login')
-        // }
-      }
-    // }
-
-  //  initializePage()
     
     // Logout after 30 mins of inactivity
     const time = 60 * 1000 * 30
@@ -189,7 +123,9 @@ export default function App(props) {
             {
               isNavigating && <LoadAnimation open={true} />
             }
-            <Component {...pageProps} />
+            <SWRConfig value={{ provider: () => new Map() }}></SWRConfig>
+              <Component {...pageProps} />
+            <SWRConfig />
           
           </PermissionContext.Provider>
 
