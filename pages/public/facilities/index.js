@@ -27,9 +27,9 @@ function Home(props) {
 	const owner_type = props?.filters?.owner_type || [];
 	const service_ = props?.filters?.service || [];
 	const service_category = props?.filters?.service_category || [];
-	const infrastructue_ = props?.infrastructureOptions?.results || [];
-	const speciality_ = props?.specialitiesOptions?.results || [];
-	const speciality_category = props?.specialityCategoryOptions?.results || [];
+	// const infrastructue_ = props?.infrastructureOptions?.results || [];
+	// const speciality_ = props?.specialitiesOptions?.results || [];
+	// const speciality_category = props?.specialityCategoryOptions?.results || [];
 
 
 	const [units, setUnits] = useState([])
@@ -125,8 +125,6 @@ function Home(props) {
 
 		e.preventDefault()
 
-		//Should be /facilitie/material
-
 		// TODO: Fix the facility detials display list
 
 		let url = `${API_URL}/facilities/facilities/?fields=id,code,name,regulatory_status_name,facility_type_name,owner_name,county,sub_county_name,constituency,ward_name,keph_level_name,operation_status_name`
@@ -181,7 +179,8 @@ function Home(props) {
 
 			const qry = Object.keys(formDataObject).map(function (key) {
 				if (formDataObject[key] !== '') {
-					const er = (key) + '=' + (formDataObject[key]);
+
+					const er = `${key == "facility" ? "name" : key}=${(formDataObject[key])}`;
 					return er
 				}
 			}).filter(Boolean).join('&')
@@ -196,7 +195,7 @@ function Home(props) {
 				url += `&service_name={"query":{"query_string":{"default_field":"service_names","query":"${formDataObject?.service}"}}}`
 			}
 
-			console.log({ url })
+			// console.log({ url })
 
 			fetch(url, {
 				headers: {
@@ -224,8 +223,6 @@ function Home(props) {
 					setFacilities([])
 					setViewAll(false)
 				})
-
-
 
 		}
 
