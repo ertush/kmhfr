@@ -97,7 +97,7 @@ function CommunityUnit(props) {
                 Home
               </Link>
               {"/"}
-              <Link className="text-gray-700" href="/public/chu/community_units">
+              <Link className="text-gray-700" href="/public/chu">
                 Community units
               </Link>
               {"/"}
@@ -153,10 +153,11 @@ function CommunityUnit(props) {
                   defaultValue="overview"
                 >
                   <Tabs.List className="list-none flex justify-around border-b border-gray-600 flex-wrap gap-2 md:gap-3 px-4 uppercase leading-none tab-list font-semibold">
+
                     <Tabs.Tab
                       id={1}
                       value="overview"
-                      className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-400 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
+                      className="p-2 flex-1 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-400 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
                     >
                       Overview
                     </Tabs.Tab>
@@ -164,9 +165,9 @@ function CommunityUnit(props) {
                     <Tabs.Tab
                       id={3}
                       value="chu_ratings"
-                      className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-400 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
+                      className="p-2 flex-1 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-400 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
                     >
-                    Chu Ratings
+                      Chu Ratings
                     </Tabs.Tab>
                     </Tabs.List>
                   {/*End of the vertical tabs  */}
@@ -175,240 +176,314 @@ function CommunityUnit(props) {
                     value="overview"
                     className="grow-1 p-4 tab-panel"
                   >
-                    <div className="flex flex-col gap-y-2 group items-center justify-start text-left">
-                      
-                      <div className=" w-full p-3 grid grid-cols-3  gap-3  ">
-                        <h3 className="text-lg leading-tight underline col-span-2 text-gray-700 font-medium">
-                          Status:
-                        </h3>
-                        <div className="grid grid-cols-3 w-full md:w-11/12 col-span-3  md:px-3 mx-auto leading-none items-center">
-                          <label className=" text-gray-600">
-                            Functionality status
-                          </label>
-                          <p className="text-black font-medium text-base col-start-3 flex">
-                            {cu.status_name
-                              ?.toLocaleLowerCase()
-                              .includes("fully-") ? (
-                              <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 text-gray-900 flex gap-x-1 items-center cursor-default">
-                                <CheckCircleIcon className="h-4 w-4" />
-                                {cu?.status_name || "Yes"}
-                              </span>
-                            ) : cu.status_name
-                              ?.toLocaleLowerCase()
-                              .includes("semi") ? (
-                              <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 text-gray-900 flex gap-x-1 items-center cursor-default">
-                                <CheckCircleIcon className="h-4 w-4" />
-                                {cu?.status_name || "Yes"}
-                              </span>
-                            ) : (
-                              <span className="bg-red-200 text-gray-900 p-1 px-2 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
-                                <XCircleIcon className="h-4 w-4" />
-                                {cu?.status_name || "No"}
-                              </span>
-                            )}
-                          </p>
-                        </div>
-                      </div>
 
-                      <div className=" w-full p-3  flex flex-col gap-3  mt-4">
-                        <h3 className="text-lg leading-tight underline text-gray-700 font-medium">
-                          Coverage:
-                        </h3>
-                        <div className="grid grid-cols-3  w-full  md:w-11/12 mx-auto leading-none items-center">
-                          <label className="col-span-1 text-gray-600">
-                            Households monitored
-                          </label>
-                          <p className="col-start-3 col-span-1 text-black font-medium text-base">
-                            {cu.households_monitored || " - "}
-                          </p>
-                        </div>
-                      </div>
+<div className="col-span-4 md:col-span-4 flex flex-col md:p-4 gap-y-3 group items-center justify-start text-left">
+                <div className="rounded border p-4 border-blue-500 bg-blue-100/60 w-full grid grid-cols-1 gap-8 md:grid-cols-2 md:gap-24">
+                  <div className="flex flex-col gap-1 w-full">
+                    <h3 className="text-lg leading-tight font-semibold col-span-2 text-gray-700">
+                      Status
+                    </h3>
 
-                      <div className=" w-full p-3  flex flex-col gap-3  mt-4">
-                        <h3 className="text-lg leading-tight underline text-gray-700 font-medium">
-                          Location:
-                        </h3>
-                        <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
-                          <label className="col-span-1 text-gray-600">
-                            Linked facility
-                          </label>
+                    <div className="flex justify-between gap-1">
+                      <label className=" text-gray-600">
+                        Functionality status
+                      </label>
+                      <p className="text-black font-medium text-base flex">
+                        {cu?.status_name
+                          ?.toLocaleLowerCase()
+                          .includes("fully-") ? (
+                          <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 text-gray-900 flex gap-x-1 items-center cursor-default">
+                            <CheckCircleIcon className="h-4 w-4" />
+                            {cu?.status_name || "Fully functional"}
+                          </span>
+                        ) : cu.status_name
+                          ?.toLocaleLowerCase()
+                          .includes("semi") ? (
+                          <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 text-gray-900 flex gap-x-1 items-center cursor-default">
+                            <CheckCircleIcon className="h-4 w-4" />
+                            {cu?.status_name || "Semi Functional"}
+                          </span>
+                        ) : (
+                          <span className="bg-red-200 text-gray-900 p-1 px-2 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
+                            {/* <XCircleIcon className="h-4 w-4" /> */}
+                            {cu?.status_name || "Non Functional"}
+                          </span>
+                        )}
+                      </p>
+                    </div>
+
+                    <div className="flex justify-between gap-1">
+                      <label className=" text-gray-600">CHU approved</label>
+                      <p className="text-black font-medium text-base flex">
+                        {cu.is_approved ? (
+                          <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 text-gray-900 flex gap-x-1 items-center cursor-default">
+                            <CheckCircleIcon className="h-4 w-4" />
+                            Yes
+                          </span>
+                        ) : (
+                          <span className="bg-red-200 text-red-900 p-1 px-2 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
+                            <XCircleIcon className="h-4 w-4" />
+                            No
+                          </span>
+                        )}
+                      </p>
+                    </div>
+
+                    {true && (
+                      <div className="flex justify-between gap-1">
+                        <label className=" text-gray-600">CHU deleted</label>
+                        <p className="text-black font-medium text-base flex">
+                          {cu.deleted ? (
+                            <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-red-200 text-red-900 flex gap-x-1 items-center cursor-default">
+                              Deleted
+                            </span>
+                          ) : (
+                            <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 text-gray-900 flex gap-x-1 items-center cursor-default">
+                              Not Deleted
+                            </span>
+                          )}
+                        </p>
+                      </div>
+                    )}
+                    {true && (
+                      <div className="flex justify-between gap-1">
+                        <label className=" text-gray-600">CHU closed</label>
+                        <p className="text-black font-medium text-base flex">
+                          {cu.is_closed ? (
+                            <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-red-200 text-red-900 flex gap-x-1 items-center cursor-default">
+                              CHU Closed {cu.closed_date || ""}
+                            </span>
+                          ) : (
+                            <span className="bg-blue-200 text-gray-900 p-1 px-2 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
+                              Not closed
+                            </span>
+                          )}
+                        </p>
+                      </div>
+                    )}
+                    {cu.closing_reason && (
+                      <div className="flex justify-between gap-1">
+                        <label className=" text-gray-600">
+                          Closure reason
+                        </label>
+                        <p className="text-black font-medium text-base">
+                          {cu.closed_date && <>{cu.closed_date}. </>}{" "}
+                          {cu.closing_reason || ""}
+                        </p>
+                      </div>
+                    )}
+
+                    {true && (
+                      <div className="flex justify-between gap-1">
+                        <label className=" text-gray-600">Has edits</label>
+                        <p className="text-black font-medium text-base flex">
+                          {cu.has_edits ? (
+                            <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 text-gray-900 flex gap-x-1 items-center cursor-default">
+                              Yes
+                            </span>
+                          ) : (
+                            <span className="bg-blue-200 text-gray-900 p-1 px-2 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
+                              No edits
+                            </span>
+                          )}
+                        </p>
+                      </div>
+                    )}
+                    {true && (
+                      <div className="flex justify-between gap-1">
+                        <label className=" text-gray-600">Rejected</label>
+                        <p className="text-black font-medium text-base flex">
+                          {cu.is_rejected ? (
+                            <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-red-200 text-red-900 flex gap-x-1 items-center cursor-default">
+                              CHU rejected {cu.closed_date || ""}
+                            </span>
+                          ) : (
+                            <span className="bg-blue-200 text-gray-900 p-1 px-2 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
+                              Not rejected
+                            </span>
+                          )}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="flex flex-col gap-1 w-full">
+                    <h3 className="text-lg leading-tight text-gray-700 font-semibold">
+                      Coverage
+                    </h3>
+                    <div className="flex justify-between gap-1">
+                      <label className="col-span-1 text-gray-600">
+                        Households monitored
+                      </label>
+                      <p className="col-span-2 text-black font-medium text-base">
+                        {cu.households_monitored || " - "}
+                      </p>
+                    </div>
+                    <div className="flex justify-between gap-1">
+                      <label className="col-span-1 text-gray-600">
+                        Number of CHVs
+                      </label>
+                      <p className="col-span-2 text-black font-medium text-base">
+                        {cu.number_of_chvs || " - "}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+
+                <div className="rounded border p-4 border-blue-500 bg-blue-100/60 w-full grid grid-cols-1 gap-8 md:grid-cols-2 md:gap-24">
+                  <div className="flex flex-col gap-1 w-full">
+                    <h3 className="text-lg leading-tight text-gray-700 font-semibold">
+                      Location
+                    </h3>
+                    <div className="flex justify-between gap-1">
+                      <label className="col-span-1 text-gray-600">
+                        Linked facility
+                      </label>
+                      <p className="col-span-2 text-black font-medium text-base">
+                        {cu.facility_name || " - "}
+                      </p>
+                    </div>
+                    <div className="flex justify-between gap-1">
+                      <label className="col-span-1 text-gray-600">Ward</label>
+                      <p className="col-span-2 text-black font-medium text-base">
+                        {cu.facility_ward || " - "}
+                      </p>
+                    </div>
+                    <div className="flex justify-between gap-1">
+                      <label className="col-span-1 text-gray-600">
+                        Constituency
+                      </label>
+                      <p className="col-span-2 text-black font-medium text-base">
+                        {cu.facility_constituency || " - "}
+                      </p>
+                    </div>
+                    <div className="flex justify-between gap-1">
+                      <label className="col-span-1 text-gray-600">
+                        Sub-county
+                      </label>
+                      <p className="col-span-2 text-black font-medium text-base">
+                        {cu.facility_subcounty || " - "}
+                      </p>
+                    </div>
+                    <div className="flex justify-between gap-1">
+                      <label className="col-span-1 text-gray-600">
+                        County
+                      </label>
+                      <p className="col-span-2 text-black font-medium text-base">
+                        {cu.facility_county || " - "}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col gap-1 w-full">
+                    <h3 className="text-lg leading-tight text-gray-700 font-semibold">
+                      Regulation:
+                    </h3>
+                    {cu.date_established && (
+                      <div className="flex justify-between gap-1">
+                        <label className="col-span-1 text-gray-600">
+                          Date established
+                        </label>
+                        <p className="col-span-2 text-black font-medium text-base">
+                          {new Date(cu.date_established).toLocaleDateString(
+                            "en-GB",
+                            {
+                              year: "numeric",
+                              month: "long",
+                              day: "numeric",
+                            }
+                          ) || " - "}
+                        </p>
+                      </div>
+                    )}
+                    {cu.date_operational && (
+                      <div className="flex justify-between gap-1">
+                        <label className="col-span-1 text-gray-600">
+                          Date operational
+                        </label>
+                        <p className="col-span-2 text-black font-medium text-base">
+                          {new Date(cu.date_operational).toLocaleDateString(
+                            "en-GB",
+                            {
+                              year: "numeric",
+                              month: "long",
+                              day: "numeric",
+                            }
+                          ) || " - "}
+                        </p>
+                      </div>
+                    )}
+                    <div className="flex justify-between gap-1">
+                      <label className="col-span-1 text-gray-600">
+                        Regulated
+                      </label>
+                      <p className="col-span-2 text-black font-medium text-base flex">
+                        {cu.regulated ? (
+                          <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 text-gray-900 flex gap-x-1 items-center cursor-default">
+                            <CheckCircleIcon className="h-4 w-4" />
+                            Yes
+                          </span>
+                        ) : (
+                          <span className="bg-red-200 text-red-900 p-1 px-2 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
+                            <XCircleIcon className="h-4 w-4" />
+                            No
+                          </span>
+                        )}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                {
+                  cu?.contacts && cu?.contacts.length > 0 &&
+                <div className="rounded border p-4 border-blue-500 bg-blue-100/60 w-full grid grid-cols-1 gap-8 md:grid-cols-2 md:gap-24">
+                  <div className="flex flex-col gap-1 w-full">
+                    <h3 className="text-lg leading-tight text-gray-700 font-semibold">
+                      Facility
+                    </h3>
+                    {cu.facility_name ?
+                     
+                        <div
                           
-                          <Link  className="col-start-3" href={`/public/facility/`+ cu.facility}>
-                            <span className="text-gray-700 col-start-3 underline underline-offset-1">{cu.facility_name || " - "}</span>
+                          className="flex justify-between gap-1"
+                        >
+                          <label className="col-span-1 text-gray-600 capitalize">
+                            Name
+                          </label>
+                          <Link href={`/public/facilities/${cu?.facility}`} className="hover:underline col-span-2 text-black font-medium text-base">
+                            {cu?.facility_name}
                           </Link>
                         </div>
-                        <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
-                          <label className="col-span-1 text-gray-600">Ward</label>
-                          <p className="col-start-3 text-black font-medium text-base">
-                            {cu.facility_ward || " - "}
-                          </p>
-                        </div>
-                        <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
-                          <label className="col-span-1 text-gray-600">
-                            Constituency
-                          </label>
-                          <p className="col-start-3 text-black font-medium text-base">
-                            {cu.facility_constituency || " - "}
-                          </p>
-                        </div>
-                        <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
-                          <label className="col-span-1 text-gray-600">
-                            Sub-county
-                          </label>
-                          <p className="col-start-3 text-black font-medium text-base">
-                            {cu.facility_subcounty || " - "}
-                          </p>
-                        </div>
-                        <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
-                          <label className="col-span-1 text-gray-600">
-                            County
-                          </label>
-                          <p className="col-start-3 text-black font-medium text-base">
-                            {cu.facility_county || " - "}
-                          </p>
-                        </div>
+                        :
+
+                        <div
+                          
+                        className="flex justify-between gap-1"
+                      >
+                        <label className="col-span-1 text-gray-600 capitalize">
+                          Name
+                        </label>
+                        <p className="col-span-2 text-black font-medium text-base">
+                          -
+                        </p>
                       </div>
 
-                      <div className=" w-full p-3  flex flex-col gap-3  mt-4">
-                        <h3 className="text-lg leading-tight underline text-gray-700 font-medium">
-                          Regulation:
-                        </h3>
-                        {cu.date_established && (
-                          <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
-                            <label className="col-span-1 text-gray-600">
-                              Date established
-                            </label>
-                            <p className="col-start-3 text-black font-medium text-base">
-                              {new Date(cu.date_established).toLocaleDateString(
-                                "en-GB",
-                                {
-                                  year: "numeric",
-                                  month: "long",
-                                  day: "numeric",
-                                }
-                              ) || " - "}
-                            </p>
-                          </div>
-                        )}
+                    }
+                
                       </div>
+                </div>
+                }
+                  {/* <div> */}
 
-                      {/* <div className=" w-full p-3  flex flex-col gap-3  mt-4">
-                        <h3 className="text-lg leading-tight underline text-gray-700 font-medium">
-                          Contacts:
-                        </h3>
-                        {cu.contacts && cu.contacts.length > 0 ?
-                          cu.contacts.map((contact, i) => (
-                            <div
-                              key={i}
-                              className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center"
-                            >
-                              <label className="col-span-1 text-gray-600 capitalize">
-                                {contact.contact_type_name[0].toLocaleUpperCase() +
-                                  contact.contact_type_name
-                                    .slice(1)
-                                    .toLocaleLowerCase() || "Contact"}
-                              </label>
-                              <p className="col-start-3 text-black font-medium text-base">
-                                {contact.contact || " - "}
-                              </p>
-                            </div>
-                          )) :
-                          <p className="col-start-3 text-black font-medium text-base">
-                                Use the linked facility's contacts. 
-                              </p>
-                          }
-                        
-                        {cu.officer_in_charge && (
-                          <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
-                            <label className="col-span-1 text-gray-600 capitalize">
-                              {cu.officer_in_charge.title_name ||
-                                "Officer in charge"}
-                            </label>
-                            <p className="col-start-3 text-black font-medium text-base">
-                              {cu.officer_in_charge.name || " - "}
-                            </p>
-                          </div>
-                        )}
-                        
-                      </div> */}
-                      {/* <div> */}
+                 
 
-                      {/* </div> */}
-                      
-                    </div>
+
+                
+                </div>
+                  
                   </Tabs.Panel>
 
-                  {/* <Tabs.Panel
-                    value="services"
-                    className="grow-1 p-4 tab-panel"
-                  >
-                    <div className="col-span-4 md:col-span-4 flex flex-col group items-center justify-start text-left">
-                      <div className="w-full p-4 ">
-                        <h3 className="text-2xl w-full flex flex-wrap justify-between items-center leading-tight tracking-tight">
-                          <span className="font-semibold">Services</span>
-                          <div className="col-span-6 md:col-span-1 flex flex-col items-center justify-center p-2"></div>
-                        </h3>
-                        <ul>
-                          {cu?.services && cu?.services.length > 0 ? (
-                            cu?.services.map((service, i) => (
-                              <li
-                                key={i}
-                                className="w-full flex flex-row justify-between gap-2 my-2 p-3 border-b border-gray-300"
-                              >
-                                <div>
-                                  <p className="text-gray-800 text-base">
-                                    {service.name}
-                                  </p>
-                                </div>
-
-                              </li>
-                            ))
-                          ) : (
-                            <li className="w-full  bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base">
-                              <p>No services listed for this cu.</p>
-                            </li>
-                          )}
-                        </ul>
-                      </div>
-                    </div>
-                  </Tabs.Panel> */}
-
-                  {/* <Tabs.Panel
-                    value="hr_staffing"
-                    className="grow-1 p-4 tab-panel"
-                  >
-                    <div className="col-span-4 md:col-span-4 flex flex-col group items-center justify-start text-left">
-                      <div className="w-full p-4 ">
-                        <h3 className="text-2xl w-full flex flex-wrap justify-between items-center leading-tight tracking-tight">
-                          <span className="font-semibold">
-                            Health Unit workers
-                          </span>
-                        </h3>
-                        <ul>
-                          {cu?.health_unit_workers && cu?.health_unit_workers.length > 0 ? (
-                            cu?.health_unit_workers.map((hr, i) => (
-                              <li
-                                key={i}
-                                className="w-full flex flex-row justify-between gap-2 my-2 p-3 border-b border-gray-300"
-                              >
-                                <div>
-                                  <p className="text-gray-800 text-base">
-                                    {hr.name} {hr.is_incharge ? <span className="font-bold" >(In charge)</span> : null}
-                                  </p>
-                                </div>
-
-                              </li>
-                            ))
-                          ) : (
-                            <li className="w-full  bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base leading-none">
-                              <p>No HR data listed for this cu.</p>
-                            </li>
-                          )}
-                        </ul>
-                      </div>
-
-                    </div>
-                  </Tabs.Panel> */}
+            
 
                   {/* chu ratings */}
 
@@ -475,7 +550,7 @@ function CommunityUnit(props) {
               </div>
               
               {/* Map Section */}
-              <div className="flex flex-col gap-3 mt-4 md:w-1/3 w-full rounded">
+              <div className="flex flex-col gap-3 md:w-1/3 w-full rounded">
                 <h2 className="text-xl font-semibold" >{cu?.facility_ward} Ward</h2>
                 {cu?.lat_long && cu?.lat_long.length > 0 ? (
                     <div className="w-full flex flex-col">
@@ -493,8 +568,8 @@ function CommunityUnit(props) {
                     </div>
                   ) : (
                     <div className="w-full flex flex-col items-center justify-center relative">
-                      <div className="w-full  bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base leading-none">
-                        <p>No location data found for this facility?.</p>
+                      <div className="w-full  bg-yellow-100 rounded flex flex-row gap-2 p-3 border border-yellow-300 text-yellow-900 text-base leading-none">
+                        <p> {cu?.facility_ward} location data found.</p>
                       </div>
                     </div>
                   )}       

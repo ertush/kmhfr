@@ -33,7 +33,7 @@ function FacilityDetailsTabs({ facility, token }) {
 
       <Tabs.Root
         orientation="horizontal"
-        className="w-full flex flex-col flex-wrap tab-root"
+        className="w-full flex flex-col flex-wrap"
         defaultValue="overview"
       >
         <Tabs.List className="list-none flex justify-evenly flex-wrap gap-2 md:gap-3 px-4 uppercase leading-none tab-list font-semibold border-b border-gray-600">

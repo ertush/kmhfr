@@ -12,17 +12,17 @@ import Alert from '@mui/material/Alert'
 function Home(props) {
 
 	const router = useRouter();
-	// const cus = props?.data?.results;
+	
 	const [cus, setcus] = useState(props?.data)
 	const filters = props?.filters;
 	const [drillDown, setDrillDown] = useState({});
 	const [reset, setReset] = useState(false)
-	const qf = props?.query?.qf || 'all';
+	// const qf = props?.query?.qf || 'all';
 	const [viewAll, setViewAll] = useState(true);
 	const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 	const code = useRef(null)
-	const allchus = useRef(null)
+	// const allchus = useRef(null)
 	const name = useRef(null)
 	const county = useRef(null)
 	const subcounty = useRef(null)

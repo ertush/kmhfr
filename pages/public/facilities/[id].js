@@ -11,9 +11,9 @@ import FacilityDetailsTabsPulic from "../../../components/FacilityDetailsTabsPub
 import {z} from 'zod'
 
 
-const FacilityDetails = (props) => {
+function FacilityDetails(props) {
 
-  const userCtx = useContext(UserContext)
+  // const userCtx = useContext(UserContext)
 
 
   const Map = dynamic(
@@ -29,9 +29,9 @@ const FacilityDetails = (props) => {
   );
 
   
-  const facility = props["0"]?.data;
-  const wardName = props["0"]?.data.ward_name;
-  const center = props["1"]?.geoLocation.center;
+  const facility = {cu: props?.cu, ...props?.data}
+  const wardName = props?.data?.ward_name;
+  const center = props?.geo_details?.geoLocation.center;
 
   // const [isViewChangeLog, setIsViewChangeLog] = useState(false)
 
@@ -77,9 +77,10 @@ const FacilityDetails = (props) => {
                 (facility?.is_approved ? "border-gray-600" : "border-red-600")
               }  
             >
-              <div className="col-span-6">
+              <div className="col-span-6 rounded">
+              
                 <h1 className="text-4xl tracking-tight font-bold leading-tight">
-                  {facility?.official_name}
+                  {facility?.official_name} 
                 </h1>
                 <div className=" flex flex-col gap-2 place-content-start">
                   <span
@@ -136,11 +137,10 @@ const FacilityDetails = (props) => {
 
           {/* end facility approval */}
               
-          <aside className={`flex flex-col col-span-1 md:col-span-3 gap-4 md:mt-7`}>
-            <h3 className="text-2xl tracking-tight font-semibold leading-5">
+          <aside className={`flex flex-col col-span-1 md:col-span-3 gap-4 md:mt-4`}>
+            {/* <h3 className="text-2xl tracking-tight font-semibold leading-5">
               Map
-            </h3>
-
+            </h3> */}
             {facility?.lat_long && facility?.lat_long.length > 0 ? (
               <div className="w-full bg-gray-200 shadow -lg flex flex-col items-center justify-center relative">
                 <Map
@@ -173,9 +173,10 @@ const FacilityDetails = (props) => {
   );
 };
 
+
 FacilityDetails.getInitialProps = async (ctx) => {
   
-  const allOptions = [];
+  const allOptions = {};
 
   const zSchema = z.object({
     id: z.string('Should be a uuid string').optional(),
@@ -218,10 +219,8 @@ FacilityDetails.getInitialProps = async (ctx) => {
         })
           .then((r) => r.json())
           .then(async (json) => {
-          allOptions.push({
-            data: json,
-            })
-
+          
+            allOptions['data'] = json
 
           // fetch ward boundaries
           if (json) {
@@ -241,10 +240,10 @@ FacilityDetails.getInitialProps = async (ctx) => {
                 const [lng, lat] =
                   _data?.ward_boundary.properties.center.coordinates;
 
-              allOptions.push({
+              allOptions['geo_details'] = {
                 geoLocation: JSON.parse(JSON.stringify(_data?.ward_boundary)),
                 center: [lat, lng],
-              });
+              }
             } catch (e) {
               console.error("Error in fetching ward boundaries", e.message);
             }
@@ -262,22 +261,38 @@ FacilityDetails.getInitialProps = async (ctx) => {
                 }
               )).json()
 
-              allOptions.push({
-                updates: facilityUpdateData,
-                })
+              allOptions['updates'] = facilityUpdateData
 
-            }
+              }
               catch(e){
                   console.error('Encountered error while fetching facility update data', e.message)
             }
           }
 
-          allOptions.push({
-            qf: ctx.query.qf
-          })
-          allOptions.push({
-            token: token
-          })
+          // fetch facility updates
+          if(json){
+            try{
+              const facilityCUData = await (await fetch( `${process.env.NEXT_PUBLIC_API_URL}/chul/units/?facility=${ctx.query?.id}`,
+              {
+                headers: {
+                  Authorization: "Bearer " + token,
+                  Accept: "application/json",
+                },
+              }
+            )).json()
+
+            allOptions['cu'] = facilityCUData?.results
+
+            }
+            catch(e){
+                console.error('Encountered error while fetching facility update data', e.message)
+          }
+        }
+
+          allOptions['qf'] = ctx.query.qf
+
+          allOptions['token'] = token
+
             return allOptions;
           })
           .catch((err) => {
