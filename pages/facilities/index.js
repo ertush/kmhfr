@@ -142,44 +142,43 @@ function FacilityHome (props){
 
     function handleNext() {
 
-        const params = Object.fromEntries(pageParams.entries())
+        // const params = Object.fromEntries(pageParams.entries())
+
 
         router.push({
             pathname:'/facilities',
             query: {
-                next: Buffer.from(`${props?.next}`).toString('base64'), //default: page_size=30
-                ...params
+                next: Buffer.from(`${props?.next}`).toString('base64') //default: page_size=30
+                
+                // ...params
             }
         })
     }
 
     function handlePrevious() {
-        const params = Object.fromEntries(pageParams.entries())
-        
+
+        // const params = Object.fromEntries(pageParams.entries())
+
         router.push({
             pathname:'/facilities',
             query: {
-                previous: Buffer.from(`${props?.previous}`).toString('base64'),
-                ...params
-               
+                previous: Buffer.from(`${props?.previous}`).toString('base64') //default: page_size=30
+                //...params
             }
         })
     }
 
     function handlePageLoad(e) {
 
-        const params = Object.fromEntries(pageParams.entries())
-
         const page = e.target.innerHTML
 
-        console.log({page})
+        // const params = Object.fromEntries(pageParams.entries())
 
         router.push({
             pathname:'/facilities',
             query: {
-                 page,
-                 ...params
-                
+                 page
+                // ...params
             }
         })
     }
@@ -272,7 +271,7 @@ function FacilityHome (props){
                                             onClick={() => {
                                                
                                                 
-                                                 window.location.href = `${process.env.NEXT_PUBLIC_FACILITY_EXPORT_URL}?access_token=${props?.token}&format=excel&page_size=${props?.count}&page=1${orgUnitFilter}`
+                                                 window.location.href = orgUnitFilter ? `${process.env.NEXT_PUBLIC_FACILITY_EXPORT_URL}?access_token=${props?.token}&format=excel&page_size=${props?.count}&page=1${orgUnitFilter}` : `${process.env.NEXT_PUBLIC_FACILITY_EXPORT_URL}?access_token=${props?.token}&format=excel&page_size=${props?.count}&page=1`
                                                
                                             }}>
                                                 <DownloadIcon className="w-4 h-4 mr-1" />
@@ -793,24 +792,27 @@ function FacilityHome (props){
                                                 </div>
 
                                                 <div className="flex items-center gap-2">
-                                                        <button className={`border p-1 px-2 flex font-semibold place-content-center rounded ${props?.current_page == 1 ? 'bg-blue-600 text-gray-50 border-blue-600': ' border-gray-800'}`} onClick={handlePageLoad}>
-                                                        1
-                                                        </button>
 
-                                                        <button className={`border p-1 px-2 flex font-semibold place-content-center rounded ${props?.current_page == 2 ? 'bg-blue-600 text-gray-50 border-blue-600': ' border-gray-800'}`} onClick={handlePageLoad}>
-                                                        2
-                                                        </button>
+                                                        
 
-                                                        <button className={`border p-1 px-2 flex font-semibold place-content-center rounded ${props?.current_page == 3 ? 'bg-blue-600 text-gray-50 border-blue-600': ' border-gray-800'}`} onClick={handlePageLoad}>
-                                                        3
-                                                        </button>
 
-                                                        <button className={`border hidden md:flex p-1 px-2  font-semibold place-content-center rounded ${props?.current_page == 4 ? 'bg-blue-600 text-gray-50 border-blue-600': ' border-gray-800'}`} onClick={handlePageLoad}>
-                                                        4
-                                                        </button>
-                                                        <button className={`border hidden md:flex p-1 px-2 font-semibold place-content-center rounded ${props?.current_page == 5 ? 'bg-blue-600 text-gray-50 border-blue-600': ' border-gray-800'}`} onClick={handlePageLoad}>
-                                                        5
-                                                        </button>
+                                                        {
+                                                            props?.current_page > 5 && (props?.count / 10) > 100 &&
+                                                            Array(props?.current_page + 5).fill(0).map((_, i) => i+1).slice(props?.current_page - 6, props?.current_page + 5).map(i => (
+                                                                <button className={`border p-1 px-2 flex font-semibold place-content-center rounded ${props?.current_page == i ? 'bg-blue-600 text-gray-50 border-blue-600': ' border-gray-800'}`} onClick={handlePageLoad}>
+                                                                {i}
+                                                                </button>
+                                                            ))
+                                                        }
+
+                                                        {
+                                                            props?.current_page <= 5 && (props?.count / 10) > 100 &&
+                                                            Array(10).fill(0).map((_, i) => i+1).slice(0, 10).map(i => (
+                                                                <button className={`border p-1 px-2 flex font-semibold place-content-center rounded ${props?.current_page == i ? 'bg-blue-600 text-gray-50 border-blue-600': ' border-gray-800'}`} onClick={handlePageLoad}>
+                                                                {i}
+                                                                </button>
+                                                            ))
+                                                        }
                                                 </div>
 
                                             </div>
