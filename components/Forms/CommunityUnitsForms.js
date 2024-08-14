@@ -115,16 +115,17 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
     if (Array(touchedFields.values()).length >= 1) {
       for (let field of [...touchedFields.values()]) {
         if (props[field] !== formDataObject[field]) {
-          if (/contact_type_\d/.test(field)) {
-            contact = {...contact, contact_type: formDataObject[field]}
+          // if (/contact_type_\d/.test(field)) {
+          //   contact = {...contact, contact_type: formDataObject[field]}
            
-          } else if (/contact_\d/.test(field)) {
-            contact = {...contact, contact: formDataObject[field]}
-            contacts.push(
-              contact
-            )
-            payload['contacts'] = contacts
-          } else if (/chcs_.+/.test(field) || /chas_.+/.test(field) || /chps_.+/.test(field)){
+          // } else if (/contact_\d/.test(field)) {
+          //   contact = {...contact, contact: formDataObject[field]}
+          //   contacts.push(
+          //     contact
+          //   )
+          //   payload['contacts'] = contacts
+          // } else 
+          if (/chcs_.+/.test(field) || /chas_.+/.test(field) || /chps_.+/.test(field)){
             payload[field] = formDataObject[field]
           }
           else {
@@ -174,7 +175,7 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
   
             const error = Array.isArray(Object.values(detail)) && Object.values(detail).length == 1 ? detail[Object.keys(detail)[0]][0] : ''
 
-            setFormError(error)
+              setFormError(error)
 
             alert.error('Unable to save Community Units Basic details')
           }
