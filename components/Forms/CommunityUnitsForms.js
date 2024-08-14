@@ -107,24 +107,40 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
     const payload = {}
     const formData = new FormData(event.target)
     const formDataObject = Object.fromEntries(formData)
-    // payload['basic'] = {}
+    
     const contacts = []
     let contact = {}
+
+
+    
+
+    for (let [k, v] of formData) {
+
+      if (props[k] !== v) {
+        if (/contact_type_\d/.test(k)) {
+          contact = {...contact, contact_type: v}
+          
+        } else if (/contact_\d/.test(k)) {
+          contact = {...contact, contact: v}
+          contacts.push(
+            contact
+          )
+         
+        } 
+
+       
+
+      }
+    }
+
+    payload['contacts'] = contacts
+
 
 
     if (Array(touchedFields.values()).length >= 1) {
       for (let field of [...touchedFields.values()]) {
         if (props[field] !== formDataObject[field]) {
-          // if (/contact_type_\d/.test(field)) {
-          //   contact = {...contact, contact_type: formDataObject[field]}
-           
-          // } else if (/contact_\d/.test(field)) {
-          //   contact = {...contact, contact: formDataObject[field]}
-          //   contacts.push(
-          //     contact
-          //   )
-          //   payload['contacts'] = contacts
-          // } else 
+          
           if (/chcs_.+/.test(field) || /chas_.+/.test(field) || /chps_.+/.test(field)){
             payload[field] = formDataObject[field]
           }
@@ -142,8 +158,13 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
       }
     }
 
-    // payload['basic']['contact'] && delete payload['basic']['contact']
-    // payload['basic']['contact_type'] && delete payload['basic']['contact_type']
+    delete payload[/contact_\d/]
+
+    
+    console.log({payload})
+
+    return
+    
 
     try {
 
