@@ -33,6 +33,8 @@ export function BasicDeatilsForm({ editMode }) {
   const [isClient, setIsClient] = useState(false)
   const [totalFunctionalBeds, setTotalFunctionalBeds] = useState(0)
   const [isFieldValidationError, setIsFieldValdiationError] = useState(false)
+  const [dateValidationError, setDateValidationError] = useState({date_established: null})
+  
 
   const submitType = useRef(null)
 
@@ -95,6 +97,27 @@ export function BasicDeatilsForm({ editMode }) {
     setTouchedFields(touchedFields => {
       return [...touchedFields, e.target.name]
     })
+  }
+
+  function handleDateChange(e) {
+
+    e.preventDefault()
+
+    if (e.currentTarget.name == "date_established") {
+      setDateValidationError(prev => ({ ...prev, date_established: null }))
+    } 
+    const today = new Date()
+
+    const setDate = e.currentTarget.valueAsDate
+
+    if (setDate > today) {
+      if (e.currentTarget.name == "date_established") {
+        setDateValidationError(prev => ({ ...prev, date_established: 'Date Established cannot be in the future' }))
+      } 
+
+      e.currentTarget.value = ''
+
+    }
   }
 
   async function handleSelectChange(e) {
@@ -887,10 +910,12 @@ export function BasicDeatilsForm({ editMode }) {
             required
             name="date_established"
             onFocus={handleFocus}
+            onChange={handleDateChange}
             defaultValue={options?.data?.date_established ?? ''}
             className='flex-none w-full bg-transparent p-2 flex-grow placeholder-gray-500 border border-gray-400 rounded focus:shadow-none  focus:border-black outline-none'
 
           />
+          <p className='text-red-500 text-sm'>{dateValidationError.date_established ?? ''}</p>
         </div>
 
          {/* Out reach services */}

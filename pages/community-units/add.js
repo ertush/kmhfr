@@ -184,9 +184,9 @@ function CommunityUnitsBasciDetailsForm(props) {
 
 		if(setDate > today) {	
 			if(event.target.name == "date_established"){
-				setValidationError(prev => ({ ...prev, date_established: 'Date Established Cannot be in the future' }))
+				setValidationError(prev => ({ ...prev, date_established: 'Date Established cannot be in the future' }))
 			} else {
-				setValidationError(prev => ({ ...prev, date_operational: 'Date Established Cannot be in the future' }))
+				setValidationError(prev => ({ ...prev, date_operational: 'Date Established cannot be in the future' }))
 			}
 
 			event.target.value = ''

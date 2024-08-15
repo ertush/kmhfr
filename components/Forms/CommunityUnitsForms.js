@@ -69,9 +69,9 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
 
     if (setDate > today) {
       if (event.target.name == "date_established") {
-        setValidationError(prev => ({ ...prev, date_established: 'Date Established Cannot be in the future' }))
+        setValidationError(prev => ({ ...prev, date_established: 'Date Established cannot be in the future' }))
       } else {
-        setValidationError(prev => ({ ...prev, date_operational: 'Date Operational Cannot be in the future' }))
+        setValidationError(prev => ({ ...prev, date_operational: 'Date Operational cannot be in the future' }))
       }
 
       event.target.value = ''
