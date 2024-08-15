@@ -51,7 +51,7 @@ function CommunityUnitsBasciDetailsForm(props) {
 
 	const [formData, setFormData] = useState({})
 	const [formError, setFormError] = useState(null)
-	const [validationError, setValidationError] = useState(null)
+	const [validationError, setValidationError] = useState({date_established:null, date_operational: null})
 	const setFormId = useContext(SetFormIdContext)
 	const [facilityType, setFacilityType] = useState(null)
 

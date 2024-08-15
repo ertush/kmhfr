@@ -22,6 +22,7 @@ import Alert from '@mui/material/Alert';
 import Spinner from '../../components/Spinner'
 import EditListItem from '../../components/Forms/formComponents/EditListItem'
 import { KeyboardArrowRight, KeyboardArrowDown } from "@mui/icons-material";
+import { v4 as uuid } from 'uuid';
 
 import { useRouter } from 'next/router';
 
@@ -32,8 +33,10 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
   const [touchedFields, setTouchedFields] = useState(new Set())
   const [submitting, setSubmitting] = useState(false)
   const [formError, setFormError] = useState(null)
-  const [validationError, setValidationError] = useState({date_established: null, date_operational: null})
-  const [contacts, setContacts] = useState(props?.contacts ?? [{contact: '', contact_type_name: ''}]);
+  const [validationError, setValidationError] = useState({ date_established: null, date_operational: null })
+
+  const derivedContacts = props?.contacts?.map(obj => ({ ...obj, uid: uuid() }))
+  const [contacts, setContacts] = useState(derivedContacts ?? [{ contact: '', contact_type_name: '', uid: uuid() }]);
 
   const router = useRouter()
 
@@ -107,49 +110,54 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
     const payload = {}
     const formData = new FormData(event.target)
     const formDataObject = Object.fromEntries(formData)
-    
-    const contacts = []
-    let contact = {}
-
-
-    
-
-    for (let [k, v] of formData) {
-
-      if (props[k] !== v) {
-        if (/contact_type_\d/.test(k)) {
-          contact = {...contact, contact_type: v}
-          
-        } else if (/contact_\d/.test(k)) {
-          contact = {...contact, contact: v}
-          contacts.push(
-            contact
-          )
-         
-        } 
-
-       
-
-      }
-    }
-
-    payload['contacts'] = contacts
-
 
 
     if (Array(touchedFields.values()).length >= 1) {
       for (let field of [...touchedFields.values()]) {
         if (props[field] !== formDataObject[field]) {
-          
-          if (/chcs_.+/.test(field) || /chas_.+/.test(field) || /chps_.+/.test(field)){
+
+          if (/chcs_.+/.test(field) || /chas_.+/.test(field) || /chps_.+/.test(field)) {
             payload[field] = formDataObject[field]
           }
           else {
-            if(field == 'facility') {
-              payload['basic'] = {[field]: formDataObject[field]}
+            if (field == 'facility') {
+              payload['basic'] = { [field]: formDataObject[field] }
 
             } else {
-              payload[field] = formDataObject[field]
+
+              if (/^contact_*/.test(field)) {
+
+                const chuContacts = [];
+                const contactEntries = Object.entries(formDataObject).filter(arr => ((/^contact_.*/.test(arr[0])) || (/^contact_type_.*/.test(arr[0]))));
+
+
+                const contact_temp = []
+
+                let i = 0
+                let temp = {}
+                for (let [k, v] of contactEntries) {
+                  if (/^contact_.*/.test(k)) temp[k.split('_').length <= 2 ? 'contact' : 'contact_type'] = v
+                  contact_temp.push(temp)
+                  temp = {};
+                  i++;
+                }
+
+                for (let i = 0; i < contact_temp.length; i++) {
+                  chuContacts.push(
+                    {
+                      ...contact_temp[i],
+                      ...contact_temp[i + 1]
+                    }
+                  )
+                  i += 1
+                }
+
+                payload['contacts'] = chuContacts
+
+              } else {
+                payload[field] = formDataObject[field]
+              }
+
 
             }
 
@@ -158,7 +166,6 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
       }
     }
 
-    delete payload[/contact_\d/]
 
     try {
 
@@ -187,10 +194,10 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
 
           } else {
             const detail = await resp.json()
-  
+
             const error = Array.isArray(Object.values(detail)) && Object.values(detail).length == 1 ? detail[Object.keys(detail)[0]][0] : ''
 
-              setFormError(error)
+            setFormError(error)
 
             alert.error('Unable to save Community Units Basic details')
           }
@@ -213,7 +220,7 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
     event.preventDefault()
 
     setContacts(prev => {
-      return [...prev, {contact: '', contact_type_name: ''}]
+      return [...prev, { contact: '', contact_type_name: '', uid: uuid() }]
     })
   }
 
@@ -223,7 +230,7 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
       onSubmit={handleFormSubmit}
     >
 
-     
+
 
       {formError && <Alert severity="error" sx={{ width: '100%', marginY: '15px' }}>{formError}</Alert>}
 
@@ -379,8 +386,8 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
                 className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:bg-white focus:border-black outline-none"
               />
 
-            <p className='text-red-500 text-sm'>{validationError.date_operational ?? ''}</p>
-              
+              <p className='text-red-500 text-sm'>{validationError.date_operational ?? ''}</p>
+
 
             </div>
           </div>
@@ -565,88 +572,92 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
         </div>
 
         {/* Community Health Unit Workforce */}
-				<div className='grid grid-cols-3 grid-rows-5 gap-3 mb-3 w-full'>
-					<h4 className='col-span-3 self-end row-start-1 text-lg uppercase  border-b border-gray-600 w-full font-semibold text-gray-900'>
-					Community Health Unit Workforce
-					</h4>
-					<label className='col-start-2 row-start-2 text-gray-600 self-end'>Number Present</label>
-					<label className='col-start-3 row-start-2 text-gray-600 self-end'>Number Trained</label>
+        <div className='grid grid-cols-3 grid-rows-5 gap-3 mb-3 w-full'>
+          <h4 className='col-span-3 self-end row-start-1 text-lg uppercase  border-b border-gray-600 w-full font-semibold text-gray-900'>
+            Community Health Unit Workforce
+          </h4>
+          <label className='col-start-2 row-start-2 text-gray-600 self-end'>Number Present</label>
+          <label className='col-start-3 row-start-2 text-gray-600 self-end'>Number Trained</label>
 
-					{/* <div className='row-span-3'> */}
-					<label className='col-start-1 row-start-3 self-end'>Community Health Promoters (CHPs)*</label>
-					<label className='col-start-1 row-start-4 self-end'>Community Health Assistants (CHAs)*</label>
-					<label className='col-start-1 row-start-5 self-end'>Community Health Commitee Members (CHC)*</label>
+          {/* <div className='row-span-3'> */}
+          <label className='col-start-1 row-start-3 self-end'>Community Health Promoters (CHPs)*</label>
+          <label className='col-start-1 row-start-4 self-end'>Community Health Assistants (CHAs)*</label>
+          <label className='col-start-1 row-start-5 self-end'>Community Health Commitee Members (CHC)*</label>
 
-					{/* </div> */}
-				
-					<input
-						defaultValue={props?.chps_present}
-						type='number'
-						name='chps_present'
+          {/* </div> */}
+
+          <input
+            defaultValue={props?.chps_present}
+            type='number'
+            name='chps_present'
             onChange={handleFieldChange}
-						className='col-start-2 flex-none w-full bg-transparent  rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
-					/>
+            className='col-start-2 flex-none w-full bg-transparent  rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
+          />
 
-					<input
-						defaultValue={props?.chps_trained}
-						type='number'
-						name='chps_trained'
+          <input
+            defaultValue={props?.chps_trained}
+            type='number'
+            name='chps_trained'
             onChange={handleFieldChange}
-						className='rounded col-start-3 flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
-					/>
-					
-					<input
-						defaultValue={props?.chas_present}
-						type='number'
-						name='chas_present'
+            className='rounded col-start-3 flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
+          />
+
+          <input
+            defaultValue={props?.chas_present}
+            type='number'
+            name='chas_present'
             onChange={handleFieldChange}
-						className='rounded col-start-2 flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
-					/>
+            className='rounded col-start-2 flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
+          />
 
-					<input
-						defaultValue={props?.chas_trained}
-						type='number'
-						name='chas_trained'
+          <input
+            defaultValue={props?.chas_trained}
+            type='number'
+            name='chas_trained'
             onChange={handleFieldChange}
-						className='rounded col-start-3 flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
-					/>
+            className='rounded col-start-3 flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
+          />
 
-					<input
-						defaultValue={props?.chcs_present}
-						type='number'
-						name='chcs_present'
+          <input
+            defaultValue={props?.chcs_present}
+            type='number'
+            name='chcs_present'
             onChange={handleFieldChange}
-						className='rounded col-start-2 flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
-					/>
+            className='rounded col-start-2 flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
+          />
 
-					<input
-						defaultValue={props?.chcs_trained}
-						type='number'
-						name='chcs_trained'
+          <input
+            defaultValue={props?.chcs_trained}
+            type='number'
+            name='chcs_trained'
             onChange={handleFieldChange}
-						className='rounded col-start-3 flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
-					/>
+            className='rounded col-start-3 flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
+          />
 
 
 
-				</div>
+        </div>
 
         <div className=" w-full flex flex-col items-start justify-start bg-transparent h-auto">
           <h4 className="text-lg uppercase  border-b border-gray-600 w-full my-4 font-semibold text-gray-900">
             Community Health Unit Contacts
           </h4>
 
-          {contacts?.map(({ contact, contact_type_name }, i) => {
+
+          {contacts?.map(({ contact, contact_type_name, uid }) => {
+
+           
             return (
               <div
                 className="w-full flex flex-row items-center  gap-1 gap-x-3 mb-3"
-                key={i}
+                key={uid}
               >
+
                 <div
                   className="w-full flex flex-col items-left   gap-1 gap-x-3 mb-3"
                 >
                   <label
-                    htmlFor={`contact_type_${i}`}
+                    htmlFor={`contact_type_${uid}`}
                     className="text-gray-600 capitalize text-sm"
                   >
                     Contact Type
@@ -658,9 +669,9 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
 
                   <CustomSelect
                     required
-                    name={`contact_type_${i}`}
+                    name={`contact_type_${uid}`}
                     onChange={handleFieldChange}
-                    id={`contact_type_${i}`}
+                    id={`contact_type_${uid}`}
                     options={options?.contactTypes}
                     defaultValue={options?.contactTypes?.find(({ label }) => label == contact_type_name)?.value}
                     placeholder="Select Contact.."
@@ -673,7 +684,7 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
 
                 >
                   <label
-                    htmlFor={`contact_${i}`}
+                    htmlFor={`contact_${uid}`}
                     className="text-gray-600 capitalize text-sm"
                   >
                     Contact Details
@@ -683,32 +694,32 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
                     </span>
                   </label>
                   <div className='flex gap-2 w-full'>
-                  <input
-                    required
-                    type="text"
-                    name={`contact_${i}`}
-                    onChange={handleFieldChange}
-                    id={`contact_${i}`}
-                    defaultValue={contact}
-                    className="flex-none w-auto bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:bg-white focus:border-black outline-none"
-                  />
+                    <input
+                      required
+                      type="text"
+                      name={`contact_${uid}`}
+                      onChange={handleFieldChange}
+                      id={`contact_${uid}`}
+                      defaultValue={contact}
+                      className="flex-none w-auto bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:bg-white focus:border-black outline-none"
+                    />
 
-                    <button 
-                    id={`delete-btn-${i}`}
-                    onClick={ev => {
-                      
+                    <button
+                      id={`delete-btn-${uid}`}
+                      onClick={ev => {
+
                         ev.preventDefault();
 
                         setContacts(prev => {
-                          delete prev[i]
-                          return prev.filter((v, _) => v !== undefined)
+                          delete prev[uid]
+                          return prev.filter(({ uid: id }) => id !== uid)
                         })
-                     
-                    }}
+
+                      }}
                     >
-                      <XCircleIcon className='w-7 h-7 text-red-400'/>
-                      </button>
-                      </div>
+                      <XCircleIcon className='w-7 h-7 text-red-400' />
+                    </button>
+                  </div>
                 </div>
               </div>
             );
@@ -768,83 +779,83 @@ function EditCommunityUnitsCHEWSForm(props) {
 
   const [healthUnitWorkers, setHealthUnitWorkers] = useState(props?.health_unit_workers)
   const alert = useAlert()
-  const [deleteButton, setDeleteButton] = useState(props?.health_unit_workers?.map((_, i) => ({[i]: false})))
+  const [deleteButton, setDeleteButton] = useState(props?.health_unit_workers?.map((_, i) => ({ [i]: false })))
 
-  console.log({deleteButton})
-  
+  console.log({ deleteButton })
+
   function handleFormSubmit(event) {
-      event.preventDefault()
+    event.preventDefault()
 
-      setSubmitting(true)
+    setSubmitting(true)
 
-      
-      const formData = new FormData(event.target)
-      const formDataObject = Object.fromEntries(formData)
 
-      for(let [k,v] of formData) {
-        if(v == "on") {
-          formDataObject[k] = true
-        } else {
-            formDataObject[`is_incharge_${k.split('_').at(-1)}`] = false
-            formDataObject[k] = v
+    const formData = new FormData(event.target)
+    const formDataObject = Object.fromEntries(formData)
+
+    for (let [k, v] of formData) {
+      if (v == "on") {
+        formDataObject[k] = true
+      } else {
+        formDataObject[`is_incharge_${k.split('_').at(-1)}`] = false
+        formDataObject[k] = v
+      }
+    }
+
+    let payload = Object.keys(formDataObject)?.filter(k => /first_name_\d/.test(k)).map(() => ({}))
+
+    const formDataEntries = Object.entries(formDataObject)
+
+    formDataEntries.forEach((entry) => {
+      if (/^first_name_[0-9]{1}/.test(entry[0])) payload[parseInt(entry[0].split('_').at(-1))]['first_name'] = entry[1];
+      if (/^last_name_[0-9]{1}/.test(entry[0])) payload[parseInt(entry[0].split('_').at(-1))]['last_name'] = entry[1];
+      if (/^mobile_no_[0-9]{1}/.test(entry[0])) payload[parseInt(entry[0].split('_').at(-1))]['mobile_no'] = entry[1];
+      if (/^email_[0-9]{1}/.test(entry[0])) payload[parseInt(entry[0].split('_').at(-1))]['email'] = entry[1];
+
+
+    })
+
+
+
+    // payload = payload.filter(({first_name}, i) => first_name !== props?.health_unit_workers[i]?.first_name)
+
+
+
+    try {
+      fetch(`${process.env.NEXT_PUBLIC_API_URL}/chul/units/${props?.id}/`, {
+        headers: {
+          'Accept': 'application/json, text/plain, */*',
+          'Content-Type': 'application/json;charset=utf-8',
+          'Authorization': `Bearer ${props?.token}`
+        },
+        method: 'PATCH',
+        body: JSON.stringify({ health_unit_workers: payload })
+      })
+
+        .then(async resp => {
+          if (resp.status == 200) {
+
+            setSubmitting(false)
+
+            alert.success(`${props?.name} Community Health Workers Updated successfully`, {
+              containerStyle: {
+                backgroundColor: "green",
+                color: "#fff"
+              }
+            })
+
+          } else {
+            // const detail = await resp.json()
+
+            setSubmitting(false)
+            // setFormError(Array.isArray(Object.values(detail)) && Object.values(detail).length == 1 && typeof Object.values(detail)[0] == 'string' && detail[0][0])
+            alert.error('Unable to update Community Units health workers')
           }
-        }
-      
-        let payload = Object.keys(formDataObject)?.filter(k => /first_name_\d/.test(k)).map(() => ({}))
-   
-        const formDataEntries = Object.entries(formDataObject)
-
-        formDataEntries.forEach((entry) => {
-          if (/^first_name_[0-9]{1}/.test(entry[0])) payload[parseInt(entry[0].split('_').at(-1))]['first_name'] = entry[1];
-          if (/^last_name_[0-9]{1}/.test(entry[0])) payload[parseInt(entry[0].split('_').at(-1))]['last_name'] = entry[1];
-          if (/^mobile_no_[0-9]{1}/.test(entry[0])) payload[parseInt(entry[0].split('_').at(-1))]['mobile_no'] = entry[1];
-          if (/^email_[0-9]{1}/.test(entry[0])) payload[parseInt(entry[0].split('_').at(-1))]['email'] = entry[1];
-
-
         })
+    }
 
-
-
-        // payload = payload.filter(({first_name}, i) => first_name !== props?.health_unit_workers[i]?.first_name)
-
-
-
-      try {
-        fetch(`${process.env.NEXT_PUBLIC_API_URL}/chul/units/${props?.id}/`, {
-          headers: {
-            'Accept': 'application/json, text/plain, */*',
-            'Content-Type': 'application/json;charset=utf-8',
-            'Authorization': `Bearer ${props?.token}`
-          },
-          method: 'PATCH',
-          body: JSON.stringify({health_unit_workers: payload})
-        })
-  
-          .then(async resp => {
-            if (resp.status == 200) {
-  
-              setSubmitting(false)
-  
-              alert.success(`${props?.name} Community Health Workers Updated successfully`, {
-                containerStyle: {
-                  backgroundColor: "green",
-                  color: "#fff"
-                }
-              })
-  
-            } else {
-              // const detail = await resp.json()
-  
-              setSubmitting(false)
-              // setFormError(Array.isArray(Object.values(detail)) && Object.values(detail).length == 1 && typeof Object.values(detail)[0] == 'string' && detail[0][0])
-              alert.error('Unable to update Community Units health workers')
-            }
-          })
-      }
-  
-      catch (e) {
-        alert.error('Error Occured: ' + e.message)
-      }
+    catch (e) {
+      alert.error('Error Occured: ' + e.message)
+    }
   }
 
 
@@ -855,7 +866,7 @@ function EditCommunityUnitsCHEWSForm(props) {
     const itemId = event.target.parentNode.dataset.id
 
     setDeleting(true)
-   
+
     setDeleteButton(prev => {
       // prev[index][index] = true
       // return prev
@@ -865,10 +876,10 @@ function EditCommunityUnitsCHEWSForm(props) {
       })
     })
 
-  
+
 
     // const index = parseInt(event.target.name.split('_').at(-1))
-    
+
     fetch(`${process.env.NEXT_PUBLIC_API_URL}/chul/workers/${id}/`, {
       headers: {
         'Accept': 'application/json, text/plain, */*',
@@ -877,121 +888,121 @@ function EditCommunityUnitsCHEWSForm(props) {
       },
       method: 'DELETE',
     })
-    
-    .then(resp => {
-      if(resp.status == 204) {
 
-        setDeleting(false)
+      .then(resp => {
+        if (resp.status == 204) {
+
+          setDeleting(false)
 
 
-        setHealthUnitWorkers(prev => {
-          setDeleteButton(prev => {
-            return prev.filter(obj => obj[index] !== true)
+          setHealthUnitWorkers(prev => {
+            setDeleteButton(prev => {
+              return prev.filter(obj => obj[index] !== true)
+            })
+            return prev.filter(({ id }) => id !== itemId)
+
+
           })
-          return prev.filter(({id}) => id !== itemId)
-  
-  
-         })
 
-        // setDeleteButton(props?.health_unit_workers.map((_, i) => ({[i]: false})))
+          // setDeleteButton(props?.health_unit_workers.map((_, i) => ({[i]: false})))
 
 
-        alert.success(`${props?.health_unit_workers[index]?.name} has been deleted successfully`)
-      } else {
-          resp.json().then(({detail}) => {
-          alert.error('Unable to delete health worker', {timeout: 10000})
+          alert.success(`${props?.health_unit_workers[index]?.name} has been deleted successfully`)
+        } else {
+          resp.json().then(({ detail }) => {
+            alert.error('Unable to delete health worker', { timeout: 10000 })
             setDeleting(false)
             setFormError(detail)
 
           })
           // console.log({error})
 
-      }
-    })
-    .catch(e => {
-      console.error(e.message)
-    })
-    
-    
+        }
+      })
+      .catch(e => {
+        console.error(e.message)
+      })
+
+
   }
 
 
-  function handleAddCHEW(e){
-      e.preventDefault()
-      setHealthUnitWorkers(prev => [...prev, {first_name: "", last_name:"", is_incharge:""}])
+  function handleAddCHEW(e) {
+    e.preventDefault()
+    setHealthUnitWorkers(prev => [...prev, { first_name: "", last_name: "", is_incharge: "" }])
   }
 
-   return (
+  return (
     <form
       name="chews_form"
       className="flex flex-col p-3 h-full bg-gray-50 w-full items-start justify-start gap-1"
       onSubmit={handleFormSubmit}
     >
       {formError && <Alert severity='error' className={'w-full'}>Error when deleting: {formError}</Alert>}
-      
+
       <div className='w-full flex flex-col items-between justify-start gap-1 my-2'>
-					
-				<div className="flex items-start justify-between">
 
-					<div className='w-full grid md:grid-cols-5 mx-auto place-content-start gap-x-5 flex-1 mb-2'>
+        <div className="flex items-start justify-between">
 
-						<label
-							htmlFor='last_name'
-							className='block text-sm font-medium text-gray-700'>
-							First Name
-						</label>
+          <div className='w-full grid md:grid-cols-5 mx-auto place-content-start gap-x-5 flex-1 mb-2'>
 
-						<label
-							htmlFor='last_name'
-							className='block text-sm font-medium text-gray-700'>
-							Second Name
-						</label>
+            <label
+              htmlFor='last_name'
+              className='block text-sm font-medium text-gray-700'>
+              First Name
+            </label>
 
-						<label
-							htmlFor='mobile_no'
-							className='block text-sm font-medium text-gray-700'>
-							Mobile Phone Number*
-						</label>
+            <label
+              htmlFor='last_name'
+              className='block text-sm font-medium text-gray-700'>
+              Second Name
+            </label>
 
-						<label
-							htmlFor='email'
-							className='block text-sm font-medium text-gray-700'>
-							Email
-						</label>
+            <label
+              htmlFor='mobile_no'
+              className='block text-sm font-medium text-gray-700'>
+              Mobile Phone Number*
+            </label>
 
-						<label
-								htmlFor='last_name'
-								className='block text-sm font-medium text-gray-700'>
-								Delete
-							</label>
+            <label
+              htmlFor='email'
+              className='block text-sm font-medium text-gray-700'>
+              Email
+            </label>
 
-							
-
-			
-					</div>
-					
-					<div className='flex flex-row justify-between gap-2'>
-							
-							<button className=' w-auto  bg-blue-600 p-2 text-white flex text-md font-semibold '
-								onClick={handleAddCHEW}
-							>
-								{`Add +`}
-
-							</button>
-						</div> 
+            <label
+              htmlFor='last_name'
+              className='block text-sm font-medium text-gray-700'>
+              Delete
+            </label>
 
 
-				</div>
+
+
+          </div>
+
+          <div className='flex flex-row justify-between gap-2'>
+
+            <button className=' w-auto  bg-blue-600 p-2 text-white flex text-md font-semibold '
+              onClick={handleAddCHEW}
+            >
+              {`Add +`}
+
+            </button>
+          </div>
+
+
+        </div>
 
         {Array.isArray(healthUnitWorkers) && healthUnitWorkers.length > 0 ? (
           healthUnitWorkers?.map(({ first_name, last_name, mobile_no, email, id }, index) => {
             return (
               <div key={id} className="flex items-start justify-between">
-						
-              <div className='w-full grid md:grid-cols-5 mx-auto place-content-start gap-x-4'>
-                {/* First Name */}
 
-                <input
+                <div className='w-full grid md:grid-cols-5 mx-auto place-content-start gap-x-4'>
+                  {/* First Name */}
+
+                  <input
                     required
                     type="text"
                     id={`first_name_${index}`}
@@ -1007,66 +1018,66 @@ function EditCommunityUnitsCHEWSForm(props) {
                     id={`last_name_${index}`}
                     name={`last_name_${index}`}
                     defaultValue={last_name}
-                   
+
                     className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:bg-white focus:border-black outline-none"
                   />
 
                   {/* Phone Number */}
                   <input
-								required
-								type='tel'
-								pattern={'[0-9]{10}'}
-								placeholder={'07XXXXXXXX'}
-								name={`mobile_no_${index}`}
-								defaultValue={mobile_no}
+                    required
+                    type='tel'
+                    pattern={'[0-9]{10}'}
+                    placeholder={'07XXXXXXXX'}
+                    name={`mobile_no_${index}`}
+                    defaultValue={mobile_no}
 
-								className='flex-none  md:max-w-min w-auto bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
-							/>
+                    className='flex-none  md:max-w-min w-auto bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                  />
 
-              {/* Email */}
+                  {/* Email */}
 
-              <input
-								required
-								type='email'
-								name={`email_${index}`}
-								defaultValue={email}
-								placeholder="user@email-domain"
-								pattern="[a-z0-9]+[.]*[\-]*[a-z0-9]+@[a-z0-9]+[\-]*[.]*[a-z0-9]+[.][a-z]{2,}"
-								className='flex-none  md:max-w-min w-auto bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
-							/>
+                  <input
+                    required
+                    type='email'
+                    name={`email_${index}`}
+                    defaultValue={email}
+                    placeholder="user@email-domain"
+                    pattern="[a-z0-9]+[.]*[\-]*[a-z0-9]+@[a-z0-9]+[\-]*[.]*[a-z0-9]+[.][a-z]{2,}"
+                    className='flex-none  md:max-w-min w-auto bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                  />
 
-              {/* Delete Button */}
+                  {/* Delete Button */}
 
-              {/* Delete CHEW */}
-							<div className='flex'>
-								<div className='flex items-center'>
-									{/* insert red button for deleting */}
-									<button
-										name='delete'
-										type='button'
-										className='bg-transparent group hover:bg-red-500 text-red-700 font-semibold hover:text-white p-3 hover:border-transparent '
-										onClick={(e) => handleDelete(e, index, id)}
-                    data-id={props?.health_unit_workers[index]?.id}
-                    >
-										<TrashIcon className="w-4 h-4 text-red-500 group-hover:text-white" />
-									</button>
-								</div>
-							</div>
-    
+                  {/* Delete CHEW */}
+                  <div className='flex'>
+                    <div className='flex items-center'>
+                      {/* insert red button for deleting */}
+                      <button
+                        name='delete'
+                        type='button'
+                        className='bg-transparent group hover:bg-red-500 text-red-700 font-semibold hover:text-white p-3 hover:border-transparent '
+                        onClick={(e) => handleDelete(e, index, id)}
+                        data-id={props?.health_unit_workers[index]?.id}
+                      >
+                        <TrashIcon className="w-4 h-4 text-red-500 group-hover:text-white" />
+                      </button>
+                    </div>
+                  </div>
+
+
+                </div>
+
+                <div className='flex flex-row justify-between gap-x-2'>
+
+                  <span disabled={true} className=' w-auto bg-transparent p-1 text-white flex text-md font-semibold '
+                  >
+                    {`Add +`}
+
+                  </span>
+                </div>
 
               </div>
 
-<div className='flex flex-row justify-between gap-x-2'>
-  
-  <span disabled={true} className=' w-auto bg-transparent p-1 text-white flex text-md font-semibold '
-  >
-    {`Add +`}
-
-  </span>
-</div> 
-
-</div>
-            
             )
           })
         ) : (
@@ -1077,7 +1088,7 @@ function EditCommunityUnitsCHEWSForm(props) {
           </>
         )}
 
-        
+
       </div>
 
       {/* Save Changes */}
@@ -1113,90 +1124,90 @@ function EditCommunityUnitsCHEWSForm(props) {
 
 function EditCommunityUnitsServicesForm(props) {
 
-    const currentServices = props?.services?.map(({name: label, service: value}) => ({label, value})) ?? []
+  const currentServices = props?.services?.map(({ name: label, service: value }) => ({ label, value })) ?? []
 
-    const options = useContext(ChuOptionsContext)
+  const options = useContext(ChuOptionsContext)
 
-    const [submitting, setSubmitting] = useState(false)
-  
-    // const serviceCtg = props?.service_category ?? []
-  
-    const serviceOptions = ((_services) => {
-  
-      const _serviceOptions = []
-      let _values = []
-      let _subCtgs = []
-  
-      if (_services.length > 0) {
-        _services.forEach(({ category_name: ctg }) => {
-          let allOccurences = _services.filter(({ category_name }) => category_name === ctg)
-  
-          allOccurences.forEach(({ id, name }) => {
-            _subCtgs.push(name)
-            _values.push(id)
-          })
-  
-          if (_serviceOptions.map(({ name }) => name).indexOf(ctg) === -1) {
-            _serviceOptions.push({
-              name: ctg,
-              subCategories: _subCtgs,
-              value: _values
-            })
-          }
-  
-          _values = []
-          _subCtgs = []
-  
+  const [submitting, setSubmitting] = useState(false)
+
+  // const serviceCtg = props?.service_category ?? []
+
+  const serviceOptions = ((_services) => {
+
+    const _serviceOptions = []
+    let _values = []
+    let _subCtgs = []
+
+    if (_services.length > 0) {
+      _services.forEach(({ category_name: ctg }) => {
+        let allOccurences = _services.filter(({ category_name }) => category_name === ctg)
+
+        allOccurences.forEach(({ id, name }) => {
+          _subCtgs.push(name)
+          _values.push(id)
         })
-      }
-  
-  
-  
-  
-      return _serviceOptions.map(({ name, subCategories, value }) => ({
-        label: name,
-        options: subCategories.map((_label, i) => ({ label: _label, value: value[i] }))
-      }))
-  
-    })(options?.services ?? [])
-  
-  
-  function handleSubmit (payload, selectedItems, chulId) {
-      // console.log({stateSetters, chulId})
-    const _payload = selectedItems.map(({value}) => ({ service: value }))
 
-		_payload.forEach(obj => obj['health_unit'] = chulId)
+        if (_serviceOptions.map(({ name }) => name).indexOf(ctg) === -1) {
+          _serviceOptions.push({
+            name: ctg,
+            subCategories: _subCtgs,
+            value: _values
+          })
+        }
 
-     
-      
-      if(_payload & payload) {
+        _values = []
+        _subCtgs = []
+
+      })
+    }
+
+
+
+
+    return _serviceOptions.map(({ name, subCategories, value }) => ({
+      label: name,
+      options: subCategories.map((_label, i) => ({ label: _label, value: value[i] }))
+    }))
+
+  })(options?.services ?? [])
+
+
+  function handleSubmit(payload, selectedItems, chulId) {
+    // console.log({stateSetters, chulId})
+    const _payload = selectedItems.map(({ value }) => ({ service: value }))
+
+    _payload.forEach(obj => obj['health_unit'] = chulId)
+
+
+
+    if (_payload & payload) {
       try {
         return fetch(`${process.env.NEXT_PUBLIC_API_URL}/chul/units/${props?.id}/`, {
           headers: {
             'Accept': 'application/json, text/plain, */*',
-                      'Content-Type': 'application/json;charset=utf-8',
+            'Content-Type': 'application/json;charset=utf-8',
             'Authorization': `Bearer ${props?.token}`
           },
           method: 'POST',
-          body: JSON.stringify({services: _payload, ...payload})
+          body: JSON.stringify({ services: _payload, ...payload })
         })
 
-    
- 
+
+
       }
       catch (e) {
         console.error(e.message)
       }
-      }
-  
+    }
+
   };
 
 
-  function handleCHUServiceUpdate (payload, selectedServices, chulId) {
+  function handleCHUServiceUpdate(payload, selectedServices, chulId) {
 
-    const _payload = selectedServices.map(({value}) => ({ service: value }))
+    const _payload = selectedServices.map(({ value }) => ({ service: value }))
 
-		_payload.forEach(obj => obj['health_unit'] = chulId)
+    _payload.forEach(obj => obj['health_unit'] = chulId)
 
     // console.log({services: _payload, ...payload})
 
@@ -1209,180 +1220,175 @@ function EditCommunityUnitsServicesForm(props) {
           'Authorization': `Bearer ${props?.token}`
         },
         method: 'PATCH',
-        body: JSON.stringify({services: _payload, ...payload})
+        body: JSON.stringify({ services: _payload, ...payload })
       })
 
-      }
+    }
     catch (e) {
       console.error(e.message)
     }
   }
-  
- 
 
 
-    return (
-      <>
-        <h4 className='text-lg uppercase pb-2 border-b border-gray-400  w-full mb-4 font-semibold text-gray-900'>
-          Services Offered
-        </h4>
-  
-        
-  
-        <div
-          name='chu_services_form'
-          className='flex flex-col w-full items-start justify-start gap-3'
-        >
-          <div className='flex flex-col w-full items-start justify-start gap-3 mt-6'>
-  
-            {/* Edit list Item Container */}
-            <div className='flex items-center w-full h-auto min-h-[300px]'>
-  
-              
-              <EditListItem
-                itemData={{currentServices, ...props}}
-                categoryItems={serviceOptions[0]?.options} //serviceOptions
-                itemId={props?.id} //chulId
-                token={props?.token}
-                handleItemsSubmit={handleSubmit} //handleCHUServiceSubmit
-                handleItemsUpdate={handleCHUServiceUpdate} //handleServiceUpdates
-                setSubmitting={setSubmitting}
-                submitting={submitting}
-                options={serviceOptions[0]?.options}
-                itemName={'chul_services'}
-                handleItemPrevious={() => null} 
-                setFormId={() => null}
-                editMode
-              />
-  
-            </div>
+
+
+  return (
+    <>
+      <h4 className='text-lg uppercase pb-2 border-b border-gray-400  w-full mb-4 font-semibold text-gray-900'>
+        Services Offered
+      </h4>
+
+
+
+      <div
+        name='chu_services_form'
+        className='flex flex-col w-full items-start justify-start gap-3'
+      >
+        <div className='flex flex-col w-full items-start justify-start gap-3 mt-6'>
+
+          {/* Edit list Item Container */}
+          <div className='flex items-center w-full h-auto min-h-[300px]'>
+
+
+            <EditListItem
+              itemData={{ currentServices, ...props }}
+              categoryItems={serviceOptions[0]?.options} //serviceOptions
+              itemId={props?.id} //chulId
+              token={props?.token}
+              handleItemsSubmit={handleSubmit} //handleCHUServiceSubmit
+              handleItemsUpdate={handleCHUServiceUpdate} //handleServiceUpdates
+              setSubmitting={setSubmitting}
+              submitting={submitting}
+              options={serviceOptions[0]?.options}
+              itemName={'chul_services'}
+              handleItemPrevious={() => null}
+              setFormId={() => null}
+              editMode
+            />
+
           </div>
         </div>
-      </>
-    );
-  
-  
-  
+      </div>
+    </>
+  );
+
+
+
 }
-  
+
 
 
 export function CommunityUnitEditForm(props) {
 
   const [isMenuOpen, setIsMenuOpen] = useState(false)
 
-    return (
-      <MainLayout>
-        <div className="w-full md:w-[85%] px-4 grid grid-cols-1 md:grid-cols-7 place-content-center md:grid gap-4 md:p-2 my-6">
-          <div className="md:col-span-7 flex flex-col items-start justify-start gap-3">
-           
-            {/* Breadcrumb */}
-            <div className="flex flex-row gap-2 text-sm md:text-base">
-              <Link className="text-gray-700" href="/">
-                Home
-              </Link>
-              {"  >  "}
-              <Link className="text-gray-700" href="/community-units">
-                Community units
-              </Link>
-              {"  >  "}
-              <span className="text-gray-500">
-                {props?.props?.name} ( #
-                <i className="text-black">{props?.props?.code || "NO_CODE"}</i> )
-              </span>
-            </div>
+  return (
+    <MainLayout>
+      <div className="w-full md:w-[85%] px-4 grid grid-cols-1 md:grid-cols-7 place-content-center md:grid gap-4 md:p-2 my-6">
+        <div className="md:col-span-7 flex flex-col items-start justify-start gap-3">
 
-            {/* Header snippet */}
-            <div
-              className={
-                `md:col-span-7 grid grid-cols-6 gap-5 md:gap-8 py-6 w-full border ${props?.props?.active ? "border-gray-400 rounded" : "border-red-600"} bg-transparent drop-shadow  text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " +
+          {/* Breadcrumb */}
+          <div className="flex flex-row gap-2 text-sm md:text-base">
+            <Link className="text-gray-700" href="/">
+              Home
+            </Link>
+            {"  >  "}
+            <Link className="text-gray-700" href="/community-units">
+              Community units
+            </Link>
+            {"  >  "}
+            <span className="text-gray-500">
+              {props?.props?.name} ( #
+              <i className="text-black">{props?.props?.code || "NO_CODE"}</i> )
+            </span>
+          </div>
+
+          {/* Header snippet */}
+          <div
+            className={
+              `md:col-span-7 grid grid-cols-6 gap-5 md:gap-8 py-6 w-full border ${props?.props?.active ? "border-gray-400 rounded" : "border-red-600"} bg-transparent drop-shadow  text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " +
               ${props?.props?.active ? "border-gray-400 rounded" : "border-yellow-700"}
             `}
-            >
+          >
 
-              {/* <pre>
-                {
-                  JSON.stringify(props?.props?.name, null, 2)
-                }
-              </pre> */}
 
-                    
-              <div className="col-span-6 md:col-span-3">
-                    <Link  href={`/community-units/${props?.props?.id}`} className="text-4xl tracking-tight font-bold leading-tight">
-                  {props?.props?.name}
-                </Link>
-                <div className="flex gap-2 items-center w-full justify-between">
-                  <span
-                    className={
-                      "font-bold text-2xl " +
-                      (props?.props?.code ? "text-gray-900" : "text-gray-500")
-                    }
-                  >
-                    #{" "}{props?.props?.code ?? "NO_CODE"} 
-                  </span>
 
-                </div>
-              </div>
+            <div className="col-span-6 md:col-span-3">
+              <Link href={`/community-units/${props?.props?.id}`} className="text-4xl tracking-tight font-bold leading-tight">
+                {props?.props?.name}
+              </Link>
+              <div className="flex gap-2 items-center w-full justify-between">
+                <span
+                  className={
+                    "font-bold text-2xl " +
+                    (props?.props?.code ? "text-gray-900" : "text-gray-500")
+                  }
+                >
+                  #{" "}{props?.props?.code ?? "NO_CODE"}
+                </span>
 
-              {/* Info snippet */}
-              <div className="flex flex-wrap gap-3 items-center justify-end col-span-6 md:col-span-2">
-                <div className="flex flex-wrap gap-3 w-full items-center justify-start md:justify-center">
-                  {props?.props?.is_approved ? (
-                    <span className="bg-blue-200 text-gray-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
-                      <CheckCircleIcon className="h-4 w-4" />
-                      CHU Approved
-                    </span>
-                  ) : (
-                    <span className="bg-red-200 text-red-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
-                      <XCircleIcon className="h-4 w-4" />
-                      Not approved
-                    </span>
-                  )}
-                  {props?.props?.is_closed && (
-                    <span className="bg-gray-200 text-gray-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
-                      <LockClosedIcon className="h-4 w-4" />
-                      CHU Closed
-                    </span>
-                  )}
-                  {props?.props?.deleted && (
-                    <span className="bg-gray-200 text-gray-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
-                      <XCircleIcon className="h-4 w-4" />
-                      CHU Deleted
-                    </span>
-                  )}
-                  {props?.props?.active && (
-                    <span className="bg-blue-200 text-gray-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
-                      <CheckCircleIcon className="h-4 w-4" />
-                      CHU Active
-                    </span>
-                  )}
-                  {props?.props?.has_edits && (
-                    <span className="bg-blue-200 text-gray-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
-                      <InformationCircleIcon className="h-4 w-4" />
-                      Has changes
-                    </span>
-                  )}
-                </div>
-              </div>
-              <div className="col-span-6 md:col-span-1 flex flex-col items-center justify-center p-2">
-                {''}
               </div>
             </div>
 
+            {/* Info snippet */}
+            <div className="flex flex-wrap gap-3 items-center justify-end col-span-6 md:col-span-2">
+              <div className="flex flex-wrap gap-3 w-full items-center justify-start md:justify-center">
+                {props?.props?.is_approved ? (
+                  <span className="bg-blue-200 text-gray-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
+                    <CheckCircleIcon className="h-4 w-4" />
+                    CHU Approved
+                  </span>
+                ) : (
+                  <span className="bg-red-200 text-red-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
+                    <XCircleIcon className="h-4 w-4" />
+                    Not approved
+                  </span>
+                )}
+                {props?.props?.is_closed && (
+                  <span className="bg-gray-200 text-gray-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
+                    <LockClosedIcon className="h-4 w-4" />
+                    CHU Closed
+                  </span>
+                )}
+                {props?.props?.deleted && (
+                  <span className="bg-gray-200 text-gray-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
+                    <XCircleIcon className="h-4 w-4" />
+                    CHU Deleted
+                  </span>
+                )}
+                {props?.props?.active && (
+                  <span className="bg-blue-200 text-gray-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
+                    <CheckCircleIcon className="h-4 w-4" />
+                    CHU Active
+                  </span>
+                )}
+                {props?.props?.has_edits && (
+                  <span className="bg-blue-200 text-gray-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
+                    <InformationCircleIcon className="h-4 w-4" />
+                    Has changes
+                  </span>
+                )}
+              </div>
+            </div>
+            <div className="col-span-6 md:col-span-1 flex flex-col items-center justify-center p-2">
+              {''}
+            </div>
           </div>
 
-          {/* Community Unit Side Menu */}
-      
-          <div className="hidden md:col-span-1 md:flex md:mt-8">
-            <CommunityUnitSideMenu
-              qf={'all'}
-              filters={[]}
-              _pathId={''}
+        </div>
 
-            />
-          </div>
+        {/* Community Unit Side Menu */}
 
-          <button className='md:hidden relative p-2 border border-gray-800 rounded w-full self-start my-4' onClick={() => setIsMenuOpen(!isMenuOpen)}>
+        <div className="hidden md:col-span-1 md:flex md:mt-8">
+          <CommunityUnitSideMenu
+            qf={'all'}
+            filters={[]}
+            _pathId={''}
+
+          />
+        </div>
+
+        <button className='md:hidden relative p-2 border border-gray-800 rounded w-full self-start my-4' onClick={() => setIsMenuOpen(!isMenuOpen)}>
           Community Health Unit Menu
           {
             !isMenuOpen &&
@@ -1403,70 +1409,70 @@ export function CommunityUnitEditForm(props) {
 
             />
           }
-          </button>
-          
-           
+        </button>
 
 
 
-          {/* Form */}
-          <div className="col-span-1 md:col-span-6 flex flex-col md:gap-3 mt-2 md:mt-8 bg-gray-50 rounded shadow-md pt-2">
-            <Tabs.Root
-              orientation="horizontal"
-              className="w-full flex flex-col tab-root"
-              defaultValue="basic_details"
-            >
-              {/* Tabs List */}
-              <Tabs.List className="list-none w-full flex justify-between md:justify-start border-b border-gray-400  md:grid md:grid-cols-3  flex-wrap gap-2 md:gap-3 px-4 uppercase leading-none tab-list font-semibold">
-                <Tabs.Tab
-                  value="basic_details"
-                  className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
-                >
-                  Basic Details
-                </Tabs.Tab>
-                <Tabs.Tab
-                  value="chews"
-                  className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
-                >
-                  CHAs
-                </Tabs.Tab>
-                <Tabs.Tab
-                  value="services"
-                  className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
-                >
-                  Services
-                </Tabs.Tab>
-              </Tabs.List>
 
-              {/* Panel List */}
 
-              {/* Basic Details Panel */}
-              <Tabs.Panel
+        {/* Form */}
+        <div className="col-span-1 md:col-span-6 flex flex-col md:gap-3 mt-2 md:mt-8 bg-gray-50 rounded shadow-md pt-2">
+          <Tabs.Root
+            orientation="horizontal"
+            className="w-full flex flex-col tab-root"
+            defaultValue="basic_details"
+          >
+            {/* Tabs List */}
+            <Tabs.List className="list-none w-full flex justify-between md:justify-start border-b border-gray-400  md:grid md:grid-cols-3  flex-wrap gap-2 md:gap-3 px-4 uppercase leading-none tab-list font-semibold">
+              <Tabs.Tab
                 value="basic_details"
-                className="grow-1 p-3 mx-auto w-full tab-panel"
+                className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
               >
-                <EditCommunityUnitsBasicDeatilsForm {...props?.props} />
-              </Tabs.Panel>
-
-              {/* Chews Panel */}
-              <Tabs.Panel value="chews" className="grow-1 p-3 mx-auto w-full tab-panel">
-                <EditCommunityUnitsCHEWSForm {...props?.props} />
-              </Tabs.Panel>
-
-              {/* Services Panel */}
-              <Tabs.Panel
+                Basic Details
+              </Tabs.Tab>
+              <Tabs.Tab
+                value="chews"
+                className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
+              >
+                CHAs
+              </Tabs.Tab>
+              <Tabs.Tab
                 value="services"
-                className="grow-1 p-3 mx-auto w-full tab-panel"
+                className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
               >
-                <EditCommunityUnitsServicesForm {...props?.props} />
+                Services
+              </Tabs.Tab>
+            </Tabs.List>
 
-              </Tabs.Panel>
+            {/* Panel List */}
 
-            </Tabs.Root>
-          </div>
+            {/* Basic Details Panel */}
+            <Tabs.Panel
+              value="basic_details"
+              className="grow-1 p-3 mx-auto w-full tab-panel"
+            >
+              <EditCommunityUnitsBasicDeatilsForm {...props?.props} />
+            </Tabs.Panel>
 
+            {/* Chews Panel */}
+            <Tabs.Panel value="chews" className="grow-1 p-3 mx-auto w-full tab-panel">
+              <EditCommunityUnitsCHEWSForm {...props?.props} />
+            </Tabs.Panel>
+
+            {/* Services Panel */}
+            <Tabs.Panel
+              value="services"
+              className="grow-1 p-3 mx-auto w-full tab-panel"
+            >
+              <EditCommunityUnitsServicesForm {...props?.props} />
+
+            </Tabs.Panel>
+
+          </Tabs.Root>
         </div>
-      </MainLayout>
-    )
-  
+
+      </div>
+    </MainLayout>
+  )
+
 }
