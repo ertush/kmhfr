@@ -161,10 +161,6 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
     delete payload[/contact_\d/]
 
     
-    console.log({payload})
-
-    return
-    
 
     try {
 
