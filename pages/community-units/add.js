@@ -184,9 +184,9 @@ function CommunityUnitsBasciDetailsForm(props) {
 
 		if(setDate > today) {	
 			if(event.target.name == "date_established"){
-				setValidationError({date_established: 'Date Established Cannot be in the future'})
+				setValidationError(prev => ({ ...prev, date_established: 'Date Established Cannot be in the future' }))
 			} else {
-				setValidationError({date_operational: 'Date Operational Cannot be in the future'})
+				setValidationError(prev => ({ ...prev, date_operational: 'Date Established Cannot be in the future' }))
 			}
 
 			event.target.value = ''
@@ -353,9 +353,7 @@ function CommunityUnitsBasciDetailsForm(props) {
 									defaultValue={formData?.date_established}
 									className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
 								/>
-
-								{validationError?.date_established && <span className='text-red-500 text-sm'>{validationError?.date_established}</span>}
-
+								<p className='text-red-500 text-sm'>{validationError.date_established ?? ''}</p>
 							</div>
 						</div>
 
@@ -380,8 +378,7 @@ function CommunityUnitsBasciDetailsForm(props) {
 
 									className={`${validationError !== null ? 'border-red-600' : ''} flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-600 rounded focus:shadow-none focus:bg-white focus:border-black outline-none`}
 								/>
-
-								{validationError?.date_operational && <span className='text-red-500 text-sm'>{validationError?.date_operational}</span>}
+								<p className='text-red-500 text-sm'>{validationError.date_operational ?? ''}</p>
 							</div>
 						</div>
 					</div>

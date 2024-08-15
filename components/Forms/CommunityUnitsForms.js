@@ -12,7 +12,7 @@ import {
   XCircleIcon,
   TrashIcon
 } from "@heroicons/react/solid";
-import { useContext, useState, useEffect } from 'react';
+import { useContext, useState } from 'react';
 import { ChuOptionsContext } from '../../pages/community-units/edit/[id]';
 import Select from 'react-select'
 import 'react-dual-listbox/lib/react-dual-listbox.css';
@@ -32,7 +32,7 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
   const [touchedFields, setTouchedFields] = useState(new Set())
   const [submitting, setSubmitting] = useState(false)
   const [formError, setFormError] = useState(null)
-  const [validationError, setValidationError] = useState(null)
+  const [validationError, setValidationError] = useState({date_established: null, date_operational: null})
   const [contacts, setContacts] = useState(props?.contacts ?? [{contact: '', contact_type_name: ''}]);
 
   const router = useRouter()
@@ -69,9 +69,9 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
 
     if (setDate > today) {
       if (event.target.name == "date_established") {
-        setValidationError({ date_established: 'Date Established Cannot be in the future' })
+        setValidationError(prev => ({ ...prev, date_established: 'Date Established Cannot be in the future' }))
       } else {
-        setValidationError({ date_operational: 'Date Operational Cannot be in the future' })
+        setValidationError(prev => ({ ...prev, date_operational: 'Date Operational Cannot be in the future' }))
       }
 
       event.target.value = ''
@@ -159,8 +159,6 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
     }
 
     delete payload[/contact_\d/]
-
-    
 
     try {
 
@@ -351,8 +349,7 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
                 placeholder={'mm/dd/yyyy'}
                 className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:bg-white focus:border-black outline-none"
               />
-
-              {validationError?.date_established && <span className='text-red-500 text-sm'>{validationError?.date_established}</span>}
+              <p className='text-red-500 text-sm'>{validationError.date_established ?? ''}</p>
 
             </div>
           </div>
@@ -382,7 +379,8 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
                 className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:bg-white focus:border-black outline-none"
               />
 
-              {validationError?.date_operational && <span className='text-red-500 text-sm'>{validationError?.date_operational}</span>}
+            <p className='text-red-500 text-sm'>{validationError.date_operational ?? ''}</p>
+              
 
             </div>
           </div>
