@@ -23,7 +23,6 @@ import Spinner from '../../components/Spinner'
 import EditListItem from '../../components/Forms/formComponents/EditListItem'
 import { KeyboardArrowRight, KeyboardArrowDown } from "@mui/icons-material";
 import { v4 as uuid } from 'uuid';
-
 import { useRouter } from 'next/router';
 
 
@@ -826,7 +825,9 @@ function EditCommunityUnitsCHEWSForm(props) {
   const [deleting, setDeleting] = useState(false)
   const [formError, setFormError] = useState(null)
 
-  const [healthUnitWorkers, setHealthUnitWorkers] = useState(props?.health_unit_workers)
+  const derivedHealthWorkers = props?.health_unit_workers?.map((obj) => ({...obj, uid: uuid()}))
+
+  const [healthUnitWorkers, setHealthUnitWorkers] = useState(derivedHealthWorkers)
   const alert = useAlert()
   const [deleteButton, setDeleteButton] = useState(props?.health_unit_workers?.map((_, i) => ({ [i]: false })))
 
@@ -912,22 +913,16 @@ function EditCommunityUnitsCHEWSForm(props) {
   function handleDelete(event, index, id) {
     event.preventDefault();
 
-    const itemId = event.target.parentNode.dataset.id
-
     setDeleting(true)
 
-    setDeleteButton(prev => {
-      // prev[index][index] = true
-      // return prev
-      return prev.map((slot) => {
-        slot[index] = true;
-        return slot
-      })
-    })
 
+    const firstName = healthUnitWorkers.find(({uid}) => uid === id)?.first_name
+    const lastName = healthUnitWorkers.find(({uid}) => uid === id)?.last_name
+    
 
+    
 
-    // const index = parseInt(event.target.name.split('_').at(-1))
+    if(id && firstName !== "" && lastName !== ""){
 
     fetch(`${process.env.NEXT_PUBLIC_API_URL}/chul/workers/${id}/`, {
       headers: {
@@ -941,20 +936,13 @@ function EditCommunityUnitsCHEWSForm(props) {
       .then(resp => {
         if (resp.status == 204) {
 
-          setDeleting(false)
-
-
-          setHealthUnitWorkers(prev => {
-            setDeleteButton(prev => {
-              return prev.filter(obj => obj[index] !== true)
-            })
-            return prev.filter(({ id }) => id !== itemId)
-
-
-          })
-
-          // setDeleteButton(props?.health_unit_workers.map((_, i) => ({[i]: false})))
-
+        setDeleting(false)
+        setHealthUnitWorkers(prev => {
+      
+          delete prev[index]
+          return prev.filter(({uid}) => uid !== index)
+        })
+          
 
           alert.success(`${props?.health_unit_workers[index]?.name} has been deleted successfully`)
         } else {
@@ -971,6 +959,13 @@ function EditCommunityUnitsCHEWSForm(props) {
       .catch(e => {
         console.error(e.message)
       })
+    } else {
+      setHealthUnitWorkers(prev => {
+      
+        delete prev[index]
+        return prev.filter(({uid}) => uid !== index)
+      })
+    }
 
 
   }
@@ -978,7 +973,7 @@ function EditCommunityUnitsCHEWSForm(props) {
 
   function handleAddCHEW(e) {
     e.preventDefault()
-    setHealthUnitWorkers(prev => [...prev, { first_name: "", last_name: "", is_incharge: "" }])
+    setHealthUnitWorkers(prev => [...prev, { first_name: "", last_name: "", is_incharge: "", uid: uuid() }])
   }
 
   return (
@@ -1044,9 +1039,9 @@ function EditCommunityUnitsCHEWSForm(props) {
         </div>
 
         {Array.isArray(healthUnitWorkers) && healthUnitWorkers.length > 0 ? (
-          healthUnitWorkers?.map(({ first_name, last_name, mobile_no, email, id }, index) => {
+          healthUnitWorkers?.map(({ first_name, last_name, mobile_no, email, uid }, index) => {
             return (
-              <div key={id} className="flex items-start justify-between">
+              <div key={uid} className="flex items-start justify-between">
 
                 <div className='w-full grid md:grid-cols-5 mx-auto place-content-start gap-x-4'>
                   {/* First Name */}
@@ -1054,8 +1049,8 @@ function EditCommunityUnitsCHEWSForm(props) {
                   <input
                     required
                     type="text"
-                    id={`first_name_${index}`}
-                    name={`first_name_${index}`}
+                    id={`first_name_${uid}`}
+                    name={`first_name_${uid}`}
                     defaultValue={first_name}
                     className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:bg-white focus:border-black outline-none"
                   />
@@ -1064,8 +1059,8 @@ function EditCommunityUnitsCHEWSForm(props) {
                   <input
                     required
                     type="text"
-                    id={`last_name_${index}`}
-                    name={`last_name_${index}`}
+                    id={`last_name_${uid}`}
+                    name={`last_name_${uid}`}
                     defaultValue={last_name}
 
                     className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:bg-white focus:border-black outline-none"
@@ -1077,7 +1072,7 @@ function EditCommunityUnitsCHEWSForm(props) {
                     type='tel'
                     pattern={'[0-9]{10}'}
                     placeholder={'07XXXXXXXX'}
-                    name={`mobile_no_${index}`}
+                    name={`mobile_no_${uid}`}
                     defaultValue={mobile_no}
 
                     className='flex-none  md:max-w-min w-auto bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
@@ -1088,7 +1083,7 @@ function EditCommunityUnitsCHEWSForm(props) {
                   <input
                     required
                     type='email'
-                    name={`email_${index}`}
+                    name={`email_${uid}`}
                     defaultValue={email}
                     placeholder="user@email-domain"
                     pattern="[a-z0-9]+[.]*[\-]*[a-z0-9]+@[a-z0-9]+[\-]*[.]*[a-z0-9]+[.][a-z]{2,}"
@@ -1105,7 +1100,7 @@ function EditCommunityUnitsCHEWSForm(props) {
                         name='delete'
                         type='button'
                         className='bg-transparent group hover:bg-red-500 text-red-700 font-semibold hover:text-white p-3 hover:border-transparent '
-                        onClick={(e) => handleDelete(e, index, id)}
+                        onClick={(e) => handleDelete(e, index, uid)}
                         data-id={props?.health_unit_workers[index]?.id}
                       >
                         <TrashIcon className="w-4 h-4 text-red-500 group-hover:text-white" />
