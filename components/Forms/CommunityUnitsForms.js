@@ -185,6 +185,7 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
         .then(async resp => {
           if (resp.ok) {
 
+            setSubmitting(false)
 
             alert.success(`${props?.name} Basic Details Updated successfully`, {
               containerStyle: {
@@ -200,6 +201,8 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
 
             const error = Array.isArray(Object.values(detail)) && Object.values(detail).length == 1 ? detail[Object.keys(detail)[0]][0] : ''
 
+            setSubmitting(false)
+
             setFormError(error)
 
             alert.error('Unable to save Community Units Basic details')
@@ -208,7 +211,8 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
     }
 
     catch (e) {
-      alert.error('Error Occured: ' + e.message)
+      setSubmitting(true)
+      console.error('Error Occured: ' + e.message)
     }
     finally {
       setSubmitting(false)
@@ -829,11 +833,10 @@ function EditCommunityUnitsCHEWSForm(props) {
 
   const [healthUnitWorkers, setHealthUnitWorkers] = useState(derivedHealthWorkers)
   const alert = useAlert()
-  const [deleteButton, setDeleteButton] = useState(props?.health_unit_workers?.map((_, i) => ({ [i]: false })))
 
-  // console.log({ deleteButton })
 
   function handleFormSubmit(event) {
+
     event.preventDefault()
 
     setSubmitting(true)
@@ -842,32 +845,18 @@ function EditCommunityUnitsCHEWSForm(props) {
     const formData = new FormData(event.target)
     const formDataObject = Object.fromEntries(formData)
 
-    for (let [k, v] of formData) {
-      if (v == "on") {
-        formDataObject[k] = true
-      } else {
-        formDataObject[`is_incharge_${k.split('_').at(-1)}`] = false
-        formDataObject[k] = v
-      }
-    }
-
-    let payload = Object.keys(formDataObject)?.filter(k => /first_name_\d/.test(k)).map(() => ({}))
+    const payload = Object.keys(formDataObject)?.filter(k => /first_name_.*/.test(k)).map(() => ({}))
 
     const formDataEntries = Object.entries(formDataObject)
 
     formDataEntries.forEach((entry) => {
-      if (/^first_name_[0-9]{1}/.test(entry[0])) payload[parseInt(entry[0].split('_').at(-1))]['first_name'] = entry[1];
-      if (/^last_name_[0-9]{1}/.test(entry[0])) payload[parseInt(entry[0].split('_').at(-1))]['last_name'] = entry[1];
-      if (/^mobile_no_[0-9]{1}/.test(entry[0])) payload[parseInt(entry[0].split('_').at(-1))]['mobile_no'] = entry[1];
-      if (/^email_[0-9]{1}/.test(entry[0])) payload[parseInt(entry[0].split('_').at(-1))]['email'] = entry[1];
+      if (/^first_name_.*/.test(entry[0])) payload[parseInt(entry[0].split('_').at(-1))]['first_name'] = entry[1];
+      if (/^last_name_.*/.test(entry[0])) payload[parseInt(entry[0].split('_').at(-1))]['last_name'] = entry[1];
+      if (/^mobile_no_.*/.test(entry[0])) payload[parseInt(entry[0].split('_').at(-1))]['mobile_no'] = entry[1];
+      if (/^email_.*/.test(entry[0])) payload[parseInt(entry[0].split('_').at(-1))]['email'] = entry[1];
 
 
     })
-
-
-
-    // payload = payload.filter(({first_name}, i) => first_name !== props?.health_unit_workers[i]?.first_name)
-
 
 
     try {
@@ -895,7 +884,6 @@ function EditCommunityUnitsCHEWSForm(props) {
 
           } else {
             // const detail = await resp.json()
-
             setSubmitting(false)
             // setFormError(Array.isArray(Object.values(detail)) && Object.values(detail).length == 1 && typeof Object.values(detail)[0] == 'string' && detail[0][0])
             alert.error('Unable to update Community Units health workers')
@@ -904,6 +892,7 @@ function EditCommunityUnitsCHEWSForm(props) {
     }
 
     catch (e) {
+      setSubmitting(false)
       alert.error('Error Occured: ' + e.message)
     }
   }
@@ -919,9 +908,6 @@ function EditCommunityUnitsCHEWSForm(props) {
     const firstName = healthUnitWorkers.find(({uid}) => uid === id)?.first_name
     const lastName = healthUnitWorkers.find(({uid}) => uid === id)?.last_name
     
-
-    
-
     if(id && firstName !== "" && lastName !== ""){
 
     fetch(`${process.env.NEXT_PUBLIC_API_URL}/chul/workers/${id}/`, {
@@ -957,6 +943,7 @@ function EditCommunityUnitsCHEWSForm(props) {
         }
       })
       .catch(e => {
+        setDeleting(false)
         console.error(e.message)
       })
     } else {
@@ -1027,7 +1014,7 @@ function EditCommunityUnitsCHEWSForm(props) {
 
           <div className='flex flex-row justify-between gap-2'>
 
-            <button className=' w-auto  bg-blue-600 p-2 text-white flex text-md font-semibold '
+            <button className=' w-auto  bg-blue-600 p-2  rounded text-white flex text-md font-semibold '
               onClick={handleAddCHEW}
             >
               {`Add +`}
@@ -1049,9 +1036,10 @@ function EditCommunityUnitsCHEWSForm(props) {
                   <input
                     required
                     type="text"
-                    id={`first_name_${uid}`}
-                    name={`first_name_${uid}`}
+                    id={`first_name_${uid}_${index}`}
+                    name={`first_name_${uid}_${index}`}
                     defaultValue={first_name}
+                    placeholder='First Name'
                     className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:bg-white focus:border-black outline-none"
                   />
 
@@ -1059,8 +1047,9 @@ function EditCommunityUnitsCHEWSForm(props) {
                   <input
                     required
                     type="text"
-                    id={`last_name_${uid}`}
-                    name={`last_name_${uid}`}
+                    id={`last_name_${uid}_${index}`}
+                    name={`last_name_${uid}_${index}`}
+                    placeholder='Second Name'
                     defaultValue={last_name}
 
                     className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:bg-white focus:border-black outline-none"
@@ -1072,7 +1061,7 @@ function EditCommunityUnitsCHEWSForm(props) {
                     type='tel'
                     pattern={'[0-9]{10}'}
                     placeholder={'07XXXXXXXX'}
-                    name={`mobile_no_${uid}`}
+                    name={`mobile_no_${uid}_${index}`}
                     defaultValue={mobile_no}
 
                     className='flex-none  md:max-w-min w-auto bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
@@ -1083,7 +1072,7 @@ function EditCommunityUnitsCHEWSForm(props) {
                   <input
                     required
                     type='email'
-                    name={`email_${uid}`}
+                    name={`email_${uid}_${index}`}
                     defaultValue={email}
                     placeholder="user@email-domain"
                     pattern="[a-z0-9]+[.]*[\-]*[a-z0-9]+@[a-z0-9]+[\-]*[.]*[a-z0-9]+[.][a-z]{2,}"
@@ -1126,7 +1115,7 @@ function EditCommunityUnitsCHEWSForm(props) {
           })
         ) : (
           <>
-            <li className="w-full  bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base leading-none">
+            <li className="w-full rounded  bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base leading-none">
               <p>No Community health unit workforce found </p>
             </li>
           </>
@@ -1166,6 +1155,7 @@ function EditCommunityUnitsCHEWSForm(props) {
 
 }
 
+
 function EditCommunityUnitsServicesForm(props) {
 
   const currentServices = props?.services?.map(({ name: label, service: value }) => ({ label, value })) ?? []
@@ -1174,7 +1164,6 @@ function EditCommunityUnitsServicesForm(props) {
 
   const [submitting, setSubmitting] = useState(false)
 
-  // const serviceCtg = props?.service_category ?? []
 
   const serviceOptions = ((_services) => {
 
@@ -1319,7 +1308,6 @@ function EditCommunityUnitsServicesForm(props) {
 
 
 }
-
 
 
 export function CommunityUnitEditForm(props) {

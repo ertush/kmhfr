@@ -159,7 +159,7 @@ function FacilityContact(
                         if(!contacts.includes(undefined)){
                             setFacilityContacts(prev => {
                                 
-                                delete prev[index]
+                                // delete prev[index]
                                 return prev?.filter(({id}) => id !== index)
                             }); 
 
@@ -167,7 +167,7 @@ function FacilityContact(
                         }else{
                             setFacilityContacts(prev => {
                                 
-                                delete prev[index]
+                                // delete prev[index]
                                 return prev?.filter(({id}) => id !== index)
                             }); 
 
@@ -352,7 +352,7 @@ function OfficerContactDetails (
 
                        
                         setFacilityContacts(prev => {
-                            delete prev[index]
+                            // delete prev[index]
                              return prev?.filter(({id}) => id !== index)
 
                         }); 
@@ -360,7 +360,7 @@ function OfficerContactDetails (
                     } else {
 
                         setFacilityContacts(prev => {
-                            delete prev[index]
+                            // delete prev[index]
                              return prev?.filter(({id}) => id !== index)
 
                         }); 
