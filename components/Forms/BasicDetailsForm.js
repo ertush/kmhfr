@@ -930,6 +930,7 @@ export function BasicDeatilsForm({ editMode }) {
               <input
                 type='radio'
                 name='out_reach_services'
+                className='w-4 aspect-square'
                 value={true}
                 defaultChecked={options?.data?.out_reach_services === true}
 
@@ -940,6 +941,7 @@ export function BasicDeatilsForm({ editMode }) {
               <input
                 type='radio'
                 name='out_reach_services'
+                className='w-4 aspect-square'
                 value={false}
                 defaultChecked={options?.data?.out_reach_services === false}
 
@@ -963,6 +965,7 @@ export function BasicDeatilsForm({ editMode }) {
               <input
                 type='radio'
                 name='accredited_lab_iso_15189'
+                className='w-4 aspect-square'
                 value={true}
                 defaultChecked={options?.data?.accredited_lab_iso_15189 === true}
 
@@ -973,6 +976,7 @@ export function BasicDeatilsForm({ editMode }) {
               <input
                 type='radio'
                 name='accredited_lab_iso_15189'
+                className='w-4 aspect-square'
                 value={false}
                 defaultChecked={options?.data?.accredited_lab_iso_15189 === false}
 
@@ -1362,6 +1366,7 @@ export function BasicDeatilsForm({ editMode }) {
                 type='radio'
                 name='new_born_unit'
                 onFocus={handleFocus}
+                className='w-4 aspect-square'
                 defaultChecked={options?.data?.new_born_unit == true}
                 value={true}
 
@@ -1372,6 +1377,7 @@ export function BasicDeatilsForm({ editMode }) {
               <input
                 type='radio'
                 name='new_born_unit'
+                className='w-4 aspect-square'
                 onFocus={handleFocus}
                 defaultChecked={options?.data?.new_born_unit == false}
                 value={false}
@@ -1420,6 +1426,7 @@ export function BasicDeatilsForm({ editMode }) {
               <input
                 type='radio'
                 name='reporting_in_dhis'
+                className='w-4 aspect-square'
                 onFocus={handleFocus}
                 defaultChecked={options?.data?.reporting_in_dhis == true}
                 value={true}
@@ -1431,6 +1438,7 @@ export function BasicDeatilsForm({ editMode }) {
               <input
                 type='radio'
                 name='reporting_in_dhis'
+                className='w-4 aspect-square'
                 onFocus={handleFocus}
                 defaultChecked={options?.data?.reporting_in_dhis == false}
                 value={false}
@@ -1481,6 +1489,7 @@ export function BasicDeatilsForm({ editMode }) {
                 type='radio'
                 name='nhif_accreditation'
                 onFocus={handleFocus}
+                className='w-4 aspect-square'
                 defaultChecked={options?.data?.nhif_accreditation == true}
                 value={true}
 
@@ -1491,6 +1500,7 @@ export function BasicDeatilsForm({ editMode }) {
               <input
                 type='radio'
                 name='nhif_accreditation'
+                className='w-4 aspect-square'
                 onFocus={handleFocus}
                 defaultChecked={options?.data?.nhif_accreditation == false}
                 value={false}
@@ -1518,6 +1528,7 @@ export function BasicDeatilsForm({ editMode }) {
             <input
               type="checkbox"
               name='is_classified'
+              className='w-4 aspect-square'
               onFocus={handleFocus}
               defaultChecked={options?.data?.is_classified ?? false}
             />
@@ -1535,6 +1546,7 @@ export function BasicDeatilsForm({ editMode }) {
             <input
               type='checkbox'
               name='open_whole_day'
+              className='w-4 aspect-square'
               onFocus={handleFocus}
               defaultChecked={options?.data?.open_whole_day ?? false}
 
@@ -1551,6 +1563,7 @@ export function BasicDeatilsForm({ editMode }) {
             <input
               type='checkbox'
               name='open_late_night'
+              className='w-4 aspect-square'
               onFocus={handleFocus}
               defaultChecked={options?.data?.open_late_night ?? false}
 
@@ -1567,6 +1580,7 @@ export function BasicDeatilsForm({ editMode }) {
             <input
               type='checkbox'
               name='open_public_holidays'
+              className='w-4 aspect-square'
               onFocus={handleFocus}
               defaultChecked={options?.data?.open_public_holidays ?? false}
 
@@ -1583,6 +1597,7 @@ export function BasicDeatilsForm({ editMode }) {
             <input
               type='checkbox'
               name='open_weekends'
+              className='w-4 aspect-square'
               onFocus={handleFocus}
               defaultChecked={options?.data?.open_weekends ?? false}
 
@@ -1600,6 +1615,7 @@ export function BasicDeatilsForm({ editMode }) {
               type='checkbox'
               name='open_normal_day'
               onFocus={handleFocus}
+              className='w-4 aspect-square'
               defaultChecked={options?.data?.open_normal_day ?? false}
 
             />

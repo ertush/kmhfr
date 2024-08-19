@@ -23,7 +23,6 @@ import Spinner from '../../components/Spinner'
 import EditListItem from '../../components/Forms/formComponents/EditListItem'
 import { KeyboardArrowRight, KeyboardArrowDown } from "@mui/icons-material";
 import { v4 as uuid } from 'uuid';
-
 import { useRouter } from 'next/router';
 
 
@@ -37,28 +36,32 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
 
   const derivedContacts = props?.contacts?.map(obj => ({ ...obj, uid: uuid() }))
   const [contacts, setContacts] = useState(derivedContacts ?? [{ contact: '', contact_type_name: '', uid: uuid() }]);
-
+  const [contactTypeLabel, setContactTypeLabel] = useState(null)
   const router = useRouter()
 
 
   const alert = useAlert()
 
-  function handleFieldChange(event) {
+  function handleFieldChange(event, uid) {
 
     if (!typeof event == 'object') event.preventDefault()
-
 
     setTouchedFields(prev => {
       prev.add(event?.target?.name ?? 'facility')
       return prev
     })
+
+
+    if(event.currentTarget.name === `contact_type_${uid}`) {
+      setContactTypeLabel(options?.contactTypes.find(({value}) => value === event.currentTarget.value)?.label)
+    }
   }
 
   function handleDateChange(event) {
 
     event.preventDefault()
 
-    handleFieldChange(event)
+    handleFieldChange(event, null)
 
     if (event.target.name == "date_established") {
       setValidationError(prev => ({ ...prev, date_established: null }))
@@ -182,6 +185,7 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
         .then(async resp => {
           if (resp.ok) {
 
+            setSubmitting(false)
 
             alert.success(`${props?.name} Basic Details Updated successfully`, {
               containerStyle: {
@@ -197,6 +201,8 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
 
             const error = Array.isArray(Object.values(detail)) && Object.values(detail).length == 1 ? detail[Object.keys(detail)[0]][0] : ''
 
+            setSubmitting(false)
+
             setFormError(error)
 
             alert.error('Unable to save Community Units Basic details')
@@ -205,7 +211,8 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
     }
 
     catch (e) {
-      alert.error('Error Occured: ' + e.message)
+      setSubmitting(true)
+      console.error('Error Occured: ' + e.message)
     }
     finally {
       setSubmitting(false)
@@ -245,10 +252,11 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
             *
           </span>
         </label>
+
         <input
           type="text"
           name="name"
-          onChange={handleFieldChange}
+          onChange={(e) => handleFieldChange(e, null)}
           id="name"
           defaultValue={props?.name}
           className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:bg-white focus:border-black outline-none"
@@ -289,7 +297,7 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
           placeholder="Select Link facility ..."
           name="facility"
           id="facility"
-          onChange={handleFieldChange}
+          onChange={(e) => handleFieldChange(e, null)}
           className='flex-none w-full  flex-grow  placeholder-gray-500 border border-gray-400 rounded outline-none'
 
 
@@ -324,7 +332,7 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
           options={options?.statuses}
           defaultValue={props?.status}
           name="status"
-          onChange={handleFieldChange}
+          onChange={(e) => handleFieldChange(e, null)}
           id="status"
           className='flex-none w-full  flex-grow  placeholder-gray-500 border border-gray-400 rounded outline-none'
 
@@ -409,7 +417,7 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
         <input
           type="number"
           name="households_monitored"
-          onChange={handleFieldChange}
+          onChange={(e) => handleFieldChange(e, null)}
           id="households_monitored"
 
           defaultValue={props?.households_monitored}
@@ -434,7 +442,7 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
         <input
           type="number"
           name="number_of_chvs"
-          onChange={handleFieldChange}
+          onChange={(e) => handleFieldChange(e, null)}
           id="number_of_chvs"
           defaultValue={props?.number_of_chvs}
 
@@ -466,7 +474,7 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
 
                 type="text"
                 name="facility_county"
-                onChange={handleFieldChange}
+                onChange={(e) => handleFieldChange(e, null)}
                 id="facility_county"
                 className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:bg-white focus:border-black outline-none"
               />
@@ -492,7 +500,7 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
 
                 type="text"
                 name="facility_subcounty"
-                onChange={handleFieldChange}
+                onChange={(e) => handleFieldChange(e, null)}
                 id="facility_subcounty"
                 className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:bg-white focus:border-black outline-none"
               />
@@ -517,7 +525,7 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
                 defaultValue={props?.facility_constituency}
                 type="text"
                 name="facility_constituency"
-                onChange={handleFieldChange}
+                onChange={(e) => handleFieldChange(e, null)}
                 id="facility_constituency"
                 className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:bg-white focus:border-black outline-none"
               />
@@ -542,7 +550,7 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
                 defaultValue={props?.facility_ward}
                 type="text"
                 name="facility_ward"
-                onChange={handleFieldChange}
+                onChange={(e) => handleFieldChange(e, null)}
                 id="facility_ward"
                 className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:bg-white focus:border-black outline-none"
               />
@@ -562,7 +570,7 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
             // required
             type="number"
             name="location"
-            onChange={handleFieldChange}
+            onChange={(e) => handleFieldChange(e, null)}
             id="location"
             placeholder="Description of the area of coverage"
             defaultValue={props?.location}
@@ -590,7 +598,7 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
             defaultValue={props?.chps_present}
             type='number'
             name='chps_present'
-            onChange={handleFieldChange}
+            onChange={(e) => handleFieldChange(e, null)}
             className='col-start-2 flex-none w-full bg-transparent  rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
           />
 
@@ -598,7 +606,7 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
             defaultValue={props?.chps_trained}
             type='number'
             name='chps_trained'
-            onChange={handleFieldChange}
+            onChange={(e) => handleFieldChange(e, null)}
             className='rounded col-start-3 flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
           />
 
@@ -606,7 +614,7 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
             defaultValue={props?.chas_present}
             type='number'
             name='chas_present'
-            onChange={handleFieldChange}
+            onChange={(e) => handleFieldChange(e, null)}
             className='rounded col-start-2 flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
           />
 
@@ -614,7 +622,7 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
             defaultValue={props?.chas_trained}
             type='number'
             name='chas_trained'
-            onChange={handleFieldChange}
+            onChange={(e) => handleFieldChange(e, null)}
             className='rounded col-start-3 flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
           />
 
@@ -622,7 +630,7 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
             defaultValue={props?.chcs_present}
             type='number'
             name='chcs_present'
-            onChange={handleFieldChange}
+            onChange={(e) => handleFieldChange(e, null)}
             className='rounded col-start-2 flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
           />
 
@@ -630,7 +638,7 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
             defaultValue={props?.chcs_trained}
             type='number'
             name='chcs_trained'
-            onChange={handleFieldChange}
+            onChange={(e) => handleFieldChange(e, null)}
             className='rounded col-start-3 flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
           />
 
@@ -670,7 +678,7 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
                   <CustomSelect
                     required
                     name={`contact_type_${uid}`}
-                    onChange={handleFieldChange}
+                    onChange={(e) => handleFieldChange(e, uid)}
                     id={`contact_type_${uid}`}
                     options={options?.contactTypes}
                     defaultValue={options?.contactTypes?.find(({ label }) => label == contact_type_name)?.value}
@@ -694,15 +702,35 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
                     </span>
                   </label>
                   <div className='flex gap-2 w-full'>
-                    <input
-                      required
-                      type="text"
-                      name={`contact_${uid}`}
-                      onChange={handleFieldChange}
-                      id={`contact_${uid}`}
-                      defaultValue={contact}
-                      className="flex-none w-auto bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:bg-white focus:border-black outline-none"
-                    />
+                   
+                    
+                      <input
+                        required
+                        type="text"
+                        name={`contact_${uid}`}
+                        onChange={(e) => handleFieldChange(e, null)}
+                        id={`contact_${uid}`}
+                        defaultValue={contact}
+                        placeholder='Enter Contact'
+                        pattern={
+                          (() => {
+                            const label = options?.contactTypes?.find(({ label }) => label == contact_type_name)?.label
+                            // console.log({label})
+                            switch(label ?? contactTypeLabel) {
+                              case "EMAIL":
+                                return "[a-z0-9]+[.]*[\\-]*[a-z0-9]+@[a-z0-9]+[\\-]*[.]*[a-z0-9]+[.][a-z]{2,}"
+                              case "MOBILE":
+                                return '[0-9]{10}'
+                              default:
+                                return null
+
+                            }
+                          })()
+                        }
+                        className="flex-none w-auto bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:bg-white focus:border-black outline-none"
+                      />
+
+                    
 
                     <button
                       id={`delete-btn-${uid}`}
@@ -777,13 +805,14 @@ function EditCommunityUnitsCHEWSForm(props) {
   const [deleting, setDeleting] = useState(false)
   const [formError, setFormError] = useState(null)
 
-  const [healthUnitWorkers, setHealthUnitWorkers] = useState(props?.health_unit_workers)
-  const alert = useAlert()
-  const [deleteButton, setDeleteButton] = useState(props?.health_unit_workers?.map((_, i) => ({ [i]: false })))
+  const derivedHealthWorkers = props?.health_unit_workers?.map((obj) => ({...obj, uid: uuid()}))
 
-  console.log({ deleteButton })
+  const [healthUnitWorkers, setHealthUnitWorkers] = useState(derivedHealthWorkers)
+  const alert = useAlert()
+
 
   function handleFormSubmit(event) {
+
     event.preventDefault()
 
     setSubmitting(true)
@@ -792,32 +821,18 @@ function EditCommunityUnitsCHEWSForm(props) {
     const formData = new FormData(event.target)
     const formDataObject = Object.fromEntries(formData)
 
-    for (let [k, v] of formData) {
-      if (v == "on") {
-        formDataObject[k] = true
-      } else {
-        formDataObject[`is_incharge_${k.split('_').at(-1)}`] = false
-        formDataObject[k] = v
-      }
-    }
-
-    let payload = Object.keys(formDataObject)?.filter(k => /first_name_\d/.test(k)).map(() => ({}))
+    const payload = Object.keys(formDataObject)?.filter(k => /first_name_.*/.test(k)).map(() => ({}))
 
     const formDataEntries = Object.entries(formDataObject)
 
     formDataEntries.forEach((entry) => {
-      if (/^first_name_[0-9]{1}/.test(entry[0])) payload[parseInt(entry[0].split('_').at(-1))]['first_name'] = entry[1];
-      if (/^last_name_[0-9]{1}/.test(entry[0])) payload[parseInt(entry[0].split('_').at(-1))]['last_name'] = entry[1];
-      if (/^mobile_no_[0-9]{1}/.test(entry[0])) payload[parseInt(entry[0].split('_').at(-1))]['mobile_no'] = entry[1];
-      if (/^email_[0-9]{1}/.test(entry[0])) payload[parseInt(entry[0].split('_').at(-1))]['email'] = entry[1];
+      if (/^first_name_.*/.test(entry[0])) payload[parseInt(entry[0].split('_').at(-1))]['first_name'] = entry[1];
+      if (/^last_name_.*/.test(entry[0])) payload[parseInt(entry[0].split('_').at(-1))]['last_name'] = entry[1];
+      if (/^mobile_no_.*/.test(entry[0])) payload[parseInt(entry[0].split('_').at(-1))]['mobile_no'] = entry[1];
+      if (/^email_.*/.test(entry[0])) payload[parseInt(entry[0].split('_').at(-1))]['email'] = entry[1];
 
 
     })
-
-
-
-    // payload = payload.filter(({first_name}, i) => first_name !== props?.health_unit_workers[i]?.first_name)
-
 
 
     try {
@@ -845,7 +860,6 @@ function EditCommunityUnitsCHEWSForm(props) {
 
           } else {
             // const detail = await resp.json()
-
             setSubmitting(false)
             // setFormError(Array.isArray(Object.values(detail)) && Object.values(detail).length == 1 && typeof Object.values(detail)[0] == 'string' && detail[0][0])
             alert.error('Unable to update Community Units health workers')
@@ -854,6 +868,7 @@ function EditCommunityUnitsCHEWSForm(props) {
     }
 
     catch (e) {
+      setSubmitting(false)
       alert.error('Error Occured: ' + e.message)
     }
   }
@@ -863,22 +878,13 @@ function EditCommunityUnitsCHEWSForm(props) {
   function handleDelete(event, index, id) {
     event.preventDefault();
 
-    const itemId = event.target.parentNode.dataset.id
-
     setDeleting(true)
 
-    setDeleteButton(prev => {
-      // prev[index][index] = true
-      // return prev
-      return prev.map((slot) => {
-        slot[index] = true;
-        return slot
-      })
-    })
 
-
-
-    // const index = parseInt(event.target.name.split('_').at(-1))
+    const firstName = healthUnitWorkers.find(({uid}) => uid === id)?.first_name
+    const lastName = healthUnitWorkers.find(({uid}) => uid === id)?.last_name
+    
+    if(id && firstName !== "" && lastName !== ""){
 
     fetch(`${process.env.NEXT_PUBLIC_API_URL}/chul/workers/${id}/`, {
       headers: {
@@ -892,20 +898,13 @@ function EditCommunityUnitsCHEWSForm(props) {
       .then(resp => {
         if (resp.status == 204) {
 
-          setDeleting(false)
-
-
-          setHealthUnitWorkers(prev => {
-            setDeleteButton(prev => {
-              return prev.filter(obj => obj[index] !== true)
-            })
-            return prev.filter(({ id }) => id !== itemId)
-
-
-          })
-
-          // setDeleteButton(props?.health_unit_workers.map((_, i) => ({[i]: false})))
-
+        setDeleting(false)
+        setHealthUnitWorkers(prev => {
+      
+          delete prev[index]
+          return prev.filter(({uid}) => uid !== index)
+        })
+          
 
           alert.success(`${props?.health_unit_workers[index]?.name} has been deleted successfully`)
         } else {
@@ -920,8 +919,16 @@ function EditCommunityUnitsCHEWSForm(props) {
         }
       })
       .catch(e => {
+        setDeleting(false)
         console.error(e.message)
       })
+    } else {
+      setHealthUnitWorkers(prev => {
+      
+        delete prev[index]
+        return prev.filter(({uid}) => uid !== index)
+      })
+    }
 
 
   }
@@ -929,7 +936,7 @@ function EditCommunityUnitsCHEWSForm(props) {
 
   function handleAddCHEW(e) {
     e.preventDefault()
-    setHealthUnitWorkers(prev => [...prev, { first_name: "", last_name: "", is_incharge: "" }])
+    setHealthUnitWorkers(prev => [...prev, { first_name: "", last_name: "", is_incharge: "", uid: uuid() }])
   }
 
   return (
@@ -983,7 +990,7 @@ function EditCommunityUnitsCHEWSForm(props) {
 
           <div className='flex flex-row justify-between gap-2'>
 
-            <button className=' w-auto  bg-blue-600 p-2 text-white flex text-md font-semibold '
+            <button className=' w-auto  bg-blue-600 p-2  rounded text-white flex text-md font-semibold '
               onClick={handleAddCHEW}
             >
               {`Add +`}
@@ -995,9 +1002,9 @@ function EditCommunityUnitsCHEWSForm(props) {
         </div>
 
         {Array.isArray(healthUnitWorkers) && healthUnitWorkers.length > 0 ? (
-          healthUnitWorkers?.map(({ first_name, last_name, mobile_no, email, id }, index) => {
+          healthUnitWorkers?.map(({ first_name, last_name, mobile_no, email, uid }, index) => {
             return (
-              <div key={id} className="flex items-start justify-between">
+              <div key={uid} className="flex items-start justify-between">
 
                 <div className='w-full grid md:grid-cols-5 mx-auto place-content-start gap-x-4'>
                   {/* First Name */}
@@ -1005,9 +1012,10 @@ function EditCommunityUnitsCHEWSForm(props) {
                   <input
                     required
                     type="text"
-                    id={`first_name_${index}`}
-                    name={`first_name_${index}`}
+                    id={`first_name_${uid}_${index}`}
+                    name={`first_name_${uid}_${index}`}
                     defaultValue={first_name}
+                    placeholder='First Name'
                     className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:bg-white focus:border-black outline-none"
                   />
 
@@ -1015,8 +1023,9 @@ function EditCommunityUnitsCHEWSForm(props) {
                   <input
                     required
                     type="text"
-                    id={`last_name_${index}`}
-                    name={`last_name_${index}`}
+                    id={`last_name_${uid}_${index}`}
+                    name={`last_name_${uid}_${index}`}
+                    placeholder='Second Name'
                     defaultValue={last_name}
 
                     className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:bg-white focus:border-black outline-none"
@@ -1028,7 +1037,7 @@ function EditCommunityUnitsCHEWSForm(props) {
                     type='tel'
                     pattern={'[0-9]{10}'}
                     placeholder={'07XXXXXXXX'}
-                    name={`mobile_no_${index}`}
+                    name={`mobile_no_${uid}_${index}`}
                     defaultValue={mobile_no}
 
                     className='flex-none  md:max-w-min w-auto bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
@@ -1039,7 +1048,7 @@ function EditCommunityUnitsCHEWSForm(props) {
                   <input
                     required
                     type='email'
-                    name={`email_${index}`}
+                    name={`email_${uid}_${index}`}
                     defaultValue={email}
                     placeholder="user@email-domain"
                     pattern="[a-z0-9]+[.]*[\-]*[a-z0-9]+@[a-z0-9]+[\-]*[.]*[a-z0-9]+[.][a-z]{2,}"
@@ -1056,7 +1065,7 @@ function EditCommunityUnitsCHEWSForm(props) {
                         name='delete'
                         type='button'
                         className='bg-transparent group hover:bg-red-500 text-red-700 font-semibold hover:text-white p-3 hover:border-transparent '
-                        onClick={(e) => handleDelete(e, index, id)}
+                        onClick={(e) => handleDelete(e, index, uid)}
                         data-id={props?.health_unit_workers[index]?.id}
                       >
                         <TrashIcon className="w-4 h-4 text-red-500 group-hover:text-white" />
@@ -1082,7 +1091,7 @@ function EditCommunityUnitsCHEWSForm(props) {
           })
         ) : (
           <>
-            <li className="w-full  bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base leading-none">
+            <li className="w-full rounded  bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base leading-none">
               <p>No Community health unit workforce found </p>
             </li>
           </>
@@ -1122,6 +1131,7 @@ function EditCommunityUnitsCHEWSForm(props) {
 
 }
 
+
 function EditCommunityUnitsServicesForm(props) {
 
   const currentServices = props?.services?.map(({ name: label, service: value }) => ({ label, value })) ?? []
@@ -1130,7 +1140,6 @@ function EditCommunityUnitsServicesForm(props) {
 
   const [submitting, setSubmitting] = useState(false)
 
-  // const serviceCtg = props?.service_category ?? []
 
   const serviceOptions = ((_services) => {
 
@@ -1192,8 +1201,6 @@ function EditCommunityUnitsServicesForm(props) {
           body: JSON.stringify({ services: _payload, ...payload })
         })
 
-
-
       }
       catch (e) {
         console.error(e.message)
@@ -1209,7 +1216,6 @@ function EditCommunityUnitsServicesForm(props) {
 
     _payload.forEach(obj => obj['health_unit'] = chulId)
 
-    // console.log({services: _payload, ...payload})
 
 
     try {
@@ -1275,7 +1281,6 @@ function EditCommunityUnitsServicesForm(props) {
 
 
 }
-
 
 
 export function CommunityUnitEditForm(props) {

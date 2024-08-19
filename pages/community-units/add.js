@@ -252,6 +252,7 @@ function CommunityUnitsBasciDetailsForm(props) {
 						</span>
 					</label>
 					<input
+						required
 						placeholder='Select the name of the CHU'
 						type='text'
 						name='name'
@@ -295,7 +296,7 @@ function CommunityUnitsBasciDetailsForm(props) {
 						className='flex-none w-full bg-transparent border border-gray-600 flex-grow  placehold-gray-500 focus:border-gray-200 outline-none'
 						options={facilityOptions}
 						defaultInputValue={formData?.facility}
-					
+						required
 						placeholder='Select linked facility...'
 						name='facility'
 
@@ -325,7 +326,6 @@ function CommunityUnitsBasciDetailsForm(props) {
 						placeholder='Select an operation status ...'
 						defaultValue={formData?.status}
 						name='status'
-
 						className='flex-none w-full  flex-grow  placeholder-gray-500 border border-gray-600 outline-none'
 					/>
 				</div>
@@ -446,7 +446,7 @@ function CommunityUnitsBasciDetailsForm(props) {
 								</label>
 								<input
 									defaultValue={formData?.facility_county ?? countyValue}
-
+									required
 									type='text'
 									name='facility_county'
 									className='flex-none w-full bg-transparent rounded  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
@@ -467,6 +467,7 @@ function CommunityUnitsBasciDetailsForm(props) {
 									</span>
 								</label>
 								<input
+									required
 									defaultValue={formData?.facility_subcounty ?? subCountyValue }
 									type='text'
 									name='facility_subcounty'
@@ -490,6 +491,7 @@ function CommunityUnitsBasciDetailsForm(props) {
 								<input
 									defaultValue={formData?.facility_constituency ?? constituencyValue}
 									type='text'
+									required
 									name='facility_constituency'
 									className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
 								/>
@@ -511,6 +513,7 @@ function CommunityUnitsBasciDetailsForm(props) {
 								<input
 									defaultValue={formData?.facility_ward ?? wardValue}
 									type='text'
+									required
 									name='facility_ward'
 									className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
 								/>
@@ -527,7 +530,6 @@ function CommunityUnitsBasciDetailsForm(props) {
 						Area of coverage
 					</label>
 					<input
-						required
 						type='text'
 						name='location'
 						defaultValue={formData?.location}
@@ -554,6 +556,7 @@ function CommunityUnitsBasciDetailsForm(props) {
 					<input
 						defaultValue={''}
 						type='number'
+						required
 						name='chps_present'
 						className='col-start-2 flex-none w-full bg-transparent  rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
 					/>
@@ -562,6 +565,7 @@ function CommunityUnitsBasciDetailsForm(props) {
 						defaultValue={''}
 						type='number'
 						name='chps_trained'
+						required
 						className='col-start-3 flex-none w-full bg-transparent  rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
 					/>
 					
@@ -569,6 +573,7 @@ function CommunityUnitsBasciDetailsForm(props) {
 						defaultValue={''}
 						type='number'
 						name='chas_present'
+						required
 						className='col-start-2 flex-none w-full bg-transparent  rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
 					/>
 
@@ -576,6 +581,7 @@ function CommunityUnitsBasciDetailsForm(props) {
 						defaultValue={''}
 						type='number'
 						name='chas_trained'
+						required
 						className='col-start-3 flex-none w-full bg-transparent  rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
 					/>
 
@@ -583,6 +589,7 @@ function CommunityUnitsBasciDetailsForm(props) {
 						defaultValue={''}
 						type='number'
 						name='chcs_present'
+						required
 						className='col-start-2 flex-none w-full bg-transparent  rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
 					/>
 
@@ -590,6 +597,7 @@ function CommunityUnitsBasciDetailsForm(props) {
 						defaultValue={''}
 						type='number'
 						name='chcs_trained'
+						required
 						className='col-start-3 flex-none w-full bg-transparent  rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
 					/>
 
@@ -622,6 +630,7 @@ function CommunityUnitsBasciDetailsForm(props) {
 										placeholder="Select Contact ..."
 										options={props?.contact_types}
 										name={`contact_type_${i}`}
+										required
 										defaultValue={Array.isArray(formData?.contacts) ? formData?.contacts[i]?.contact_type : ''}
 									/>
 								</div>
@@ -1091,21 +1100,15 @@ function CommunityUnitsServicesForm(props) {
 	})(serviceCtg ?? [])
 
 
-	function handleCHUServiceSubmit (payload, selectedServices, chulId = "kdksdskd") {
-		// console.log({stateSetters, chulId})
-
-		// console.log(JSON.stringify(selectedServices, null, 2))
-
-		console.log({selectedServices})
+	function handleCHUServiceSubmit (payload, selectedServices, chulId) {
 		
 		const _payload = selectedServices.map(({value}) => ({ service: value }))
 
 		_payload.forEach(obj => obj['health_unit'] = chulId)
 
-		console.log(JSON.stringify({services: _payload, ...payload}))
+		// console.log(JSON.stringify({services: _payload, ...payload}, null, 2))
+		// console.log(JSON.stringify({payload, chulId}))
 
-		// return
-	
 
 		if(_payload && chulId) {
 		try {

@@ -10,15 +10,16 @@ import { useRouter } from 'next/router';
 import { TrashIcon } from '@heroicons/react/solid'
 import { Alert } from '@mui/lab'
 import { SubmitTypeCtx } from '../ServicesForm';
+import {v4 as uuid} from 'uuid'
 
 
-function RenderpartnersForm({ index, setPartners, partnerName }) {
+function RenderpartnersForm({ uid, index, setPartners, partnerName }) {
 
   // console.log({partnerName})
   return (
     <div
       className="flex  items-center justify-between md:mx-1 gap-4 w-full"
-      key={index + 1}
+      
     >
       {/* First Name */}
       <div className="flex-col w-full gap-2">
@@ -44,18 +45,9 @@ function RenderpartnersForm({ index, setPartners, partnerName }) {
               e.preventDefault()
 
               setPartners(partners => {
-
-                delete partners[index]
-
-
-                const val = partners.filter(i => i !== undefined)
-
-
-                console.log({ val })
-                return val
+                 return partners.filter(({uid: id}) => id !== uid)
 
               })
-
 
             }}
             className="flex items-center justify-start space-x-2 bg-red-600 rounded p-1 px-2"
@@ -101,7 +93,7 @@ function EditListItem({
 
   const [formError, setFormError] = useState(null)
   const [from, setFrom] = useState("submission")
-  const [partners, setPartners] = useState(editMode ? [null] : [0])
+  const [partners, setPartners] = useState([])
 
   // Refs
   const [categoryOptions, setCategoryItems] = useState(() => {
@@ -190,7 +182,9 @@ function EditListItem({
       itemName == 'chul_services' && 
       editMode && itemData && itemData?.partners !== null && 
       itemData?.partners?.length > 0){
-      setPartners(itemData?.partners)
+
+      const dereivedPartners = itemData?.partners?.map((partner, i) => ({index: i, name:partner, uid: uuid()}))
+      setPartners(dereivedPartners)
 
       }
 
@@ -302,12 +296,18 @@ function EditListItem({
                 })
             }
           })
-          .catch(e => console.error('unable to update facility services. Error:', e.message))
+          .catch(e => {
+            setSubmitting(false)
+            console.error('unable to update facility services. Error:', e.message)
+          }
+          )
       } else {
 
+        // console.log({payload})
 
         handleItemsUpdate(payload, newSelectedItems, itemId)
           .then(resp => {
+
             if (resp.status == 200 || resp.status == 204 || resp.status == 201) {
               setSubmitting(false)
               alert.success('Updated Community Health Unit Services successfully', {
@@ -332,14 +332,22 @@ function EditListItem({
                 })
             }
           })
-          .catch(e => console.error('unable to update CHU servics update. Error:', e.message))
+          .catch(e => {
+            setSubmitting(false)
+            console.error('unable to update CHU servics update. Error:', e.message)
+          })
       }
     }
     else {
       if (itemName == "facility_services") {
 
         if(typeof handleItemsSubmit == 'function' && itemId){
-        
+      //  Facilities handleCHUFormSubmit
+         if(selectedItems.length == 0) {
+          setFormError('Service are required. Please add services')
+          setSubmitting(false)
+          return
+         }
         handleItemsSubmit(token, selectedItems, itemId)
           .then((resp) => {
             if (resp.ok) {
@@ -410,12 +418,20 @@ function EditListItem({
 
             }
           })
-          .catch(e => console.error('unable to submit item data. Error:', e.message))
+          .catch(e => {
+            setSubmitting(false)
+            console.error('unable to submit item data. Error:', e.message)
+          })
         }
       } else {
-       
+      //  Community Units handleCHUFormSubmit
         if(typeof handleItemsSubmit == 'function' && itemId){
 
+        if(selectedItems.length == 0) {
+          setFormError('Services are required. Please Add Services')
+          setSubmitting(false)
+          return
+        }
         handleItemsSubmit(payload, selectedItems, itemId)
           .then(resp => {
             if (resp.status == 200 || resp.status == 201) {
@@ -437,7 +453,10 @@ function EditListItem({
 
             }
           })
-          .catch(console.error)
+          .catch(e => {
+            setSubmitting(false)
+            console.error(e.message)
+          })
         }
       }
     }
@@ -466,11 +485,12 @@ function EditListItem({
               className='text-gray-700 capitalize text-sm flex-grow'>
               Does the CHU have income-generating activities{' '}
             </label>
-          {/* <pre>{JSON.stringify({has_iga: itemData?.has_iga, has_iec_materials: itemData?.has_iec_materials}, null, 2)}</pre> */}
+
             <span className='flex items-center gap-x-1'>
               <input
                 type='radio'
                 name='has_iga'
+                className='w-4 aspect-square'
                 value={true}
                 defaultChecked={itemData?.has_iga}
 
@@ -481,6 +501,7 @@ function EditListItem({
               <input
                 type='radio'
                 name='has_iga'
+                className='w-4 aspect-square'
                 value={false}
                 defaultChecked={itemData?.has_iga == false}
 
@@ -502,6 +523,7 @@ function EditListItem({
               <input
                 type='radio'
                 name='has_iec_materials'
+                className='w-4 aspect-square'
                 value={true}
                 defaultChecked={itemData?.has_iec_materials}
               />
@@ -512,6 +534,7 @@ function EditListItem({
                 type='radio'
                 name='has_iec_materials'
                 value={false}
+                className='w-4 aspect-square'
                 defaultChecked={itemData?.has_iec_materials == false}
               />
               <small className='text-gray-700'>No</small>
@@ -528,7 +551,6 @@ function EditListItem({
         <div className='flex flex-col w-full items-start gap-1'>
           <h4 className="text-lg uppercase mt-4 pb-2 border-b border-gray-600 w-full mb-4 font-semibold text-gray-900">partners(s) currently supporting CHU</h4>
 
-
           <div className="w-full flex flex-col items-start justify-start gap-y-7 mb-3">
             <label
               htmlFor={`partners_name`}
@@ -538,22 +560,23 @@ function EditListItem({
             </label>
             {
               Array.isArray(partners) && partners.length > 0 ? (
-                partners?.map((partner, index) => {
-                  return <RenderpartnersForm key={index} index={index} setPartners={setPartners} partnerName={/\d/.test(partner) ? '' : partner} />
+                partners?.map(({name, uid, index}) => {
+                  return <RenderpartnersForm key={uid} uid={uid} index={index} setPartners={setPartners} partnerName={name} />
 
                 })
               ) : (
-                editMode && <Alert severity='info' className='w-full'>No Partners found</Alert>
+                editMode && <Alert severity='info' className='w-full'>No Partners found. Please add one</Alert>
               )
             }
 
 
             <div className="sticky top-0 right-10 w-full flex justify-end">
+              
               <button
                 className=" bg-gray-500 rounded p-2 text-white flex text-md font-semibold "
                 onClick={(e) => {
                   e.preventDefault()
-                  setPartners((prev) => [...prev, Number(prev[prev.length - 1]) + 1])
+                  setPartners((prev) => [...prev, {name: '', index: prev.length, uid: uuid()}])
                   console.log({ partners })
 
                 }
@@ -570,34 +593,29 @@ function EditListItem({
 
       {/* Selected Services */}
       <div className='w-full grid grid-cols-12 gap-4'>
-      <div className="col-span-12 h-full overflow-auto" >
+      <div className="col-span-12 h-full" >
 
-<table className="table-auto w-full">
+<table className="w-full">
   <thead>
-    <tr>
+    <tr className='border border-gray-300'>
 
-      <th className="border border-gray-300 px-1 py-1">Current Services</th>
-      <th className="border border-gray-300 px-1 py-1">{itemName == "chul_services" ? 'Action' : 'Present'}</th>
+      <th className="border border-gray-300 ">Current Services</th>
+      <th className="border border-gray-300">{itemName == "chul_services" ? 'Action' : 'Present'}</th>
 
     </tr>
   </thead>
-  <tbody className='bg-gray-50 shadow-md'>
+  <tbody className='bg-gray-50'>
 
 
     {Array.isArray(selectedItems) && selectedItems.length === 0 && from !== "previous" && <tr><td colSpan={3} className="text-center">No services found</td></tr>}
 
-    {/* <pre>
-      {
-        JSON.stringify(itemData, null, 2)
-      }
-    </pre> */}
     {
       Array.isArray(itemData?.currentServices) && itemData?.currentServices.length > 0 && from == "previous" ?
         itemData?.currentServices?.map((row, i) => (
           <tr key={i}>
 
-            <td className="border border-gray-300 px-1 py-1">{row.sname}</td>
-            <td className="border border-gray-300 px-1 py-1">
+            <td className="border border-gray-300 p-1">{row.sname}</td>
+            <td className="border border-gray-300 p-1">
               Yes
             </td>
           </tr>
@@ -607,17 +625,17 @@ function EditListItem({
           selectedItems?.map((row, i) => (
             <tr key={i}>
 
-              <td className="border border-gray-300 px-1 py-1">{row.sname}</td>
-              <td className="border border-gray-300 px-1 py-1">
+              <td className="border border-gray-300 p-1">{row.sname}</td>
+              <td className="border border-gray-300 p-1">
                 Yes
               </td>
             </tr>
           ))
           :
           selectedItems?.map(({ label, value }) => (
-            <tr key={value}>
-              <td className="border border-gray-300 px-1 py-1">{label}</td>
-              <td className="border border-gray-300 px-1 flex place-content-center py-1">
+            <tr className="border border-gray-300" key={value}>
+              <td className="border border-gray-300 px-2">{label}</td>
+              <td className="flex place-content-center">
                 <button className='bg-transparent mx-auto flex place-content-center group hover:bg-red-500 text-red-700 font-semibold hover:text-white p-3 hover:border-transparent' onClick={e => {
                   e.preventDefault()
                   setSelectedItems(prev => {
@@ -690,10 +708,10 @@ function EditListItem({
                       <>
                         {allServices?.map((row, i) => (
                           <tr key={i}>
-                            <td className="border px-1 py-1">
+                            <td className="border p-1">
                               <label className="w-full p-2" >{row.name}</label>
                             </td>
-                            <td className="border px-1 py-1">
+                            <td className="border p-1">
                               <input
                                 type="checkbox"
                                 className="p-1 w-5 h-5"
@@ -714,10 +732,10 @@ function EditListItem({
                       <>
                         {allServices?.map(({ label, value }, i) => (
                           <tr key={i}>
-                            <td className="border px-1 py-1">
+                            <td className="border p-1">
                               <label className="w-full p-2" >{label}</label>
                             </td>
-                            <td className="border px-1 py-1">
+                            <td className="border p-1">
 
                               <input
                                 type="checkbox"
@@ -800,7 +818,7 @@ function EditListItem({
             type="submit"
             onClick={() => {submitType.current = 'continue'}}
             disabled={submitting && submitType.current == 'continue'}
-            className="flex items-center justify-end space-x-2 bg-blue-600   p-1 px-2"
+            className="flex items-center rounded justify-end space-x-2 bg-blue-600   p-1 px-2"
           >
             <span className="text-medium font-semibold text-white">
               {
@@ -826,7 +844,7 @@ function EditListItem({
           <button
             type="submit"
             disabled={submitting && submitType.current == null}
-            className="flex items-center justify-end space-x-2 bg-blue-600  p-1 px-2"
+            className="flex items-center  rounded justify-end space-x-2 bg-blue-600  p-1 px-2"
           >
             <span className="text-medium font-semibold text-white">
               {
@@ -888,7 +906,7 @@ function EditListItem({
           <button
             type="submit"
             disabled={submitting}
-            className="flex items-center justify-end space-x-2 bg-blue-500  p-1 px-2"
+            className="flex items-center justify-end space-x-2 rounded bg-blue-500  p-1 px-2"
           >
             <span className="text-medium font-semibold text-white">
               {

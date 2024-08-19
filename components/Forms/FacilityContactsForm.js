@@ -465,7 +465,8 @@ export function FacilityContactsForm() {
                                     {/* add other fields */}
                                     <div className='col-span-2 flex-col w-full items-start justify-start gap-y-3 '>
                                         
-                                        {
+                                        {   
+                                        Array.isArray(facilityContacts) && facilityContacts.length > 0 ?
                                             facilityContacts.map(({contact, id}) => (
 
                                                 <Fragment key={id}>
@@ -478,6 +479,8 @@ export function FacilityContactsForm() {
                                                 </Fragment>
 
                                             ))
+                                        :
+                                        <Alert severity='info'>Please add facility contacts</Alert>
                                         }
                                     </div>
 
@@ -602,6 +605,8 @@ export function FacilityContactsForm() {
 
                                         <div className='col-span-2 flex-col w-full items-start justify-start gap-y-3 '>
                                             {
+                                        Array.isArray(officerContactDetails) && officerContactDetails.length > 0 ?
+
                                                 officerContactDetails.map(({contact, id}) => (
 
                                                     <Fragment key={id}>
@@ -616,6 +621,10 @@ export function FacilityContactsForm() {
                                                     </Fragment>
 
                                                 ))
+                                            :
+
+                                            <Alert severity='info'>Please add officer-in charge contacts</Alert>
+
                                             }
                                         </div>
 

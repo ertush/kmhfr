@@ -148,7 +148,7 @@ async function approveCHUUpdates (e, token) {
 
   // console.log({status})
 
-  console.log(formError)
+  // console.log(formError)
 
 
   let payload = ''
@@ -405,6 +405,8 @@ async function approveCHUUpdates (e, token) {
                     Pending Updates
                   </h3>
 
+              
+
                   {formError && <Alert severity="error" sx={{ width: '100%', marginY: '15px' }}>{formError}</Alert>}
 
                   <form
@@ -451,6 +453,19 @@ async function approveCHUUpdates (e, token) {
                                             <TableCell align="left">{cu.pending_updates.basic.name}</TableCell>
 
                                           </TableRow>
+                                        )}
+                                      {cu.pending_updates?.basic.partners !== undefined && cu.pending_updates?.basic.partners.length > 0 &&
+                                        (
+                                          cu.pending_updates?.basic.partners.map((partner) => (
+                                            <TableRow hover role="checkbox" tabIndex={-1}>
+
+                                            <TableCell align="left">{'Partner'}</TableCell>
+                                            <TableCell align="left">N/A</TableCell>
+                                            <TableCell align="left">{partner}</TableCell>
+
+                                          </TableRow>
+                                          ))
+                                        
                                         )}
                                       {/* basic status */}
                                       {cu.pending_updates?.basic.status !== undefined &&
