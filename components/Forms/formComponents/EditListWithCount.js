@@ -274,8 +274,15 @@ function EditListWithCount(
                 })
         }
         else {
-            nextItemCategory === 'finish' ? /* Human Resource */ (() => {
+            nextItemCategory === 'finish' ? 
+            /* Human Resource */ 
+            (() => {
 
+                if(selectedRows.length == 0) {
+                    setFormError('Human resouce is required. Please add HR specialities')
+                    setSubmitting(false)
+                    return
+                }
                 handleItemsSubmit(token, selectedRows, itemId)
                     .then(resp => {
                         if (resp.ok) {
@@ -308,7 +315,17 @@ function EditListWithCount(
 
                     })
 
-            })() :  /* Infrastructure */ handleItemsSubmit(token, selectedRows, itemId)
+            })() :  
+            /* Infrastructure */ 
+            (() => {
+
+            if(selectedRows.length == 0) {
+                setFormError('Infrastructure is required. Please add Infrastructure')
+                setSubmitting(false)
+                return
+            }
+
+            handleItemsSubmit(token, selectedRows, itemId)
                 .then(resp => {
                     if (resp.ok) {
                         setSubmitting(false)
@@ -366,6 +383,7 @@ function EditListWithCount(
 
                 })
                 .catch(e => console.error('unable to submit item data. Error:', e.message))
+            })()    
         }
     }
 

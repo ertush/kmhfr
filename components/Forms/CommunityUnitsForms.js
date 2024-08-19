@@ -702,17 +702,7 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
                     </span>
                   </label>
                   <div className='flex gap-2 w-full'>
-                    {/* <pre>
-                      {
-                        JSON.stringify(options?.contactTypes?.find(({ label }) => label == contact_type_name)?.label, null ,2)
-                      }
-                    </pre> */}
-
-                    {/* <pre>
-                      {
-                        JSON.stringify(contactTypeLabel, null ,2)
-                      }
-                    </pre> */}
+                   
                     
                       <input
                         required
@@ -740,21 +730,7 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
                         className="flex-none w-auto bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:bg-white focus:border-black outline-none"
                       />
 
-                    {/* { 
-                        ( contactTypeLabel === 'EMAIL') && 
-                      
-                        <input
-                          required
-                          type="text"
-                          name={`contact_${uid}`}
-                          onChange={(e) => handleFieldChange(e, null)}
-                          id={`contact_${uid}`}
-                          defaultValue={contact}
-                          placeholder={'07XXXXXXXX'}
-                          pattern="[a-z0-9]+[.]*[\-]*[a-z0-9]+@[a-z0-9]+[\-]*[.]*[a-z0-9]+[.][a-z]{2,}"
-                          className="flex-none w-auto bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:bg-white focus:border-black outline-none"
-                        />
-                    } */}
+                    
 
                     <button
                       id={`delete-btn-${uid}`}
@@ -1225,8 +1201,6 @@ function EditCommunityUnitsServicesForm(props) {
           body: JSON.stringify({ services: _payload, ...payload })
         })
 
-
-
       }
       catch (e) {
         console.error(e.message)
@@ -1242,7 +1216,6 @@ function EditCommunityUnitsServicesForm(props) {
 
     _payload.forEach(obj => obj['health_unit'] = chulId)
 
-    // console.log({services: _payload, ...payload})
 
 
     try {

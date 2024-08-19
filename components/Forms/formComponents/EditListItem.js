@@ -303,9 +303,11 @@ function EditListItem({
           )
       } else {
 
+        // console.log({payload})
 
         handleItemsUpdate(payload, newSelectedItems, itemId)
           .then(resp => {
+
             if (resp.status == 200 || resp.status == 204 || resp.status == 201) {
               setSubmitting(false)
               alert.success('Updated Community Health Unit Services successfully', {
@@ -340,7 +342,12 @@ function EditListItem({
       if (itemName == "facility_services") {
 
         if(typeof handleItemsSubmit == 'function' && itemId){
-        
+      //  Facilities handleCHUFormSubmit
+         if(selectedItems.length == 0) {
+          setFormError('Service are required. Please add services')
+          setSubmitting(false)
+          return
+         }
         handleItemsSubmit(token, selectedItems, itemId)
           .then((resp) => {
             if (resp.ok) {
@@ -417,9 +424,14 @@ function EditListItem({
           })
         }
       } else {
-       
+      //  Community Units handleCHUFormSubmit
         if(typeof handleItemsSubmit == 'function' && itemId){
 
+        if(selectedItems.length == 0) {
+          setFormError('Services are required. Please Add Services')
+          setSubmitting(false)
+          return
+        }
         handleItemsSubmit(payload, selectedItems, itemId)
           .then(resp => {
             if (resp.status == 200 || resp.status == 201) {
@@ -473,11 +485,12 @@ function EditListItem({
               className='text-gray-700 capitalize text-sm flex-grow'>
               Does the CHU have income-generating activities{' '}
             </label>
-          {/* <pre>{JSON.stringify({has_iga: itemData?.has_iga, has_iec_materials: itemData?.has_iec_materials}, null, 2)}</pre> */}
+
             <span className='flex items-center gap-x-1'>
               <input
                 type='radio'
                 name='has_iga'
+                className='w-4 aspect-square'
                 value={true}
                 defaultChecked={itemData?.has_iga}
 
@@ -488,6 +501,7 @@ function EditListItem({
               <input
                 type='radio'
                 name='has_iga'
+                className='w-4 aspect-square'
                 value={false}
                 defaultChecked={itemData?.has_iga == false}
 
@@ -509,6 +523,7 @@ function EditListItem({
               <input
                 type='radio'
                 name='has_iec_materials'
+                className='w-4 aspect-square'
                 value={true}
                 defaultChecked={itemData?.has_iec_materials}
               />
@@ -519,6 +534,7 @@ function EditListItem({
                 type='radio'
                 name='has_iec_materials'
                 value={false}
+                className='w-4 aspect-square'
                 defaultChecked={itemData?.has_iec_materials == false}
               />
               <small className='text-gray-700'>No</small>
@@ -535,11 +551,6 @@ function EditListItem({
         <div className='flex flex-col w-full items-start gap-1'>
           <h4 className="text-lg uppercase mt-4 pb-2 border-b border-gray-600 w-full mb-4 font-semibold text-gray-900">partners(s) currently supporting CHU</h4>
 
-          <pre>
-                {
-                  JSON.stringify(partners, null, 2)
-                }
-          </pre>
           <div className="w-full flex flex-col items-start justify-start gap-y-7 mb-3">
             <label
               htmlFor={`partners_name`}
