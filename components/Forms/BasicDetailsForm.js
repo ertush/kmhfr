@@ -79,7 +79,7 @@ export function BasicDeatilsForm({ editMode }) {
   const [constituencyOptions, setConstituencyOptions] = useState(options?.constituencies)
   const [wardOptions, setWardOptions] = useState(options?.wards)
 
-  const facilityTypeValue = options?.facility_types?.find(({label}) => label.toLowerCase().trim() == options?.data?.facility_type_parent.toLowerCase().trim())?.value
+  const facilityTypeValue = options?.facility_types?.find(({label}) => label?.toLowerCase().trim() == options?.data?.facility_type_parent?.toLowerCase().trim())?.value
   
   const operationStatusOptions = [
     {
@@ -582,7 +582,7 @@ export function BasicDeatilsForm({ editMode }) {
 
 
   // Effects
-  useEffect(() => {
+  useEffect(async () => {
 
 
     // console.log({facility: options?.data})
@@ -634,7 +634,7 @@ export function BasicDeatilsForm({ editMode }) {
     }
 
     
-    function getFacilityTypeDetails(facilityTypeId, token) {
+     function getFacilityTypeDetails(facilityTypeId, token) {
 
       return fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facility_types_details/?is_parent=false&parent=${facilityTypeId}`, {
         headers: {
@@ -740,8 +740,73 @@ export function BasicDeatilsForm({ editMode }) {
         }
       }
       )
+
+
+      if (facilityTypeValue) {
+        try {
+          const facilityTypeDetails = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facility_types_details/?is_parent=false&parent=${facilityTypeValue}`, {
+            headers: {
+              'Accept': 'application/json',
+              'Authorization': `Bearer ${options?.token}`
+            }
+          })
+
+          const filteredFacilityType = (await facilityTypeDetails.json())?.results
+
+          if (!filteredFacilityType) throw Error('Unable to Fetch Facility Type Details')
+
+
+          const facilityType = Array.from(filteredFacilityType, ({ id, name }) => {
+            return {
+              label: name,
+              value: id
+            }
+          })
+
+
+          setFacilityTypeDetailOptions(facilityType ?? options?.facility_type_details)
+
+        }
+        catch (e) {
+          console.error(e.message)
+        }
+      }
+
+      if(options?.data?.owner_type){
+
+      try {
+        const owners = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/owners/?owner_type=${options?.data?.owner_type}`, {
+          headers: {
+            'Accept': 'application/json',
+            'Authorization': `Bearer ${options?.token}`
+          }
+        })
+
+        const filteredOwners = (await owners.json())?.results
+
+        if (!filteredOwners) throw Error('Unable to Fetch Owner Type Details')
+
+
+        const facilityOwnerOptions = Array.from(filteredOwners, ({ id, name }) => {
+          return {
+            label: name,
+            value: id
+          }
+        })
+
+
+
+
+        setOwnerTypeDetailsOptions(facilityOwnerOptions ?? options?.owner_types)
+
+      }
+      catch (e) {
+        console.error(e.message)
+      }
+
         
     }
+  }
   
 
     setIsClient(true)

@@ -296,7 +296,7 @@ function handleLicenseFileChange (e) {
 
                                               const filteredRegOptions = regOptions.filter(({ label }) => label !== 'Other')
 
-                                              if (options?.data?.owner_type_name.toLowerCase().trim() == "ministry of health") {
+                                              if (options?.data?.owner_type_name?.toLowerCase().trim() == "ministry of health") {
                                                   return filteredRegOptions.filter(({ label }) => {
                                                        return label.toLowerCase().trim() == "ministry of health"
 

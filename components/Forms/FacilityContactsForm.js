@@ -140,7 +140,7 @@ export function FacilityContactsForm() {
 
         const currentUrl = new URL(window.document.location.href)
 
-        if(options?.data?.facility_contacts.length > 0){
+        if(options?.data?.facility_contacts?.length > 0){
             // const uid = uuid()
             setFacilityContacts(
                 options?.data?.facility_contacts?.map((_, i) => (
