@@ -582,11 +582,11 @@ export function BasicDeatilsForm({ editMode }) {
 
 
   // Effects
-  useEffect(async () => {
+  useEffect(() => {
 
 
     // console.log({facility: options?.data})
-    async function updateFacilityTypeDetailOptions(e) {
+     async function updateFacilityTypeDetailOptions(e) {
       try {
         const facilityTypeDetails = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facility_types_details/?is_parent=false`, {
           headers: {
@@ -617,7 +617,7 @@ export function BasicDeatilsForm({ editMode }) {
       }
     }
 
-    updateFacilityTypeDetailOptions()
+     updateFacilityTypeDetailOptions()
 
     function getFacilityTypeDetailsParent(facilityTypeId, token) {
 
@@ -742,75 +742,80 @@ export function BasicDeatilsForm({ editMode }) {
       )
 
 
-      if (facilityTypeValue) {
-        try {
-          const facilityTypeDetails = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facility_types_details/?is_parent=false&parent=${facilityTypeValue}`, {
-            headers: {
-              'Accept': 'application/json',
-              'Authorization': `Bearer ${options?.token}`
-            }
-          })
+      // async function fetchDetailOptions() {
+      //   if (facilityTypeValue) {
+      //     try {
+      //       const facilityTypeDetails = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facility_types_details/?is_parent=false&parent=${facilityTypeValue}`, {
+      //         headers: {
+      //           'Accept': 'application/json',
+      //           'Authorization': `Bearer ${options?.token}`
+      //         }
+      //       })
 
-          const filteredFacilityType = (await facilityTypeDetails.json())?.results
-
-          if (!filteredFacilityType) throw Error('Unable to Fetch Facility Type Details')
-
-
-          const facilityType = Array.from(filteredFacilityType, ({ id, name }) => {
-            return {
-              label: name,
-              value: id
-            }
-          })
-
-
-          setFacilityTypeDetailOptions(facilityType ?? options?.facility_type_details)
-
-        }
-        catch (e) {
-          console.error(e.message)
-        }
-      }
-
-      if(options?.data?.owner_type){
-
-      try {
-        const owners = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/owners/?owner_type=${options?.data?.owner_type}`, {
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': `Bearer ${options?.token}`
-          }
-        })
-
-        const filteredOwners = (await owners.json())?.results
-
-        if (!filteredOwners) throw Error('Unable to Fetch Owner Type Details')
-
-
-        const facilityOwnerOptions = Array.from(filteredOwners, ({ id, name }) => {
-          return {
-            label: name,
-            value: id
-          }
-        })
+      //       const filteredFacilityType = (await facilityTypeDetails.json())?.results
 
 
 
+      //       const facilityType = Array.from(filteredFacilityType, ({ id, name }) => {
+      //         return {
+      //           label: name,
+      //           value: id
+      //         }
+      //       })
 
-        setOwnerTypeDetailsOptions(facilityOwnerOptions ?? options?.owner_types)
 
-      }
-      catch (e) {
-        console.error(e.message)
-      }
+      //       setFacilityTypeDetailOptions(facilityType ?? options?.facility_type_details)
 
-        
-    }
+      //     }
+      //     catch (e) {
+      //       console.error(e.message)
+      //     }
+      //   }
+
+      //   if(options?.data?.owner_type){
+
+      //   try {
+      //     const owners = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/owners/?owner_type=${options?.data?.owner_type}`, {
+      //       headers: {
+      //         'Accept': 'application/json',
+      //         'Authorization': `Bearer ${options?.token}`
+      //       }
+      //     })
+
+      //     const filteredOwners = (await owners.json())?.results
+
+      //     if (!filteredOwners) throw Error('Unable to Fetch Owner Type Details')
+
+
+      //     const facilityOwnerOptions = Array.from(filteredOwners, ({ id, name }) => {
+      //       return {
+      //         label: name,
+      //         value: id
+      //       }
+      //     })
+
+
+
+
+      //     setOwnerTypeDetailsOptions(facilityOwnerOptions ?? options?.owner_types)
+
+      //   }
+      //   catch (e) {
+      //     console.error(e.message)
+      //   }
+
+          
+      //   }
+      // }
+
+
+      // fetchDetailOptions()
   }
   
 
     setIsClient(true)
 
+   
   }, [])
 
 
@@ -1072,7 +1077,7 @@ export function BasicDeatilsForm({ editMode }) {
             onFocus={handleFocus}
             required
             name='owner_type'
-            defaultValue={options?.data?.owner_type ?? ''}
+            defaultValue={options?.data?.owner_type}
 
           />
         </div>
@@ -1094,7 +1099,7 @@ export function BasicDeatilsForm({ editMode }) {
             placeholder="Select owner..."
             required
             name='owner'
-            defaultValue={options?.data?.owner ?? ''}
+            defaultValue={options?.data?.owner}
 
           />
         </div>
