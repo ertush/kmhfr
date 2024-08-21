@@ -109,6 +109,9 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
 
     setSubmitting(true)
 
+    console.log({submitting})
+
+
 
     const payload = {}
     const formData = new FormData(event.target)
@@ -170,6 +173,7 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
     }
 
 
+
     try {
 
       fetch(`${process.env.NEXT_PUBLIC_API_URL}/chul/units/${props?.id}/`, {
@@ -214,10 +218,7 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
       setSubmitting(true)
       console.error('Error Occured: ' + e.message)
     }
-    finally {
-      setSubmitting(false)
-
-    }
+  
 
 
 
@@ -236,8 +237,6 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
       className="flex m-1 p-3 bg-gray-50 flex-col w-full items-start justify-start gap-3"
       onSubmit={handleFormSubmit}
     >
-
-
 
       {formError && <Alert severity="error" sx={{ width: '100%', marginY: '15px' }}>{formError}</Alert>}
 
@@ -775,17 +774,17 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
             <span className="text-medium font-semibold text-white">
               {
                 submitting ?
-                  <Spinner />
+                  <div className='flex gap-2'>
+                     <Spinner />
+                     <span className='text-white'>Saving.. </span>
+                  </div>
+
                   :
                   'Save and Finish'
 
               }
             </span>
-            {
-              submitting &&
-              <span className='text-white'>Saving.. </span>
-            }
-
+           
           </button>
 
         </div>
