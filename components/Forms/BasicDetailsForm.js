@@ -38,7 +38,7 @@ export function BasicDeatilsForm({ editMode }) {
 
   const submitType = useRef(null)
 
-  const [facilityId, setFacilityId] = useMemo(() => {
+  const [__, setFacilityId] = useMemo(() => {
     
     let id = ''
 
@@ -50,13 +50,12 @@ export function BasicDeatilsForm({ editMode }) {
         setId(new URL(window.location.href).searchParams.get('facilityId') ?? '')
     }
 
-    // console.log({id})
 
     return [id, setId]
 }, [])
 
   const [submitting, setSubmitting] = useState(false);
-  const [touchedFields, setTouchedFields] = useState([]);
+  const [_, setTouchedFields] = useState([]);
   const [formError, setFormError] = useState(null);
 
 
@@ -756,7 +755,7 @@ export function BasicDeatilsForm({ editMode }) {
 
 
 
-      //       const facilityType = Array.from(filteredFacilityType, ({ id, name }) => {
+      //       const facilityType = Array.from(options?.facility_types, ({ id, name }) => {
       //         return {
       //           label: name,
       //           value: id
@@ -794,9 +793,7 @@ export function BasicDeatilsForm({ editMode }) {
       //       }
       //     })
 
-
-
-
+          
       //     setOwnerTypeDetailsOptions(facilityOwnerOptions ?? options?.owner_types)
 
       //   }
@@ -903,7 +900,7 @@ export function BasicDeatilsForm({ editMode }) {
 
           <CustomSelect
             options={options?.facility_types}
-            defaultValue={facilityTypeValue}
+            defaultValue={facilityTypeValue ?? ''}
             placeholder="Select a facility type..."
             required
             name='facility_type_parent' // facility_type
@@ -932,7 +929,7 @@ export function BasicDeatilsForm({ editMode }) {
             placeholder="Select facility type details..."
             onChange={handleSelectChange}
             onFocus={handleFocus}
-            defaultValue={options?.data?.facility_type/*options?.facility_type_details?.find(({ label }) => label == options?.data?.facility_type_name)?.value*/}
+            defaultValue={options?.data?.facility_type ?? '' /*options?.facility_type_details?.find(({ label }) => label == options?.data?.facility_type_name)?.value*/}
             required
             name='facility_type' // facility_type_details
 
@@ -1077,7 +1074,7 @@ export function BasicDeatilsForm({ editMode }) {
             onFocus={handleFocus}
             required
             name='owner_type'
-            defaultValue={options?.data?.owner_type}
+            defaultValue={options?.data?.owner_type ?? ''}
 
           />
         </div>
@@ -1099,7 +1096,7 @@ export function BasicDeatilsForm({ editMode }) {
             placeholder="Select owner..."
             required
             name='owner'
-            defaultValue={options?.data?.owner}
+            defaultValue={options?.data?.owner ?? ''}
 
           />
         </div>
