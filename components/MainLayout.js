@@ -149,7 +149,7 @@ export default function MainLayout({ children, searchTerm }) {
 
                     <div className='flex items-center gap-2'>
                     <NorthEast className="text-gray-200 w-3 aspect-square"/>
-                    <Link href="https://kmhfr-docs.github.io" className="text-gray-200 hover:underline">KMHFR Docs</Link>
+                    <Link href="https://kmhfr-docs.vercel.app" className="text-gray-200 hover:underline">KMHFR Docs</Link>
                     
                     </div>
                   </div>
