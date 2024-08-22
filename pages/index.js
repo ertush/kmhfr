@@ -148,7 +148,7 @@ function Home() {
                   </li>
 
                   <li className='text-lg h-[60px] flex items-center  hover:text-gray-100  duration-200 ease-out hover:bg-blue-800 px-4 font-semibold capitalize text-gray-900 '>
-                    <Link href="https://kmhfr-docs.github.io">Documentation</Link>
+                    <Link href="https://kmhfr-docs.vercel.app">Documentation</Link>
                   </li>
                   
                 </ul>
@@ -188,7 +188,7 @@ function Home() {
                   </li>
 
                   <li className={`text-lg h-[50px] w-full border-b border-b-gray-300 flex items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-600 ${currentPath == "/public/faqs" && 'border-r-2 border-r-gray-50 bg-blue-700/85 text-gray-100'}`}>
-                    <Link href="https://kmhfr-docs.github.io">Documentation</Link>
+                    <Link href="https://kmhfr-docs.vercel.app">Documentation</Link>
                   </li>
                   
                 </ul>
@@ -584,7 +584,7 @@ function Home() {
                     </div>
 
                     <div className='flex items-center gap-2'>
-                    <Link href="https://kmhfr-docs.github.io" className="text-gray-200 hover:underline">KMHFR Docs</Link>
+                    <Link href="https://kmhfr-docs.vercel.app" className="text-gray-200 hover:underline">KMHFR Docs</Link>
                     <NorthEast className="text-gray-200 w-3 aspect-square"/>
                     
                     </div>
