@@ -511,7 +511,7 @@ export function GeolocationForm({ editMode }) {
             {
               (editMode) || (!editMode && geoJSON && geoCenter && wardName) ?
 
-                <Map markerCoordinates={[latitude, longitude]} geoJSON={geoJSON} ward={wardName} center={geoCenter} zoom={geoJSON?.properties?.density} />
+                <Map markerCoordinates={[latitude, longitude]} geoJSON={geoJSON} ward={wardName} center={geoCenter} zoom={10.899 ?? geoJSON?.properties?.density} />
                 :
                 <Alert severity='warning' className='w-full p-1 border-2 border-yellow-500 rounded-none'>Geolocation Data is Missing For this facility</Alert>
             }
