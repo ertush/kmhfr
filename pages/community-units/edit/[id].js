@@ -71,7 +71,7 @@ export async function getServerSideProps(ctx) {
     .then((resp) => {
         const params = `?sub_county=${resp?.results[0].id}&fields=id,name,county,sub_county_name,constituency,ward_name`
 
-        return fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${params}&reporting_in_dhis=true&owner_type=6a833136-5f50-46d9-b1f9-5f961a42249f`, {
+        return fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${params}&reporting_in_dhis=true`, { /*&owner_type=6a833136-5f50-46d9-b1f9-5f961a42249f*/
           headers: {
             'Authorization': 'Bearer ' + token,
             'Accept': 'application/json'
