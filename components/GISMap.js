@@ -45,8 +45,8 @@ const GISMap = ({ data }) => {
       <>
         <MapContainer
           center={[-0.818389, 37.477222]}
-          zoom={5.899}
-          maxZoom={9.7886}
+          zoom={5.899} // 5.899
+          maxZoom={9.7886} // 9.7886
           scrollWheelZoom={false}
           touchZoom={false}
           style={{

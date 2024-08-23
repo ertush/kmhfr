@@ -38,10 +38,6 @@ export default function App(props) {
  
   const router = useRouter()
   const [isNavigating, setIsNavigating] = useState(false)
-
-  // const [isLoggedIn, setIsLoggedIn] = useState(false);
-  // const [user, setUser] = useState(null);
-
  
   const  { Component, pageProps } = props
 
@@ -53,16 +49,13 @@ export default function App(props) {
     router.events.on('routeChangeError', () => {setIsNavigating(false)}); 
 
     
-    let mtd = true;
-
-
-    
+    var mtd = true;
     // Logout after 30 mins of inactivity
-    const time = 60 * 1000 * 30
+    // const time = 60 * 1000 * 30
 
-    const timeOut = setTimeout(() => {
-      router.push('/logout')
-    }, time)
+    // const timeOut = setTimeout(() => {
+    //   router.push('/logout')
+    // }, time)
 
 
     return () =>  {

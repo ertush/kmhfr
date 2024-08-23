@@ -533,7 +533,6 @@ function User(props) {
 											</span>
 										</label>
 										<input
-											required
 											type='password'
 											name='password'
 											onChange={ev => {
@@ -558,7 +557,6 @@ function User(props) {
 											</span>
 										</label>
 										<input
-											required
 											type='password'
 											name='conf_password'
 											onChange={ev => {

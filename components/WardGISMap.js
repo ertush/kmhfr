@@ -64,12 +64,12 @@ const WardGISMap = ({ markerCoordinates, geoJSON, center, ward, zoom }) => {
 
                 // Not Out of Bound
                 setIsOutOfBound(false)
-                console.log("[>>>>>] NoT out of Bound")
+                // console.log("[>>>>>] NoT out of Bound")
             }
             else {
                    //Out of Bound
                 setIsOutOfBound(true)
-                console.log("[>>>>>] Out of Bound")
+                // console.log("[>>>>>] Out of Bound")
             }
             
             
@@ -93,7 +93,7 @@ const WardGISMap = ({ markerCoordinates, geoJSON, center, ward, zoom }) => {
                 <MapContainer 
                     className='w-full z-0' 
                     center={center ?? [-0.818389, 37.477222]} 
-                    zoom={(zoom * 2) ?? 9.899} 
+                    zoom={zoom ?? (zoom * 2) ?? 9.899} 
                     maxZoom={12.70} 
                     scrollWheelZoom={false} 
                     touchZoom={false} 
