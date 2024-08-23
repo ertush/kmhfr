@@ -52,7 +52,7 @@ function EditCommunityUnitsBasicDeatilsForm(props) {
     })
 
 
-    if(event.currentTarget.name === `contact_type_${uid}`) {
+    if(event.currentTarget?.name === `contact_type_${uid}`) {
       setContactTypeLabel(options?.contactTypes.find(({value}) => value === event.currentTarget.value)?.label)
     }
   }
