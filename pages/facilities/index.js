@@ -793,11 +793,8 @@ function FacilityHome (props){
 
                                                 <div className="flex items-center gap-2">
 
-                                                        
-
-
                                                         {
-                                                            props?.current_page > 5 && (props?.count / 10) > 100 &&
+                                                            // props?.current_page > 5 &&
                                                             Array(props?.current_page + 5).fill(0).map((_, i) => i+1).slice(props?.current_page - 6, props?.current_page + 5).map(i => (
                                                                 <button className={`border p-1 px-2 flex font-semibold place-content-center rounded ${props?.current_page == i ? 'bg-blue-600 text-gray-50 border-blue-600': ' border-gray-800'}`} onClick={handlePageLoad}>
                                                                 {i}
@@ -805,14 +802,15 @@ function FacilityHome (props){
                                                             ))
                                                         }
 
-                                                        {
-                                                            props?.current_page <= 5 && (props?.count / 10) > 100 &&
-                                                            Array(10).fill(0).map((_, i) => i+1).slice(0, 10).map(i => (
-                                                                <button className={`border p-1 px-2 flex font-semibold place-content-center rounded ${props?.current_page == i ? 'bg-blue-600 text-gray-50 border-blue-600': ' border-gray-800'}`} onClick={handlePageLoad}>
-                                                                {i}
-                                                                </button>
-                                                            ))
-                                                        }
+                                                        {/* {
+                                                                props?.current_page <= 5 &&
+                                                                Array(10).fill(0).map((_, i) => i+1).slice(0, 10).map(i => (
+                                                                    <button className={`border p-1 px-2 flex font-semibold place-content-center rounded ${props?.current_page == i ? 'bg-blue-600 text-gray-50 border-blue-600': ' border-gray-800'}`} onClick={handlePageLoad}>
+                                                                    {i}
+                                                                    </button>
+                                                                ))
+                                                         } */}
+                                                        
                                                 </div>
 
                                             </div>
@@ -945,7 +943,7 @@ export async function getServerSideProps(ctx) {
 
     })
 
-    console.log({url})
+    // console.log({url})
 
 
     let current_url = url + '&page_size=100'
