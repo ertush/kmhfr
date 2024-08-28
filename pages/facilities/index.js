@@ -838,10 +838,10 @@ function FacilityHome (props){
 export async function getServerSideProps(ctx) {
 
 
-	ctx?.res?.setHeader(
-		'Cache-Control',
-		'public, s-maxage=10, stale-while-revalidate=59'
-	)
+	// ctx?.res?.setHeader(
+	// 	'Cache-Control',
+	// 	'public, s-maxage=10, stale-while-revalidate=59'
+	// )
 
 
     function fetchFilters(token) {
@@ -881,7 +881,6 @@ export async function getServerSideProps(ctx) {
 
     // const previousURL = ctx?.query?.previous
 
-    console.log({query: ctx?.query})
 
     const defaultURL = ctx?.query?.q ? `${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/` : `${`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/` + `${page ? '?page=' + page + '&': '?' }` + 'page_size=10'}`
 
@@ -946,7 +945,7 @@ export async function getServerSideProps(ctx) {
 
     })
 
- 
+    console.log({url})
 
 
     let current_url = url + '&page_size=100'
