@@ -35,6 +35,7 @@ function Home(props) {
 	const [isClient, setIsClient] = useState(false)
 	const [units, setUnits] = useState([])
 	const status = useRef(null)
+	
 
 
 	useEffect(() => {
@@ -66,9 +67,9 @@ function Home(props) {
 
 	const administrativeUnits = [
 		{ label: 'county', ref: county, array: props?.filters?.counties },
-		{ label: 'subcounty', ref: subcounty, array: props?.filters?.subCounties },
-		{ label: 'constituency', ref: constituency, array: props?.filters?.constituencies },
-		{ label: 'wards', ref: ward, array: props?.filters?.wards }
+		{ label: 'subcounty', ref: subcounty, array: units['sub_county'] ?? props?.filters?.subCounties },
+		{ label: 'constituency', ref: constituency, array: units['constituency'] ?? props?.filters?.constituencies },
+		{ label: 'wards', ref: ward, array: units['ward'] ?? props?.filters?.wards }
 	]
 
 
@@ -262,6 +263,7 @@ function Home(props) {
 									placeholder="Search all CHUs"
 								/>
 							</div>
+							
 
 							<div className="card col-span-6 rounded md:col-span-2 flex flex-col gap-3 items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '50px' }}>
 								<h2>Community Health Info</h2>
@@ -312,6 +314,7 @@ function Home(props) {
 									placeholder={'Select status'}
 								/>
 							</div>
+							
 
 							<div className="card col-span-6 rounded md:col-span-2 flex flex-col items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '50px' }}>
 								<h2>Administrative Units</h2> &nbsp;
@@ -335,17 +338,20 @@ function Home(props) {
 										}}
 										
 										options={
-											(() => {
-												let opts = [...Array.from(ct.array || [],
-													fltopt => {
-														if (fltopt.id != null && fltopt.id.length > 0) {
-															return {
-																value: fltopt.id, label: fltopt.name
-															}
-														}
-													})]
-												return opts
-											})()
+											Array.from(ct.array, obj => ({value: obj?.id, label: obj?.name}))
+											// (() => {
+											// 	let opts = [...Array.from(ct.array || [],
+
+											// 		fltopt => {
+											// 			console.log(fltopt)
+											// 			if (fltopt.id != null && fltopt.id.length > 0) {
+											// 				return {
+											// 					value: fltopt.id, label: fltopt.name
+											// 				}
+											// 			}
+											// 		})]
+											// 	return opts
+											// })()
 										}
 										placeholder={`Select ${ct.label}`}
 										onChange={sl => {
@@ -624,7 +630,7 @@ Home.getInitialProps = async (ctx) => {
 			const subCounties = filters?.sub_county?.map(({id, name}) => ({id, name}))
 			const constituencies = filters?.constituency?.map(({id, name}) => ({id, name}))
 			const wards = filters?.ward?.map(({id, name}) => ({id, name}))
-			const statuses = filters?.chu_status?.map(({id, name}) => ({id, name}))
+			const statuses = filters?.chu_status?.map(({id, name}) => ({value:id, label:name}))
 
 			
 			return {
