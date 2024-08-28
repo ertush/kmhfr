@@ -899,7 +899,7 @@ export async function getServerSideProps(ctx) {
 
     if (ctx?.query?.q) {
         query.searchTerm = ctx.query.q
-        url += `?search={"query":{"query_string":{"default_field":"name","query":"${query.searchTerm}"}}}`
+        url += `?name=${ctx?.query?.q}` // `?search={"query":{"query_string":{"default_field":"name","query":"${query.searchTerm}"}}}`
     }
 
     const other_posssible_filters = [
@@ -955,7 +955,7 @@ export async function getServerSideProps(ctx) {
     }
 
 
-    console.log({url})
+    // console.log({url})
     try {
         facilities = (await (await fetch(url, {
             headers: {
