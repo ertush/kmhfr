@@ -8,8 +8,12 @@ import { useRouter } from 'next/router';
 // import { SearchIcon } from "@heroicons/react/solid";
 import Select from 'react-select'
 import Alert from '@mui/material/Alert'
+import {v4 as uuid} from 'uuid';
+import {uuid as uid} from 'react-use-uuid'
+
 
 function Home(props) {
+
 
 	const router = useRouter();
 	
@@ -29,11 +33,9 @@ function Home(props) {
 	const ward = useRef(null)
 	const constituency = useRef(null)
 	const [isClient, setIsClient] = useState(false)
-
-	const status_options = props.filters?.chu_status || props.filters?.status || [];
-	const counties = props?.filters?.county || [];
 	const [units, setUnits] = useState([])
 	const status = useRef(null)
+	
 
 
 	useEffect(() => {
@@ -55,7 +57,7 @@ function Home(props) {
 	useEffect(() => {
 		setIsClient(true)
 
-		console.log({props})
+		// console.log({props})
 
 		if (!(props?.current_url.includes('q') || router.asPath.includes('q'))) {
 		setViewAll(true)
@@ -63,11 +65,11 @@ function Home(props) {
 		}
 	}, [])
 
-	const administrative_units = [
-		{ label: 'county', ref: county, array: counties },
-		{ label: 'subcounty', ref: subcounty, array: units['sub_counties'] },
-		{ label: 'constituency', ref: constituency, array: units['sub_counties'] },
-		{ label: 'wards', ref: ward, array: units['wards'] }
+	const administrativeUnits = [
+		{ label: 'county', ref: county, array: props?.filters?.counties },
+		{ label: 'subcounty', ref: subcounty, array: units['sub_county'] ?? props?.filters?.subCounties },
+		{ label: 'constituency', ref: constituency, array: units['constituency'] ?? props?.filters?.constituencies },
+		{ label: 'wards', ref: ward, array: units['ward'] ?? props?.filters?.wards }
 	]
 
 
@@ -114,11 +116,11 @@ function Home(props) {
 
 					if (node.type == "text") {
 
-						status.current.select.clearValue(); 
-						county.current.select.clearValue(); 
-						subcounty.current.select.clearValue(); 
-						ward.current.select.clearValue(); 
-						constituency.current.select.clearValue();
+						status.current?.select?.clearValue(); 
+						county.current?.select?.clearValue(); 
+						subcounty.current?.select?.clearValue(); 
+						ward.current.select?.clearValue(); 
+						constituency.current?.select?.clearValue();
 
 					}
 
@@ -238,20 +240,11 @@ function Home(props) {
 								</button>
 
 								<button
-									type="button"
+									type="submit"
 									className="bg-gray-50 rounded border-1 border-black text-black flex items-center justify-center px-4 py-1 "
 									onClick={() => {
 
 										setReset(true)
-										// setDrillDown({})
-										// name.current.value = ''; 
-										// code.current.value = ''; 
-										// status.current.select.clearValue(); 
-										// allchus.current.value = '';
-										// county.current.select.clearValue(); 
-										// subcounty.current.select.clearValue(); 
-										// ward.current.select.clearValue(); 
-										// constituency.current.select.clearValue();
 									}}
 								>
 									Reset	
@@ -264,12 +257,13 @@ function Home(props) {
 								{/* &nbsp; */}
 								<input
 									name="allchus"
-									id="search-input"
+									id="search-name"
 									className="flex-none bg-gray-50 rounded p-2 flex-grow shadow-sm mt-2 border placeholder-gray-500 w-full border-gray-400 focus:shadow-none focus:bg-white focus:border-black outline-none"
 									type="search"
 									placeholder="Search all CHUs"
 								/>
 							</div>
+							
 
 							<div className="card col-span-6 rounded md:col-span-2 flex flex-col gap-3 items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '50px' }}>
 								<h2>Community Health Info</h2>
@@ -286,13 +280,19 @@ function Home(props) {
 								{/* <label className=" text-gray-600">CHU Code</label> */}
 								<input
 									name="code"
-									id="search-input"
+									id="search-code"
 									className="flex-none bg-gray-50 rounded p-2 flex-grow shadow-sm border placeholder-gray-500 w-full border-gray-400 focus:shadow-none focus:bg-white focus:border-black outline-none"
 									type="search"
 									placeholder="CHU Code"
 								/>
 
 								{/* <label className=" text-gray-600">Status</label> */}
+								{/* <pre>
+									{
+										JSON.stringify(props?.filters?.statuses, null, 2)
+									}
+								</pre> */}
+
 								<Select name="status" ref={status} className="w-full md:max-w-xs rounded  border border-gray-400"
 									styles={{
 										control: (baseStyles) => ({
@@ -309,28 +309,19 @@ function Home(props) {
 
 									}}
 									options={
-										(() => {
-											let opts = [...Array.from(status_options || [],
-												fltopt => {
-													if (fltopt.id != null && fltopt.id.length > 0) {
-														return {
-															value: fltopt.id, label: fltopt.name
-														}
-													}
-												})]
-											return opts
-										})()
+										props?.filters?.statuses
 									}
 									placeholder={'Select status'}
 								/>
 							</div>
+							
 
 							<div className="card col-span-6 rounded md:col-span-2 flex flex-col items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '50px' }}>
 								<h2>Administrative Units</h2> &nbsp;
 								<div className="w-full md:max-w-xs flex flex-col gap-3 items-start justify-start mb-3" id='first'>
 									{
-									administrative_units?.map((ct, i) => (
-										<Select key={i} name={ct.label} ref={ct.ref} defaultValue={drillDown[ct.label] || "national"} id={ct.label} className="w-full md:max-w-xs rounded border border-gray-400"
+									administrativeUnits?.map((ct, i) => (
+										<Select key={uuid()} name={ct.label} ref={ct.ref} defaultValue={drillDown[ct.label] || "national"} id={ct.label} className="w-full md:max-w-xs rounded border border-gray-400"
 										styles={{
 											control: (baseStyles) => ({
 												...baseStyles,
@@ -347,17 +338,20 @@ function Home(props) {
 										}}
 										
 										options={
-											(() => {
-												let opts = [...Array.from(ct.array || [],
-													fltopt => {
-														if (fltopt.id != null && fltopt.id.length > 0) {
-															return {
-																value: fltopt.id, label: fltopt.name
-															}
-														}
-													})]
-												return opts
-											})()
+											Array.from(ct.array, obj => ({value: obj?.id, label: obj?.name}))
+											// (() => {
+											// 	let opts = [...Array.from(ct.array || [],
+
+											// 		fltopt => {
+											// 			console.log(fltopt)
+											// 			if (fltopt.id != null && fltopt.id.length > 0) {
+											// 				return {
+											// 					value: fltopt.id, label: fltopt.name
+											// 				}
+											// 			}
+											// 		})]
+											// 	return opts
+											// })()
 										}
 										placeholder={`Select ${ct.label}`}
 										onChange={sl => {
@@ -382,7 +376,7 @@ function Home(props) {
 
 						</form>
 
-
+						
 						{/* Main body */}
 						<div className="col-span-1 rounded md:col-span-4 px-4 md:px-0   flex max-h-min md:h-[752px]  overflow-y-scroll bg-gray-50 shadow-md flex-col gap-4 order-last md:order-none"> {/* CHANGED colspan */}
 								<div className="w-full flex justify-end	pt-2 px-4 border-b border-gray-300">
@@ -390,7 +384,6 @@ function Home(props) {
 								</div>
 							
 							<div className='flex flex-col justify-center items-center overflow-scroll-y w-full '>
-								{/* <pre>{JSON.stringify(cus[0], null, 2)}</pre> */}
 								
 								{cus?.results?.length > 0 ? (
 									cus?.results?.map((comm_unit, index) => (
@@ -573,9 +566,9 @@ Home.getInitialProps = async (ctx) => {
 
 	const fetchFilters = async (token) => {
 
-		let filters_url = `${API_URL}/common/filtering_summaries/?fields=county,chu_status`;
+		let filters_url = `${API_URL}/common/filtering_summaries/?fields=county,chu_status,sub_county,constituency,ward`;
 
-		 fetch(filters_url, {
+		return fetch(filters_url, {
 				headers: {
 					Authorization: 'Bearer ' + token,
 					Accept: 'application/json',
@@ -597,8 +590,8 @@ Home.getInitialProps = async (ctx) => {
 	};
 
 	const fetchData = async (token) => {
-		let filterQuery = JSON.parse(JSON.stringify(ctx.query));
-		let qry = ''
+		// let filterQuery = JSON.parse(JSON.stringify(ctx.query));
+		// let qry = ''
 		let url = API_URL + `/chul/units/?fields=id,code,name,status_name,date_established,facility,facility_name,facility_county,facility_subcounty,facility_ward,facility_constituency`;
 		let query = { searchTerm: '' };
 		if (ctx?.query?.q) {
@@ -632,13 +625,20 @@ Home.getInitialProps = async (ctx) => {
 				},
 			});
 			const json = await r.json();
-			const ft = await fetchFilters(token);
+			const filters = await fetchFilters(token)
+			const counties = filters?.county?.map(({id, name}) => ({id, name}))
+			const subCounties = filters?.sub_county?.map(({id, name}) => ({id, name}))
+			const constituencies = filters?.constituency?.map(({id, name}) => ({id, name}))
+			const wards = filters?.ward?.map(({id, name}) => ({id, name}))
+			const statuses = filters?.chu_status?.map(({id, name}) => ({value:id, label:name}))
+
+			
 			return {
 				data: json,
 				chuCount: json?.count,
 				query,
 				token,
-				filters: { ...ft },
+				filters: { counties, statuses, subCounties, constituencies, wards },
 				path: ctx.asPath || '/chu/community_units',
 				current_url: current_url,
 			};
