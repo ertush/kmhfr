@@ -881,7 +881,9 @@ export async function getServerSideProps(ctx) {
 
     // const previousURL = ctx?.query?.previous
 
-    const defaultURL = `${`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/` + `${page ? '?page=' + page + '&': '?' }` + 'page_size=10'}`
+    console.log({query: ctx?.query})
+
+    const defaultURL = ctx?.query?.q ? `${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/` : `${`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/` + `${page ? '?page=' + page + '&': '?' }` + 'page_size=10'}`
 
     let url = nextURL ?? previousURL ?? defaultURL
 
@@ -897,7 +899,7 @@ export async function getServerSideProps(ctx) {
 
     if (ctx?.query?.q) {
         query.searchTerm = ctx.query.q
-        url += `&search={"query":{"query_string":{"default_field":"name","query":"${query.searchTerm}"}}}`
+        url += `?search={"query":{"query_string":{"default_field":"name","query":"${query.searchTerm}"}}}`
     }
 
     const other_posssible_filters = [
@@ -953,7 +955,7 @@ export async function getServerSideProps(ctx) {
     }
 
 
-
+    console.log({url})
     try {
         facilities = (await (await fetch(url, {
             headers: {
