@@ -543,7 +543,7 @@ async function handleRegulationSubmit(token, values, facilityId, setSubmitting, 
             .then(async ({ name: facility_name }) => {
 
                 // console.log({facility_name})
-                if (licenseFile) {
+                // if (licenseFile) {
 
                     const formData = new FormData()
 
@@ -574,17 +574,30 @@ async function handleRegulationSubmit(token, values, facilityId, setSubmitting, 
 
                             alert.success('License Document saved successfully')
 
+                            router.push({
+                                pathname: `${window.location.origin}/facilities/add`,
+                                query: { 
+                                  formId: 4,
+                                  facilityId: facilityId,
+                                  from: 'submission'
+            
+                                }
+                            })
+
                         }
 
                     
                     }
                     catch (e) {
-                        console.error('Unable to Post License Document', e.message)
+                        setSubmitting(false)
+                        setFormError(`Error :${e.message}`)
+                        console.error(e.message)
+                        
                     }
-                } else {
-                    console.error('No license file ')
+                // } else {
+                //     console.error('No license file ')
 
-                }
+                // }
 
             })
     }

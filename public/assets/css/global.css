@@ -255,3 +255,19 @@ text-align: right;
   font-style: normal;
 }
 
+
+/* @property --num {
+  syntax: '<integer>';
+  initial-value: 0;
+  inherits: false;
+}
+
+
+@keyframes counter {
+  from {
+      --num: 0;
+  }
+  to {
+      --num: 40;
+  }
+}  */

@@ -49,7 +49,7 @@ export default function App(props) {
     router.events.on('routeChangeError', () => {setIsNavigating(false)}); 
 
     
-    var mtd = true;
+    // var mtd = true;
     // Logout after 30 mins of inactivity
     // const time = 60 * 1000 * 30
 
@@ -58,10 +58,10 @@ export default function App(props) {
     // }, time)
 
 
-    return () =>  {
-      mtd = false
-      clearTimeout(timeOut)
-    }
+    // return () =>  {
+    //   mtd = false
+    //   clearTimeout(timeOut)
+    // }
   }, [])
 
 
