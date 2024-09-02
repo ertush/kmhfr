@@ -84,7 +84,7 @@ function Home() {
   if (isClient) {
     
     return (
-    <header className='w-full max-h-min block'>
+    <div className='w-full max-h-min block'>
         <Head>
           <title>KMHFR | Home</title>
           <link rel="icon" href="/favicon.ico" />
@@ -148,7 +148,7 @@ function Home() {
                   </li>
 
                   <li className='text-lg h-[60px] flex items-center  hover:text-gray-100  duration-200 ease-out hover:bg-blue-800 px-4 font-semibold capitalize text-gray-900 '>
-                    <Link href="https://kmhfr-docs.vercel.app">Documentation</Link>
+                    <Link target="_blank" href="https://kmhfr-docs.vercel.app">Documentation</Link>
                   </li>
                   
                 </ul>
@@ -608,7 +608,7 @@ function Home() {
 
 
         </div>
-    </header>
+    </div>
     )
   }
   else {
