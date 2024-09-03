@@ -480,7 +480,7 @@ export function FacilityContactsForm() {
 
                                             ))
                                         :
-                                        <Alert severity='info'>Please add facility contacts</Alert>
+                                        <Alert severity='error'>Please add facility contacts</Alert>
                                         }
                                     </div>
 
@@ -623,7 +623,7 @@ export function FacilityContactsForm() {
                                                 ))
                                             :
 
-                                            <Alert severity='info'>Please add officer-in charge contacts</Alert>
+                                            <Alert severity='error'>Please add officer-in charge contacts</Alert>
 
                                             }
                                         </div>
