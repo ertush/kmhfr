@@ -295,7 +295,7 @@ export function FacilityContactsForm() {
                     handleFacilityContactsUpdates(options.token, values, options?.data?.id, options?.data?.facility_contacts, options?.data?.officer_in_charge)
                         .then((resp) => {
                             defer(() => updatedSavedChanges(true));
-                            if (resp.status == 200 || resp.status == 204) {
+                            if (resp.ok) {
                                 setSubmitting(false)
                                 alert.success("Updated facility contacts successfully")
 
@@ -311,6 +311,10 @@ export function FacilityContactsForm() {
 
                             else {
                                 alert.error("Unable to update facility contacts")
+
+                                if(resp?.error) {
+                                    setFormError(`Error: ${resp?.error}`)
+                                  } else {
                                 resp.json()
                                 .then(resp => {
                                   const formResponse = []
@@ -326,6 +330,7 @@ export function FacilityContactsForm() {
                                     }
                                   })
                                 })
+                              }
                             }
                         })
                         .catch(e => {

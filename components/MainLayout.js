@@ -6,7 +6,7 @@ import React, { useState, useEffect } from 'react';
 import HeaderLayout from './HeaderLayout';
 import Link from 'next/link'
 import { NorthEast } from '@mui/icons-material';
-import { Analytics } from '@vercel/analytics/react';
+// import { Analytics } from '@vercel/analytics/react';
 // import { useAlert } from 'react-alert';
 
 
@@ -32,7 +32,7 @@ export default function MainLayout({ children, searchTerm }) {
             <div className={"h-full w-full flex flex-col py-5 items-center " }>
                
                 { children }
-                <Analytics />
+                {/* <Analytics /> */}
             </div>
 
           {/* Footer */}
@@ -60,24 +60,24 @@ export default function MainLayout({ children, searchTerm }) {
                     <h2 className='text-gray-50 font-semibold mb-2'>Quick Links</h2>
                     <div className='flex items-center gap-2'>
                     <NorthEast className="text-gray-200 w-3 aspect-square"/>
-                    <Link href="https://healthit.uonbi.ac.ke" className="text-gray-200 hover:underline">HealthIT</Link>
+                    <Link target='_blank' href="https://healthit.uonbi.ac.ke" className="text-gray-200 hover:underline">HealthIT</Link>
                     </div>
 
                     <div className='flex items-center gap-2'>
                     <NorthEast className="text-gray-200 w-3 aspect-square"/>
-                    <Link href="https://usaid.gov/kenya" className="text-gray-200 hover:underline">USAID</Link>
+                    <Link target='_blank' href="https://usaid.gov/kenya" className="text-gray-200 hover:underline">USAID</Link>
                     
                     </div>
 
                     <div className='flex items-center gap-2'>
                     <NorthEast className="text-gray-200 w-3 aspect-square"/>
-                    <Link href="https://health.go.ke" className="text-gray-200 hover:underline">Ministry of Health</Link>
+                    <Link target='_blank' href="https://health.go.ke" className="text-gray-200 hover:underline">Ministry of Health</Link>
                     
                     </div>
 
                     <div className='flex items-center gap-2'>
                     <NorthEast className="text-gray-200 w-3 aspect-square"/>
-                    <Link href="https://kmhfr-docs.vercel.app" className="text-gray-200 hover:underline">KMHFR Docs</Link>
+                    <Link target='_blank' href="https://kmhfr-docs.vercel.app" className="text-gray-200 hover:underline">KMHFR Docs</Link>
                     
                     </div>
                   </div>

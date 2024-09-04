@@ -302,7 +302,7 @@ function handleFacilityContactsSubmit(token, values, facilityId, setFormError) {
 
     //    console.log(JSON.stringify(payload, null, 2))
 
-    console.log({facilityContacts, officerDetails})
+    
 
     if(facilityContacts.length === 0 && officerDetails.contacts.length === 0) {
         return new Promise(resolve => resolve({ok: false, error:'Both Facility and Officer-Incharge contacts are missing'}))
@@ -851,6 +851,19 @@ async function handleFacilityContactsUpdates(token, values, facility_id, current
 
   
     const payload = { contacts: facilityContacts, officer_in_charge: officerDetails };
+
+    if(facilityContacts.length === 0 && officerDetails.contacts.length === 0) {
+        return new Promise(resolve => resolve({ok: false, error:'Both Facility and Officer-Incharge contacts are missing'}))
+    }
+
+    if(facilityContacts.length === 0) {
+        return new Promise(reslove => reslove({ok: false, error:'Facility Contacts are missing'}))
+
+        
+    } else if(officerDetails.contacts.length === 0) {
+        return new Promise(reslove => reslove({ok: false, error:'Facility Officer-Incharge Contacts are missing'}))
+        
+    }
 
     // console.log({payload, officerDetails, officerContacts})
 
