@@ -336,9 +336,11 @@ export function FacilityContactsForm() {
                           })
                           
                     :
-                    handleFacilityContactsSubmit(options.token, values,  facilityId)
+                    handleFacilityContactsSubmit(options.token, values,  facilityId, setFormError)
                         .then(resp => {
-                            // console.log(JSON.stringify({token: options.token, values,  facilityId}, null , 2))
+
+                            console.log(JSON.stringify({resp}, null , 2))
+
                             if (resp.ok) {
 
                                 setSubmitting(false)
@@ -387,6 +389,9 @@ export function FacilityContactsForm() {
                                 alert.error('Unable to save Facility Contacts')
                                 alert.error('Unable to save Officer Incharge Contacts')
 
+                                if(resp?.error) {
+                                  setFormError(`Error: ${resp?.error}`)
+                                } else {
                                 resp.json()
                                 .then(resp => {
                                   const formResponse = []
@@ -402,6 +407,7 @@ export function FacilityContactsForm() {
                                     }
                                   })
                                 })
+                              }
                             }
                         })
                         .catch(e => {

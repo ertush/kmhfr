@@ -235,7 +235,7 @@ function handleGeolocationSubmit(token, values, stateSetters) {
 };
 
 // handleFacilityContactsSubmit
-function handleFacilityContactsSubmit(token, values, facilityId) {
+function handleFacilityContactsSubmit(token, values, facilityId, setFormError) {
 
     
     const facilityContacts = [];
@@ -301,6 +301,21 @@ function handleFacilityContactsSubmit(token, values, facilityId) {
     const payload = { contacts: facilityContacts, officer_in_charge: officerDetails };
 
     //    console.log(JSON.stringify(payload, null, 2))
+
+    console.log({facilityContacts, officerDetails})
+
+    if(facilityContacts.length === 0 && officerDetails.contacts.length === 0) {
+        return new Promise(resolve => resolve({ok: false, error:'Both Facility and Officer-Incharge contacts are missing'}))
+    }
+
+    if(facilityContacts.length === 0) {
+        return new Promise(reslove => reslove({ok: false, error:'Facility Contacts are missing'}))
+
+        
+    } else if(officerDetails.contacts.length === 0) {
+        return new Promise(reslove => reslove({ok: false, error:'Facility Officer-Incharge Contacts are missing'}))
+        
+    }
 
     if (facilityId && token) {
         try {
