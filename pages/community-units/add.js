@@ -1370,6 +1370,8 @@ export async function getServerSideProps({req, res}) {
 		.then(resp => resp.json())
 		.then( (resp) => {
 
+
+
 			const userSubCountyID = resp?.user_sub_counties[0]?.sub_county
 			const userCountyID = resp?.county
 			const userGroup = resp?.groups[0]?.id
@@ -1377,7 +1379,7 @@ export async function getServerSideProps({req, res}) {
 
 			if(userGroup == 2 && userSubCountyID){
 			
-			const subCountyFacilitiesURL = `${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/?sub_county=${userSubCountyID}&reporting_in_dhis=true&closed=false&owner_type=6a833136-5f50-46d9-b1f9-5f961a42249f&fields=id,name,county,sub_county_name,constituency,ward_name`
+			const subCountyFacilitiesURL = `${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/?ward=${userSubCountyID}&reporting_in_dhis=true&closed=false&fields=id,name,county,sub_county_name,constituency,ward_name&page_size=300`
 
 		   return fetch(subCountyFacilitiesURL, {
 				headers:{
