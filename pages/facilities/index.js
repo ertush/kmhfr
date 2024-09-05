@@ -32,8 +32,14 @@ function FacilityHome (props){
     // const facilities = props?.data?.results
     const filters = props?.filters
     const fltrs = props?.filters
+    
     const userCtx = useContext(UserContext);
+
     const groupID = userCtx?.groups[0]?.id
+
+    const userCounty = userCtx?.user_counties[0]?.county
+
+    const userSubCounty = userCtx?.user_sub_counties[0]?.sub_county
 
 
     // const qf = props?.query?.qf ?? null
@@ -107,6 +113,16 @@ function FacilityHome (props){
         }
     }, [facilityFeedBack, title])
 
+    function userOrgUnit() {
+        if(groupID === 1) { // CHRIO
+            return {county: userCounty}
+        } else if (groupID === 2) { // SCHRIO
+            return {sub_county: userSubCounty}
+        } else {
+            return {}
+        }
+    }
+
 
      function handleAccordionExpand(ev) {
         if(isAccordionExpanded){
@@ -148,12 +164,16 @@ function FacilityHome (props){
         router.push({
             pathname:'/facilities',
             query: {
-                next: Buffer.from(`${props?.next}`).toString('base64') //default: page_size=30
+                next: Buffer.from(`${props?.next}`).toString('base64'),
+                ...userOrgUnit
+                 //default: page_size=30
                 
                 // ...params
             }
         })
     }
+
+   
 
     function handlePrevious() {
 
@@ -162,7 +182,8 @@ function FacilityHome (props){
         router.push({
             pathname:'/facilities',
             query: {
-                previous: Buffer.from(`${props?.previous}`).toString('base64') //default: page_size=30
+                previous: Buffer.from(`${props?.previous}`).toString('base64'),
+                ...userOrgUnit //default: page_size=30
                 //...params
             }
         })
@@ -177,7 +198,8 @@ function FacilityHome (props){
         router.push({
             pathname:'/facilities',
             query: {
-                 page
+                 page,
+                 ...userOrgUnit()
                 // ...params
             }
         })
@@ -842,6 +864,20 @@ export async function getServerSideProps(ctx) {
 	// )
 
 
+    function fetchCurrentUser(token) {
+        return fetch(`${process.env.NEXT_PUBLIC_API_URL}/rest-auth/user/`, {
+            headers:{
+                'Authorization': `Bearer ${token}`,
+                'Accept': 'application/json',
+                'Cache-Control': 'public, s-maxage=10, stale-while-revalidate=59'
+              }
+        })
+        .then(resp => resp.json())
+        .then(resp => resp)
+    }
+
+
+
     function fetchFilters(token) {
 
         const filtersURL = `${process.env.NEXT_PUBLIC_API_URL}/common/filtering_summaries/?fields=county,facility_type,constituency,ward,operation_status,service_category,owner_type,owner,service,keph_level,sub_county`
@@ -872,6 +908,11 @@ export async function getServerSideProps(ctx) {
     const nextURL = ctx?.query?.next ? Buffer.from(ctx?.query?.next, 'base64').toString() : null
 
     const page = ctx?.query?.page
+
+
+    const user = await fetchCurrentUser(token)
+
+    const userGroup = user?.groups[0]?.id
 
     // const nextURL = ctx?.query?.next
 
@@ -943,7 +984,6 @@ export async function getServerSideProps(ctx) {
 
     })
 
-    // console.log({url})
 
 
     let current_url = url + '&page_size=100'
@@ -952,8 +992,22 @@ export async function getServerSideProps(ctx) {
     }
 
 
-    // console.log({url})
     try {
+        
+        if(userGroup === 1) { // CHRIO
+
+            const userCountyID = user?.county
+            url = `${url}&county=${userCountyID}`
+
+        } else if(userGroup === 2) { // SCHRIO
+
+            const userSubCountyID = user?.user_sub_counties[0]?.sub_county
+            url = `${url}&sub_county=${userSubCountyID}`
+        
+        } 
+
+        // console.log({url})
+
         facilities = (await (await fetch(url, {
             headers: {
                 'Accept': 'application/json',
