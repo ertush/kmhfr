@@ -41,6 +41,8 @@ function FacilityHome (props){
 
     const userSubCounty = userCtx?.user_sub_counties[0]?.sub_county
 
+    const [searchTerm, setSearchTerm] = useState('')
+
 
     // const qf = props?.query?.qf ?? null
     
@@ -165,7 +167,9 @@ function FacilityHome (props){
             pathname:'/facilities',
             query: {
                 next: Buffer.from(`${props?.next}`).toString('base64'),
-                ...userOrgUnit
+                ...userOrgUnit,
+                ...(() => searchTerm !== '' ? ({q: searchTerm}) : ({}))()
+
                  //default: page_size=30
                 
                 // ...params
@@ -183,7 +187,10 @@ function FacilityHome (props){
             pathname:'/facilities',
             query: {
                 previous: Buffer.from(`${props?.previous}`).toString('base64'),
-                ...userOrgUnit //default: page_size=30
+                ...userOrgUnit,
+                ...(() => searchTerm !== '' ? ({q: searchTerm}) : ({}))()
+
+               //default: page_size=30
                 //...params
             }
         })
@@ -195,11 +202,14 @@ function FacilityHome (props){
 
         // const params = Object.fromEntries(pageParams.entries())
 
+
         router.push({
             pathname:'/facilities',
             query: {
                  page,
-                 ...userOrgUnit()
+                 ...userOrgUnit(),
+                 ...(() => searchTerm !== '' ? ({q: searchTerm}) : ({}))()
+                 
                 // ...params
             }
         })
@@ -549,6 +559,9 @@ function FacilityHome (props){
                                                 const href = new URL(window.location.href)
                                                 const filter = href.searchParams.get('filter')
                                                 // console.log({values})
+                                                setSearchTerm(query)
+
+
                                                 switch(filter){
                                                     case "all_facilities":
                                                         router.push(`/facilities/?q=${query}&filter=all_facilities`)
