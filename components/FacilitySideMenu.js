@@ -6,12 +6,22 @@ import router from 'next/router'
 import { hasPermission } from '../utils/checkPermissions';
 import { PermissionContext } from '../providers/permissions';
 import { useSearchParams } from 'next/navigation';
+import { UserContext } from '../providers/user';
 
 function FacilitySideMenu({ states, stateSetters, filters }) {
 
     const userPermissions = useContext(PermissionContext)
 
+
     const searchParams = useSearchParams()
+
+    const userCtx = useContext(UserContext)
+
+    const userGroup = userCtx?.groups[0]?.id
+
+    const userCounty = userCtx?.user_counties[0]?.county
+
+    const userSubCounty = userCtx?.user_sub_counties[0]?.sub_county
 
     // const quickFilters = [
     //     {
@@ -92,8 +102,15 @@ function FacilitySideMenu({ states, stateSetters, filters }) {
     //     }
     // ]
 
-
-
+    function userOrgUnit() {
+        if(userGroup === 1) { // CHRIO
+            return {county: userCounty}
+        } else if (userGroup === 2) {
+            return {sub_county: userSubCounty}
+        } else {
+            return {}
+        }
+    }
 
     return (
 
@@ -127,7 +144,9 @@ function FacilitySideMenu({ states, stateSetters, filters }) {
                         router.push({
                             pathname:'/facilities',
                             query: {
-                                filter:'all_facilities'
+                                filter:'all_facilities',
+                            ...userOrgUnit()
+
                             }
                         })
 
@@ -162,7 +181,8 @@ function FacilitySideMenu({ states, stateSetters, filters }) {
                             filter:'approved_facilities',
                             approved: true,
                             approved_national_level: true,
-                            rejected: false
+                            rejected: false,
+                            ...userOrgUnit()
                         }
                     })
 
@@ -197,7 +217,9 @@ function FacilitySideMenu({ states, stateSetters, filters }) {
                         query: {
                             filter:'pending_validation_facilities',
                             pending_approval: true,
-                            has_edits: false
+                            has_edits: false,
+                            ...userOrgUnit()
+
                         }
                     })
                  
@@ -229,7 +251,9 @@ function FacilitySideMenu({ states, stateSetters, filters }) {
                             pathname:'/facilities',
                             query: {
                                 filter:'updated_pending_validation_facilities',
-                                have_updates: true
+                                have_updates: true,
+                                ...userOrgUnit()
+
                             }
                         })
                  
@@ -261,7 +285,9 @@ function FacilitySideMenu({ states, stateSetters, filters }) {
                             pathname:'/facilities',
                             query: {
                                 filter:'pending_approval_facilities',
-                                to_publish: true
+                                to_publish: true,
+                                ...userOrgUnit()
+
                             }
                         })
                       
@@ -296,7 +322,9 @@ function FacilitySideMenu({ states, stateSetters, filters }) {
                             approved: true,
                             approved_national_level: true,
                             rejected: false,
-                            reporting_in_dhis: true
+                            reporting_in_dhis: true,
+                            ...userOrgUnit()
+
                         }
                     })
                 
@@ -328,7 +356,9 @@ function FacilitySideMenu({ states, stateSetters, filters }) {
                         pathname:'/facilities',
                         query: {
                             filter:'failed_validation_facilities',
-                            rejected: true
+                            rejected: true,
+                            ...userOrgUnit()
+
                         }
                     })
                    
@@ -360,7 +390,9 @@ function FacilitySideMenu({ states, stateSetters, filters }) {
                         pathname:'/facilities',
                         query: {
                             filter:'rejected_facilities',
-                            rejected_national_true: true
+                            rejected_national_true: true,
+                            ...userOrgUnit()
+
                         }
                     })
                   
@@ -392,7 +424,9 @@ function FacilitySideMenu({ states, stateSetters, filters }) {
                             pathname:'/facilities',
                             query: {
                                 filter:'closed_facilities',
-                                closed: true 
+                                closed: true,
+                                ...userOrgUnit()
+
                             }
                         })
                   
@@ -424,7 +458,9 @@ function FacilitySideMenu({ states, stateSetters, filters }) {
                             pathname:'/facilities',
                             query: {
                                 filter:'incomplete_facilities',
-                                incomplete: true
+                                incomplete: true,
+                            ...userOrgUnit()
+
                             }
                         })
                      
@@ -455,7 +491,9 @@ function FacilitySideMenu({ states, stateSetters, filters }) {
                         pathname:'/facilities',
                         query: {
                             filter:'synchronized_regulated_facilities',
-                            mfl_code_null: true
+                            mfl_code_null: true,
+                            ...userOrgUnit()
+
                         }
                     })
                         
@@ -487,6 +525,8 @@ function FacilitySideMenu({ states, stateSetters, filters }) {
                             pathname:'/facilities',
                             query: {
                                 filter:'feed_back_facilities',
+                            ...userOrgUnit()
+
                             }
                         })
                      
