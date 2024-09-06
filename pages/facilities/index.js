@@ -8,6 +8,7 @@ import { useRouter } from 'next/router'
 import { Menu } from '@headlessui/react'
 import { ChevronDownIcon, FilterIcon, SearchIcon } from '@heroicons/react/outline'
 import { Select as CustomSelect } from '../../components/Forms/formComponents/Select'
+import { getUserDetails } from '../../controllers/auth/auth'
 
 
 // @mui imports
@@ -877,17 +878,17 @@ export async function getServerSideProps(ctx) {
 	// )
 
 
-    function fetchCurrentUser(token) {
-        return fetch(`${process.env.NEXT_PUBLIC_API_URL}/rest-auth/user/`, {
-            headers:{
-                'Authorization': `Bearer ${token}`,
-                'Accept': 'application/json',
-                'Cache-Control': 'public, s-maxage=10, stale-while-revalidate=59'
-              }
-        })
-        .then(resp => resp.json())
-        .then(resp => resp)
-    }
+    // function fetchCurrentUser(token) {
+    //     return fetch(`${process.env.NEXT_PUBLIC_API_URL}/rest-auth/user/`, {
+    //         headers:{
+    //             'Authorization': `Bearer ${token}`,
+    //             'Accept': 'application/json',
+    //             'Cache-Control': 'public, s-maxage=10, stale-while-revalidate=59'
+    //           }
+    //     })
+    //     .then(resp => resp.json())
+    //     .then(resp => resp)
+    // }
 
 
 
@@ -923,7 +924,7 @@ export async function getServerSideProps(ctx) {
     const page = ctx?.query?.page
 
 
-    const user = await fetchCurrentUser(token)
+    const {response: user} = await getUserDetails(token, `${process.env.NEXT_PUBLIC_API_URL}/rest-auth/user/`)
 
     const userGroup = user?.groups[0]?.id
 
@@ -1019,7 +1020,7 @@ export async function getServerSideProps(ctx) {
         
         } 
 
-        // console.log({url})
+        console.log({url})
 
         facilities = (await (await fetch(url, {
             headers: {
