@@ -514,9 +514,11 @@ function FacilityHome (props){
                     {/* Side Menu Filters Wide View port*/}
                     <div className="hidden md:flex col-span-1">
                         <FacilitySideMenu 
-                        filters={filters ?? {}}
+                        /*filters={filters ?? {}}
                         states={[khisSynched, facilityFeedBack, pathId, allFctsSelected, title]}
-                        stateSetters={[setKhisSynched, setFacilityFeedBack, setPathId, setAllFctsSelected, setTitle]} />
+                        stateSetters={[setKhisSynched, setFacilityFeedBack, setPathId, setAllFctsSelected, setTitle]} 
+                        */
+                        />
                    </div>
 
                     {/* Side Menu Filters Small View port*/}
@@ -872,10 +874,10 @@ function FacilityHome (props){
 export async function getServerSideProps(ctx) {
 
 
-	// ctx?.res?.setHeader(
-	// 	'Cache-Control',
-	// 	'public, s-maxage=10, stale-while-revalidate=59'
-	// )
+	ctx?.res?.setHeader(
+		'Cache-Control',
+		'public, s-maxage=10, stale-while-revalidate=59'
+	)
 
 
     // function fetchCurrentUser(token) {
@@ -1020,7 +1022,7 @@ export async function getServerSideProps(ctx) {
         
         } 
 
-        console.log({url})
+        // console.log({url})
 
         facilities = (await (await fetch(url, {
             headers: {

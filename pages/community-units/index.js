@@ -19,7 +19,7 @@ import { KeyboardArrowDown } from '@mui/icons-material';
 import { KeyboardArrowRight } from '@mui/icons-material';
 import { useSearchParams } from 'next/navigation';
 import withAuth from '../../components/ProtectedRoute';
-
+import { getUserDetails } from '../../controllers/auth/auth';
 
 function CommunityUnit(props) {
 
@@ -253,6 +253,12 @@ function CommunityUnit(props) {
 						</button>
 
 						{/* Main body */}
+{/* 
+						<pre>
+							{
+								JSON.stringify(props?.data, null, 2)
+							}
+						</pre> */}
 
 						<div className="w-full md:col-span-4 mr-24 md:col-start-2 col-span-5 md:h-auto rounded bg-gray-50 shadow-md">
 							{/* Data Indicator section */}
@@ -359,7 +365,7 @@ function CommunityUnit(props) {
 								<div className="flex flex-col justify-center items-center w-full">
 
 									{cus && cus.length > 0 ? (
-										cus.map((comm_unit, index) => (
+										cus.map((comm_unit) => (
 											<div
 												key={comm_unit.id}
 												className='grid grid-cols-8 gap-2 border-b border-gray-400 py-4 hover:bg-gray-50 w-full'>
@@ -406,10 +412,8 @@ function CommunityUnit(props) {
 															<span className="whitespace-pre-line">{comm_unit.facility_ward || 'N/A'}</span>
 														</div>
 														<div className="flex flex-col items-start justify-start gap-0 leading-none whitespace-pre-wrap">
-															<label className="text-xs text-gray-500">Constituency:</label>
-															<span className="whitespace-pre-line">{comm_unit.constituency_name ||
-																comm_unit.facility_constituency ||
-																'N/A'}</span>
+															<label className="text-xs text-gray-500">Date Established:</label>
+															<span className="whitespace-pre-line">{new Date(comm_unit?.date_established).toDateString()}</span>
 														</div>
 													</div>
 												</div>
@@ -588,10 +592,29 @@ export async function getServerSideProps(ctx) {
 			url = `${url}&page=${ctx.query.page}`;
 		}
 
-		// console.log({url})	
+		
+		const {response: user} = await getUserDetails(token, `${process.env.NEXT_PUBLIC_API_URL}/rest-auth/user/`)
+
+   		const userGroup = user?.groups[0]?.id
 
 
 		try {
+
+			if(userGroup === 1) { // CHRIO
+
+				const userCountyID = user?.county
+				url = `${url}&county=${userCountyID}`
+	
+			} else if(userGroup === 2) { // SCHRIO
+	
+				const userSubCountyID = user?.user_sub_counties[0]?.sub_county
+				url = `${url}&sub_county=${userSubCountyID}`
+			
+			} 
+
+		// console.log({url})
+
+
 			const r = await fetch(url, {
 				headers: {
 					Authorization: 'Bearer ' + token,
@@ -625,36 +648,10 @@ export async function getServerSideProps(ctx) {
 		}
 	};
 
+    const token = (await checkToken(ctx.req, ctx.res))?.token
 
-	const response = (() => checkToken(ctx.req, ctx.res)
-		.then((t) => {
-			if (t.error) {
-				throw new Error('Error checking token');
-			} else {
-				let token = t.token;
-				return fetchData(token).then((t) => t);
-			}
-		})
-		.catch((err) => {
-			console.log('Error checking token: ', err);
-			if (typeof window !== 'undefined' && window) {
-				if (ctx?.asPath) {
-					window.location.href = ctx?.asPath;
-				} else {
-					window.location.href = '/community-units';
-				}
-			}
-			// setTimeout(() => {
-				return {
-					error: true,
-					err: err,
-					data: [],
-					query: {},
-					path: ctx.asPath || '/community-units',
-					current_url: '',
-				};
-			// }, 1000);
-	}))()
+	const response = await fetchData(token)
+		
 
 
 	return {
