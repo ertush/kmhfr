@@ -516,10 +516,10 @@ function CommunityUnit(props) {
 export async function getServerSideProps(ctx) {
 
 
-	ctx?.res?.setHeader(
-		'Cache-Control',
-		'public, s-maxage=10, stale-while-revalidate=59'
-	)
+	// ctx?.res?.setHeader(
+	// 	'Cache-Control',
+	// 	'public, s-maxage=10, stale-while-revalidate=59'
+	// )
 	
 	async function fetchFilters(token) {
 		let filters_url = `${process.env.NEXT_PUBLIC_API_URL}/common/filtering_summaries/?fields=county,constituency,ward,chu_status,sub_county`;
