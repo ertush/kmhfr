@@ -1,17 +1,36 @@
-import React from 'react'
+import { useContext } from 'react'
 import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import { useRouter } from 'next/router';
 import { useSearchParams } from 'next/navigation';
+import { UserContext } from '../providers/user';
 
-
-export default function CommunityUnitSideMenu({ _pathId, filters, qf }) {
+export default function CommunityUnitSideMenu({ /*_pathId,*/ filters /*, qf*/ }) {
 
 
 	const router = useRouter()
 
 	const searchParams = useSearchParams()
+
+	const userCtx = useContext(UserContext)
+
+    const userGroup = userCtx?.groups[0]?.id
+
+    const userCounty = userCtx?.user_counties[0]?.county
+
+    const userSubCounty = userCtx?.user_sub_counties[0]?.sub_county
+
+	function userOrgUnit() {
+        if(userGroup === 1) { // CHRIO
+            return {county: userCounty}
+        } else if (userGroup === 2) {
+            return {sub_county: userSubCounty}
+        } else {
+            return {}
+        }
+    }
+
 
 
 	const quickFilters = [
@@ -137,7 +156,9 @@ export default function CommunityUnitSideMenu({ _pathId, filters, qf }) {
 										router.push({
 											pathname:'/community-units',
 											query: {
-												filter:'all_chu'
+												filter:'all_chu',
+												...userOrgUnit()
+
 											}
 										})
 
@@ -149,7 +170,9 @@ export default function CommunityUnitSideMenu({ _pathId, filters, qf }) {
 											pathname:'/community-units',
 											query: {
 												filter:'approved_chu',
-												is_approved: true
+												is_approved: true,
+												...userOrgUnit()
+
 											}
 										})
 
@@ -162,7 +185,9 @@ export default function CommunityUnitSideMenu({ _pathId, filters, qf }) {
 											query: {
 												filter:'new_pending_approval_chu',
 												pending_approval: true,
-												has_edits: false
+												has_edits: false,
+												...userOrgUnit()
+
 											}
 										})
 
@@ -177,7 +202,9 @@ export default function CommunityUnitSideMenu({ _pathId, filters, qf }) {
 											query: {
 												filter:'updated_pending_approval_chu',
 												is_approved: true,
-												has_edits: true
+												has_edits: true,
+												...userOrgUnit()
+
 											}
 										})
 
@@ -190,7 +217,9 @@ export default function CommunityUnitSideMenu({ _pathId, filters, qf }) {
 											pathname:'/community-units',
 											query: {
 												filter:'rejected_chu',
-												is_rejected: true
+												is_rejected: true,
+												...userOrgUnit()
+
 											}
 										})
 

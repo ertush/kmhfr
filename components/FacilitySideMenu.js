@@ -8,7 +8,7 @@ import { PermissionContext } from '../providers/permissions';
 import { useSearchParams } from 'next/navigation';
 import { UserContext } from '../providers/user';
 
-function FacilitySideMenu({ states, stateSetters, filters }) {
+function FacilitySideMenu(/*{ states, stateSetters, filters }*/) {
 
     const userPermissions = useContext(PermissionContext)
 
@@ -23,84 +23,7 @@ function FacilitySideMenu({ states, stateSetters, filters }) {
 
     const userSubCounty = userCtx?.user_sub_counties[0]?.sub_county
 
-    // const quickFilters = [
-    //     {
-    //         name: 'All',
-    //         id: 'all',
-    //         filters: Object.keys(filters),
-    //     },
-    //     {
-    //         name: 'Approved',
-    //         id: 'approved',
-    //         filters: [
-    //             { id: "approved", value: true },
-    //             { id: "approved_national_level", value: true },
-    //             { id: "rejected", value: false },
-    //         ],
-    //     },
-    //     {
-    //         name: 'New pending validation',
-    //         id: 'new_pending_validation',
-    //         filters: [
-    //             { id: "pending_approval", value: true },
-    //             { id: "has_edits", value: false },
 
-    //         ],
-    //     },
-    //     {
-    //         name: 'Updated pending validation',
-    //         id: 'updated_pending_validation',
-    //         filters: [
-    //             { id: "has_edits", value: true },
-    //             { id: "pending_approval", value: true },
-    //         ],
-    //     },
-    //     {
-    //         name: 'Facilities pending approval',
-    //         id: 'to_publish',
-    //         filters: [
-    //             { id: "to_publish", value: true },
-    //         ],
-    //     },
-    //     {
-    //         name: 'DHIS Synced Facilities',
-    //         id: 'dhis_synced_facilities',
-    //         filters: [
-    //             { id: "approved", value: true },
-    //             { id: "approved_national_level", value: true },
-    //             { id: "rejected", value: false },
-    //             { id: "reporting_in_dhis", value: true },
-    //         ]
-    //     },
-    //     {
-    //         name: 'Failed Validation',
-    //         id: 'failed_validation',
-    //         filters: [
-    //             { id: "rejected", value: true },
-    //         ],
-    //     },
-    //     {
-    //         name: 'Incomplete',
-    //         id: 'incomplete',
-    //         filters: [
-    //             { id: "is_complete", value: false },
-    //         ]
-    //     },
-    //     {
-    //         name: 'Rejected',
-    //         id: 'rejected',
-    //         filters: [
-    //             { id: "rejected_national", value: true },
-    //         ]
-    //     },
-    //     {
-    //         name: 'Closed',
-    //         id: 'closed',
-    //         filters: [
-    //             { id: "closed", value: true },
-    //         ]
-    //     }
-    // ]
 
     function userOrgUnit() {
         if(userGroup === 1) { // CHRIO
