@@ -566,7 +566,7 @@ export async function getServerSideProps(ctx) {
 
 		if (ctx?.query?.q) {
 			query.searchTerm = ctx.query.q;
-			url += `&search={"query":{"query_string":{"default_field":"name","query":"${query.searchTerm}"}}}`;
+			url += `&search=${query.searchTerm}`;
 		}
 
 		let other_posssible_filters = [
@@ -612,7 +612,12 @@ export async function getServerSideProps(ctx) {
 			
 			} 
 
-		// console.log({url})
+			//Strip the filter param
+
+			url = url.replace(/filter=\w+\&/, '')
+			url = url.replace(/q=\w+\&/, '')
+
+			// console.log({url})
 
 
 			const r = await fetch(url, {

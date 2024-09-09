@@ -23,6 +23,7 @@ import {Formik, Form, Field} from 'formik';
 import { KeyboardArrowRight, KeyboardArrowDown } from "@mui/icons-material";
 import { useSearchParams } from 'next/navigation'
 import withAuth from '../../components/ProtectedRoute'
+import {v4 as uuid} from 'uuid'
 
 
 function FacilityHome (props){
@@ -354,10 +355,10 @@ function FacilityHome (props){
                                                                             className='flex flex-col md:grid md:grid-cols-4 place-content-center items-content-end gap-2'>
                                                                     {  
                                                                         filters && Object.keys(filters).length > 0 &&
-                                                                        Object.keys(fltrs).map((ft, i) => (
+                                                                        Object.keys(fltrs).map((ft) => (
                                                                            
                                                                                 
-                                                                                <div key={i} className="w-full flex flex-col items-start justify-start gap-1 mb-1">
+                                                                                <div key={uuid()} className="w-full flex flex-col items-start justify-start gap-1 mb-1">
                                                                                 <label htmlFor={ft} className="text-gray-600 capitalize text-sm">{ft.split('_').join(' ')}</label>
                                                                                
 
@@ -567,43 +568,43 @@ function FacilityHome (props){
 
                                                 switch(filter){
                                                     case "all_facilities":
-                                                        router.push(`/facilities/?q=${query}&filter=all_facilities`)
+                                                        router.push(`/facilities/?search=${query}&filter=all_facilities`)
                                                         break;
                                                     case "approved_facilities":
-                                                        router.push(`/facilities/?q=${query}&filter=approved_facilities&approved=true&approved_national_level=true&rejected=false`)
+                                                        router.push(`/facilities/?search=${query}&filter=approved_facilities&approved=true&approved_national_level=true&rejected=false`)
                                                         break;
                                                     case "pending_validation_facilities":
-                                                        router.push(`/facilities/?q=${query}&filter=pending_validation_facilities&pending_approval=true&has_edits=false`)
+                                                        router.push(`/facilities/?search=${query}&filter=pending_validation_facilities&pending_approval=true&has_edits=false`)
                                                         break;
                                                     case "updated_pending_validation_facilities":
-                                                        router.push(`/facilities/?q=${query}&filter=updated_pending_validation_facilities&have_updates=true`)
+                                                        router.push(`/facilities/?search=${query}&filter=updated_pending_validation_facilities&have_updates=true`)
                                                         break;
                                                     case "pending_approval_facilities":
-                                                        router.push(`/facilities/?q=${query}&filter=pending_approval_facilities&to_publish=true`)
+                                                        router.push(`/facilities/?search=${query}&filter=pending_approval_facilities&to_publish=true`)
                                                         break;
                                                     case "dhis_synched_facilities":
-                                                        router.push(`/facilities/?q=${query}&filter=dhis_synched_facilities&approved=true&approved_national_level=true&rejected=false&reporting_in_dhis=true`)
+                                                        router.push(`/facilities/?search=${query}&filter=dhis_synched_facilities&approved=true&approved_national_level=true&rejected=false&reporting_in_dhis=true`)
                                                         break;
                                                     case "failed_validation_facilities":
-                                                        router.push(`/facilities/?q=${query}&filter=failed_validation_facilities&rejected=true`)
+                                                        router.push(`/facilities/?search=${query}&filter=failed_validation_facilities&rejected=true`)
                                                         break;
                                                     case "rejected_facilities":
-                                                        router.push(`/facilities/?q=${query}&filter=rejected_facilities&rejected_national_true=true`)
+                                                        router.push(`/facilities/?search=${query}&filter=rejected_facilities&rejected_national_true=true`)
                                                         break;
                                                     case "closed":
-                                                        router.push(`/facilities/?q=${query}&filter=closed_facilities&closed=true`)
+                                                        router.push(`/facilities/?search=${query}&filter=closed_facilities&closed=true`)
                                                         break;
                                                     case "incomplete":
-                                                        router.push(`/facilities/?q=${query}&filter=incomplete_facilities&is_complete=true`)
+                                                        router.push(`/facilities/?search=${query}&filter=incomplete_facilities&is_complete=true`)
                                                         break;
                                                     case "synchronized_regulated_facilities":
-                                                        router.push(`/facilities/?q=${query}&filter=synchronized_regulated_facilities&mfl_code_null=true`)
+                                                        router.push(`/facilities/?search=${query}&filter=synchronized_regulated_facilities&mfl_code_null=true`)
                                                         break;
                                                     case "feed_back_facilities":
-                                                        router.push(`/facilities/?q=${query}&filter=feed_back_facilities`)
+                                                        router.push(`/facilities/?search=${query}&filter=feed_back_facilities`)
                                                         break;
                                                     default:
-                                                        router.push(`/facilities/?q=${query}&filter=all_facilities`)
+                                                        router.push(`/facilities/?search=${query}&filter=all_facilities`)
                                                         break;
                                                 
                                                 }
@@ -644,12 +645,21 @@ function FacilityHome (props){
                                         </h5>
                                     </div>
                                   
+                                    {/* <pre>
+                                                {
+                                                    JSON.stringify(props?.facilities, null, 2)
+                                                }
+                                      </pre> */}
+                                            
                         
                                     {/*  Quick Filters status display */}
+                                    {
+                                        pageParams.get('filter') !== 'feed_back_facilities' ?
+                                    (
                                     <div className="flex-grow w-full flex flex-col items-center gap-1 order-last md:order-none">
                                         <div className="flex flex-col justify-center items-center  w-full">
                                             {/* Facilities View */}
-                                            
+                                           
                                             {
                                             props?.facilities.length > 0 ?
 
@@ -725,7 +735,12 @@ function FacilityHome (props){
                                                         {
                                                         facility?.approved_national_level ? 
                                                         "Approved" : "Not Approved"}</span> : 
-                                                        <span className={"shadow-sm  col-start-2 leading-none whitespace-nowrap text-sm font-semibold py-1 px-2 bg-red-200 text-red-900"}>{facility?.rejected ? "Rejected" : ""}</span>
+                                                        facility?.rejected && <span className={"shadow-sm  col-start-2 leading-none whitespace-nowrap px-2 text-sm font-semibold py-1 bg-red-200 text-red-900"}>Rejected Validate</span> 
+                                                        }
+
+                                                        {
+                                                        facility?.rejected_national &&
+                                                        <span className={"shadow-sm leading-none whitespace-nowrap text-sm col-start-2 py-1 px-2 bg-red-200 font-semibold text-yellow-900"}>Rejected Approve</span> 
                                                         }
                                                         
                                                         {
@@ -768,8 +783,8 @@ function FacilityHome (props){
 
                                             {/* Feedback Facilities View */}
                                             {
-                                                facilityFeedBack && facilityFeedBack.length > 0  ? facilityFeedBack.map((facility, index) => (
-                                                    <div key={index} className="grid grid-cols-8 gap-2 border-b py-4 hover:bg-gray-50 w-full">
+                                                facilityFeedBack && facilityFeedBack.length > 0  ? facilityFeedBack.map((facility) => (
+                                                    <div key={facility?.id} className="grid grid-cols-8 gap-2 border-b py-4 hover:bg-gray-50 w-full">
                                                     <div className="col-span-8 md:col-span-8 lg:col-span-6 flex flex-col gap-1 group items-center justify-start text-left">
                                                         <h3 className="text-2xl w-full">
                                                             <Link href={'/facilities/' + facility?.id} className="hover:text-gray-800 group-focus:text-gray-800 active:text-gray-800 ">
@@ -834,7 +849,7 @@ function FacilityHome (props){
                                                         {
                                                             // props?.current_page > 5 &&
                                                             Array(props?.current_page + 5).fill(0).map((_, i) => i+1).slice(props?.current_page - 6, props?.current_page + 5).map(i => (
-                                                                <button className={`border p-1 px-2 flex font-semibold place-content-center rounded ${props?.current_page == i ? 'bg-blue-600 text-gray-50 border-blue-600': ' border-gray-800'}`} onClick={handlePageLoad}>
+                                                                <button key={uuid()} className={`border p-1 px-2 flex font-semibold place-content-center rounded ${props?.current_page == i ? 'bg-blue-600 text-gray-50 border-blue-600': ' border-gray-800'}`} onClick={handlePageLoad}>
                                                                 {i}
                                                                 </button>
                                                             ))
@@ -855,6 +870,120 @@ function FacilityHome (props){
                                             }
                                         </div>
                                     </div>
+                                    )
+    
+                                    :
+                                    (
+                                    <div className="flex-grow w-full flex flex-col items-center gap-1 order-last md:order-none">
+                                         <div className="flex flex-col justify-center items-center  w-full">
+                                             {/* Facilities View */}
+                                            
+                                             {
+                                             props?.facilities.length > 0 ?
+ 
+                                             props?.facilities.map((facility) => (
+                                                 <div key={facility?.id} 
+                                                 
+                                                 className={`grid grid-cols-8 gap-2 border-b px-3 py-4 w-full`}>
+                                                     <div className="px-2 col-span-8 md:col-span-8 lg:col-span-6 gap-2 md:gap-0 flex flex-col group items-center justify-start text-left">
+                                                         <h3 className="text-2xl font-semibold w-full">
+                                                             <span onClick={() => router.push({pathname: `/facilities/${facility?.id}`, query: currentPageParams})} className={`cursor-pointer text-blue-500 hover:underline ${facility?.is_complete ? 'hover:text-blue-500' : 'hover:text-yellow-600'} group-focus:text-blue-500 active:text-blue-500`} >
+                                                                 {facility?.facility_name} 
+                                                             </span>
+                                                         </h3>
+                                                         
+                                                         <div className="w-full grid grid-cols-2 md:grid-cols-5 gap-1">
+                                                            
+ 
+                                                             <div className="flex flex-col items-start justify-start gap-0 leading-none whitespace-pre-wrap mb-2">
+                                                                 <label className="text-xs text-gray-500 ">Rating:</label>
+                                                                 <span className="whitespace-pre-line font-semibold">{facility?.rating }</span>
+                                                             </div>
+ 
+                                                             <div className="flex flex-col  items-start justify-start gap-0 leading-none whitespace-pre-wrap">
+                                                                 <label className="text-xs text-gray-500">Service:</label>
+                                                                 <span className="whitespace-pre-line text-wrap">{facility?.service_name ?? ' '}</span>
+                                                             </div>
+                                                             
+                                                           
+                                                             <div className="flex flex-col  items-start justify-start gap-0 leading-none whitespace-pre-wrap">
+                                                                 <label className="text-xs text-gray-500">Comment:</label>
+                                                                 <span className="whitespace-pre-line text-wrap">{facility?.comment ?? '-'}</span>
+                                                             </div>
+                                                             
+                                                             <div className="flex flex-col items-start justify-start gap-0 leading-none whitespace-pre-wrap">
+                                                                 <label className="text-xs text-gray-500">Active:</label>
+                                                                 <span className="whitespace-pre-line">{filters?.active ?? '-'}</span>
+                                                             </div>
+ 
+                                                             <div className="flex flex-col items-start col-start-2 row-start-1 md:col-start-5 justify-start gap-0 leading-none whitespace-pre-wrap">
+                                                                 <label className="text-xs text-gray-500">Updated:</label>
+                                                                 <span className="whitespace-pre-line">{new Date(facility?.updated).toDateString()}{", "}{new Date(facility?.updated).toLocaleTimeString()}</span>
+                                                             </div>
+                                                         </div>
+ 
+                                                        
+                                                     </div>
+ 
+                                                     
+                                                 </div>
+                                             ))
+                                             :
+                                             <div className='w-[98%] hidden my-4  rounded border border-yellow-600 items-center justify-start gap-2 bg-yellow-100  font-medium p-3'>
+                                                 <span className='text-base text-gray-700'>
+                                                     No Facilities found
+                                                 </span>
+                                                 <Link href={props.path || '/'}>
+                                                     <span className='text-gray-700 hover:text-gray-800 group-focus:text-gray-800 active:text-gray-800'>
+                                                         Refresh.
+                                                     </span>
+                                                 </Link>
+                                             </div>
+                                             }
+ 
+ 
+                                             {props?.facilities && props?.count >= 10 && 
+                                             <div className='flex w-full justify-between p-2 items-center'>
+                                                 <div className="flex items-center gap-2">
+ 
+                                                 <button className="border border-gray-800 p-1 flex place-content-center rounded" onClick={handlePrevious}>
+                                             {'<< Previous'}
+                                             </button>
+ 
+                                         <button className=" border border-gray-800 p-1 flex place-content-center rounded" onClick={handleNext}>
+                                             {'Next >>'}
+                                             </button>
+                                                 </div>
+ 
+                                                 <div className="flex items-center gap-2">
+ 
+                                                         {
+                                                             // props?.current_page > 5 &&
+                                                             Array(props?.current_page + 5).fill(0).map((_, i) => i+1).slice(props?.current_page - 6, props?.current_page + 5).map(i => (
+                                                                 <button key={uuid()} className={`border p-1 px-2 flex font-semibold place-content-center rounded ${props?.current_page == i ? 'bg-blue-600 text-gray-50 border-blue-600': ' border-gray-800'}`} onClick={handlePageLoad}>
+                                                                 {i}
+                                                                 </button>
+                                                             ))
+                                                         }
+ 
+                                                         {/* {
+                                                                 props?.current_page <= 5 &&
+                                                                 Array(10).fill(0).map((_, i) => i+1).slice(0, 10).map(i => (
+                                                                     <button className={`border p-1 px-2 flex font-semibold place-content-center rounded ${props?.current_page == i ? 'bg-blue-600 text-gray-50 border-blue-600': ' border-gray-800'}`} onClick={handlePageLoad}>
+                                                                     {i}
+                                                                     </button>
+                                                                 ))
+                                                          } */}
+                                                         
+                                                 </div>
+ 
+                                             </div>
+                                             }
+                                         </div>
+                                     </div>
+                                    )
+                                    }   
+
 
                                    
                              
@@ -946,59 +1075,30 @@ export async function getServerSideProps(ctx) {
     let facilities 
 
     let query = { 'searchTerm': '' }
+
     if (ctx?.query?.qf) {
         query.qf = ctx.query.qf
     
     }
 
-    if (ctx?.query?.q) {
-        query.searchTerm = ctx.query.q
-        url += `?name=${ctx?.query?.q}` // `?search={"query":{"query_string":{"default_field":"name","query":"${query.searchTerm}"}}}`
+ 
+
+    for (let [k, v] of Object.entries(ctx.query)) {
+         if(k !== 'filter'){
+             url = `${url}&${k}=${v}`
+         } else {
+            if(v === 'feed_back_facilities') {
+                url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/facility_service_ratings/`
+            } 
+         }
+
+         if (k == 'mfl_code_null') {
+            url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/regulator_sync/?${k}=${v}&page_size=10`
+         }
+
+
     }
 
-    const other_posssible_filters = [
-        "owner_type", 
-        "service", 
-        "facility_type", 
-        "county", 
-        "service_category", 
-        "sub_county", 
-        "keph_level", 
-        "owner", 
-        "operation_status", 
-        "constituency", 
-        "ward", 
-        "have_updates",
-        "has_edits", 
-        "rejected_national",
-        "rejected",
-        "closed",
-        "is_approved", 
-        "is_complete", 
-        "number_of_beds", 
-        "number_of_cots", 
-        "incomplete",
-        "open_whole_day",
-        "to_publish", 
-        "dhis_synced_facilities",
-        "open_weekends",
-        "approved",
-        "reporting_in_dhis",
-        "pending_approval",
-        "approved_national_level",
-        "admitting_maternity_general", 
-        "admitting_maternity_only",
-        "open_public_holidays"]
-
-    other_posssible_filters.map(flt => {
-        if (ctx?.query[flt]) {
-            query[flt] = ctx?.query[flt]
-            url = url + "&" + flt + "=" + ctx?.query[flt]
-
-        }
-
-
-    })
 
 
 
@@ -1022,7 +1122,9 @@ export async function getServerSideProps(ctx) {
         
         } 
 
-        // console.log({url})
+       
+        
+        console.log({url})
 
         facilities = (await (await fetch(url, {
             headers: {
@@ -1034,6 +1136,7 @@ export async function getServerSideProps(ctx) {
         console.error('Error message:', e.message)
     }   
 
+    
 
 
     if (
@@ -1042,6 +1145,7 @@ export async function getServerSideProps(ctx) {
         facilities?.results.length > 0
     ) {
 
+        // console.log({facilities})
         return {
             props: {
                 facilities: facilities?.results ?? null,
