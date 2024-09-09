@@ -105,8 +105,9 @@ function FacilitySideMenu(/*{ states, stateSetters, filters }*/) {
                             approved: true,
                             approved_national_level: true,
                             rejected: false,
+                            closed: false,
                             ...userOrgUnit()
-                        }
+                        }   
                     })
 
                  
@@ -313,7 +314,7 @@ function FacilitySideMenu(/*{ states, stateSetters, filters }*/) {
                         pathname:'/facilities',
                         query: {
                             filter:'rejected_facilities',
-                            rejected_national_true: true,
+                            rejected_national: true,
                             ...userOrgUnit()
 
                         }

@@ -553,8 +553,8 @@ function Facility(props) {
                         userCtx?.groups[0].id == 11 || // Data cleaning National
                         userCtx?.groups[0].id == 7) && // SuperAdmin
                         
-                        currentPageProps.get('filter') == 'pending_validation_facilities' || 
-                        currentPageProps.get('filter') == 'failed_validation_facilities' &&
+                        (currentPageProps.get('filter') == 'pending_validation_facilities' || 
+                        currentPageProps.get('filter') == 'failed_validation_facilities') &&
 
                       //  Validate new facilities
 
