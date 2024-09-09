@@ -792,6 +792,7 @@ export async function getServerSideProps(ctx) {
         // Fetching the details of the quieried chu
         let url = process.env.NEXT_PUBLIC_API_URL + '/chul/units/' + queryId + '/';
 
+        
         return fetch(url, {
           headers: {
             Authorization: 'Bearer ' + token,
