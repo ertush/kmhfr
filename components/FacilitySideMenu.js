@@ -142,6 +142,7 @@ function FacilitySideMenu(/*{ states, stateSetters, filters }*/) {
                             filter:'pending_validation_facilities',
                             pending_approval: true,
                             has_edits: false,
+                            closed: false,
                             ...userOrgUnit()
 
                         }
@@ -176,6 +177,7 @@ function FacilitySideMenu(/*{ states, stateSetters, filters }*/) {
                             query: {
                                 filter:'updated_pending_validation_facilities',
                                 have_updates: true,
+                                closed: false,
                                 ...userOrgUnit()
 
                             }
@@ -210,6 +212,7 @@ function FacilitySideMenu(/*{ states, stateSetters, filters }*/) {
                             query: {
                                 filter:'pending_approval_facilities',
                                 to_publish: true,
+                                closed: false,
                                 ...userOrgUnit()
 
                             }
@@ -247,6 +250,7 @@ function FacilitySideMenu(/*{ states, stateSetters, filters }*/) {
                             approved_national_level: true,
                             rejected: false,
                             reporting_in_dhis: true,
+                            closed: false,
                             ...userOrgUnit()
 
                         }
@@ -281,6 +285,7 @@ function FacilitySideMenu(/*{ states, stateSetters, filters }*/) {
                         query: {
                             filter:'failed_validation_facilities',
                             rejected: true,
+                            closed: false,
                             ...userOrgUnit()
 
                         }
@@ -315,6 +320,7 @@ function FacilitySideMenu(/*{ states, stateSetters, filters }*/) {
                         query: {
                             filter:'rejected_facilities',
                             rejected_national: true,
+                            closed: false,
                             ...userOrgUnit()
 
                         }
@@ -383,6 +389,7 @@ function FacilitySideMenu(/*{ states, stateSetters, filters }*/) {
                             query: {
                                 filter:'incomplete_facilities',
                                 incomplete: true,
+                                closed: false,
                             ...userOrgUnit()
 
                             }
@@ -416,6 +423,7 @@ function FacilitySideMenu(/*{ states, stateSetters, filters }*/) {
                         query: {
                             filter:'synchronized_regulated_facilities',
                             mfl_code_null: true,
+                            close: false,
                             ...userOrgUnit()
 
                         }

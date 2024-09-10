@@ -19,7 +19,6 @@ import { UpdateFormIdContext } from './Form';
 
 // import { FacilityIdContext, FacilityWardDataContext } from './Form';
 
-
 export function BasicDeatilsForm({ editMode }) {
 
   // Context
@@ -119,11 +118,58 @@ export function BasicDeatilsForm({ editMode }) {
     }
   }
 
+  // async function setFilteredOptions(countyId) { 
+  //   try {
+  //   const sub_counties = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/common/sub_counties/?county=${countyId}`, {
+  //     headers: {
+  //       'Accept': 'application/json',
+  //       'Authorization': `Bearer ${options?.token}`
+  //     }
+  //   })
+
+  //   const constituencies = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/common/constituencies/?county=${countyId}`, {
+  //     headers: {
+  //       'Accept': 'application/json',
+  //       'Authorization': `Bearer ${options?.token}`
+  //     }
+  //   })
+
+  //       const _sub_counties = (await sub_counties.json())?.results
+
+  //       if (!_sub_counties) throw Error('Unable to Fetch sub counties')
+
+
+    
+  //       const _constitutencies = (await constituencies.json())?.results
+
+  //       if (!constituencies) throw Error('Unable to Fetch sub counties')
+
+
+  //     setSubCountyOptions(() => _sub_counties?.map(({id, name}) => ({value:id, label:name})))
+
+  //     setConstituencyOptions(() => _constitutencies?.map(({id, name}) => ({value:id, label:name})))
+
+  //   } catch(e) {
+  //       if(e instanceof TypeError){
+  //         console.error(`Error: ${e.message}`)
+  //       } else if(typeof e === 'string') {
+  //         console.error(e)
+  //       } else {
+  //         console.error(e)
+  //       }
+  //   }
+  // }
+
   async function handleSelectChange(e) {
 
     const keph = document.getElementsByName('keph_level');
     const kephDisplay = document.getElementsByName('keph_level_display');
 
+
+    // if(editMode) {
+    //   // Filter sub county, constituency and ward Options in edit mode
+    //   setFilteredOptions(options?.data?.county_id)
+    // }
 
     // Handle facility Type Change
     if (e.target.name == 'facility_type_parent') {
@@ -583,7 +629,6 @@ export function BasicDeatilsForm({ editMode }) {
   // Effects
   useEffect(() => {
 
-
     // console.log({facility: options?.data})
      async function updateFacilityTypeDetailOptions(e) {
       try {
@@ -646,6 +691,12 @@ export function BasicDeatilsForm({ editMode }) {
         .catch(console.error)
 
     }
+    /**
+     * 
+     * @param {string} countyId
+     */
+
+ 
 
     if (window && !editMode) {
       const path = new URL(window.document.location.href)
@@ -711,6 +762,8 @@ export function BasicDeatilsForm({ editMode }) {
     else if (editMode) {
 
       let parent = "";
+
+    
       
       getFacilityTypeDetailsParent(options?.data?.facility_type, options?.token)
         .then(facilityTypeDetails => {
@@ -817,7 +870,7 @@ export function BasicDeatilsForm({ editMode }) {
 
 
 
-
+  
   if (isClient) {
 
   
@@ -1746,6 +1799,7 @@ export function BasicDeatilsForm({ editMode }) {
                     *
                   </span>
                 </label>
+                
                 <CustomSelect
                   options={subCountyOptions ?? []}
                   required
