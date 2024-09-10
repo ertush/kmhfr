@@ -2,7 +2,7 @@
 
 "use client"
 
-import { useContext, useEffect, useState, useMemo, useRef } from 'react';
+import { useContext, useEffect, useState, useCallback, useMemo, useRef } from 'react';
 import { Select as CustomSelect } from './formComponents/Select';
 import { FormOptionsContext } from '../../pages/facilities/add';
 import {
@@ -15,9 +15,6 @@ import { useRouter } from 'next/router';
 import { Alert } from '@mui/lab';
 import { UpdateFormIdContext } from './Form';
 
-// import { indexOf } from 'underscore';
-
-// import { FacilityIdContext, FacilityWardDataContext } from './Form';
 
 export function BasicDeatilsForm({ editMode }) {
 
@@ -62,6 +59,7 @@ export function BasicDeatilsForm({ editMode }) {
   const formContext = useContext(FormOptionsContext);
   const [options, setOptions] = useState(formContext)
   const [facilityTypeDetailOptions, setFacilityTypeDetailOptions] = useState(options?.facility_type_details)
+  const [countyId, setCountyId] = useState(options?.data?.county_id)
   const [ownerTypeDetailsOptions, setOwnerTypeDetailsOptions] = useState(Array.from(options?.owners ?? [], o => {
     if (o?.owner_type_name || o?.created_by || o?.updated_by) {
       return {
@@ -90,14 +88,87 @@ export function BasicDeatilsForm({ editMode }) {
     },
   ];
 
+  async function setFilteredOptions(countyId, selectName) {
+    if(countyId === options?.data?.county_id) {
+      try {
+      const sub_counties = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/common/sub_counties/?county=${countyId}`, {
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': `Bearer ${options?.token}`
+        }
+      })
+
+      const constituencies = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/common/constituencies/?county=${countyId}`, {
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': `Bearer ${options?.token}`
+        }
+      })
+
+
+      const wards = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/common/wards/?county=${countyId}`, {
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': `Bearer ${options?.token}`
+        }
+      })
+
+          const _sub_counties = (await sub_counties.json())?.results
+
+          if (!_sub_counties) throw Error('Unable to Fetch sub counties')
+
+
+      
+          const _constitutencies = (await constituencies.json())?.results
+
+          if (!constituencies) throw Error('Unable to Fetch sub counties')
+
+
+          const _wards = (await wards.json())?.results
+
+          if (!_wards) throw Error('Unable to Fetch sub counties')
+
+
+
+        if(selectName === "sub_county_id") setSubCountyOptions(() => _sub_counties?.map(({id, name}) => ({value:id, label:name})))
+
+        if(selectName === "constituency_id") setConstituencyOptions(() => _constitutencies?.map(({id, name}) => ({value:id, label:name})))
+
+        if(selectName === "ward") setWardOptions(() => _wards?.map(({id, name}) => ({value:id, label:name})))
+
+
+      } catch(e) {
+          if(e instanceof TypeError){
+            console.error(`Error: ${e.message}`)
+          } else if(typeof e === 'string') {
+            console.error(e)
+          } else {
+            console.error(e)
+          }
+      }
+   }
+  
+  }
+
   // Event handlers
-  function handleFocus(e) {
+  const handleFocus = useCallback((e) => {
+
+    if(editMode){
+      setFilteredOptions(countyId, e.currentTarget.name)
+    } 
+    
+    if(!editMode) {
+      if(e.currentTarget.name === 'sub_county_id' && !countyId) setSubCountyOptions([])
+      if(e.currentTarget.name === 'constituency_id' && !countyId) setConstituencyOptions([])
+      if(e.currentTarget.name === 'ward' && !countyId) setWardOptions([])
+    }
+
     setTouchedFields(touchedFields => {
       return [...touchedFields, e.target.name]
     })
-  }
+  })
 
-  function handleDateChange(e) {
+  const handleDateChange = useCallback((e) => {
 
     e.preventDefault()
 
@@ -116,60 +187,23 @@ export function BasicDeatilsForm({ editMode }) {
       e.currentTarget.value = ''
 
     }
-  }
+  })
 
-  // async function setFilteredOptions(countyId) { 
-  //   try {
-  //   const sub_counties = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/common/sub_counties/?county=${countyId}`, {
-  //     headers: {
-  //       'Accept': 'application/json',
-  //       'Authorization': `Bearer ${options?.token}`
-  //     }
-  //   })
+ 
+  
 
-  //   const constituencies = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/common/constituencies/?county=${countyId}`, {
-  //     headers: {
-  //       'Accept': 'application/json',
-  //       'Authorization': `Bearer ${options?.token}`
-  //     }
-  //   })
-
-  //       const _sub_counties = (await sub_counties.json())?.results
-
-  //       if (!_sub_counties) throw Error('Unable to Fetch sub counties')
-
-
-    
-  //       const _constitutencies = (await constituencies.json())?.results
-
-  //       if (!constituencies) throw Error('Unable to Fetch sub counties')
-
-
-  //     setSubCountyOptions(() => _sub_counties?.map(({id, name}) => ({value:id, label:name})))
-
-  //     setConstituencyOptions(() => _constitutencies?.map(({id, name}) => ({value:id, label:name})))
-
-  //   } catch(e) {
-  //       if(e instanceof TypeError){
-  //         console.error(`Error: ${e.message}`)
-  //       } else if(typeof e === 'string') {
-  //         console.error(e)
-  //       } else {
-  //         console.error(e)
-  //       }
-  //   }
-  // }
-
-  async function handleSelectChange(e) {
+  const handleSelectChange = useCallback(async (e) => {
 
     const keph = document.getElementsByName('keph_level');
     const kephDisplay = document.getElementsByName('keph_level_display');
 
 
-    // if(editMode) {
-    //   // Filter sub county, constituency and ward Options in edit mode
-    //   setFilteredOptions(options?.data?.county_id)
-    // }
+    if(e.currentTarget.name === 'county_id') {
+      setCountyId(e.currentTarget.value)
+      // Filter sub county, constituency and ward Options in edit mode
+    }
+
+
 
     // Handle facility Type Change
     if (e.target.name == 'facility_type_parent') {
@@ -393,10 +427,10 @@ export function BasicDeatilsForm({ editMode }) {
         }
       }
     }
-  }
+  })
 
 
-  function handleBasicDetailsUpdate(e) {
+  const handleBasicDetailsUpdate = useCallback((e) => {
 
     e.preventDefault()
 
@@ -464,10 +498,10 @@ export function BasicDeatilsForm({ editMode }) {
 
 
 
-  }
+  })
 
 
-  function handeBasicDetailsCreate(e) {
+  const handeBasicDetailsCreate = useCallback((e) => {
 
     e.preventDefault()
 
@@ -603,9 +637,9 @@ export function BasicDeatilsForm({ editMode }) {
 
 
 
-  }
+  })
 
-  function handleNumberInputChange(e) {
+  const handleNumberInputChange = useCallback((e) => {
 
     // Total Funcational Input Beds validation
 
@@ -623,7 +657,7 @@ export function BasicDeatilsForm({ editMode }) {
 
     setTotalFunctionalBeds(totalBeds)
 
-  }
+  })
 
 
   // Effects
@@ -794,72 +828,7 @@ export function BasicDeatilsForm({ editMode }) {
       )
 
 
-      // async function fetchDetailOptions() {
-      //   if (facilityTypeValue) {
-      //     try {
-      //       const facilityTypeDetails = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facility_types_details/?is_parent=false&parent=${facilityTypeValue}`, {
-      //         headers: {
-      //           'Accept': 'application/json',
-      //           'Authorization': `Bearer ${options?.token}`
-      //         }
-      //       })
-
-      //       const filteredFacilityType = (await facilityTypeDetails.json())?.results
-
-
-
-      //       const facilityType = Array.from(options?.facility_types, ({ id, name }) => {
-      //         return {
-      //           label: name,
-      //           value: id
-      //         }
-      //       })
-
-
-      //       setFacilityTypeDetailOptions(facilityType ?? options?.facility_type_details)
-
-      //     }
-      //     catch (e) {
-      //       console.error(e.message)
-      //     }
-      //   }
-
-      //   if(options?.data?.owner_type){
-
-      //   try {
-      //     const owners = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/owners/?owner_type=${options?.data?.owner_type}`, {
-      //       headers: {
-      //         'Accept': 'application/json',
-      //         'Authorization': `Bearer ${options?.token}`
-      //       }
-      //     })
-
-      //     const filteredOwners = (await owners.json())?.results
-
-      //     if (!filteredOwners) throw Error('Unable to Fetch Owner Type Details')
-
-
-      //     const facilityOwnerOptions = Array.from(filteredOwners, ({ id, name }) => {
-      //       return {
-      //         label: name,
-      //         value: id
-      //       }
-      //     })
-
-          
-      //     setOwnerTypeDetailsOptions(facilityOwnerOptions ?? options?.owner_types)
-
-      //   }
-      //   catch (e) {
-      //     console.error(e.message)
-      //   }
-
-          
-      //   }
-      // }
-
-
-      // fetchDetailOptions()
+   
   }
   
 
@@ -1785,7 +1754,7 @@ export function BasicDeatilsForm({ editMode }) {
 
               </div>
             </div>
-
+      
             {/* Sub-county */}
             <div className='md:col-start-2 col-span-1 '>
               <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
@@ -1808,7 +1777,6 @@ export function BasicDeatilsForm({ editMode }) {
                   onChange={handleSelectChange}
                   onFocus={handleFocus}
                   name='sub_county_id'
-
 
                 />
 
