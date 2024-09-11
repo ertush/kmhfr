@@ -1005,7 +1005,7 @@ export async function getServerSideProps(ctx) {
 
 	ctx?.res?.setHeader(
 		'Cache-Control',
-		'no-cache'
+		'no-store'
 	)
 
 
