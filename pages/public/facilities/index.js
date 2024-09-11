@@ -787,7 +787,7 @@ export async function getServerSideProps(ctx) {
 
 	ctx?.res?.setHeader(
 		'Cache-Control',
-		'public, s-maxage=10, stale-while-revalidate=59'
+		'no-cache, no-store, max-age=0'
 	)
 
 	const token = (await checkToken(ctx.req, ctx.res, { username: process.env.NEXT_PUBLIC_CLIENT_USERNAME, password: process.env.CLIENT_PASSWORD }))?.token
@@ -872,8 +872,11 @@ export async function getServerSideProps(ctx) {
 	try {
 		const r = await fetch(url, {
 			headers: {
-				Authorization: 'Bearer ' + token,
-				Accept: 'application/json',
+				'Accept': 'application/json, text/plain, */*',
+				'Accept-Encoding': 'gzip, deflate, br, zstd',
+				'Authorization': `Bearer ${token}`,
+				'Accept-Language': 'en-US,en;q=0.5',
+				'Cache-Control': 'no-cache, no-store, max-age=0'
 			},
 		});
 		const json = await r.json();
