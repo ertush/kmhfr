@@ -562,6 +562,11 @@ function Home(props) {
 
 Home.getInitialProps = async (ctx) => {
 
+	ctx?.res?.setHeader(
+		'Cache-Control',
+		'no-cache, no-store, max-age=0'
+	)
+
 	const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 	const fetchFilters = async (token) => {
@@ -620,8 +625,11 @@ Home.getInitialProps = async (ctx) => {
 		try {
 			const r = await fetch(url, {
 				headers: {
-					Authorization: 'Bearer ' + token,
-					Accept: 'application/json',
+				'Accept': 'application/json, text/plain, */*',
+				'Accept-Encoding': 'gzip, deflate, br, zstd',
+				'Authorization': `Bearer ${token}`,
+				'Accept-Language': 'en-US,en;q=0.5',
+				'Cache-Control': 'no-cache, no-store, max-age=0'
 				},
 			});
 			const json = await r.json();

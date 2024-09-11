@@ -142,7 +142,6 @@ function FacilitySideMenu(/*{ states, stateSetters, filters }*/) {
                             filter:'pending_validation_facilities',
                             pending_approval: true,
                             has_edits: false,
-                            closed: false,
                             ...userOrgUnit()
 
                         }

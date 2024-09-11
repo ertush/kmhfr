@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 
 // component / controllers imports
 import MainLayout from '../../components/MainLayout'
@@ -4547,7 +4547,7 @@ export async function getServerSideProps(ctx) {
 
     ctx?.res?.setHeader(
         'Cache-Control',
-        'public, s-maxage=10, stale-while-revalidate=59'
+        'no-cache, no-store, max-age=0'
     )
 
     function fetchData(token) {
@@ -4572,8 +4572,11 @@ export async function getServerSideProps(ctx) {
 
         return fetch(url, {
             headers: {
-                'Authorization': 'Bearer ' + token,
-                'Accept': 'application/json'
+                'Accept': 'application/json, text/plain, */*',
+				'Accept-Encoding': 'gzip, deflate, br, zstd',
+				'Authorization': `Bearer ${token}`,
+				'Accept-Language': 'en-US,en;q=0.5',
+				'Cache-Control': 'no-cache, no-store, max-age=0'
             }
         }).then(r => r.json())
             .then(json => {

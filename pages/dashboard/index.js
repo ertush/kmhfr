@@ -1389,7 +1389,7 @@ export async function getServerSideProps(ctx) {
 
     ctx?.res?.setHeader(
         'Cache-Control',
-        'public, s-maxage=10, stale-while-revalidate=59'
+        'no-cache, no-store, max-age=0'
     )
 
 
@@ -1438,8 +1438,11 @@ export async function getServerSideProps(ctx) {
 
         return fetch(url, {
             headers: {
-                "Accept": "application/json",
-                "Authorization": `Bearer ${token}`
+                'Accept': 'application/json, text/plain, */*',
+				'Accept-Encoding': 'gzip, deflate, br, zstd',
+				'Authorization': `Bearer ${token}`,
+				'Accept-Language': 'en-US,en;q=0.5',
+				'Cache-Control': 'no-cache, no-store, max-age=0'
             }
         })
             .then(resp => resp.json())
