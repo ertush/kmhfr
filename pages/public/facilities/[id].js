@@ -45,7 +45,7 @@ function FacilityDetails(props) {
   return (
     <>
       <Head>
-        <title>KMHFR | {facility?.official_name ?? ""}</title>
+        <title>KMHFR </title>
         <link rel="icon" href="/favicon.ico" />
        
       </Head>
@@ -175,6 +175,12 @@ function FacilityDetails(props) {
 
 
 FacilityDetails.getInitialProps = async (ctx) => {
+
+
+	ctx?.res?.setHeader(
+		'Cache-Control',
+		'no-cache, no-store, max-age=0'
+	)
   
   const allOptions = {};
 
@@ -213,8 +219,11 @@ FacilityDetails.getInitialProps = async (ctx) => {
           "/";
         return await fetch(url, {
             headers: {
-              Authorization: "Bearer " + token,
-              Accept: "application/json",
+              'Accept': 'application/json, text/plain, */*',
+              'Accept-Encoding': 'gzip, deflate, br, zstd',
+              'Authorization': `Bearer ${token}`,
+              'Accept-Language': 'en-US,en;q=0.5',
+              'Cache-Control': 'no-cache, no-store, max-age=0'
             },
         })
           .then((r) => r.json())

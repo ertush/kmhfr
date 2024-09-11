@@ -70,7 +70,7 @@ export async function getServerSideProps(ctx) {
     .then(resp => resp.json())
     .then((resp) => {
         
-        const params = `?ward=${resp?.results[0].id}&fields=id,name,county,sub_county_name,constituency,ward_name&page_size=150`
+        const params = `?sub_county=${resp?.results[0].id}&fields=id,name,county,sub_county_name,constituency,ward_name&page_size=150`
 
         return fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${params}&reporting_in_dhis=true&closed=false`, { /*&owner_type=6a833136-5f50-46d9-b1f9-5f961a42249f*/
           headers: {
@@ -127,7 +127,7 @@ export async function getServerSideProps(ctx) {
 
           case "facilities":
 
-            const url =  `${process.env.NEXT_PUBLIC_API_URL}/common/wards/?name=${response?.cu?.facility_ward.split(' ').join('+')}` 
+            const url =  `${process.env.NEXT_PUBLIC_API_URL}/common/sub_counties/?name=${response?.cu?.facility_subcounty.split(' ').join('+')}` 
 
             response['facilities'] = await fetchFacilities(url)
 
