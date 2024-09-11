@@ -21,7 +21,7 @@ function FacilityDetailsTabsPulic({ facility }) {
 
 
   // const [isFormVisible, setIsFormVisible] = useState(false); 
-  const [formVisibility, setFormVisibility] = useState(Array(facility?.facility_services.length).fill(false) || []);
+  const [formVisibility, setFormVisibility] = useState(Array(facility?.facility_services?.length).fill(false) ?? []);
 
   useEffect(() => {
     // let user_id
@@ -91,6 +91,7 @@ function FacilityDetailsTabsPulic({ facility }) {
         className="w-full flex flex-col flex-wrap"
         defaultValue="overview"
       >
+       
         <Tabs.List className="list-none flex justify-evenly flex-wrap gap-2 md:gap-3 px-4 uppercase leading-none tab-list font-semibold border-b border-gray-600">
           <Tabs.Tab
             id={1}
