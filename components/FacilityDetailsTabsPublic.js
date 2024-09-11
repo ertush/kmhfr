@@ -21,10 +21,10 @@ function FacilityDetailsTabsPulic({ facility }) {
 
 
   // const [isFormVisible, setIsFormVisible] = useState(false); 
-  const [formVisibility, setFormVisibility] = useState(Array(facility.facility_services.length).fill(false) || []);
+  const [formVisibility, setFormVisibility] = useState(Array(facility?.facility_services.length).fill(false) || []);
 
   useEffect(() => {
-    let user_id
+    // let user_id
     if (userCtx) {
       let s_r = userCtx
       user_id = s_r.id
@@ -698,7 +698,7 @@ function FacilityDetailsTabsPulic({ facility }) {
               <ul>
                 {facility?.facility_services &&
                   facility?.facility_services.length > 0 ? (
-                  facility?.facility_services.map((service, index) => (
+                  facility?.facility_services?.map((service, index) => (
                     <li
                       key={service.service_id}
                       className="w-full grid grid-cols-1 gap-3 place-content-end my-2 p-3 border-b border-gray-300"
