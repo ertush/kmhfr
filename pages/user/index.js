@@ -131,7 +131,7 @@ function Users (props) {
         return (
             <div className="">
                 <Head>
-                    <title>KMHFR | Reports</title>
+                    <title>KMHFR | Users</title>
                     <link rel="icon" href="/favicon.ico" />
                 </Head>
                 <MainLayout isLoading={false} isFullWidth={false}>
