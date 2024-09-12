@@ -3,12 +3,13 @@ import Link from 'next/link'
 import MainLayout from '../../components/MainLayout'
 import { DownloadIcon, PlusIcon } from '@heroicons/react/solid'
 import { checkToken } from '../../controllers/auth/auth'
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useEffect, useCallback, useContext } from 'react'
 import { useRouter } from 'next/router'
 import { Menu } from '@headlessui/react'
 import { ChevronDownIcon, FilterIcon, SearchIcon } from '@heroicons/react/outline'
 import { Select as CustomSelect } from '../../components/Forms/formComponents/Select'
 import { getUserDetails } from '../../controllers/auth/auth'
+import Select from 'react-select'
 
 
 // @mui imports
@@ -44,6 +45,8 @@ function FacilityHome (props){
     const userSubCounty = userCtx?.user_sub_counties[0]?.sub_county
 
     const [searchTerm, setSearchTerm] = useState('')
+
+    const [facilityStatus, setFacilityStatus] = useState('')
 
 
     // const qf = props?.query?.qf ?? null
@@ -96,6 +99,23 @@ function FacilityHome (props){
             return ""
         }
     })()
+
+    const handleApprovalStatus = useCallback(({value}) => {
+        
+        if(!!value){
+            setFacilityStatus(value);
+
+            router.push({
+                pathname: '/facilities',
+                query:{
+                    filter: 'updated_pending_validation_facilities',
+                    have_updates: true,
+                    closed:false,
+                    [value.split(':')[0]]: value.split(':')[1]
+                }
+            })
+        }
+    })
 
 
 
@@ -550,7 +570,8 @@ function FacilityHome (props){
                                     {/* Data Indicator section */}
                                     <div className='w-full p-2 flex flex-col md:flex-row md:justify-between md:items-center border-b border-gray-400'>
                                         {/* search input */}
-                                    
+                                        <div className='flex max-w-min gap-2  items-end'>
+
                                         <Formik
                                         initialValues={
                                             {
@@ -577,7 +598,24 @@ function FacilityHome (props){
                                                         router.push(`/facilities/?search=${query}&filter=pending_validation_facilities&pending_approval=true&has_edits=false`)
                                                         break;
                                                     case "updated_pending_validation_facilities":
-                                                        router.push(`/facilities/?search=${query}&filter=updated_pending_validation_facilities&have_updates=true`)
+                                                        // `/facilities/?search=${query}&filter=updated_pending_validation_facilities&have_updates=true&${facilityStatus.split(':')[0]}=${facilityStatus.split(':')[1]}`)
+                                                        router.push({
+                                                            pathname: '/facilities',
+                                                            query:{
+                                                                search: query,
+                                                                filter: 'updated_pending_validation_facilities',
+                                                                have_updates: true,
+                                                                ...(() => {
+                                                                    if(facilityStatus !== ''){
+                                                                        return {
+                                                                            [facilityStatus.split(':')[0]]: facilityStatus.split(':')[1]
+                                                                        }
+                                                                    } 
+                                                                    return {}
+                                                                })()       
+
+                                                            }
+                                                        })
                                                         break;
                                                     case "pending_approval_facilities":
                                                         router.push(`/facilities/?search=${query}&filter=pending_approval_facilities&to_publish=true`)
@@ -613,18 +651,18 @@ function FacilityHome (props){
                                         >
 
                                         <Form
-                                        className="inline-flex flex-row justify-start flex-grow py-2 lg:py-0"
+                                        className="inline-flex flex-row justify-start py-2 lg:py-0"
                                         
                                     >
                                           
                                         <Field
                                         name="q"
                                         id="search-input"
-                                        className="flex-none bg-transparent p-2 w-3/5 md:flex-grow-0 flex-grow shadow-sm rounded-tl rounded-bl border border-gray-400 placeholder-gray-600  focus:shadow-none focus:ring-black focus:border-black outline-none"
+                                        className=" bg-transparent  p-2 min-w-max md:flex-grow-1 flex-grow shadow-sm rounded-tl rounded-bl border border-gray-400 placeholder-gray-600  focus:shadow-none focus:ring-black focus:border-black outline-none"
                                         type="search"
-                                        
-                                        placeholder="Search for a facility"
+                                        placeholder="Use MFR code or Name"
                                         />
+
                                         <button
                                         type="submit"
                                         className="bg-transparent border-t border-r border-b rounded-tr rounded-br border-gray-400 text-black flex items-center justify-center px-4 py-1"
@@ -633,7 +671,32 @@ function FacilityHome (props){
                                         <SearchIcon className="w-5 h-5 text-gray-600" />
                                         </button>
                                     </Form>
+
                                          </Formik>
+                                         {
+                                        pageParams.get('filter') === 'updated_pending_validation_facilities' &&
+
+                                         <Select
+                                            className='flex-grow min-w-max h-full'
+                                            options={[{
+                                                label: 'Approved National',
+                                                value: 'approved_national_level:true'
+                                            }, {
+                                                label: 'Pending Validation',
+                                                value: 'approved:false'
+                                            }]}
+                                            
+                                            placeholder="Select Facility Status"
+                                            onChange={handleApprovalStatus}
+                                            defaultValue={''}
+                                            name='approval_status'
+
+
+                                        />
+
+                                        }
+                                        </div>
+
 
                                         <h5 className="text-lg  md:text-end font-medium flex  gap-2 md:gap-3 text-gray-800 md:pr-2">      
                                             
@@ -855,14 +918,7 @@ function FacilityHome (props){
                                                             ))
                                                         }
 
-                                                        {/* {
-                                                                props?.current_page <= 5 &&
-                                                                Array(10).fill(0).map((_, i) => i+1).slice(0, 10).map(i => (
-                                                                    <button className={`border p-1 px-2 flex font-semibold place-content-center rounded ${props?.current_page == i ? 'bg-blue-600 text-gray-50 border-blue-600': ' border-gray-800'}`} onClick={handlePageLoad}>
-                                                                    {i}
-                                                                    </button>
-                                                                ))
-                                                         } */}
+                                                      
                                                         
                                                 </div>
 
@@ -1066,7 +1122,7 @@ export async function getServerSideProps(ctx) {
     // const previousURL = ctx?.query?.previous
 
 
-    const defaultURL = ctx?.query?.q ? `${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/` : `${`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/` + `${page ? '?page=' + page + '&': '?' }` + 'page_size=10'}`
+    const defaultURL = ctx?.query?.q ? `${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/` : `${`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/` + `${page ? '?page=' + page + '&': '?' }` + 'page_size=30'}`
 
     let url = nextURL ?? previousURL ?? defaultURL
 
