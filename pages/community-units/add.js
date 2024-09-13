@@ -26,6 +26,7 @@ import {
 
 } from '@mui/icons-material'
 import withAuth from '../../components/ProtectedRoute';
+import { getUserDetails } from '../../controllers/auth/auth';
 
 
 
@@ -1360,26 +1361,22 @@ export async function getServerSideProps({req, res}) {
 	]
   
  
-	 function fetchFacilities(url) {
-		return fetch(url, {
-			headers: {
-				'Accept': 'application/json',
-				'Authorization': `Bearer ${token}`
-			}
-		})
-		.then(resp => resp.json())
-		.then( (resp) => {
+	 async function fetchFacilities() {
+		
+
+			const {response: user} = await getUserDetails(token, `${process.env.NEXT_PUBLIC_API_URL}/rest-auth/user/`)
 
 
+			const userSubCountyID = user?.user_sub_counties[0]?.sub_county
+			const userCountyID = user?.county
+			const userGroup = user?.groups[0]?.id
 
-			const userSubCountyID = resp?.user_sub_counties[0]?.sub_county
-			const userCountyID = resp?.county
-			const userGroup = resp?.groups[0]?.id
+
 
 
 			if(userGroup == 2 && userSubCountyID){
 			
-			const subCountyFacilitiesURL = `${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/?ward=${userSubCountyID}&reporting_in_dhis=true&closed=false&fields=id,name,county,sub_county_name,constituency,ward_name&page_size=300`
+			const subCountyFacilitiesURL = `${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/?sub_county=${userSubCountyID}&reporting_in_dhis=true&closed=false&fields=id,name,county,sub_county_name,constituency,ward_name&page_size=300`
 
 		   return fetch(subCountyFacilitiesURL, {
 				headers:{
@@ -1429,8 +1426,7 @@ export async function getServerSideProps({req, res}) {
 				return []
 			}
 			
-		})
-		.catch(e => console.error('Error rest-auth user :', e.message))
+		
 	}
   
   
@@ -1456,9 +1452,9 @@ export async function getServerSideProps({req, res}) {
   
 		case "facilities":
 
-		const url = `${process.env.NEXT_PUBLIC_API_URL}/rest-auth/user/`
+		// const url = `${process.env.NEXT_PUBLIC_API_URL}/rest-auth/user/`
 
-		response['facilities'] = await fetchFacilities(url)
+		response['facilities'] = await fetchFacilities()
 		 
 		break;
 		case "contact_types":
