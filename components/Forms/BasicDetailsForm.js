@@ -507,8 +507,9 @@ export function BasicDeatilsForm({ editMode }) {
 
     const formData = new FormData(e.target)
 
-    const data = Object.fromEntries(formData)
+    let data = Object.fromEntries(formData)
 
+    data['facility_catchment_population'] = data?.facility_catchment_population === '' ? null : data?.facility_catchment_population
 
     setSubmitting(true)
 
