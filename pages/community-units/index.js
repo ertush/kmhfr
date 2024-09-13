@@ -626,7 +626,8 @@ export async function getServerSideProps(ctx) {
 					'Accept-Encoding': 'gzip, deflate, br, zstd',
 					'Authorization': `Bearer ${token}`,
 					'Accept-Language': 'en-US,en;q=0.5',
-					'Cache-Control': 'no-cache, no-store, max-age=0'
+					'Cache-Control': 'no-cache, no-store, max-age=0',
+					'Connection': 'keep-alive'
 				},
 			});
 			const json = await r.json();
