@@ -570,7 +570,7 @@ function FacilityHome (props){
                                     {/* Data Indicator section */}
                                     <div className='w-full p-2 flex flex-col md:flex-row md:justify-between md:items-center border-b border-gray-400'>
                                         {/* search input */}
-                                        <div className='flex max-w-min gap-2  items-end'>
+                                        <div className='flex max-w-max gap-2  items-end'>
 
                                         <Formik
                                         initialValues={
@@ -658,7 +658,7 @@ function FacilityHome (props){
                                         <Field
                                         name="q"
                                         id="search-input"
-                                        className=" bg-transparent  p-2 min-w-max md:flex-grow-1 flex-grow shadow-sm rounded-tl rounded-bl border border-gray-400 placeholder-gray-600  focus:shadow-none focus:ring-black focus:border-black outline-none"
+                                        className=" bg-transparent  w-8/12 p-2  md:flex-grow-1 flex-grow shadow-sm rounded-tl rounded-bl border border-gray-400 placeholder-gray-600  focus:shadow-none focus:ring-black focus:border-black outline-none"
                                         type="search"
                                         placeholder="Use MFR code or Name"
                                         />

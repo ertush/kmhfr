@@ -617,7 +617,7 @@ export async function getServerSideProps(ctx) {
 			url = url.replace(/filter=\w+\&/, '')
 			url = url.replace(/q=\w+\&/, '')
 
-			// console.log({url})
+			console.log({url})
 
 
 			const r = await fetch(url, {
