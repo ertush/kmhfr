@@ -214,7 +214,6 @@ function Home(props) {
 					return resp.json()
 				})
 				.then(facilities => {
-					console.log({ facilities })
 					setFacilities(facilities)
 					setViewAll(true)
 
@@ -596,19 +595,19 @@ function Home(props) {
 						<div className={`${(Array.isArray(facilities) && facilities?.length == 0) || (!formError || !submitting) && 'p-4'} col-span-1 rounded bg-gray-50 md:h-[1670px] md:px-0  p-4 shadow-md md:col-span-4 flex flex-col items-center justify-start md:gap-4 order-last md:order-none`}> {/* CHANGED colspan */}
 						<div className='w-full flex justify-end'>
 							{viewAll && facilities?.results && facilities?.results.length >= 30 && (
-									<ul className='list-none flex p-2 flex-row w-max justify-self-end gap-2 items-center'>
+									<ul className='list-none flex px-2 flex-row w-max justify-self-end gap-x-2 items-center'>
 										{
 											facilities?.current_page >= 6 && 
 										<>
 										<li  className='text-base text-gray-600'>
-											<a href="/public/facilities?page=1" className='text-gray-800 p-2 hover:underline active:underline focus:underline'>
+											<Link href="/public/facilities?page=1" className='text-gray-800 p-2 hover:underline active:underline focus:underline'>
 												1
-											</a>
+											</Link>
 										</li>
 										<li  className='text-base text-gray-600'>
-											<a href="/public/facilities?page=2" className='text-gray-800 p-2 hover:underline active:underline focus:underline'>
+											<Link href="/public/facilities?page=2" className='text-gray-800 p-2 hover:underline active:underline focus:underline'>
 												2
-											</a>
+											</Link>
 										</li>
 										<li className='text-sm text-gray-400 flex'>
 											<DotsHorizontalIcon className='h-3' />
@@ -617,8 +616,11 @@ function Home(props) {
 										}	
 										<li className='text-base text-gray-600'>
 
-											<a
+											<Link
 												href={
+													`
+													/public
+													${
 													(() =>
 														props.path.includes('?page') ?
 															props.path.replace(/\?page=\d+/, `?page=${facilities?.current_page}`)
@@ -631,16 +633,18 @@ function Home(props) {
 																	:
 																	`${props.path}?page=${facilities?.current_page}`
 													)()
+												}	
+													`
 												}
 												className='text-gray-400  border border-gray-400 rounded font-semibold p-2 hover:underline active:underline focus:underline'>
 												{facilities?.current_page}
-											</a>
+											</Link>
 										</li>
 										{facilities?.near_pages &&
 											facilities?.near_pages.map((page, i) => (
 												<li key={i} className='text-base text-gray-600'>
 
-													<a
+													<Link
 														href={
 															`
 															/public
@@ -663,7 +667,7 @@ function Home(props) {
 														}
 														className='text-gray-800 p-2 hover:underline active:underline focus:underline'>
 														{page}
-													</a>
+													</Link>
 												</li>
 											))}
 										{/* <li className='text-sm text-gray-400 flex'>
@@ -796,19 +800,19 @@ function Home(props) {
 							</div>
 							<div className='w-full flex justify-end'>
 							{viewAll && facilities?.results && facilities?.results.length >= 30 && (
-									<ul className='list-none flex p-2 flex-row w-max justify-self-end gap-2 items-center'>
+									<ul className='list-none flex px-2 flex-row w-max justify-self-end gap-x-2 items-center'>
 										{
 											facilities?.current_page >= 6 && 
 										<>
 										<li  className='text-base text-gray-600'>
-											<a href="/public/facilities?page=1" className='text-gray-800 p-2 hover:underline active:underline focus:underline'>
+											<Link href="/public/facilities?page=1" className='text-gray-800 p-2 hover:underline active:underline focus:underline'>
 												1
-											</a>
+											</Link>
 										</li>
 										<li  className='text-base text-gray-600'>
-											<a href="/public/facilities?page=2" className='text-gray-800 p-2 hover:underline active:underline focus:underline'>
+											<Link href="/public/facilities?page=2" className='text-gray-800 p-2 hover:underline active:underline focus:underline'>
 												2
-											</a>
+											</Link>
 										</li>
 										<li className='text-sm text-gray-400 flex'>
 											<DotsHorizontalIcon className='h-3' />
@@ -817,8 +821,11 @@ function Home(props) {
 										}			
 										<li className='text-base text-gray-600'>
 
-											<a
+											<Link
 												href={
+													`
+													/public
+													${
 													(() =>
 														props.path.includes('?page') ?
 															props.path.replace(/\?page=\d+/, `?page=${facilities?.current_page}`)
@@ -832,16 +839,18 @@ function Home(props) {
 																	`${props.path}?page=${facilities?.current_page}`
 													)()
 												}
+													`
+												}
 												className='text-gray-400  border border-gray-400 rounded font-semibold p-2 hover:underline active:underline focus:underline'>
 												{facilities?.current_page}
-											</a>
+											</Link>
 										</li>
 										
 										{facilities?.near_pages &&
 											facilities?.near_pages.map((page, i) => (
 												<li key={i} className='text-base text-gray-600'>
 
-													<a
+													<Link
 														href={
 															`
 															/public
@@ -864,7 +873,7 @@ function Home(props) {
 														}
 														className='text-gray-800 p-2 hover:underline active:underline focus:underline'>
 														{page}
-													</a>
+													</Link>
 												</li>
 											))}
 										
