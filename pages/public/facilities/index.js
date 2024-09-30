@@ -593,8 +593,86 @@ function Home(props) {
 
 						{/* Main body */}
 						{/* <div className='col-span-5 md:col-span-4 flex flex-col items-center gap-4 mt-2 order-last md:order-none'> */}
-						<div className={`${(Array.isArray(facilities) && facilities?.length == 0) || (!formError || !submitting) && 'p-4'} col-span-1 rounded bg-gray-50 md:h-[1670px] md:px-0 overflow-y-scroll p-4 shadow-md md:col-span-4 flex flex-col items-center justify-start md:gap-4 order-last md:order-none`}> {/* CHANGED colspan */}
+						<div className={`${(Array.isArray(facilities) && facilities?.length == 0) || (!formError || !submitting) && 'p-4'} col-span-1 rounded bg-gray-50 md:h-[1670px] md:px-0  p-4 shadow-md md:col-span-4 flex flex-col items-center justify-start md:gap-4 order-last md:order-none`}> {/* CHANGED colspan */}
+						<div className='w-full flex justify-end'>
+							{viewAll && facilities?.results && facilities?.results.length >= 30 && (
+									<ul className='list-none flex p-2 flex-row w-max justify-self-end gap-2 items-center'>
+										{
+											facilities?.current_page >= 6 && 
+										<>
+										<li  className='text-base text-gray-600'>
+											<a href="/public/facilities?page=1" className='text-gray-800 p-2 hover:underline active:underline focus:underline'>
+												1
+											</a>
+										</li>
+										<li  className='text-base text-gray-600'>
+											<a href="/public/facilities?page=2" className='text-gray-800 p-2 hover:underline active:underline focus:underline'>
+												2
+											</a>
+										</li>
+										<li className='text-sm text-gray-400 flex'>
+											<DotsHorizontalIcon className='h-3' />
+										</li> 
+										</>
+										}	
+										<li className='text-base text-gray-600'>
 
+											<a
+												href={
+													(() =>
+														props.path.includes('?page') ?
+															props.path.replace(/\?page=\d+/, `?page=${facilities?.current_page}`)
+															:
+															props.path.includes('?q') && props.path.includes('&page') ?
+																props.path.replace(/&page=\d+/, `&page=${facilities?.current_page}`)
+																:
+																props.path.includes('?q') ?
+																	`${props.path}&page=${facilities?.current_page}`
+																	:
+																	`${props.path}?page=${facilities?.current_page}`
+													)()
+												}
+												className='text-gray-400  border border-gray-400 rounded font-semibold p-2 hover:underline active:underline focus:underline'>
+												{facilities?.current_page}
+											</a>
+										</li>
+										{facilities?.near_pages &&
+											facilities?.near_pages.map((page, i) => (
+												<li key={i} className='text-base text-gray-600'>
+
+													<a
+														href={
+															`
+															/public
+															${
+															(() =>
+																props.path.includes('?page') ?
+																	props.path.replace(/\?page=\d+/, `?page=${page}`)
+																	:
+																	props.path.includes('?q') && props.path.includes('&page') ?
+																		props.path.replace(/&page=\d+/, `&page=${page}`)
+																		:
+																		props.path.includes('?q') ?
+																			`${props.path}&page=${page}`
+																			:
+																			`${props.path}?page=${page}`
+
+															)()
+															}
+															`				
+														}
+														className='text-gray-800 p-2 hover:underline active:underline focus:underline'>
+														{page}
+													</a>
+												</li>
+											))}
+										{/* <li className='text-sm text-gray-400 flex'>
+											<DotsHorizontalIcon className='h-3' />
+										</li> */}
+
+									</ul>
+								)}
+							</div>
 							{
 								formError && <Alert severity='error' className='w-full border-2 border-red-500 rounded-none'>{formError}</Alert>
 							}
@@ -606,7 +684,7 @@ function Home(props) {
 
 							
 
-							<div className='flex flex-col justify-center items-center md:col-span-4 w-full '>
+							<div className='flex flex-col overflow-y-scroll my-4 justify-center items-center md:col-span-4 w-full '>
 
 							<div className="w-full flex justify-end	pt-2 px-1 border-b border-gray-500">
 								<p className='text-end text-gray-500 font-semibold'>{props?.facilityCount > 0 ? '30': '0'} of {props?.facilityCount}</p>
@@ -714,8 +792,29 @@ function Home(props) {
 								) : (
 									<div className='w-full px-4 my-6'>{!formError && !submitting && <Alert severity='warning' className='border-2 border-yellow-500 rounded-none'>No facility found </Alert>}</div>
 								)}
-								{viewAll && facilities?.results && facilities?.results.length >= 30 && (
-									<ul className='list-none flex p-2 flex-row gap-2 w-full items-center my-2'>
+								
+							</div>
+							<div className='w-full flex justify-end'>
+							{viewAll && facilities?.results && facilities?.results.length >= 30 && (
+									<ul className='list-none flex p-2 flex-row w-max justify-self-end gap-2 items-center'>
+										{
+											facilities?.current_page >= 6 && 
+										<>
+										<li  className='text-base text-gray-600'>
+											<a href="/public/facilities?page=1" className='text-gray-800 p-2 hover:underline active:underline focus:underline'>
+												1
+											</a>
+										</li>
+										<li  className='text-base text-gray-600'>
+											<a href="/public/facilities?page=2" className='text-gray-800 p-2 hover:underline active:underline focus:underline'>
+												2
+											</a>
+										</li>
+										<li className='text-sm text-gray-400 flex'>
+											<DotsHorizontalIcon className='h-3' />
+										</li> 
+										</>
+										}			
 										<li className='text-base text-gray-600'>
 
 											<a
@@ -733,16 +832,20 @@ function Home(props) {
 																	`${props.path}?page=${facilities?.current_page}`
 													)()
 												}
-												className='text-gray-400 font-semibold p-2 hover:underline active:underline focus:underline'>
+												className='text-gray-400  border border-gray-400 rounded font-semibold p-2 hover:underline active:underline focus:underline'>
 												{facilities?.current_page}
 											</a>
 										</li>
+										
 										{facilities?.near_pages &&
 											facilities?.near_pages.map((page, i) => (
 												<li key={i} className='text-base text-gray-600'>
 
 													<a
 														href={
+															`
+															/public
+															${
 															(() =>
 																props.path.includes('?page') ?
 																	props.path.replace(/\?page=\d+/, `?page=${page}`)
@@ -756,21 +859,23 @@ function Home(props) {
 																			`${props.path}?page=${page}`
 
 															)()
+															}
+															`				
 														}
 														className='text-gray-800 p-2 hover:underline active:underline focus:underline'>
 														{page}
 													</a>
 												</li>
 											))}
-										<li className='text-sm text-gray-400 flex'>
-											<DotsHorizontalIcon className='h-3' />
-										</li>
+										
 
 									</ul>
 								)}
 							</div>
 
 						</div>
+
+						
 
 					</div>
 				</MainLayout>

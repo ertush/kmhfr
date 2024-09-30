@@ -8,13 +8,13 @@ import Link from 'next/link'
 
 function FacilityDetailsTabsPulic({ facility }) {
 
-  const [user, setUser] = useState(null);
+  // const [user, setUser] = useState(null);
 
   //rating
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState("");
 
-  const userCtx = useContext(UserContext);
+  // const userCtx = useContext(UserContext);
 
   //alert
   const alert = useAlert();
@@ -23,14 +23,14 @@ function FacilityDetailsTabsPulic({ facility }) {
   // const [isFormVisible, setIsFormVisible] = useState(false); 
   const [formVisibility, setFormVisibility] = useState(Array(facility?.facility_services?.length).fill(false) ?? []);
 
-  useEffect(() => {
-    // let user_id
-    if (userCtx) {
-      let s_r = userCtx
-      user_id = s_r.id
-      setUser(s_r)
-    }
-  }, [userCtx])
+  // useEffect(() => {
+  //   // let user_id
+  //   if (userCtx) {
+  //     let s_r = userCtx
+  //     user_id = s_r.id
+  //     setUser(s_r)
+  //   }
+  // }, [userCtx])
 
 
   const handleServiceRating = async (event, serviceId) => {

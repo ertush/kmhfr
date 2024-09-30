@@ -33,14 +33,13 @@ function FacilityDetails(props) {
   const wardName = props?.data?.ward_name;
   const center = props?.geo_details?.geoLocation.center;
 
-  // const [isViewChangeLog, setIsViewChangeLog] = useState(false)
 
   const router = useRouter()
 
-  const handlePrint = (accessToken, id) => {
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/facility_detail_report/${id}/?format=pdf&access_token=${accessToken}`;
-    router.push(url);
-  };
+  // const handlePrint = (accessToken, id) => {
+  //   const url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/facility_detail_report/${id}/?format=pdf&access_token=${accessToken}`;
+  //   router.push(url);
+  // };
   
   return (
     <>

@@ -146,14 +146,14 @@ function CommunityUnit(props) {
 																(active ? 'bg-gray-200' : '')
 															}
 															onClick={() => {
-																window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/chul/units/?format=csv&access_token=${props.token}&page_size=${orgUnitFilter !== "" ? props?.count : 30}&page=1${orgUnitFilter}`;
+																window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/chul/units/?format=csv&access_token=${props.token}&page_size=${props?.count}&page=1${orgUnitFilter}&fields=name,facility_name,code,facility_ward,facility_subcounty,facility_county,status_name,lat_long,chps_present,chps_trained,chas_present,chas_trained,chcs_present,chcs_trained,households_monitored`;
 															}}>
 															<DownloadIcon className='w-4 h-4 mr-1' />
 															<span>CSV</span>
 														</button>
 													)}
 												</Menu.Item>
-												<Menu.Item
+												{/* <Menu.Item
 													as='li'
 													className='p-0 flex items-center w-full text-center hover:bg-gray-200 focus:bg-gray-200 active:bg-gray-200'>
 													{({ active }) => (
@@ -169,7 +169,7 @@ function CommunityUnit(props) {
 															<span>Excel</span>
 														</button>
 													)}
-												</Menu.Item>
+												</Menu.Item> */}
 											</Menu.Items>
 										</Menu>
 									)}
