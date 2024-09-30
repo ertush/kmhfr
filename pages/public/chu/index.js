@@ -17,7 +17,7 @@ function Home(props) {
 
 	const router = useRouter();
 	
-	const [cus, setcus] = useState(props?.data)
+	// const [props?.data, setprops?.data] = useState(props?.data)
 	const filters = props?.filters;
 	const [drillDown, setDrillDown] = useState({});
 	const [reset, setReset] = useState(false)
@@ -175,11 +175,11 @@ function Home(props) {
 			})
 			.then(resp => resp.json())
 			.then(resp => {
-				setcus(resp)
+				setprops?.data(resp)
 				setViewAll(true)
 			})
 			.catch(error => {
-				setcus([])
+				setprops?.data([])
 				setViewAll(false)
 			})
 
@@ -258,7 +258,7 @@ function Home(props) {
 								<input
 									name="allchus"
 									id="search-name"
-									className="flex-none bg-gray-50 rounded p-2 flex-grow shadow-sm mt-2 border placeholder-gray-500 w-full border-gray-400 focus:shadow-none focus:bg-white focus:border-black outline-none"
+									className="flex-none bg-gray-50 rounded p-2 flex-grow shadow-sm mt-2 border placeholder-gray-500 w-full border-gray-400 foprops?.data:shadow-none foprops?.data:bg-white foprops?.data:border-black outline-none"
 									type="search"
 									placeholder="Search all CHUs"
 								/>
@@ -272,7 +272,7 @@ function Home(props) {
 								<input
 									name="name"
 									id="search-input"
-									className="flex-none bg-gray-50 rounded p-2 flex-grow shadow-sm border placeholder-gray-500 w-full border-gray-400 focus:shadow-none focus:bg-white focus:border-black outline-none"
+									className="flex-none bg-gray-50 rounded p-2 flex-grow shadow-sm border placeholder-gray-500 w-full border-gray-400 foprops?.data:shadow-none foprops?.data:bg-white foprops?.data:border-black outline-none"
 									type="search"
 									placeholder="CHU Name"
 								/>
@@ -281,7 +281,7 @@ function Home(props) {
 								<input
 									name="code"
 									id="search-code"
-									className="flex-none bg-gray-50 rounded p-2 flex-grow shadow-sm border placeholder-gray-500 w-full border-gray-400 focus:shadow-none focus:bg-white focus:border-black outline-none"
+									className="flex-none bg-gray-50 rounded p-2 flex-grow shadow-sm border placeholder-gray-500 w-full border-gray-400 foprops?.data:shadow-none foprops?.data:bg-white foprops?.data:border-black outline-none"
 									type="search"
 									placeholder="CHU Code"
 								/>
@@ -378,15 +378,89 @@ function Home(props) {
 
 						
 						{/* Main body */}
-						<div className="col-span-1 rounded md:col-span-4 px-4 md:px-0   flex max-h-min md:h-[752px]  overflow-y-scroll bg-gray-50 shadow-md flex-col gap-4 order-last md:order-none"> {/* CHANGED colspan */}
-								<div className="w-full flex justify-end	pt-2 px-4 border-b border-gray-300">
-									<p className='text-end text-gray-500 font-semibold'>{props?.chuCount > 0 ? '30': '0'} of {props?.chuCount}</p>
-								</div>
-							
-							<div className='flex flex-col justify-center items-center overflow-scroll-y w-full '>
+						<div className="col-span-1 rounded bg-gray-50 md:h-[1670px] md:px-0  p-4 shadow-md md:col-span-4 flex flex-col items-center justify-start md:gap-4 order-last md:order-none"> 
 								
-								{cus?.results?.length > 0 ? (
-									cus?.results?.map((comm_unit, index) => (
+							<div className='w-full flex justify-end'>
+
+{viewAll && props?.data?.results && props?.data?.results.length >= 30 && (
+	<ul className='list-none flex p-1 flex-row w-max justify-self-end gap-x-2 items-center'>
+		{
+			props?.data?.current_page >= 6 && 
+		<>
+		<li  className='text-base text-gray-600'>
+			<Link href="/public/chu?page=1" className='text-gray-800 p-2 hover:underline active:underline foprops?.data:underline'>
+				1
+			</Link>
+		</li>
+		<li  className='text-base text-gray-600'>
+			<Link href="/public/chu?page=2" className='text-gray-800 p-2 hover:underline active:underline foprops?.data:underline'>
+				2
+			</Link>
+		</li>
+		<li className='text-sm text-gray-400 flex'>
+			<DotsHorizontalIcon className='h-3' />
+		</li> 
+		</>
+		}	
+		<li className='text-base text-gray-600'>
+
+			<Link
+				href={
+					(() =>
+						props.path.includes('?page') ?
+							props.path.replace(/\?page=\d+/, `?page=${props?.data?.current_page}`)
+							:
+							props.path.includes('?q') && props.path.includes('&page') ?
+								props.path.replace(/&page=\d+/, `&page=${props?.data?.current_page}`)
+								:
+								props.path.includes('?q') ?
+									`${props.path}&page=${props?.data?.current_page}`
+									:
+									`${props.path}?page=${props?.data?.current_page}`
+					)()
+				}
+				className='text-gray-400 border border-gray-400 rounded font-semibold p-2 hover:underline active:underline foprops?.data:underline'>
+				{props?.data?.current_page}
+			</Link>
+		</li>
+		{props?.data?.near_pages &&
+			props?.data?.near_pages.map((page, i) => (
+				
+				<li key={i} className='text-base text-gray-600'>
+
+					<Link
+						href={
+							(() =>
+								props.path.includes('?page') ?
+									props.path.replace(/\?page=\d+/, `?page=${page}`)
+									:
+									props.path.includes('?q') && props.path.includes('&page') ?
+										props.path.replace(/&page=\d+/, `&page=${page}`)
+										:
+										props.path.includes('?q') ?
+											`${props.path}&page=${page}`
+											:
+											`${props.path}?page=${page}`
+
+							)()
+						}
+						className='text-gray-800 p-2 hover:underline active:underline foprops?.data:underline'>
+						{page}
+					</Link>
+				</li>
+			))}
+		{/* <li className='text-sm text-gray-400 flex'>
+			<DotsHorizontalIcon className='h-3' />
+		</li> */}
+
+	</ul>
+)}
+							</div>
+							
+							<div className='flex flex-col overflow-y-scroll my-4 justify-center items-center md:col-span-4 w-full '>
+								
+								{props?.data?.results?.length > 0 ? (
+									props?.data?.results?.map((comm_unit, index) => (
 										<div
 											key={comm_unit?.id}
 											className='px-1 md:px-3 grid grid-cols-8 gap-3 border-b border-gray-400 py-4 hover:bg-gray-50 w-full'>
@@ -394,7 +468,7 @@ function Home(props) {
 												<h3 className='text-2xl w-full'>
 													<Link
 														href={'/public/chu/' + comm_unit?.id}
-														className='hover:text-gray-800 group-focus:text-gray-800 active:text-gray-800'>
+														className='hover:text-gray-800 group-foprops?.data:text-gray-800 active:text-gray-800'>
 															
 														{		
 															comm_unit?.official_name ||
@@ -493,35 +567,61 @@ function Home(props) {
 									
 									</div>
 								)}
-								{viewAll && cus?.results && cus?.results.length >= 30 && (
-									<ul className='list-none flex p-2 flex-row gap-2 w-full items-center my-2'>
+						
+							</div>
+
+							<div className='w-full flex justify-end'>
+								{viewAll && props?.data?.results && props?.data?.results.length >= 30 && (
+									<ul className='list-none flex p-2 flex-row w-max justify-self-end gap-x-2 items-center'>
+										{
+											props?.data?.current_page >= 6 && 
+										<>
+										<li  className='text-base text-gray-600'>
+											<Link href="/public/chu?page=1" className='text-gray-800 p-2 hover:underline active:underline foprops?.data:underline'>
+												1
+											</Link>
+										</li>
+										<li  className='text-base text-gray-600'>
+											<Link href="/public/chu?page=2" className='text-gray-800 p-2 hover:underline active:underline foprops?.data:underline'>
+												2
+											</Link>
+										</li>
+										<li className='text-sm text-gray-400 flex'>
+											<DotsHorizontalIcon className='h-3' />
+										</li> 
+										</>
+										}	
 										<li className='text-base text-gray-600'>
 
 											<Link
 												href={
+													
 													(() =>
 														props.path.includes('?page') ?
-															props.path.replace(/\?page=\d+/, `?page=${cus?.current_page}`)
+															props.path.replace(/\?page=\d+/, `?page=${props?.data?.current_page}`)
 															:
 															props.path.includes('?q') && props.path.includes('&page') ?
-																props.path.replace(/&page=\d+/, `&page=${cus?.current_page}`)
+																props.path.replace(/&page=\d+/, `&page=${props?.data?.current_page}`)
 																:
 																props.path.includes('?q') ?
-																	`${props.path}&page=${cus?.current_page}`
+																	`${props.path}&page=${props?.data?.current_page}`
 																	:
-																	`${props.path}?page=${cus?.current_page}`
+																	`${props.path}?page=${props?.data?.current_page}`
 													)()
+												
 												}
-												className='text-gray-400 font-semibold p-2 hover:underline active:underline focus:underline'>
-												{cus?.current_page}
+												className='text-gray-400 border border-gray-400 rounded font-semibold p-2 hover:underline active:underline foprops?.data:underline'>
+												{props?.data?.current_page}
 											</Link>
 										</li>
-										{cus?.near_pages &&
-											cus?.near_pages.map((page) => (
-												<li key={page} className='text-base text-gray-600'>
+										{props?.data?.near_pages &&
+											props?.data?.near_pages.map((page, i) => (
+												
+												<li key={i} className='text-base text-gray-600'>
 
 													<Link
 														href={
+															
 															(() =>
 																props.path.includes('?page') ?
 																	props.path.replace(/\?page=\d+/, `?page=${page}`)
@@ -535,20 +635,22 @@ function Home(props) {
 																			`${props.path}?page=${page}`
 
 															)()
+														
 														}
-														className='text-gray-800 p-2 hover:underline active:underline focus:underline'>
+														className='text-gray-800 p-2 hover:underline active:underline foprops?.data:underline'>
 														{page}
 													</Link>
 												</li>
 											))}
-										<li className='text-sm text-gray-400 flex'>
+										{/* <li className='text-sm text-gray-400 flex'>
 											<DotsHorizontalIcon className='h-3' />
-										</li>
+										</li> */}
 
 									</ul>
 								)}
-							</div>
+						</div>	
 						</div>
+						
 					</div>
 				</MainLayout>
 			</div>
