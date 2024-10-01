@@ -1,5 +1,5 @@
 // React imports
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState, useContext, useCallback } from 'react';
 import router from 'next/router';
 import MainLayout from '../../../components/MainLayout';
 import { checkToken } from '../../../controllers/auth/auth';
@@ -42,8 +42,7 @@ function User(props) {
 	const [isCPasswordDirty, setIsCPasswordDirty] = useState(false);
 	const [isClient, setIsClient] = useState(false);
 	const [submitting, setSubmitting] = useState(false);
-
-
+	const [isSetPassword, setIsSetPassword] = useState(editMode)
 
 	// console.log({props})
 
@@ -69,6 +68,19 @@ function User(props) {
 			return [...s, { contact_type: '', contact_text: '' }]
 		})
 	};
+
+	const handlePasswordSetChecked = useCallback((event) => {
+		// event.preventDefault()
+
+		
+		setIsSetPassword(prev => {
+			
+			if(!event.checked == !prev){
+				return !prev
+
+			}
+		})
+	},[])
 
 	const handleOnChange = (val) => {
 		if (val.target && val.target != undefined && val.target != null) {
@@ -112,7 +124,17 @@ function User(props) {
 		setSubmitting(true)
 
 		let url = ''
+
 		url = editMode ? `${process.env.NEXT_PUBLIC_API_URL}/users/${person_details.id}/` : `${process.env.NEXT_PUBLIC_API_URL}/users/`
+
+
+		if(userData.password.includes("") && userData.password.includes("")){
+			delete userData.password
+			delete userData.conf_password
+		}
+
+		
+
 		try {
 			fetch(url, {
 				headers: {
@@ -520,56 +542,80 @@ function User(props) {
 
 										/>
 									</div>
+									
+									{/* Update Password */}
+									{editMode && <div className='w-full flex flex-row items-center px-2 gap-1 gap-x-3 mb-3'>
+										<input
+											type='checkbox'
+											id='set_password'
+											defaultChecked={isSetPassword}
+											onChange={handlePasswordSetChecked}
+										/>
+										<label
+											htmlFor='set_password'
+											className='text-gray-700 capitalize text-sm flex-grow'>
+											{' '}
+											Set password 
+										</label>
+									</div>}
 
 									{/* Password */}
-									<div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-										<label
-											htmlFor='password'
-											className='text-gray-600 capitalize text-sm'>
-											Password
-											<span className='text-medium leading-12 font-semibold'>
-												{' '}
-												*
-											</span>
-										</label>
-										<input
-											type='password'
-											name='password'
-											onChange={ev => {
-												handleOnChange(
-													ev
-												)
-												setIsCPasswordDirty(true);
-											}}
-											value={userData.password || ''}
-											className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
-										/>
-									</div>
+									{
+										((!editMode && !isSetPassword) || (editMode && isSetPassword)) &&
+										<div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+											<label
+												htmlFor='password'
+												className='text-gray-600 capitalize text-sm'>
+												Password
+												<span className='text-medium leading-12 font-semibold'>
+													{' '}
+													*
+												</span>
+											</label>
+											<input
+												type='password'
+												name='password'
+												onChange={ev => {
+													handleOnChange(
+														ev
+													)
+													setIsCPasswordDirty(true);
+												}}
+												value={userData.password || ''}
+												className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
+											/>
+										</div>
+									}
 									{/* confirm password */}
-									<div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-										<label
-											htmlFor='conf-password'
-											className='text-gray-600 capitalize text-sm'>
-											Confirm Password
-											<span className='text-medium leading-12 font-semibold'>
-												{' '}
-												*
-											</span>
-										</label>
-										<input
-											type='password'
-											name='conf_password'
-											onChange={ev => {
-												handleOnChange(
-													ev
-												)
-											}}
-											defaultValue={userData.conf_password}
-											className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
-										/>
-										{showErrorMessage && isCPasswordDirty ? <div> <p className='text-red-600'>Passwords did not match</p> </div> : ''}
+									{
+										((!editMode && !isSetPassword) || (editMode && isSetPassword)) &&
 
-									</div>
+										<div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+											<label
+												htmlFor='conf-password'
+												className='text-gray-600 capitalize text-sm'>
+												Confirm Password
+												<span className='text-medium leading-12 font-semibold'>
+													{' '}
+													*
+												</span>
+											</label>
+											<input
+												type='password'
+												name='conf_password'
+												onChange={ev => {
+													handleOnChange(
+														ev
+													)
+												}}
+												defaultValue={userData.conf_password}
+												className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
+											/>
+											{showErrorMessage && isCPasswordDirty ? <div> <p className='text-red-600'>Passwords did not match</p> </div> : ''}
+
+										</div>
+									}
+									
 
 									{editMode && <div className='w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3'>
 										<input
@@ -591,6 +637,8 @@ function User(props) {
 											Is Active?
 										</label>
 									</div>}
+
+
 									{/* Contacts */}
 
 									<div className=' w-full flex flex-col items-start justify-start py-3   bg-transparent h-auto'>
