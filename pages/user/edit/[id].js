@@ -129,21 +129,14 @@ function User(props) {
 
 		url = editMode ? `${process.env.NEXT_PUBLIC_API_URL}/users/${person_details.id}/` : `${process.env.NEXT_PUBLIC_API_URL}/users/`
 
-		console.log({before: userData, event})
-
+		
 
 		if(!isSetPassword && editMode){
 			delete userData.password
 			delete userData.conf_password
 		}
 
-		console.log({after: userData})
-
-
-		return
-
-
-		
+			
 
 		try {
 			fetch(url, {
