@@ -83,6 +83,8 @@ function User(props) {
 	},[])
 
 	const handleOnChange = (val) => {
+	
+
 		if (val.target && val.target != undefined && val.target != null) {
 			const newObj = {}
 			newObj[val.target.name] = {}
@@ -127,13 +129,14 @@ function User(props) {
 
 		url = editMode ? `${process.env.NEXT_PUBLIC_API_URL}/users/${person_details.id}/` : `${process.env.NEXT_PUBLIC_API_URL}/users/`
 
+		
 
-		if(userData.password.includes("") && userData.password.includes("")){
+		if(!isSetPassword && editMode){
 			delete userData.password
 			delete userData.conf_password
 		}
 
-		
+			
 
 		try {
 			fetch(url, {
