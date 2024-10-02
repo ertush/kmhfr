@@ -13,60 +13,71 @@ import Backdrop from '@mui/material/Backdrop';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import Fade from '@mui/material/Fade';
-// import Alert from '@mui/material/Alert';
+
 import 'react-dual-listbox/lib/react-dual-listbox.css';
 import {z} from 'zod'
 import withAuth from '../../../../components/ProtectedRoute';
+import Spinner from '../../../../components/Spinner'
 
 function EditGroup (props) {
     
-	const [selPermissions, setselPermissions] = useState(props?.data.permissions.map((pm)=>{return pm.id}))
+	const [selPermissions, setselPermissions] = useState(props?.data?.permissions?.map(({id, name, codename}) => `${id}-${name}-${codename}`))
 
     let permissions = props?.permissions[0].params.results
 	let group_details = props?.data
-	const [groupData, setGroupData]=useState(props.data)
+	const [groupData, setGroupData] = useState(null) //props.data
 	const alert = useAlert()
 	const userCtx = useContext(UserContext);
 	const [add_permission, setAddPermission] = useState(false)
 	const [open, setOpen] = useState(false);
 	const [status, setStatus] = useState(null);
 	const [delete_permission, setDeletePermission] = useState(false)
+	const [submitting, setSubmitting] = useState(false)
 
 	const handleOnChange = (val) => {
-		// console.log(val);
+
+
 		if (val.target && val.target != undefined && val.target != null) {
 			const newObj = {}
 			newObj[val.target.name] = {}
 			newObj[val.target.name].name = val.target.name
 			val.target.type =="checkbox" ? newObj[val.target.name] = val.target.checked : newObj[val.target.name] = val.target.value
-			setGroupData({ ...groupData, ...newObj })
+			setGroupData(prev => ({...prev, ...newObj }))
+
 		}else{
+			setselPermissions(val)
+
 			const newObj2={}
 			newObj2['permissions'] = {}
-			newObj2['permissions'] = "permissions"
-			newObj2['permissions'] = val.map((id)=>{return {id: id.value, name:id.label, codename:id.codename}})
-			setGroupData({ ...groupData, ...newObj2 })
+			newObj2['permissions'] = val.map((id) => ({id: parseInt(id.split('-')[0]), name:id.split('-')[1], codename:id.split('-')[2]}))
+			setGroupData(prev => ({...prev, ...newObj2 }))
 		}
 	}
 
 	const handleGroupSubmit = (event) => {
 		event.preventDefault()
 
+		setSubmitting(true)
+
+
 		try{
-			 fetch(`/api/common/submit_form_data/?path=edit&id=${props.data.id}`, {
+			 fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/groups/${props.data.id}/`, {
 				headers:{
 					'Accept': 'application/json, text/plain, */*',
-					'Content-Type': 'application/json;charset=utf-8'
+					'Content-Type': 'application/json;charset=utf-8',
+					'Authorization': `Bearer ${props?.token}`
 					
 				},
 				method:'PATCH',
-				body: JSON.stringify(groupData).replace(',"":""','')
+				body: JSON.stringify({id: parseInt(props.data.id), name: props.data.name, ...groupData})
 			})
 			.then(resp =>resp.json())
 			.then(res => {
 				if(res.id !==undefined ){
 					router.push({pathname:'/user/groups'})
+					setSubmitting(false)
 					alert.success('Group updated successfully ')
+					
 				}else{
 					setStatus({status:'error', message: res})
 				}
@@ -133,7 +144,7 @@ function EditGroup (props) {
                                     left: '50%',
                                     transform: 'translate(-50%, -50%)',
                                     width: 700,
-                                    // bgcolor: 'rgba(255, 251, 235, 1)',
+                                    
                                     boxShadow: 24,
                                     p: 4,
                                 }
@@ -180,6 +191,11 @@ function EditGroup (props) {
 							<div className=' w-full flex flex-col items-start p-3  border border-gray-300/70 shadow-md bg-gray-50'>
 							
 												<>
+												<pre>
+													{
+														JSON.stringify(props?.data, null, 2)
+													}
+												</pre>
 													<h4 className='text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-gray-900'>
 														{/* Bio Details */}
 													</h4>
@@ -207,6 +223,8 @@ function EditGroup (props) {
 																className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
 															/>
 														</div>
+
+														
                                                         <div className='w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3'>
                                                             
 														   <div className='w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3'>
@@ -340,16 +358,11 @@ function EditGroup (props) {
                                                                     Array.from(permissions || [],
 																		fltopt => {
 																			return {
-																				value: fltopt.id, label: fltopt.name
+																				value: `${fltopt.id}-${fltopt.name}-${fltopt.codename}`, label: fltopt.name
 																			}
 																		})
                                                                 } 
-                                                               onChange={(ev)=>{
-                                                                setselPermissions(ev)
-                                                                handleOnChange(
-                                                                    ev
-                                                                )
-                                                            }}
+                                                               onChange={handleOnChange}
                                                                icons={{
                                                                 moveLeft:<ChevronLeftIcon className='w-3 h-3 text-black' />,
                                                                 moveAllLeft: <ChevronDoubleLeftIcon className='w-3 h-3 text-black' />,
@@ -378,7 +391,16 @@ function EditGroup (props) {
 																type='submit'
 																className=' bg-blue-600 p-2 text-white flex text-md font-semibold '>
 																<span className='text-medium font-semibold text-white'>
-																	Update
+																{
+																	submitting ?
+																	<div className='flex items-center gap-2'>
+																		<span className='text-white'>Updating... </span>
+																		<Spinner />
+																	</div>
+																	:
+																	'Update'
+
+																}
 																</span>
 															</button>
 														</div>
@@ -469,13 +491,15 @@ export async function getServerSideProps (ctx){
 				  }
 			  })
 	  }
+
+  
   
    const response = (() => checkToken(ctx.req, ctx.res).then(t => {
 		  if (t.error) {
 			  throw new Error('Error checking token')
 		  } else {
-			  let token = t.token
-			  return fetchData(token).then(t => t)
+			  const token = t.token
+			  return fetchData(token)
 		  }
 	  }).catch(err => {
 		  console.log('Error checking token: ', err)
