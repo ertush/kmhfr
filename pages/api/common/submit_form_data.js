@@ -201,9 +201,9 @@ export default async function submitFormData(req, res) {
         }
 
 
-        const body = method == 'DELETE' ? null : JSON.stringify(req.body)
+        const body = method == 'DELETE' ? null : JSON.stringify(req.body, null, 2)
 
-        console.log({url, body, method})
+        console.log({body})
 
 
         try {
@@ -215,7 +215,7 @@ export default async function submitFormData(req, res) {
                             'Accept': 'application/json, text/plain, */*',
                         },
                         method,
-                        body: req.body
+                        body
                     }
                     :
                     {
@@ -232,7 +232,7 @@ export default async function submitFormData(req, res) {
             return url.includes('common/documents') ? resp : await resp.json()
         }
         catch (err) {
-            console.error('Error posting facility basic details: ', err)
+            console.error('Error: ', err)
             return {
                 error: true,
                 err: err.message,
