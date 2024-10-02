@@ -191,11 +191,7 @@ function EditGroup (props) {
 							<div className=' w-full flex flex-col items-start p-3  border border-gray-300/70 shadow-md bg-gray-50'>
 							
 												<>
-												<pre>
-													{
-														JSON.stringify(props?.data, null, 2)
-													}
-												</pre>
+												
 													<h4 className='text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-gray-900'>
 														{/* Bio Details */}
 													</h4>
