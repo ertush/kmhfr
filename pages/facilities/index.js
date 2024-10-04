@@ -32,7 +32,7 @@ function FacilityHome(props) {
     const router = useRouter()
 
     
-    console.log({props})
+    
 
     // const facilities = props?.data?.results
     const filters = props?.filters
@@ -1376,7 +1376,7 @@ export async function getServerSideProps(ctx) {
 
     let url = nextURL ?? previousURL ?? defaultURL
 
-    // const filters = await fetchFilters(token)
+    const filters = await fetchFilters(token)
 
     // console.log({filters})
 
@@ -1432,7 +1432,7 @@ export async function getServerSideProps(ctx) {
 
 
 
-        console.log({ url })
+        // console.log({ url })
 
         facilities = (await (await fetch(url, {
             headers: {
@@ -1464,7 +1464,7 @@ export async function getServerSideProps(ctx) {
                 facilities: facilities?.results ?? null,
                 next: facilities?.next ?? null,
                 previous: facilities?.previous ?? null,
-                filters: await fetchFilters(token),
+                filters,
                 path: ctx.asPath || '/facilities',
                 current_url,
                 current_page: facilities?.current_page ?? null,
