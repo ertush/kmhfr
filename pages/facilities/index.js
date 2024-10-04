@@ -31,6 +31,8 @@ function FacilityHome(props) {
 
     const router = useRouter()
 
+    
+    
 
     // const facilities = props?.data?.results
     const filters = props?.filters
@@ -102,17 +104,17 @@ function FacilityHome(props) {
     })()
 
     // FilterOptions
-    const countyFilterOptions = filters['county']?.map(({ id, name }) => ({ value: id, label: name }))
-    const subCountyFilterOptions = filters['sub_county']?.map(({ id, name }) => ({ value: id, label: name }))
-    const constituencyFilterOptions = filters['constituency']?.map(({ id, name }) => ({ value: id, label: name }))
-    const wardFilterOptions = filters['ward']?.map(({ id, name }) => ({ value: id, label: name }))
-    const facilityTypeFilterOptions = filters['facility_type']?.map(({ id, name }) => ({ value: id, label: name }))
-    const facilityTypeDetailsFilterOptions = filters['facility_type_details']?.map(({ id, name }) => ({ value: id, label: name }))
-    const kephLevelFilterOptions = filters['keph_level']?.map(({ id, name }) => ({ value: id, label: name }))
-    const ownerTypeFilterOptions = filters['owner_type']?.map(({ id, name }) => ({ value: id, label: name }))
-    const ownerFilterOptions = filters['owner']?.map(({ id, name }) => ({ value: id, label: name }))
+    const countyFilterOptions = filters?.county?.map(({ id, name }) => ({ value: id, label: name }))
+    const subCountyFilterOptions = filters?.sub_county?.map(({ id, name }) => ({ value: id, label: name }))
+    const constituencyFilterOptions = filters?.constituency?.map(({ id, name }) => ({ value: id, label: name }))
+    const wardFilterOptions = filters?.ward?.map(({ id, name }) => ({ value: id, label: name }))
+    const facilityTypeFilterOptions = filters?.facility_type?.map(({ id, name }) => ({ value: id, label: name }))
+    const facilityTypeDetailsFilterOptions = filters?.facility_type_details?.map(({ id, name }) => ({ value: id, label: name }))
+    const kephLevelFilterOptions = filters?.keph_level?.map(({ id, name }) => ({ value: id, label: name }))
+    const ownerTypeFilterOptions = filters?.owner_type?.map(({ id, name }) => ({ value: id, label: name }))
+    const ownerFilterOptions = filters?.owner?.map(({ id, name }) => ({ value: id, label: name }))
     // const serviceFilterOptions = filters['service']?.map(({ id, name }) => ({ value: id, label: name }))
-    const operationStatusFilterOptions = filters['operation_status']?.map(({ id, name }) => ({ value: id, label: name }))
+    const operationStatusFilterOptions = filters?.operation_status?.map(({ id, name }) => ({ value: id, label: name }))
 
 
 
@@ -1358,6 +1360,7 @@ export async function getServerSideProps(ctx) {
     const page = ctx?.query?.page
 
 
+
     const { response: user } = await getUserDetails(token, `${process.env.NEXT_PUBLIC_API_URL}/rest-auth/user/`)
 
     const userGroup = user?.groups[0]?.id
@@ -1429,7 +1432,7 @@ export async function getServerSideProps(ctx) {
 
 
 
-        console.log({ url })
+        // console.log({ url })
 
         facilities = (await (await fetch(url, {
             headers: {
