@@ -140,8 +140,8 @@ function Users (props) {
                         <div className="col-span-7 flex flex-col gap-x-1 ">
                             <div className="flex flex-wrap items-center justify-between gap-2 text-sm md:text-base py-1">
                                 <div className="flex flex-row items-center justify-between gap-2 text-sm md:text-base py-3">
-                                    <Link className="text-gray-700" href="/">Home</Link> {'/'}
-                                    <span className="text-gray-500">Users</span> 
+                                    {/* <Link className="text-gray-700" href="/">Home</Link>  */}
+                                    <span className="text-gray-900">Users</span> {'/'}
                                 </div>
                             </div>
                                 

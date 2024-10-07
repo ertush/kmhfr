@@ -52,7 +52,7 @@ import {
 
 import { styled } from '@mui/material/styles';
 import { PencilAltIcon } from '@heroicons/react/outline';
-import { UserContext } from '../../providers/user';
+// import { UserContext } from '../../providers/user';
 
 
 const StyledDataGrid = styled(DataGrid)(() => ({
@@ -1270,10 +1270,11 @@ function SystemSetup(props) {
                             </Modal>}
 
                         {/* Bread Cumbs  */}
-                        <div className="flex flex-row gap-2 text-sm md:text-base">
-                            <Link className="text-gray-700" href="/">Home</Link> {'/'}
-                            <span className="text-gray-500" >System setup</span>
-                        </div>
+                        {/* <div className="flex flex-row gap-2 text-sm md:text-base">
+                             <Link className="text-gray-700" href="/">Home</Link> 
+                            <span className="text-gray-900" >System setup</span>
+                            {'/'}
+                        </div> */}
 
                         {/* Header Bunner */}
                         <div className={"col-span-5 flex justify-between w-full bg-transparent drop-shadow border border-gray-600 text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-gray-600" : "border-red-600")}>

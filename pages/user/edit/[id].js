@@ -324,9 +324,9 @@ function User(props) {
 					<div className="col-span-5 flex flex-col gap-3 md:gap-5 px-4">
 						<div className="flex flex-wrap items-center justify-between gap-2 text-sm md:text-base pb-3">
 							<div className="flex flex-row items-center justify-between gap-2 text-sm md:text-base py-3">
-								<Link className="text-gray-800" href='/'>Home</Link>{'/'}
-								<Link className="text-gray-800" href='/user'>Users</Link>{'/'}
-								<span className="text-gray-500">{editMode ? 'Edit user' : 'Add user'}</span>
+								{/* <Link className="text-gray-800" href='/'>Home</Link>{'/'} */}
+								<Link className="text-gray-500" href='/user'>Users</Link>{'/'}
+								<span className="text-gray-800">{editMode ? 'Edit' : 'Add'}</span>
 							</div>
 						</div>
 						<div>

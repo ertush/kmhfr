@@ -75,15 +75,16 @@ function ApproveReject(props) {
           {/* Breadcramps */}
 
           <div className="flex md:col-span-7 flex-row gap-2 text-sm md:text-base md:my-3">
-            <Link className="text-gray-700" href="/">
-              Home
-            </Link>
-            {"/"}
-            <Link className="text-gray-700" href="/facilities">
+            
+            <Link className="text-gray-500" href="/facilities">
               Facilities
             </Link>
             {"/"}
-            <span className="text-gray-500">
+            <Link className="text-gray-500" href={`/facilities/${facility?.id}`}>
+              Approve Validate
+            </Link>
+            {"/"}
+            <span className="text-gray-800">
               {facility?.official_name ?? ""} ( #
               <i className="text-black">{facility?.code || "NO_CODE"}</i> )
             </span>

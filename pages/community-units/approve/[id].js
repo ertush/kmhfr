@@ -236,15 +236,16 @@ async function approveCHUUpdates (e, token) {
 
               {/* Breadcrumb */}
               <div className='flex flex-row gap-2 text-sm md:text-base'>
-                <a className='text-gray-700' href='/'>
-                  Home
-                </a>
-                {'/'}
-                <a className='text-gray-700' href='/community-units'>
+               
+                <Link className='text-gray-500' href='/community-units'>
                   Community units
-                </a>
+                </Link>
                 {'/'}
-                <span className='text-gray-500'>
+                <Link className='text-gray-500' href={`/community-units/${cu?.id}`}>
+                  Approve
+                </Link>
+                {'/'}
+                <span className='text-gray-800'>
                   {cu.name} ( #
                   <i className='text-black'>{cu.code || 'NO_CODE'}</i> )
                 </span>

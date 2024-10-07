@@ -369,9 +369,8 @@ function UpgradeFacility(props) {
                         <div className="md:col-span-7 flex flex-col gap-3 md:gap-5 bg-transparent">
                             <div className="flex flex-wrap items-center justify-between gap-2 text-sm md:text-base">
                                 <div className="flex flex-row items-center justify-between gap-2 text-sm md:text-base py-3">
-                                    <Link className="text-gray-700 cursor-pointer" href='/'>Home</Link>{'/'}
-                                    <Link className="text-gray-700 cursor-pointer" href='/facilities'>Facilities</Link> {'/'}
-                                    <span className="text-gray-500">Upgrade</span>
+                                    <Link className="text-gray-500 cursor-pointer" href='/facilities'>Facilities</Link> {'/'}
+                                    <span className="text-gray-800">Upgrade</span>
                                 </div>
                             </div>
                             <div className={"col-span-5 gap-2 flex-col  justify-between p-6 w-full bg-transparent border border-gray-600 drop-shadow  text-black  md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-gray-600" : "border-red-600")}>

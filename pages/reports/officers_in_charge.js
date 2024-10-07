@@ -73,10 +73,10 @@ function OfficersInCharge(props) {
                 <div className="w-full  md:w-[85%] grid grid-cols-8 gap-4 p-1 md:mx-4 my-2">
                     <div className="col-span-8 flex flex-col gap-x-1">
                         <div className="flex flex-wrap items-center justify-between gap-2 text-sm md:text-base py-1">
-                            <div className="flex flex-row items-center justify-between gap-x-2 gap-y-0 text-sm md:text-base py-1">
+                            {/* <div className="flex flex-row items-center justify-between gap-x-2 gap-y-0 text-sm md:text-base py-1">
                                 <a className="text-gray-700" href="/">Home</a> {'/'}
                                 <span className="text-gray-500">Facility Officers</span> 
-                            </div>
+                            </div> */}
                             <div className={`col-span-5 flex justify-between p-6 w-full bg-transparent drop-shadow  text-black md:divide-x md:divide-gray-200z items-center border border-gray-600 border-l-8 ${'border-gray-600'}`}>
                                 <h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
                                     {'Facility Officers'}

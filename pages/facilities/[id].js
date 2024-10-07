@@ -349,17 +349,14 @@ function Facility(props) {
             <div className="col-span-1 md:col-span-7 flex-1 flex-col items-start justify-start md:mb-6 gap-3">
               {/* Breadcramps */}
               <div className="flex flex-row gap-2 text-sm md:text-base md:my-3">
-                <Link className="text-gray-700" href="/">
-                  Home
-                </Link>
-                {"/"}
-                <Link className="text-gray-700" href="/facilities">
+                
+                <Link className="text-gray-500" href="/facilities">
                   Facilities
                 </Link>
                 {"/"}
-                <span className="text-gray-500">
+                <span className="text-gray-800">
                   {facility?.official_name ?? ""} ( #
-                  <i className="text-black">{facility?.code || "NO_CODE"}</i> )
+                  <i className="text-gray-800">{facility?.code || "NO_CODE"}</i> )
                 </span>
               </div>
               {/* Header Bunner  */}

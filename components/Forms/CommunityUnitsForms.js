@@ -1293,15 +1293,16 @@ export function CommunityUnitEditForm(props) {
 
           {/* Breadcrumb */}
           <div className="flex flex-row gap-2 text-sm md:text-base">
-            <Link className="text-gray-700" href="/">
-              Home
-            </Link>
-            {"  >  "}
-            <Link className="text-gray-700" href="/community-units">
+           
+            <Link className="text-gray-500" href="/community-units">
               Community units
             </Link>
-            {"  >  "}
-            <span className="text-gray-500">
+            {" / "}
+            <Link className="text-gray-500" href={`/community-units/${props?.props?.id}`}>
+              Edit
+            </Link>
+            {" / "}
+            <span className="text-gray-800">
               {props?.props?.name} ( #
               <i className="text-black">{props?.props?.code || "NO_CODE"}</i> )
             </span>
