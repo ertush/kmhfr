@@ -193,6 +193,7 @@ function EditCommunityUnit(props){
                 { 
                  (groupID == 7 || 
                   groupID == 5 ||
+                  groupID == 11 ||
                   groupID == 1) &&
                   (
                   props?.cu?.is_approved == null ||
