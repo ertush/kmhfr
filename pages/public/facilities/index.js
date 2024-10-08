@@ -954,7 +954,7 @@ export async function getServerSideProps(ctx) {
 	};
 
 
-	let url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/material/?fields=id,code,name,regulatory_status_name,facility_type_name,owner_name,county,constituency,ward_name,keph_level_name,operation_status_name`
+	let url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/material/?fields=id,code,name,regulatory_status_name,facility_type_name,owner_name,county,constituency,ward_name,keph_level_name,operation_status_name&approved_national_level=true`
 	let query = { searchTerm: '' };
 
 	if (ctx?.query?.q) {
