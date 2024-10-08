@@ -100,9 +100,8 @@ const EditFacility = withErrorBoundary(
 							<div className="md:col-span-5 col-span-1 flex flex-col gap-3 md:gap-5 mb-4">
 								<div className="flex flex-wrap items-center  justify-between gap-2 text-sm md:text-base py-3">
 									<div className="flex flex-row mt-8 items-center justify-between gap-2 text-sm md:text-base py-3">
-										<Link className="text-gray-800" href="/dashboard">Home</Link> {'/'}
-										<Link className="text-gray-800" href="/facilities">Facilities</Link> {'/'}
-										<span className="text-gray-500">Edit Facility</span>
+										<Link className="text-gray-500" href="/facilities">Facilities</Link> {'/'}
+										<span className="text-gray-800">Edit</span>
 									</div>
 								</div>
 

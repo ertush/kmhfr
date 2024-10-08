@@ -623,15 +623,12 @@ function Reports(props) {
                         <div className="col-span-1 md:col-span-7 flex-1 flex-col items-start justify-start gap-4">
                             {/* Breadcramps */}
                             <div className="flex flex-row gap-2 text-sm md:text-base md:my-3">
-                                <Link className="text-gray-700" href="/">
-                                    Home
-                                </Link>
-                                {"/"}
-                                <Link className="text-gray-700" href="/reports">
+                                
+                                <Link className="text-gray-500" href="/reports">
                                     Reports
                                 </Link>
                                 {"/"}
-                                <span className="text-gray-700" href="/facilities">
+                                <span className="text-gray-800" href="/facilities">
                                     {reportTitle} Report
                                 </span>
 

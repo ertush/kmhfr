@@ -106,10 +106,11 @@ function AdminOffices(props) {
                 <div className="w-full  md:w-[85%] px-4 md:px-0 grid grid-cols-7 mt-8 gap-4 p-1 md:mx-4 my-2">
                     <div className="col-span-7 flex flex-col gap-x-1">
                         <div className="flex flex-wrap items-center justify-between gap-2 text-sm md:text-base py-1">
-                            <div className="flex flex-row items-center justify-between gap-x-2 gap-y-0 text-sm md:text-base py-1">
-                                <a className="text-gray-700" href="/">Home</a> {'/'}
+                            {/* <div className="flex flex-row items-center justify-between gap-x-2 gap-y-0 text-sm md:text-base py-1">
+                                <a className="text-gray-700" href="/admin_offices">Home</a> {'/'}
                                 <span className="text-gray-500">Admin Offices</span>
-                            </div>
+                            </div> */}
+
                             <div className={"col-span-5 flex  justify-between w-full  drop-shadow  text-black p-4 md:divide-x bg-transparent border border-gray-600 md:divide-gray-200 items-center border-l-8 " + (true && "border-gray-600")}>
                                 <h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
 

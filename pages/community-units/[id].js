@@ -89,15 +89,12 @@ function EditCommunityUnit(props){
 
             {/* Header */}
             <div className="flex text-start items-start md:items-center md:w-full  md:justify-start justify-between gap-2 text-sm md:text-base py-3">
-              <Link className="text-gray-700" href="/">
-                Home
-              </Link>
-              {"/"}
-              <Link className="text-gray-700" href="/community-units">
+             
+              <Link className="text-gray-500" href="/community-units">
                 Community units
               </Link>
               {"/"}
-              <span className="text-gray-500">
+              <span className="text-gray-900">
                 {props?.props?.cu?.name} ( #
                 <i className="text-black">{props?.cu.code || "NO_CODE"}</i> )
               </span>

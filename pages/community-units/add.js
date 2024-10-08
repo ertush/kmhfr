@@ -1235,15 +1235,12 @@ function AddCommunityUnit(props) {
 					<div className='col-span-5 flex flex-col gap-3 md:gap-5 px-0'>
 						<div className='flex flex-wrap items-center justify-between gap-2 text-sm md:text-base py-3'>
 							<div className='flex flex-row items-center justify-between gap-2 text-sm md:text-base py-3'>
-								<Link className='text-gray-800' href='/'>
-									Home
-								</Link>
-								{'/'}
-								<Link className='text-gray-800' href='/community-units'>
+								
+								<Link className='text-gray-500' href='/community-units'>
 									Community Units
 								</Link>
 								{'/'}
-								<span className='text-gray-500'>Add Community Unit</span>
+								<span className='text-gray-800'>Add</span>
 							</div>
 							<div className='flex flex-wrap items-center justify-evenly gap-x-3 gap-y-2 text-sm md:text-base py-3'></div>
 						</div>
