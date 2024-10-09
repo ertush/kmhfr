@@ -26,6 +26,13 @@ function FacilitySideMenu(/*{ states, stateSetters, filters }*/) {
 
 
     function userOrgUnit() {
+
+        
+        if(userCtx?.user_sub_counties.length == 2 && userGroup === 2) {
+            return {sub_county: `${userCtx?.user_sub_counties[0]?.sub_county},${userCtx?.user_sub_counties[1]?.sub_county}`}
+        }
+        else 
+        {
         if(userGroup === 1) { // CHRIO
             return {county: userCounty}
         } else if (userGroup === 2) {
@@ -33,6 +40,7 @@ function FacilitySideMenu(/*{ states, stateSetters, filters }*/) {
         } else {
             return {}
         }
+     }
     }
 
     return (
