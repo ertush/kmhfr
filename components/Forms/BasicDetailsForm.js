@@ -651,9 +651,9 @@ export function BasicDeatilsForm({ editMode }) {
     const number_of_hdu_beds = Number(document.getElementsByName('number_of_hdu_beds')[0]?.value)
     const number_of_maternity_beds = Number(document.getElementsByName('number_of_maternity_beds')[0]?.value)
     const number_of_isolation_beds = Number(document.getElementsByName('number_of_isolation_beds')[0]?.value)
-    const number_of_emergency_casualty_beds = Number(document.getElementsByName('number_of_emergency_casualty_beds')[0]?.value)
+    // const number_of_emergency_casualty_beds = Number(document.getElementsByName('number_of_emergency_casualty_beds')[0]?.value)
 
-    const totalBeds = number_of_inpatient_beds + number_of_icu_beds + number_of_hdu_beds + number_of_maternity_beds + number_of_emergency_casualty_beds + number_of_isolation_beds
+    const totalBeds = number_of_inpatient_beds + number_of_icu_beds + number_of_hdu_beds + number_of_maternity_beds + number_of_isolation_beds
 
 
     setTotalFunctionalBeds(totalBeds)
