@@ -1418,6 +1418,12 @@ export async function getServerSideProps(ctx) {
 
     try {
 
+        if(user?.user_sub_counties.length == 2 && userGroup === 2) {
+             
+            url = `${url}&sub_county=${user?.user_sub_counties[0]?.sub_county},${user?.user_sub_counties[1]?.sub_county}`
+        }
+        else {
+
         if (userGroup === 1) { // CHRIO
 
             const userCountyID = user?.county
@@ -1429,6 +1435,8 @@ export async function getServerSideProps(ctx) {
             url = `${url}&sub_county=${userSubCountyID}`
 
         }
+
+    }
 
 
 
