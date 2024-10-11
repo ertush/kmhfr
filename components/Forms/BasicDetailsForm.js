@@ -644,16 +644,16 @@ export function BasicDeatilsForm({ editMode }) {
 
     // Total Funcational Input Beds validation
 
-    handleFocus(e)
+    
 
     const number_of_inpatient_beds = Number(document.getElementsByName('number_of_inpatient_beds')[0]?.value)
     const number_of_icu_beds = Number(document.getElementsByName('number_of_icu_beds')[0]?.value)
     const number_of_hdu_beds = Number(document.getElementsByName('number_of_hdu_beds')[0]?.value)
     const number_of_maternity_beds = Number(document.getElementsByName('number_of_maternity_beds')[0]?.value)
     const number_of_isolation_beds = Number(document.getElementsByName('number_of_isolation_beds')[0]?.value)
-    const number_of_emergency_casualty_beds = Number(document.getElementsByName('number_of_emergency_casualty_beds')[0]?.value)
+    // const number_of_emergency_casualty_beds = Number(document.getElementsByName('number_of_emergency_casualty_beds')[0]?.value)
 
-    const totalBeds = number_of_inpatient_beds + number_of_icu_beds + number_of_hdu_beds + number_of_maternity_beds + number_of_emergency_casualty_beds + number_of_isolation_beds
+    const totalBeds = number_of_inpatient_beds + number_of_icu_beds + number_of_hdu_beds + number_of_maternity_beds + number_of_isolation_beds
 
 
     setTotalFunctionalBeds(totalBeds)
@@ -929,6 +929,7 @@ export function BasicDeatilsForm({ editMode }) {
             name='facility_type_parent' // facility_type
             onChange={handleSelectChange}
             onFocus={handleFocus}
+            
 
           />
 
@@ -978,6 +979,7 @@ export function BasicDeatilsForm({ editMode }) {
             required
             name='operation_status'
             onFocus={handleFocus}
+            onChange={handleNumberInputChange}
             defaultValue={options?.data?.operation_status ?? ''}
 
           />
@@ -1000,7 +1002,7 @@ export function BasicDeatilsForm({ editMode }) {
             required
             name="date_established"
             onFocus={handleFocus}
-            onChange={handleDateChange}
+            onChange={handleNumberInputChange}
             defaultValue={options?.data?.date_established ?? ''}
             className='flex-none w-full bg-transparent p-2 flex-grow placeholder-gray-500 border border-gray-400 rounded focus:shadow-none  focus:border-black outline-none'
 
@@ -1116,6 +1118,7 @@ export function BasicDeatilsForm({ editMode }) {
           <CustomSelect
             options={ownerTypeDetailsOptions ?? []}
             onFocus={handleFocus}
+            onChange={handleNumberInputChange}
             placeholder="Select owner..."
             required
             name='owner'
@@ -1192,7 +1195,8 @@ export function BasicDeatilsForm({ editMode }) {
             type='number'
             min={0}
             name='number_of_inpatient_beds'
-            onFocus={handleNumberInputChange}
+            onFocus={handleFocus}
+            onChange={handleNumberInputChange}
             defaultValue={options?.data?.number_of_inpatient_beds ?? 0}
             className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:border-black outline-none'
           />
@@ -1238,7 +1242,8 @@ export function BasicDeatilsForm({ editMode }) {
             type='number'
             min={0}
             name='number_of_emergency_casualty_beds'
-            onFocus={handleNumberInputChange}
+            onFocus={handleFocus}
+            onChange={handleNumberInputChange}
             defaultValue={options?.data?.number_of_emergency_casualty_beds ?? ''}
             className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:border-black outline-none'
           />
@@ -1262,7 +1267,8 @@ export function BasicDeatilsForm({ editMode }) {
             type='number'
             min={0}
             name='number_of_icu_beds'
-            onFocus={handleNumberInputChange}
+            onFocus={handleFocus}
+            onChange={handleNumberInputChange}
             defaultValue={options?.data?.number_of_icu_beds ?? ''}
             className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:border-black outline-none'
           />
@@ -1286,7 +1292,8 @@ export function BasicDeatilsForm({ editMode }) {
             type='number'
             min={0}
             name='number_of_hdu_beds'
-            onFocus={handleNumberInputChange}
+            onFocus={handleFocus}
+            onChange={handleNumberInputChange}
             defaultValue={options?.data?.number_of_hdu_beds ?? ''}
             className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:border-black outline-none'
           />
@@ -1310,7 +1317,8 @@ export function BasicDeatilsForm({ editMode }) {
             type='number'
             min={0}
             name='number_of_maternity_beds'
-            onFocus={handleNumberInputChange}
+            onFocus={handleFocus}
+            onChange={handleNumberInputChange}
             defaultValue={options?.data?.number_of_maternity_beds ?? ''}
             className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:border-black outline-none'
           />
@@ -1335,6 +1343,7 @@ export function BasicDeatilsForm({ editMode }) {
             min={0}
             name='number_of_isolation_beds'
             onFocus={handleFocus}
+            onChange={handleNumberInputChange}
             defaultValue={options?.data?.number_of_isolation_beds ?? ''}
             className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:border-black outline-none'
           />
@@ -1361,7 +1370,6 @@ export function BasicDeatilsForm({ editMode }) {
             name='number_of_general_theatres'
             onFocus={handleFocus}
             defaultValue={options?.data?.number_of_general_theatres ?? ''}
-
             className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:border-black outline-none'
           />
 
@@ -1410,7 +1418,6 @@ export function BasicDeatilsForm({ editMode }) {
             name='number_of_minor_theatres'
             onFocus={handleFocus}
             defaultValue={options?.data?.number_of_minor_theatres ?? ''}
-
             className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:border-black outline-none'
           />
 
@@ -1436,7 +1443,6 @@ export function BasicDeatilsForm({ editMode }) {
             name='number_of_eye_theatres'
             onFocus={handleFocus}
             defaultValue={options?.data?.number_of_eye_theatres ?? ''}
-
             className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:border-black outline-none'
           />
 
