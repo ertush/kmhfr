@@ -578,6 +578,8 @@ function Facility(props) {
                       (
                         userCtx?.groups[0]?.id == 2 || // SCHRIO
                         userCtx?.groups[0]?.id == 1 || // CHRIO
+                        userCtx?.groups[0].id == 5 ||  // National
+                        userCtx?.groups[0].id == 6 ||  // National
                         userCtx?.groups[0]?.id == 7 ||   // SuperAdmin
                         userCtx?.groups[0].id == 11 // Data cleaning National
                       ) &&
