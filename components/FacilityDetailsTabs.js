@@ -222,7 +222,7 @@ function FacilityDetailsTabs({ facility, token }) {
                   </div>
                 )}
 
-                {facility?.open_normal_day && (
+                {facility?.open_whole_day && (
 
                   <div className="flex justify-between gap-1">
 
@@ -239,6 +239,42 @@ function FacilityDetailsTabs({ facility, token }) {
                   </div>
 
                 )}
+
+              {facility?.open_public_holidays && (
+
+              <div className="flex justify-between gap-1">
+
+              <label className=" text-gray-600">
+                Open Public Holidays
+              </label>
+              <label className="text-black font-medium text-base">
+                <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 text-gray-900 flex gap-x-1 items-center cursor-default">
+                  <CheckCircleIcon className="h-4 w-4" />
+                  Yes
+                </span>
+
+              </label>
+              </div>
+
+              )}
+
+              {facility?.open_normal_day && (
+
+              <div className="flex justify-between gap-1">
+
+              <label className=" text-gray-600">
+                Open 8am - 5pm
+              </label>
+              <label className="text-black font-medium text-base">
+                <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 text-gray-900 flex gap-x-1 items-center cursor-default">
+                  <CheckCircleIcon className="h-4 w-4" />
+                  Yes
+                </span>
+
+              </label>
+              </div>
+
+              )}
 
                 {facility?.open_weekends && (
 
