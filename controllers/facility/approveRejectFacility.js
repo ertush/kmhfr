@@ -23,12 +23,21 @@ function validateRejectFacility (facility_id, reject, comment, alert, token, set
 
                 if (resp.ok) {
                     setSubmitting(false)
+
                     if (!reject) {
                         alert.success("Facility validated successfully")
                     } else {
                         alert.success("Facility rejected successfully")
                     }
-                    router.push('/facilities?qf=new_pending_validation&pending_approval=true&has_edits=false&is_complete=true') // redirect to New Facilties Pending Validation
+
+                    router.push({
+                        pathname: '/facilities',
+                        filter:'pending_validation_facilities',
+                        pending_approval: true,
+                        has_edits: false
+                        
+                    }) // redirect to New Facilties Pending Validation
+
                 } else {
                     setSubmitting(false)
                     setRejecting(false)
@@ -80,14 +89,21 @@ function approveRejectFacility (facility_id, comment, alert, reject, token, setS
             .then(resp => {
 
                 if (resp.ok) {
+
                     setSubmitting(false)
+
                     if (reject) {
                         alert.success(`Facility Approved successfully`)
                     } else {
                         alert.success(`Facility Rejected successfully`)
                     }
                     
-                    router.push('/facilities?qf=approved&approved=true&approved_national_level=true&rejected=false') // redirect Facilties Pending Approval
+                    router.push({
+                        pathname: '/facilities',
+                        to_publish: true,
+                        closed: false
+                    }) 
+
                 } else {
                     setSubmitting(false)
                     setRejecting(false)
@@ -151,9 +167,10 @@ function approveRejectFacilityUpdates (reject, alert, update_id, token, setSubmi
                         pathname: '/facilities',
                         query: {
                             filter: 'updated_pending_validation_facilities',
-                            have_updates: true
+                            have_updates: true,
+                            closed: false
                         }
-                    }) // redirect to New Facilties Pending Validation
+                    }) // redirect to Updated Facilties Pending Validation
                         
                 } else {
                     setSubmitting(false)
