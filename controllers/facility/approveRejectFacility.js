@@ -132,9 +132,6 @@ function approveRejectFacility (facility_id, comment, alert, reject, token, setS
                 console.error(e.message)
             })
     
-
-
-
 }
 
 function approveRejectFacilityUpdates (reject, alert, update_id, token, setSubmitting, setRejecting, setFormError) {
