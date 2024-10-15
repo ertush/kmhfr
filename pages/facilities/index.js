@@ -1029,7 +1029,7 @@ function FacilityHome(props) {
                                                                     }
 
                                                                     {
-                                                                        facility?.is_approved ?
+                                                                        facility?.approved ?
                                                                             <span className={"shadow-sm leading-none whitespace-nowrap text-sm col-start-2 py-1 px-2 bg-purple-200 font-semibold text-purple-900"}>Validated</span> :
                                                                             <span className={"shadow-sm leading-none whitespace-nowrap text-sm col-start-2 py-1 px-2 bg-gray-500 font-semibold text-gray-50"}>Not Validated</span>
                                                                     }
