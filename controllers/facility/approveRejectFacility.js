@@ -30,13 +30,16 @@ function validateRejectFacility (facility_id, reject, comment, alert, token, set
                         alert.success("Facility rejected successfully")
                     }
 
+
+
                     router.push({
                         pathname: '/facilities',
-                        filter:'pending_validation_facilities',
-                        pending_approval: true,
-                        has_edits: false
-                        
-                    }) // redirect to New Facilties Pending Validation
+                        query: {
+                            filter:'pending_validation_facilities',
+                            pending_approval: true,
+                            has_edits: false
+                        }
+                    }) // redirect to New   Facilties Pending Validation
 
                 } else {
                     setSubmitting(false)
@@ -100,8 +103,10 @@ function approveRejectFacility (facility_id, comment, alert, reject, token, setS
                     
                     router.push({
                         pathname: '/facilities',
-                        to_publish: true,
-                        closed: false
+                        query: {
+                            to_publish: true,
+                            closed: false
+                        }
                     }) 
 
                 } else {
