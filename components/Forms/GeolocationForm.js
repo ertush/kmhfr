@@ -120,8 +120,8 @@ export function GeolocationForm({ editMode }) {
       if (payload) {
 
         const url = options?.data?.lat_long && options?.data?.coordinates ? 
-        `${process.env.NEXT_PUBLIC_API_URL}/gis/facility_coordinates/${options?.data?.lat_long && `${options?.data?.coordinates}/`}` :
-        `${process.env.NEXT_PUBLIC_API_URL}/gis/facility_coordinates/`
+        `${process.env.NEXT_PUBLIC_API_URL}/gis/facility_coordinates/${options?.data?.lat_long && `${options?.data?.coordinates}/?access_token=${options?.token}`}` :
+        `${process.env.NEXT_PUBLIC_API_URL}/gis/facility_coordinates/?access_token=${options?.token}`
         
 
         fetch(url, {
@@ -209,7 +209,7 @@ export function GeolocationForm({ editMode }) {
     // console.log({payload})
 
 
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/gis/facility_coordinates/`, {
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/gis/facility_coordinates/?access_token=${options?.token}`, {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
