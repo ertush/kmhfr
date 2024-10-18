@@ -1,6 +1,6 @@
 
 import { forwardRef } from 'react'
-
+import {v4 as uuid} from 'uuid'
 
 const Select = forwardRef(function Select(props, ref) {
 
@@ -12,7 +12,7 @@ const Select = forwardRef(function Select(props, ref) {
           className='flex-none w-full p-2 border border-gray-800 rounded bg-transparent flex-grow  placeholder-gray-200  focus:border-black outline-none'>
           {
             ((_options) => _options.map(({ value, label }, i) =>
-              <option className={`py-1 hover:bg-red-300 text-normal font-normal ${i == 0 ? 'text-gray-300' : ''}`} key={i} value={value}>{label}</option>
+              <option className={`py-1 hover:bg-red-300 text-normal font-normal ${i == 0 ? 'text-gray-300' : ''}`} key={uuid()} value={value}>{label}</option>
             ))(props.options?.length ? [{label:props.placeholder ??  "Select option..", value:""}, ...props.options] : [])
           }
         </select>
