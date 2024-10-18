@@ -105,9 +105,9 @@ function FacilityHome(props) {
 
     // FilterOptions
     const countyFilterOptions = filters?.county?.map(({ id, name }) => ({ value: id, label: name }))
-    const subCountyFilterOptions = filters?.sub_county?.map(({ id, name }) => ({ value: id, label: name }))
-    const constituencyFilterOptions = filters?.constituency?.map(({ id, name }) => ({ value: id, label: name }))
-    const wardFilterOptions = filters?.ward?.map(({ id, name }) => ({ value: id, label: name }))
+    const [subCountyFilterOptions, setSubCountyFilterOptions] = useState(() => filters?.sub_county?.map(({ id, name }) => ({ value: id, label: name })))
+    const [wardFilterOptions, setWardFilterOptions] = useState(() => filters?.ward?.map(({ id, name }) => ({ value: id, label: name })))
+    const [constituencyFilterOptions, setConstituencyFilterOptions] = useState(() => filters?.constituency?.map(({ id, name }) => ({ value: id, label: name })))
     const facilityTypeFilterOptions = filters?.facility_type?.map(({ id, name }) => ({ value: id, label: name }))
     const facilityTypeDetailsFilterOptions = filters?.facility_type_details?.map(({ id, name }) => ({ value: id, label: name }))
     const kephLevelFilterOptions = filters?.keph_level?.map(({ id, name }) => ({ value: id, label: name }))
@@ -115,12 +115,6 @@ function FacilityHome(props) {
     const ownerFilterOptions = filters?.owner?.map(({ id, name }) => ({ value: id, label: name }))
     // const serviceFilterOptions = filters['service']?.map(({ id, name }) => ({ value: id, label: name }))
     const operationStatusFilterOptions = filters?.operation_status?.map(({ id, name }) => ({ value: id, label: name }))
-
-
-
-
-
-
 
 
 
@@ -169,6 +163,64 @@ function FacilityHome(props) {
             return { sub_county: userSubCounty }
         } else {
             return {}
+        }
+    }
+
+
+    async function handleOrgUnitFilter(event) {
+        event.preventDefault()
+
+        const url = (() => {
+            if(event.target?.name === 'county') {
+                return `${process.env.NEXT_PUBLIC_API_URL}/common/sub_counties/?county=${event.currentTarget?.value}`
+                
+            }
+
+            if(event.target?.name === 'sub_county') {
+                return `${process.env.NEXT_PUBLIC_API_URL}/common/wards/?sub_county=${event.currentTarget?.value}`
+            }
+
+            if(event.target?.name === 'constituency') {
+                return `${process.env.NEXT_PUBLIC_API_URL}/common/wards/?constituency=${event.currentTarget?.value}`
+            }
+
+           
+        })()
+
+        try {
+
+            const filteredOrgUnits = await fetch(url, {
+                headers: {
+                    Accept: 'application/json',
+                    Authorization: `Bearer ${props?.token}`,
+                }
+            })
+
+            if(event.target?.name === 'county') {
+                const subCounties = (await filteredOrgUnits?.json())?.results
+
+                setSubCountyFilterOptions(() => subCounties?.map(({id, name}) => ({value: id, label: name})))
+                event.target.value = event.target?.value
+
+                console.log({countyFilterOptions})
+            }
+
+            if(event.target?.name === 'sub_county') {
+                const wards = (await filteredOrgUnits?.json())?.results
+                setWardFilterOptions(wards?.map(({id, name}) => ({value: id, label: name})))
+            }
+            if(event.target?.name === 'constituency') {
+                const wards = (await filteredOrgUnits?.json())?.results
+                setWardFilterOptions(wards?.map(({id, name}) => ({value: id, label: name})))
+
+            }
+
+            // return (await filteredOrgUnits?.json())?.results
+        }
+         catch (e) {
+            if(e instanceof Error) {
+                console.error(`Error occurred. \nOrgUnit: ${e.message}\n`)
+            }
         }
     }
 
@@ -340,11 +392,6 @@ function FacilityHome(props) {
                                                     </Menu.Button>
                                                 </div>
 
-                                                {/* <pre>
-                                    {
-                                        JSON.stringify(orgUnitFilter, null, 2)
-                                    }
-                                </pre> */}
 
                                                 <Menu.Items as="ul" className="absolute top-0 left-[100%] w-auto flex flex-col gap-y-1 items-center justify-start bg-white  shadow-lg border border-gray-200 p-1">
 
@@ -428,7 +475,8 @@ function FacilityHome(props) {
                                                                 placeholder="Select County"
                                                                 name="county"
                                                                 onChange={
-                                                                    (e) => null
+                                                                    e => null
+                                                                    // handleOrgUnitFilter
                                                                 }
 
                                                             />
@@ -442,9 +490,10 @@ function FacilityHome(props) {
                                                             <CustomSelect
                                                                 options={subCountyFilterOptions}
                                                                 placeholder="Select Sub County"
-                                                                name="county"
+                                                                name="sub_county"
                                                                 onChange={
-                                                                    (e) => null
+                                                                    e => null
+                                                                    // handleOrgUnitFilter
                                                                 }
 
                                                             />
@@ -568,63 +617,7 @@ function FacilityHome(props) {
                                                             />
                                                         </div>
 
-                                                        {/* Service */}
-                                                        {/* <div key={uuid()} className="w-full flex flex-col items-start justify-start gap-1 mb-1">
-                                                            <label htmlFor="service" className="text-gray-600 capitalize text-sm">Service</label>
-
-
-                                                            <CustomSelect
-                                                                options={serviceFilterOptions}
-                                                                placeholder="Select Service"
-                                                                name="service"
-                                                                
-                                                
-                                                            />
-                                                        </div> */}
-
-
-                                                        
-                                                        
-                                                        {/* {  
-                                                                        filters && Object.keys(filters).length > 0 &&
-                                                                        Object.keys(fltrs).map((ft) => (
-                                                                           
-                                                                                
-                                                                                <div key={uuid()} className="w-full flex flex-col items-start justify-start gap-1 mb-1">
-                                                                                <label htmlFor={ft} className="text-gray-600 capitalize text-sm">{ft.split('_').join(' ')}</label>
-                                                                               
-
-                                                                                <CustomSelect
-                                                                                            options={Array.from(filters[ft] || [],
-                                                                                                fltopt => {
-                                                                                                    return {
-                                                                                                        value: fltopt.id, label: fltopt.name
-                                                                                                    }
-                                                                                                })}
-                                                                                            
-                                                                                            placeholder={`Select ${ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}`}
-                                                                                            name={ft} // facility_type
-                                                                                        //     onChange={sl => {
-                                                                                        //         let nf = {}
-                                                                                        //         if (Array.isArray(sl)) {
-                                                                                        //             nf[ft] = (drillDown[ft] ? drillDown[ft] + ',' : '') + Array.from(sl, l_ => l_.value).join(',')
-                                                                                        //         } else if (sl && sl !== null && typeof sl === 'object' && !Array.isArray(sl)) {
-                                                                                        //             nf[ft] = sl.value
-                                                                                        //         } else {
-                                                                                        //             delete nf[ft]
-                                                                                                   
-                                                                                        //         }
-                                                                                        //         setDrillDown({ ...drillDown, ...nf })
-                                                                                        // }}
-
-                                                                                        /> 
-                                                                                </div>
-                                                                        ))
-                                                                    } */}
-
-                                                        {/* From and To Date Picker Components */}
-
-
+                                            
                                                         {/* Yes/No Dialog */}
                                                         <div className="w-full col-span-3 gap-x-3 grid md:grid-cols-4 grid-cols-2 mb-3">
                                                             <div className='flex flex-col items-start justify-center gap-1'>
@@ -920,12 +913,6 @@ function FacilityHome(props) {
                                 </h5>
                             </div>
 
-                            {/* <pre>
-                                                {
-                                                    JSON.stringify(props?.facilities, null, 2)
-                                                }
-                                      </pre> */}
-
 
                             {/*  Quick Filters status display */}
                             {
@@ -1010,7 +997,7 @@ function FacilityHome(props) {
                                                                                 {
                                                                                     facility?.approved_national_level ?
                                                                                         "Approved" : "Not Approved"}</span> :
-                                                                            facility?.rejected && <span className={"shadow-sm  col-start-2 leading-none whitespace-nowrap px-2 text-sm font-semibold py-1 bg-red-200 text-red-900"}>Rejected Validate</span>
+                                                                                         facility?.rejected && <span className={"shadow-sm  col-start-2 leading-none whitespace-nowrap px-2 text-sm font-semibold py-1 bg-red-200 text-red-900"}>Rejected Validate</span>
                                                                     }
 
                                                                     {
@@ -1298,7 +1285,11 @@ export async function getServerSideProps(ctx) {
           let result = {}
 
           const fetchResource = async (endpoint, resource = null) => {
-            if(resource === "facility_type" || resource === "facility_type_details") {
+            if(
+                resource === "facility_type" || 
+                resource === "facility_type_details" || 
+                resource === "keph_level"
+            ) {
             try {
                 const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${endpoint}`, {
                        headers: {
@@ -1343,11 +1334,11 @@ export async function getServerSideProps(ctx) {
         
             result['facility_type'] = await fetchResource('/facilities/facility_types/?is_parent=true&fields=id,name', 'facility_type')
             result['facility_type_details'] = await fetchResource('/facilities/facility_types/?is_parent=false&fields=id,name', 'facility_type_details')
-            result = {...result, ...(await fetchResource('/common/filtering_summaries/?fields=county,sub_county,constituency,ward,keph_level,owner,owner_type,operation_status'))}
+            result['keph_level'] = await fetchResource('/facilities/keph/?is_active=true&fields=id,name', 'keph_level')
+            result = {...result, ...(await fetchResource('/common/filtering_summaries/?fields=county,sub_county,constituency,ward,owner,owner_type,operation_status'))}
 
             return result
               
-        
 
          
     }
