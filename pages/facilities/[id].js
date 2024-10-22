@@ -869,6 +869,12 @@ export async function getServerSideProps(ctx) {
 
 const queryId = zSchema.parse(ctx.query).id
 
+// Debug
+
+console.log("[DEBUG::Query ID]: ", {
+  queryId
+})
+
   if (ctx.query.q) {
     const query = ctx.query.q;
     if (typeof window !== "undefined" && query.length > 2) {
@@ -897,13 +903,22 @@ const queryId = zSchema.parse(ctx.query).id
           "/";
         return fetch(url, {
           headers: {
-            Authorization: "Bearer " + token,
-            Accept: "application/json",
+            'Accept': 'application/json, text/plain, */*',
+            'Accept-Encoding': 'gzip, deflate, br, zstd',
+            'Authorization': `Bearer ${token}`,
+            'Accept-Language': 'en-US,en;q=0.5',
+            'Cache-Control': 'no-cache, no-store, max-age=0',
+            'Connection': 'keep-alive'
           },
         })
           .then((r) => r.json())
           .then(async (json) => {
             allOptions["data"] = json ?? null
+
+            // Debug
+            console.log("[DEBUG::allOptions['data']]: ", {
+              'allOptions["data"]': allOptions?.data
+            })
 
 
             // fetch ward boundaries
