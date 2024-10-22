@@ -853,6 +853,13 @@ function Facility(props) {
 
 
 export async function getServerSideProps(ctx) {
+
+  ctx?.res?.setHeader(
+    'Cache-Control',
+    'no-cache, no-store, max-age=0'
+  )
+
+
   const allOptions = {};
 
   const zSchema = z.object({
@@ -906,8 +913,12 @@ const queryId = zSchema.parse(ctx.query).id
                   `${process.env.NEXT_PUBLIC_API_URL}/common/wards/${json.ward}/`,
                   {
                     headers: {
-                      Authorization: "Bearer " + token,
-                      Accept: "application/json",
+                      'Accept': 'application/json, text/plain, */*',
+                      'Accept-Encoding': 'gzip, deflate, br, zstd',
+                      'Authorization': `Bearer ${token}`,
+                      'Accept-Language': 'en-US,en;q=0.5',
+                      'Cache-Control': 'no-cache, no-store, max-age=0',
+                      'Connection': 'keep-alive'
                     },
                   }
                 );
@@ -930,8 +941,12 @@ const queryId = zSchema.parse(ctx.query).id
                 const facilityUpdateData = await (await fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facility_updates/${json.latest_update}/`,
                   {
                     headers: {
-                      Authorization: "Bearer " + token,
-                      Accept: "application/json",
+                      'Accept': 'application/json, text/plain, */*',
+                      'Accept-Encoding': 'gzip, deflate, br, zstd',
+                      'Authorization': `Bearer ${token}`,
+                      'Accept-Language': 'en-US,en;q=0.5',
+                      'Cache-Control': 'no-cache, no-store, max-age=0',
+                      'Connection': 'keep-alive'
                     },
                   }
                 )).json()
@@ -949,8 +964,12 @@ const queryId = zSchema.parse(ctx.query).id
               try {
                 const resp = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${json?.id}/?fields=__rev__&include_audit=true`, {
                   headers: {
-                    'Accept': 'application/json',
-                    'Authorization': `Bearer ${token}`
+                    'Accept': 'application/json, text/plain, */*',
+                    'Accept-Encoding': 'gzip, deflate, br, zstd',
+                    'Authorization': `Bearer ${token}`,
+                    'Accept-Language': 'en-US,en;q=0.5',
+                    'Cache-Control': 'no-cache, no-store, max-age=0',
+                    'Connection': 'keep-alive'
                   }
                 })
 
