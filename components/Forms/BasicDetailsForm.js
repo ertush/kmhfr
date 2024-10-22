@@ -1513,7 +1513,7 @@ export function BasicDeatilsForm({ editMode }) {
             <label
               htmlFor='reporting_in_dhis'
               className='text-gray-700 capitalize text-sm flex-grow'>
-              *Is this facililty reporting ?{' '}
+              *Is this facililty reporting in KHIS?{' '}
 
             </label>
             <span className='flex items-center gap-x-1'>
