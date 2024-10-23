@@ -250,7 +250,7 @@ function Home(props) {
 								{/* Bread Crumbs */}
 
 								
-								<div className={"col-span-5 rounded flex justify-between w-full bg-gray-50  text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-gray-600" : "border-red-600")}>
+								<div className={"col-span-5 rounded flex-col md:flex justify-between w-full bg-gray-50  text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-gray-600" : "border-red-600")}>
 									<h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
 										{'Facilities'}
 									</h2>

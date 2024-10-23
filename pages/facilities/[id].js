@@ -908,7 +908,8 @@ console.log("[DEBUG::Query ID]: ", {
             'Authorization': `Bearer ${token}`,
             'Accept-Language': 'en-US,en;q=0.5',
             'Cache-Control': 'no-cache, no-store, max-age=0',
-            'Connection': 'keep-alive'
+            'Connection': 'keep-alive',
+            'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:131.0) Gecko/20100101 Firefox/131.0'
           },
         })
           .then((r) => r.json())
