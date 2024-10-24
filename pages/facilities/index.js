@@ -783,7 +783,6 @@ function FacilityHome(props) {
                                         }
                                         onSubmit={(values) => {
 
-                                            router.refresh()
 
                                             const query = values.q.split(' ').join('+');
                                             const href = new URL(window.location.href)
