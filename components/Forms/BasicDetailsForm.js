@@ -153,9 +153,9 @@ export function BasicDeatilsForm({ editMode }) {
   // Event handlers
   const handleFocus = useCallback((e) => {
 
-    if(editMode){
-      setFilteredOptions(countyId, e.currentTarget.name)
-    } 
+    // if(editMode){
+    //   setFilteredOptions(countyId, e.currentTarget.name)
+    // } 
     
     if(!editMode) {
       if(e.currentTarget.name === 'sub_county_id' && !countyId) setSubCountyOptions([])

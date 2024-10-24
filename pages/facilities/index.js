@@ -32,8 +32,6 @@ function FacilityHome(props) {
     const router = useRouter()
 
     
-    
-
     // const facilities = props?.data?.results
     const filters = props?.filters
 
@@ -785,6 +783,8 @@ function FacilityHome(props) {
                                         }
                                         onSubmit={(values) => {
 
+                                            router.refresh()
+
                                             const query = values.q.split(' ').join('+');
                                             const href = new URL(window.location.href)
                                             const filter = href.searchParams.get('filter')
@@ -1257,7 +1257,7 @@ function FacilityHome(props) {
 
 export async function getServerSideProps(ctx) {
 
-
+    
     ctx?.res?.setHeader(
         'Cache-Control',
         'no-cache, no-store, max-age=0'
