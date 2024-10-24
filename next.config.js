@@ -26,7 +26,7 @@ const nextConfig = {
     async headers() {
       return [
         {
-          source: '/:path*',
+          source: '/facilities',
           headers: [
             {
               key: 'Cache-Control',
@@ -34,6 +34,88 @@ const nextConfig = {
             },
           ],
         },
+        {
+          source: '/facilities/:slug',
+          headers: [
+            {
+              key: 'Cache-Control',
+              value: 'no-cache, no-store, max-age=0'
+            },
+          ],
+        },
+        {
+          source: '/facilities/edit/:slug',
+          headers: [
+            {
+              key: 'Cache-Control',
+              value: 'no-cache, no-store, max-age=0'
+            },
+          ],
+        },
+        {
+          source: '/facilities/edit/:slug',
+          headers: [
+            {
+              key: 'Cache-Control',
+              value: 'no-cache, no-store, max-age=0'
+            },
+          ],
+        },
+        {
+          source: '/facilities/upgrade/:slug',
+          headers: [
+            {
+              key: 'Cache-Control',
+              value: 'no-cache, no-store, max-age=0'
+            },
+          ],
+        },
+        {
+          source: '/facilities/approve_reject/:slug',
+          headers: [
+            {
+              key: 'Cache-Control',
+              value: 'no-cache, no-store, max-age=0'
+            },
+          ],
+        },
+        {
+          source: '/community-units',
+          headers: [
+            {
+              key: 'Cache-Control',
+              value: 'no-cache, no-store, max-age=0'
+            },
+          ],
+        },
+        {
+          source: '/community-units/:slug',
+          headers: [
+            {
+              key: 'Cache-Control',
+              value: 'no-cache, no-store, max-age=0'
+            },
+          ],
+        },
+        {
+          source: '/community-units/edit/:slug',
+          headers: [
+            {
+              key: 'Cache-Control',
+              value: 'no-cache, no-store, max-age=0'
+            },
+          ],
+        },
+        {
+          source: '/community-units/approve/:slug',
+          headers: [
+            {
+              key: 'Cache-Control',
+              value: 'no-cache, no-store, max-age=0'
+            },
+          ],
+        },
+
       ]
     }
 
