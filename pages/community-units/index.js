@@ -547,16 +547,20 @@ export async function getServerSideProps(ctx) {
 
 	async function fetchData(token) {
 		let filterQuery = JSON.parse(JSON.stringify(ctx.query));
+		delete filterQuery['sub_county']
+		console.log({filterQuery})
+
 		let qry = ''
 		let url
 
 		if (ctx.query !== null) {
 			qry = Object.keys(filterQuery).map(function (key) {
+				// if(key == 'sub_county') return
 				const er = `${key}=${filterQuery[key]}`
 				return er
 			}).join('&')
 
-			// console.log(qry);
+			
 			url = `${process.env.NEXT_PUBLIC_API_URL}/chul/units/?${qry}&fields=id,code,name,status_name,facility_name,has_edits,facility_county,facility_subcounty,facility_ward,date_established`;
 		} else {
 			url = `${process.env.NEXT_PUBLIC_API_URL}/chul/units/?fields=id,code,name,status_name,date_established,facility,facility_name,facility_county,facility_subcounty,facility_ward,facility_constituency`;
@@ -569,28 +573,28 @@ export async function getServerSideProps(ctx) {
 			url += `&search=${query.searchTerm}`;
 		}
 
-		let other_posssible_filters = [
-			'county',
-			'constituency',
-			'ward',
-			'status',
-			'sub_county',
-		];
+		// let other_posssible_filters = [
+		// 	'county',
+		// 	'constituency',
+		// 	'ward',
+		// 	'status',
+		// 	'sub_county',
+		// ];
 
-		other_posssible_filters.map((flt) => {
-			if (ctx?.query[flt]) {
-				query[flt] = ctx?.query[flt];
-				url = url + '&' + flt.replace('chu_', '') + '=' + ctx?.query[flt];
-			}
-		});
+		// other_posssible_filters.map((flt) => {
+		// 	if (ctx?.query[flt]) {
+		// 		query[flt] = ctx?.query[flt];
+		// 		url = url + '&' + flt.replace('chu_', '') + '=' + ctx?.query[flt];
+		// 	}
+		// });
 
 		
 
 		let current_url = url + `&page_size=11000`;
 
-		if (ctx?.query?.page) {
-			url = `${url}&page=${ctx.query.page}`;
-		}
+		// if (ctx?.query?.page) {
+		// 	url = `${url}&page=${ctx.query.page}`;
+		// }
 
 		
 		const {response: user} = await getUserDetails(token, `${process.env.NEXT_PUBLIC_API_URL}/rest-auth/user/`)
@@ -607,8 +611,8 @@ export async function getServerSideProps(ctx) {
 	
 			} else if(userGroup === 2) { // SCHRIO
 	
-				const userSubCountyID = user?.user_sub_counties[0]?.sub_county
-				url = `${url}&sub_county=${userSubCountyID}`
+				const userSubCountyIDs = user?.user_sub_counties.length > 1 ? user?.user_sub_counties?.map(({sub_county}) => sub_county)?.join(',') : user?.user_sub_counties[0]?.sub_county
+				url = `${url}&sub_county=${userSubCountyIDs}`
 			
 			} 
 
