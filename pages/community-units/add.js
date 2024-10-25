@@ -1369,14 +1369,16 @@ export async function getServerSideProps({req, res}) {
 
 
 
-			const userSubCountyID = resp?.user_sub_counties[0]?.sub_county
+			const userSubCountyIDs = resp?.user_sub_counties.length > 1 ? resp?.user_sub_counties.map(({sub_county}) => sub_county).join(',') : resp?.user_sub_counties[0]?.sub_county
 			const userCountyID = resp?.county
 			const userGroup = resp?.groups[0]?.id
 
-
-			if(userGroup == 2 && userSubCountyID){
 			
-			const subCountyFacilitiesURL = `${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/?sub_county=${userSubCountyID}&reporting_in_dhis=true&closed=false&fields=id,name,county,sub_county_name,constituency,ward_name&page_size=300`
+			if(userGroup == 2 && userSubCountyIDs){
+			
+			const subCountyFacilitiesURL = `${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/?sub_county=${userSubCountyIDs}&reporting_in_dhis=true&closed=false&fields=id,name,county,sub_county_name,constituency,ward_name&page_size=300`
+
+		
 
 		   return fetch(subCountyFacilitiesURL, {
 				headers:{
@@ -1486,15 +1488,17 @@ export async function getServerSideProps({req, res}) {
   
 		response['token'] = token
 	   
-		return {
-		  props: response 
-		}
+		
 		
 	  }
 	  
 	catch(e) {
 	  console.error(e.message)
 	}
+
+	return {
+		props: response
+	  }
   
 }
 

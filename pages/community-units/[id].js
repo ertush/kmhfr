@@ -756,7 +756,9 @@ export async function getServerSideProps (ctx) {
     activity_log: []
   }
 
-  const response = (() => fetch(`${process.env.NEXT_PUBLIC_API_URL}/chul/units/${queryId}/`, {
+  let response = {}
+
+  response = (() => fetch(`${process.env.NEXT_PUBLIC_API_URL}/chul/units/${queryId}/`, {
     headers: {
       'Accept': 'application/json',
       'Authorization': `Bearer ${token}`
@@ -787,7 +789,7 @@ export async function getServerSideProps (ctx) {
   })
   .catch(e => {
     console.error('Error when fetching props?.cu details for: ', queryId, e.message)
-  }))();
+  }))()
 
 
   return {

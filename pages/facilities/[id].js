@@ -952,9 +952,9 @@ console.log("[DEBUG::Query ID]: ", {
             }
 
             // fetch facility updates
-            if (json) {
+            if (json?.latest_update) {
               try {
-                const facilityUpdateData = await (await fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facility_updates/${json.latest_update}/`,
+                const facilityUpdateData = await (await fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facility_updates/${json?.latest_update}/`,
                   {
                     headers: {
                       'Accept': 'application/json, text/plain, */*',
