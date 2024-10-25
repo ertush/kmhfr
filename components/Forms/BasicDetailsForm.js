@@ -563,11 +563,12 @@ export function BasicDeatilsForm({ editMode }) {
 
         if (facilityData) {
           fetch(
-            `${process.env.NEXT_PUBLIC_API_URL}/common/wards/${facilityData?.ward}`,
+            `${process.env.NEXT_PUBLIC_API_URL}/common/wards/${facilityData?.ward}/`,
             {
               headers: {
-                Authorization: 'Bearer ' + options?.token,
-                Accept: 'application/json',
+              'Accept': 'application/json',
+              'Content-Type': 'application/json;charset=UTF-8',
+              'Authorization': `Bearer ${options?.token}`
               }
             }
           )

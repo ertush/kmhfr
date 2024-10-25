@@ -104,7 +104,8 @@ function approveRejectFacility (facility_id, comment, alert, reject, token, setS
                     router.push({
                         pathname: '/facilities',
                         query: {
-                            to_publish: true,
+                            filter: pending_approval_facilities,
+                            to_publish: false,
                             closed: false
                         }
                     }) 

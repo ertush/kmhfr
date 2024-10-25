@@ -115,6 +115,16 @@ const nextConfig = {
             },
           ],
         },
+        // For debug only
+        {
+          source: '/test-fetch',
+          headers: [
+            {
+              key: 'Cache-Control',
+              value: 'no-cache, no-store, max-age=0'
+            },
+          ],
+        },
 
       ]
     }

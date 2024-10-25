@@ -50,3 +50,6 @@ todo.md
 /test-results/
 /playwright-report/
 /playwright/.cache/
+
+# pages
+pages/test-fetch.js
