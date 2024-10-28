@@ -193,7 +193,7 @@ function EditCommunityUnit(props){
                   groupID == 11 ||
                   groupID == 1) &&
                   (
-                  props?.cu?.is_approved == null ||
+                  (props?.cu?.is_approved === null || props?.cu?.is_approved === false) ||
                   props?.cu?.has_edits 
                 ) &&
                 <button
@@ -205,7 +205,7 @@ function EditCommunityUnit(props){
                 >
                   {/* Dynamic Button Rendering */}
                   {
-                    props?.cu?.is_approved == null && props?.cu?.has_edits == false &&
+                    (props?.cu?.is_approved === null || props?.cu?.is_approved === false) && props?.cu?.has_edits == false &&
                     "Approve Or Reject CHU"
                   }
                   {
