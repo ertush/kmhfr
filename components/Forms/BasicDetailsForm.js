@@ -129,7 +129,6 @@ export function BasicDeatilsForm({ editMode }) {
           if (!_wards) throw Error('Unable to Fetch sub counties')
 
 
-
         if(selectName === "sub_county_id") setSubCountyOptions(() => _sub_counties?.map(({id, name}) => ({value:id, label:name})))
 
         if(selectName === "constituency_id") setConstituencyOptions(() => _constitutencies?.map(({id, name}) => ({value:id, label:name})))
@@ -153,9 +152,16 @@ export function BasicDeatilsForm({ editMode }) {
   // Event handlers
   const handleFocus = useCallback((e) => {
 
-    // if(editMode){
-    //   setFilteredOptions(countyId, e.currentTarget.name)
-    // } 
+    if(
+      (
+        e.currentTarget.name === 'constituency_id' ||
+        e.currentTarget.name === 'sub_county_id' ||
+        e.currentTarget.name === 'ward'
+      )
+      && editMode
+    ) {
+      setFilteredOptions(countyId, e.currentTarget.name)
+    }
     
     if(!editMode) {
       if(e.currentTarget.name === 'sub_county_id' && !countyId) setSubCountyOptions([])
@@ -200,6 +206,7 @@ export function BasicDeatilsForm({ editMode }) {
       setCountyId(e.currentTarget.value)
       // Filter sub county, constituency and ward Options in edit mode
     }
+
 
 
 
@@ -416,8 +423,7 @@ export function BasicDeatilsForm({ editMode }) {
           })
 
           // console.log({ filteredWards, wards })
-
-          setWardOptions(filteredWards ?? options?.sub_counties)
+          if(!wardOptions) setWardOptions(filteredWards ?? options?.sub_counties)
 
         }
         catch (e) {
