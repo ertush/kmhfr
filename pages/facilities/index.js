@@ -103,8 +103,14 @@ function FacilityHome(props) {
 
     // FilterOptions
     const countyFilterOptions = filters?.county?.map(({ id, name }) => ({ value: id, label: name }))
-    const [subCountyFilterOptions, setSubCountyFilterOptions] = useState(() => filters?.sub_county?.map(({ id, name }) => ({ value: id, label: name })))
-    const [wardFilterOptions, setWardFilterOptions] = useState(() => filters?.ward?.map(({ id, name }) => ({ value: id, label: name })))
+    
+    const [subCountyFilterOptions, setSubCountyFilterOptions] = useState((prev) => {
+        if(!prev) return []
+        return filters?.sub_county?.map(({ id, name }) => ({ value: id, label: name }))
+    })
+
+    const [wardFilterOptions, setWardFilterOptions] = useState(() => filters?.ward?.map(({ id, name }) => ({ value: id, label: name }))
+)
     const [constituencyFilterOptions, setConstituencyFilterOptions] = useState(() => filters?.constituency?.map(({ id, name }) => ({ value: id, label: name })))
     const facilityTypeFilterOptions = filters?.facility_type?.map(({ id, name }) => ({ value: id, label: name }))
     const facilityTypeDetailsFilterOptions = filters?.facility_type_details?.map(({ id, name }) => ({ value: id, label: name }))
@@ -182,7 +188,6 @@ function FacilityHome(props) {
                 return `${process.env.NEXT_PUBLIC_API_URL}/common/wards/?constituency=${event.currentTarget?.value}`
             }
 
-           
         })()
 
         try {
@@ -198,9 +203,9 @@ function FacilityHome(props) {
                 const subCounties = (await filteredOrgUnits?.json())?.results
 
                 setSubCountyFilterOptions(() => subCounties?.map(({id, name}) => ({value: id, label: name})))
-                event.target.value = event.target?.value
 
-                console.log({countyFilterOptions})
+                event.target.defaultValue = event.target?.value
+                // console.log({})
             }
 
             if(event.target?.name === 'sub_county') {
@@ -467,12 +472,11 @@ function FacilityHome(props) {
 
                                                         <CustomSelect
                                                             options={countyFilterOptions}
-
+                                                            defaultValue={''}
                                                             placeholder="Select County"
                                                             name="county"
                                                             onChange={
-                                                                e => null
-                                                                // handleOrgUnitFilter
+                                                                handleOrgUnitFilter
                                                             }
 
                                                         />
@@ -488,8 +492,7 @@ function FacilityHome(props) {
                                                             placeholder="Select Sub County"
                                                             name="sub_county"
                                                             onChange={
-                                                                e => null
-                                                                // handleOrgUnitFilter
+                                                                handleOrgUnitFilter
                                                             }
 
                                                         />

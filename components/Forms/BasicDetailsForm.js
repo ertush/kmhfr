@@ -201,18 +201,13 @@ export function BasicDeatilsForm({ editMode }) {
     const keph = document.getElementsByName('keph_level');
     const kephDisplay = document.getElementsByName('keph_level_display');
 
-
     if(e.currentTarget.name === 'county_id') {
       setCountyId(e.currentTarget.value)
       // Filter sub county, constituency and ward Options in edit mode
     }
 
-
-
-
     // Handle facility Type Change
     if (e.target.name == 'facility_type_parent') {
-
       // Keph form validation
       const facilityTypeLabel = e.target.selectedOptions[0].innerText
 
@@ -1760,7 +1755,6 @@ export function BasicDeatilsForm({ editMode }) {
                   onChange={handleSelectChange}
                   onFocus={handleFocus}
                   name='county_id'
-
                 />
 
 
