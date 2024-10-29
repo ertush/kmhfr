@@ -1030,7 +1030,7 @@ export async function getServerSideProps(ctx) {
                         }
                     })
 
-                    allOptions["facilityData"] = await _data.json() ?? null;
+                    allOptions["facilityData"] = (await _data.json()) ?? null;
 
                 }
                 catch (err) {

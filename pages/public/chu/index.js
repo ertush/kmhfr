@@ -196,13 +196,12 @@ function Home(props) {
 
 	if(isClient){
 		return (
-			<div>
-				<Head>
+            (<div>
+                <Head>
 					<title>KMHFR | Community Units</title>
 					<link rel='icon' href='/favicon.ico' />
 				</Head>
-
-				<MainLayout isLoading={false} searchTerm={props?.query?.searchTerm}>
+                <MainLayout isLoading={false} searchTerm={props?.query?.searchTerm}>
 					<div className='w-full md:w-[80%] md:mx-auto px-4 md:px-0 grid grid-cols-1 gap-y-8 md:grid-cols-5 md:gap-4 py-2 my-4 md:max-h-auto'>
 						<div className='col-span-1 md:col-span-5 flex flex-col gap-3 md:gap-5'>
 							<div className='flex flex-wrap items-center justify-between gap-2 text-sm md:text-base py-3'>
@@ -653,8 +652,8 @@ function Home(props) {
 						
 					</div>
 				</MainLayout>
-			</div>
-		)
+            </div>)
+        );
 	}
 	else
 	{

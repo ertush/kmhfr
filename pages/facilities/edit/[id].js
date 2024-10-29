@@ -86,153 +86,148 @@ const EditFacility = withErrorBoundary(
 		if (isClient) {
 
 		
-			return (
-				<>
-					<Head>
-						<title>KMHFR | Edit Facility</title>
-						<link rel="icon" href="/favicon.ico" />
-						<link rel="stylesheet" href="/assets/css/leaflet.css" />
+			return (<>
+                <Head>
+                    <title>KMHFR | Edit Facility</title>
+                    <link rel="icon" href="/favicon.ico" />
+                    <link rel="stylesheet" href="/assets/css/leaflet.css" />
 
-					</Head>
+                </Head>
+                <MainLayout isLoading={false} searchTerm={props?.query?.searchTerm}>
+                    <div className="w-full md:w-[85%] md:mx-auto px-4 md:px-0 grid grid-cols-1 md:grid-cols-5 h-full gap-4">
+                        <div className="md:col-span-5 col-span-1 flex flex-col gap-3 md:gap-5 mb-4">
+                            <div className="flex flex-wrap items-center  justify-between gap-2 text-sm md:text-base py-3">
+                                <div className="flex flex-row mt-8 items-center justify-between gap-2 text-sm md:text-base py-3">
+                                    <Link className="text-gray-500" href="/facilities">Facilities</Link> {'/'}
+                                    <span className="text-gray-800">Edit</span>
+                                </div>
+                            </div>
 
-					<MainLayout isLoading={false} searchTerm={props?.query?.searchTerm}>
-						<div className="w-full md:w-[85%] md:mx-auto px-4 md:px-0 grid grid-cols-1 md:grid-cols-5 h-full gap-4">
-							<div className="md:col-span-5 col-span-1 flex flex-col gap-3 md:gap-5 mb-4">
-								<div className="flex flex-wrap items-center  justify-between gap-2 text-sm md:text-base py-3">
-									<div className="flex flex-row mt-8 items-center justify-between gap-2 text-sm md:text-base py-3">
-										<Link className="text-gray-500" href="/facilities">Facilities</Link> {'/'}
-										<span className="text-gray-800">Edit</span>
-									</div>
-								</div>
+                            <div className={"col-span-1 md:col-span-5 flex flex-col items-start w-full  border border-gray-600  text-black p-4 md:divide-x md:divide-gray-200z border-l-8 " + (true ? "border-gray-600" : "border-red-600")}>
+                                <h2 className='flex items-center text-xl text-start font-bold text-black capitalize gap-2'>
+                                    <span className="cursor-pointer hover:text-gray-800" onClick={() => router.push(`/facilities/${props?.data?.id}`)}>Editing  {props?.data?.official_name}</span>
+                                </h2>
+                                <h3 className='text-gray-900 font-semibold '>{props?.data?.facility_type_name ?? ''}</h3>
+                                <h4 className='text-gray-700'>{`# ${props?.data?.code ?? 'NO_CODE'}`}</h4>
+                            </div>
 
-								<div className={"col-span-1 md:col-span-5 flex flex-col items-start w-full  border border-gray-600  text-black p-4 md:divide-x md:divide-gray-200z border-l-8 " + (true ? "border-gray-600" : "border-red-600")}>
-									<h2 className='flex items-center text-xl text-start font-bold text-black capitalize gap-2'>
-										<span className="cursor-pointer hover:text-gray-800" onClick={() => router.push(`/facilities/${props?.data?.id}`)}>Editing  {props?.data?.official_name}</span>
-									</h2>
-									<h3 className='text-gray-900 font-semibold '>{props?.data?.facility_type_name ?? ''}</h3>
-									<h4 className='text-gray-700'>{`# ${props?.data?.code ?? 'NO_CODE'}`}</h4>
-								</div>
-
-							</div>
+                        </div>
 
 
 
-							{/* Facility Side Menu Filters */}
-							<div className="hidden md:flex col-span-1">
+                        {/* Facility Side Menu Filters */}
+                        <div className="hidden md:flex col-span-1">
 
-								<FacilitySideMenu
-									filters={filters}
-									states={[khisSynched, facilityFeedBack, pathId, allFctsSelected, title]}
-									stateSetters={[setKhisSynched, setFacilityFeedBack, setPathId, setAllFctsSelected, setTitle]} />
-							</div>
+                            <FacilitySideMenu
+                                filters={filters}
+                                states={[khisSynched, facilityFeedBack, pathId, allFctsSelected, title]}
+                                stateSetters={[setKhisSynched, setFacilityFeedBack, setPathId, setAllFctsSelected, setTitle]} />
+                        </div>
 
-							<button className='md:hidden relative p-2 border border-gray-800 rounded w-full self-start my-4' onClick={() => setIsMenuOpen(!isMenuOpen)}>
-								Facility Menu
-								{
-									!isMenuOpen &&
-									<KeyboardArrowRight className='w-8 aspect-square text-gray-800' />
-								}
+                        <button className='md:hidden relative p-2 border border-gray-800 rounded w-full self-start my-4' onClick={() => setIsMenuOpen(!isMenuOpen)}>
+                            Facility Menu
+                            {
+                                !isMenuOpen &&
+                                <KeyboardArrowRight className='w-8 aspect-square text-gray-800' />
+                            }
 
-								{
-									isMenuOpen &&
-									<KeyboardArrowDown className='w-8 aspect-square text-gray-800' />
-								}
+                            {
+                                isMenuOpen &&
+                                <KeyboardArrowDown className='w-8 aspect-square text-gray-800' />
+                            }
 
-								{
-									isMenuOpen &&
-									<FacilitySideMenu
-										filters={filters}
-										states={[khisSynched, facilityFeedBack, pathId, allFctsSelected, title]}
-										stateSetters={[setKhisSynched, setFacilityFeedBack, setPathId, setAllFctsSelected, setTitle]} />
-								}
-							</button>
+                            {
+                                isMenuOpen &&
+                                <FacilitySideMenu
+                                    filters={filters}
+                                    states={[khisSynched, facilityFeedBack, pathId, allFctsSelected, title]}
+                                    stateSetters={[setKhisSynched, setFacilityFeedBack, setPathId, setAllFctsSelected, setTitle]} />
+                            }
+                        </button>
 
-							{isSavedChanges && facilityUpdateData ? (
-								// Display Changes to be updated
-								<div className="col-span-1 md:col-span-4 bg-gray-50 p-3 shadow-md flex flex-col items-center md:gap-3 gap-y-3">
+                        {isSavedChanges && facilityUpdateData ? (
+                            // Display Changes to be updated
+                            (<div className="col-span-1 md:col-span-4 bg-gray-50 p-3 shadow-md flex flex-col items-center md:gap-3 gap-y-3">
+                                <div className="flex flex-col justify-start w-full space-y-3">
+                                    <h2 className="text-2xl font-bold justify-center items-center md:ml-0 ml-4">
+                                        Updated details
+                                    </h2>
+                                    {/* Update Metadata */}
+                                    <div className="grid grid-cols-1 gap-y-2 grid-rows-1 md:flex justify-between md:space-x-4 w-full md:mx-0 mx-4">
+                                        <p className="text-base font-normal flex items-center gap-x-1">
+                                            Updates were made on {" "}
+                                            <span className="text-gray-900 font-semibold text-base ">
+                                                {
+                                                    new Date(facilityUpdateData?.updated)
+                                                        .toLocaleString()
+                                                        .split(",")[0]
+                                                }
+                                            </span>
+                                            {" "}
+                                            by
+                                            {" "}
+                                            <span className="text-gray-900 font-semibold text-base ">
+                                                {facilityUpdateData?.created_by_name}
+                                            </span>
+                                        </p>
 
-									<div className="flex flex-col justify-start w-full space-y-3">
-										<h2 className="text-2xl font-bold justify-center items-center md:ml-0 ml-4">
-											Updated details
-										</h2>
-										{/* Update Metadata */}
-										<div className="grid grid-cols-1 gap-y-2 grid-rows-1 md:flex justify-between md:space-x-4 w-full md:mx-0 mx-4">
-											<p className="text-base font-normal flex items-center gap-x-1">
-												Updates were made on {" "}
-												<span className="text-gray-900 font-semibold text-base ">
-													{
-														new Date(facilityUpdateData?.updated)
-															.toLocaleString()
-															.split(",")[0]
-													}
-												</span>
-												{" "}
-												by
-												{" "}
-												<span className="text-gray-900 font-semibold text-base ">
-													{facilityUpdateData?.created_by_name}
-												</span>
-											</p>
+                                        {
+                                            facilityUpdateData?.code &&
+                                            <p className="text-base font-normal flex gap-x-1 ">
+                                                Facility Code:
+                                                {" "}
+                                                <span className="text-gray-900 font-semibold text-base ">
+                                                    {facilityUpdateData?.code}
+                                                </span>
+                                            </p>
+                                        }
 
-											{
-												facilityUpdateData?.code &&
-												<p className="text-base font-normal flex gap-x-1 ">
-													Facility Code:
-													{" "}
-													<span className="text-gray-900 font-semibold text-base ">
-														{facilityUpdateData?.code}
-													</span>
-												</p>
-											}
+                                        <span className="flex space-x-2">
+                                            <button
+                                                className="flex justify-center text-base font-semibold text-white bg-gray-500  py-1 px-2"
+                                                onClick={() => router.push(`/facilities/edit/${facilityUpdateData?.id}`)}
+                                            >
+                                                Edit
+                                            </button>
+                                            <button
+                                                className="flex justify-center text-base font-semibold text-white bg-gray-500  py-1 px-2"
+                                                onClick={() => {
+                                                    if (isSavedChanges) {
+                                                        alert.success("Facility updates saved successfully")
+                                                    } else {
+                                                        alert.error("Unable to save facility updates")
+                                                    }
+                                                    router.push("/facilities")
+                                                }}
+                                            >
+                                                Confirm Updates
+                                            </button>
+                                        </span>
+                                    </div>
 
-											<span className="flex space-x-2">
-												<button
-													className="flex justify-center text-base font-semibold text-white bg-gray-500  py-1 px-2"
-													onClick={() => router.push(`/facilities/edit/${facilityUpdateData?.id}`)}
-												>
-													Edit
-												</button>
-												<button
-													className="flex justify-center text-base font-semibold text-white bg-gray-500  py-1 px-2"
-													onClick={() => {
-														if (isSavedChanges) {
-															alert.success("Facility updates saved successfully")
-														} else {
-															alert.error("Unable to save facility updates")
-														}
-														router.push("/facilities")
-													}}
-												>
-													Confirm Updates
-												</button>
-											</span>
-										</div>
+                                    {/* Update Details */}
 
-										{/* Update Details */}
+                                    <FacilityUpdatesTable
+                                        facilityUpdatedJson={facility_updated_json}
+                                        originalData={props?.data}
+                                    />
+                                </div>
+                            </div>)
+                        ) : (
 
-										<FacilityUpdatesTable
-											facilityUpdatedJson={facility_updated_json}
-											originalData={props?.data}
-										/>
-									</div>
-								</div>
-							) : (
-
-								<FacilityUpdatesContext.Provider value={{
-									updatedSavedChanges: setIsSavedChanges,
-									updateFacilityUpdateData: setFacilityUpdateData
-								}} >
-									<FormOptionsContext.Provider value={props}>
-										<EditForm />
-									</FormOptionsContext.Provider>
-								</FacilityUpdatesContext.Provider>
-							)
-							}
-						</div>
-					</MainLayout >
-				</>
-
-			)
+                            <FacilityUpdatesContext.Provider value={{
+                                updatedSavedChanges: setIsSavedChanges,
+                                updateFacilityUpdateData: setFacilityUpdateData
+                            }} >
+                                <FormOptionsContext.Provider value={props}>
+                                    <EditForm />
+                                </FormOptionsContext.Provider>
+                            </FacilityUpdatesContext.Provider>
+                        )
+                        }
+                    </div>
+                </MainLayout >
+            </>);
 		}
 		else {
 			return null;

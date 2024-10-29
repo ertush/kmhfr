@@ -331,922 +331,919 @@ function FacilityHome(props) {
 
     if (isClient) {
 
-        return (
-            <>
-                <Head>
-                    <title>KMHFR | Facilities</title>
-                    <link rel="icon" href="/favicon.ico" />
-                </Head>
+        return (<>
+            <Head>
+                <title>KMHFR | Facilities</title>
+                <link rel="icon" href="/favicon.ico" />
+            </Head>
+            <MainLayout isLoading={false} searchTerm={props?.query?.searchTerm}>
+                <div className="w-full md:w-[85%] md:mx-auto grid grid-cols-1 md:grid-cols-5 gap-3 md:mt-3 md:mb-12 mb-6 px-4 md:px-0">
 
-                <MainLayout isLoading={false} searchTerm={props?.query?.searchTerm}>
-                    <div className="w-full md:w-[85%] md:mx-auto grid grid-cols-1 md:grid-cols-5 gap-3 md:mt-3 md:mb-12 mb-6 px-4 md:px-0">
+                    {/* Header Matters */}
+                    <div className="col-sapn-1 md:col-span-5 flex flex-col gap-3 ">
 
-                        {/* Header Matters */}
-                        <div className="col-sapn-1 md:col-span-5 flex flex-col gap-3 ">
+                        {/* Buttons section */}
 
-                            {/* Buttons section */}
-
-                            <div className="flex flex-wrap gap-2 text-sm md:text-base py-3 items-center justify-between">
+                        <div className="flex flex-wrap gap-2 text-sm md:text-base py-3 items-center justify-between">
 
 
-                                <div className="flex w-full flex-wrap items-start md:items-center justify-between gap-2 text-sm md:text-base py-1">
-                                    {/* Bread Crumbs */}
+                            <div className="flex w-full flex-wrap items-start md:items-center justify-between gap-2 text-sm md:text-base py-1">
+                                {/* Bread Crumbs */}
 
-                                    <div className={"col-span-1 md:col-span-5 flex justify-between w-full bg-django-blue border drop-shadow  text-black p-4 md:divide-x md:divide-gray-200 items-start md:items-center border-l-8 " + (true ? "border-gray-700" : "border-red-600")}>
-                                        <h2 className='flex items-center text-2xl font-bold text-gray-900 capitalize gap-2'>
-                                            {title}
-                                        </h2>
-                                        {/* dropdown options to download data */}
-                                        {props?.current_url && props?.current_url.length > 5 &&
-                                            <Menu as="div" className="relative">
-                                                {/* Button group */}
-
-
-                                                <div className='flex flex-col z-40 gap-5 md:flex-row md:items-center md:space-x-6 w-auto'>
-                                                    {/* Facility Button */}
+                                <div className={"col-span-1 md:col-span-5 flex justify-between w-full bg-django-blue border drop-shadow  text-black p-4 md:divide-x md:divide-gray-200 items-start md:items-center border-l-8 " + (true ? "border-gray-700" : "border-red-600")}>
+                                    <h2 className='flex items-center text-2xl font-bold text-gray-900 capitalize gap-2'>
+                                        {title}
+                                    </h2>
+                                    {/* dropdown options to download data */}
+                                    {props?.current_url && props?.current_url.length > 5 &&
+                                        <Menu as="div" className="relative">
+                                            {/* Button group */}
 
 
-                                                    {
-                                                        (
-                                                            userCtx?.groups[0]?.id == 2 || // SCHRIO
-                                                            userCtx?.groups[0]?.id == 7    // SuperAdmin
-                                            /*allFctsSelected || pathId === 'all'*/) &&
-                                                        // Display add facility button if  user belong to SCHRIO group
-
-                                                        <Menu.Item as="div" className="px-3 py-2 bg-gray-600 rounded text-white text-md tracking-tighter font-semibold whitespace-nowrap  hover:bg-black focus:bg-black active:bg-black uppercase">
-                                                            <button onClick={() => { router.push('/facilities/add?formId=0') }} className='flex items-center justify-center'>
-
-                                                                <span className='text-base uppercase font-semibold'>Add Facility</span>
-                                                                <PlusIcon className="w-4 h-4 ml-2" />
-                                                            </button>
-                                                        </Menu.Item>
-                                                    }
-
-                                                    {/* Export Button */}
-                                                    <Menu.Button as="button" className="px-3 py-2 bg-gray-600 rounded text-white text-md tracking-tighter font-semibold flex items-center justify-center whitespace-nowrap  hover:bg-black focus:bg-black active:bg-black uppercase">
-                                                        <DownloadIcon className="w-5 h-5 mr-1" />
-                                                        <span className='text-base uppercase font-semibold'>Export</span>
-                                                        <ChevronDownIcon className="w-4 h-4 ml-2" />
-                                                    </Menu.Button>
-                                                </div>
+                                            <div className='flex flex-col z-40 gap-5 md:flex-row md:items-center md:space-x-6 w-auto'>
+                                                {/* Facility Button */}
 
 
-                                                <Menu.Items as="ul" className="absolute top-0 left-[100%] w-auto flex flex-col gap-y-1 items-center justify-start bg-white  shadow-lg border border-gray-200 p-1">
+                                                {
+                                                    (
+                                                        (// SCHRIO
+                                                        userCtx?.groups[0]?.id == 2 || userCtx?.groups[0]?.id == 7)    // SuperAdmin
+                                        /*allFctsSelected || pathId === 'all'*/) &&
+                                                    // Display add facility button if  user belong to SCHRIO group
 
-                                                    <Menu.Item as="li" className="p-0 flex items-center w-full text-center hover:bg-gray-200 focus:bg-gray-200 active:bg-gray-200">
-                                                        {({ active }) => (
-                                                            <button className={"flex items-center justify-start text-center hover:bg-gray-200 focus:bg-gray-200 text-gray-800 font-medium active:bg-gray-200 py-2 px-1 w-full " + (active ? 'bg-gray-200' : '')} onClick={() => {
+                                                    <Menu.Item as="div" className="px-3 py-2 bg-gray-600 rounded text-white text-md tracking-tighter font-semibold whitespace-nowrap  hover:bg-black focus:bg-black active:bg-black uppercase">
+                                                        <button onClick={() => { router.push('/facilities/add?formId=0') }} className='flex items-center justify-center'>
 
-                                                                window.location.href = `${process.env.NEXT_PUBLIC_FACILITY_EXPORT_URL}?&access_token=${props?.token}&format=csv&page_size=${props?.count}&page=1${orgUnitFilter}`
+                                                            <span className='text-base uppercase font-semibold'>Add Facility</span>
+                                                            <PlusIcon className="w-4 h-4 ml-2" />
+                                                        </button>
+                                                    </Menu.Item>
+                                                }
+
+                                                {/* Export Button */}
+                                                <Menu.Button as="button" className="px-3 py-2 bg-gray-600 rounded text-white text-md tracking-tighter font-semibold flex items-center justify-center whitespace-nowrap  hover:bg-black focus:bg-black active:bg-black uppercase">
+                                                    <DownloadIcon className="w-5 h-5 mr-1" />
+                                                    <span className='text-base uppercase font-semibold'>Export</span>
+                                                    <ChevronDownIcon className="w-4 h-4 ml-2" />
+                                                </Menu.Button>
+                                            </div>
+
+
+                                            <Menu.Items as="ul" className="absolute top-0 left-[100%] w-auto flex flex-col gap-y-1 items-center justify-start bg-white  shadow-lg border border-gray-200 p-1">
+
+                                                <Menu.Item as="li" className="p-0 flex items-center w-full text-center hover:bg-gray-200 focus:bg-gray-200 active:bg-gray-200">
+                                                    {({ active }) => (
+                                                        <button className={"flex items-center justify-start text-center hover:bg-gray-200 focus:bg-gray-200 text-gray-800 font-medium active:bg-gray-200 py-2 px-1 w-full " + (active ? 'bg-gray-200' : '')} onClick={() => {
+
+                                                            window.location.href = `${process.env.NEXT_PUBLIC_FACILITY_EXPORT_URL}?&access_token=${props?.token}&format=csv&page_size=${props?.count}&page=1${orgUnitFilter}`
+
+                                                        }}>
+                                                            <DownloadIcon className="w-4 h-4 mr-1" />
+                                                            <span className='text-base uppercase font-semibold'>CSV</span>
+                                                        </button>
+                                                    )}
+                                                </Menu.Item>
+
+                                                <Menu.Item as="li" className="p-0 flex items-center w-full text-center hover:bg-gray-200 focus:bg-gray-200 active:bg-gray-200">
+                                                    {({ active }) => (
+                                                        <button className={"flex items-center justify-start text-center hover:bg-gray-200 focus:bg-gray-200 text-gray-800 font-medium active:bg-gray-200 py-2 px-1 w-full " + (active ? 'bg-gray-200' : '')}
+                                                            onClick={() => {
+
+
+                                                                window.location.href = orgUnitFilter ? `${process.env.NEXT_PUBLIC_FACILITY_EXPORT_URL}?access_token=${props?.token}&format=excel&page_size=${props?.count}&page=1${orgUnitFilter}` : `${process.env.NEXT_PUBLIC_FACILITY_EXPORT_URL}?access_token=${props?.token}&format=excel&page_size=${props?.count}&page=1`
 
                                                             }}>
-                                                                <DownloadIcon className="w-4 h-4 mr-1" />
-                                                                <span className='text-base uppercase font-semibold'>CSV</span>
-                                                            </button>
-                                                        )}
-                                                    </Menu.Item>
-
-                                                    <Menu.Item as="li" className="p-0 flex items-center w-full text-center hover:bg-gray-200 focus:bg-gray-200 active:bg-gray-200">
-                                                        {({ active }) => (
-                                                            <button className={"flex items-center justify-start text-center hover:bg-gray-200 focus:bg-gray-200 text-gray-800 font-medium active:bg-gray-200 py-2 px-1 w-full " + (active ? 'bg-gray-200' : '')}
-                                                                onClick={() => {
-
-
-                                                                    window.location.href = orgUnitFilter ? `${process.env.NEXT_PUBLIC_FACILITY_EXPORT_URL}?access_token=${props?.token}&format=excel&page_size=${props?.count}&page=1${orgUnitFilter}` : `${process.env.NEXT_PUBLIC_FACILITY_EXPORT_URL}?access_token=${props?.token}&format=excel&page_size=${props?.count}&page=1`
-
-                                                                }}>
-                                                                <DownloadIcon className="w-4 h-4 mr-1" />
-                                                                <span className='text-base uppercase font-semibold'>Excel</span>
-                                                            </button>
-                                                        )}
-                                                    </Menu.Item>
-
-                                                </Menu.Items>
-                                            </Menu>
-                                        }
-
-                                    </div>
-                                </div>
-
-
-                            </div>
-
-                            <div className="flex-wrap items-center justify-between gap-2 text-sm md:text-base ">
-
-
-                                {/* Accordion Filter */}
-                                <Accordion
-                                    sx={{ borderRadius: '4px', boxShadow: 'none', zIndex: '0px', borderBottomLeftRadius: '0px', borderBottomRightRadius: '0px' }} className='border bg-gray-50 z-0 border-gray-200  mb-4 w-full shadow-none' expanded={isAccordionExpanded} onChange={handleAccordionExpand}>
-                                    <AccordionSummary
-                                        expandIcon={<ExpandMoreIcon />}
-                                        aria-controls="panel1a-content"
-                                        id="panel1a-header"
-
-                                    >
-
-                                        <h2 className='my-2 font-semibold text-xl text-gray-900 flex items-center space-x-2'>
-                                            <FilterIcon className='w-6 h-6 text-gray-900' />
-                                            <p>Filter Facilities By ...</p></h2>
-                                    </AccordionSummary>
-
-                                    <AccordionDetails sx={{ width: '100%', padding: 4, height: 'auto' }}>
-                                        <div className="flex flex-col gap-2">
-                                            
-                                            {filters && filters?.error ?
-                                                (<div className="w-full  bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base">
-                                                    <p>No filters.</p>
-                                                </div>)
-                                                : (
-                                                    <form
-                                                        id="filter-panel"
-                                                        onSubmit={handleFiltersSubmit}
-                                                        className='flex flex-col md:grid md:grid-cols-4 place-content-center items-content-end gap-2'>
-
-                                                        {/* County */}
-                                                        <div key={uuid()} className="w-full flex flex-col items-start justify-start gap-1 mb-1">
-                                                            <label htmlFor="county" className="text-gray-600 capitalize text-sm">County</label>
-
-
-                                                            <CustomSelect
-                                                                options={countyFilterOptions}
-
-                                                                placeholder="Select County"
-                                                                name="county"
-                                                                onChange={
-                                                                    e => null
-                                                                    // handleOrgUnitFilter
-                                                                }
-
-                                                            />
-                                                        </div>
-
-                                                         {/* Sub County */}
-                                                         <div key={uuid()} className="w-full flex flex-col items-start justify-start gap-1 mb-1">
-                                                            <label htmlFor="sub_county" className="text-gray-600 capitalize text-sm">Sub County</label>
-
-
-                                                            <CustomSelect
-                                                                options={subCountyFilterOptions}
-                                                                placeholder="Select Sub County"
-                                                                name="sub_county"
-                                                                onChange={
-                                                                    e => null
-                                                                    // handleOrgUnitFilter
-                                                                }
-
-                                                            />
-                                                        </div>
-
-
-                                                         {/* Constituency */}
-                                                         <div key={uuid()} className="w-full flex flex-col items-start justify-start gap-1 mb-1">
-                                                            <label htmlFor="constituency" className="text-gray-600 capitalize text-sm">Constituency</label>
-
-
-                                                            <CustomSelect
-                                                                options={constituencyFilterOptions}
-                                                                placeholder="Select Constituency"
-                                                                name="constituency"
-                                                                
-
-                                                            />
-                                                        </div>
-
-                                                        
-                                                         {/* Ward */}
-                                                         <div key={uuid()} className="w-full flex flex-col items-start justify-start gap-1 mb-1">
-                                                            <label htmlFor="ward" className="text-gray-600 capitalize text-sm">Ward</label>
-
-
-                                                            <CustomSelect
-                                                                options={wardFilterOptions}
-                                                                placeholder="Select Ward"
-                                                                name="ward"
-                                                                
-
-                                                            />
-                                                        </div>
-
-                                                        {/* Facility Type */}
-                                                        <div key={uuid()} className="w-full flex flex-col items-start justify-start gap-1 mb-1">
-                                                            <label htmlFor="facility_type" className="text-gray-600 capitalize text-sm">Facility type</label>
-
-
-                                                            <CustomSelect
-                                                                options={facilityTypeFilterOptions}
-                                                                placeholder="Select Facility Type"
-                                                                name="facility_type"
-                                                                onChange={
-                                                                    (e) => null
-                                                                }
-
-                                                            />
-                                                        </div>
-
-                                                        {/* Facility Type */}
-                                                        <div key={uuid()} className="w-full flex flex-col items-start justify-start gap-1 mb-1">
-                                                            <label htmlFor="facility_type_category"className="text-gray-600 capitalize text-sm">Facility Type Detail</label>
-
-
-                                                            <CustomSelect
-                                                                options={facilityTypeDetailsFilterOptions}
-                                                                placeholder="Select Facility Type Detail"
-                                                                name="facility_type_category"
-                                                                onChange={
-                                                                    (e) => null
-                                                                }
-
-                                                            />
-                                                        </div>
-
-                                                        {/* Keph Level */}
-                                                        <div key={uuid()} className="w-full flex flex-col items-start justify-start gap-1 mb-1">
-                                                            <label htmlFor="keph_level" className="text-gray-600 capitalize text-sm">Keph Level</label>
-
-
-                                                            <CustomSelect
-                                                                options={kephLevelFilterOptions}
-                                                                placeholder="Select Keph Level"
-                                                                name="keph_level"
-                                                                
-                                                
-                                                            />
-                                                        </div>
-
-                                                        {/* Owner Type */}
-                                                        <div key={uuid()} className="w-full flex flex-col items-start justify-start gap-1 mb-1">
-                                                            <label htmlFor="owner_type" className="text-gray-600 capitalize text-sm">Owner Type</label>
-
-
-                                                            <CustomSelect
-                                                                options={ownerTypeFilterOptions}
-                                                                placeholder="Select Owner Type"
-                                                                name="owner_type"
-                                                                
-                                                
-                                                            />
-                                                        </div>
-
-                                                        {/* Owner */}
-                                                        <div key={uuid()} className="w-full flex flex-col items-start justify-start gap-1 mb-1">
-                                                            <label htmlFor="owner" className="text-gray-600 capitalize text-sm">Owner</label>
-
-
-                                                            <CustomSelect
-                                                                options={ownerFilterOptions}
-                                                                placeholder="Select Owner"
-                                                                name="owner"
-                                                                
-                                                
-                                                            />
-                                                        </div>
-
-                                                        {/* Opertation Status */}
-                                                        <div key={uuid()} className="w-full flex flex-col items-start justify-start gap-1 mb-1">
-                                                            <label htmlFor="operational_status" className="text-gray-600 capitalize text-sm">Operational Status</label>
-
-
-                                                            <CustomSelect
-                                                                options={operationStatusFilterOptions}
-                                                                placeholder="Select Operational Status"
-                                                                name="operational_status"
-                                                                
-                                                
-                                                            />
-                                                        </div>
-
-                                            
-                                                        {/* Yes/No Dialog */}
-                                                        <div className="w-full col-span-3 gap-x-3 grid md:grid-cols-4 grid-cols-2 mb-3">
-                                                            <div className='flex flex-col items-start justify-center gap-1'>
-                                                                <span className='inline-flex gap-2'>
-                                                                    <input type="checkbox" className="justify-self-end border border-gray-600 bg-django-blue" value={false} defaultChecked={props?.query?.has_edits === "true"} name="has_edits" id="has_edits" onChange={ev => {
-                                                                        setDrillDown({ ...drillDown, 'has_edits': true })
-                                                                    }} />
-                                                                    <label htmlFor="has_edits" className="text-gray-700 capitalize text-sm">Has edits</label>
-
-                                                                </span>
-
-
-                                                                <span className='inline-flex gap-2'>
-                                                                    <input type="checkbox" className="justify-self-end border border-gray-600 bg-django-blue" value={true} defaultChecked={props?.query?.is_approved === "true"} name="is_approved" id="is_approved" onChange={ev => {
-                                                                        setDrillDown({ ...drillDown, 'is_approved': true })
-                                                                    }} />
-                                                                    <label htmlFor="is_approved" className="text-gray-700 capitalize text-sm">Approved</label>
-
-                                                                </span>
-                                                            </div>
-
-
-                                                            <div className='flex flex-col items-start justify-center gap-1'>
-                                                                <span className='inline-flex gap-2'>
-
-                                                                    <input type="checkbox" className="justify-self-end border border-gray-600 bg-django-blue" value={true} defaultChecked={props?.query?.is_complete === "true"} name="is_complete" id="is_complete" onChange={ev => {
-                                                                        setDrillDown({ ...drillDown, 'is_complete': true })
-                                                                    }} />
-                                                                    <label htmlFor="is_complete" className="text-gray-700 capitalize text-sm">Complete</label>
-
-                                                                </span>
-
-
-                                                                <span className='inline-flex gap-2'>
-
-                                                                    <input type="checkbox" className="justify-self-end border border-gray-600 bg-django-blue" value={true} defaultChecked={props?.query?.number_of_beds === "true"} name="number_of_beds" id="number_of_beds" onChange={ev => {
-                                                                        setDrillDown({ ...drillDown, 'number_of_beds': true })
-                                                                    }} />
-                                                                    <label htmlFor="number_of_beds" className="text-gray-700 capitalize text-sm">Has beds</label>
-
-                                                                </span>
-                                                            </div>
-
-
-                                                            <div className='flex flex-col items-start justify-center gap-1'>
-                                                                <span className='inline-flex gap-2'>
-
-                                                                    <input type="checkbox" className="justify-self-end border border-gray-600 bg-django-blue" value={true} defaultChecked={props?.query?.number_of_cots === "true"} name="number_of_cots" id="number_of_cots" onChange={ev => {
-                                                                        setDrillDown({ ...drillDown, 'number_of_cots': true })
-                                                                    }} />
-                                                                    <label htmlFor="number_of_cots" className="text-gray-700 capitalize text-sm">Has cots</label>
-
-                                                                </span>
-
-                                                                <span className='inline-flex gap-2'>
-
-                                                                    <input type="checkbox" className="justify-self-end border border-gray-600 bg-django-blue" value={true} defaultChecked={props?.query?.open_whole_day === "true"} name="open_whole_day" id="open_whole_day" onChange={ev => {
-                                                                        setDrillDown({ ...drillDown, 'open_whole_day': true })
-                                                                    }} />
-                                                                    <label htmlFor="open_whole_day" className="text-gray-700 capitalize text-sm">Open 24 hours</label>
-
-                                                                </span>
-                                                            </div>
-
-                                                            <div className='flex flex-col items-start justify-center gap-1'>
-                                                                <span className='inline-flex gap-2'>
-
-                                                                    <input type="checkbox" className="justify-self-end border border-gray-600 bg-django-blue" value={true} defaultChecked={props?.query?.open_weekends === "true"} name="open_weekends" id="open_weekends" onChange={ev => {
-                                                                        setDrillDown({ ...drillDown, 'open_weekends': true })
-                                                                    }} />
-                                                                    <label htmlFor="open_weekends" className="text-gray-700 capitalize text-sm">Open weekends</label>
-
-                                                                </span>
-
-                                                                <span className='inline-flex gap-2'>
-
-                                                                    <input type="checkbox" className="justify-self-end border border-gray-600 bg-django-blue" value={true} defaultChecked={props?.query?.open_public_holidays === "true"} name="open_public_holidays" id="open_public_holidays" onChange={ev => {
-                                                                        setDrillDown({ ...drillDown, 'open_public_holidays': true })
-                                                                    }} />
-                                                                    <label htmlFor="open_public_holidays" className="text-gray-700 capitalize text-sm">Open holidays</label>
-
-                                                                </span>
-                                                            </div>
-
-
-                                                        </div>
-
-
-
-                                                        <button
-                                                            type="submit"
-                                                            className="bg-django-blue col-start-1  border border-gray-600  text-gray-600 hover:bg-black hover:text-white hover:border-black font-semibold px-5 py-1 text-base  w-full whitespace-nowrap text-center">
-                                                            Search
+                                                            <DownloadIcon className="w-4 h-4 mr-1" />
+                                                            <span className='text-base uppercase font-semibold'>Excel</span>
                                                         </button>
+                                                    )}
+                                                </Menu.Item>
 
-                                                        <button
-                                                            onClick={handleFiltersReset}
-                                                            type='reset'
-                                                            className="bg-blue-700 boder border-gray-700 text-white hover:bg-black hover:border-black font-semibold px-5 py-1 text-base  w-full whitespace-nowrap text-center"
-                                                        >
-                                                            Reset
-                                                        </button>
-
-
-                                                    </form>
-
-                                                )
-                                            }
-                                        </div>
-                                    </AccordionDetails>
-                                </Accordion>
-
-
-                            </div>
-
-
-                        </div>
-
-
-                        {/* Side Menu Filters Wide View port*/}
-                        <div className="hidden md:flex col-span-1">
-                            <FacilitySideMenu
-                            /*filters={filters ?? {}}
-                            states={[khisSynched, facilityFeedBack, pathId, allFctsSelected, title]}
-                            stateSetters={[setKhisSynched, setFacilityFeedBack, setPathId, setAllFctsSelected, setTitle]} 
-                            */
-                            />
-                        </div>
-
-                        {/* Side Menu Filters Small View port*/}
-
-                        <button className='md:hidden relative p-2 border border-gray-800 rounded w-full self-start my-4' onClick={() => setIsMenuOpen(!isMenuOpen)}>
-                            Facility Menu
-                            {
-                                !isMenuOpen &&
-                                <KeyboardArrowRight className='w-8 aspect-square text-gray-800' />
-                            }
-
-                            {
-                                isMenuOpen &&
-                                <KeyboardArrowDown className='w-8 aspect-square text-gray-800' />
-                            }
-
-                            {
-                                isMenuOpen &&
-                                <FacilitySideMenu
-                                    filters={filters}
-                                    states={[khisSynched, facilityFeedBack, pathId, allFctsSelected, title]}
-                                    stateSetters={[setKhisSynched, setFacilityFeedBack, setPathId, setAllFctsSelected, setTitle]} />
-                            }
-                        </button>
-
-                        {/* Main Body */}
-                        <div className="w-full col-span-1 md:col-span-4 mr-24 md:col-start-2  md:h-auto bg-gray-50 shadow-md">
-                            {/* Data Indicator section */}
-                            <div className='w-full p-2 flex flex-col md:flex-row md:justify-between md:items-center border-b border-gray-400'>
-                                {/* search input */}
-                                <div className='flex max-w-max gap-2  items-end'>
-
-                                    <Formik
-                                        initialValues={
-                                            {
-                                                q: ""
-                                            }
-                                        }
-                                        onSubmit={(values) => {
-
-
-                                            const query = values.q.split(' ').join('+');
-                                            const href = new URL(window.location.href)
-                                            const filter = href.searchParams.get('filter')
-                                            // console.log({values})
-                                            setSearchTerm(query)
-
-
-                                            switch (filter) {
-                                                case "all_facilities":
-                                                    router.push(`/facilities/?search=${query}&filter=all_facilities`)
-                                                    break;
-                                                case "approved_facilities":
-                                                    router.push(`/facilities/?search=${query}&filter=approved_facilities&approved=true&approved_national_level=true&rejected=false`)
-                                                    break;
-                                                case "pending_validation_facilities":
-                                                    router.push(`/facilities/?search=${query}&filter=pending_validation_facilities&pending_approval=true&has_edits=false`)
-                                                    break;
-                                                case "updated_pending_validation_facilities":
-                                                    // `/facilities/?search=${query}&filter=updated_pending_validation_facilities&have_updates=true&${facilityStatus.split(':')[0]}=${facilityStatus.split(':')[1]}`)
-                                                    router.push({
-                                                        pathname: '/facilities',
-                                                        query: {
-                                                            search: query,
-                                                            filter: 'updated_pending_validation_facilities',
-                                                            have_updates: true,
-                                                            ...(() => {
-                                                                if (facilityStatus !== '') {
-                                                                    return {
-                                                                        [facilityStatus.split(':')[0]]: facilityStatus.split(':')[1]
-                                                                    }
-                                                                }
-                                                                return {}
-                                                            })()
-
-                                                        }
-                                                    })
-                                                    break;
-                                                case "pending_approval_facilities":
-                                                    router.push(`/facilities/?search=${query}&filter=pending_approval_facilities&to_publish=true`)
-                                                    break;
-                                                case "dhis_synched_facilities":
-                                                    router.push(`/facilities/?search=${query}&filter=dhis_synched_facilities&approved=true&approved_national_level=true&rejected=false&reporting_in_dhis=true`)
-                                                    break;
-                                                case "failed_validation_facilities":
-                                                    router.push(`/facilities/?search=${query}&filter=failed_validation_facilities&rejected=true`)
-                                                    break;
-                                                case "rejected_facilities":
-                                                    router.push(`/facilities/?search=${query}&filter=rejected_facilities&rejected_national_true=true`)
-                                                    break;
-                                                case "closed":
-                                                    router.push(`/facilities/?search=${query}&filter=closed_facilities&closed=true`)
-                                                    break;
-                                                case "incomplete":
-                                                    router.push(`/facilities/?search=${query}&filter=incomplete_facilities&is_complete=true`)
-                                                    break;
-                                                case "synchronized_regulated_facilities":
-                                                    router.push(`/facilities/?search=${query}&filter=synchronized_regulated_facilities&mfl_code_null=true`)
-                                                    break;
-                                                case "feed_back_facilities":
-                                                    router.push(`/facilities/?search=${query}&filter=feed_back_facilities`)
-                                                    break;
-                                                default:
-                                                    router.push(`/facilities/?search=${query}&filter=all_facilities`)
-                                                    break;
-
-                                            }
-
-                                        }}
-                                    >
-
-                                        <Form
-                                            className="inline-flex flex-row justify-start py-2 lg:py-0"
-
-                                        >
-
-                                            <Field
-                                                name="q"
-                                                id="search-input"
-                                                className=" bg-transparent  w-8/12 p-2  md:flex-grow-1 flex-grow shadow-sm rounded-tl rounded-bl border border-gray-400 placeholder-gray-600  focus:shadow-none focus:ring-black focus:border-black outline-none"
-                                                type="search"
-                                                placeholder="Use MFR code or Name"
-                                            />
-
-                                            <button
-                                                type="submit"
-                                                className="bg-transparent border-t border-r border-b rounded-tr rounded-br border-gray-400 text-black flex items-center justify-center px-4 py-1"
-
-                                            >
-                                                <SearchIcon className="w-5 h-5 text-gray-600" />
-                                            </button>
-                                        </Form>
-
-                                    </Formik>
-                                    {
-                                        pageParams.get('filter') === 'updated_pending_validation_facilities' &&
-
-                                        <Select
-                                            className='flex-grow min-w-max h-full'
-                                            options={[{
-                                                label: 'Approved National',
-                                                value: 'approved_national_level:true'
-                                            }, {
-                                                label: 'Pending Validation',
-                                                value: 'approved:false'
-                                            }]}
-
-                                            placeholder="Select Facility Status"
-                                            onChange={handleApprovalStatus}
-                                            defaultValue={''}
-                                            name='approval_status'
-
-
-                                        />
-
+                                            </Menu.Items>
+                                        </Menu>
                                     }
+
                                 </div>
-
-
-                                <h5 className="text-lg  md:text-end font-medium flex  gap-2 md:gap-3 text-gray-800 md:pr-2">
-
-                                    <small className="text-gray-500 text-base"> Total facilities: {props?.count}</small>
-                                    <small className="text-gray-500 text-base"> Current page: {props?.current_page}</small>
-                                    <small className="text-gray-500 text-base"> Facility count: {props?.page_size}</small>
-
-
-                                </h5>
                             </div>
 
 
-                            {/*  Quick Filters status display */}
-                            {
-                                pageParams.get('filter') !== 'feed_back_facilities' ?
-                                    (
-                                        <div className="flex-grow w-full flex flex-col items-center gap-1 order-last md:order-none">
-                                            <div className="flex flex-col justify-center items-center  w-full">
-                                                {/* Facilities View */}
+                        </div>
 
-                                                {
-                                                    props?.facilities.length > 0 ?
-
-                                                        props?.facilities.map((facility) => (
-                                                            <div key={facility?.id}
-                                                                title={`Incomplete Details : ${facility?.is_complete ? 'none' : facility?.in_complete_details}`}
-                                                                className={`grid grid-cols-8 gap-2 border-b py-4 w-full ${!facility?.is_complete && !facility?.in_complete_details ? 'bg-yellow-50 border-yellow-500 hover:bg-gray-50' : 'bg-transparent border-gray-400 hover:border-grat-400'}`}>
-                                                                <div className="px-2 col-span-8 md:col-span-8 lg:col-span-6 gap-2 md:gap-0 flex flex-col group items-center justify-start text-left">
-                                                                    <h3 className="text-2xl font-semibold w-full">
-                                                                        <span onClick={() => router.push({ pathname: `/facilities/${facility?.id}`, query: currentPageParams })} className={`cursor-pointer text-blue-500 hover:underline ${facility?.is_complete ? 'hover:text-blue-500' : 'hover:text-yellow-600'} group-focus:text-blue-500 active:text-blue-500`} >
-                                                                            {facility?.official_name || facility?.official_name || facility?.name}
-                                                                        </span>
-                                                                    </h3>
-
-                                                                    <div className="w-full grid grid-cols-2 md:grid-cols-5 gap-1">
+                        <div className="flex-wrap items-center justify-between gap-2 text-sm md:text-base ">
 
 
-                                                                        <div className="flex flex-col items-start justify-start gap-0 leading-none whitespace-pre-wrap mb-2">
-                                                                            <label className="text-xs text-gray-500 ">Code:</label>
-                                                                            <span className="whitespace-pre-line font-semibold"># {facility?.code ?? 'NO_CODE'}</span>
-                                                                        </div>
+                            {/* Accordion Filter */}
+                            <Accordion
+                                sx={{ borderRadius: '4px', boxShadow: 'none', zIndex: '0px', borderBottomLeftRadius: '0px', borderBottomRightRadius: '0px' }} className='border bg-gray-50 z-0 border-gray-200  mb-4 w-full shadow-none' expanded={isAccordionExpanded} onChange={handleAccordionExpand}>
+                                <AccordionSummary
+                                    expandIcon={<ExpandMoreIcon />}
+                                    aria-controls="panel1a-content"
+                                    id="panel1a-header"
 
-                                                                        <div className="flex flex-col  items-start justify-start gap-0 leading-none whitespace-pre-wrap">
-                                                                            <label className="text-xs text-gray-500">Type:</label>
-                                                                            <span className="whitespace-pre-line text-wrap">{facility?.facility_type_name ?? ' '}</span>
-                                                                        </div>
+                                >
 
+                                    <h2 className='my-2 font-semibold text-xl text-gray-900 flex items-center space-x-2'>
+                                        <FilterIcon className='w-6 h-6 text-gray-900' />
+                                        <p>Filter Facilities By ...</p></h2>
+                                </AccordionSummary>
 
-                                                                        <div className="flex flex-col  items-start justify-start gap-0 leading-none whitespace-pre-wrap">
-                                                                            <label className="text-xs text-gray-500">Owner:</label>
-                                                                            <span className="whitespace-pre-line text-wrap">{facility?.owner_name ?? ' '}</span>
-                                                                        </div>
+                                <AccordionDetails sx={{ width: '100%', padding: 4, height: 'auto' }}>
+                                    <div className="flex flex-col gap-2">
+                                        
+                                        {filters && filters?.error ?
+                                            (<div className="w-full  bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base">
+                                                <p>No filters.</p>
+                                            </div>)
+                                            : (
+                                                <form
+                                                    id="filter-panel"
+                                                    onSubmit={handleFiltersSubmit}
+                                                    className='flex flex-col md:grid md:grid-cols-4 place-content-center items-content-end gap-2'>
 
-                                                                        <div className="flex flex-col items-start justify-start gap-0 leading-none whitespace-pre-wrap">
-                                                                            <label className="text-xs text-gray-500">Keph:</label>
-                                                                            <span className="whitespace-pre-line">{filters?.keph_level.find(({ id }) => id == facility?.keph_level)?.name ?? '-'}</span>
-                                                                        </div>
-
-                                                                        <div className="flex flex-col items-start col-start-2 row-start-1 md:col-start-5 justify-start gap-0 leading-none whitespace-pre-wrap">
-                                                                            <label className="text-xs text-gray-500">Updated:</label>
-                                                                            <span className="whitespace-pre-line">{new Date(facility?.updated).toDateString()}{", "}{new Date(facility?.updated).toLocaleTimeString()}</span>
-                                                                        </div>
-                                                                    </div>
-
-                                                                    <div className="text-base grid grid-cols-2 md:grid-cols-5 items-center justify-start gap-1 w-full">
-                                                                        <div className="flex flex-col items-start justify-start gap-0 leading-none whitespace-pre-wrap">
-                                                                            <label className="text-xs text-gray-500">County:</label>
-                                                                            <span className="whitespace-pre-line">{facility?.county_name || facility?.county || 'N/A'}</span>
-                                                                        </div>
-                                                                        <div className="flex flex-col items-start justify-start gap-0 leading-none whitespace-pre-wrap">
-                                                                            <label className="text-xs text-gray-500">Sub-county:</label>
-                                                                            <span className="whitespace-pre-line">{facility?.sub_county_name || facility?.sub_county || 'N/A'}</span>
-                                                                        </div>
-                                                                        <div className="flex flex-col items-start justify-start gap-0 leading-none whitespace-pre-wrap">
-                                                                            <label className="text-xs text-gray-500">Ward:</label>
-                                                                            <span className="whitespace-pre-line">{facility?.ward_name || 'N/A'}</span>
-                                                                        </div>
-                                                                        <div className="flex flex-col items-start justify-start gap-0 leading-none whitespace-pre-wrap">
-                                                                            <label className="text-xs text-gray-500">Constituency:</label>
-                                                                            <span className="whitespace-pre-line">{facility?.constituency_name || facility?.constituency || 'N/A'}</span>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-
-                                                                <div className="col-span-8 md:col-span-8 lg:col-span-2 grid grid-cols-2 grid-rows-4 gap-x-2 gap-y-1 text-lg">
-                                                                    {/* {console.log({facility})} */}
-                                                                    {/* {(facility?.operational || facility?.operation_status_name) ? <span className={"shadow-sm col-start-2 leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 font-semibold text-gray-900"}>Operational</span> : ""} */}
-                                                                    {
-                                                                        !facility?.rejected ?
-                                                                            <span className={"shadow-sm leading-none whitespace-nowrap text-sm col-start-2  py-1 px-2 " + (facility?.approved_national_level ? "bg-green-200 font-semibold text-green-900" : "bg-gray-500 font-semibold p-1 text-gray-50")}>
+                                                    {/* County */}
+                                                    <div key={uuid()} className="w-full flex flex-col items-start justify-start gap-1 mb-1">
+                                                        <label htmlFor="county" className="text-gray-600 capitalize text-sm">County</label>
 
 
-                                                                                {
-                                                                                    facility?.approved_national_level ?
-                                                                                        "Approved" : "Not Approved"}</span> :
-                                                                                         facility?.rejected && <span className={"shadow-sm  col-start-2 leading-none whitespace-nowrap px-2 text-sm font-semibold py-1 bg-red-200 text-red-900"}>Rejected Validate</span>
-                                                                    }
+                                                        <CustomSelect
+                                                            options={countyFilterOptions}
 
-                                                                    {
-                                                                        facility?.rejected_national &&
-                                                                        <span className={"shadow-sm leading-none whitespace-nowrap text-sm col-start-2 py-1 px-2 bg-red-200 font-semibold text-yellow-900"}>Rejected Approve</span>
-                                                                    }
-
-                                                                    {
-                                                                        facility?.has_edits && facility?.latest_update &&
-                                                                        <span className={"shadow-sm leading-none whitespace-nowrap text-sm col-start-2 py-1 px-2 bg-yellow-200 font-semibold text-yellow-900"}>Has edits</span>
-                                                                    }
-
-                                                                    {
-                                                                        !facility?.is_complete &&
-                                                                        <span className={"shadow-sm leading-none whitespace-nowrap text-sm col-start-2 py-1 px-2 bg-pink-200 font-semibold text-pink-900"}>Incomplete</span>
-                                                                    }
-
-                                                                    {
-                                                                        facility?.approved ?
-                                                                            <span className={"shadow-sm leading-none whitespace-nowrap text-sm col-start-2 py-1 px-2 bg-purple-200 font-semibold text-purple-900"}>Validated</span> :
-                                                                            <span className={"shadow-sm leading-none whitespace-nowrap text-sm col-start-2 py-1 px-2 bg-gray-500 font-semibold text-gray-50"}>Not Validated</span>
-                                                                    }
-
-                                                                    {
-                                                                        facility?.closed &&
-                                                                        <span className={"shadow-sm leading-none whitespace-nowrap text-sm col-start-2 py-1 px-2 bg-red-200 font-semibold text-red-900"}>Closed</span>
-                                                                    }
-
-
-                                                                </div>
-                                                            </div>
-                                                        ))
-                                                        :
-                                                        <div className='w-[98%] hidden my-4  rounded border border-yellow-600 items-center justify-start gap-2 bg-yellow-100  font-medium p-3'>
-                                                            <span className='text-base text-gray-700'>
-                                                                No Facilities found
-                                                            </span>
-                                                            <Link href={props.path || '/'}>
-                                                                <span className='text-gray-700 hover:text-gray-800 group-focus:text-gray-800 active:text-gray-800'>
-                                                                    Refresh.
-                                                                </span>
-                                                            </Link>
-                                                        </div>
-                                                }
-
-                                                {/* Feedback Facilities View */}
-                                                {
-                                                    facilityFeedBack && facilityFeedBack.length > 0 ? facilityFeedBack.map((facility) => (
-                                                        <div key={facility?.id} className="grid grid-cols-8 gap-2 border-b py-4 hover:bg-gray-50 w-full">
-                                                            <div className="col-span-8 md:col-span-8 lg:col-span-6 flex flex-col gap-1 group items-center justify-start text-left">
-                                                                <h3 className="text-2xl w-full">
-                                                                    <Link href={'/facilities/' + facility?.id} className="hover:text-gray-800 group-focus:text-gray-800 active:text-gray-800 ">
-                                                                        <small className="text-gray-500">{index + props?.data?.start_index}.</small>{' '}{facility?.facility_name}
-                                                                    </Link>
-                                                                </h3>
-
-                                                                <div className="text-base grid grid-cols-2 md:grid-cols-4 items-center justify-start gap-3 w-full">
-                                                                    <div className="flex flex-col items-start justify-start gap-0 leading-none whitespace-pre-wrap">
-                                                                        <label className="text-xs text-gray-500">Service:</label>
-                                                                        <span className="whitespace-pre-line">{facility?.service_name || facility?.county || '-'}</span>
-                                                                    </div>
-                                                                    <div className="flex flex-col items-start justify-start gap-0 leading-none whitespace-pre-wrap">
-                                                                        <label className="text-xs text-gray-500">Comment:</label>
-                                                                        <span className="whitespace-pre-line">{facility?.comment || facility?.county || '-'}</span>
-                                                                    </div>
-                                                                    <div className="flex flex-col items-start justify-start gap-0 leading-none whitespace-pre-wrap">
-                                                                        <label className="text-xs text-gray-500">Rating:</label>
-                                                                        <span className="whitespace-pre-line">{facility?.rating || facility?.sub_county || '0'}</span>
-                                                                    </div>
-                                                                    <div className="flex flex-col items-start justify-start gap-0 leading-none whitespace-pre-wrap">
-                                                                        <label className="text-xs text-gray-500">Date:</label>
-                                                                        <span className="whitespace-pre-line">{new Date(facility?.created).toLocaleDateString() || '-'}</span>
-                                                                    </div>
-
-                                                                </div>
-                                                            </div>
-
-                                                        </div>
-                                                    )) : (
-
-                                                        (props?.facilities?.length === 0 && facilityFeedBack?.length == 0) &&
-                                                        // No Facility feedback data found
-                                                        <Alert severity="warning" sx={{ width: '100%', marginInline: '4px' }} >No facilities found <span onClick={() => {
-                                                            setTitle('Facilities')
-                                                            setAllFctsSelected(true)
-
-
-                                                            router.push({ pathname: '/facilities', query: { qf: 'all' } })
-                                                        }} className='hover:underline text-indigo-700 cursor-pointer'>back to all facilities</span>
-                                                        </Alert>
-
-                                                    )
-
-                                                }
-
-                                                {props?.facilities &&
-                                                    <div className='flex w-full justify-between p-2 items-center'>
-                                                        <div className="flex items-center gap-2">
-
-                                                            <button className="border border-gray-800 p-1 flex place-content-center rounded" onClick={handlePrevious}>
-                                                                {'<< Previous'}
-                                                            </button>
-
-                                                            <button className=" border border-gray-800 p-1 flex place-content-center rounded" onClick={handleNext}>
-                                                                {'Next >>'}
-                                                            </button>
-                                                        </div>
-
-                                                        <div className="flex items-center gap-2">
-
-                                                            {
-                                                                // props?.current_page > 5 &&
-                                                                Array(props?.current_page + 5).fill(0).map((_, i) => i + 1).slice(props?.current_page - 6, props?.current_page + 5).map(i => (
-                                                                    <button key={uuid()} className={`border p-1 px-2 flex font-semibold place-content-center rounded ${props?.current_page == i ? 'bg-blue-600 text-gray-50 border-blue-600' : ' border-gray-800'}`} onClick={handlePageLoad}>
-                                                                        {i}
-                                                                    </button>
-                                                                ))
+                                                            placeholder="Select County"
+                                                            name="county"
+                                                            onChange={
+                                                                e => null
+                                                                // handleOrgUnitFilter
                                                             }
 
-
-
-                                                        </div>
-
+                                                        />
                                                     </div>
-                                                }
-                                            </div>
-                                        </div>
-                                    )
 
-                                    :
-                                    (
-                                        <div className="flex-grow w-full flex flex-col items-center gap-1 order-last md:order-none">
-                                            <div className="flex flex-col justify-center items-center  w-full">
-                                                {/* Facilities View */}
-
-                                                {
-                                                    props?.facilities.length > 0 ?
-
-                                                        props?.facilities.map((facility) => (
-                                                            <div key={facility?.id}
-
-                                                                className={`grid grid-cols-8 gap-2 border-b px-3 py-4 w-full`}>
-                                                                <div className="px-2 col-span-8 md:col-span-8 lg:col-span-6 gap-2 md:gap-0 flex flex-col group items-center justify-start text-left">
-                                                                    <h3 className="text-2xl font-semibold w-full">
-                                                                        <span onClick={() => router.push({ pathname: `/facilities/${facility?.id}`, query: currentPageParams })} className={`cursor-pointer text-blue-500 hover:underline ${facility?.is_complete ? 'hover:text-blue-500' : 'hover:text-yellow-600'} group-focus:text-blue-500 active:text-blue-500`} >
-                                                                            {facility?.facility_name}
-                                                                        </span>
-                                                                    </h3>
-
-                                                                    <div className="w-full grid grid-cols-2 md:grid-cols-5 gap-1">
+                                                     {/* Sub County */}
+                                                     <div key={uuid()} className="w-full flex flex-col items-start justify-start gap-1 mb-1">
+                                                        <label htmlFor="sub_county" className="text-gray-600 capitalize text-sm">Sub County</label>
 
 
-                                                                        <div className="flex flex-col items-start justify-start gap-0 leading-none whitespace-pre-wrap mb-2">
-                                                                            <label className="text-xs text-gray-500 ">Rating:</label>
-                                                                            <span className="whitespace-pre-line font-semibold">{facility?.rating}</span>
-                                                                        </div>
-
-                                                                        <div className="flex flex-col  items-start justify-start gap-0 leading-none whitespace-pre-wrap">
-                                                                            <label className="text-xs text-gray-500">Service:</label>
-                                                                            <span className="whitespace-pre-line text-wrap">{facility?.service_name ?? ' '}</span>
-                                                                        </div>
-
-
-                                                                        <div className="flex flex-col  items-start justify-start gap-0 leading-none whitespace-pre-wrap">
-                                                                            <label className="text-xs text-gray-500">Comment:</label>
-                                                                            <span className="whitespace-pre-line text-wrap">{facility?.comment ?? '-'}</span>
-                                                                        </div>
-
-                                                                        <div className="flex flex-col items-start justify-start gap-0 leading-none whitespace-pre-wrap">
-                                                                            <label className="text-xs text-gray-500">Active:</label>
-                                                                            <span className="whitespace-pre-line">{filters?.active ?? '-'}</span>
-                                                                        </div>
-
-                                                                        <div className="flex flex-col items-start col-start-2 row-start-1 md:col-start-5 justify-start gap-0 leading-none whitespace-pre-wrap">
-                                                                            <label className="text-xs text-gray-500">Updated:</label>
-                                                                            <span className="whitespace-pre-line">{new Date(facility?.updated).toDateString()}{", "}{new Date(facility?.updated).toLocaleTimeString()}</span>
-                                                                        </div>
-                                                                    </div>
-
-
-                                                                </div>
-
-
-                                                            </div>
-                                                        ))
-                                                        :
-                                                        <div className='w-[98%] hidden my-4  rounded border border-yellow-600 items-center justify-start gap-2 bg-yellow-100  font-medium p-3'>
-                                                            <span className='text-base text-gray-700'>
-                                                                No Facilities found
-                                                            </span>
-                                                            <Link href={props.path || '/'}>
-                                                                <span className='text-gray-700 hover:text-gray-800 group-focus:text-gray-800 active:text-gray-800'>
-                                                                    Refresh.
-                                                                </span>
-                                                            </Link>
-                                                        </div>
-                                                }
-
-
-                                                {props?.facilities && props?.count >= 10 &&
-                                                    <div className='flex w-full justify-between p-2 items-center'>
-                                                        <div className="flex items-center gap-2">
-
-                                                            <button className="border border-gray-800 p-1 flex place-content-center rounded" onClick={handlePrevious}>
-                                                                {'<< Previous'}
-                                                            </button>
-
-                                                            <button className=" border border-gray-800 p-1 flex place-content-center rounded" onClick={handleNext}>
-                                                                {'Next >>'}
-                                                            </button>
-                                                        </div>
-
-                                                        <div className="flex items-center gap-2">
-
-                                                            {
-                                                                // props?.current_page > 5 &&
-                                                                Array(props?.current_page + 5).fill(0).map((_, i) => i + 1).slice(props?.current_page - 6, props?.current_page + 5).map(i => (
-                                                                    <button key={uuid()} className={`border p-1 px-2 flex font-semibold place-content-center rounded ${props?.current_page == i ? 'bg-blue-600 text-gray-50 border-blue-600' : ' border-gray-800'}`} onClick={handlePageLoad}>
-                                                                        {i}
-                                                                    </button>
-                                                                ))
+                                                        <CustomSelect
+                                                            options={subCountyFilterOptions}
+                                                            placeholder="Select Sub County"
+                                                            name="sub_county"
+                                                            onChange={
+                                                                e => null
+                                                                // handleOrgUnitFilter
                                                             }
 
-                                                            {/* {
-                                                                 props?.current_page <= 5 &&
-                                                                 Array(10).fill(0).map((_, i) => i+1).slice(0, 10).map(i => (
-                                                                     <button className={`border p-1 px-2 flex font-semibold place-content-center rounded ${props?.current_page == i ? 'bg-blue-600 text-gray-50 border-blue-600': ' border-gray-800'}`} onClick={handlePageLoad}>
-                                                                     {i}
-                                                                     </button>
-                                                                 ))
-                                                          } */}
+                                                        />
+                                                    </div>
 
+
+                                                     {/* Constituency */}
+                                                     <div key={uuid()} className="w-full flex flex-col items-start justify-start gap-1 mb-1">
+                                                        <label htmlFor="constituency" className="text-gray-600 capitalize text-sm">Constituency</label>
+
+
+                                                        <CustomSelect
+                                                            options={constituencyFilterOptions}
+                                                            placeholder="Select Constituency"
+                                                            name="constituency"
+                                                            
+
+                                                        />
+                                                    </div>
+
+                                                    
+                                                     {/* Ward */}
+                                                     <div key={uuid()} className="w-full flex flex-col items-start justify-start gap-1 mb-1">
+                                                        <label htmlFor="ward" className="text-gray-600 capitalize text-sm">Ward</label>
+
+
+                                                        <CustomSelect
+                                                            options={wardFilterOptions}
+                                                            placeholder="Select Ward"
+                                                            name="ward"
+                                                            
+
+                                                        />
+                                                    </div>
+
+                                                    {/* Facility Type */}
+                                                    <div key={uuid()} className="w-full flex flex-col items-start justify-start gap-1 mb-1">
+                                                        <label htmlFor="facility_type" className="text-gray-600 capitalize text-sm">Facility type</label>
+
+
+                                                        <CustomSelect
+                                                            options={facilityTypeFilterOptions}
+                                                            placeholder="Select Facility Type"
+                                                            name="facility_type"
+                                                            onChange={
+                                                                (e) => null
+                                                            }
+
+                                                        />
+                                                    </div>
+
+                                                    {/* Facility Type */}
+                                                    <div key={uuid()} className="w-full flex flex-col items-start justify-start gap-1 mb-1">
+                                                        <label htmlFor="facility_type_category"className="text-gray-600 capitalize text-sm">Facility Type Detail</label>
+
+
+                                                        <CustomSelect
+                                                            options={facilityTypeDetailsFilterOptions}
+                                                            placeholder="Select Facility Type Detail"
+                                                            name="facility_type_category"
+                                                            onChange={
+                                                                (e) => null
+                                                            }
+
+                                                        />
+                                                    </div>
+
+                                                    {/* Keph Level */}
+                                                    <div key={uuid()} className="w-full flex flex-col items-start justify-start gap-1 mb-1">
+                                                        <label htmlFor="keph_level" className="text-gray-600 capitalize text-sm">Keph Level</label>
+
+
+                                                        <CustomSelect
+                                                            options={kephLevelFilterOptions}
+                                                            placeholder="Select Keph Level"
+                                                            name="keph_level"
+                                                            
+                                            
+                                                        />
+                                                    </div>
+
+                                                    {/* Owner Type */}
+                                                    <div key={uuid()} className="w-full flex flex-col items-start justify-start gap-1 mb-1">
+                                                        <label htmlFor="owner_type" className="text-gray-600 capitalize text-sm">Owner Type</label>
+
+
+                                                        <CustomSelect
+                                                            options={ownerTypeFilterOptions}
+                                                            placeholder="Select Owner Type"
+                                                            name="owner_type"
+                                                            
+                                            
+                                                        />
+                                                    </div>
+
+                                                    {/* Owner */}
+                                                    <div key={uuid()} className="w-full flex flex-col items-start justify-start gap-1 mb-1">
+                                                        <label htmlFor="owner" className="text-gray-600 capitalize text-sm">Owner</label>
+
+
+                                                        <CustomSelect
+                                                            options={ownerFilterOptions}
+                                                            placeholder="Select Owner"
+                                                            name="owner"
+                                                            
+                                            
+                                                        />
+                                                    </div>
+
+                                                    {/* Opertation Status */}
+                                                    <div key={uuid()} className="w-full flex flex-col items-start justify-start gap-1 mb-1">
+                                                        <label htmlFor="operational_status" className="text-gray-600 capitalize text-sm">Operational Status</label>
+
+
+                                                        <CustomSelect
+                                                            options={operationStatusFilterOptions}
+                                                            placeholder="Select Operational Status"
+                                                            name="operational_status"
+                                                            
+                                            
+                                                        />
+                                                    </div>
+
+                                        
+                                                    {/* Yes/No Dialog */}
+                                                    <div className="w-full col-span-3 gap-x-3 grid md:grid-cols-4 grid-cols-2 mb-3">
+                                                        <div className='flex flex-col items-start justify-center gap-1'>
+                                                            <span className='inline-flex gap-2'>
+                                                                <input type="checkbox" className="justify-self-end border border-gray-600 bg-django-blue" value={false} defaultChecked={props?.query?.has_edits === "true"} name="has_edits" id="has_edits" onChange={ev => {
+                                                                    setDrillDown({ ...drillDown, 'has_edits': true })
+                                                                }} />
+                                                                <label htmlFor="has_edits" className="text-gray-700 capitalize text-sm">Has edits</label>
+
+                                                            </span>
+
+
+                                                            <span className='inline-flex gap-2'>
+                                                                <input type="checkbox" className="justify-self-end border border-gray-600 bg-django-blue" value={true} defaultChecked={props?.query?.is_approved === "true"} name="is_approved" id="is_approved" onChange={ev => {
+                                                                    setDrillDown({ ...drillDown, 'is_approved': true })
+                                                                }} />
+                                                                <label htmlFor="is_approved" className="text-gray-700 capitalize text-sm">Approved</label>
+
+                                                            </span>
                                                         </div>
 
+
+                                                        <div className='flex flex-col items-start justify-center gap-1'>
+                                                            <span className='inline-flex gap-2'>
+
+                                                                <input type="checkbox" className="justify-self-end border border-gray-600 bg-django-blue" value={true} defaultChecked={props?.query?.is_complete === "true"} name="is_complete" id="is_complete" onChange={ev => {
+                                                                    setDrillDown({ ...drillDown, 'is_complete': true })
+                                                                }} />
+                                                                <label htmlFor="is_complete" className="text-gray-700 capitalize text-sm">Complete</label>
+
+                                                            </span>
+
+
+                                                            <span className='inline-flex gap-2'>
+
+                                                                <input type="checkbox" className="justify-self-end border border-gray-600 bg-django-blue" value={true} defaultChecked={props?.query?.number_of_beds === "true"} name="number_of_beds" id="number_of_beds" onChange={ev => {
+                                                                    setDrillDown({ ...drillDown, 'number_of_beds': true })
+                                                                }} />
+                                                                <label htmlFor="number_of_beds" className="text-gray-700 capitalize text-sm">Has beds</label>
+
+                                                            </span>
+                                                        </div>
+
+
+                                                        <div className='flex flex-col items-start justify-center gap-1'>
+                                                            <span className='inline-flex gap-2'>
+
+                                                                <input type="checkbox" className="justify-self-end border border-gray-600 bg-django-blue" value={true} defaultChecked={props?.query?.number_of_cots === "true"} name="number_of_cots" id="number_of_cots" onChange={ev => {
+                                                                    setDrillDown({ ...drillDown, 'number_of_cots': true })
+                                                                }} />
+                                                                <label htmlFor="number_of_cots" className="text-gray-700 capitalize text-sm">Has cots</label>
+
+                                                            </span>
+
+                                                            <span className='inline-flex gap-2'>
+
+                                                                <input type="checkbox" className="justify-self-end border border-gray-600 bg-django-blue" value={true} defaultChecked={props?.query?.open_whole_day === "true"} name="open_whole_day" id="open_whole_day" onChange={ev => {
+                                                                    setDrillDown({ ...drillDown, 'open_whole_day': true })
+                                                                }} />
+                                                                <label htmlFor="open_whole_day" className="text-gray-700 capitalize text-sm">Open 24 hours</label>
+
+                                                            </span>
+                                                        </div>
+
+                                                        <div className='flex flex-col items-start justify-center gap-1'>
+                                                            <span className='inline-flex gap-2'>
+
+                                                                <input type="checkbox" className="justify-self-end border border-gray-600 bg-django-blue" value={true} defaultChecked={props?.query?.open_weekends === "true"} name="open_weekends" id="open_weekends" onChange={ev => {
+                                                                    setDrillDown({ ...drillDown, 'open_weekends': true })
+                                                                }} />
+                                                                <label htmlFor="open_weekends" className="text-gray-700 capitalize text-sm">Open weekends</label>
+
+                                                            </span>
+
+                                                            <span className='inline-flex gap-2'>
+
+                                                                <input type="checkbox" className="justify-self-end border border-gray-600 bg-django-blue" value={true} defaultChecked={props?.query?.open_public_holidays === "true"} name="open_public_holidays" id="open_public_holidays" onChange={ev => {
+                                                                    setDrillDown({ ...drillDown, 'open_public_holidays': true })
+                                                                }} />
+                                                                <label htmlFor="open_public_holidays" className="text-gray-700 capitalize text-sm">Open holidays</label>
+
+                                                            </span>
+                                                        </div>
+
+
                                                     </div>
-                                                }
-                                            </div>
-                                        </div>
-                                    )
-                            }
 
 
+
+                                                    <button
+                                                        type="submit"
+                                                        className="bg-django-blue col-start-1  border border-gray-600  text-gray-600 hover:bg-black hover:text-white hover:border-black font-semibold px-5 py-1 text-base  w-full whitespace-nowrap text-center">
+                                                        Search
+                                                    </button>
+
+                                                    <button
+                                                        onClick={handleFiltersReset}
+                                                        type='reset'
+                                                        className="bg-blue-700 boder border-gray-700 text-white hover:bg-black hover:border-black font-semibold px-5 py-1 text-base  w-full whitespace-nowrap text-center"
+                                                    >
+                                                        Reset
+                                                    </button>
+
+
+                                                </form>
+
+                                            )
+                                        }
+                                    </div>
+                                </AccordionDetails>
+                            </Accordion>
 
 
                         </div>
+
 
                     </div>
-                </MainLayout >
-            </>
-        )
+
+
+                    {/* Side Menu Filters Wide View port*/}
+                    <div className="hidden md:flex col-span-1">
+                        <FacilitySideMenu
+                        /*filters={filters ?? {}}
+                        states={[khisSynched, facilityFeedBack, pathId, allFctsSelected, title]}
+                        stateSetters={[setKhisSynched, setFacilityFeedBack, setPathId, setAllFctsSelected, setTitle]} 
+                        */
+                        />
+                    </div>
+
+                    {/* Side Menu Filters Small View port*/}
+
+                    <button className='md:hidden relative p-2 border border-gray-800 rounded w-full self-start my-4' onClick={() => setIsMenuOpen(!isMenuOpen)}>
+                        Facility Menu
+                        {
+                            !isMenuOpen &&
+                            <KeyboardArrowRight className='w-8 aspect-square text-gray-800' />
+                        }
+
+                        {
+                            isMenuOpen &&
+                            <KeyboardArrowDown className='w-8 aspect-square text-gray-800' />
+                        }
+
+                        {
+                            isMenuOpen &&
+                            <FacilitySideMenu
+                                filters={filters}
+                                states={[khisSynched, facilityFeedBack, pathId, allFctsSelected, title]}
+                                stateSetters={[setKhisSynched, setFacilityFeedBack, setPathId, setAllFctsSelected, setTitle]} />
+                        }
+                    </button>
+
+                    {/* Main Body */}
+                    <div className="w-full col-span-1 md:col-span-4 mr-24 md:col-start-2  md:h-auto bg-gray-50 shadow-md">
+                        {/* Data Indicator section */}
+                        <div className='w-full p-2 flex flex-col md:flex-row md:justify-between md:items-center border-b border-gray-400'>
+                            {/* search input */}
+                            <div className='flex max-w-max gap-2  items-end'>
+
+                                <Formik
+                                    initialValues={
+                                        {
+                                            q: ""
+                                        }
+                                    }
+                                    onSubmit={(values) => {
+
+
+                                        const query = values.q.split(' ').join('+');
+                                        const href = new URL(window.location.href)
+                                        const filter = href.searchParams.get('filter')
+                                        // console.log({values})
+                                        setSearchTerm(query)
+
+
+                                        switch (filter) {
+                                            case "all_facilities":
+                                                router.push(`/facilities/?search=${query}&filter=all_facilities`)
+                                                break;
+                                            case "approved_facilities":
+                                                router.push(`/facilities/?search=${query}&filter=approved_facilities&approved=true&approved_national_level=true&rejected=false`)
+                                                break;
+                                            case "pending_validation_facilities":
+                                                router.push(`/facilities/?search=${query}&filter=pending_validation_facilities&pending_approval=true&has_edits=false`)
+                                                break;
+                                            case "updated_pending_validation_facilities":
+                                                // `/facilities/?search=${query}&filter=updated_pending_validation_facilities&have_updates=true&${facilityStatus.split(':')[0]}=${facilityStatus.split(':')[1]}`)
+                                                router.push({
+                                                    pathname: '/facilities',
+                                                    query: {
+                                                        search: query,
+                                                        filter: 'updated_pending_validation_facilities',
+                                                        have_updates: true,
+                                                        ...(() => {
+                                                            if (facilityStatus !== '') {
+                                                                return {
+                                                                    [facilityStatus.split(':')[0]]: facilityStatus.split(':')[1]
+                                                                }
+                                                            }
+                                                            return {}
+                                                        })()
+
+                                                    }
+                                                })
+                                                break;
+                                            case "pending_approval_facilities":
+                                                router.push(`/facilities/?search=${query}&filter=pending_approval_facilities&to_publish=true`)
+                                                break;
+                                            case "dhis_synched_facilities":
+                                                router.push(`/facilities/?search=${query}&filter=dhis_synched_facilities&approved=true&approved_national_level=true&rejected=false&reporting_in_dhis=true`)
+                                                break;
+                                            case "failed_validation_facilities":
+                                                router.push(`/facilities/?search=${query}&filter=failed_validation_facilities&rejected=true`)
+                                                break;
+                                            case "rejected_facilities":
+                                                router.push(`/facilities/?search=${query}&filter=rejected_facilities&rejected_national_true=true`)
+                                                break;
+                                            case "closed":
+                                                router.push(`/facilities/?search=${query}&filter=closed_facilities&closed=true`)
+                                                break;
+                                            case "incomplete":
+                                                router.push(`/facilities/?search=${query}&filter=incomplete_facilities&is_complete=true`)
+                                                break;
+                                            case "synchronized_regulated_facilities":
+                                                router.push(`/facilities/?search=${query}&filter=synchronized_regulated_facilities&mfl_code_null=true`)
+                                                break;
+                                            case "feed_back_facilities":
+                                                router.push(`/facilities/?search=${query}&filter=feed_back_facilities`)
+                                                break;
+                                            default:
+                                                router.push(`/facilities/?search=${query}&filter=all_facilities`)
+                                                break;
+
+                                        }
+
+                                    }}
+                                >
+
+                                    <Form
+                                        className="inline-flex flex-row justify-start py-2 lg:py-0"
+
+                                    >
+
+                                        <Field
+                                            name="q"
+                                            id="search-input"
+                                            className=" bg-transparent  w-8/12 p-2  md:flex-grow-1 flex-grow shadow-sm rounded-tl rounded-bl border border-gray-400 placeholder-gray-600  focus:shadow-none focus:ring-black focus:border-black outline-none"
+                                            type="search"
+                                            placeholder="Use MFR code or Name"
+                                        />
+
+                                        <button
+                                            type="submit"
+                                            className="bg-transparent border-t border-r border-b rounded-tr rounded-br border-gray-400 text-black flex items-center justify-center px-4 py-1"
+
+                                        >
+                                            <SearchIcon className="w-5 h-5 text-gray-600" />
+                                        </button>
+                                    </Form>
+
+                                </Formik>
+                                {
+                                    pageParams.get('filter') === 'updated_pending_validation_facilities' &&
+
+                                    <Select
+                                        className='flex-grow min-w-max h-full'
+                                        options={[{
+                                            label: 'Approved National',
+                                            value: 'approved_national_level:true'
+                                        }, {
+                                            label: 'Pending Validation',
+                                            value: 'approved:false'
+                                        }]}
+
+                                        placeholder="Select Facility Status"
+                                        onChange={handleApprovalStatus}
+                                        defaultValue={''}
+                                        name='approval_status'
+
+
+                                    />
+
+                                }
+                            </div>
+
+
+                            <h5 className="text-lg  md:text-end font-medium flex  gap-2 md:gap-3 text-gray-800 md:pr-2">
+
+                                <small className="text-gray-500 text-base"> Total facilities: {props?.count}</small>
+                                <small className="text-gray-500 text-base"> Current page: {props?.current_page}</small>
+                                <small className="text-gray-500 text-base"> Facility count: {props?.page_size}</small>
+
+
+                            </h5>
+                        </div>
+
+
+                        {/*  Quick Filters status display */}
+                        {
+                            pageParams.get('filter') !== 'feed_back_facilities' ?
+                                (
+                                    <div className="flex-grow w-full flex flex-col items-center gap-1 order-last md:order-none">
+                                        <div className="flex flex-col justify-center items-center  w-full">
+                                            {/* Facilities View */}
+
+                                            {
+                                                props?.facilities.length > 0 ?
+
+                                                    props?.facilities.map((facility) => (
+                                                        <div key={facility?.id}
+                                                            title={`Incomplete Details : ${facility?.is_complete ? 'none' : facility?.in_complete_details}`}
+                                                            className={`grid grid-cols-8 gap-2 border-b py-4 w-full ${!facility?.is_complete && !facility?.in_complete_details ? 'bg-yellow-50 border-yellow-500 hover:bg-gray-50' : 'bg-transparent border-gray-400 hover:border-grat-400'}`}>
+                                                            <div className="px-2 col-span-8 md:col-span-8 lg:col-span-6 gap-2 md:gap-0 flex flex-col group items-center justify-start text-left">
+                                                                <h3 className="text-2xl font-semibold w-full">
+                                                                    <span onClick={() => router.push({ pathname: `/facilities/${facility?.id}`, query: currentPageParams })} className={`cursor-pointer text-blue-500 hover:underline ${facility?.is_complete ? 'hover:text-blue-500' : 'hover:text-yellow-600'} group-focus:text-blue-500 active:text-blue-500`} >
+                                                                        {facility?.official_name || facility?.official_name || facility?.name}
+                                                                    </span>
+                                                                </h3>
+
+                                                                <div className="w-full grid grid-cols-2 md:grid-cols-5 gap-1">
+
+
+                                                                    <div className="flex flex-col items-start justify-start gap-0 leading-none whitespace-pre-wrap mb-2">
+                                                                        <label className="text-xs text-gray-500 ">Code:</label>
+                                                                        <span className="whitespace-pre-line font-semibold"># {facility?.code ?? 'NO_CODE'}</span>
+                                                                    </div>
+
+                                                                    <div className="flex flex-col  items-start justify-start gap-0 leading-none whitespace-pre-wrap">
+                                                                        <label className="text-xs text-gray-500">Type:</label>
+                                                                        <span className="whitespace-pre-line text-wrap">{facility?.facility_type_name ?? ' '}</span>
+                                                                    </div>
+
+
+                                                                    <div className="flex flex-col  items-start justify-start gap-0 leading-none whitespace-pre-wrap">
+                                                                        <label className="text-xs text-gray-500">Owner:</label>
+                                                                        <span className="whitespace-pre-line text-wrap">{facility?.owner_name ?? ' '}</span>
+                                                                    </div>
+
+                                                                    <div className="flex flex-col items-start justify-start gap-0 leading-none whitespace-pre-wrap">
+                                                                        <label className="text-xs text-gray-500">Keph:</label>
+                                                                        <span className="whitespace-pre-line">{filters?.keph_level.find(({ id }) => id == facility?.keph_level)?.name ?? '-'}</span>
+                                                                    </div>
+
+                                                                    <div className="flex flex-col items-start col-start-2 row-start-1 md:col-start-5 justify-start gap-0 leading-none whitespace-pre-wrap">
+                                                                        <label className="text-xs text-gray-500">Updated:</label>
+                                                                        <span className="whitespace-pre-line">{new Date(facility?.updated).toDateString()}{", "}{new Date(facility?.updated).toLocaleTimeString()}</span>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div className="text-base grid grid-cols-2 md:grid-cols-5 items-center justify-start gap-1 w-full">
+                                                                    <div className="flex flex-col items-start justify-start gap-0 leading-none whitespace-pre-wrap">
+                                                                        <label className="text-xs text-gray-500">County:</label>
+                                                                        <span className="whitespace-pre-line">{facility?.county_name || facility?.county || 'N/A'}</span>
+                                                                    </div>
+                                                                    <div className="flex flex-col items-start justify-start gap-0 leading-none whitespace-pre-wrap">
+                                                                        <label className="text-xs text-gray-500">Sub-county:</label>
+                                                                        <span className="whitespace-pre-line">{facility?.sub_county_name || facility?.sub_county || 'N/A'}</span>
+                                                                    </div>
+                                                                    <div className="flex flex-col items-start justify-start gap-0 leading-none whitespace-pre-wrap">
+                                                                        <label className="text-xs text-gray-500">Ward:</label>
+                                                                        <span className="whitespace-pre-line">{facility?.ward_name || 'N/A'}</span>
+                                                                    </div>
+                                                                    <div className="flex flex-col items-start justify-start gap-0 leading-none whitespace-pre-wrap">
+                                                                        <label className="text-xs text-gray-500">Constituency:</label>
+                                                                        <span className="whitespace-pre-line">{facility?.constituency_name || facility?.constituency || 'N/A'}</span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <div className="col-span-8 md:col-span-8 lg:col-span-2 grid grid-cols-2 grid-rows-4 gap-x-2 gap-y-1 text-lg">
+                                                                {/* {console.log({facility})} */}
+                                                                {/* {(facility?.operational || facility?.operation_status_name) ? <span className={"shadow-sm col-start-2 leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 font-semibold text-gray-900"}>Operational</span> : ""} */}
+                                                                {
+                                                                    !facility?.rejected ?
+                                                                        <span className={"shadow-sm leading-none whitespace-nowrap text-sm col-start-2  py-1 px-2 " + (facility?.approved_national_level ? "bg-green-200 font-semibold text-green-900" : "bg-gray-500 font-semibold p-1 text-gray-50")}>
+
+
+                                                                            {
+                                                                                facility?.approved_national_level ?
+                                                                                    "Approved" : "Not Approved"}</span> :
+                                                                                     facility?.rejected && <span className={"shadow-sm  col-start-2 leading-none whitespace-nowrap px-2 text-sm font-semibold py-1 bg-red-200 text-red-900"}>Rejected Validate</span>
+                                                                }
+
+                                                                {
+                                                                    facility?.rejected_national &&
+                                                                    <span className={"shadow-sm leading-none whitespace-nowrap text-sm col-start-2 py-1 px-2 bg-red-200 font-semibold text-yellow-900"}>Rejected Approve</span>
+                                                                }
+
+                                                                {
+                                                                    facility?.has_edits && facility?.latest_update &&
+                                                                    <span className={"shadow-sm leading-none whitespace-nowrap text-sm col-start-2 py-1 px-2 bg-yellow-200 font-semibold text-yellow-900"}>Has edits</span>
+                                                                }
+
+                                                                {
+                                                                    !facility?.is_complete &&
+                                                                    <span className={"shadow-sm leading-none whitespace-nowrap text-sm col-start-2 py-1 px-2 bg-pink-200 font-semibold text-pink-900"}>Incomplete</span>
+                                                                }
+
+                                                                {
+                                                                    facility?.approved ?
+                                                                        <span className={"shadow-sm leading-none whitespace-nowrap text-sm col-start-2 py-1 px-2 bg-purple-200 font-semibold text-purple-900"}>Validated</span> :
+                                                                        <span className={"shadow-sm leading-none whitespace-nowrap text-sm col-start-2 py-1 px-2 bg-gray-500 font-semibold text-gray-50"}>Not Validated</span>
+                                                                }
+
+                                                                {
+                                                                    facility?.closed &&
+                                                                    <span className={"shadow-sm leading-none whitespace-nowrap text-sm col-start-2 py-1 px-2 bg-red-200 font-semibold text-red-900"}>Closed</span>
+                                                                }
+
+
+                                                            </div>
+                                                        </div>
+                                                    ))
+                                                    :
+                                                    <div className='w-[98%] hidden my-4  rounded border border-yellow-600 items-center justify-start gap-2 bg-yellow-100  font-medium p-3'>
+                                                        <span className='text-base text-gray-700'>
+                                                            No Facilities found
+                                                        </span>
+                                                        <Link href={props.path || '/'}>
+                                                            <span className='text-gray-700 hover:text-gray-800 group-focus:text-gray-800 active:text-gray-800'>
+                                                                Refresh.
+                                                            </span>
+                                                        </Link>
+                                                    </div>
+                                            }
+
+                                            {/* Feedback Facilities View */}
+                                            {
+                                                facilityFeedBack && facilityFeedBack.length > 0 ? facilityFeedBack.map((facility) => (
+                                                    <div key={facility?.id} className="grid grid-cols-8 gap-2 border-b py-4 hover:bg-gray-50 w-full">
+                                                        <div className="col-span-8 md:col-span-8 lg:col-span-6 flex flex-col gap-1 group items-center justify-start text-left">
+                                                            <h3 className="text-2xl w-full">
+                                                                <Link href={'/facilities/' + facility?.id} className="hover:text-gray-800 group-focus:text-gray-800 active:text-gray-800 ">
+                                                                    <small className="text-gray-500">{index + props?.data?.start_index}.</small>{' '}{facility?.facility_name}
+                                                                </Link>
+                                                            </h3>
+
+                                                            <div className="text-base grid grid-cols-2 md:grid-cols-4 items-center justify-start gap-3 w-full">
+                                                                <div className="flex flex-col items-start justify-start gap-0 leading-none whitespace-pre-wrap">
+                                                                    <label className="text-xs text-gray-500">Service:</label>
+                                                                    <span className="whitespace-pre-line">{facility?.service_name || facility?.county || '-'}</span>
+                                                                </div>
+                                                                <div className="flex flex-col items-start justify-start gap-0 leading-none whitespace-pre-wrap">
+                                                                    <label className="text-xs text-gray-500">Comment:</label>
+                                                                    <span className="whitespace-pre-line">{facility?.comment || facility?.county || '-'}</span>
+                                                                </div>
+                                                                <div className="flex flex-col items-start justify-start gap-0 leading-none whitespace-pre-wrap">
+                                                                    <label className="text-xs text-gray-500">Rating:</label>
+                                                                    <span className="whitespace-pre-line">{facility?.rating || facility?.sub_county || '0'}</span>
+                                                                </div>
+                                                                <div className="flex flex-col items-start justify-start gap-0 leading-none whitespace-pre-wrap">
+                                                                    <label className="text-xs text-gray-500">Date:</label>
+                                                                    <span className="whitespace-pre-line">{new Date(facility?.created).toLocaleDateString() || '-'}</span>
+                                                                </div>
+
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                )) : (
+
+                                                    (props?.facilities?.length === 0 && facilityFeedBack?.length == 0) &&
+                                                    // No Facility feedback data found
+                                                    <Alert severity="warning" sx={{ width: '100%', marginInline: '4px' }} >No facilities found <span onClick={() => {
+                                                        setTitle('Facilities')
+                                                        setAllFctsSelected(true)
+
+
+                                                        router.push({ pathname: '/facilities', query: { qf: 'all' } })
+                                                    }} className='hover:underline text-indigo-700 cursor-pointer'>back to all facilities</span>
+                                                    </Alert>
+
+                                                )
+
+                                            }
+
+                                            {props?.facilities &&
+                                                <div className='flex w-full justify-between p-2 items-center'>
+                                                    <div className="flex items-center gap-2">
+
+                                                        <button className="border border-gray-800 p-1 flex place-content-center rounded" onClick={handlePrevious}>
+                                                            {'<< Previous'}
+                                                        </button>
+
+                                                        <button className=" border border-gray-800 p-1 flex place-content-center rounded" onClick={handleNext}>
+                                                            {'Next >>'}
+                                                        </button>
+                                                    </div>
+
+                                                    <div className="flex items-center gap-2">
+
+                                                        {
+                                                            // props?.current_page > 5 &&
+                                                            Array(props?.current_page + 5).fill(0).map((_, i) => i + 1).slice(props?.current_page - 6, props?.current_page + 5).map(i => (
+                                                                <button key={uuid()} className={`border p-1 px-2 flex font-semibold place-content-center rounded ${props?.current_page == i ? 'bg-blue-600 text-gray-50 border-blue-600' : ' border-gray-800'}`} onClick={handlePageLoad}>
+                                                                    {i}
+                                                                </button>
+                                                            ))
+                                                        }
+
+
+
+                                                    </div>
+
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                )
+
+                                :
+                                (
+                                    <div className="flex-grow w-full flex flex-col items-center gap-1 order-last md:order-none">
+                                        <div className="flex flex-col justify-center items-center  w-full">
+                                            {/* Facilities View */}
+
+                                            {
+                                                props?.facilities.length > 0 ?
+
+                                                    props?.facilities.map((facility) => (
+                                                        <div key={facility?.id}
+
+                                                            className={`grid grid-cols-8 gap-2 border-b px-3 py-4 w-full`}>
+                                                            <div className="px-2 col-span-8 md:col-span-8 lg:col-span-6 gap-2 md:gap-0 flex flex-col group items-center justify-start text-left">
+                                                                <h3 className="text-2xl font-semibold w-full">
+                                                                    <span onClick={() => router.push({ pathname: `/facilities/${facility?.id}`, query: currentPageParams })} className={`cursor-pointer text-blue-500 hover:underline ${facility?.is_complete ? 'hover:text-blue-500' : 'hover:text-yellow-600'} group-focus:text-blue-500 active:text-blue-500`} >
+                                                                        {facility?.facility_name}
+                                                                    </span>
+                                                                </h3>
+
+                                                                <div className="w-full grid grid-cols-2 md:grid-cols-5 gap-1">
+
+
+                                                                    <div className="flex flex-col items-start justify-start gap-0 leading-none whitespace-pre-wrap mb-2">
+                                                                        <label className="text-xs text-gray-500 ">Rating:</label>
+                                                                        <span className="whitespace-pre-line font-semibold">{facility?.rating}</span>
+                                                                    </div>
+
+                                                                    <div className="flex flex-col  items-start justify-start gap-0 leading-none whitespace-pre-wrap">
+                                                                        <label className="text-xs text-gray-500">Service:</label>
+                                                                        <span className="whitespace-pre-line text-wrap">{facility?.service_name ?? ' '}</span>
+                                                                    </div>
+
+
+                                                                    <div className="flex flex-col  items-start justify-start gap-0 leading-none whitespace-pre-wrap">
+                                                                        <label className="text-xs text-gray-500">Comment:</label>
+                                                                        <span className="whitespace-pre-line text-wrap">{facility?.comment ?? '-'}</span>
+                                                                    </div>
+
+                                                                    <div className="flex flex-col items-start justify-start gap-0 leading-none whitespace-pre-wrap">
+                                                                        <label className="text-xs text-gray-500">Active:</label>
+                                                                        <span className="whitespace-pre-line">{filters?.active ?? '-'}</span>
+                                                                    </div>
+
+                                                                    <div className="flex flex-col items-start col-start-2 row-start-1 md:col-start-5 justify-start gap-0 leading-none whitespace-pre-wrap">
+                                                                        <label className="text-xs text-gray-500">Updated:</label>
+                                                                        <span className="whitespace-pre-line">{new Date(facility?.updated).toDateString()}{", "}{new Date(facility?.updated).toLocaleTimeString()}</span>
+                                                                    </div>
+                                                                </div>
+
+
+                                                            </div>
+
+
+                                                        </div>
+                                                    ))
+                                                    :
+                                                    <div className='w-[98%] hidden my-4  rounded border border-yellow-600 items-center justify-start gap-2 bg-yellow-100  font-medium p-3'>
+                                                        <span className='text-base text-gray-700'>
+                                                            No Facilities found
+                                                        </span>
+                                                        <Link href={props.path || '/'}>
+                                                            <span className='text-gray-700 hover:text-gray-800 group-focus:text-gray-800 active:text-gray-800'>
+                                                                Refresh.
+                                                            </span>
+                                                        </Link>
+                                                    </div>
+                                            }
+
+
+                                            {props?.facilities && props?.count >= 10 &&
+                                                <div className='flex w-full justify-between p-2 items-center'>
+                                                    <div className="flex items-center gap-2">
+
+                                                        <button className="border border-gray-800 p-1 flex place-content-center rounded" onClick={handlePrevious}>
+                                                            {'<< Previous'}
+                                                        </button>
+
+                                                        <button className=" border border-gray-800 p-1 flex place-content-center rounded" onClick={handleNext}>
+                                                            {'Next >>'}
+                                                        </button>
+                                                    </div>
+
+                                                    <div className="flex items-center gap-2">
+
+                                                        {
+                                                            // props?.current_page > 5 &&
+                                                            Array(props?.current_page + 5).fill(0).map((_, i) => i + 1).slice(props?.current_page - 6, props?.current_page + 5).map(i => (
+                                                                <button key={uuid()} className={`border p-1 px-2 flex font-semibold place-content-center rounded ${props?.current_page == i ? 'bg-blue-600 text-gray-50 border-blue-600' : ' border-gray-800'}`} onClick={handlePageLoad}>
+                                                                    {i}
+                                                                </button>
+                                                            ))
+                                                        }
+
+                                                        {/* {
+                                                             props?.current_page <= 5 &&
+                                                             Array(10).fill(0).map((_, i) => i+1).slice(0, 10).map(i => (
+                                                                 <button className={`border p-1 px-2 flex font-semibold place-content-center rounded ${props?.current_page == i ? 'bg-blue-600 text-gray-50 border-blue-600': ' border-gray-800'}`} onClick={handlePageLoad}>
+                                                                 {i}
+                                                                 </button>
+                                                             ))
+                                                      } */}
+
+                                                    </div>
+
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                )
+                        }
+
+
+
+
+                    </div>
+
+                </div>
+            </MainLayout >
+        </>);
 
     } else {
         return null

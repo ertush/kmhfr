@@ -226,9 +226,8 @@ function User(props){
 
 	if (isClient) {
 		return (
-			<MainLayout isLoading={false} searchTerm={props?.query?.searchTerm}>
-
-				{open &&
+            (<MainLayout isLoading={false} searchTerm={props?.query?.searchTerm}>
+                {open &&
 					<Modal
 						aria-labelledby="transition-modal-title"
 						aria-describedby="transition-modal-description"
@@ -267,7 +266,7 @@ function User(props){
 						</Fade>
 					</Modal>
 				}
-				<div className="w-full  md:w-[85%] md:mx-auto grid grid-cols-5 gap-4 px-1 md:px-4 py-2 my-4">
+                <div className="w-full  md:w-[85%] md:mx-auto grid grid-cols-5 gap-4 px-1 md:px-4 py-2 my-4">
 					<div className="col-span-5 flex flex-col gap-3 md:gap-5 px-4">
 						<div className="flex flex-wrap items-center justify-between gap-2 text-sm md:text-base pb-3">
 							<div className="flex flex-row items-center justify-between gap-2 text-sm md:text-base py-3">
@@ -707,155 +706,152 @@ function User(props){
 									</div>
 
 									{selectedGroups?.map((grp, i) => {
-										return (
-											<>
-												{(() => {
-													if (grp.id == 1 || grp.id == 12 || grp.id == 2) {
-														return (
-															// Administrative area 
-															<div key={i} className=' w-full flex flex-col items-start justify-start py-3   bg-transparent h-auto'>
-																<h4 className='text-lg uppercase pb-2 border-b border-gray-600 w-full mb-4 font-semibold text-gray-900'>
-																	Administrative Areas
-																</h4>
-																<div className='w-full flex flex-row items-center gap-1 gap-x-3 mb-3'>
-																	<div className='w-full flex flex-col items-left  gap-2 gap-x-3 mb-3'>
+										return (<>
+                                            {(() => {
+                                                if (grp.id == 1 || grp.id == 12 || grp.id == 2) {
+                                                    return (
+                                                        // Administrative area 
+                                                        (<div key={i} className=' w-full flex flex-col items-start justify-start py-3   bg-transparent h-auto'>
+                                                            <h4 className='text-lg uppercase pb-2 border-b border-gray-600 w-full mb-4 font-semibold text-gray-900'>
+                                                                Administrative Areas
+                                                            </h4>
+                                                            <div className='w-full flex flex-row items-center gap-1 gap-x-3 mb-3'>
+                                                                <div className='w-full flex flex-col items-left  gap-2 gap-x-3 mb-3'>
 
-																		<Select
-																			styles={{
-																				control: (baseStyles) => ({
-																					...baseStyles,
-																					backgroundColor: 'transparent',
-																					outLine: 'none',
-																					border: 'none',
-																					outLine: 'none',
-																					textColor: 'transparent',
-																					padding: 0,
-																					height: '4px'
-																				}),
+                                                                    <Select
+                                                                        styles={{
+                                                                            control: (baseStyles) => ({
+                                                                                ...baseStyles,
+                                                                                backgroundColor: 'transparent',
+                                                                                outLine: 'none',
+                                                                                border: 'none',
+                                                                                outLine: 'none',
+                                                                                textColor: 'transparent',
+                                                                                padding: 0,
+                                                                                height: '4px'
+                                                                            }),
 
-																			}}
-																			options={counties || []}
-																			isMulti
-																			required
-																			placeholder='Select county..'
+                                                                        }}
+                                                                        options={counties || []}
+                                                                        isMulti
+                                                                        required
+                                                                        placeholder='Select county..'
 
-																			onChange={async (ev) => {
+                                                                        onChange={async (ev) => {
 
-																				handleOnChange({ name: 'user_counties', ev })
+                                                                            handleOnChange({ name: 'user_counties', ev })
 
-																				for (let i = 0; i < ev.length; i++) {
-																					try {
-																						const resp = await fetch(`/api/filters/subcounty/?county=${ev[i].value}${"&fields=id,name,county&page_size=30"}`)
+                                                                            for (let i = 0; i < ev.length; i++) {
+                                                                                try {
+                                                                                    const resp = await fetch(`/api/filters/subcounty/?county=${ev[i].value}${"&fields=id,name,county&page_size=30"}`)
 
-																						setSubCountyOptions((await resp.json()).results.map(({ id, name }) => ({ value: id, label: name })))
+                                                                                    setSubCountyOptions((await resp.json()).results.map(({ id, name }) => ({ value: id, label: name })))
 
-																					}
-																					catch (e) {
-																						console.error('Unable to fetch sub_county options')
-																						setSubCountyOpt(null)
-																					}
-																				}
+                                                                                }
+                                                                                catch (e) {
+                                                                                    console.error('Unable to fetch sub_county options')
+                                                                                    setSubCountyOpt(null)
+                                                                                }
+                                                                            }
 
 
-																			}}
-																			value={userData.user_counties?.map((value) => ({
-																				value: value.county || '',
-																				label: value.county_name || value.name || ''
-																			})) || ''}
-																			name='county'
-																			className='flex-none w-full  flex-grow  placeholder-gray-500 border border-gray-600 outline-none'
+                                                                        }}
+                                                                        value={userData.user_counties?.map((value) => ({
+                                                                            value: value.county || '',
+                                                                            label: value.county_name || value.name || ''
+                                                                        })) || ''}
+                                                                        name='county'
+                                                                        className='flex-none w-full  flex-grow  placeholder-gray-500 border border-gray-600 outline-none'
 
-																		/>
-																		
-																		{
-																			userData?.groups[0]?.id !== 1 &&
-																		<Select
-																			styles={{
-																				control: (baseStyles) => ({
-																					...baseStyles,
-																					backgroundColor: 'transparent',
-																					outLine: 'none',
-																					border: 'none',
-																					outLine: 'none',
-																					textColor: 'transparent',
-																					padding: 0,
-																					height: '4px'
-																				}),
+                                                                    />
+                                                                    
+                                                                    {
+                                                                        userData?.groups[0]?.id !== 1 &&
+                                                                    <Select
+                                                                        styles={{
+                                                                            control: (baseStyles) => ({
+                                                                                ...baseStyles,
+                                                                                backgroundColor: 'transparent',
+                                                                                outLine: 'none',
+                                                                                border: 'none',
+                                                                                outLine: 'none',
+                                                                                textColor: 'transparent',
+                                                                                padding: 0,
+                                                                                height: '4px'
+                                                                            }),
 
-																			}}
-																			options={subCountyOptions || []}
-																			isMulti
-																			required
-																			placeholder='Select a sub county..'
-																			onChange={ev => {
-																				handleOnChange({ name: 'user_sub_counties', ev })
-																			}}
-																			value={userData.user_sub_counties?.map((value) => ({
-																				value: value.id || '',
-																				label: value.sub_county_name || value.name || ''
-																			})) || ''}
+                                                                        }}
+                                                                        options={subCountyOptions || []}
+                                                                        isMulti
+                                                                        required
+                                                                        placeholder='Select a sub county..'
+                                                                        onChange={ev => {
+                                                                            handleOnChange({ name: 'user_sub_counties', ev })
+                                                                        }}
+                                                                        value={userData.user_sub_counties?.map((value) => ({
+                                                                            value: value.id || '',
+                                                                            label: value.sub_county_name || value.name || ''
+                                                                        })) || ''}
 
-																			name='sub_county'
-																			className='flex-none w-full  flex-grow  placeholder-gray-500 border border-gray-600 outline-none'
-																		/>
-																		}
-																	</div>
+                                                                        name='sub_county'
+                                                                        className='flex-none w-full  flex-grow  placeholder-gray-500 border border-gray-600 outline-none'
+                                                                    />
+                                                                    }
+                                                                </div>
 
-																</div>
+                                                            </div>
+                                                        </div>)
+                                                    );
+                                                }
+                                                else if (grp.id == 3) {
+                                                    return (
+                                                        //  Regulatory body 
+                                                        (<div className=' w-full flex flex-col items-start justify-start p-3   bg-transparent h-auto'>
+                                                            <h4 className='text-lg uppercase pb-2 border-b border-gray-600 w-full mb-4 font-semibold text-gray-900'>
+                                                                Regulatory Body
+                                                            </h4>
+                                                            <div className='w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3'>
+                                                                <div className='w-full flex flex-col items-left px-2 justify-  gap-1 gap-x-3 mb-3'>
 
-															</div>)
-													}
-													else if (grp.id == 3) {
-														return (
-															//  Regulatory body 
-															<div className=' w-full flex flex-col items-start justify-start p-3   bg-transparent h-auto'>
-																<h4 className='text-lg uppercase pb-2 border-b border-gray-600 w-full mb-4 font-semibold text-gray-900'>
-																	Regulatory Body
-																</h4>
-																<div className='w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3'>
-																	<div className='w-full flex flex-col items-left px-2 justify-  gap-1 gap-x-3 mb-3'>
+                                                                    <Select
+                                                                        styles={{
+                                                                            control: (baseStyles) => ({
+                                                                                ...baseStyles,
+                                                                                backgroundColor: 'transparent',
+                                                                                outLine: 'none',
+                                                                                border: 'none',
+                                                                                outLine: 'none',
+                                                                                textColor: 'transparent',
+                                                                                padding: 0,
+                                                                                height: '4px'
+                                                                            }),
 
-																		<Select
-																			styles={{
-																				control: (baseStyles) => ({
-																					...baseStyles,
-																					backgroundColor: 'transparent',
-																					outLine: 'none',
-																					border: 'none',
-																					outLine: 'none',
-																					textColor: 'transparent',
-																					padding: 0,
-																					height: '4px'
-																				}),
+                                                                        }}
+                                                                        options={regbodies || []}
+                                                                        isMulti
+                                                                        required
+                                                                        placeholder='Select regulatory body(s)'
+                                                                        onChange={ev => {
+                                                                            handleOnChange({ name: 'regulatory_users', ev })
+                                                                        }}
+                                                                        value={userData.regulatory_users?.map((value) => ({
+                                                                            value: value.id,
+                                                                            label: value.name
+                                                                        })) || ''}
+                                                                        name='regulatory_body'
+                                                                        className='flex-none w-full bg-transparent  flex-grow  placeholder-gray-5 focus:bg-white focus:border-gray-600 outline-none'
+                                                                    />
+                                                                </div>
 
-																			}}
-																			options={regbodies || []}
-																			isMulti
-																			required
-																			placeholder='Select regulatory body(s)'
-																			onChange={ev => {
-																				handleOnChange({ name: 'regulatory_users', ev })
-																			}}
-																			value={userData.regulatory_users?.map((value) => ({
-																				value: value.id,
-																				label: value.name
-																			})) || ''}
-																			name='regulatory_body'
-																			className='flex-none w-full bg-transparent  flex-grow  placeholder-gray-5 focus:bg-white focus:border-gray-600 outline-none'
-																		/>
-																	</div>
-
-																</div>
-
-															</div>
-														)
-													}
-													else {
-														return null
-													}
-												})()}
-											</>
-										)
+                                                            </div>
+                                                        </div>)
+                                                    );
+                                                }
+                                                else {
+                                                    return null
+                                                }
+                                            })()}
+                                        </>);
 									})}
 
 									{/* Cancel & Save */}
@@ -909,8 +905,8 @@ function User(props){
                     </div> */}
 
 				</div>
-			</MainLayout>
-		)
+            </MainLayout>)
+        );
 	}
 	else {
 		return null

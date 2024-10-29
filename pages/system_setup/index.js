@@ -1219,1049 +1219,568 @@ function SystemSetup(props) {
     
 
     if (isClient) {
-        return (
-            <>
-                <Head>
-                    <title>KMHFR | System Setup</title>
-                    <metadata zoomAndPan='100'></metadata>
-                    <link rel="icon" href="/favicon.ico" />
-                </Head>
+        return (<>
+            <Head>
+                <title>KMHFR | System Setup</title>
+                <metadata zoomAndPan='100'></metadata>
+                <link rel="icon" href="/favicon.ico" />
+            </Head>
+            <MainLayout>
 
-                <MainLayout>
-
-                    <div className="w-full  md:w-[85%] md:mx-auto grid grid-cols-5 gap-4 p-2 my-6">
-                        {open &&
-                            <Modal
-                                aria-labelledby="transition-modal-title"
-                                aria-describedby="transition-modal-description"
-                                open={open}
-                                onClose={handleClose}
-                                closeAfterTransition
-                                BackdropComponent={Backdrop}
-                                BackdropProps={{
-                                    timeout: 500,
-                                }}
-                            >
-                                <Fade in={open}>
-                                    <Box sx={
-                                        {
-                                            position: 'absolute',
-                                            top: '50%',
-                                            left: '50%',
-                                            transform: 'translate(-50%, -50%)',
-                                            width: 700,
-                                            bgcolor: 'rgb(239 246 255)',
-                                            boxShadow: 24,
-                                            borderRadius: '4px',
-                                            p: 2,
-                                        }
-                                    }>
-                                        <span className="flex gap-2">
-                                            Are you sure you want to delete<b>{editData.name}</b> ?
-                                        </span>
-                                        <div className='flex justify-start gap-4 mt-4'>
-                                            <button className="bg-gray-500 text-white font-semibold  p-2 text-center" type="button" onClick={() => { handleDelete(addBtnLabel); setOpen(false) }}>Yes</button>
-                                            <button className="bg-red-500 text-white font-semibold  p-2 text-center"
-                                                onClick={() => { setEditMode(false); setEditID(null); setIsAddForm(false); setEditData([]); setOpen(false) }}
-                                            >No</button>
-                                        </div>
-                                    </Box>
-                                </Fade>
-                            </Modal>}
-
-                        {/* Bread Cumbs  */}
-                        {/* <div className="flex flex-row gap-2 text-sm md:text-base">
-                             <Link className="text-gray-700" href="/">Home</Link> 
-                            <span className="text-gray-900" >System setup</span>
-                            {'/'}
-                        </div> */}
-
-                        {/* Header Bunner */}
-                        <div className={"col-span-5 flex justify-between w-full bg-transparent drop-shadow border border-gray-600 text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-gray-600" : "border-red-600")}>
-                            <h2 className='text-xl font-bold text-black capitalize'>{title}</h2>
-                            {
-                                !isAddForm && addBtnLabel !== 'feedback' && addBtnLabel !== 'CHU Rating Comment' &&
-                                <button className=' bg-blue-600 p-2 text-white flex items-center text-lg font-semibold' onClick={() => { setTitle(`Add ${addBtnLabel}`); setIsAddForm(true) }}>
-                                    {`Add ${addBtnLabel}`}
-                                    <PlusIcon className='text-white ml-2 h-5 w-5' />
-                                </button>
-                            }
-                            {isAddForm && editMode && addBtnLabel !== 'feedback' && addBtnLabel !== 'CHU Rating Comment' && addBtnLabel !== 'county' && addBtnLabel !== 'constituency' &&
-                                <button className=' bg-black p-2 text-white flex items-center text-lg font-semibold' onClick={() => { setOpen(true) }}>
-                                    {`Delete `}
-                                </button>
-                            }
-                        </div>
-
-                        {/* Side Menu */}
-                        <div className='col-span-1 w-full col-start-1 h-auto shadow-sm bg-gray-50'>
-                            <List
-                                sx={{ width: '100%', bgcolor: '#f9fafb', flexGrow: 1 }}
-                                component="div"
-                                aria-labelledby="nested-list-subheader"
-
-                            >
-                                {/* Administrative Units */}
-                                <ListItemButton onClick={handleAdminUnitsClick} sx={{ borderBottom: 'solid 1px #d3d6db' }}>
-                                    <ListItemIcon>
-                                        <AddLocationAlt />
-                                    </ListItemIcon>
-                                    <ListItemText primary="Administrative Units" />
-                                    {openAdminUnits ? <ExpandLess /> : <ExpandMore />}
-                                </ListItemButton>
-                                <Collapse in={openAdminUnits} timeout="auto" unmountOnExit>
-                                    <List component="ul" disablePadding>
-                                        {/* Counties */}
-                                        <ListItemButton componene="li"
-                                            className="hover:text-gray-700"
-                                            sx={{
-                                                backgroundColor: `${addBtnLabel.toLocaleLowerCase() == 'county' ? '#2563eb' : 'none'}`,
-                                                color: `${addBtnLabel.toLocaleLowerCase() == 'county' ? 'white' : 'none'}`,
-                                                borderBottom: `${addBtnLabel.toLocaleLowerCase() == 'county' ? 'solid 1px #d3d6db' : 'solid 1px rgba(156, 163, 175, 1)'}`
-                                            }}
-                                            onClick={() => { setIsAddForm(false); setFields(['id', 'name', 'code']); setResource('counties'); setResourceCategory('AdminUnits'); setTitle('counties'); setAddBtnLabel('county'); setEditMode(false); setEditID(null) }}>
-                                            <ListItemText primary="Counties" />
-                                        </ListItemButton>
-                                        {/* Sub Counties */}
-                                        <ListItemButton componene="li"
-                                            className="hover:text-gray-700"
-                                            sx={{
-                                                backgroundColor: `${addBtnLabel.toLocaleLowerCase() == 'sub county' ? '#2563eb' : 'none'}`,
-                                                color: `${addBtnLabel.toLocaleLowerCase() == 'sub county' ? 'white' : 'none'}`,
-                                                borderBottom: `${addBtnLabel.toLocaleLowerCase() == 'sub county' ? 'solid 1px #d3d6db' : 'solid 1px rgba(156, 163, 175, 1)'}`
-                                            }}
-                                            onClick={() => { setIsAddForm(false); setAddBtnLabel('sub county'); setTitle('Sub Counties'); setFields(['id', 'name', 'code']); setResource('sub_counties') }}
-
-                                        >
-                                            <ListItemText primary="Sub Counties" />
-                                        </ListItemButton>
-                                        {/* Constituencies */}
-                                        <ListItemButton componene="li"
-                                            className="hover:text-gray-700"
-                                            sx={{
-                                                backgroundColor: `${addBtnLabel.toLocaleLowerCase() == 'constituency' ? '#2563eb' : 'none'}`,
-                                                color: `${addBtnLabel.toLocaleLowerCase() == 'constituency' ? 'white' : 'none'}`,
-                                                borderBottom: `${addBtnLabel.toLocaleLowerCase() == 'constituency' ? 'solid 1px #d3d6db' : 'solid 1px rgba(156, 163, 175, 1)'}`
-                                            }}
-                                            onClick={() => { setIsAddForm(false); setAddBtnLabel('constituency'); setFields(['id', 'name', 'code']); setTitle('Constituencies'); setResource('constituencies') }}
-                                        >
-                                            {/* {console.log({ addBtnLabel })} */}
-                                            <ListItemText primary="Constituencies" />
-                                        </ListItemButton>
-                                        {/* Wards */}
-                                        <ListItemButton componene="li"
-                                            className="hover:text-gray-700"
-                                            sx={{
-                                                backgroundColor: `${addBtnLabel.toLocaleLowerCase() == 'ward' ? '#2563eb' : 'none'}`,
-                                                color: `${addBtnLabel.toLocaleLowerCase() == 'ward' ? 'white' : 'none'}`,
-                                                borderBottom: `${addBtnLabel.toLocaleLowerCase() == 'ward' ? 'solid 1px #d3d6db' : 'solid 1px rgba(156, 163, 175, 1)'}`
-                                            }}
-                                            onClick={() => { setIsAddForm(false); setFields(['id', 'name', 'code', 'county_name', 'constituency_name', 'sub_county_name', 'county']); setTitle('Wards'); setResource('wards'); setResourceCategory('AdminUnits'); setTitle('wards'); setAddBtnLabel('ward'); setEditMode(false); setEditID(null) }}>
-                                            <ListItemText primary="Wards" />
-                                        </ListItemButton>
-                                        {/* Towns */}
-                                        <ListItemButton componene="li"
-                                            className="hover:text-gray-700"
-                                            sx={{
-                                                backgroundColor: `${addBtnLabel.toLocaleLowerCase() == 'town' ? '#2563eb' : 'none'}`,
-                                                color: `${addBtnLabel.toLocaleLowerCase() == 'town' ? 'white' : 'none'}`,
-                                                borderBottom: `${addBtnLabel.toLocaleLowerCase() == 'town' ? 'solid 1px #d3d6db' : 'solid 1px rgba(156, 163, 175, 1)'}`
-                                            }}
-                                            onClick={() => { setIsAddForm(false); setFields(['id', 'name', 'ward_name']); setResource('towns'); setResourceCategory('AdminUnits'); setTitle('Towns'); setAddBtnLabel('town'); setEditMode(false); setEditID(null) }}>
-                                            <ListItemText primary="Towns" />
-                                        </ListItemButton>
-                                    </List>
-                                </Collapse>
-
-                                {/* Service Catalogue */}
-                                <ListItemButton onClick={handleServiceCatalogueClick} sx={{ borderBottom: 'solid 1px #d3d6db' }}>
-                                    <ListItemIcon>
-                                        <MiscellaneousServices />
-                                    </ListItemIcon>
-                                    <ListItemText primary="Service Catalogue" />
-                                    {openServiceCatalogue ? <ExpandLess /> : <ExpandMore />}
-                                </ListItemButton>
-                                <Collapse in={openServiceCatalogue} timeout="auto" unmountOnExit>
-                                    <List component="ul" disablePadding>
-                                        {/* Categories */}
-                                        <ListItemButton componene="li"
-                                            className="hover:text-gray-700"
-                                            sx={{
-                                                backgroundColor: `${addBtnLabel.toLocaleLowerCase() == 'category' ? '#2563eb' : 'none'}`,
-                                                color: `${addBtnLabel.toLocaleLowerCase() == 'category' ? 'white' : 'none'}`,
-                                                borderBottom: `${addBtnLabel.toLocaleLowerCase() == 'category' ? 'solid 1px #d3d6db' : 'solid 1px rgba(156, 163, 175, 1)'}`
-                                            }}
-                                            onClick={() => { setIsAddForm(false); setFields(['id', 'name', 'abbreviation', 'description']); setResource('service_categories'); setResourceCategory('ServiceCatalogue'); setTitle('Service categories'); setAddBtnLabel('Service Category'); setEditMode(false); setEditID(null) }}>
-                                            <ListItemText primary="Categories" />
-                                        </ListItemButton>
-                                        {/* Option groups */}
-                                        <ListItemButton componene="li"
-                                            className="hover:text-gray-700"
-                                            sx={{
-                                                backgroundColor: `${addBtnLabel.toLocaleLowerCase() == 'option group' ? '#2563eb' : 'none'}`,
-                                                color: `${addBtnLabel.toLocaleLowerCase() == 'option group' ? 'white' : 'none'}`,
-                                                borderBottom: `${addBtnLabel.toLocaleLowerCase() == 'option group' ? 'solid 1px #d3d6db' : 'solid 1px rgba(156, 163, 175, 1)'}`
-                                            }}
-                                            onClick={() => { setIsAddForm(false); setFields(['id', 'name']); setResource('option_groups'); setResourceCategory('ServiceCatalogue'); setTitle('option groups'); setAddBtnLabel('option group'); setEditMode(false); setEditID(null) }}>
-                                            <ListItemText primary="Option Groups" />
-                                        </ListItemButton>
-                                        {/* Services */}
-                                        <ListItemButton componene="li"
-                                            className="hover:text-gray-700"
-                                            sx={{
-                                                backgroundColor: `${addBtnLabel.toLocaleLowerCase() == 'service' ? '#2563eb' : 'none'}`,
-                                                color: `${addBtnLabel.toLocaleLowerCase() == 'service' ? 'white' : 'none'}`,
-                                                borderBottom: `${addBtnLabel.toLocaleLowerCase() == 'service' ? 'solid 1px #d3d6db' : 'solid 1px rgba(156, 163, 175, 1)'}`
-                                            }}
-                                            onClick={() => { setIsAddForm(false); setFields(['id', 'name', 'code', 'abbreviation', 'category_name']); setResource('services'); setResourceCategory('ServiceCatalogue'); setTitle('services'); setAddBtnLabel('service'); setEditMode(false); setEditID(null) }}>
-                                            <ListItemText primary="Services" />
-                                        </ListItemButton>
-
-                                    </List>
-                                </Collapse>
-
-                                {/* Health Infrastructure */}
-                                <ListItemButton onClick={handleHealthInfrClick} sx={{ borderBottom: 'solid 1px #d3d6db' }}>
-                                    <ListItemIcon>
-                                        <LocalHospital />
-                                    </ListItemIcon>
-                                    <ListItemText primary="Health Infrastructure" />
-                                    {openHealthInfr ? <ExpandLess /> : <ExpandMore />}
-                                </ListItemButton>
-                                <Collapse in={openHealthInfr} timeout="auto" unmountOnExit>
-                                    <List component="ul" disablePadding>
-                                        {/* Categories */}
-                                        <ListItemButton componene="li"
-                                            className="hover:text-gray-700"
-                                            sx={{
-                                                backgroundColor: `${addBtnLabel.toLocaleLowerCase() == 'infrastructure category' ? '#2563eb' : 'none'}`,
-                                                color: `${addBtnLabel.toLocaleLowerCase() == 'infrastructure category' ? 'white' : 'none'}`,
-                                                borderBottom: `${addBtnLabel.toLocaleLowerCase() == 'infrastructure category' ? 'solid 1px #d3d6db' : 'solid 1px rgba(156, 163, 175, 1)'}`
-                                            }}
-                                            onClick={() => { setIsAddForm(false); setFields(['id', 'name', 'description']); setResource('infrastructure_categories'); setResourceCategory('HealthInfrastructure'); setTitle('Infrastructure categories'); setAddBtnLabel('infrastructure category'); setEditMode(false); setEditID(null) }}>
-                                            <ListItemText primary="Categories" />
-                                        </ListItemButton>
-                                        {/* Infrastructure */}
-                                        <ListItemButton componene="li"
-                                            className="hover:text-gray-700"
-                                            sx={{
-                                                backgroundColor: `${addBtnLabel.toLocaleLowerCase() == 'infrastructure' ? '#2563eb' : 'none'}`,
-                                                color: `${addBtnLabel.toLocaleLowerCase() == 'infrastructure' ? 'white' : 'none'}`,
-                                                borderBottom: `${addBtnLabel.toLocaleLowerCase() == 'infrastructure' ? 'solid 1px #d3d6db' : 'solid 1px rgba(156, 163, 175, 1)'}`
-                                            }}
-                                            onClick={() => { setIsAddForm(false); setFields(['id', 'name', 'category_name', 'numbers']); setResource('infrastructure'); setResourceCategory('HealthInfrastructure'); setTitle('infrastructures'); setAddBtnLabel('infrastructure'); setEditMode(false); setEditID(null) }}>
-                                            <ListItemText primary="Infrastructure" />
-                                        </ListItemButton>
-                                    </List>
-                                </Collapse>
-
-                                {/* Human Resource */}
-                                <ListItemButton onClick={handleHRClick} sx={{ borderBottom: 'solid 1px #d3d6db' }}>
-                                    <ListItemIcon>
-                                        <ReduceCapacity />
-                                    </ListItemIcon>
-                                    <ListItemText primary="Human Resource" />
-                                    {openHR ? <ExpandLess /> : <ExpandMore />}
-                                </ListItemButton>
-                                <Collapse in={openHR} timeout="auto" unmountOnExit>
-                                    <List component="ul" disablePadding>
-                                        {/* HR Categories */}
-                                        <ListItemButton componene="li"
-                                            className="hover:text-gray-700"
-                                            sx={{
-                                                backgroundColor: `${addBtnLabel.toLocaleLowerCase() == 'human resource category' ? '#2563eb' : 'none'}`,
-                                                color: `${addBtnLabel.toLocaleLowerCase() == 'human resource category' ? 'white' : 'none'}`,
-                                                borderBottom: `${addBtnLabel.toLocaleLowerCase() == 'human resource category' ? 'solid 1px #d3d6db' : 'solid 1px rgba(156, 163, 175, 1)'}`
-                                            }}
-                                            onClick={() => { setIsAddForm(false); setFields(['id', 'name', 'description']); setResource('speciality_categories'); setResourceCategory('HR'); setTitle('HR Categories'); setAddBtnLabel('human resource category') }}>
-                                            <ListItemText primary="HR Categories" />
-                                        </ListItemButton>
-                                        {/* Specialities */}
-                                        <ListItemButton componene="li"
-                                            className="hover:text-gray-700"
-                                            sx={{
-                                                backgroundColor: `${addBtnLabel.toLocaleLowerCase() == 'specialty' ? '#2563eb' : 'none'}`,
-                                                color: `${addBtnLabel.toLocaleLowerCase() == 'specialty' ? 'white' : 'none'}`,
-                                                borderBottom: `${addBtnLabel.toLocaleLowerCase() == 'specialty' ? 'solid 1px #d3d6db' : 'solid 1px rgba(156, 163, 175, 1)'}`
-                                            }}
-                                            onClick={() => { setIsAddForm(false); setFields(['id', 'name', 'category_name']); setResource('specialities'); setResourceCategory('HR'); setTitle('specialities'); setAddBtnLabel('specialty') }}>
-                                            <ListItemText primary="Specialities" />
-                                        </ListItemButton>
-                                    </List>
-                                </Collapse>
-
-                                {/* Contacts */}
-                                <ListItemButton onClick={hanldeConactsClick} sx={{ borderBottom: 'solid 1px #d3d6db' }}>
-                                    <ListItemIcon>
-                                        <Phone />
-                                    </ListItemIcon>
-                                    <ListItemText primary="Contacts" />
-                                    {openContacts ? <ExpandLess /> : <ExpandMore />}
-                                </ListItemButton>
-                                <Collapse in={openContacts} timeout="auto" unmountOnExit>
-                                    <List component="ul" disablePadding>
-
-                                        <ListItemButton componene="li"
-                                            className="hover:text-gray-700"
-                                            sx={{
-                                                backgroundColor: `${addBtnLabel.toLocaleLowerCase() == 'contact type' ? '#2563eb' : 'none'}`,
-                                                color: `${addBtnLabel.toLocaleLowerCase() == 'contact type' ? 'white' : 'none'}`,
-                                                borderBottom: `${addBtnLabel.toLocaleLowerCase() == 'contact type' ? 'solid 1px #d3d6db' : 'solid 1px rgba(156, 163, 175, 1)'}`
-                                            }}
-                                            onClick={() => { setIsAddForm(false); setFields(['id', 'name']); setResource('contact_types'); setResourceCategory('Contacts'); setTitle('contact types'); setAddBtnLabel('contact type'); setEditMode(false); setEditID(null) }}>
-                                            <ListItemText primary="Contact Type" />
-                                        </ListItemButton>
-
-                                    </List>
-                                </Collapse>
-
-                                {/* Facilities */}
-                                <ListItemButton onClick={handleFacilitiesClick} sx={{ borderBottom: 'solid 1px #d3d6db' }}>
-                                    <ListItemIcon>
-                                        <MapsHomeWork />
-                                    </ListItemIcon>
-                                    <ListItemText primary="Facilities" />
-                                    {openFacilities ? <ExpandLess /> : <ExpandMore />}
-                                </ListItemButton>
-                                <Collapse in={openFacilities} timeout="auto" unmountOnExit>
-
-                                    <List component="ul" disablePadding>
-                                        {/* Facility Departments */}
-                                        <ListItemButton componene="li"
-                                            className="hover:text-gray-700"
-                                            sx={{
-                                                backgroundColor: `${addBtnLabel.toLocaleLowerCase() == 'facility department' ? '#2563eb' : 'none'}`,
-                                                color: `${addBtnLabel.toLocaleLowerCase() == 'facility department' ? 'white' : 'none'}`,
-                                                borderBottom: `${addBtnLabel.toLocaleLowerCase() == 'facility department' ? 'solid 1px #d3d6db' : 'solid 1px rgba(156, 163, 175, 1)'}`
-                                            }}
-                                            onClick={() => { setIsAddForm(false); setFields(['']); setResource('facility_depts'); setIsParent(null); setResourceCategory('Facilities'); setTitle('facility departments'); setAddBtnLabel('facility department'); setEditMode(false); }}>
-                                            <ListItemText primary="Facility Departments" />
-                                        </ListItemButton>
-
-                                        {/* Facility Type Details */}
-                                        <ListItemButton componene="li"
-                                            className="hover:text-gray-700"
-                                            sx={{
-                                                backgroundColor: `${addBtnLabel.toLocaleLowerCase() == 'facility type detail' ? '#2563eb' : 'none'}`,
-                                                color: `${addBtnLabel.toLocaleLowerCase() == 'facility type detail' ? 'white' : 'none'}`,
-                                                borderBottom: `${addBtnLabel.toLocaleLowerCase() == 'facility type detail' ? 'solid 1px #d3d6db' : 'solid 1px rgba(156, 163, 175, 1)'}`
-                                            }}
-                                            onClick={() => { setIsAddForm(false); setFields(['id', 'name', 'sub_division']); setIsParent(true); setResource('facility_types'); setResourceCategory('Facilities'); setTitle('facility type details'); setAddBtnLabel('facility type detail'); setEditMode(false); }}>
-                                            <ListItemText primary="Facility Type Details" />
-                                        </ListItemButton>
-
-                                        {/* Facility Type Categories */}
-                                        <ListItemButton componene="li"
-                                            className="hover:text-gray-700"
-                                            sx={{
-                                                backgroundColor: `${addBtnLabel.toLocaleLowerCase() == 'facility type category' ? '#2563eb' : 'none'}`,
-                                                color: `${addBtnLabel.toLocaleLowerCase() == 'facility type category' ? 'white' : 'none'}`,
-                                                borderBottom: `${addBtnLabel.toLocaleLowerCase() == 'facility type category' ? 'solid 1px #d3d6db' : 'solid 1px rgba(156, 163, 175, 1)'}`
-                                            }}
-                                            onClick={() => { setIsAddForm(false); setFields(['id', 'name', 'sub_division']); setIsParent(false); setResource('facility_types'); setResourceCategory('Facilities'); setTitle('facility type categories'); setAddBtnLabel('facility type category'); setEditMode(false); }}>
-                                            <ListItemText primary="Facility Type Categories" />
-                                        </ListItemButton>
-
-                                        {/* Facility Operation Status */}
-                                        <ListItemButton componene="li"
-                                            className="hover:text-gray-700"
-                                            sx={{
-                                                backgroundColor: `${addBtnLabel.toLocaleLowerCase() == 'facility operation status' ? '#2563eb' : 'none'}`,
-                                                color: `${addBtnLabel.toLocaleLowerCase() == 'facility operation status' ? 'white' : 'none'}`,
-                                                borderBottom: `${addBtnLabel.toLocaleLowerCase() == 'facility operation status' ? 'solid 1px #d3d6db' : 'solid 1px rgba(156, 163, 175, 1)'}`
-                                            }}
-                                            onClick={() => { setIsAddForm(false); setFields([]); setResource('facility_status'); setIsParent(null); setResourceCategory('Facilities'); setTitle('facility operation statuses'); setAddBtnLabel('facility operation status'); setEditMode(false); }}>
-                                            <ListItemText primary="Facility Operation Status" />
-                                        </ListItemButton>
-
-                                        {/*  Facility Admission Status */}
-                                        <ListItemButton componene="li"
-                                            className="hover:text-gray-700"
-                                            sx={{
-                                                backgroundColor: `${addBtnLabel.toLocaleLowerCase() == 'facility admission status' ? '#2563eb' : 'none'}`,
-                                                color: `${addBtnLabel.toLocaleLowerCase() == 'facility admission status' ? 'white' : 'none'}`,
-                                                borderBottom: `${addBtnLabel.toLocaleLowerCase() == 'facility admission status' ? 'solid 1px #d3d6db' : 'solid 1px rgba(156, 163, 175, 1)'}`
-                                            }}
-                                            onClick={() => { setIsAddForm(false); setFields(['']); setResource('facility_admission_status'); setIsParent(null); setResourceCategory('Facilities'); setTitle('facility admission statuses'); setAddBtnLabel('facility admission status'); setEditMode(false); }}>
-                                            <ListItemText primary="Facility Admission Status" />
-                                        </ListItemButton>
-
-                                        {/*  Feedback */}
-                                        <ListItemButton componene="li"
-                                            className="hover:text-gray-700"
-                                            sx={{
-                                                backgroundColor: `${addBtnLabel.toLocaleLowerCase() == 'feedback' ? '#2563eb' : 'none'}`,
-                                                color: `${addBtnLabel.toLocaleLowerCase() == 'feedback' ? 'white' : 'none'}`,
-                                                borderBottom: `${addBtnLabel.toLocaleLowerCase() == 'feedback' ? 'solid 1px #d3d6db' : 'solid 1px rgba(156, 163, 175, 1)'}`
-                                            }}
-                                            onClick={() => { setIsAddForm(false); setFields(['']); setIsParent(null); setResource('facility_service_ratings'); setResourceCategory('Facilities'); setTitle('feedbacks'); setAddBtnLabel('feedback'); setEditMode(false); }}>
-                                            <ListItemText primary="Feedback" />
-                                        </ListItemButton>
-
-                                        {/*  Facility Owner Details */}
-                                        <ListItemButton componene="li"
-                                            className="hover:text-gray-700"
-                                            sx={{
-                                                backgroundColor: `${addBtnLabel.toLocaleLowerCase() == 'facility owner detail' ? '#2563eb' : 'none'}`,
-                                                color: `${addBtnLabel.toLocaleLowerCase() == 'facility owner detail' ? 'white' : 'none'}`,
-                                                borderBottom: `${addBtnLabel.toLocaleLowerCase() == 'facility owner detail' ? 'solid 1px #d3d6db' : 'solid 1px rgba(156, 163, 175, 1)'}`
-                                            }}
-                                            onClick={() => { setIsAddForm(false); setFields(['id', 'name']); setIsParent(null); setResource('owner_types'); setResourceCategory('Facilities'); setTitle('facility owner details'); setAddBtnLabel('facility owner detail'); setEditMode(false); }}>
-                                            <ListItemText primary="Facility Owner Details" />
-                                        </ListItemButton>
-
-                                        {/* Facility Owners Categories */}
-                                        <ListItemButton componene="li"
-                                            className="hover:text-gray-700"
-                                            sx={{
-                                                backgroundColor: `${addBtnLabel.toLocaleLowerCase() == 'facility owner category' ? '#2563eb' : 'none'}`,
-                                                color: `${addBtnLabel.toLocaleLowerCase() == 'facility owner category' ? 'white' : 'none'}`,
-                                                borderBottom: `${addBtnLabel.toLocaleLowerCase() == 'facility owner category' ? 'solid 1px #d3d6db' : 'solid 1px rgba(156, 163, 175, 1)'}`
-                                            }}
-                                            onClick={() => { setIsAddForm(false); setFields(['id', 'name', 'code', 'abbreviation', 'owner_type_name']); setIsParent(null); setResource('owners'); setResourceCategory('Facilities'); setTitle('facility owner categories'); setAddBtnLabel('facility owner category'); setEditMode(false); }}>
-                                            <ListItemText primary="Facility Owners Categories" />
-                                        </ListItemButton>
-
-                                        {/*  Job Titles */}
-                                        <ListItemButton componene="li"
-                                            className="hover:text-gray-700"
-                                            sx={{
-                                                backgroundColor: `${addBtnLabel.toLocaleLowerCase() == 'job title' ? '#2563eb' : 'none'}`,
-                                                color: `${addBtnLabel.toLocaleLowerCase() == 'job title' ? 'white' : 'none'}`,
-                                                borderBottom: `${addBtnLabel.toLocaleLowerCase() == 'job title' ? 'solid 1px #d3d6db' : 'solid 1px rgba(156, 163, 175, 1)'}`
-                                            }}
-                                            onClick={() => { setIsAddForm(false); setFields(['id', 'name']); setIsParent(null); setResource('job_titles'); setResourceCategory('Facilities'); setTitle('job titles'); setAddBtnLabel('job title'); setEditMode(false); }}>
-                                            <ListItemText primary="Job Titles" />
-                                        </ListItemButton>
-
-                                        {/*  Regulatory Bodies */}
-                                        <ListItemButton componene="li"
-                                            className="hover:text-gray-700"
-                                            sx={{
-                                                backgroundColor: `${addBtnLabel.toLocaleLowerCase() == 'regulatory body' ? '#2563eb' : 'none'}`,
-                                                color: `${addBtnLabel.toLocaleLowerCase() == 'regulatory body' ? 'white' : 'none'}`,
-                                                borderBottom: `${addBtnLabel.toLocaleLowerCase() == 'regulatory body' ? 'solid 1px #d3d6db' : 'solid 1px rgba(156, 163, 175, 1)'}`
-                                            }}
-                                            onClick={() => { setIsAddForm(false); setFields(['id', 'name', 'abbreviation', 'regulatory_body_type_name', 'regulation_verb']); setIsParent(null); setResource('regulating_bodies'); setResourceCategory('Facilities'); setTitle('regulatory bodies'); setAddBtnLabel('regulatory body'); setEditMode(false); }}>
-                                            <ListItemText primary="Regulatory Bodies" />
-                                        </ListItemButton>
-
-                                        {/*  Regulatory Status */}
-                                        <ListItemButton componene="li"
-                                            className="hover:text-gray-700"
-                                            sx={{
-                                                backgroundColor: `${addBtnLabel.toLocaleLowerCase() == 'regulatory status' ? '#2563eb' : 'none'}`,
-                                                color: `${addBtnLabel.toLocaleLowerCase() == 'regulatory status' ? 'white' : 'none'}`,
-                                                borderBottom: `${addBtnLabel.toLocaleLowerCase() == 'regulatory status' ? 'solid 1px #d3d6db' : 'solid 1px rgba(156, 163, 175, 1)'}`
-                                            }}
-                                            onClick={() => { setIsAddForm(false); setFields(['']); setIsParent(null); setResource('regulation_status'); setResourceCategory('Facilities'); setTitle('regulatory statuses'); setAddBtnLabel('regulatory status'); setEditMode(false); }}>
-                                            <ListItemText primary="Regulatory Status" />
-                                        </ListItemButton>
-
-                                        {/*  Upgrade Reason */}
-                                        <ListItemButton componene="li"
-                                            className="hover:text-gray-700"
-                                            sx={{
-                                                backgroundColor: `${addBtnLabel.toLocaleLowerCase() == 'upgrade reason' ? '#2563eb' : 'none'}`,
-                                                color: `${addBtnLabel.toLocaleLowerCase() == 'upgrade reason' ? 'white' : 'none'}`,
-                                                borderBottom: `${addBtnLabel.toLocaleLowerCase() == 'upgrade reason' ? 'solid 1px #d3d6db' : 'solid 1px rgba(156, 163, 175, 1)'}`
-                                            }}
-                                            onClick={() => { setIsAddForm(false); setFields(['id', 'reason', 'description']); setIsParent(null); setResource('level_change_reasons'); setResourceCategory('Facilities'); setTitle('upgrade reasons'); setAddBtnLabel('upgrade reason'); setEditMode(false); }}>
-                                            <ListItemText primary="Upgrade Reason" />
-                                        </ListItemButton>
-
-
-                                    </List>
-                                </Collapse>
-
-                                {/* CHU */}
-                                <ListItemButton onClick={handleCHUClick} sx={{ borderBottom: 'solid 1px #d3d6db' }}>
-                                    <ListItemIcon>
-                                        <GroupAdd />
-                                    </ListItemIcon>
-                                    <ListItemText primary="CHU" />
-                                    {openCHU ? <ExpandLess /> : <ExpandMore />}
-                                </ListItemButton>
-                                <Collapse in={openCHU} timeout="auto" unmountOnExit>
-                                    <List component="ul" disablePadding>
-                                        {/* CHU Rating Comments */}
-                                        <ListItemButton componene="li"
-                                            className="hover:text-gray-700"
-                                            sx={{
-                                                backgroundColor: `${addBtnLabel.toLocaleLowerCase() == 'chu rating comment' ? '#2563eb' : 'none'}`,
-                                                color: `${addBtnLabel.toLocaleLowerCase() == 'chu rating comment' ? 'white' : 'none'}`,
-                                                borderBottom: `${addBtnLabel.toLocaleLowerCase() == 'chu rating comment' ? 'solid 1px #d3d6db' : 'solid 1px rgba(156, 163, 175, 1)'}`
-                                            }}
-                                            onClick={() => { setIsAddForm(false); setFields(['']); setResource('chu_ratings'); setResourceCategory('CHU'); setTitle('CHU Rating Comments'); setAddBtnLabel('CHU Rating Comment') }}>
-                                            <ListItemText primary="CHU Rating Comments" />
-                                        </ListItemButton>
-
-                                    </List>
-                                </Collapse>
-
-
-                                {/* Documents */}
-                                <ListItemButton onClick={handleDocumentsClick} sx={{ borderBottom: 'solid 1px #d3d6db' }}>
-                                    <ListItemIcon>
-                                        <Article />
-                                    </ListItemIcon>
-                                    <ListItemText primary="Documents" />
-                                    {openDocuments ? <ExpandLess /> : <ExpandMore />}
-                                </ListItemButton>
-                                <Collapse in={openDocuments} timeout="auto" unmountOnExit>
-                                    <List component="ul" disablePadding>
-                                        {/* Documents */}
-                                        <ListItemButton componene="li"
-                                            className="hover:text-gray-700"
-                                            sx={{
-                                                backgroundColor: `${addBtnLabel.toLocaleLowerCase() == 'document' ? '#2563eb' : 'none'}`,
-                                                color: `${addBtnLabel.toLocaleLowerCase() == 'document' ? 'white' : 'none'}`,
-                                                borderBottom: `${addBtnLabel.toLocaleLowerCase() == 'document' ? 'solid 1px #d3d6db' : 'solid 1px rgba(156, 163, 175, 1)'}`
-                                            }}
-                                            onClick={() => { setIsAddForm(false); setFields(['id', 'name', 'description', 'fyl', 'document_type']); setResource('documents'); setResourceCategory('Documents'); setTitle('Documents'); setAddBtnLabel('Document') }}>
-                                            <ListItemText primary="Documents" />
-                                        </ListItemButton>
-
-                                    </List>
-                                </Collapse>
-
-
-
-                            </List>
-                        </div>
-                        {
-                            // Edit forms
-                            !isAddForm ? (
-                                <>
-                                    {/* Table Section */}
-                                    <div className='col-span-4 w-full h-auto'>
-                                        
-                                        <Paper className="shadow-md rounded " >
-                                            <StyledDataGrid
-                                                columns={columns}
-                                                rows={rows}
-                                                className="w-full justify-evenly"
-                                                getRowClassName={() => `super-app-theme--Row`}
-                                                rowSpacingType="border"
-                                                showColumnRightBorder
-                                                showCellRightBorder
-                                                rowSelection={false}
-                                                getCellClassName={() => 'super-app-theme--Cell'}
-                                                slots={{
-                                                    toolbar: () => (
-                                                        <GridToolbar
-                                                            sx={{
-                                                                flex: 1,
-                                                                display: 'flex',
-                                                                marginX: 'auto',
-                                                                gap: 5,
-                                                                padding: '0.45rem'
-                                                            }}
-                                                        />
-                                                    ),
-                                                }}
-                                            />
-
-                                        </Paper>
+                <div className="w-full  md:w-[85%] md:mx-auto grid grid-cols-5 gap-4 p-2 my-6">
+                    {open &&
+                        <Modal
+                            aria-labelledby="transition-modal-title"
+                            aria-describedby="transition-modal-description"
+                            open={open}
+                            onClose={handleClose}
+                            closeAfterTransition
+                            BackdropComponent={Backdrop}
+                            BackdropProps={{
+                                timeout: 500,
+                            }}
+                        >
+                            <Fade in={open}>
+                                <Box sx={
+                                    {
+                                        position: 'absolute',
+                                        top: '50%',
+                                        left: '50%',
+                                        transform: 'translate(-50%, -50%)',
+                                        width: 700,
+                                        bgcolor: 'rgb(239 246 255)',
+                                        boxShadow: 24,
+                                        borderRadius: '4px',
+                                        p: 2,
+                                    }
+                                }>
+                                    <span className="flex gap-2">
+                                        Are you sure you want to delete<b>{editData.name}</b> ?
+                                    </span>
+                                    <div className='flex justify-start gap-4 mt-4'>
+                                        <button className="bg-gray-500 text-white font-semibold  p-2 text-center" type="button" onClick={() => { handleDelete(addBtnLabel); setOpen(false) }}>Yes</button>
+                                        <button className="bg-red-500 text-white font-semibold  p-2 text-center"
+                                            onClick={() => { setEditMode(false); setEditID(null); setIsAddForm(false); setEditData([]); setOpen(false) }}
+                                        >No</button>
                                     </div>
-                                </>
-                            ) : (
-                            // Add forms
-                                <div className='col-span-4 flex items-start justify-start h-auto w-full'>
-                                    {/* Add Form */}
-                                    <div className="w-full h-auto p-3 bg-gray-50 shadow-md" >
-                                        {
+                                </Box>
+                            </Fade>
+                        </Modal>}
 
-                                            (() => {
-                                                switch (addBtnLabel) {
-                                                    case 'county':
-                                                        return (
-                                                            <>
-                                                                <form className='w-full h-full' onSubmit={(e) => handleFormSubmit(e, addBtnLabel)}>
-                                                                    <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-                                                                        <label
-                                                                            htmlFor={`add_${addBtnLabel}`}
-                                                                            className='text-gray-600 capitalize text-sm'>
-                                                                            County Name
-                                                                            <span className='text-medium leading-12 font-semibold'>
-                                                                                {' '}
-                                                                                *
-                                                                            </span>
-                                                                        </label>
-                                                                        <input
-                                                                            required
-                                                                            type='text'
-                                                                            placeholder='County Name'
-                                                                            id={`add_${addBtnLabel}`}
-                                                                            name='name'
-                                                                            defaultValue={editMode ? editData[0]?.name : ''}
-                                                                            className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
-                                                                        />
+                    {/* Bread Cumbs  */}
+                    {/* <div className="flex flex-row gap-2 text-sm md:text-base">
+                         <Link className="text-gray-700" href="/">Home</Link> 
+                        <span className="text-gray-900" >System setup</span>
+                        {'/'}
+                    </div> */}
 
-                                                                    </div>
-                                                                    {editMode &&
-                                                                        <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-                                                                            <label
-                                                                                htmlFor={`add_${addBtnLabel}`}
-                                                                                className='text-gray-600 capitalize text-sm'>
-                                                                                County Code
-                                                                                <span className='text-medium leading-12 font-semibold'>
-                                                                                    {' '}
-                                                                                    *
-                                                                                </span>
-                                                                            </label>
-                                                                            <input
-                                                                                readOnly
-                                                                                type='text'
-                                                                                placeholder='County Code'
-                                                                                id={`add_${addBtnLabel}`}
-                                                                                name='county_code'
-                                                                                defaultValue={editMode ? editData[0]?.code : ''}
-                                                                                className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
-                                                                            />
+                    {/* Header Bunner */}
+                    <div className={"col-span-5 flex justify-between w-full bg-transparent drop-shadow border border-gray-600 text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-gray-600" : "border-red-600")}>
+                        <h2 className='text-xl font-bold text-black capitalize'>{title}</h2>
+                        {
+                            !isAddForm && addBtnLabel !== 'feedback' && addBtnLabel !== 'CHU Rating Comment' &&
+                            <button className=' bg-blue-600 p-2 text-white flex items-center text-lg font-semibold' onClick={() => { setTitle(`Add ${addBtnLabel}`); setIsAddForm(true) }}>
+                                {`Add ${addBtnLabel}`}
+                                <PlusIcon className='text-white ml-2 h-5 w-5' />
+                            </button>
+                        }
+                        {isAddForm && editMode && addBtnLabel !== 'feedback' && addBtnLabel !== 'CHU Rating Comment' && addBtnLabel !== 'county' && addBtnLabel !== 'constituency' &&
+                            <button className=' bg-black p-2 text-white flex items-center text-lg font-semibold' onClick={() => { setOpen(true) }}>
+                                {`Delete `}
+                            </button>
+                        }
+                    </div>
 
-                                                                        </div>}
+                    {/* Side Menu */}
+                    <div className='col-span-1 w-full col-start-1 h-auto shadow-sm bg-gray-50'>
+                        <List
+                            sx={{ width: '100%', bgcolor: '#f9fafb', flexGrow: 1 }}
+                            component="div"
+                            aria-labelledby="nested-list-subheader"
 
-                                                                    <div className='flex items-center space-x-3 mt-4'>
-                                                                        <button type='submit' disabled={submitting} className='p-2 text-white border-2 border-blue-600 bg-blue-600 rounded  font-semibold'>
-                                                                            {
-                                                                                submitting ?
-                                                                                    <div className='flex items-center gap-2'>
-                                                                                        <span className='text-white'>Saving.. </span>
-                                                                                        <Spinner />
-                                                                                    </div>
-                                                                                    :
-                                                                                    'Save'
+                        >
+                            {/* Administrative Units */}
+                            <ListItemButton onClick={handleAdminUnitsClick} sx={{ borderBottom: 'solid 1px #d3d6db' }}>
+                                <ListItemIcon>
+                                    <AddLocationAlt />
+                                </ListItemIcon>
+                                <ListItemText primary="Administrative Units" />
+                                {openAdminUnits ? <ExpandLess /> : <ExpandMore />}
+                            </ListItemButton>
+                            <Collapse in={openAdminUnits} timeout="auto" unmountOnExit>
+                                <List component="ul" disablePadding>
+                                    {/* Counties */}
+                                    <ListItemButton componene="li"
+                                        className="hover:text-gray-700"
+                                        sx={{
+                                            backgroundColor: `${addBtnLabel.toLocaleLowerCase() == 'county' ? '#2563eb' : 'none'}`,
+                                            color: `${addBtnLabel.toLocaleLowerCase() == 'county' ? 'white' : 'none'}`,
+                                            borderBottom: `${addBtnLabel.toLocaleLowerCase() == 'county' ? 'solid 1px #d3d6db' : 'solid 1px rgba(156, 163, 175, 1)'}`
+                                        }}
+                                        onClick={() => { setIsAddForm(false); setFields(['id', 'name', 'code']); setResource('counties'); setResourceCategory('AdminUnits'); setTitle('counties'); setAddBtnLabel('county'); setEditMode(false); setEditID(null) }}>
+                                        <ListItemText primary="Counties" />
+                                    </ListItemButton>
+                                    {/* Sub Counties */}
+                                    <ListItemButton componene="li"
+                                        className="hover:text-gray-700"
+                                        sx={{
+                                            backgroundColor: `${addBtnLabel.toLocaleLowerCase() == 'sub county' ? '#2563eb' : 'none'}`,
+                                            color: `${addBtnLabel.toLocaleLowerCase() == 'sub county' ? 'white' : 'none'}`,
+                                            borderBottom: `${addBtnLabel.toLocaleLowerCase() == 'sub county' ? 'solid 1px #d3d6db' : 'solid 1px rgba(156, 163, 175, 1)'}`
+                                        }}
+                                        onClick={() => { setIsAddForm(false); setAddBtnLabel('sub county'); setTitle('Sub Counties'); setFields(['id', 'name', 'code']); setResource('sub_counties') }}
 
-                                                                            }
-                                                                        </button>
-                                                                        <button onClick={e => { e.preventDefault(); setIsAddForm(false); setFields(['id', 'name', 'code']); setResource('counties'); setResourceCategory('AdminUnits'); setTitle('counties'); setAddBtnLabel('county'); setEditMode(false); setEditID(null) }} className='p-2 text-gray-600 border-2 border-gray-600 rounded  font-semibold' >cancel</button>
-                                                                    </div>
-                                                                </form>
-                                                                &nbsp;
-                                                                {editMode &&
-                                                                    <>
-                                                                        <ChangeLog />
-                                                                        &nbsp;
+                                    >
+                                        <ListItemText primary="Sub Counties" />
+                                    </ListItemButton>
+                                    {/* Constituencies */}
+                                    <ListItemButton componene="li"
+                                        className="hover:text-gray-700"
+                                        sx={{
+                                            backgroundColor: `${addBtnLabel.toLocaleLowerCase() == 'constituency' ? '#2563eb' : 'none'}`,
+                                            color: `${addBtnLabel.toLocaleLowerCase() == 'constituency' ? 'white' : 'none'}`,
+                                            borderBottom: `${addBtnLabel.toLocaleLowerCase() == 'constituency' ? 'solid 1px #d3d6db' : 'solid 1px rgba(156, 163, 175, 1)'}`
+                                        }}
+                                        onClick={() => { setIsAddForm(false); setAddBtnLabel('constituency'); setFields(['id', 'name', 'code']); setTitle('Constituencies'); setResource('constituencies') }}
+                                    >
+                                        {/* {console.log({ addBtnLabel })} */}
+                                        <ListItemText primary="Constituencies" />
+                                    </ListItemButton>
+                                    {/* Wards */}
+                                    <ListItemButton componene="li"
+                                        className="hover:text-gray-700"
+                                        sx={{
+                                            backgroundColor: `${addBtnLabel.toLocaleLowerCase() == 'ward' ? '#2563eb' : 'none'}`,
+                                            color: `${addBtnLabel.toLocaleLowerCase() == 'ward' ? 'white' : 'none'}`,
+                                            borderBottom: `${addBtnLabel.toLocaleLowerCase() == 'ward' ? 'solid 1px #d3d6db' : 'solid 1px rgba(156, 163, 175, 1)'}`
+                                        }}
+                                        onClick={() => { setIsAddForm(false); setFields(['id', 'name', 'code', 'county_name', 'constituency_name', 'sub_county_name', 'county']); setTitle('Wards'); setResource('wards'); setResourceCategory('AdminUnits'); setTitle('wards'); setAddBtnLabel('ward'); setEditMode(false); setEditID(null) }}>
+                                        <ListItemText primary="Wards" />
+                                    </ListItemButton>
+                                    {/* Towns */}
+                                    <ListItemButton componene="li"
+                                        className="hover:text-gray-700"
+                                        sx={{
+                                            backgroundColor: `${addBtnLabel.toLocaleLowerCase() == 'town' ? '#2563eb' : 'none'}`,
+                                            color: `${addBtnLabel.toLocaleLowerCase() == 'town' ? 'white' : 'none'}`,
+                                            borderBottom: `${addBtnLabel.toLocaleLowerCase() == 'town' ? 'solid 1px #d3d6db' : 'solid 1px rgba(156, 163, 175, 1)'}`
+                                        }}
+                                        onClick={() => { setIsAddForm(false); setFields(['id', 'name', 'ward_name']); setResource('towns'); setResourceCategory('AdminUnits'); setTitle('Towns'); setAddBtnLabel('town'); setEditMode(false); setEditID(null) }}>
+                                        <ListItemText primary="Towns" />
+                                    </ListItemButton>
+                                </List>
+                            </Collapse>
 
-                                                                        <Tabs.Root
-                                                                            orientation="horizontal"
-                                                                            className="w-full flex flex-col tab-root"
-                                                                            defaultValue="constituencies"
-                                                                        >
-                                                                            <Tabs.List className="list-none flex flex-wrap gap-2 md:gap-3 px-4 uppercase leading-none tab-list font-semibold border-b">
-                                                                                <Tabs.Tab
-                                                                                    id={1}
-                                                                                    value="constituencies"
-                                                                                    className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-400 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
-                                                                                >
-                                                                                    Constituencies
-                                                                                </Tabs.Tab>
-                                                                                <Tabs.Tab
-                                                                                    id={2}
-                                                                                    value="county_users"
-                                                                                    className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-400 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
-                                                                                >
-                                                                                    County Users
-                                                                                </Tabs.Tab>
+                            {/* Service Catalogue */}
+                            <ListItemButton onClick={handleServiceCatalogueClick} sx={{ borderBottom: 'solid 1px #d3d6db' }}>
+                                <ListItemIcon>
+                                    <MiscellaneousServices />
+                                </ListItemIcon>
+                                <ListItemText primary="Service Catalogue" />
+                                {openServiceCatalogue ? <ExpandLess /> : <ExpandMore />}
+                            </ListItemButton>
+                            <Collapse in={openServiceCatalogue} timeout="auto" unmountOnExit>
+                                <List component="ul" disablePadding>
+                                    {/* Categories */}
+                                    <ListItemButton componene="li"
+                                        className="hover:text-gray-700"
+                                        sx={{
+                                            backgroundColor: `${addBtnLabel.toLocaleLowerCase() == 'category' ? '#2563eb' : 'none'}`,
+                                            color: `${addBtnLabel.toLocaleLowerCase() == 'category' ? 'white' : 'none'}`,
+                                            borderBottom: `${addBtnLabel.toLocaleLowerCase() == 'category' ? 'solid 1px #d3d6db' : 'solid 1px rgba(156, 163, 175, 1)'}`
+                                        }}
+                                        onClick={() => { setIsAddForm(false); setFields(['id', 'name', 'abbreviation', 'description']); setResource('service_categories'); setResourceCategory('ServiceCatalogue'); setTitle('Service categories'); setAddBtnLabel('Service Category'); setEditMode(false); setEditID(null) }}>
+                                        <ListItemText primary="Categories" />
+                                    </ListItemButton>
+                                    {/* Option groups */}
+                                    <ListItemButton componene="li"
+                                        className="hover:text-gray-700"
+                                        sx={{
+                                            backgroundColor: `${addBtnLabel.toLocaleLowerCase() == 'option group' ? '#2563eb' : 'none'}`,
+                                            color: `${addBtnLabel.toLocaleLowerCase() == 'option group' ? 'white' : 'none'}`,
+                                            borderBottom: `${addBtnLabel.toLocaleLowerCase() == 'option group' ? 'solid 1px #d3d6db' : 'solid 1px rgba(156, 163, 175, 1)'}`
+                                        }}
+                                        onClick={() => { setIsAddForm(false); setFields(['id', 'name']); setResource('option_groups'); setResourceCategory('ServiceCatalogue'); setTitle('option groups'); setAddBtnLabel('option group'); setEditMode(false); setEditID(null) }}>
+                                        <ListItemText primary="Option Groups" />
+                                    </ListItemButton>
+                                    {/* Services */}
+                                    <ListItemButton componene="li"
+                                        className="hover:text-gray-700"
+                                        sx={{
+                                            backgroundColor: `${addBtnLabel.toLocaleLowerCase() == 'service' ? '#2563eb' : 'none'}`,
+                                            color: `${addBtnLabel.toLocaleLowerCase() == 'service' ? 'white' : 'none'}`,
+                                            borderBottom: `${addBtnLabel.toLocaleLowerCase() == 'service' ? 'solid 1px #d3d6db' : 'solid 1px rgba(156, 163, 175, 1)'}`
+                                        }}
+                                        onClick={() => { setIsAddForm(false); setFields(['id', 'name', 'code', 'abbreviation', 'category_name']); setResource('services'); setResourceCategory('ServiceCatalogue'); setTitle('services'); setAddBtnLabel('service'); setEditMode(false); setEditID(null) }}>
+                                        <ListItemText primary="Services" />
+                                    </ListItemButton>
 
-                                                                            </Tabs.List>
+                                </List>
+                            </Collapse>
 
-                                                                            <Tabs.Panel
-                                                                                value="constituencies"
-                                                                                className="grow-1 py-1 px-4 tab-panel"
-                                                                            >
-                                                                                <div className='col-span-4 w-full h-auto'>
-                                                                                    <TableContainer sx={{ maxHeight: 440 }}>
-                                                                                        <Table stickyHeader aria-label="sticky table">
-                                                                                            <TableHead>
-                                                                                                <TableRow>
-                                                                                                    {constituenciesColumns.map((column, i) => (
-                                                                                                        <TableCell
-                                                                                                            key={i}
-                                                                                                            align={column.align}
-                                                                                                            style={{ minWidth: column.minWidth, fontWeight: 600 }}
-                                                                                                        >
-                                                                                                            {column.label}
-                                                                                                        </TableCell>
-                                                                                                    ))}
-                                                                                                </TableRow>
-                                                                                            </TableHead>
-                                                                                            <TableBody sx={{ paddingX: 4 }}>
-                                                                                                {editData[1]?.results.map((row) => {
-                                                                                                    return (
-                                                                                                        <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
-                                                                                                            {constituenciesColumns.map((column, i) => {
-                                                                                                                const value = row[column.id];
-                                                                                                                return (
-                                                                                                                    <TableCell key={column.id} align={column.align}>
-                                                                                                                        {
-                                                                                                                            column.format && typeof value === 'boolean'
-                                                                                                                                ? value.toString()
-                                                                                                                                : column.format && typeof value === 'number'
-                                                                                                                                    ? column.format(value) : column.link ? <a className="text-indigo-500" href={value}>{value}</a> : value
+                            {/* Health Infrastructure */}
+                            <ListItemButton onClick={handleHealthInfrClick} sx={{ borderBottom: 'solid 1px #d3d6db' }}>
+                                <ListItemIcon>
+                                    <LocalHospital />
+                                </ListItemIcon>
+                                <ListItemText primary="Health Infrastructure" />
+                                {openHealthInfr ? <ExpandLess /> : <ExpandMore />}
+                            </ListItemButton>
+                            <Collapse in={openHealthInfr} timeout="auto" unmountOnExit>
+                                <List component="ul" disablePadding>
+                                    {/* Categories */}
+                                    <ListItemButton componene="li"
+                                        className="hover:text-gray-700"
+                                        sx={{
+                                            backgroundColor: `${addBtnLabel.toLocaleLowerCase() == 'infrastructure category' ? '#2563eb' : 'none'}`,
+                                            color: `${addBtnLabel.toLocaleLowerCase() == 'infrastructure category' ? 'white' : 'none'}`,
+                                            borderBottom: `${addBtnLabel.toLocaleLowerCase() == 'infrastructure category' ? 'solid 1px #d3d6db' : 'solid 1px rgba(156, 163, 175, 1)'}`
+                                        }}
+                                        onClick={() => { setIsAddForm(false); setFields(['id', 'name', 'description']); setResource('infrastructure_categories'); setResourceCategory('HealthInfrastructure'); setTitle('Infrastructure categories'); setAddBtnLabel('infrastructure category'); setEditMode(false); setEditID(null) }}>
+                                        <ListItemText primary="Categories" />
+                                    </ListItemButton>
+                                    {/* Infrastructure */}
+                                    <ListItemButton componene="li"
+                                        className="hover:text-gray-700"
+                                        sx={{
+                                            backgroundColor: `${addBtnLabel.toLocaleLowerCase() == 'infrastructure' ? '#2563eb' : 'none'}`,
+                                            color: `${addBtnLabel.toLocaleLowerCase() == 'infrastructure' ? 'white' : 'none'}`,
+                                            borderBottom: `${addBtnLabel.toLocaleLowerCase() == 'infrastructure' ? 'solid 1px #d3d6db' : 'solid 1px rgba(156, 163, 175, 1)'}`
+                                        }}
+                                        onClick={() => { setIsAddForm(false); setFields(['id', 'name', 'category_name', 'numbers']); setResource('infrastructure'); setResourceCategory('HealthInfrastructure'); setTitle('infrastructures'); setAddBtnLabel('infrastructure'); setEditMode(false); setEditID(null) }}>
+                                        <ListItemText primary="Infrastructure" />
+                                    </ListItemButton>
+                                </List>
+                            </Collapse>
 
-                                                                                                                        }
-                                                                                                                    </TableCell>
+                            {/* Human Resource */}
+                            <ListItemButton onClick={handleHRClick} sx={{ borderBottom: 'solid 1px #d3d6db' }}>
+                                <ListItemIcon>
+                                    <ReduceCapacity />
+                                </ListItemIcon>
+                                <ListItemText primary="Human Resource" />
+                                {openHR ? <ExpandLess /> : <ExpandMore />}
+                            </ListItemButton>
+                            <Collapse in={openHR} timeout="auto" unmountOnExit>
+                                <List component="ul" disablePadding>
+                                    {/* HR Categories */}
+                                    <ListItemButton componene="li"
+                                        className="hover:text-gray-700"
+                                        sx={{
+                                            backgroundColor: `${addBtnLabel.toLocaleLowerCase() == 'human resource category' ? '#2563eb' : 'none'}`,
+                                            color: `${addBtnLabel.toLocaleLowerCase() == 'human resource category' ? 'white' : 'none'}`,
+                                            borderBottom: `${addBtnLabel.toLocaleLowerCase() == 'human resource category' ? 'solid 1px #d3d6db' : 'solid 1px rgba(156, 163, 175, 1)'}`
+                                        }}
+                                        onClick={() => { setIsAddForm(false); setFields(['id', 'name', 'description']); setResource('speciality_categories'); setResourceCategory('HR'); setTitle('HR Categories'); setAddBtnLabel('human resource category') }}>
+                                        <ListItemText primary="HR Categories" />
+                                    </ListItemButton>
+                                    {/* Specialities */}
+                                    <ListItemButton componene="li"
+                                        className="hover:text-gray-700"
+                                        sx={{
+                                            backgroundColor: `${addBtnLabel.toLocaleLowerCase() == 'specialty' ? '#2563eb' : 'none'}`,
+                                            color: `${addBtnLabel.toLocaleLowerCase() == 'specialty' ? 'white' : 'none'}`,
+                                            borderBottom: `${addBtnLabel.toLocaleLowerCase() == 'specialty' ? 'solid 1px #d3d6db' : 'solid 1px rgba(156, 163, 175, 1)'}`
+                                        }}
+                                        onClick={() => { setIsAddForm(false); setFields(['id', 'name', 'category_name']); setResource('specialities'); setResourceCategory('HR'); setTitle('specialities'); setAddBtnLabel('specialty') }}>
+                                        <ListItemText primary="Specialities" />
+                                    </ListItemButton>
+                                </List>
+                            </Collapse>
 
-                                                                                                                );
-                                                                                                            })}
-                                                                                                        </TableRow>
-                                                                                                    );
-                                                                                                })}
-                                                                                            </TableBody>
-                                                                                        </Table>
-                                                                                    </TableContainer>
-                                                                                </div>
-                                                                            </Tabs.Panel>
-                                                                            <Tabs.Panel
-                                                                                value="county_users"
-                                                                                className="grow-1 py-1 px-4 tab-panel"
-                                                                            >
-                                                                                <div className='col-span-4 w-full h-auto'>
-                                                                                    {loading ? <div>loading...</div> :
-                                                                                        <DataGrid
-                                                                                            rows={editData[2]?.results?.map(({ id, user_full_name, user_email, county_name, county_code, user }) => ({ id, user_full_name, user_email, county_name, county_code, user }))}
-                                                                                            columns={county_users}
-                                                                                            autoHeight
-                                                                                            pageSize={5}
-                                                                                            rowsPerPageOptions={[5]}
-                                                                                            disableSelectionOnClick
-                                                                                            experimentalFeatures={{ newEditingApi: true }}
-                                                                                            components={{
-                                                                                                Toolbar: GridToolbar,
-                                                                                            }}
-                                                                                        />}
-                                                                                    {/*  */}
-                                                                                </div>
-                                                                            </Tabs.Panel>
-                                                                        </Tabs.Root>
+                            {/* Contacts */}
+                            <ListItemButton onClick={hanldeConactsClick} sx={{ borderBottom: 'solid 1px #d3d6db' }}>
+                                <ListItemIcon>
+                                    <Phone />
+                                </ListItemIcon>
+                                <ListItemText primary="Contacts" />
+                                {openContacts ? <ExpandLess /> : <ExpandMore />}
+                            </ListItemButton>
+                            <Collapse in={openContacts} timeout="auto" unmountOnExit>
+                                <List component="ul" disablePadding>
 
+                                    <ListItemButton componene="li"
+                                        className="hover:text-gray-700"
+                                        sx={{
+                                            backgroundColor: `${addBtnLabel.toLocaleLowerCase() == 'contact type' ? '#2563eb' : 'none'}`,
+                                            color: `${addBtnLabel.toLocaleLowerCase() == 'contact type' ? 'white' : 'none'}`,
+                                            borderBottom: `${addBtnLabel.toLocaleLowerCase() == 'contact type' ? 'solid 1px #d3d6db' : 'solid 1px rgba(156, 163, 175, 1)'}`
+                                        }}
+                                        onClick={() => { setIsAddForm(false); setFields(['id', 'name']); setResource('contact_types'); setResourceCategory('Contacts'); setTitle('contact types'); setAddBtnLabel('contact type'); setEditMode(false); setEditID(null) }}>
+                                        <ListItemText primary="Contact Type" />
+                                    </ListItemButton>
 
-                                                                    </>
-                                                                }
+                                </List>
+                            </Collapse>
 
-                                                            </>
+                            {/* Facilities */}
+                            <ListItemButton onClick={handleFacilitiesClick} sx={{ borderBottom: 'solid 1px #d3d6db' }}>
+                                <ListItemIcon>
+                                    <MapsHomeWork />
+                                </ListItemIcon>
+                                <ListItemText primary="Facilities" />
+                                {openFacilities ? <ExpandLess /> : <ExpandMore />}
+                            </ListItemButton>
+                            <Collapse in={openFacilities} timeout="auto" unmountOnExit>
 
-                                                        )
-                                                    case 'sub county':
-                                                        return (
-                                                            <>
-                                                                <form className='w-full h-full flex-col gap-1' onSubmit={(e) => handleFormSubmit(e, addBtnLabel)}>
-                                                                    {/* Constituency Name */}
-                                                                    <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                <List component="ul" disablePadding>
+                                    {/* Facility Departments */}
+                                    <ListItemButton componene="li"
+                                        className="hover:text-gray-700"
+                                        sx={{
+                                            backgroundColor: `${addBtnLabel.toLocaleLowerCase() == 'facility department' ? '#2563eb' : 'none'}`,
+                                            color: `${addBtnLabel.toLocaleLowerCase() == 'facility department' ? 'white' : 'none'}`,
+                                            borderBottom: `${addBtnLabel.toLocaleLowerCase() == 'facility department' ? 'solid 1px #d3d6db' : 'solid 1px rgba(156, 163, 175, 1)'}`
+                                        }}
+                                        onClick={() => { setIsAddForm(false); setFields(['']); setResource('facility_depts'); setIsParent(null); setResourceCategory('Facilities'); setTitle('facility departments'); setAddBtnLabel('facility department'); setEditMode(false); }}>
+                                        <ListItemText primary="Facility Departments" />
+                                    </ListItemButton>
 
-                                                                        
-                                                                        <label
-                                                                            htmlFor={`add_${addBtnLabel}_sub_county_field`}
-                                                                            className='text-gray-600 capitalize text-sm'>
-                                                                            Sub County Name
-                                                                            <span className='text-medium leading-12 font-semibold'>
-                                                                                {' '}
-                                                                                *
-                                                                            </span>
-                                                                        </label>
-                                                                        <input
-                                                                            required
-                                                                            type='text'
-                                                                            placeholder='Sub County Name'
-                                                                            id={`add_${addBtnLabel}_sub_county_field`}
-                                                                            name='name'
-                                                                            defaultValue={editData?.name}
-                                                                            className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
-                                                                        />
-                                                                    </div>
+                                    {/* Facility Type Details */}
+                                    <ListItemButton componene="li"
+                                        className="hover:text-gray-700"
+                                        sx={{
+                                            backgroundColor: `${addBtnLabel.toLocaleLowerCase() == 'facility type detail' ? '#2563eb' : 'none'}`,
+                                            color: `${addBtnLabel.toLocaleLowerCase() == 'facility type detail' ? 'white' : 'none'}`,
+                                            borderBottom: `${addBtnLabel.toLocaleLowerCase() == 'facility type detail' ? 'solid 1px #d3d6db' : 'solid 1px rgba(156, 163, 175, 1)'}`
+                                        }}
+                                        onClick={() => { setIsAddForm(false); setFields(['id', 'name', 'sub_division']); setIsParent(true); setResource('facility_types'); setResourceCategory('Facilities'); setTitle('facility type details'); setAddBtnLabel('facility type detail'); setEditMode(false); }}>
+                                        <ListItemText primary="Facility Type Details" />
+                                    </ListItemButton>
 
-                                                                    {editMode &&
-                                                                        <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-                                                                            <label
-                                                                                htmlFor={`add_${addBtnLabel}`}
-                                                                                className='text-gray-600 capitalize text-sm'>
-                                                                                Sub County Code
-                                                                                <span className='text-medium leading-12 font-semibold'>
-                                                                                    {' '}
-                                                                                    *
-                                                                                </span>
-                                                                            </label>
-                                                                            <input
-                                                                                type='text'
-                                                                                placeholder='Sub County Code'
-                                                                                id={`add_${addBtnLabel}`}
-                                                                                name='code'
-                                                                                defaultValue={editData?.code}
-                                                                                className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
-                                                                            />
+                                    {/* Facility Type Categories */}
+                                    <ListItemButton componene="li"
+                                        className="hover:text-gray-700"
+                                        sx={{
+                                            backgroundColor: `${addBtnLabel.toLocaleLowerCase() == 'facility type category' ? '#2563eb' : 'none'}`,
+                                            color: `${addBtnLabel.toLocaleLowerCase() == 'facility type category' ? 'white' : 'none'}`,
+                                            borderBottom: `${addBtnLabel.toLocaleLowerCase() == 'facility type category' ? 'solid 1px #d3d6db' : 'solid 1px rgba(156, 163, 175, 1)'}`
+                                        }}
+                                        onClick={() => { setIsAddForm(false); setFields(['id', 'name', 'sub_division']); setIsParent(false); setResource('facility_types'); setResourceCategory('Facilities'); setTitle('facility type categories'); setAddBtnLabel('facility type category'); setEditMode(false); }}>
+                                        <ListItemText primary="Facility Type Categories" />
+                                    </ListItemButton>
 
-                                                                        </div>
-                                                                        }
+                                    {/* Facility Operation Status */}
+                                    <ListItemButton componene="li"
+                                        className="hover:text-gray-700"
+                                        sx={{
+                                            backgroundColor: `${addBtnLabel.toLocaleLowerCase() == 'facility operation status' ? '#2563eb' : 'none'}`,
+                                            color: `${addBtnLabel.toLocaleLowerCase() == 'facility operation status' ? 'white' : 'none'}`,
+                                            borderBottom: `${addBtnLabel.toLocaleLowerCase() == 'facility operation status' ? 'solid 1px #d3d6db' : 'solid 1px rgba(156, 163, 175, 1)'}`
+                                        }}
+                                        onClick={() => { setIsAddForm(false); setFields([]); setResource('facility_status'); setIsParent(null); setResourceCategory('Facilities'); setTitle('facility operation statuses'); setAddBtnLabel('facility operation status'); setEditMode(false); }}>
+                                        <ListItemText primary="Facility Operation Status" />
+                                    </ListItemButton>
 
-                                                                    {/* County */}
-                                                                    <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-                                                                    
-                                                                   
+                                    {/*  Facility Admission Status */}
+                                    <ListItemButton componene="li"
+                                        className="hover:text-gray-700"
+                                        sx={{
+                                            backgroundColor: `${addBtnLabel.toLocaleLowerCase() == 'facility admission status' ? '#2563eb' : 'none'}`,
+                                            color: `${addBtnLabel.toLocaleLowerCase() == 'facility admission status' ? 'white' : 'none'}`,
+                                            borderBottom: `${addBtnLabel.toLocaleLowerCase() == 'facility admission status' ? 'solid 1px #d3d6db' : 'solid 1px rgba(156, 163, 175, 1)'}`
+                                        }}
+                                        onClick={() => { setIsAddForm(false); setFields(['']); setResource('facility_admission_status'); setIsParent(null); setResourceCategory('Facilities'); setTitle('facility admission statuses'); setAddBtnLabel('facility admission status'); setEditMode(false); }}>
+                                        <ListItemText primary="Facility Admission Status" />
+                                    </ListItemButton>
 
-                                                                        <label
-                                                                            htmlFor={`add_${addBtnLabel}_county_field`}
-                                                                            className='text-gray-600 capitalize text-sm'>
-                                                                            County{' '}
-                                                                            <span className='text-medium leading-12 font-semibold'>
-                                                                                {' '}
-                                                                                *
-                                                                            </span>
-                                                                        </label>
-                                                                        <Select
-                                                                            styles={{
-                                                                                control: (baseStyles) => ({
-                                                                                    ...baseStyles,
-                                                                                    backgroundColor: 'transparent',
-                                                                                    outLine: 'none',
-                                                                                    textColor: 'transparent',
-                                                                                    padding: 0,
-                                                                                    height: '4px'
-                                                                                }),
+                                    {/*  Feedback */}
+                                    <ListItemButton componene="li"
+                                        className="hover:text-gray-700"
+                                        sx={{
+                                            backgroundColor: `${addBtnLabel.toLocaleLowerCase() == 'feedback' ? '#2563eb' : 'none'}`,
+                                            color: `${addBtnLabel.toLocaleLowerCase() == 'feedback' ? 'white' : 'none'}`,
+                                            borderBottom: `${addBtnLabel.toLocaleLowerCase() == 'feedback' ? 'solid 1px #d3d6db' : 'solid 1px rgba(156, 163, 175, 1)'}`
+                                        }}
+                                        onClick={() => { setIsAddForm(false); setFields(['']); setIsParent(null); setResource('facility_service_ratings'); setResourceCategory('Facilities'); setTitle('feedbacks'); setAddBtnLabel('feedback'); setEditMode(false); }}>
+                                        <ListItemText primary="Feedback" />
+                                    </ListItemButton>
 
-                                                                            }}
-                                                                            options={props?.data?.results?.map(({id, name}) => ({label: name, value: id}))}
-                                                                            required
-                                                                            placeholder='Select '
-                                                                            id={`add_${addBtnLabel}_county_field`}
-                                                                            name='county'
-                                                                            defaultValue={{value: editData?.county, label: editData?.name}}
-                                                                            className='flex-none rounded w-full border border-gray-600 bg-transparent flex-grow placeholder-gray-500 focus:border-gray-600 outline-none'
-                                                                        />
+                                    {/*  Facility Owner Details */}
+                                    <ListItemButton componene="li"
+                                        className="hover:text-gray-700"
+                                        sx={{
+                                            backgroundColor: `${addBtnLabel.toLocaleLowerCase() == 'facility owner detail' ? '#2563eb' : 'none'}`,
+                                            color: `${addBtnLabel.toLocaleLowerCase() == 'facility owner detail' ? 'white' : 'none'}`,
+                                            borderBottom: `${addBtnLabel.toLocaleLowerCase() == 'facility owner detail' ? 'solid 1px #d3d6db' : 'solid 1px rgba(156, 163, 175, 1)'}`
+                                        }}
+                                        onClick={() => { setIsAddForm(false); setFields(['id', 'name']); setIsParent(null); setResource('owner_types'); setResourceCategory('Facilities'); setTitle('facility owner details'); setAddBtnLabel('facility owner detail'); setEditMode(false); }}>
+                                        <ListItemText primary="Facility Owner Details" />
+                                    </ListItemButton>
 
+                                    {/* Facility Owners Categories */}
+                                    <ListItemButton componene="li"
+                                        className="hover:text-gray-700"
+                                        sx={{
+                                            backgroundColor: `${addBtnLabel.toLocaleLowerCase() == 'facility owner category' ? '#2563eb' : 'none'}`,
+                                            color: `${addBtnLabel.toLocaleLowerCase() == 'facility owner category' ? 'white' : 'none'}`,
+                                            borderBottom: `${addBtnLabel.toLocaleLowerCase() == 'facility owner category' ? 'solid 1px #d3d6db' : 'solid 1px rgba(156, 163, 175, 1)'}`
+                                        }}
+                                        onClick={() => { setIsAddForm(false); setFields(['id', 'name', 'code', 'abbreviation', 'owner_type_name']); setIsParent(null); setResource('owners'); setResourceCategory('Facilities'); setTitle('facility owner categories'); setAddBtnLabel('facility owner category'); setEditMode(false); }}>
+                                        <ListItemText primary="Facility Owners Categories" />
+                                    </ListItemButton>
 
-                                                                    </div>
+                                    {/*  Job Titles */}
+                                    <ListItemButton componene="li"
+                                        className="hover:text-gray-700"
+                                        sx={{
+                                            backgroundColor: `${addBtnLabel.toLocaleLowerCase() == 'job title' ? '#2563eb' : 'none'}`,
+                                            color: `${addBtnLabel.toLocaleLowerCase() == 'job title' ? 'white' : 'none'}`,
+                                            borderBottom: `${addBtnLabel.toLocaleLowerCase() == 'job title' ? 'solid 1px #d3d6db' : 'solid 1px rgba(156, 163, 175, 1)'}`
+                                        }}
+                                        onClick={() => { setIsAddForm(false); setFields(['id', 'name']); setIsParent(null); setResource('job_titles'); setResourceCategory('Facilities'); setTitle('job titles'); setAddBtnLabel('job title'); setEditMode(false); }}>
+                                        <ListItemText primary="Job Titles" />
+                                    </ListItemButton>
 
-                                                                   
+                                    {/*  Regulatory Bodies */}
+                                    <ListItemButton componene="li"
+                                        className="hover:text-gray-700"
+                                        sx={{
+                                            backgroundColor: `${addBtnLabel.toLocaleLowerCase() == 'regulatory body' ? '#2563eb' : 'none'}`,
+                                            color: `${addBtnLabel.toLocaleLowerCase() == 'regulatory body' ? 'white' : 'none'}`,
+                                            borderBottom: `${addBtnLabel.toLocaleLowerCase() == 'regulatory body' ? 'solid 1px #d3d6db' : 'solid 1px rgba(156, 163, 175, 1)'}`
+                                        }}
+                                        onClick={() => { setIsAddForm(false); setFields(['id', 'name', 'abbreviation', 'regulatory_body_type_name', 'regulation_verb']); setIsParent(null); setResource('regulating_bodies'); setResourceCategory('Facilities'); setTitle('regulatory bodies'); setAddBtnLabel('regulatory body'); setEditMode(false); }}>
+                                        <ListItemText primary="Regulatory Bodies" />
+                                    </ListItemButton>
 
-                                                                    <div className='flex items-center space-x-3 mt-4'>
-                                                                        <button type='submit' disabled={submitting} className='p-2 text-white border-2 border-blue-600 bg-blue-600 rounded  font-semibold'>
-                                                                            {
-                                                                                submitting ?
-                                                                                    <div className='flex items-center gap-2'>
-                                                                                        <span className='text-white'>Saving.. </span>
-                                                                                        <Spinner />
-                                                                                    </div>
-                                                                                    :
-                                                                                    'Save'
+                                    {/*  Regulatory Status */}
+                                    <ListItemButton componene="li"
+                                        className="hover:text-gray-700"
+                                        sx={{
+                                            backgroundColor: `${addBtnLabel.toLocaleLowerCase() == 'regulatory status' ? '#2563eb' : 'none'}`,
+                                            color: `${addBtnLabel.toLocaleLowerCase() == 'regulatory status' ? 'white' : 'none'}`,
+                                            borderBottom: `${addBtnLabel.toLocaleLowerCase() == 'regulatory status' ? 'solid 1px #d3d6db' : 'solid 1px rgba(156, 163, 175, 1)'}`
+                                        }}
+                                        onClick={() => { setIsAddForm(false); setFields(['']); setIsParent(null); setResource('regulation_status'); setResourceCategory('Facilities'); setTitle('regulatory statuses'); setAddBtnLabel('regulatory status'); setEditMode(false); }}>
+                                        <ListItemText primary="Regulatory Status" />
+                                    </ListItemButton>
 
-                                                                            }
-                                                                        </button>
-                                                                        <button  onClick={(e) => { e.preventDefault(); setIsAddForm(false); setAddBtnLabel('sub county'); setTitle('Sub Counties'); setFields(['id', 'name', 'code']); setResource('sub_counties') }} className='p-2 text-gray-600 border-2 border-gray-600 rounded  font-semibold' >cancel</button>
-                                                                    </div>
-                                                                </form>
-                                                                &nbsp;
-                                                                {editMode &&
-                                                                    <>
-                                                                        <ChangeLog />
-                                                                        &nbsp;
-                                                                        <div className='col-span-4 w-full h-auto'>
-                                                                            <h3>{editData[0]?.name} Wards</h3>
-                                                                            <TableContainer sx={{ maxHeight: 440 }}>
-                                                                                <Table stickyHeader aria-label="sticky table">
-                                                                                    <TableHead>
-                                                                                        <TableRow>
-                                                                                            {wardsColumns.map((column, i) => (
-                                                                                                <TableCell
-                                                                                                    key={i}
-                                                                                                    align={column.align}
-                                                                                                    style={{ minWidth: column.minWidth, fontWeight: 600 }}
-                                                                                                >
-                                                                                                    {column.label}
-                                                                                                </TableCell>
-                                                                                            ))}
-                                                                                        </TableRow>
-                                                                                    </TableHead>
-                                                                                    <TableBody sx={{ paddingX: 4 }}>
-                                                                                        {editData[1]?.results.map((row) => {
-                                                                                            return (
-                                                                                                <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
-                                                                                                    {wardsColumns.map((column, i) => {
-                                                                                                        const value = row[column.id];
-                                                                                                        return (
-                                                                                                            <TableCell key={column.id} align={column.align}>
-                                                                                                                {
-                                                                                                                    column.format && typeof value === 'boolean'
-                                                                                                                        ? value.toString()
-                                                                                                                        : column.format && typeof value === 'number'
-                                                                                                                            ? column.format(value) : column.link ? <a className="text-indigo-500" href={value}>{value}</a> : value
-
-                                                                                                                }
-                                                                                                            </TableCell>
-
-                                                                                                        );
-                                                                                                    })}
-                                                                                                </TableRow>
-                                                                                            );
-                                                                                        })}
-                                                                                    </TableBody>
-                                                                                </Table>
-                                                                            </TableContainer>
-                                                                        </div>
-                                                                    </>
-
-
-                                                                }
-                                                            </>
-                                                        )
-                                                    case 'constituency':
-                                                        return (
-                                                            <>
-                                                                <form className='w-full h-full flex-col gap-1' onSubmit={(e) => handleFormSubmit(e, addBtnLabel)}>
-                                                                    {/* Constituency Name */}
-                                                                    <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-
-                                                                        <label
-                                                                            htmlFor={`add_${addBtnLabel}_constituency_field`}
-                                                                            className='text-gray-600 capitalize text-sm'>
-                                                                            Constituency Name
-                                                                            <span className='text-medium leading-12 font-semibold'>
-                                                                                {' '}
-                                                                                *
-                                                                            </span>
-                                                                        </label>
-                                                                        <input
-                                                                            required
-                                                                            type='text'
-                                                                            placeholder='Constitency Name'
-                                                                            id={`add_${addBtnLabel}_constituency_field`}
-                                                                            name='name'
-                                                                            defaultValue={editData[0]?.name}
-                                                                            className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
-                                                                        />
-                                                                    </div>
-
-                                                                    {editMode &&
-                                                                        <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-                                                                            <label
-                                                                                htmlFor={`add_${addBtnLabel}`}
-                                                                                className='text-gray-600 capitalize text-sm'>
-                                                                                Constitency Code
-                                                                                <span className='text-medium leading-12 font-semibold'>
-                                                                                    {' '}
-                                                                                    *
-                                                                                </span>
-                                                                            </label>
-                                                                            <input
-                                                                                readOnly
-                                                                                type='text'
-                                                                                placeholder='Constituency Code'
-                                                                                id={`add_${addBtnLabel}`}
-                                                                                name='code'
-                                                                                defaultValue={editData[0]?.code}
-                                                                                className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
-                                                                            />
-
-                                                                        </div>}
-
-                                                                    {/* County */}
-                                                                    <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-
-                                                                        <label
-                                                                            htmlFor={`add_${addBtnLabel}_county_field`}
-                                                                            className='text-gray-600 capitalize text-sm'>
-                                                                            County{' '}
-                                                                            <span className='text-medium leading-12 font-semibold'>
-                                                                                {' '}
-                                                                                *
-                                                                            </span>
-                                                                        </label>
-                                                                        <Select
-                                                                            styles={{
-                                                                                control: (baseStyles) => ({
-                                                                                    ...baseStyles,
-                                                                                    backgroundColor: 'transparent',
-                                                                                    outLine: 'none',
-                                                                                    textColor: 'transparent',
-                                                                                    padding: 0,
-                                                                                    height: '4px'
-                                                                                }),
-
-                                                                            }}
-                                                                            options={selectOptions}
-                                                                            required
-                                                                            placeholder='Select '
-                                                                            id={`add_${addBtnLabel}_county_field`}
-                                                                            name='county'
-                                                                            key={editData[0]?.county}
-                                                                            defaultValue={{ value: editData[0]?.county, label: editData[0]?.county_name }}
-                                                                            className='flex-none w-full  border border-gray-600 bg-transparent rounded flex-grow  placeholder-gray-500 focus:border-gray-600 outline-none'
-                                                                        />
+                                    {/*  Upgrade Reason */}
+                                    <ListItemButton componene="li"
+                                        className="hover:text-gray-700"
+                                        sx={{
+                                            backgroundColor: `${addBtnLabel.toLocaleLowerCase() == 'upgrade reason' ? '#2563eb' : 'none'}`,
+                                            color: `${addBtnLabel.toLocaleLowerCase() == 'upgrade reason' ? 'white' : 'none'}`,
+                                            borderBottom: `${addBtnLabel.toLocaleLowerCase() == 'upgrade reason' ? 'solid 1px #d3d6db' : 'solid 1px rgba(156, 163, 175, 1)'}`
+                                        }}
+                                        onClick={() => { setIsAddForm(false); setFields(['id', 'reason', 'description']); setIsParent(null); setResource('level_change_reasons'); setResourceCategory('Facilities'); setTitle('upgrade reasons'); setAddBtnLabel('upgrade reason'); setEditMode(false); }}>
+                                        <ListItemText primary="Upgrade Reason" />
+                                    </ListItemButton>
 
 
-                                                                    </div>
+                                </List>
+                            </Collapse>
 
-                                                                    <div className='flex items-center space-x-3 mt-4'>
-                                                                        <button type='submit'  className='p-2 text-white bg-blue-600  font-semibold'>save</button>
-                                                                        <button className='p-2 text-white bg-indigo-500  font-semibold'>cancel</button>
-                                                                    </div>
-                                                                </form>
-                                                                &nbsp;
-                                                                {editMode &&
-                                                                    <>
-                                                                        <ChangeLog />
-                                                                        &nbsp;
-                                                                        <div className='col-span-4 w-full h-auto'>
-                                                                            <h3>{editData[0]?.name} Wards</h3>
-                                                                            <TableContainer sx={{ maxHeight: 440 }}>
-                                                                                <Table stickyHeader aria-label="sticky table">
-                                                                                    <TableHead>
-                                                                                        <TableRow>
-                                                                                            {wardsColumns.map((column, i) => (
-                                                                                                <TableCell
-                                                                                                    key={i}
-                                                                                                    align={column.align}
-                                                                                                    style={{ minWidth: column.minWidth, fontWeight: 600 }}
-                                                                                                >
-                                                                                                    {column.label}
-                                                                                                </TableCell>
-                                                                                            ))}
-                                                                                        </TableRow>
-                                                                                    </TableHead>
-                                                                                    <TableBody sx={{ paddingX: 4 }}>
-                                                                                        {editData[1]?.results.map((row) => {
-                                                                                            return (
-                                                                                                <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
-                                                                                                    {wardsColumns.map((column, i) => {
-                                                                                                        const value = row[column.id];
-                                                                                                        return (
-                                                                                                            <TableCell key={column.id} align={column.align}>
-                                                                                                                {
-                                                                                                                    column.format && typeof value === 'boolean'
-                                                                                                                        ? value.toString()
-                                                                                                                        : column.format && typeof value === 'number'
-                                                                                                                            ? column.format(value) : column.link ? <a className="text-indigo-500" href={value}>{value}</a> : value
+                            {/* CHU */}
+                            <ListItemButton onClick={handleCHUClick} sx={{ borderBottom: 'solid 1px #d3d6db' }}>
+                                <ListItemIcon>
+                                    <GroupAdd />
+                                </ListItemIcon>
+                                <ListItemText primary="CHU" />
+                                {openCHU ? <ExpandLess /> : <ExpandMore />}
+                            </ListItemButton>
+                            <Collapse in={openCHU} timeout="auto" unmountOnExit>
+                                <List component="ul" disablePadding>
+                                    {/* CHU Rating Comments */}
+                                    <ListItemButton componene="li"
+                                        className="hover:text-gray-700"
+                                        sx={{
+                                            backgroundColor: `${addBtnLabel.toLocaleLowerCase() == 'chu rating comment' ? '#2563eb' : 'none'}`,
+                                            color: `${addBtnLabel.toLocaleLowerCase() == 'chu rating comment' ? 'white' : 'none'}`,
+                                            borderBottom: `${addBtnLabel.toLocaleLowerCase() == 'chu rating comment' ? 'solid 1px #d3d6db' : 'solid 1px rgba(156, 163, 175, 1)'}`
+                                        }}
+                                        onClick={() => { setIsAddForm(false); setFields(['']); setResource('chu_ratings'); setResourceCategory('CHU'); setTitle('CHU Rating Comments'); setAddBtnLabel('CHU Rating Comment') }}>
+                                        <ListItemText primary="CHU Rating Comments" />
+                                    </ListItemButton>
 
-                                                                                                                }
-                                                                                                            </TableCell>
-
-                                                                                                        );
-                                                                                                    })}
-                                                                                                </TableRow>
-                                                                                            );
-                                                                                        })}
-                                                                                    </TableBody>
-                                                                                </Table>
-                                                                            </TableContainer>
-                                                                        </div>
-                                                                    </>
+                                </List>
+                            </Collapse>
 
 
-                                                                }
-                                                            </>
-                                                        )
-                                                    case 'ward':
-                                                        return (
+                            {/* Documents */}
+                            <ListItemButton onClick={handleDocumentsClick} sx={{ borderBottom: 'solid 1px #d3d6db' }}>
+                                <ListItemIcon>
+                                    <Article />
+                                </ListItemIcon>
+                                <ListItemText primary="Documents" />
+                                {openDocuments ? <ExpandLess /> : <ExpandMore />}
+                            </ListItemButton>
+                            <Collapse in={openDocuments} timeout="auto" unmountOnExit>
+                                <List component="ul" disablePadding>
+                                    {/* Documents */}
+                                    <ListItemButton componene="li"
+                                        className="hover:text-gray-700"
+                                        sx={{
+                                            backgroundColor: `${addBtnLabel.toLocaleLowerCase() == 'document' ? '#2563eb' : 'none'}`,
+                                            color: `${addBtnLabel.toLocaleLowerCase() == 'document' ? 'white' : 'none'}`,
+                                            borderBottom: `${addBtnLabel.toLocaleLowerCase() == 'document' ? 'solid 1px #d3d6db' : 'solid 1px rgba(156, 163, 175, 1)'}`
+                                        }}
+                                        onClick={() => { setIsAddForm(false); setFields(['id', 'name', 'description', 'fyl', 'document_type']); setResource('documents'); setResourceCategory('Documents'); setTitle('Documents'); setAddBtnLabel('Document') }}>
+                                        <ListItemText primary="Documents" />
+                                    </ListItemButton>
 
-                                                            <form className='w-full h-full flex-col gap-1 rounded-none' onSubmit={(e) => handleFormSubmit(e, addBtnLabel)}>
-                                                                {/* Ward Name */}
+                                </List>
+                            </Collapse>
+
+
+
+                        </List>
+                    </div>
+                    {
+                        // Edit forms
+                        !isAddForm ? (
+                            <>
+                                {/* Table Section */}
+                                <div className='col-span-4 w-full h-auto'>
+                                    
+                                    <Paper className="shadow-md rounded " >
+                                        <StyledDataGrid
+                                            columns={columns}
+                                            rows={rows}
+                                            className="w-full justify-evenly"
+                                            getRowClassName={() => `super-app-theme--Row`}
+                                            rowSpacingType="border"
+                                            showColumnRightBorder
+                                            showCellRightBorder
+                                            rowSelection={false}
+                                            getCellClassName={() => 'super-app-theme--Cell'}
+                                            slots={{
+                                                toolbar: () => (
+                                                    <GridToolbar
+                                                        sx={{
+                                                            flex: 1,
+                                                            display: 'flex',
+                                                            marginX: 'auto',
+                                                            gap: 5,
+                                                            padding: '0.45rem'
+                                                        }}
+                                                    />
+                                                ),
+                                            }}
+                                        />
+
+                                    </Paper>
+                                </div>
+                            </>
+                        ) : (
+                        // Add forms
+                            (<div className='col-span-4 flex items-start justify-start h-auto w-full'>
+                                {/* Add Form */}
+                                <div className="w-full h-auto p-3 bg-gray-50 shadow-md" >
+                                    {
+
+                                        (() => {
+                                            switch (addBtnLabel) {
+                                                case 'county':
+                                                    return (
+                                                        <>
+                                                            <form className='w-full h-full' onSubmit={(e) => handleFormSubmit(e, addBtnLabel)}>
                                                                 <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-
                                                                     <label
-                                                                        htmlFor={`add_${addBtnLabel}_field`}
+                                                                        htmlFor={`add_${addBtnLabel}`}
                                                                         className='text-gray-600 capitalize text-sm'>
-                                                                        Ward Name
+                                                                        County Name
                                                                         <span className='text-medium leading-12 font-semibold'>
                                                                             {' '}
                                                                             *
@@ -2270,13 +1789,369 @@ function SystemSetup(props) {
                                                                     <input
                                                                         required
                                                                         type='text'
-                                                                        placeholder='Ward Name'
-                                                                        id={`add_${addBtnLabel}_field`}
+                                                                        placeholder='County Name'
+                                                                        id={`add_${addBtnLabel}`}
+                                                                        name='name'
+                                                                        defaultValue={editMode ? editData[0]?.name : ''}
+                                                                        className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
+                                                                    />
+
+                                                                </div>
+                                                                {editMode &&
+                                                                    <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                                                        <label
+                                                                            htmlFor={`add_${addBtnLabel}`}
+                                                                            className='text-gray-600 capitalize text-sm'>
+                                                                            County Code
+                                                                            <span className='text-medium leading-12 font-semibold'>
+                                                                                {' '}
+                                                                                *
+                                                                            </span>
+                                                                        </label>
+                                                                        <input
+                                                                            readOnly
+                                                                            type='text'
+                                                                            placeholder='County Code'
+                                                                            id={`add_${addBtnLabel}`}
+                                                                            name='county_code'
+                                                                            defaultValue={editMode ? editData[0]?.code : ''}
+                                                                            className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
+                                                                        />
+
+                                                                    </div>}
+
+                                                                <div className='flex items-center space-x-3 mt-4'>
+                                                                    <button type='submit' disabled={submitting} className='p-2 text-white border-2 border-blue-600 bg-blue-600 rounded  font-semibold'>
+                                                                        {
+                                                                            submitting ?
+                                                                                <div className='flex items-center gap-2'>
+                                                                                    <span className='text-white'>Saving.. </span>
+                                                                                    <Spinner />
+                                                                                </div>
+                                                                                :
+                                                                                'Save'
+
+                                                                        }
+                                                                    </button>
+                                                                    <button onClick={e => { e.preventDefault(); setIsAddForm(false); setFields(['id', 'name', 'code']); setResource('counties'); setResourceCategory('AdminUnits'); setTitle('counties'); setAddBtnLabel('county'); setEditMode(false); setEditID(null) }} className='p-2 text-gray-600 border-2 border-gray-600 rounded  font-semibold' >cancel</button>
+                                                                </div>
+                                                            </form>
+                                                            &nbsp;
+                                                            {editMode &&
+                                                                <>
+                                                                    <ChangeLog />
+                                                                    &nbsp;
+
+                                                                    <Tabs.Root
+                                                                        orientation="horizontal"
+                                                                        className="w-full flex flex-col tab-root"
+                                                                        defaultValue="constituencies"
+                                                                    >
+                                                                        <Tabs.List className="list-none flex flex-wrap gap-2 md:gap-3 px-4 uppercase leading-none tab-list font-semibold border-b">
+                                                                            <Tabs.Tab
+                                                                                id={1}
+                                                                                value="constituencies"
+                                                                                className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-400 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
+                                                                            >
+                                                                                Constituencies
+                                                                            </Tabs.Tab>
+                                                                            <Tabs.Tab
+                                                                                id={2}
+                                                                                value="county_users"
+                                                                                className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-400 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
+                                                                            >
+                                                                                County Users
+                                                                            </Tabs.Tab>
+
+                                                                        </Tabs.List>
+
+                                                                        <Tabs.Panel
+                                                                            value="constituencies"
+                                                                            className="grow-1 py-1 px-4 tab-panel"
+                                                                        >
+                                                                            <div className='col-span-4 w-full h-auto'>
+                                                                                <TableContainer sx={{ maxHeight: 440 }}>
+                                                                                    <Table stickyHeader aria-label="sticky table">
+                                                                                        <TableHead>
+                                                                                            <TableRow>
+                                                                                                {constituenciesColumns.map((column, i) => (
+                                                                                                    <TableCell
+                                                                                                        key={i}
+                                                                                                        align={column.align}
+                                                                                                        style={{ minWidth: column.minWidth, fontWeight: 600 }}
+                                                                                                    >
+                                                                                                        {column.label}
+                                                                                                    </TableCell>
+                                                                                                ))}
+                                                                                            </TableRow>
+                                                                                        </TableHead>
+                                                                                        <TableBody sx={{ paddingX: 4 }}>
+                                                                                            {editData[1]?.results.map((row) => {
+                                                                                                return (
+                                                                                                    <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
+                                                                                                        {constituenciesColumns.map((column, i) => {
+                                                                                                            const value = row[column.id];
+                                                                                                            return (
+                                                                                                                <TableCell key={column.id} align={column.align}>
+                                                                                                                    {
+                                                                                                                        column.format && typeof value === 'boolean'
+                                                                                                                            ? value.toString()
+                                                                                                                            : column.format && typeof value === 'number'
+                                                                                                                                ? column.format(value) : column.link ? <a className="text-indigo-500" href={value}>{value}</a> : value
+
+                                                                                                                    }
+                                                                                                                </TableCell>
+
+                                                                                                            );
+                                                                                                        })}
+                                                                                                    </TableRow>
+                                                                                                );
+                                                                                            })}
+                                                                                        </TableBody>
+                                                                                    </Table>
+                                                                                </TableContainer>
+                                                                            </div>
+                                                                        </Tabs.Panel>
+                                                                        <Tabs.Panel
+                                                                            value="county_users"
+                                                                            className="grow-1 py-1 px-4 tab-panel"
+                                                                        >
+                                                                            <div className='col-span-4 w-full h-auto'>
+                                                                                {loading ? <div>loading...</div> :
+                                                                                    <DataGrid
+                                                                                        rows={editData[2]?.results?.map(({ id, user_full_name, user_email, county_name, county_code, user }) => ({ id, user_full_name, user_email, county_name, county_code, user }))}
+                                                                                        columns={county_users}
+                                                                                        autoHeight
+                                                                                        pageSize={5}
+                                                                                        rowsPerPageOptions={[5]}
+                                                                                        disableSelectionOnClick
+                                                                                        experimentalFeatures={{ newEditingApi: true }}
+                                                                                        components={{
+                                                                                            Toolbar: GridToolbar,
+                                                                                        }}
+                                                                                    />}
+                                                                                {/*  */}
+                                                                            </div>
+                                                                        </Tabs.Panel>
+                                                                    </Tabs.Root>
+
+
+                                                                </>
+                                                            }
+
+                                                        </>
+
+                                                    )
+                                                case 'sub county':
+                                                    return (
+                                                        <>
+                                                            <form className='w-full h-full flex-col gap-1' onSubmit={(e) => handleFormSubmit(e, addBtnLabel)}>
+                                                                {/* Constituency Name */}
+                                                                <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+
+                                                                    
+                                                                    <label
+                                                                        htmlFor={`add_${addBtnLabel}_sub_county_field`}
+                                                                        className='text-gray-600 capitalize text-sm'>
+                                                                        Sub County Name
+                                                                        <span className='text-medium leading-12 font-semibold'>
+                                                                            {' '}
+                                                                            *
+                                                                        </span>
+                                                                    </label>
+                                                                    <input
+                                                                        required
+                                                                        type='text'
+                                                                        placeholder='Sub County Name'
+                                                                        id={`add_${addBtnLabel}_sub_county_field`}
                                                                         name='name'
                                                                         defaultValue={editData?.name}
-                                                                        className='flex-none w-full bg-transparent rounded  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none  focus:border-black outline-none'
+                                                                        className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
                                                                     />
                                                                 </div>
+
+                                                                {editMode &&
+                                                                    <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                                                        <label
+                                                                            htmlFor={`add_${addBtnLabel}`}
+                                                                            className='text-gray-600 capitalize text-sm'>
+                                                                            Sub County Code
+                                                                            <span className='text-medium leading-12 font-semibold'>
+                                                                                {' '}
+                                                                                *
+                                                                            </span>
+                                                                        </label>
+                                                                        <input
+                                                                            type='text'
+                                                                            placeholder='Sub County Code'
+                                                                            id={`add_${addBtnLabel}`}
+                                                                            name='code'
+                                                                            defaultValue={editData?.code}
+                                                                            className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
+                                                                        />
+
+                                                                    </div>
+                                                                    }
+
+                                                                {/* County */}
+                                                                <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                                                
+                                                               
+
+                                                                    <label
+                                                                        htmlFor={`add_${addBtnLabel}_county_field`}
+                                                                        className='text-gray-600 capitalize text-sm'>
+                                                                        County{' '}
+                                                                        <span className='text-medium leading-12 font-semibold'>
+                                                                            {' '}
+                                                                            *
+                                                                        </span>
+                                                                    </label>
+                                                                    <Select
+                                                                        styles={{
+                                                                            control: (baseStyles) => ({
+                                                                                ...baseStyles,
+                                                                                backgroundColor: 'transparent',
+                                                                                outLine: 'none',
+                                                                                textColor: 'transparent',
+                                                                                padding: 0,
+                                                                                height: '4px'
+                                                                            }),
+
+                                                                        }}
+                                                                        options={props?.data?.results?.map(({id, name}) => ({label: name, value: id}))}
+                                                                        required
+                                                                        placeholder='Select '
+                                                                        id={`add_${addBtnLabel}_county_field`}
+                                                                        name='county'
+                                                                        defaultValue={{value: editData?.county, label: editData?.name}}
+                                                                        className='flex-none rounded w-full border border-gray-600 bg-transparent flex-grow placeholder-gray-500 focus:border-gray-600 outline-none'
+                                                                    />
+
+
+                                                                </div>
+
+                                                               
+
+                                                                <div className='flex items-center space-x-3 mt-4'>
+                                                                    <button type='submit' disabled={submitting} className='p-2 text-white border-2 border-blue-600 bg-blue-600 rounded  font-semibold'>
+                                                                        {
+                                                                            submitting ?
+                                                                                <div className='flex items-center gap-2'>
+                                                                                    <span className='text-white'>Saving.. </span>
+                                                                                    <Spinner />
+                                                                                </div>
+                                                                                :
+                                                                                'Save'
+
+                                                                        }
+                                                                    </button>
+                                                                    <button  onClick={(e) => { e.preventDefault(); setIsAddForm(false); setAddBtnLabel('sub county'); setTitle('Sub Counties'); setFields(['id', 'name', 'code']); setResource('sub_counties') }} className='p-2 text-gray-600 border-2 border-gray-600 rounded  font-semibold' >cancel</button>
+                                                                </div>
+                                                            </form>
+                                                            &nbsp;
+                                                            {editMode &&
+                                                                <>
+                                                                    <ChangeLog />
+                                                                    &nbsp;
+                                                                    <div className='col-span-4 w-full h-auto'>
+                                                                        <h3>{editData[0]?.name} Wards</h3>
+                                                                        <TableContainer sx={{ maxHeight: 440 }}>
+                                                                            <Table stickyHeader aria-label="sticky table">
+                                                                                <TableHead>
+                                                                                    <TableRow>
+                                                                                        {wardsColumns.map((column, i) => (
+                                                                                            <TableCell
+                                                                                                key={i}
+                                                                                                align={column.align}
+                                                                                                style={{ minWidth: column.minWidth, fontWeight: 600 }}
+                                                                                            >
+                                                                                                {column.label}
+                                                                                            </TableCell>
+                                                                                        ))}
+                                                                                    </TableRow>
+                                                                                </TableHead>
+                                                                                <TableBody sx={{ paddingX: 4 }}>
+                                                                                    {editData[1]?.results.map((row) => {
+                                                                                        return (
+                                                                                            <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
+                                                                                                {wardsColumns.map((column, i) => {
+                                                                                                    const value = row[column.id];
+                                                                                                    return (
+                                                                                                        <TableCell key={column.id} align={column.align}>
+                                                                                                            {
+                                                                                                                column.format && typeof value === 'boolean'
+                                                                                                                    ? value.toString()
+                                                                                                                    : column.format && typeof value === 'number'
+                                                                                                                        ? column.format(value) : column.link ? <a className="text-indigo-500" href={value}>{value}</a> : value
+
+                                                                                                            }
+                                                                                                        </TableCell>
+
+                                                                                                    );
+                                                                                                })}
+                                                                                            </TableRow>
+                                                                                        );
+                                                                                    })}
+                                                                                </TableBody>
+                                                                            </Table>
+                                                                        </TableContainer>
+                                                                    </div>
+                                                                </>
+
+
+                                                            }
+                                                        </>
+                                                    )
+                                                case 'constituency':
+                                                    return (
+                                                        <>
+                                                            <form className='w-full h-full flex-col gap-1' onSubmit={(e) => handleFormSubmit(e, addBtnLabel)}>
+                                                                {/* Constituency Name */}
+                                                                <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+
+                                                                    <label
+                                                                        htmlFor={`add_${addBtnLabel}_constituency_field`}
+                                                                        className='text-gray-600 capitalize text-sm'>
+                                                                        Constituency Name
+                                                                        <span className='text-medium leading-12 font-semibold'>
+                                                                            {' '}
+                                                                            *
+                                                                        </span>
+                                                                    </label>
+                                                                    <input
+                                                                        required
+                                                                        type='text'
+                                                                        placeholder='Constitency Name'
+                                                                        id={`add_${addBtnLabel}_constituency_field`}
+                                                                        name='name'
+                                                                        defaultValue={editData[0]?.name}
+                                                                        className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
+                                                                    />
+                                                                </div>
+
+                                                                {editMode &&
+                                                                    <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                                                        <label
+                                                                            htmlFor={`add_${addBtnLabel}`}
+                                                                            className='text-gray-600 capitalize text-sm'>
+                                                                            Constitency Code
+                                                                            <span className='text-medium leading-12 font-semibold'>
+                                                                                {' '}
+                                                                                *
+                                                                            </span>
+                                                                        </label>
+                                                                        <input
+                                                                            readOnly
+                                                                            type='text'
+                                                                            placeholder='Constituency Code'
+                                                                            id={`add_${addBtnLabel}`}
+                                                                            name='code'
+                                                                            defaultValue={editData[0]?.code}
+                                                                            className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
+                                                                        />
+
+                                                                    </div>}
 
                                                                 {/* County */}
                                                                 <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
@@ -2296,6 +2171,168 @@ function SystemSetup(props) {
                                                                                 ...baseStyles,
                                                                                 backgroundColor: 'transparent',
                                                                                 outLine: 'none',
+                                                                                textColor: 'transparent',
+                                                                                padding: 0,
+                                                                                height: '4px'
+                                                                            }),
+
+                                                                        }}
+                                                                        options={selectOptions}
+                                                                        required
+                                                                        placeholder='Select '
+                                                                        id={`add_${addBtnLabel}_county_field`}
+                                                                        name='county'
+                                                                        key={editData[0]?.county}
+                                                                        defaultValue={{ value: editData[0]?.county, label: editData[0]?.county_name }}
+                                                                        className='flex-none w-full  border border-gray-600 bg-transparent rounded flex-grow  placeholder-gray-500 focus:border-gray-600 outline-none'
+                                                                    />
+
+
+                                                                </div>
+
+                                                                <div className='flex items-center space-x-3 mt-4'>
+                                                                    <button type='submit'  className='p-2 text-white bg-blue-600  font-semibold'>save</button>
+                                                                    <button className='p-2 text-white bg-indigo-500  font-semibold'>cancel</button>
+                                                                </div>
+                                                            </form>
+                                                            &nbsp;
+                                                            {editMode &&
+                                                                <>
+                                                                    <ChangeLog />
+                                                                    &nbsp;
+                                                                    <div className='col-span-4 w-full h-auto'>
+                                                                        <h3>{editData[0]?.name} Wards</h3>
+                                                                        <TableContainer sx={{ maxHeight: 440 }}>
+                                                                            <Table stickyHeader aria-label="sticky table">
+                                                                                <TableHead>
+                                                                                    <TableRow>
+                                                                                        {wardsColumns.map((column, i) => (
+                                                                                            <TableCell
+                                                                                                key={i}
+                                                                                                align={column.align}
+                                                                                                style={{ minWidth: column.minWidth, fontWeight: 600 }}
+                                                                                            >
+                                                                                                {column.label}
+                                                                                            </TableCell>
+                                                                                        ))}
+                                                                                    </TableRow>
+                                                                                </TableHead>
+                                                                                <TableBody sx={{ paddingX: 4 }}>
+                                                                                    {editData[1]?.results.map((row) => {
+                                                                                        return (
+                                                                                            <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
+                                                                                                {wardsColumns.map((column, i) => {
+                                                                                                    const value = row[column.id];
+                                                                                                    return (
+                                                                                                        <TableCell key={column.id} align={column.align}>
+                                                                                                            {
+                                                                                                                column.format && typeof value === 'boolean'
+                                                                                                                    ? value.toString()
+                                                                                                                    : column.format && typeof value === 'number'
+                                                                                                                        ? column.format(value) : column.link ? <a className="text-indigo-500" href={value}>{value}</a> : value
+
+                                                                                                            }
+                                                                                                        </TableCell>
+
+                                                                                                    );
+                                                                                                })}
+                                                                                            </TableRow>
+                                                                                        );
+                                                                                    })}
+                                                                                </TableBody>
+                                                                            </Table>
+                                                                        </TableContainer>
+                                                                    </div>
+                                                                </>
+
+
+                                                            }
+                                                        </>
+                                                    )
+                                                case 'ward':
+                                                    return (
+
+                                                        <form className='w-full h-full flex-col gap-1 rounded-none' onSubmit={(e) => handleFormSubmit(e, addBtnLabel)}>
+                                                            {/* Ward Name */}
+                                                            <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+
+                                                                <label
+                                                                    htmlFor={`add_${addBtnLabel}_field`}
+                                                                    className='text-gray-600 capitalize text-sm'>
+                                                                    Ward Name
+                                                                    <span className='text-medium leading-12 font-semibold'>
+                                                                        {' '}
+                                                                        *
+                                                                    </span>
+                                                                </label>
+                                                                <input
+                                                                    required
+                                                                    type='text'
+                                                                    placeholder='Ward Name'
+                                                                    id={`add_${addBtnLabel}_field`}
+                                                                    name='name'
+                                                                    defaultValue={editData?.name}
+                                                                    className='flex-none w-full bg-transparent rounded  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none  focus:border-black outline-none'
+                                                                />
+                                                            </div>
+
+                                                            {/* County */}
+                                                            <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+
+                                                                <label
+                                                                    htmlFor={`add_${addBtnLabel}_county_field`}
+                                                                    className='text-gray-600 capitalize text-sm'>
+                                                                    County{' '}
+                                                                    <span className='text-medium leading-12 font-semibold'>
+                                                                        {' '}
+                                                                        *
+                                                                    </span>
+                                                                </label>
+                                                                <Select
+                                                                    styles={{
+                                                                        control: (baseStyles) => ({
+                                                                            ...baseStyles,
+                                                                            backgroundColor: 'transparent',
+                                                                            outLine: 'none',
+                                                                            border: 'none',
+                                                                            outLine: 'none',
+                                                                            textColor: 'transparent',
+                                                                            padding: 0,
+                                                                            height: '4px'
+                                                                        }),
+
+                                                                    }}
+                                                                    options={props?.data?.results?.map(({id, name}) => ({label: name, value: id}))}
+                                                                    required
+                                                                    placeholder='Select county'
+                                                                    onChange={(e) => fetchSbctyConstituency(e.value)}
+                                                                    key={editData?.county?.id}
+                                                                    id={`add_${addBtnLabel}_county_field`}
+                                                                    name='county'
+                                                                    defaultValue={{ value: editData?.county?.id, label: editData?.county_name }}
+                                                                    className='flex-none w-full  flex-grow  placeholder-gray-500 border border-gray-600 outline-none'
+                                                                />
+                                                            </div>
+                                                            {sbcty_constituency.length > 0 && <>
+
+                                                                {/* Sub County */}
+                                                                <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+
+                                                                    <label
+                                                                        htmlFor={`add_${addBtnLabel}_sub_county_field`}
+                                                                        className='text-gray-600 capitalize text-sm'>
+                                                                        Sub County{' '}
+                                                                        <span className='text-medium leading-12 font-semibold'>
+                                                                            {' '}
+                                                                            *
+                                                                        </span>
+                                                                    </label>
+                                                                    <Select
+                                                                        styles={{
+                                                                            control: (baseStyles) => ({
+                                                                                ...baseStyles,
+                                                                                backgroundColor: 'transparent',
+                                                                                outLine: 'none',
                                                                                 border: 'none',
                                                                                 outLine: 'none',
                                                                                 textColor: 'transparent',
@@ -2304,115 +2341,114 @@ function SystemSetup(props) {
                                                                             }),
 
                                                                         }}
-                                                                        options={props?.data?.results?.map(({id, name}) => ({label: name, value: id}))}
+                                                                        options={sbcty_constituency[1].results.map(({ id, name }) => ({ value: id, label: name }))}
                                                                         required
-                                                                        placeholder='Select county'
-                                                                        onChange={(e) => fetchSbctyConstituency(e.value)}
-                                                                        key={editData?.county?.id}
-                                                                        id={`add_${addBtnLabel}_county_field`}
-                                                                        name='county'
-                                                                        defaultValue={{ value: editData?.county?.id, label: editData?.county_name }}
+                                                                        placeholder='Select Sub County'
+                                                                        key={editData?.sub_county}
+                                                                        id={`add_${addBtnLabel}_sub_county_field`}
+                                                                        name='sub_county'
+                                                                        defaultValue={{ value: editData?.sub_county, label: editData?.sub_county_name }}
                                                                         className='flex-none w-full  flex-grow  placeholder-gray-500 border border-gray-600 outline-none'
                                                                     />
                                                                 </div>
-                                                                {sbcty_constituency.length > 0 && <>
 
-                                                                    {/* Sub County */}
-                                                                    <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                                                {/* Constituency */}
+                                                                <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
 
-                                                                        <label
-                                                                            htmlFor={`add_${addBtnLabel}_sub_county_field`}
-                                                                            className='text-gray-600 capitalize text-sm'>
-                                                                            Sub County{' '}
-                                                                            <span className='text-medium leading-12 font-semibold'>
-                                                                                {' '}
-                                                                                *
-                                                                            </span>
-                                                                        </label>
-                                                                        <Select
-                                                                            styles={{
-                                                                                control: (baseStyles) => ({
-                                                                                    ...baseStyles,
-                                                                                    backgroundColor: 'transparent',
-                                                                                    outLine: 'none',
-                                                                                    border: 'none',
-                                                                                    outLine: 'none',
-                                                                                    textColor: 'transparent',
-                                                                                    padding: 0,
-                                                                                    height: '4px'
-                                                                                }),
+                                                                    <label
+                                                                        htmlFor={`add_${addBtnLabel}_constituency_field`}
+                                                                        className='text-gray-600 capitalize text-sm'>
+                                                                        Constitency{' '}
+                                                                        <span className='text-medium leading-12 font-semibold'>
+                                                                            {' '}
+                                                                            *
+                                                                        </span>
+                                                                    </label>
+                                                                    <Select
+                                                                        styles={{
+                                                                            control: (baseStyles) => ({
+                                                                                ...baseStyles,
+                                                                                backgroundColor: 'transparent',
+                                                                                outLine: 'none',
+                                                                                border: 'none',
+                                                                                outLine: 'none',
+                                                                                textColor: 'transparent',
+                                                                                padding: 0,
+                                                                                height: '4px'
+                                                                            }),
 
-                                                                            }}
-                                                                            options={sbcty_constituency[1].results.map(({ id, name }) => ({ value: id, label: name }))}
-                                                                            required
-                                                                            placeholder='Select Sub County'
-                                                                            key={editData?.sub_county}
-                                                                            id={`add_${addBtnLabel}_sub_county_field`}
-                                                                            name='sub_county'
-                                                                            defaultValue={{ value: editData?.sub_county, label: editData?.sub_county_name }}
-                                                                            className='flex-none w-full  flex-grow  placeholder-gray-500 border border-gray-600 outline-none'
-                                                                        />
-                                                                    </div>
-
-                                                                    {/* Constituency */}
-                                                                    <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-
-                                                                        <label
-                                                                            htmlFor={`add_${addBtnLabel}_constituency_field`}
-                                                                            className='text-gray-600 capitalize text-sm'>
-                                                                            Constitency{' '}
-                                                                            <span className='text-medium leading-12 font-semibold'>
-                                                                                {' '}
-                                                                                *
-                                                                            </span>
-                                                                        </label>
-                                                                        <Select
-                                                                            styles={{
-                                                                                control: (baseStyles) => ({
-                                                                                    ...baseStyles,
-                                                                                    backgroundColor: 'transparent',
-                                                                                    outLine: 'none',
-                                                                                    border: 'none',
-                                                                                    outLine: 'none',
-                                                                                    textColor: 'transparent',
-                                                                                    padding: 0,
-                                                                                    height: '4px'
-                                                                                }),
-
-                                                                            }}
-                                                                            options={sbcty_constituency[0]?.results?.map(({ id, name }) => ({ value: id, label: name }))}
-                                                                            required
-                                                                            placeholder='Select Constituency'
-                                                                            key={editData?.constituency}
-                                                                            id={`add_${addBtnLabel}_constituency_field`}
-                                                                            name='constituency'
-                                                                            defaultValue={{ value: editData?.constituency, label: editData?.constituency_name }}
-                                                                            className='flex-none w-full  flex-grow  placeholder-gray-500 border border-gray-600 outline-none'
-                                                                        />
+                                                                        }}
+                                                                        options={sbcty_constituency[0]?.results?.map(({ id, name }) => ({ value: id, label: name }))}
+                                                                        required
+                                                                        placeholder='Select Constituency'
+                                                                        key={editData?.constituency}
+                                                                        id={`add_${addBtnLabel}_constituency_field`}
+                                                                        name='constituency'
+                                                                        defaultValue={{ value: editData?.constituency, label: editData?.constituency_name }}
+                                                                        className='flex-none w-full  flex-grow  placeholder-gray-500 border border-gray-600 outline-none'
+                                                                    />
 
 
-                                                                    </div>
+                                                                </div>
 
-                                                                </>}
-                                                                &nbsp;
-                                                                {editMode && <ChangeLog />}
+                                                            </>}
+                                                            &nbsp;
+                                                            {editMode && <ChangeLog />}
+
+                                                            <div className='flex items-center space-x-3 mt-4'>
+                                                                <button type='submit' className='p-2 text-white bg-blue-600  font-semibold'>save</button>
+                                                                <button className='p-2 text-white bg-indigo-500  font-semibold'>cancel</button>
+                                                            </div>
+
+                                                        </form>
+                                                    )
+                                                case 'town':
+                                                    return (
+                                                        <>
+                                                            <form className='w-full h-full' onSubmit={(e) => handleFormSubmit(e, addBtnLabel)}>
+                                                                <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                                                    <label
+                                                                        htmlFor={`add_${addBtnLabel}_town_field`}
+                                                                        className='text-gray-600 capitalize text-sm'>
+                                                                        Town Name
+                                                                        <span className='text-medium leading-12 font-semibold'>
+                                                                            {' '}
+                                                                            *
+                                                                        </span>
+                                                                    </label>
+                                                                    <input
+                                                                        required
+                                                                        type='text'
+                                                                        placeholder='Town Name'
+                                                                        id={`add_${addBtnLabel}_town_field`}
+                                                                        name="name"
+                                                                        defaultValue={editData.name}
+                                                                        className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
+                                                                    />
+
+                                                                </div>
 
                                                                 <div className='flex items-center space-x-3 mt-4'>
                                                                     <button type='submit' className='p-2 text-white bg-blue-600  font-semibold'>save</button>
                                                                     <button className='p-2 text-white bg-indigo-500  font-semibold'>cancel</button>
                                                                 </div>
-
                                                             </form>
-                                                        )
-                                                    case 'town':
-                                                        return (
+                                                            &nbsp;
+                                                            {editMode && <ChangeLog />}
+                                                        </>
+                                                    )
+                                                case 'category':
+                                                    return (
+                                                        resourceCategory === 'ServiceCatalogue' ? (
                                                             <>
-                                                                <form className='w-full h-full' onSubmit={(e) => handleFormSubmit(e, addBtnLabel)}>
+                                                                <form className='w-full h-full flex-col gap-1' onSubmit={(e) => handleFormSubmit(e, addBtnLabel)}>
+                                                                    {/* Name */}
                                                                     <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+
                                                                         <label
-                                                                            htmlFor={`add_${addBtnLabel}_town_field`}
+                                                                            htmlFor={`add_${addBtnLabel}_constituency_field`}
                                                                             className='text-gray-600 capitalize text-sm'>
-                                                                            Town Name
+                                                                            Name
                                                                             <span className='text-medium leading-12 font-semibold'>
                                                                                 {' '}
                                                                                 *
@@ -2421,10 +2457,94 @@ function SystemSetup(props) {
                                                                         <input
                                                                             required
                                                                             type='text'
-                                                                            placeholder='Town Name'
-                                                                            id={`add_${addBtnLabel}_town_field`}
-                                                                            name="name"
+                                                                            placeholder='Name'
+                                                                            id={`add_${addBtnLabel}_constituency_field`}
+                                                                            name='name'
                                                                             defaultValue={editData.name}
+                                                                            className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
+                                                                        />
+                                                                    </div>
+
+                                                                    {/* Parent */}
+                                                                    <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+
+                                                                        <label
+                                                                            htmlFor={`add_${addBtnLabel}_county_field`}
+                                                                            className='text-gray-600 capitalize text-sm'>
+                                                                            Parent{' '}
+                                                                            <span className='text-medium leading-12 font-semibold'>
+                                                                                {' '}
+
+                                                                            </span>
+                                                                        </label>
+                                                                       
+                                                                        <Select
+                                                                            styles={{
+                                                                                control: (baseStyles) => ({
+                                                                                    ...baseStyles,
+                                                                                    backgroundColor: 'transparent',
+                                                                                    outLine: 'none',
+                                                                                    border: 'none',
+                                                                                    outLine: 'none',
+                                                                                    textColor: 'transparent',
+                                                                                    padding: 0,
+                                                                                    height: '4px'
+                                                                                }),
+
+                                                                            }}
+                                                                            options={selectOptions}
+                                                                            placeholder='Select Parent'
+                                                                            id={`add_${addBtnLabel}_county_field`}
+                                                                            name='parent'
+                                                                            key={editData.parent}
+                                                                            defaultValue={{ value: editData?.parent, label: selectOptions?.find(so => so.value === editData?.parent)?.label }}
+                                                                            className='flex-none w-full  flex-grow  placeholder-gray-500 border border-gray-600 outline-none'
+                                                                        />
+
+                                                                    </div>
+
+                                                                    {/* Abbreviation */}
+                                                                    <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+
+                                                                        <label
+                                                                            htmlFor={`add_${addBtnLabel}_constituency_field`}
+                                                                            className='text-gray-600 capitalize text-sm'>
+                                                                            Abbreviation
+                                                                            <span className='text-medium leading-12 font-semibold'>
+                                                                                {' '}
+
+                                                                            </span>
+                                                                        </label>
+                                                                        <input
+                                                                            required
+                                                                            type='text'
+                                                                            placeholder='Abbreviation'
+                                                                            id={`add_${addBtnLabel}_constituency_field`}
+                                                                            name='abbreviation'
+                                                                            defaultValue={editData?.abbreviation}
+                                                                            className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
+                                                                        />
+                                                                    </div>
+
+                                                                    {/* Description */}
+                                                                    <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+
+                                                                        <label
+                                                                            htmlFor={`add_${addBtnLabel}_constituency_field`}
+                                                                            className='text-gray-600 capitalize text-sm'>
+                                                                            Description
+                                                                            <span className='text-medium leading-12 font-semibold'>
+                                                                                {' '}
+
+                                                                            </span>
+                                                                        </label>
+                                                                        <textarea
+                                                                            required
+                                                                            type='text'
+                                                                            placeholder='Description'
+                                                                            id={`add_${addBtnLabel}_constituency_field`}
+                                                                            name='description'
+                                                                            defaultValue={editData?.description}
                                                                             className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
                                                                         />
 
@@ -2436,19 +2556,19 @@ function SystemSetup(props) {
                                                                     </div>
                                                                 </form>
                                                                 &nbsp;
-                                                                {editMode && <ChangeLog />}
+                                                                <ChangeLog />
                                                             </>
-                                                        )
-                                                    case 'category':
-                                                        return (
-                                                            resourceCategory === 'ServiceCatalogue' ? (
+
+                                                        ) :
+                                                            (
                                                                 <>
-                                                                    <form className='w-full h-full flex-col gap-1' onSubmit={(e) => handleFormSubmit(e, addBtnLabel)}>
+                                                                    <form className='w-full h-full' onSubmit={(e) => handleFormSubmit(e, addBtnLabel)}>
+
                                                                         {/* Name */}
                                                                         <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
 
                                                                             <label
-                                                                                htmlFor={`add_${addBtnLabel}_constituency_field`}
+                                                                                htmlFor={`add_${addBtnLabel}_name`}
                                                                                 className='text-gray-600 capitalize text-sm'>
                                                                                 Name
                                                                                 <span className='text-medium leading-12 font-semibold'>
@@ -2460,70 +2580,9 @@ function SystemSetup(props) {
                                                                                 required
                                                                                 type='text'
                                                                                 placeholder='Name'
-                                                                                id={`add_${addBtnLabel}_constituency_field`}
+                                                                                id={`add_${addBtnLabel}_name`}
                                                                                 name='name'
                                                                                 defaultValue={editData.name}
-                                                                                className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
-                                                                            />
-                                                                        </div>
-
-                                                                        {/* Parent */}
-                                                                        <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-
-                                                                            <label
-                                                                                htmlFor={`add_${addBtnLabel}_county_field`}
-                                                                                className='text-gray-600 capitalize text-sm'>
-                                                                                Parent{' '}
-                                                                                <span className='text-medium leading-12 font-semibold'>
-                                                                                    {' '}
-
-                                                                                </span>
-                                                                            </label>
-                                                                           
-                                                                            <Select
-                                                                                styles={{
-                                                                                    control: (baseStyles) => ({
-                                                                                        ...baseStyles,
-                                                                                        backgroundColor: 'transparent',
-                                                                                        outLine: 'none',
-                                                                                        border: 'none',
-                                                                                        outLine: 'none',
-                                                                                        textColor: 'transparent',
-                                                                                        padding: 0,
-                                                                                        height: '4px'
-                                                                                    }),
-
-                                                                                }}
-                                                                                options={selectOptions}
-                                                                                placeholder='Select Parent'
-                                                                                id={`add_${addBtnLabel}_county_field`}
-                                                                                name='parent'
-                                                                                key={editData.parent}
-                                                                                defaultValue={{ value: editData?.parent, label: selectOptions?.find(so => so.value === editData?.parent)?.label }}
-                                                                                className='flex-none w-full  flex-grow  placeholder-gray-500 border border-gray-600 outline-none'
-                                                                            />
-
-                                                                        </div>
-
-                                                                        {/* Abbreviation */}
-                                                                        <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-
-                                                                            <label
-                                                                                htmlFor={`add_${addBtnLabel}_constituency_field`}
-                                                                                className='text-gray-600 capitalize text-sm'>
-                                                                                Abbreviation
-                                                                                <span className='text-medium leading-12 font-semibold'>
-                                                                                    {' '}
-
-                                                                                </span>
-                                                                            </label>
-                                                                            <input
-                                                                                required
-                                                                                type='text'
-                                                                                placeholder='Abbreviation'
-                                                                                id={`add_${addBtnLabel}_constituency_field`}
-                                                                                name='abbreviation'
-                                                                                defaultValue={editData?.abbreviation}
                                                                                 className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
                                                                             />
                                                                         </div>
@@ -2532,7 +2591,7 @@ function SystemSetup(props) {
                                                                         <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
 
                                                                             <label
-                                                                                htmlFor={`add_${addBtnLabel}_constituency_field`}
+                                                                                htmlFor={`add_${addBtnLabel}_desc`}
                                                                                 className='text-gray-600 capitalize text-sm'>
                                                                                 Description
                                                                                 <span className='text-medium leading-12 font-semibold'>
@@ -2541,493 +2600,99 @@ function SystemSetup(props) {
                                                                                 </span>
                                                                             </label>
                                                                             <textarea
-                                                                                required
+
                                                                                 type='text'
                                                                                 placeholder='Description'
-                                                                                id={`add_${addBtnLabel}_constituency_field`}
+                                                                                id={`add_${addBtnLabel}_desc`}
                                                                                 name='description'
-                                                                                defaultValue={editData?.description}
+                                                                                defaultValue={editData.description}
                                                                                 className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
                                                                             />
-
                                                                         </div>
 
                                                                         <div className='flex items-center space-x-3 mt-4'>
                                                                             <button type='submit' className='p-2 text-white bg-blue-600  font-semibold'>save</button>
                                                                             <button className='p-2 text-white bg-indigo-500  font-semibold'>cancel</button>
                                                                         </div>
+
                                                                     </form>
                                                                     &nbsp;
                                                                     <ChangeLog />
+
                                                                 </>
-
-                                                            ) :
-                                                                (
-                                                                    <>
-                                                                        <form className='w-full h-full' onSubmit={(e) => handleFormSubmit(e, addBtnLabel)}>
-
-                                                                            {/* Name */}
-                                                                            <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-
-                                                                                <label
-                                                                                    htmlFor={`add_${addBtnLabel}_name`}
-                                                                                    className='text-gray-600 capitalize text-sm'>
-                                                                                    Name
-                                                                                    <span className='text-medium leading-12 font-semibold'>
-                                                                                        {' '}
-                                                                                        *
-                                                                                    </span>
-                                                                                </label>
-                                                                                <input
-                                                                                    required
-                                                                                    type='text'
-                                                                                    placeholder='Name'
-                                                                                    id={`add_${addBtnLabel}_name`}
-                                                                                    name='name'
-                                                                                    defaultValue={editData.name}
-                                                                                    className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
-                                                                                />
-                                                                            </div>
-
-                                                                            {/* Description */}
-                                                                            <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-
-                                                                                <label
-                                                                                    htmlFor={`add_${addBtnLabel}_desc`}
-                                                                                    className='text-gray-600 capitalize text-sm'>
-                                                                                    Description
-                                                                                    <span className='text-medium leading-12 font-semibold'>
-                                                                                        {' '}
-
-                                                                                    </span>
-                                                                                </label>
-                                                                                <textarea
-
-                                                                                    type='text'
-                                                                                    placeholder='Description'
-                                                                                    id={`add_${addBtnLabel}_desc`}
-                                                                                    name='description'
-                                                                                    defaultValue={editData.description}
-                                                                                    className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
-                                                                                />
-                                                                            </div>
-
-                                                                            <div className='flex items-center space-x-3 mt-4'>
-                                                                                <button type='submit' className='p-2 text-white bg-blue-600  font-semibold'>save</button>
-                                                                                <button className='p-2 text-white bg-indigo-500  font-semibold'>cancel</button>
-                                                                            </div>
-
-                                                                        </form>
-                                                                        &nbsp;
-                                                                        <ChangeLog />
-
-                                                                    </>
-                                                                )
-                                                        )
-                                                    case 'option group':
-                                                        const handleAddOptionGroup = (e, path) => {
-                                                            e.preventDefault()
-                                                            let obj = {};
-                                                            const jk = {}
-                                                            editMode ? obj = { ...editData } : null
-                                                            console.log(jk);
-                                                            const elements = [...e.target];
-                                                            elements.forEach((element) => {
-                                                                if (obj[element.name] === '') {
-                                                                    delete obj[element.name];
-                                                                }
-                                                                if (element.name == 'option_type' || element.name == 'display_text' || element.name == 'value') {
-                                                                    let data = [...optionGroup];
-                                                                    obj['options'] = {}
-                                                                    data[element.id][element.name] = element.value
-                                                                    obj['options'] = data.map((op) => {
-                                                                        return {
-                                                                            ...op,
-                                                                            option_type: op.option_type,
-                                                                            display_text: op.display_text,
-                                                                            value: op.value
-                                                                        }
-                                                                    })
-
-                                                                } else {
-                                                                    element.type === 'checkbox' ? obj[element.name] = element.checked : obj[element.name] = element.value;
-                                                                }
-                                                            });
-
-                                                            try {
-                                                                let url = ''
-                                                                editMode ? url = `/api/system_setup/submit_form/?path=${path}&resourceCategory=${resourceCategory}` : url = `/api/system_setup/submit_form/?path=${path}&resourceCategory=${resourceCategory}`
-                                                                fetch(url, {
-                                                                    headers: {
-                                                                        'Accept': 'application/json, text/plain, */*',
-                                                                        'Content-Type': 'application/json;charset=utf-8'
-                                                                    },
-                                                                    method: 'POST',
-                                                                    body: JSON.stringify(obj).replace(',"":""', '')
-                                                                }).then(res => res.json()).then(data => {
-                                                                    setEditMode(false); setEditID(null); setIsAddForm(false); setEditData([])
-                                                                    if (data.details) {
-                                                                        alert.danger('Error: ' + data.details)
-                                                                    } else {
-                                                                        alert.success((editMode ? 'Updated' : 'Added') + ' Successfully')
+                                                            )
+                                                    )
+                                                case 'option group':
+                                                    const handleAddOptionGroup = (e, path) => {
+                                                        e.preventDefault()
+                                                        let obj = {};
+                                                        const jk = {}
+                                                        editMode ? obj = { ...editData } : null
+                                                        console.log(jk);
+                                                        const elements = [...e.target];
+                                                        elements.forEach((element) => {
+                                                            if (obj[element.name] === '') {
+                                                                delete obj[element.name];
+                                                            }
+                                                            if (element.name == 'option_type' || element.name == 'display_text' || element.name == 'value') {
+                                                                let data = [...optionGroup];
+                                                                obj['options'] = {}
+                                                                data[element.id][element.name] = element.value
+                                                                obj['options'] = data.map((op) => {
+                                                                    return {
+                                                                        ...op,
+                                                                        option_type: op.option_type,
+                                                                        display_text: op.display_text,
+                                                                        value: op.value
                                                                     }
                                                                 })
-                                                            } catch (error) {
-                                                                alert.danger('Error: ' + error)
+
+                                                            } else {
+                                                                element.type === 'checkbox' ? obj[element.name] = element.checked : obj[element.name] = element.value;
                                                             }
-                                                        }
+                                                        });
 
-                                                        const handleAddOptionGroupClick = (e) => {
-                                                            e.preventDefault();
-                                                            setOptionGroup(s => {
-                                                                return [...s, { option_type: '', display_text: '', value: '' }]
+                                                        try {
+                                                            let url = ''
+                                                            editMode ? url = `/api/system_setup/submit_form/?path=${path}&resourceCategory=${resourceCategory}` : url = `/api/system_setup/submit_form/?path=${path}&resourceCategory=${resourceCategory}`
+                                                            fetch(url, {
+                                                                headers: {
+                                                                    'Accept': 'application/json, text/plain, */*',
+                                                                    'Content-Type': 'application/json;charset=utf-8'
+                                                                },
+                                                                method: 'POST',
+                                                                body: JSON.stringify(obj).replace(',"":""', '')
+                                                            }).then(res => res.json()).then(data => {
+                                                                setEditMode(false); setEditID(null); setIsAddForm(false); setEditData([])
+                                                                if (data.details) {
+                                                                    alert.danger('Error: ' + data.details)
+                                                                } else {
+                                                                    alert.success((editMode ? 'Updated' : 'Added') + ' Successfully')
+                                                                }
                                                             })
-                                                        };
+                                                        } catch (error) {
+                                                            alert.danger('Error: ' + error)
+                                                        }
+                                                    }
 
-                                                        return (
-                                                            <>
-                                                                <form className='w-full h-full flex-col gap-1' onSubmit={(e) => handleAddOptionGroup(e, addBtnLabel)}>
-                                                                    {/* Name */}
+                                                    const handleAddOptionGroupClick = (e) => {
+                                                        e.preventDefault();
+                                                        setOptionGroup(s => {
+                                                            return [...s, { option_type: '', display_text: '', value: '' }]
+                                                        })
+                                                    };
 
-                                                                    <div className='col-span-3 flex-1 flex flex-col items-start justify-start gap-1 mb-3'>
-
-                                                                        <label
-                                                                            htmlFor={`add_${addBtnLabel}_option_group`}
-                                                                            className='text-gray-600 capitalize text-sm'>
-                                                                            Option Group Name
-                                                                            <span className='text-medium leading-12 font-semibold'>
-                                                                                {' '}
-                                                                                *
-                                                                            </span>
-                                                                        </label>
-                                                                        <input
-                                                                            required
-                                                                            type='text'
-                                                                            placeholder='Option Group Name'
-                                                                            id={`add_${addBtnLabel}_option_group`}
-                                                                            name='name'
-                                                                            defaultValue={editData?.name}
-                                                                            className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
-                                                                        />
-                                                                    </div>
-                                                                    {editMode && (
-
-                                                                        <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-                                                                            <input
-                                                                                className=''
-                                                                                name="active"
-                                                                                type='checkbox'
-                                                                                defaultChecked={editData.active}
-                                                                                id={`add_${addBtnLabel}_active`}
-                                                                            />
-
-                                                                            <label
-                                                                                htmlFor={`add_${addBtnLabel}_active`}
-                                                                                className='text-gray-600 capitalize text-sm'>
-                                                                                Is Active?
-                                                                                <span className='text-medium leading-12 font-semibold'>
-                                                                                    {' '}
-
-                                                                                </span>
-                                                                            </label>
-                                                                        </div>
-                                                                    )}
-
-
-                                                                    {/* inputsContainer */}
-                                                                    <div className='grid grid-cols-3 place-content-start gap-3 space-y-1' ref={inputsContainerRef}>
-                                                                        <h2 className='text-lg font-semibold text-indigo-900'>Option Type*</h2>
-                                                                        <h2 className='text-lg font-semibold text-indigo-900'>Display Text*</h2>
-                                                                        <h2 className='text-lg font-semibold text-indigo-900'>Option Value*</h2>
-                                                                        {optionGroup.length > 0 ? optionGroup.map((option, index) => {
-                                                                            return (
-                                                                                <>
-                                                                                    {/* Option Type */}
-                                                                                    <select
-                                                                                        required
-                                                                                        placeholder='Select Option Type'
-                                                                                        id={index}
-                                                                                        name='option_type'
-                                                                                        defaultValue={option.option_type}
-                                                                                        className='flex-none w-full bg-transparent rounded flex-grow placeholder-gray-500 focus:border-gray-600 outline-none'
-                                                                                    >
-                                                                                        <option value='BOOLEAN'>BOOLEAN</option>
-                                                                                        <option value='INTEGER'>INTEGER</option>
-                                                                                        <option value='DECIMAL'>DECIMAL</option>
-                                                                                        <option value='TEXT'>TEXT</option>
-                                                                                    </select>
-                                                                                    {/* Display Text */}
-                                                                                    <input
-                                                                                        required
-                                                                                        type='text'
-                                                                                        placeholder='Display Text'
-                                                                                        id={index}
-                                                                                        name='display_text'
-                                                                                        defaultValue={option.display_text}
-                                                                                        className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
-                                                                                    />
-
-                                                                                    {/* Option Value */}
-                                                                                    <div className='grid grid-cols-4 w-full'>
-                                                                                        <input
-                                                                                            required
-                                                                                            type='text'
-                                                                                            placeholder='Option Value'
-                                                                                            id={index}
-                                                                                            name='value'
-                                                                                            defaultValue={option.value}
-                                                                                            className='flex-none w-full bg-transparent roundedcol-span-3  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
-                                                                                        />
-                                                                                    </div>
-
-                                                                                </>
-                                                                            )
-                                                                        }) : (<><p>No Options Assigned to Option Group </p></>)}
-
-                                                                        <div className='col-span-3 flex items-center justify-end'>
-                                                                            <button className=' p-2 w-auto h-auto bg-indigo-600 text-white flex items-center self-start'
-                                                                                onClick={handleAddOptionGroupClick}
-                                                                            >Add <PlusIcon className='w-5 h-5 text-white' /></button>
-                                                                        </div>
-
-
-
-                                                                    </div>
-
-                                                                    <div className='flex items-center space-x-3 mt-4'>
-                                                                        <button type='submit' className='p-2 text-white bg-blue-600  font-semibold'>save</button>
-                                                                        <button className='p-2 text-white bg-indigo-500  font-semibold'>cancel</button>
-                                                                    </div>
-                                                                </form>
-                                                                &nbsp;
-                                                                <ChangeLog />
-
-                                                            </>
-                                                        )
-                                                    case 'service':
-                                                        return (
-                                                            <>
-                                                                <form className='w-full h-full' onSubmit={(e) => handleFormSubmit(e, addBtnLabel)}>
-
-                                                                    {/* Service code */}
-                                                                    <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-                                                                        <label
-                                                                            htmlFor={`add_${addBtnLabel}_field`}
-                                                                            className='text-gray-600 capitalize text-sm'>
-                                                                            Service Code
-                                                                            <span className='text-medium leading-12 font-semibold'>
-                                                                                {' '}
-
-                                                                            </span>
-                                                                        </label>
-                                                                        {editMode ? editData.code : (
-                                                                            <Alert severity="info">Service Code will be generated after creating the service</Alert>
-                                                                        )}
-
-                                                                    </div>
-                                                                    {/* Service Name */}
-                                                                    <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-
-                                                                        <label
-                                                                            htmlFor={`add_${addBtnLabel}_field`}
-                                                                            className='text-gray-600 capitalize text-sm'>
-                                                                            Service Name
-                                                                            <span className='text-medium leading-12 font-semibold'>
-                                                                                {' '}
-                                                                                *
-                                                                            </span>
-                                                                        </label>
-                                                                        <input
-                                                                            required
-                                                                            type='text'
-                                                                            placeholder='Service Name'
-                                                                            id={`add_${addBtnLabel}_field`}
-                                                                            name='name'
-                                                                            defaultValue={editData.name}
-                                                                            className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
-                                                                        />
-                                                                    </div>
-
-                                                                    {/* Abbreviation */}
-                                                                    <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-
-                                                                        <label
-                                                                            htmlFor={`add_${addBtnLabel}_field`}
-                                                                            className='text-gray-600 capitalize text-sm'>
-                                                                            Abbreviation
-                                                                            <span className='text-medium leading-12 font-semibold'>
-                                                                                {' '}
-
-                                                                            </span>
-                                                                        </label>
-                                                                        <input
-
-                                                                            type='text'
-                                                                            placeholder='Abbreviation'
-                                                                            id={`add_${addBtnLabel}_field`}
-                                                                            name='abbreviation'
-                                                                            defaultValue={editData.abbreviation}
-                                                                            className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
-                                                                        />
-                                                                    </div>
-
-                                                                    {/* Category */}
-                                                                    <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-
-                                                                        <label
-                                                                            htmlFor={`add_${addBtnLabel}_category_field`}
-                                                                            className='text-gray-600 capitalize text-sm'>
-                                                                            Category{' '}
-                                                                            <span className='text-medium leading-12 font-semibold'>
-                                                                                {' '}
-                                                                                *
-                                                                            </span>
-                                                                        </label>
-                                                                        <Select
-                                                                            styles={{
-                                                                                control: (baseStyles) => ({
-                                                                                    ...baseStyles,
-                                                                                    backgroundColor: 'transparent',
-                                                                                    outLine: 'none',
-                                                                                    border: 'none',
-                                                                                    outLine: 'none',
-                                                                                    textColor: 'transparent',
-                                                                                    padding: 0,
-                                                                                    height: '4px'
-                                                                                }),
-
-                                                                            }}
-                                                                            options={selectOptions[1]}
-                                                                            required
-                                                                            placeholder='Select a Category'
-                                                                            key={editData.category}
-                                                                            id={`add_${addBtnLabel}_category_field`}
-                                                                            name='category'
-                                                                            defaultValue={{ value: editData.category, label: editData.category_name }}
-                                                                            className='flex-none w-full  flex-grow  placeholder-gray-500 border border-gray-600 outline-none'
-                                                                        />
-                                                                    </div>
-
-                                                                    {/* Option Groups */}
-                                                                    <div className='w-full flex flex-col items-start justify-start gap-1'>
-
-                                                                        <label
-                                                                            htmlFor={`add_${addBtnLabel}_sub_county_field`}
-                                                                            className='text-gray-600 capitalize text-sm'>
-                                                                            Option Groups   {' '}
-                                                                            <span className='text-medium leading-12 font-semibold'>
-                                                                                {' '}
-                                                                                *
-                                                                            </span>
-                                                                        </label>
-                                                                        <Select
-                                                                            styles={{
-                                                                                control: (baseStyles) => ({
-                                                                                    ...baseStyles,
-                                                                                    backgroundColor: 'transparent',
-                                                                                    outLine: 'none',
-                                                                                    border: 'none',
-                                                                                    outLine: 'none',
-                                                                                    textColor: 'transparent',
-                                                                                    padding: 0,
-                                                                                    height: '4px'
-                                                                                }),
-
-                                                                            }}
-                                                                            options={selectOptions[0]}
-                                                                            required
-                                                                            placeholder='Select Option Group'
-                                                                            key={editData.group}
-                                                                            id={`add_${addBtnLabel}_sub_county_field`}
-                                                                            name='group'
-                                                                            defaultValue={{ value: editData.group, label: (selectOptions[0])?.find(i => i.value == editData.group)?.label }}
-                                                                            className='flex-none w-full  flex-grow  placeholder-gray-500 border border-gray-600 outline-none'
-                                                                        />
-                                                                    </div>
-
-                                                                    {/* Description */}
-                                                                    <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-
-                                                                        <label
-                                                                            htmlFor={`add_${addBtnLabel}_desc`}
-                                                                            className='text-gray-600 capitalize text-sm'>
-                                                                            Description
-                                                                            <span className='text-medium leading-12 font-semibold'>
-                                                                                {' '}
-
-                                                                            </span>
-                                                                        </label>
-                                                                        <textarea
-
-                                                                            type='text'
-                                                                            placeholder='Service description'
-                                                                            id={`add_${addBtnLabel}_desc`}
-                                                                            name='description'
-                                                                            defaultValue={editData.description}
-                                                                            className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
-                                                                        />
-                                                                    </div>
-
-                                                                    {/* Has options */}
-                                                                    <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-                                                                        <input className='' type='checkbox' id={`add_${addBtnLabel}_has_options`} name='has_options' defaultChecked={editData.has_options} />
-                                                                        <label
-                                                                            htmlFor={`add_${addBtnLabel}_has_options`}
-                                                                            className='text-gray-600 capitalize text-sm'>
-                                                                            Service has options?
-                                                                            <span className='text-medium leading-12 font-semibold'>
-                                                                                {' '}
-
-                                                                            </span>
-                                                                        </label>
-
-                                                                    </div>
-
-                                                                    {/* Active */}
-                                                                    {editMode && (
-
-                                                                        <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-                                                                            <input
-                                                                                className=''
-                                                                                name="active"
-                                                                                type='checkbox'
-                                                                                defaultChecked={editData.active}
-                                                                                id={`add_${addBtnLabel}_active`}
-                                                                            />
-
-                                                                            <label
-                                                                                htmlFor={`add_${addBtnLabel}_active`}
-                                                                                className='text-gray-600 capitalize text-sm'>
-                                                                                Is Active?
-                                                                                <span className='text-medium leading-12 font-semibold'>
-                                                                                    {' '}
-
-                                                                                </span>
-                                                                            </label>
-                                                                        </div>
-                                                                    )}
-
-                                                                    <div className='flex items-center space-x-3 mt-4'>
-                                                                        <button type='submit' className='p-2 text-white bg-blue-600  font-semibold'>save</button>
-                                                                        <button className='p-2 text-white bg-indigo-500  font-semibold'>cancel</button>
-                                                                    </div>
-
-                                                                </form>
-                                                                &nbsp;
-                                                                <ChangeLog />
-                                                            </>
-                                                        )
-                                                    case 'Service Category':
-                                                        return (
-                                                            <form className='w-full h-full' onSubmit={(e) => handleFormSubmit(e, addBtnLabel)}>
-
+                                                    return (
+                                                        <>
+                                                            <form className='w-full h-full flex-col gap-1' onSubmit={(e) => handleAddOptionGroup(e, addBtnLabel)}>
                                                                 {/* Name */}
-                                                                <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+
+                                                                <div className='col-span-3 flex-1 flex flex-col items-start justify-start gap-1 mb-3'>
 
                                                                     <label
-                                                                        htmlFor={`add_${addBtnLabel}_name`}
+                                                                        htmlFor={`add_${addBtnLabel}_option_group`}
                                                                         className='text-gray-600 capitalize text-sm'>
-                                                                        Name
+                                                                        Option Group Name
                                                                         <span className='text-medium leading-12 font-semibold'>
                                                                             {' '}
                                                                             *
@@ -3035,142 +2700,171 @@ function SystemSetup(props) {
                                                                     </label>
                                                                     <input
                                                                         required
-                                                                        type="text"
-                                                                        placeholder='Name'
-                                                                        id={`add_${addBtnLabel}_name`}
+                                                                        type='text'
+                                                                        placeholder='Option Group Name'
+                                                                        id={`add_${addBtnLabel}_option_group`}
                                                                         name='name'
-                                                                        defaultValue={editData.name}
+                                                                        defaultValue={editData?.name}
                                                                         className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
                                                                     />
+                                                                </div>
+                                                                {editMode && (
+
+                                                                    <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                                                        <input
+                                                                            className=''
+                                                                            name="active"
+                                                                            type='checkbox'
+                                                                            defaultChecked={editData.active}
+                                                                            id={`add_${addBtnLabel}_active`}
+                                                                        />
+
+                                                                        <label
+                                                                            htmlFor={`add_${addBtnLabel}_active`}
+                                                                            className='text-gray-600 capitalize text-sm'>
+                                                                            Is Active?
+                                                                            <span className='text-medium leading-12 font-semibold'>
+                                                                                {' '}
+
+                                                                            </span>
+                                                                        </label>
+                                                                    </div>
+                                                                )}
+
+
+                                                                {/* inputsContainer */}
+                                                                <div className='grid grid-cols-3 place-content-start gap-3 space-y-1' ref={inputsContainerRef}>
+                                                                    <h2 className='text-lg font-semibold text-indigo-900'>Option Type*</h2>
+                                                                    <h2 className='text-lg font-semibold text-indigo-900'>Display Text*</h2>
+                                                                    <h2 className='text-lg font-semibold text-indigo-900'>Option Value*</h2>
+                                                                    {optionGroup.length > 0 ? optionGroup.map((option, index) => {
+                                                                        return (
+                                                                            <>
+                                                                                {/* Option Type */}
+                                                                                <select
+                                                                                    required
+                                                                                    placeholder='Select Option Type'
+                                                                                    id={index}
+                                                                                    name='option_type'
+                                                                                    defaultValue={option.option_type}
+                                                                                    className='flex-none w-full bg-transparent rounded flex-grow placeholder-gray-500 focus:border-gray-600 outline-none'
+                                                                                >
+                                                                                    <option value='BOOLEAN'>BOOLEAN</option>
+                                                                                    <option value='INTEGER'>INTEGER</option>
+                                                                                    <option value='DECIMAL'>DECIMAL</option>
+                                                                                    <option value='TEXT'>TEXT</option>
+                                                                                </select>
+                                                                                {/* Display Text */}
+                                                                                <input
+                                                                                    required
+                                                                                    type='text'
+                                                                                    placeholder='Display Text'
+                                                                                    id={index}
+                                                                                    name='display_text'
+                                                                                    defaultValue={option.display_text}
+                                                                                    className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
+                                                                                />
+
+                                                                                {/* Option Value */}
+                                                                                <div className='grid grid-cols-4 w-full'>
+                                                                                    <input
+                                                                                        required
+                                                                                        type='text'
+                                                                                        placeholder='Option Value'
+                                                                                        id={index}
+                                                                                        name='value'
+                                                                                        defaultValue={option.value}
+                                                                                        className='flex-none w-full bg-transparent roundedcol-span-3  p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
+                                                                                    />
+                                                                                </div>
+
+                                                                            </>
+                                                                        )
+                                                                    }) : (<><p>No Options Assigned to Option Group </p></>)}
+
+                                                                    <div className='col-span-3 flex items-center justify-end'>
+                                                                        <button className=' p-2 w-auto h-auto bg-indigo-600 text-white flex items-center self-start'
+                                                                            onClick={handleAddOptionGroupClick}
+                                                                        >Add <PlusIcon className='w-5 h-5 text-white' /></button>
+                                                                    </div>
+
+
 
                                                                 </div>
 
-                                                                {/* Parent */}
+                                                                <div className='flex items-center space-x-3 mt-4'>
+                                                                    <button type='submit' className='p-2 text-white bg-blue-600  font-semibold'>save</button>
+                                                                    <button className='p-2 text-white bg-indigo-500  font-semibold'>cancel</button>
+                                                                </div>
+                                                            </form>
+                                                            &nbsp;
+                                                            <ChangeLog />
+
+                                                        </>
+                                                    )
+                                                case 'service':
+                                                    return (
+                                                        <>
+                                                            <form className='w-full h-full' onSubmit={(e) => handleFormSubmit(e, addBtnLabel)}>
+
+                                                                {/* Service code */}
+                                                                <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                                                    <label
+                                                                        htmlFor={`add_${addBtnLabel}_field`}
+                                                                        className='text-gray-600 capitalize text-sm'>
+                                                                        Service Code
+                                                                        <span className='text-medium leading-12 font-semibold'>
+                                                                            {' '}
+
+                                                                        </span>
+                                                                    </label>
+                                                                    {editMode ? editData.code : (
+                                                                        <Alert severity="info">Service Code will be generated after creating the service</Alert>
+                                                                    )}
+
+                                                                </div>
+                                                                {/* Service Name */}
                                                                 <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
 
                                                                     <label
-                                                                        htmlFor={`add_${addBtnLabel}_name`}
+                                                                        htmlFor={`add_${addBtnLabel}_field`}
                                                                         className='text-gray-600 capitalize text-sm'>
-                                                                        Parent
+                                                                        Service Name
                                                                         <span className='text-medium leading-12 font-semibold'>
                                                                             {' '}
                                                                             *
                                                                         </span>
-
-
                                                                     </label>
-                                                                    {/* <pre>
-                                                                        {
-                                                                        JSON.stringify(selectOptions, null, 2)
-                                                                        }
-                                                                    </pre> */}
-                                                                    <Select
-                                                                        styles={{
-                                                                            control: (baseStyles) => ({
-                                                                                ...baseStyles,
-                                                                                backgroundColor: 'transparent',
-                                                                                outLine: 'none',
-                                                                                border: 'none',
-                                                                                outLine: 'none',
-                                                                                textColor: 'transparent',
-                                                                                padding: 0,
-                                                                                height: '4px'
-                                                                            }),
-
-                                                                        }}
-                                                                        options={selectOptions}
+                                                                    <input
                                                                         required
-                                                                        placeholder={'Select a Category'}
-                                                                        key={editData.category}
-                                                                        id={`add_${addBtnLabel}_category_field`}
-                                                                        name='category'
-                                                                        defaultValue={{ value: editData.category, label: editData.category_name }}
-                                                                        className='flex-none w-full rounded  flex-grow  placeholder-gray-500 border border-gray-600 outline-none'
+                                                                        type='text'
+                                                                        placeholder='Service Name'
+                                                                        id={`add_${addBtnLabel}_field`}
+                                                                        name='name'
+                                                                        defaultValue={editData.name}
+                                                                        className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
                                                                     />
-
                                                                 </div>
 
                                                                 {/* Abbreviation */}
                                                                 <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
 
                                                                     <label
-                                                                        htmlFor={`add_${addBtnLabel}_name`}
+                                                                        htmlFor={`add_${addBtnLabel}_field`}
                                                                         className='text-gray-600 capitalize text-sm'>
                                                                         Abbreviation
                                                                         <span className='text-medium leading-12 font-semibold'>
                                                                             {' '}
-                                                                            *
+
                                                                         </span>
                                                                     </label>
                                                                     <input
-                                                                        required
-                                                                        type="text"
-                                                                        placeholder='Name'
-                                                                        id={`add_${addBtnLabel}_name`}
-                                                                        name='name'
-                                                                        defaultValue={editData.name}
-                                                                        className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
-                                                                    />
-
-                                                                </div>
-
-
-
-                                                                {/* Description */}
-                                                                <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-
-                                                                    <label
-                                                                        htmlFor={`add_${addBtnLabel}_desc`}
-                                                                        className='text-gray-600 capitalize text-sm'>
-                                                                        Description
-                                                                        <span className='text-medium leading-12 font-semibold'>
-                                                                            {' '}
-
-                                                                        </span>
-                                                                    </label>
-                                                                    <textarea
 
                                                                         type='text'
-                                                                        placeholder='Description'
-                                                                        id={`add_${addBtnLabel}_desc`}
-                                                                        name='description'
-                                                                        defaultValue={editData.description}
-                                                                        className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
-                                                                    />
-                                                                </div>
-
-
-
-                                                                <div className='flex items-center space-x-3 mt-4'>
-                                                                    <button type='submit' className='p-2 text-white bg-blue-600  font-semibold'>save</button>
-                                                                    <button className='p-2 text-white bg-indigo-500  font-semibold'>cancel</button>
-                                                                </div>
-
-                                                            </form>
-                                                        )
-                                                    case 'infrastructure':
-                                                        return (
-                                                            <form className='w-full h-full' onSubmit={(e) => handleFormSubmit(e, addBtnLabel)}>
-
-                                                                {/* Name */}
-                                                                <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-
-                                                                    <label
-                                                                        htmlFor={`add_${addBtnLabel}_name`}
-                                                                        className='text-gray-600 capitalize text-sm'>
-                                                                        Name
-                                                                        <span className='text-medium leading-12 font-semibold'>
-                                                                            {' '}
-                                                                            *
-                                                                        </span>
-                                                                    </label>
-                                                                    <input
-                                                                        required
-                                                                        type='text'
-                                                                        placeholder='Name'
-                                                                        id={`add_${addBtnLabel}_name`}
-                                                                        name='name'
-                                                                        defaultValue={editData.name}
+                                                                        placeholder='Abbreviation'
+                                                                        id={`add_${addBtnLabel}_field`}
+                                                                        name='abbreviation'
+                                                                        defaultValue={editData.abbreviation}
                                                                         className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
                                                                     />
                                                                 </div>
@@ -3201,242 +2895,7 @@ function SystemSetup(props) {
                                                                             }),
 
                                                                         }}
-                                                                        options={selectOptions}
-                                                                        required
-                                                                        id={`add_${addBtnLabel}_category_field`}
-                                                                        name='category'
-                                                                        key={editData.category}
-                                                                        defaultValue={{ value: editData.category, label: editData.category_name }}
-                                                                        className='flex-none w-full  flex-grow  placeholder-gray-500 border border-gray-600 outline-none'
-                                                                    />
-                                                                </div>
-
-                                                                {/* Track Numbers */}
-                                                                <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-                                                                    <label
-                                                                        htmlFor={`add_${addBtnLabel}_track_numbers`}
-                                                                        className='text-gray-600 capitalize text-sm'>
-                                                                        Track Numbers
-                                                                        <span className='text-medium leading-12 font-semibold'>
-                                                                            {' '}
-
-                                                                        </span>
-                                                                    </label>
-
-                                                                    <input className='' type='checkbox' id={`add_${addBtnLabel}_track_numbers`} name='count'
-                                                                        defaultChecked={editData.numbers}
-                                                                    />
-                                                                </div>
-
-                                                                {/* Description */}
-                                                                <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-
-                                                                    <label
-                                                                        htmlFor={`add_${addBtnLabel}_desc`}
-                                                                        className='text-gray-600 capitalize text-sm'>
-                                                                        Description
-                                                                        <span className='text-medium leading-12 font-semibold'>
-                                                                            {' '}
-
-                                                                        </span>
-                                                                    </label>
-                                                                    <textarea
-
-                                                                        type='text'
-                                                                        placeholder='Description'
-                                                                        id={`add_${addBtnLabel}_desc`}
-                                                                        name='description'
-                                                                        defaultValue={editData.description}
-                                                                        className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
-                                                                    />
-                                                                </div>
-
-
-
-                                                                <div className='flex items-center space-x-3 mt-4'>
-                                                                    <button type='submit' className='p-2 text-white bg-blue-600  font-semibold'>save</button>
-                                                                    <button className='p-2 text-white bg-indigo-500  font-semibold'>cancel</button>
-                                                                </div>
-
-                                                            </form>
-                                                        )
-                                                    case 'infrastructure category':
-                                                        return (
-                                                            <form className='w-full h-full' onSubmit={(e) => handleFormSubmit(e, addBtnLabel)}>
-
-                                                                {/* Name */}
-                                                                <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-
-                                                                    <label
-                                                                        htmlFor={`add_${addBtnLabel}_name`}
-                                                                        className='text-gray-600 capitalize text-sm'>
-                                                                        Name
-                                                                        <span className='text-medium leading-12 font-semibold'>
-                                                                            {' '}
-                                                                            *
-                                                                        </span>
-                                                                    </label>
-                                                                    <input
-                                                                        required
-                                                                        type="text"
-                                                                        placeholder='Name'
-                                                                        id={`add_${addBtnLabel}_name`}
-                                                                        name='name'
-                                                                        defaultValue={editData.name}
-                                                                        className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
-                                                                    />
-
-                                                                </div>
-
-
-
-                                                                {/* Description */}
-                                                                <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-
-                                                                    <label
-                                                                        htmlFor={`add_${addBtnLabel}_desc`}
-                                                                        className='text-gray-600 capitalize text-sm'>
-                                                                        Description
-                                                                        <span className='text-medium leading-12 font-semibold'>
-                                                                            {' '}
-
-                                                                        </span>
-                                                                    </label>
-                                                                    <textarea
-
-                                                                        type='text'
-                                                                        placeholder='Description'
-                                                                        id={`add_${addBtnLabel}_desc`}
-                                                                        name='description'
-                                                                        defaultValue={editData.description}
-                                                                        className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
-                                                                    />
-                                                                </div>
-
-
-
-                                                                <div className='flex items-center space-x-3 mt-4'>
-                                                                    <button type='submit' className='p-2 text-white bg-blue-600  font-semibold'>save</button>
-                                                                    <button className='p-2 text-white bg-indigo-500  font-semibold'>cancel</button>
-                                                                </div>
-
-                                                            </form>
-                                                        )
-                                                    case 'human resource category':
-                                                        return (
-                                                            <>
-                                                                <form className='w-full h-full' onSubmit={(e) => handleFormSubmit(e, addBtnLabel)}>
-
-                                                                    {/* Name */}
-                                                                    <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-
-                                                                        <label
-                                                                            htmlFor={`add_${addBtnLabel}_name`}
-                                                                            className='text-gray-600 capitalize text-sm'>
-                                                                            Name
-                                                                            <span className='text-medium leading-12 font-semibold'>
-                                                                                {' '}
-                                                                                *
-                                                                            </span>
-                                                                        </label>
-                                                                        <input
-                                                                            required
-                                                                            type='text'
-                                                                            placeholder='Name'
-                                                                            id={`add_${addBtnLabel}_name`}
-                                                                            name='name'
-                                                                            defaultValue={editData.name}
-                                                                            className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
-                                                                        />
-                                                                    </div>
-
-                                                                    {/* Description */}
-                                                                    <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-
-                                                                        <label
-                                                                            htmlFor={`add_${addBtnLabel}_desc`}
-                                                                            className='text-gray-600 capitalize text-sm'>
-                                                                            Description
-                                                                            <span className='text-medium leading-12 font-semibold'>
-                                                                                {' '}
-
-                                                                            </span>
-                                                                        </label>
-                                                                        <textarea
-
-                                                                            type='text'
-                                                                            placeholder='Description'
-                                                                            id={`add_${addBtnLabel}_desc`}
-                                                                            name='description'
-                                                                            defaultValue={editData.description}
-                                                                            className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
-                                                                        />
-                                                                    </div>
-
-                                                                    <div className='flex items-center space-x-3 mt-4'>
-                                                                        <button type='submit' className='p-2 text-white bg-blue-600  font-semibold'>save</button>
-                                                                        <button className='p-2 text-white bg-indigo-500  font-semibold'>cancel</button>
-                                                                    </div>
-
-                                                                </form>
-                                                                &nbsp;
-                                                                <ChangeLog />
-                                                            </>
-                                                        )
-                                                    case 'specialty':
-                                                        return (
-                                                            <form className='w-full h-full' onSubmit={(e) => handleFormSubmit(e, addBtnLabel)}>
-
-                                                                {/* Name */}
-                                                                <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-
-                                                                    <label
-                                                                        htmlFor={`add_${addBtnLabel}_name`}
-                                                                        className='text-gray-600 capitalize text-sm'>
-                                                                        Name
-                                                                        <span className='text-medium leading-12 font-semibold'>
-                                                                            {' '}
-                                                                            *
-                                                                        </span>
-                                                                    </label>
-                                                                    <input
-                                                                        required
-                                                                        type='text'
-                                                                        placeholder='Name'
-                                                                        id={`add_${addBtnLabel}_name`}
-                                                                        name='name'
-                                                                        defaultValue={editData.name}
-                                                                        className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
-                                                                    />
-                                                                </div>
-
-                                                                {/* Category */}
-                                                                <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-
-                                                                    <label
-                                                                        htmlFor={`add_${addBtnLabel}_category_field`}
-                                                                        className='text-gray-600 capitalize text-sm'>
-                                                                        Category{' '}
-                                                                        <span className='text-medium leading-12 font-semibold'>
-                                                                            {' '}
-                                                                            *
-                                                                        </span>
-                                                                    </label>
-                                                                    <Select
-                                                                        styles={{
-                                                                            control: (baseStyles) => ({
-                                                                                ...baseStyles,
-                                                                                backgroundColor: 'transparent',
-                                                                                outLine: 'none',
-                                                                                border: 'none',
-                                                                                outLine: 'none',
-                                                                                textColor: 'transparent',
-                                                                                padding: 0,
-                                                                                height: '4px'
-                                                                            }),
-
-                                                                        }}
-                                                                        options={selectOptions}
+                                                                        options={selectOptions[1]}
                                                                         required
                                                                         placeholder='Select a Category'
                                                                         key={editData.category}
@@ -3447,6 +2906,448 @@ function SystemSetup(props) {
                                                                     />
                                                                 </div>
 
+                                                                {/* Option Groups */}
+                                                                <div className='w-full flex flex-col items-start justify-start gap-1'>
+
+                                                                    <label
+                                                                        htmlFor={`add_${addBtnLabel}_sub_county_field`}
+                                                                        className='text-gray-600 capitalize text-sm'>
+                                                                        Option Groups   {' '}
+                                                                        <span className='text-medium leading-12 font-semibold'>
+                                                                            {' '}
+                                                                            *
+                                                                        </span>
+                                                                    </label>
+                                                                    <Select
+                                                                        styles={{
+                                                                            control: (baseStyles) => ({
+                                                                                ...baseStyles,
+                                                                                backgroundColor: 'transparent',
+                                                                                outLine: 'none',
+                                                                                border: 'none',
+                                                                                outLine: 'none',
+                                                                                textColor: 'transparent',
+                                                                                padding: 0,
+                                                                                height: '4px'
+                                                                            }),
+
+                                                                        }}
+                                                                        options={selectOptions[0]}
+                                                                        required
+                                                                        placeholder='Select Option Group'
+                                                                        key={editData.group}
+                                                                        id={`add_${addBtnLabel}_sub_county_field`}
+                                                                        name='group'
+                                                                        defaultValue={{ value: editData.group, label: (selectOptions[0])?.find(i => i.value == editData.group)?.label }}
+                                                                        className='flex-none w-full  flex-grow  placeholder-gray-500 border border-gray-600 outline-none'
+                                                                    />
+                                                                </div>
+
+                                                                {/* Description */}
+                                                                <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+
+                                                                    <label
+                                                                        htmlFor={`add_${addBtnLabel}_desc`}
+                                                                        className='text-gray-600 capitalize text-sm'>
+                                                                        Description
+                                                                        <span className='text-medium leading-12 font-semibold'>
+                                                                            {' '}
+
+                                                                        </span>
+                                                                    </label>
+                                                                    <textarea
+
+                                                                        type='text'
+                                                                        placeholder='Service description'
+                                                                        id={`add_${addBtnLabel}_desc`}
+                                                                        name='description'
+                                                                        defaultValue={editData.description}
+                                                                        className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
+                                                                    />
+                                                                </div>
+
+                                                                {/* Has options */}
+                                                                <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                                                    <input className='' type='checkbox' id={`add_${addBtnLabel}_has_options`} name='has_options' defaultChecked={editData.has_options} />
+                                                                    <label
+                                                                        htmlFor={`add_${addBtnLabel}_has_options`}
+                                                                        className='text-gray-600 capitalize text-sm'>
+                                                                        Service has options?
+                                                                        <span className='text-medium leading-12 font-semibold'>
+                                                                            {' '}
+
+                                                                        </span>
+                                                                    </label>
+
+                                                                </div>
+
+                                                                {/* Active */}
+                                                                {editMode && (
+
+                                                                    <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                                                        <input
+                                                                            className=''
+                                                                            name="active"
+                                                                            type='checkbox'
+                                                                            defaultChecked={editData.active}
+                                                                            id={`add_${addBtnLabel}_active`}
+                                                                        />
+
+                                                                        <label
+                                                                            htmlFor={`add_${addBtnLabel}_active`}
+                                                                            className='text-gray-600 capitalize text-sm'>
+                                                                            Is Active?
+                                                                            <span className='text-medium leading-12 font-semibold'>
+                                                                                {' '}
+
+                                                                            </span>
+                                                                        </label>
+                                                                    </div>
+                                                                )}
+
+                                                                <div className='flex items-center space-x-3 mt-4'>
+                                                                    <button type='submit' className='p-2 text-white bg-blue-600  font-semibold'>save</button>
+                                                                    <button className='p-2 text-white bg-indigo-500  font-semibold'>cancel</button>
+                                                                </div>
+
+                                                            </form>
+                                                            &nbsp;
+                                                            <ChangeLog />
+                                                        </>
+                                                    )
+                                                case 'Service Category':
+                                                    return (
+                                                        <form className='w-full h-full' onSubmit={(e) => handleFormSubmit(e, addBtnLabel)}>
+
+                                                            {/* Name */}
+                                                            <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+
+                                                                <label
+                                                                    htmlFor={`add_${addBtnLabel}_name`}
+                                                                    className='text-gray-600 capitalize text-sm'>
+                                                                    Name
+                                                                    <span className='text-medium leading-12 font-semibold'>
+                                                                        {' '}
+                                                                        *
+                                                                    </span>
+                                                                </label>
+                                                                <input
+                                                                    required
+                                                                    type="text"
+                                                                    placeholder='Name'
+                                                                    id={`add_${addBtnLabel}_name`}
+                                                                    name='name'
+                                                                    defaultValue={editData.name}
+                                                                    className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
+                                                                />
+
+                                                            </div>
+
+                                                            {/* Parent */}
+                                                            <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+
+                                                                <label
+                                                                    htmlFor={`add_${addBtnLabel}_name`}
+                                                                    className='text-gray-600 capitalize text-sm'>
+                                                                    Parent
+                                                                    <span className='text-medium leading-12 font-semibold'>
+                                                                        {' '}
+                                                                        *
+                                                                    </span>
+
+
+                                                                </label>
+                                                                {/* <pre>
+                                                                    {
+                                                                    JSON.stringify(selectOptions, null, 2)
+                                                                    }
+                                                                </pre> */}
+                                                                <Select
+                                                                    styles={{
+                                                                        control: (baseStyles) => ({
+                                                                            ...baseStyles,
+                                                                            backgroundColor: 'transparent',
+                                                                            outLine: 'none',
+                                                                            border: 'none',
+                                                                            outLine: 'none',
+                                                                            textColor: 'transparent',
+                                                                            padding: 0,
+                                                                            height: '4px'
+                                                                        }),
+
+                                                                    }}
+                                                                    options={selectOptions}
+                                                                    required
+                                                                    placeholder={'Select a Category'}
+                                                                    key={editData.category}
+                                                                    id={`add_${addBtnLabel}_category_field`}
+                                                                    name='category'
+                                                                    defaultValue={{ value: editData.category, label: editData.category_name }}
+                                                                    className='flex-none w-full rounded  flex-grow  placeholder-gray-500 border border-gray-600 outline-none'
+                                                                />
+
+                                                            </div>
+
+                                                            {/* Abbreviation */}
+                                                            <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+
+                                                                <label
+                                                                    htmlFor={`add_${addBtnLabel}_name`}
+                                                                    className='text-gray-600 capitalize text-sm'>
+                                                                    Abbreviation
+                                                                    <span className='text-medium leading-12 font-semibold'>
+                                                                        {' '}
+                                                                        *
+                                                                    </span>
+                                                                </label>
+                                                                <input
+                                                                    required
+                                                                    type="text"
+                                                                    placeholder='Name'
+                                                                    id={`add_${addBtnLabel}_name`}
+                                                                    name='name'
+                                                                    defaultValue={editData.name}
+                                                                    className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
+                                                                />
+
+                                                            </div>
+
+
+
+                                                            {/* Description */}
+                                                            <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+
+                                                                <label
+                                                                    htmlFor={`add_${addBtnLabel}_desc`}
+                                                                    className='text-gray-600 capitalize text-sm'>
+                                                                    Description
+                                                                    <span className='text-medium leading-12 font-semibold'>
+                                                                        {' '}
+
+                                                                    </span>
+                                                                </label>
+                                                                <textarea
+
+                                                                    type='text'
+                                                                    placeholder='Description'
+                                                                    id={`add_${addBtnLabel}_desc`}
+                                                                    name='description'
+                                                                    defaultValue={editData.description}
+                                                                    className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
+                                                                />
+                                                            </div>
+
+
+
+                                                            <div className='flex items-center space-x-3 mt-4'>
+                                                                <button type='submit' className='p-2 text-white bg-blue-600  font-semibold'>save</button>
+                                                                <button className='p-2 text-white bg-indigo-500  font-semibold'>cancel</button>
+                                                            </div>
+
+                                                        </form>
+                                                    )
+                                                case 'infrastructure':
+                                                    return (
+                                                        <form className='w-full h-full' onSubmit={(e) => handleFormSubmit(e, addBtnLabel)}>
+
+                                                            {/* Name */}
+                                                            <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+
+                                                                <label
+                                                                    htmlFor={`add_${addBtnLabel}_name`}
+                                                                    className='text-gray-600 capitalize text-sm'>
+                                                                    Name
+                                                                    <span className='text-medium leading-12 font-semibold'>
+                                                                        {' '}
+                                                                        *
+                                                                    </span>
+                                                                </label>
+                                                                <input
+                                                                    required
+                                                                    type='text'
+                                                                    placeholder='Name'
+                                                                    id={`add_${addBtnLabel}_name`}
+                                                                    name='name'
+                                                                    defaultValue={editData.name}
+                                                                    className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
+                                                                />
+                                                            </div>
+
+                                                            {/* Category */}
+                                                            <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+
+                                                                <label
+                                                                    htmlFor={`add_${addBtnLabel}_category_field`}
+                                                                    className='text-gray-600 capitalize text-sm'>
+                                                                    Category{' '}
+                                                                    <span className='text-medium leading-12 font-semibold'>
+                                                                        {' '}
+                                                                        *
+                                                                    </span>
+                                                                </label>
+                                                                <Select
+                                                                    styles={{
+                                                                        control: (baseStyles) => ({
+                                                                            ...baseStyles,
+                                                                            backgroundColor: 'transparent',
+                                                                            outLine: 'none',
+                                                                            border: 'none',
+                                                                            outLine: 'none',
+                                                                            textColor: 'transparent',
+                                                                            padding: 0,
+                                                                            height: '4px'
+                                                                        }),
+
+                                                                    }}
+                                                                    options={selectOptions}
+                                                                    required
+                                                                    id={`add_${addBtnLabel}_category_field`}
+                                                                    name='category'
+                                                                    key={editData.category}
+                                                                    defaultValue={{ value: editData.category, label: editData.category_name }}
+                                                                    className='flex-none w-full  flex-grow  placeholder-gray-500 border border-gray-600 outline-none'
+                                                                />
+                                                            </div>
+
+                                                            {/* Track Numbers */}
+                                                            <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                                                <label
+                                                                    htmlFor={`add_${addBtnLabel}_track_numbers`}
+                                                                    className='text-gray-600 capitalize text-sm'>
+                                                                    Track Numbers
+                                                                    <span className='text-medium leading-12 font-semibold'>
+                                                                        {' '}
+
+                                                                    </span>
+                                                                </label>
+
+                                                                <input className='' type='checkbox' id={`add_${addBtnLabel}_track_numbers`} name='count'
+                                                                    defaultChecked={editData.numbers}
+                                                                />
+                                                            </div>
+
+                                                            {/* Description */}
+                                                            <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+
+                                                                <label
+                                                                    htmlFor={`add_${addBtnLabel}_desc`}
+                                                                    className='text-gray-600 capitalize text-sm'>
+                                                                    Description
+                                                                    <span className='text-medium leading-12 font-semibold'>
+                                                                        {' '}
+
+                                                                    </span>
+                                                                </label>
+                                                                <textarea
+
+                                                                    type='text'
+                                                                    placeholder='Description'
+                                                                    id={`add_${addBtnLabel}_desc`}
+                                                                    name='description'
+                                                                    defaultValue={editData.description}
+                                                                    className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
+                                                                />
+                                                            </div>
+
+
+
+                                                            <div className='flex items-center space-x-3 mt-4'>
+                                                                <button type='submit' className='p-2 text-white bg-blue-600  font-semibold'>save</button>
+                                                                <button className='p-2 text-white bg-indigo-500  font-semibold'>cancel</button>
+                                                            </div>
+
+                                                        </form>
+                                                    )
+                                                case 'infrastructure category':
+                                                    return (
+                                                        <form className='w-full h-full' onSubmit={(e) => handleFormSubmit(e, addBtnLabel)}>
+
+                                                            {/* Name */}
+                                                            <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+
+                                                                <label
+                                                                    htmlFor={`add_${addBtnLabel}_name`}
+                                                                    className='text-gray-600 capitalize text-sm'>
+                                                                    Name
+                                                                    <span className='text-medium leading-12 font-semibold'>
+                                                                        {' '}
+                                                                        *
+                                                                    </span>
+                                                                </label>
+                                                                <input
+                                                                    required
+                                                                    type="text"
+                                                                    placeholder='Name'
+                                                                    id={`add_${addBtnLabel}_name`}
+                                                                    name='name'
+                                                                    defaultValue={editData.name}
+                                                                    className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
+                                                                />
+
+                                                            </div>
+
+
+
+                                                            {/* Description */}
+                                                            <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+
+                                                                <label
+                                                                    htmlFor={`add_${addBtnLabel}_desc`}
+                                                                    className='text-gray-600 capitalize text-sm'>
+                                                                    Description
+                                                                    <span className='text-medium leading-12 font-semibold'>
+                                                                        {' '}
+
+                                                                    </span>
+                                                                </label>
+                                                                <textarea
+
+                                                                    type='text'
+                                                                    placeholder='Description'
+                                                                    id={`add_${addBtnLabel}_desc`}
+                                                                    name='description'
+                                                                    defaultValue={editData.description}
+                                                                    className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
+                                                                />
+                                                            </div>
+
+
+
+                                                            <div className='flex items-center space-x-3 mt-4'>
+                                                                <button type='submit' className='p-2 text-white bg-blue-600  font-semibold'>save</button>
+                                                                <button className='p-2 text-white bg-indigo-500  font-semibold'>cancel</button>
+                                                            </div>
+
+                                                        </form>
+                                                    )
+                                                case 'human resource category':
+                                                    return (
+                                                        <>
+                                                            <form className='w-full h-full' onSubmit={(e) => handleFormSubmit(e, addBtnLabel)}>
+
+                                                                {/* Name */}
+                                                                <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+
+                                                                    <label
+                                                                        htmlFor={`add_${addBtnLabel}_name`}
+                                                                        className='text-gray-600 capitalize text-sm'>
+                                                                        Name
+                                                                        <span className='text-medium leading-12 font-semibold'>
+                                                                            {' '}
+                                                                            *
+                                                                        </span>
+                                                                    </label>
+                                                                    <input
+                                                                        required
+                                                                        type='text'
+                                                                        placeholder='Name'
+                                                                        id={`add_${addBtnLabel}_name`}
+                                                                        name='name'
+                                                                        defaultValue={editData.name}
+                                                                        className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
+                                                                    />
+                                                                </div>
+
                                                                 {/* Description */}
                                                                 <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
 
@@ -3470,6 +3371,186 @@ function SystemSetup(props) {
                                                                     />
                                                                 </div>
 
+                                                                <div className='flex items-center space-x-3 mt-4'>
+                                                                    <button type='submit' className='p-2 text-white bg-blue-600  font-semibold'>save</button>
+                                                                    <button className='p-2 text-white bg-indigo-500  font-semibold'>cancel</button>
+                                                                </div>
+
+                                                            </form>
+                                                            &nbsp;
+                                                            <ChangeLog />
+                                                        </>
+                                                    )
+                                                case 'specialty':
+                                                    return (
+                                                        <form className='w-full h-full' onSubmit={(e) => handleFormSubmit(e, addBtnLabel)}>
+
+                                                            {/* Name */}
+                                                            <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+
+                                                                <label
+                                                                    htmlFor={`add_${addBtnLabel}_name`}
+                                                                    className='text-gray-600 capitalize text-sm'>
+                                                                    Name
+                                                                    <span className='text-medium leading-12 font-semibold'>
+                                                                        {' '}
+                                                                        *
+                                                                    </span>
+                                                                </label>
+                                                                <input
+                                                                    required
+                                                                    type='text'
+                                                                    placeholder='Name'
+                                                                    id={`add_${addBtnLabel}_name`}
+                                                                    name='name'
+                                                                    defaultValue={editData.name}
+                                                                    className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
+                                                                />
+                                                            </div>
+
+                                                            {/* Category */}
+                                                            <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+
+                                                                <label
+                                                                    htmlFor={`add_${addBtnLabel}_category_field`}
+                                                                    className='text-gray-600 capitalize text-sm'>
+                                                                    Category{' '}
+                                                                    <span className='text-medium leading-12 font-semibold'>
+                                                                        {' '}
+                                                                        *
+                                                                    </span>
+                                                                </label>
+                                                                <Select
+                                                                    styles={{
+                                                                        control: (baseStyles) => ({
+                                                                            ...baseStyles,
+                                                                            backgroundColor: 'transparent',
+                                                                            outLine: 'none',
+                                                                            border: 'none',
+                                                                            outLine: 'none',
+                                                                            textColor: 'transparent',
+                                                                            padding: 0,
+                                                                            height: '4px'
+                                                                        }),
+
+                                                                    }}
+                                                                    options={selectOptions}
+                                                                    required
+                                                                    placeholder='Select a Category'
+                                                                    key={editData.category}
+                                                                    id={`add_${addBtnLabel}_category_field`}
+                                                                    name='category'
+                                                                    defaultValue={{ value: editData.category, label: editData.category_name }}
+                                                                    className='flex-none w-full  flex-grow  placeholder-gray-500 border border-gray-600 outline-none'
+                                                                />
+                                                            </div>
+
+                                                            {/* Description */}
+                                                            <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+
+                                                                <label
+                                                                    htmlFor={`add_${addBtnLabel}_desc`}
+                                                                    className='text-gray-600 capitalize text-sm'>
+                                                                    Description
+                                                                    <span className='text-medium leading-12 font-semibold'>
+                                                                        {' '}
+
+                                                                    </span>
+                                                                </label>
+                                                                <textarea
+
+                                                                    type='text'
+                                                                    placeholder='Description'
+                                                                    id={`add_${addBtnLabel}_desc`}
+                                                                    name='description'
+                                                                    defaultValue={editData.description}
+                                                                    className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
+                                                                />
+                                                            </div>
+
+
+
+                                                            <div className='flex items-center space-x-3 mt-4'>
+                                                                <button type='submit' className='p-2 text-white bg-blue-600  font-semibold'>save</button>
+                                                                <button className='p-2 text-white bg-indigo-500  font-semibold'>cancel</button>
+                                                            </div>
+
+                                                        </form>
+                                                    )
+                                                case 'contact type':
+                                                    return (
+                                                        <>
+                                                            <form className='w-full h-full' onSubmit={(e) => handleFormSubmit(e, addBtnLabel)}>
+
+                                                                {/* Name */}
+                                                                <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+
+                                                                    <label
+                                                                        htmlFor={`add_${addBtnLabel}_name`}
+                                                                        className='text-gray-600 capitalize text-sm'>
+                                                                        Name
+                                                                        <span className='text-medium leading-12 font-semibold'>
+                                                                            {' '}
+                                                                            *
+                                                                        </span>
+                                                                    </label>
+                                                                    <input
+                                                                        required
+                                                                        type='text'
+                                                                        placeholder='Name'
+                                                                        id={`add_${addBtnLabel}_name`}
+                                                                        name='name'
+                                                                        defaultValue={editData.name}
+                                                                        className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
+                                                                    />
+                                                                </div>
+
+                                                                {/* Description */}
+                                                                <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+
+                                                                    <label
+                                                                        htmlFor={`add_${addBtnLabel}_desc`}
+                                                                        className='text-gray-600 capitalize text-sm'>
+                                                                        Description
+                                                                        <span className='text-medium leading-12 font-semibold'>
+                                                                            {' '}
+
+                                                                        </span>
+                                                                    </label>
+
+                                                                    <textarea
+
+                                                                        type='text'
+                                                                        placeholder='Description'
+                                                                        id={`add_${addBtnLabel}_desc`}
+                                                                        name='description'
+                                                                        defaultValue={editData.description}
+                                                                        className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
+                                                                    />
+                                                                </div>
+                                                                {/* Active */}
+                                                                {editMode && (
+
+                                                                    <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                                                        <input
+                                                                            className=''
+                                                                            name="active"
+                                                                            type='checkbox'
+                                                                            defaultChecked={editData.active}
+                                                                            id={`add_${addBtnLabel}_active`}
+                                                                        />
+
+                                                                        <label
+                                                                            htmlFor={`add_${addBtnLabel}_active`}
+                                                                            className='text-gray-600 capitalize text-sm'>
+                                                                            Is Active?
+                                                                            <span className='text-medium leading-12 font-semibold'>
+                                                                                {' '}
+
+                                                                            </span>
+                                                                        </label>
+                                                                    </div>
+                                                                )}
 
 
                                                                 <div className='flex items-center space-x-3 mt-4'>
@@ -3478,251 +3559,75 @@ function SystemSetup(props) {
                                                                 </div>
 
                                                             </form>
-                                                        )
-                                                    case 'contact type':
-                                                        return (
-                                                            <>
-                                                                <form className='w-full h-full' onSubmit={(e) => handleFormSubmit(e, addBtnLabel)}>
-
-                                                                    {/* Name */}
-                                                                    <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-
-                                                                        <label
-                                                                            htmlFor={`add_${addBtnLabel}_name`}
-                                                                            className='text-gray-600 capitalize text-sm'>
-                                                                            Name
-                                                                            <span className='text-medium leading-12 font-semibold'>
-                                                                                {' '}
-                                                                                *
-                                                                            </span>
-                                                                        </label>
-                                                                        <input
-                                                                            required
-                                                                            type='text'
-                                                                            placeholder='Name'
-                                                                            id={`add_${addBtnLabel}_name`}
-                                                                            name='name'
-                                                                            defaultValue={editData.name}
-                                                                            className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
-                                                                        />
-                                                                    </div>
-
-                                                                    {/* Description */}
-                                                                    <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-
-                                                                        <label
-                                                                            htmlFor={`add_${addBtnLabel}_desc`}
-                                                                            className='text-gray-600 capitalize text-sm'>
-                                                                            Description
-                                                                            <span className='text-medium leading-12 font-semibold'>
-                                                                                {' '}
-
-                                                                            </span>
-                                                                        </label>
-
-                                                                        <textarea
-
-                                                                            type='text'
-                                                                            placeholder='Description'
-                                                                            id={`add_${addBtnLabel}_desc`}
-                                                                            name='description'
-                                                                            defaultValue={editData.description}
-                                                                            className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
-                                                                        />
-                                                                    </div>
-                                                                    {/* Active */}
-                                                                    {editMode && (
-
-                                                                        <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-                                                                            <input
-                                                                                className=''
-                                                                                name="active"
-                                                                                type='checkbox'
-                                                                                defaultChecked={editData.active}
-                                                                                id={`add_${addBtnLabel}_active`}
-                                                                            />
-
-                                                                            <label
-                                                                                htmlFor={`add_${addBtnLabel}_active`}
-                                                                                className='text-gray-600 capitalize text-sm'>
-                                                                                Is Active?
-                                                                                <span className='text-medium leading-12 font-semibold'>
-                                                                                    {' '}
-
-                                                                                </span>
-                                                                            </label>
-                                                                        </div>
-                                                                    )}
-
-
-                                                                    <div className='flex items-center space-x-3 mt-4'>
-                                                                        <button type='submit' className='p-2 text-white bg-blue-600  font-semibold'>save</button>
-                                                                        <button className='p-2 text-white bg-indigo-500  font-semibold'>cancel</button>
-                                                                    </div>
-
-                                                                </form>
-                                                                &nbsp;
-                                                                <ChangeLog />
-                                                            </>
-                                                        )
-                                                    case 'facility department':
-                                                        return (
-                                                            <>
-                                                                <form className='w-full h-full' onSubmit={(e) => handleFormSubmit(e, addBtnLabel)}>
-
-                                                                    {/* Name */}
-                                                                    <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-
-                                                                        <label
-                                                                            htmlFor={`add_${addBtnLabel}_name`}
-                                                                            className='text-gray-600 capitalize text-sm'>
-                                                                            Name
-                                                                            <span className='text-medium leading-12 font-semibold'>
-                                                                                {' '}
-                                                                                *
-                                                                            </span>
-                                                                        </label>
-                                                                        <input
-                                                                            required
-                                                                            type='text'
-                                                                            placeholder='Name'
-                                                                            id={`add_${addBtnLabel}_name`}
-                                                                            name='name'
-                                                                            defaultValue={editData.name}
-                                                                            className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
-                                                                        />
-                                                                    </div>
-
-                                                                    {/* Description */}
-                                                                    <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-
-                                                                        <label
-                                                                            htmlFor={`add_${addBtnLabel}_desc`}
-                                                                            className='text-gray-600 capitalize text-sm'>
-                                                                            Description
-                                                                            <span className='text-medium leading-12 font-semibold'>
-                                                                                {' '}
-
-                                                                            </span>
-                                                                        </label>
-
-                                                                        <textarea
-
-                                                                            type='text'
-                                                                            placeholder='Description'
-                                                                            id={`add_${addBtnLabel}_desc`}
-                                                                            name='description'
-                                                                            defaultValue={editData.description}
-                                                                            className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
-                                                                        />
-                                                                    </div>
-
-                                                                    {/* Regulatory Body */}
-                                                                    <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-
-                                                                        <label
-                                                                            htmlFor={`add_${addBtnLabel}_name`}
-                                                                            className='text-gray-600 capitalize text-sm'>
-                                                                            Regulatory Body
-                                                                            <span className='text-medium leading-12 font-semibold'>
-                                                                                {' '}
-                                                                                *
-                                                                            </span>
-                                                                        </label>
-
-                                                                        <Select
-                                                                            styles={{
-                                                                                control: (baseStyles) => ({
-                                                                                    ...baseStyles,
-                                                                                    backgroundColor: 'transparent',
-                                                                                    outLine: 'none',
-                                                                                    border: 'none',
-                                                                                    outLine: 'none',
-                                                                                    textColor: 'transparent',
-                                                                                    padding: 0,
-                                                                                    height: '4px'
-                                                                                }),
-
-                                                                            }}
-                                                                            options={selectOptions}
-                                                                            required
-                                                                            placeholder='Select a regulatory body'
-                                                                            id={`add_${addBtnLabel}_category_field`}
-                                                                            name='regulatory_body'
-                                                                            key={editData.regulatory_body}
-                                                                            defaultValue={{ value: editData.regulatory_body, label: editData.regulatory_body_name }}
-                                                                            className='flex-none w-full  flex-grow  placeholder-gray-500 border border-gray-600 outline-none'
-                                                                        />
-
-                                                                    </div>
-
-                                                                    <div className='flex items-center space-x-3 mt-4'>
-                                                                        <button type='submit' className='p-2 text-white bg-blue-600  font-semibold'>save</button>
-                                                                        <button className='p-2 text-white bg-indigo-500  font-semibold'>cancel</button>
-                                                                    </div>
-
-                                                                </form>
-                                                                &nbsp;
-                                                                <ChangeLog />
-                                                            </>
-                                                        )
-                                                    case 'facility type detail':
-                                                        return (
-                                                            <>
-                                                                <form className='w-full h-full' onSubmit={(e) => handleFormSubmit(e, addBtnLabel)}>
-
-                                                                    {/* Facility Type */}
-                                                                    <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-
-                                                                        <label
-                                                                            htmlFor={`add_${addBtnLabel}_name`}
-                                                                            className='text-gray-600 capitalize text-sm'>
-                                                                            Facility Type
-                                                                            <span className='text-medium leading-12 font-semibold'>
-                                                                                {' '}
-                                                                                *
-                                                                            </span>
-                                                                        </label>
-                                                                        <input
-                                                                            required
-                                                                            type='text'
-                                                                            placeholder='Name'
-                                                                            id={`add_${addBtnLabel}_name`}
-                                                                            name='name'
-                                                                            defaultValue={editData.name}
-                                                                            className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none' />
-                                                                    </div>
-
-
-                                                                    <div className='flex items-center space-x-3 mt-4'>
-                                                                        <button type='submit' className='p-2 text-white bg-blue-600  font-semibold'>save</button>
-                                                                        <button className='p-2 text-white bg-indigo-500  font-semibold'>cancel</button>
-                                                                    </div>
-
-
-                                                                </form>
-                                                                &nbsp;
-                                                                <ChangeLog />
-                                                            </>
-
-                                                        )
-                                                    case 'facility type category':
-                                                        return (
-
+                                                            &nbsp;
+                                                            <ChangeLog />
+                                                        </>
+                                                    )
+                                                case 'facility department':
+                                                    return (
+                                                        <>
                                                             <form className='w-full h-full' onSubmit={(e) => handleFormSubmit(e, addBtnLabel)}>
 
-                                                                {/* Facility Type */}
+                                                                {/* Name */}
                                                                 <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
 
                                                                     <label
-                                                                        htmlFor={`add_${addBtnLabel}_type`}
+                                                                        htmlFor={`add_${addBtnLabel}_name`}
                                                                         className='text-gray-600 capitalize text-sm'>
-                                                                        Facility Type
+                                                                        Name
                                                                         <span className='text-medium leading-12 font-semibold'>
                                                                             {' '}
                                                                             *
                                                                         </span>
                                                                     </label>
+                                                                    <input
+                                                                        required
+                                                                        type='text'
+                                                                        placeholder='Name'
+                                                                        id={`add_${addBtnLabel}_name`}
+                                                                        name='name'
+                                                                        defaultValue={editData.name}
+                                                                        className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
+                                                                    />
+                                                                </div>
+
+                                                                {/* Description */}
+                                                                <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+
+                                                                    <label
+                                                                        htmlFor={`add_${addBtnLabel}_desc`}
+                                                                        className='text-gray-600 capitalize text-sm'>
+                                                                        Description
+                                                                        <span className='text-medium leading-12 font-semibold'>
+                                                                            {' '}
+
+                                                                        </span>
+                                                                    </label>
+
+                                                                    <textarea
+
+                                                                        type='text'
+                                                                        placeholder='Description'
+                                                                        id={`add_${addBtnLabel}_desc`}
+                                                                        name='description'
+                                                                        defaultValue={editData.description}
+                                                                        className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
+                                                                    />
+                                                                </div>
+
+                                                                {/* Regulatory Body */}
+                                                                <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+
+                                                                    <label
+                                                                        htmlFor={`add_${addBtnLabel}_name`}
+                                                                        className='text-gray-600 capitalize text-sm'>
+                                                                        Regulatory Body
+                                                                        <span className='text-medium leading-12 font-semibold'>
+                                                                            {' '}
+                                                                            *
+                                                                        </span>
+                                                                    </label>
+
                                                                     <Select
                                                                         styles={{
                                                                             control: (baseStyles) => ({
@@ -3737,31 +3642,40 @@ function SystemSetup(props) {
                                                                             }),
 
                                                                         }}
-                                                                        options={Array.from(
-                                                                            selectOptions || [],
-                                                                            (fltopt) => {
-                                                                                return {
-                                                                                    value: fltopt.label,
-                                                                                    label: fltopt.label,
-                                                                                };
-                                                                            }
-                                                                        )}
-                                                                        placeholder='Select facility type'
-                                                                        id={`add_${addBtnLabel}_type`}
-                                                                        name='sub_division'
-                                                                        key={editData.parent}
-                                                                        defaultValue={{ value: editData.sub_division, label: editData.sub_division }}
+                                                                        options={selectOptions}
+                                                                        required
+                                                                        placeholder='Select a regulatory body'
+                                                                        id={`add_${addBtnLabel}_category_field`}
+                                                                        name='regulatory_body'
+                                                                        key={editData.regulatory_body}
+                                                                        defaultValue={{ value: editData.regulatory_body, label: editData.regulatory_body_name }}
                                                                         className='flex-none w-full  flex-grow  placeholder-gray-500 border border-gray-600 outline-none'
                                                                     />
+
                                                                 </div>
 
-                                                                {/* Facility Type Detail */}
+                                                                <div className='flex items-center space-x-3 mt-4'>
+                                                                    <button type='submit' className='p-2 text-white bg-blue-600  font-semibold'>save</button>
+                                                                    <button className='p-2 text-white bg-indigo-500  font-semibold'>cancel</button>
+                                                                </div>
+
+                                                            </form>
+                                                            &nbsp;
+                                                            <ChangeLog />
+                                                        </>
+                                                    )
+                                                case 'facility type detail':
+                                                    return (
+                                                        <>
+                                                            <form className='w-full h-full' onSubmit={(e) => handleFormSubmit(e, addBtnLabel)}>
+
+                                                                {/* Facility Type */}
                                                                 <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
 
                                                                     <label
-                                                                        htmlFor={`add_${addBtnLabel}_type_detail`}
+                                                                        htmlFor={`add_${addBtnLabel}_name`}
                                                                         className='text-gray-600 capitalize text-sm'>
-                                                                        Facility Type Detail
+                                                                        Facility Type
                                                                         <span className='text-medium leading-12 font-semibold'>
                                                                             {' '}
                                                                             *
@@ -3771,7 +3685,189 @@ function SystemSetup(props) {
                                                                         required
                                                                         type='text'
                                                                         placeholder='Name'
-                                                                        id={`add_${addBtnLabel}_type_detail`}
+                                                                        id={`add_${addBtnLabel}_name`}
+                                                                        name='name'
+                                                                        defaultValue={editData.name}
+                                                                        className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none' />
+                                                                </div>
+
+
+                                                                <div className='flex items-center space-x-3 mt-4'>
+                                                                    <button type='submit' className='p-2 text-white bg-blue-600  font-semibold'>save</button>
+                                                                    <button className='p-2 text-white bg-indigo-500  font-semibold'>cancel</button>
+                                                                </div>
+
+
+                                                            </form>
+                                                            &nbsp;
+                                                            <ChangeLog />
+                                                        </>
+
+                                                    )
+                                                case 'facility type category':
+                                                    return (
+
+                                                        <form className='w-full h-full' onSubmit={(e) => handleFormSubmit(e, addBtnLabel)}>
+
+                                                            {/* Facility Type */}
+                                                            <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+
+                                                                <label
+                                                                    htmlFor={`add_${addBtnLabel}_type`}
+                                                                    className='text-gray-600 capitalize text-sm'>
+                                                                    Facility Type
+                                                                    <span className='text-medium leading-12 font-semibold'>
+                                                                        {' '}
+                                                                        *
+                                                                    </span>
+                                                                </label>
+                                                                <Select
+                                                                    styles={{
+                                                                        control: (baseStyles) => ({
+                                                                            ...baseStyles,
+                                                                            backgroundColor: 'transparent',
+                                                                            outLine: 'none',
+                                                                            border: 'none',
+                                                                            outLine: 'none',
+                                                                            textColor: 'transparent',
+                                                                            padding: 0,
+                                                                            height: '4px'
+                                                                        }),
+
+                                                                    }}
+                                                                    options={Array.from(
+                                                                        selectOptions || [],
+                                                                        (fltopt) => {
+                                                                            return {
+                                                                                value: fltopt.label,
+                                                                                label: fltopt.label,
+                                                                            };
+                                                                        }
+                                                                    )}
+                                                                    placeholder='Select facility type'
+                                                                    id={`add_${addBtnLabel}_type`}
+                                                                    name='sub_division'
+                                                                    key={editData.parent}
+                                                                    defaultValue={{ value: editData.sub_division, label: editData.sub_division }}
+                                                                    className='flex-none w-full  flex-grow  placeholder-gray-500 border border-gray-600 outline-none'
+                                                                />
+                                                            </div>
+
+                                                            {/* Facility Type Detail */}
+                                                            <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+
+                                                                <label
+                                                                    htmlFor={`add_${addBtnLabel}_type_detail`}
+                                                                    className='text-gray-600 capitalize text-sm'>
+                                                                    Facility Type Detail
+                                                                    <span className='text-medium leading-12 font-semibold'>
+                                                                        {' '}
+                                                                        *
+                                                                    </span>
+                                                                </label>
+                                                                <input
+                                                                    required
+                                                                    type='text'
+                                                                    placeholder='Name'
+                                                                    id={`add_${addBtnLabel}_type_detail`}
+                                                                    name='name'
+                                                                    defaultValue={editData.name}
+                                                                    className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
+                                                                />
+                                                            </div>
+
+
+                                                            <div className='flex items-center space-x-3 mt-4'>
+                                                                <button type='submit' className='p-2 text-white bg-blue-600  font-semibold'>save</button>
+                                                                <button className='p-2 text-white bg-indigo-500  font-semibold'>cancel</button>
+                                                            </div>
+
+                                                        </form>
+                                                    )
+                                                case 'facility operation status':
+                                                    return (
+                                                        <>
+                                                            <form className='w-full h-full ' onSubmit={(e) => handleFormSubmit(e, addBtnLabel)}>
+
+                                                                {/* Facility Type */}
+                                                                <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+
+                                                                    <label
+                                                                        htmlFor={`add_${addBtnLabel}_status`}
+                                                                        className='text-gray-600 capitalize text-sm'>
+                                                                        Facility Status
+                                                                        <span className='text-medium leading-12 font-semibold'>
+                                                                            {' '}
+                                                                            *
+                                                                        </span>
+                                                                    </label>
+                                                                    <input
+                                                                        required
+                                                                        type='text'
+                                                                        placeholder='Name'
+                                                                        id={`add_${addBtnLabel}_status`}
+                                                                        name='name'
+                                                                        defaultValue={editData.name}
+                                                                        className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
+                                                                    />
+                                                                </div>
+
+                                                                {/* Is Seen Public */}
+                                                                <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+
+                                                                    <label
+                                                                        htmlFor={`add_${addBtnLabel}_is_public`}
+                                                                        className='text-gray-600 capitalize text-sm'>
+                                                                        Will facilities with this status be seen in public?
+                                                                        <span className='text-medium leading-12 font-semibold'>
+                                                                            {' '}
+
+                                                                        </span>
+                                                                    </label>
+                                                                    <input
+                                                                        // required
+                                                                        type='checkbox'
+                                                                        placeholder='Name'
+                                                                        id={`add_${addBtnLabel}_is_public`}
+                                                                        name='is_public_visible'
+                                                                        defaultChecked={editData.is_public_visible}
+
+                                                                    />
+                                                                </div>
+
+
+                                                                <div className='flex items-center space-x-3 mt-4'>
+                                                                    <button type='submit' className='p-2 text-white bg-blue-600  font-semibold'>save</button>
+                                                                    <button className='p-2 text-white bg-indigo-500  font-semibold'>cancel</button>
+                                                                </div>
+
+                                                            </form>
+                                                            &nbsp;
+                                                            <ChangeLog />
+                                                        </>
+                                                    )
+                                                case 'facility admission status':
+                                                    return (
+                                                        <>
+                                                            <form className='w-full h-full' onSubmit={(e) => handleFormSubmit(e, addBtnLabel)}>
+
+                                                                {/* Facility Type */}
+                                                                <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+
+                                                                    <label
+                                                                        htmlFor={`add_${addBtnLabel}_status`}
+                                                                        className='text-gray-600 capitalize text-sm'>
+                                                                        Facility Admission Status
+                                                                        <span className='text-medium leading-12 font-semibold'>
+                                                                            {' '}
+                                                                            *
+                                                                        </span>
+                                                                    </label>
+                                                                    <input
+                                                                        required
+                                                                        type='text'
+                                                                        placeholder='Name'
+                                                                        id={`add_${addBtnLabel}_status`}
                                                                         name='name'
                                                                         defaultValue={editData.name}
                                                                         className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
@@ -3785,671 +3881,20 @@ function SystemSetup(props) {
                                                                 </div>
 
                                                             </form>
-                                                        )
-                                                    case 'facility operation status':
-                                                        return (
-                                                            <>
-                                                                <form className='w-full h-full ' onSubmit={(e) => handleFormSubmit(e, addBtnLabel)}>
-
-                                                                    {/* Facility Type */}
-                                                                    <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-
-                                                                        <label
-                                                                            htmlFor={`add_${addBtnLabel}_status`}
-                                                                            className='text-gray-600 capitalize text-sm'>
-                                                                            Facility Status
-                                                                            <span className='text-medium leading-12 font-semibold'>
-                                                                                {' '}
-                                                                                *
-                                                                            </span>
-                                                                        </label>
-                                                                        <input
-                                                                            required
-                                                                            type='text'
-                                                                            placeholder='Name'
-                                                                            id={`add_${addBtnLabel}_status`}
-                                                                            name='name'
-                                                                            defaultValue={editData.name}
-                                                                            className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
-                                                                        />
-                                                                    </div>
-
-                                                                    {/* Is Seen Public */}
-                                                                    <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-
-                                                                        <label
-                                                                            htmlFor={`add_${addBtnLabel}_is_public`}
-                                                                            className='text-gray-600 capitalize text-sm'>
-                                                                            Will facilities with this status be seen in public?
-                                                                            <span className='text-medium leading-12 font-semibold'>
-                                                                                {' '}
-
-                                                                            </span>
-                                                                        </label>
-                                                                        <input
-                                                                            // required
-                                                                            type='checkbox'
-                                                                            placeholder='Name'
-                                                                            id={`add_${addBtnLabel}_is_public`}
-                                                                            name='is_public_visible'
-                                                                            defaultChecked={editData.is_public_visible}
-
-                                                                        />
-                                                                    </div>
-
-
-                                                                    <div className='flex items-center space-x-3 mt-4'>
-                                                                        <button type='submit' className='p-2 text-white bg-blue-600  font-semibold'>save</button>
-                                                                        <button className='p-2 text-white bg-indigo-500  font-semibold'>cancel</button>
-                                                                    </div>
-
-                                                                </form>
-                                                                &nbsp;
-                                                                <ChangeLog />
-                                                            </>
-                                                        )
-                                                    case 'facility admission status':
-                                                        return (
-                                                            <>
-                                                                <form className='w-full h-full' onSubmit={(e) => handleFormSubmit(e, addBtnLabel)}>
-
-                                                                    {/* Facility Type */}
-                                                                    <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-
-                                                                        <label
-                                                                            htmlFor={`add_${addBtnLabel}_status`}
-                                                                            className='text-gray-600 capitalize text-sm'>
-                                                                            Facility Admission Status
-                                                                            <span className='text-medium leading-12 font-semibold'>
-                                                                                {' '}
-                                                                                *
-                                                                            </span>
-                                                                        </label>
-                                                                        <input
-                                                                            required
-                                                                            type='text'
-                                                                            placeholder='Name'
-                                                                            id={`add_${addBtnLabel}_status`}
-                                                                            name='name'
-                                                                            defaultValue={editData.name}
-                                                                            className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
-                                                                        />
-                                                                    </div>
-
-
-                                                                    <div className='flex items-center space-x-3 mt-4'>
-                                                                        <button type='submit' className='p-2 text-white bg-blue-600  font-semibold'>save</button>
-                                                                        <button className='p-2 text-white bg-indigo-500  font-semibold'>cancel</button>
-                                                                    </div>
-
-                                                                </form>
-                                                                &nbsp;
-                                                                <ChangeLog />
-                                                            </>
-                                                        )
-                                                    case 'facility owner detail':
-                                                        return (
-                                                            <>
-                                                                <form className='w-full h-full' onSubmit={(e) => handleFormSubmit(e, addBtnLabel)}>
-
-                                                                    {/* Name */}
-                                                                    <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-
-                                                                        <label
-                                                                            htmlFor={`add_${addBtnLabel}_name`}
-                                                                            className='text-gray-600 capitalize text-sm'>
-                                                                            Name
-                                                                            <span className='text-medium leading-12 font-semibold'>
-                                                                                {' '}
-                                                                                *
-                                                                            </span>
-                                                                        </label>
-                                                                        <input
-                                                                            required
-                                                                            type='text'
-                                                                            placeholder='Name'
-                                                                            id={`add_${addBtnLabel}_name`}
-                                                                            name='name'
-                                                                            defaultValue={editData.name}
-                                                                            className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
-                                                                        />
-                                                                    </div>
-
-                                                                    {/* Description */}
-                                                                    <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-
-                                                                        <label
-                                                                            htmlFor={`add_${addBtnLabel}_desc`}
-                                                                            className='text-gray-600 capitalize text-sm'>
-                                                                            Description
-                                                                            <span className='text-medium leading-12 font-semibold'>
-                                                                                {' '}
-
-                                                                            </span>
-                                                                        </label>
-                                                                        <textarea
-
-                                                                            type='text'
-                                                                            placeholder='Description'
-                                                                            id={`add_${addBtnLabel}_desc`}
-                                                                            name='description'
-                                                                            defaultValue={editData.description}
-                                                                            className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
-                                                                        />
-                                                                    </div>
-                                                                    {editMode && (
-
-                                                                        <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-                                                                            <input
-                                                                                className=''
-                                                                                name="active"
-                                                                                type='checkbox'
-                                                                                defaultChecked={editData.active}
-                                                                                id={`add_${addBtnLabel}_active`}
-                                                                            />
-
-                                                                            <label
-                                                                                htmlFor={`add_${addBtnLabel}_active`}
-                                                                                className='text-gray-600 capitalize text-sm'>
-                                                                                Is Active?
-                                                                                <span className='text-medium leading-12 font-semibold'>
-                                                                                    {' '}
-
-                                                                                </span>
-                                                                            </label>
-                                                                        </div>
-                                                                    )}
-
-                                                                    <div className='flex items-center space-x-3 mt-4'>
-                                                                        <button type='submit' className='p-2 text-white bg-blue-600  font-semibold'>save</button>
-                                                                        <button className='p-2 text-white bg-indigo-500  font-semibold'>cancel</button>
-                                                                    </div>
-
-                                                                </form>
-                                                                &nbsp;
-                                                                <ChangeLog />
-                                                            </>
-
-                                                        )
-                                                    case 'facility owner category':
-                                                        return (
-                                                            <>
-                                                                <form className='w-full h-full' onSubmit={(e) => handleFormSubmit(e, addBtnLabel)}>
-
-                                                                    {/* Name */}
-                                                                    <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-
-                                                                        <label
-                                                                            htmlFor={`add_${addBtnLabel}_name`}
-                                                                            className='text-gray-600 capitalize text-sm'>
-                                                                            Name
-                                                                            <span className='text-medium leading-12 font-semibold'>
-                                                                                {' '}
-                                                                                *
-                                                                            </span>
-                                                                        </label>
-                                                                        <input
-                                                                            required
-                                                                            type='text'
-                                                                            placeholder='Name'
-                                                                            id={`add_${addBtnLabel}_name`}
-                                                                            name='name'
-                                                                            defaultValue={editData.name}
-                                                                            className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
-                                                                        />
-                                                                    </div>
-
-
-                                                                    {/* Owner Type */}
-                                                                    <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-
-                                                                        <label
-                                                                            htmlFor={`add_${addBtnLabel}_owner_type`}
-                                                                            className='text-gray-600 capitalize text-sm'>
-                                                                            Owner Type
-                                                                            <span className='text-medium leading-12 font-semibold'>
-                                                                                {' '}
-                                                                                *
-                                                                            </span>
-                                                                        </label>
-
-                                                                        <Select
-                                                                            styles={{
-                                                                                control: (baseStyles) => ({
-                                                                                    ...baseStyles,
-                                                                                    backgroundColor: 'transparent',
-                                                                                    outLine: 'none',
-                                                                                    border: 'none',
-                                                                                    outLine: 'none',
-                                                                                    textColor: 'transparent',
-                                                                                    padding: 0,
-                                                                                    height: '4px'
-                                                                                }),
-
-                                                                            }}
-                                                                            options={selectOptions}
-                                                                            required
-                                                                            placeholder='Select Facility Owner'
-                                                                            onChange={() => console.log('changed type')}
-                                                                            key={editData.owner_type}
-                                                                            id={`add_${addBtnLabel}_owner_type`}
-                                                                            name='owner_type'
-                                                                            defaultValue={{ value: editData.owner_type, label: editData.owner_type_name }}
-                                                                            className='flex-none w-full  flex-grow  placeholder-gray-500 border border-gray-600 outline-none'
-                                                                        />
-
-                                                                    </div>
-
-                                                                    {/* Abbreviation */}
-                                                                    <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-
-                                                                        <label
-                                                                            htmlFor={`add_${addBtnLabel}_constituency_field`}
-                                                                            className='text-gray-600 capitalize text-sm'>
-                                                                            Abbreviation
-                                                                            <span className='text-medium leading-12 font-semibold'>
-                                                                                {' '}
-
-                                                                            </span>
-                                                                        </label>
-                                                                        <input
-                                                                            required
-                                                                            type='text'
-                                                                            placeholder='Abbreviation'
-                                                                            id={`add_${addBtnLabel}_constituency_field`}
-                                                                            name='abbreviation'
-                                                                            defaultValue={editData.abbreviation}
-                                                                            className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
-                                                                        />
-                                                                    </div>
-
-
-
-                                                                    {/* Description */}
-                                                                    <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-
-                                                                        <label
-                                                                            htmlFor={`add_${addBtnLabel}_desc`}
-                                                                            className='text-gray-600 capitalize text-sm'>
-                                                                            Description
-                                                                            <span className='text-medium leading-12 font-semibold'>
-                                                                                {' '}
-
-                                                                            </span>
-                                                                        </label>
-                                                                        <textarea
-
-                                                                            type='text'
-                                                                            placeholder='Description'
-                                                                            id={`add_${addBtnLabel}_desc`}
-                                                                            name='description'
-                                                                            defaultValue={editData.description}
-                                                                            className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
-                                                                        />
-                                                                    </div>
-                                                                    {editMode && (
-
-                                                                        <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-                                                                            <input
-                                                                                className=''
-                                                                                name="active"
-                                                                                type='checkbox'
-                                                                                defaultChecked={editData.active}
-                                                                                id={`add_${addBtnLabel}_active`}
-                                                                            />
-
-                                                                            <label
-                                                                                htmlFor={`add_${addBtnLabel}_active`}
-                                                                                className='text-gray-600 capitalize text-sm'>
-                                                                                Is Active?
-                                                                                <span className='text-medium leading-12 font-semibold'>
-                                                                                    {' '}
-
-                                                                                </span>
-                                                                            </label>
-                                                                        </div>
-                                                                    )}
-
-                                                                    <div className='flex items-center space-x-3 mt-4'>
-                                                                        <button type='submit' className='p-2 text-white bg-blue-600  font-semibold'>save</button>
-                                                                        <button className='p-2 text-white bg-indigo-500  font-semibold'>cancel</button>
-                                                                    </div>
-
-                                                                </form>
-                                                                &nbsp;
-                                                                <ChangeLog />
-                                                            </>
-                                                        )
-                                                    case 'job title':
-                                                        return (
-                                                            <>
-                                                                <form className='w-full h-full' onSubmit={(e) => handleFormSubmit(e, addBtnLabel)}>
-
-                                                                    {/* Name */}
-                                                                    <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-
-                                                                        <label
-                                                                            htmlFor={`add_${addBtnLabel}_name`}
-                                                                            className='text-gray-600 capitalize text-sm'>
-                                                                            Name
-                                                                            <span className='text-medium leading-12 font-semibold'>
-                                                                                {' '}
-                                                                                *
-                                                                            </span>
-                                                                        </label>
-                                                                        <input
-                                                                            required
-                                                                            type='text'
-                                                                            placeholder='Name'
-                                                                            id={`add_${addBtnLabel}_name`}
-                                                                            name='name'
-                                                                            defaultValue={editData.name}
-                                                                            className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
-                                                                        />
-                                                                    </div>
-
-                                                                    {/* Description */}
-                                                                    <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-
-                                                                        <label
-                                                                            htmlFor={`add_${addBtnLabel}_desc`}
-                                                                            className='text-gray-600 capitalize text-sm'>
-                                                                            Description
-                                                                            <span className='text-medium leading-12 font-semibold'>
-                                                                                {' '}
-
-                                                                            </span>
-                                                                        </label>
-                                                                        <textarea
-
-                                                                            type='text'
-                                                                            placeholder='Description'
-                                                                            id={`add_${addBtnLabel}_desc`}
-                                                                            name='description'
-                                                                            defaultValue={editData.description}
-                                                                            className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
-                                                                        />
-                                                                    </div>
-
-                                                                    {editMode && (
-
-                                                                        <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-                                                                            <input
-                                                                                className=''
-                                                                                name="active"
-                                                                                type='checkbox'
-                                                                                defaultChecked={editData.active}
-                                                                                id={`add_${addBtnLabel}_active`}
-                                                                            />
-
-                                                                            <label
-                                                                                htmlFor={`add_${addBtnLabel}_active`}
-                                                                                className='text-gray-600 capitalize text-sm'>
-                                                                                Is Active?
-                                                                                <span className='text-medium leading-12 font-semibold'>
-                                                                                    {' '}
-
-                                                                                </span>
-                                                                            </label>
-                                                                        </div>
-                                                                    )}
-
-                                                                    <div className='flex items-center space-x-3 mt-4'>
-                                                                        <button type='submit' className='p-2 text-white bg-blue-600  font-semibold'>save</button>
-                                                                        <button className='p-2 text-white bg-indigo-500  font-semibold'>cancel</button>
-                                                                    </div>
-
-                                                                </form>
-                                                                &nbsp;
-                                                                <ChangeLog />
-                                                            </>
-                                                        )
-                                                    case 'regulatory body':
-                                                        const handleAddClick = (e) => {
-                                                            e.preventDefault();
-                                                            setContactList(s => {
-                                                                return [...s, { contact_type: '', contact: '' }]
-                                                            })
-                                                        };
-
-                                                        return (
-                                                            <>
-                                                                <form className='w-full h-full' onSubmit={e => handleFormSubmit(e, addBtnLabel)}>
-                                                                    <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-
-                                                                        <label
-                                                                            htmlFor={`add_${addBtnLabel}_name`}
-                                                                            className='text-gray-600 capitalize text-sm'>
-                                                                            Name
-                                                                            <span className='text-medium leading-12 font-semibold'>
-                                                                                {' '}
-                                                                                *
-                                                                            </span>
-                                                                        </label>
-                                                                        <input
-                                                                            required
-                                                                            type='text'
-                                                                            placeholder='Name'
-                                                                            id={`add_${addBtnLabel}_name`}
-                                                                            name="name"
-                                                                            defaultValue={editData.name}
-                                                                            className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
-                                                                        />
-                                                                    </div>
-
-                                                                    {/* Abbreviation */}
-                                                                    <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-
-                                                                        <label
-                                                                            htmlFor={`add_${addBtnLabel}_abbr`}
-                                                                            className='text-gray-600 capitalize text-sm'>
-                                                                            Abbreviation
-                                                                            <span className='text-medium leading-12 font-semibold'>
-                                                                                {' '}
-
-                                                                            </span>
-                                                                        </label>
-                                                                        <input
-
-                                                                            type='text'
-                                                                            placeholder=''
-                                                                            id={`add_${addBtnLabel}_abbr`}
-                                                                            name="abbreviation"
-                                                                            defaultValue={editData.abbreviation}
-                                                                            className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
-                                                                        />
-                                                                    </div>
-                                                                    {editMode && (
-
-                                                                        <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-                                                                            <input
-                                                                                className=''
-                                                                                name="active"
-                                                                                type='checkbox'
-                                                                                defaultChecked={editData.active}
-                                                                                id={`add_${addBtnLabel}_active`}
-                                                                            />
-
-                                                                            <label
-                                                                                htmlFor={`add_${addBtnLabel}_active`}
-                                                                                className='text-gray-600 capitalize text-sm'>
-                                                                                Is Active?
-                                                                                <span className='text-medium leading-12 font-semibold'>
-                                                                                    {' '}
-
-                                                                                </span>
-                                                                            </label>
-                                                                        </div>
-                                                                    )}
-
-                                                                    {/* inputsContainer */}
-                                                                    <div className='grid grid-cols-2 place-content-start gap-3 space-y-1' ref={inputsContainerRef2}>
-                                                                        <h2 className='text-lg font-semibold text-indigo-900'>Contact Type*</h2>
-                                                                        <h2 className='text-lg font-semibold text-indigo-900'>Contact Details*</h2>
-
-                                                                        {contactList.map((contact, index) => {
-                                                                            return (
-                                                                                <>
-                                                                                    {/* Contact Type */}
-
-                                                                                    <select
-                                                                                        required
-                                                                                        key={index}
-                                                                                        id={`${index}`}
-                                                                                        name='contact_type'
-                                                                                        defaultValue={contact?.contact_type}
-                                                                                        className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
-
-                                                                                    >
-
-                                                                                        {selectOptions.map((ct, i) => (
-                                                                                            <option value={ct.value} key={i}>{ct.label}</option>
-                                                                                        ))}
-                                                                                    </select>
-
-                                                                                    {/* Contact Detail */}
-                                                                                    <input
-                                                                                        required
-                                                                                        type='text'
-                                                                                        placeholder='Contact Details'
-                                                                                        key={index}
-                                                                                        id={index}
-                                                                                        name="contact"
-                                                                                        defaultValue={contact?.contact}
-                                                                                        className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
-                                                                                    />
-
-                                                                                </>
-                                                                            )
-                                                                        })}
-
-                                                                        <div className='col-span-2 flex items-center justify-end'>
-                                                                            <button className=' p-2 w-auto h-auto bg-indigo-600 text-white flex items-center self-start'
-                                                                                onClick={handleAddClick}
-                                                                            >Add <PlusIcon className='w-5 h-5 text-white' /></button>
-                                                                        </div>
-
-                                                                    </div>
-
-                                                                    <div className='flex items-center space-x-3 mt-4'>
-                                                                        <button type='submit' className='p-2 text-white bg-blue-600  font-semibold'>save</button>
-                                                                        <button className='p-2 text-white bg-indigo-500  font-semibold'>cancel</button>
-                                                                    </div>
-
-
-
-                                                                </form>
-                                                                &nbsp;
-                                                                <ChangeLog />
-                                                            </>
-                                                        )
-                                                    case 'regulatory status':
-                                                        return (
-                                                            <>
-                                                                <form className='w-full h-full' onSubmit={(e) => handleFormSubmit(e, addBtnLabel)}>
-                                                                    {/* regulatory Status */}
-                                                                    <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-
-                                                                        <label
-                                                                            htmlFor={`add_${addBtnLabel}_status`}
-                                                                            className='text-gray-600 capitalize text-sm'>
-                                                                            Regulatory Status
-                                                                            <span className='text-medium leading-12 font-semibold'>
-                                                                                {' '}
-
-                                                                            </span>
-                                                                        </label>
-                                                                        <input
-
-                                                                            type='text'
-                                                                            placeholder='Enter Regulatory status'
-                                                                            id={`add_${addBtnLabel}_status`}
-                                                                            name='name'
-                                                                            defaultValue={editData.name}
-                                                                            className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
-                                                                        />
-                                                                    </div>
-
-                                                                    <div className='flex items-center space-x-3 mt-4'>
-                                                                        <button type='submit' className='p-2 text-white bg-blue-600  font-semibold'>save</button>
-                                                                        <button className='p-2 text-white bg-indigo-500  font-semibold'>cancel</button>
-                                                                    </div>
-
-                                                                </form>
-                                                                &nbsp;
-                                                                <ChangeLog />
-                                                            </>
-                                                        )
-                                                    case 'upgrade reason':
-                                                        return (
-                                                            <>
-                                                                <form className='w-full h-full' onSubmit={(e) => handleFormSubmit(e, addBtnLabel)}>
-
-                                                                    {/* Facility Change reason */}
-                                                                    <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-
-                                                                        <label
-                                                                            htmlFor={`add_${addBtnLabel}_reason`}
-                                                                            className='text-gray-600 capitalize text-sm'>
-                                                                            Facility Change reason
-                                                                            <span className='text-medium leading-12 font-semibold'>
-                                                                                {' '}
-                                                                                *
-                                                                            </span>
-                                                                        </label>
-                                                                        <input
-                                                                            required
-                                                                            type='text'
-                                                                            placeholder='Name'
-                                                                            id={`add_${addBtnLabel}_reason`}
-                                                                            name='reason'
-                                                                            defaultValue={editData.reason}
-                                                                            className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
-                                                                        />
-                                                                    </div>
-
-                                                                    {/* Description */}
-                                                                    <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-
-                                                                        <label
-                                                                            htmlFor={`add_${addBtnLabel}_desc`}
-                                                                            className='text-gray-600 capitalize text-sm'>
-                                                                            Description
-                                                                            <span className='text-medium leading-12 font-semibold'>
-                                                                                {' '}
-
-                                                                            </span>
-                                                                        </label>
-                                                                        <textarea
-
-                                                                            type='text'
-                                                                            placeholder='Description'
-                                                                            id={`add_${addBtnLabel}_desc`}
-                                                                            name='description'
-                                                                            defaultValue={editData.description}
-                                                                            className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
-                                                                        />
-                                                                    </div>
-
-                                                                    <div className='flex items-center space-x-3 mt-4'>
-                                                                        <button type='submit' className='p-2 text-white bg-blue-600  font-semibold'>save</button>
-                                                                        <button className='p-2 text-white bg-indigo-500  font-semibold'>cancel</button>
-                                                                    </div>
-
-                                                                </form>
-                                                                &nbsp;
-                                                                <ChangeLog />
-                                                            </>
-                                                        )
-                                                    case 'Document':
-                                                        return (
-                                                            <form className='w-full h-full'>
+                                                            &nbsp;
+                                                            <ChangeLog />
+                                                        </>
+                                                    )
+                                                case 'facility owner detail':
+                                                    return (
+                                                        <>
+                                                            <form className='w-full h-full' onSubmit={(e) => handleFormSubmit(e, addBtnLabel)}>
 
                                                                 {/* Name */}
                                                                 <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
 
                                                                     <label
-                                                                        htmlFor={`add_${addBtnLabel}_reason`}
+                                                                        htmlFor={`add_${addBtnLabel}_name`}
                                                                         className='text-gray-600 capitalize text-sm'>
                                                                         Name
                                                                         <span className='text-medium leading-12 font-semibold'>
@@ -4460,8 +3905,10 @@ function SystemSetup(props) {
                                                                     <input
                                                                         required
                                                                         type='text'
-                                                                        placeholder=''
-                                                                        name={`add_${addBtnLabel}_reason`}
+                                                                        placeholder='Name'
+                                                                        id={`add_${addBtnLabel}_name`}
+                                                                        name='name'
+                                                                        defaultValue={editData.name}
                                                                         className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
                                                                     />
                                                                 </div>
@@ -4482,28 +3929,441 @@ function SystemSetup(props) {
 
                                                                         type='text'
                                                                         placeholder='Description'
-                                                                        name={`add_${addBtnLabel}_desc`}
+                                                                        id={`add_${addBtnLabel}_desc`}
+                                                                        name='description'
+                                                                        defaultValue={editData.description}
                                                                         className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
                                                                     />
                                                                 </div>
+                                                                {editMode && (
 
-                                                                {/* File */}
+                                                                    <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                                                        <input
+                                                                            className=''
+                                                                            name="active"
+                                                                            type='checkbox'
+                                                                            defaultChecked={editData.active}
+                                                                            id={`add_${addBtnLabel}_active`}
+                                                                        />
+
+                                                                        <label
+                                                                            htmlFor={`add_${addBtnLabel}_active`}
+                                                                            className='text-gray-600 capitalize text-sm'>
+                                                                            Is Active?
+                                                                            <span className='text-medium leading-12 font-semibold'>
+                                                                                {' '}
+
+                                                                            </span>
+                                                                        </label>
+                                                                    </div>
+                                                                )}
+
+                                                                <div className='flex items-center space-x-3 mt-4'>
+                                                                    <button type='submit' className='p-2 text-white bg-blue-600  font-semibold'>save</button>
+                                                                    <button className='p-2 text-white bg-indigo-500  font-semibold'>cancel</button>
+                                                                </div>
+
+                                                            </form>
+                                                            &nbsp;
+                                                            <ChangeLog />
+                                                        </>
+
+                                                    )
+                                                case 'facility owner category':
+                                                    return (
+                                                        <>
+                                                            <form className='w-full h-full' onSubmit={(e) => handleFormSubmit(e, addBtnLabel)}>
+
+                                                                {/* Name */}
                                                                 <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
 
                                                                     <label
-                                                                        htmlFor={`add_${addBtnLabel}_file`}
+                                                                        htmlFor={`add_${addBtnLabel}_name`}
                                                                         className='text-gray-600 capitalize text-sm'>
-                                                                        File
+                                                                        Name
                                                                         <span className='text-medium leading-12 font-semibold'>
                                                                             {' '}
                                                                             *
                                                                         </span>
                                                                     </label>
                                                                     <input
+                                                                        required
+                                                                        type='text'
+                                                                        placeholder='Name'
+                                                                        id={`add_${addBtnLabel}_name`}
+                                                                        name='name'
+                                                                        defaultValue={editData.name}
+                                                                        className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
+                                                                    />
+                                                                </div>
 
-                                                                        type='file'
+
+                                                                {/* Owner Type */}
+                                                                <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+
+                                                                    <label
+                                                                        htmlFor={`add_${addBtnLabel}_owner_type`}
+                                                                        className='text-gray-600 capitalize text-sm'>
+                                                                        Owner Type
+                                                                        <span className='text-medium leading-12 font-semibold'>
+                                                                            {' '}
+                                                                            *
+                                                                        </span>
+                                                                    </label>
+
+                                                                    <Select
+                                                                        styles={{
+                                                                            control: (baseStyles) => ({
+                                                                                ...baseStyles,
+                                                                                backgroundColor: 'transparent',
+                                                                                outLine: 'none',
+                                                                                border: 'none',
+                                                                                outLine: 'none',
+                                                                                textColor: 'transparent',
+                                                                                padding: 0,
+                                                                                height: '4px'
+                                                                            }),
+
+                                                                        }}
+                                                                        options={selectOptions}
+                                                                        required
+                                                                        placeholder='Select Facility Owner'
+                                                                        onChange={() => console.log('changed type')}
+                                                                        key={editData.owner_type}
+                                                                        id={`add_${addBtnLabel}_owner_type`}
+                                                                        name='owner_type'
+                                                                        defaultValue={{ value: editData.owner_type, label: editData.owner_type_name }}
+                                                                        className='flex-none w-full  flex-grow  placeholder-gray-500 border border-gray-600 outline-none'
+                                                                    />
+
+                                                                </div>
+
+                                                                {/* Abbreviation */}
+                                                                <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+
+                                                                    <label
+                                                                        htmlFor={`add_${addBtnLabel}_constituency_field`}
+                                                                        className='text-gray-600 capitalize text-sm'>
+                                                                        Abbreviation
+                                                                        <span className='text-medium leading-12 font-semibold'>
+                                                                            {' '}
+
+                                                                        </span>
+                                                                    </label>
+                                                                    <input
+                                                                        required
+                                                                        type='text'
+                                                                        placeholder='Abbreviation'
+                                                                        id={`add_${addBtnLabel}_constituency_field`}
+                                                                        name='abbreviation'
+                                                                        defaultValue={editData.abbreviation}
+                                                                        className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
+                                                                    />
+                                                                </div>
+
+
+
+                                                                {/* Description */}
+                                                                <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+
+                                                                    <label
+                                                                        htmlFor={`add_${addBtnLabel}_desc`}
+                                                                        className='text-gray-600 capitalize text-sm'>
+                                                                        Description
+                                                                        <span className='text-medium leading-12 font-semibold'>
+                                                                            {' '}
+
+                                                                        </span>
+                                                                    </label>
+                                                                    <textarea
+
+                                                                        type='text'
+                                                                        placeholder='Description'
+                                                                        id={`add_${addBtnLabel}_desc`}
+                                                                        name='description'
+                                                                        defaultValue={editData.description}
+                                                                        className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
+                                                                    />
+                                                                </div>
+                                                                {editMode && (
+
+                                                                    <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                                                        <input
+                                                                            className=''
+                                                                            name="active"
+                                                                            type='checkbox'
+                                                                            defaultChecked={editData.active}
+                                                                            id={`add_${addBtnLabel}_active`}
+                                                                        />
+
+                                                                        <label
+                                                                            htmlFor={`add_${addBtnLabel}_active`}
+                                                                            className='text-gray-600 capitalize text-sm'>
+                                                                            Is Active?
+                                                                            <span className='text-medium leading-12 font-semibold'>
+                                                                                {' '}
+
+                                                                            </span>
+                                                                        </label>
+                                                                    </div>
+                                                                )}
+
+                                                                <div className='flex items-center space-x-3 mt-4'>
+                                                                    <button type='submit' className='p-2 text-white bg-blue-600  font-semibold'>save</button>
+                                                                    <button className='p-2 text-white bg-indigo-500  font-semibold'>cancel</button>
+                                                                </div>
+
+                                                            </form>
+                                                            &nbsp;
+                                                            <ChangeLog />
+                                                        </>
+                                                    )
+                                                case 'job title':
+                                                    return (
+                                                        <>
+                                                            <form className='w-full h-full' onSubmit={(e) => handleFormSubmit(e, addBtnLabel)}>
+
+                                                                {/* Name */}
+                                                                <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+
+                                                                    <label
+                                                                        htmlFor={`add_${addBtnLabel}_name`}
+                                                                        className='text-gray-600 capitalize text-sm'>
+                                                                        Name
+                                                                        <span className='text-medium leading-12 font-semibold'>
+                                                                            {' '}
+                                                                            *
+                                                                        </span>
+                                                                    </label>
+                                                                    <input
+                                                                        required
+                                                                        type='text'
+                                                                        placeholder='Name'
+                                                                        id={`add_${addBtnLabel}_name`}
+                                                                        name='name'
+                                                                        defaultValue={editData.name}
+                                                                        className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
+                                                                    />
+                                                                </div>
+
+                                                                {/* Description */}
+                                                                <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+
+                                                                    <label
+                                                                        htmlFor={`add_${addBtnLabel}_desc`}
+                                                                        className='text-gray-600 capitalize text-sm'>
+                                                                        Description
+                                                                        <span className='text-medium leading-12 font-semibold'>
+                                                                            {' '}
+
+                                                                        </span>
+                                                                    </label>
+                                                                    <textarea
+
+                                                                        type='text'
+                                                                        placeholder='Description'
+                                                                        id={`add_${addBtnLabel}_desc`}
+                                                                        name='description'
+                                                                        defaultValue={editData.description}
+                                                                        className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
+                                                                    />
+                                                                </div>
+
+                                                                {editMode && (
+
+                                                                    <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                                                        <input
+                                                                            className=''
+                                                                            name="active"
+                                                                            type='checkbox'
+                                                                            defaultChecked={editData.active}
+                                                                            id={`add_${addBtnLabel}_active`}
+                                                                        />
+
+                                                                        <label
+                                                                            htmlFor={`add_${addBtnLabel}_active`}
+                                                                            className='text-gray-600 capitalize text-sm'>
+                                                                            Is Active?
+                                                                            <span className='text-medium leading-12 font-semibold'>
+                                                                                {' '}
+
+                                                                            </span>
+                                                                        </label>
+                                                                    </div>
+                                                                )}
+
+                                                                <div className='flex items-center space-x-3 mt-4'>
+                                                                    <button type='submit' className='p-2 text-white bg-blue-600  font-semibold'>save</button>
+                                                                    <button className='p-2 text-white bg-indigo-500  font-semibold'>cancel</button>
+                                                                </div>
+
+                                                            </form>
+                                                            &nbsp;
+                                                            <ChangeLog />
+                                                        </>
+                                                    )
+                                                case 'regulatory body':
+                                                    const handleAddClick = (e) => {
+                                                        e.preventDefault();
+                                                        setContactList(s => {
+                                                            return [...s, { contact_type: '', contact: '' }]
+                                                        })
+                                                    };
+
+                                                    return (
+                                                        <>
+                                                            <form className='w-full h-full' onSubmit={e => handleFormSubmit(e, addBtnLabel)}>
+                                                                <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+
+                                                                    <label
+                                                                        htmlFor={`add_${addBtnLabel}_name`}
+                                                                        className='text-gray-600 capitalize text-sm'>
+                                                                        Name
+                                                                        <span className='text-medium leading-12 font-semibold'>
+                                                                            {' '}
+                                                                            *
+                                                                        </span>
+                                                                    </label>
+                                                                    <input
+                                                                        required
+                                                                        type='text'
+                                                                        placeholder='Name'
+                                                                        id={`add_${addBtnLabel}_name`}
+                                                                        name="name"
+                                                                        defaultValue={editData.name}
+                                                                        className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
+                                                                    />
+                                                                </div>
+
+                                                                {/* Abbreviation */}
+                                                                <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+
+                                                                    <label
+                                                                        htmlFor={`add_${addBtnLabel}_abbr`}
+                                                                        className='text-gray-600 capitalize text-sm'>
+                                                                        Abbreviation
+                                                                        <span className='text-medium leading-12 font-semibold'>
+                                                                            {' '}
+
+                                                                        </span>
+                                                                    </label>
+                                                                    <input
+
+                                                                        type='text'
                                                                         placeholder=''
-                                                                        name={`add_${addBtnLabel}_file`}
+                                                                        id={`add_${addBtnLabel}_abbr`}
+                                                                        name="abbreviation"
+                                                                        defaultValue={editData.abbreviation}
+                                                                        className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
+                                                                    />
+                                                                </div>
+                                                                {editMode && (
+
+                                                                    <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                                                        <input
+                                                                            className=''
+                                                                            name="active"
+                                                                            type='checkbox'
+                                                                            defaultChecked={editData.active}
+                                                                            id={`add_${addBtnLabel}_active`}
+                                                                        />
+
+                                                                        <label
+                                                                            htmlFor={`add_${addBtnLabel}_active`}
+                                                                            className='text-gray-600 capitalize text-sm'>
+                                                                            Is Active?
+                                                                            <span className='text-medium leading-12 font-semibold'>
+                                                                                {' '}
+
+                                                                            </span>
+                                                                        </label>
+                                                                    </div>
+                                                                )}
+
+                                                                {/* inputsContainer */}
+                                                                <div className='grid grid-cols-2 place-content-start gap-3 space-y-1' ref={inputsContainerRef2}>
+                                                                    <h2 className='text-lg font-semibold text-indigo-900'>Contact Type*</h2>
+                                                                    <h2 className='text-lg font-semibold text-indigo-900'>Contact Details*</h2>
+
+                                                                    {contactList.map((contact, index) => {
+                                                                        return (
+                                                                            <>
+                                                                                {/* Contact Type */}
+
+                                                                                <select
+                                                                                    required
+                                                                                    key={index}
+                                                                                    id={`${index}`}
+                                                                                    name='contact_type'
+                                                                                    defaultValue={contact?.contact_type}
+                                                                                    className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
+
+                                                                                >
+
+                                                                                    {selectOptions.map((ct, i) => (
+                                                                                        <option value={ct.value} key={i}>{ct.label}</option>
+                                                                                    ))}
+                                                                                </select>
+
+                                                                                {/* Contact Detail */}
+                                                                                <input
+                                                                                    required
+                                                                                    type='text'
+                                                                                    placeholder='Contact Details'
+                                                                                    key={index}
+                                                                                    id={index}
+                                                                                    name="contact"
+                                                                                    defaultValue={contact?.contact}
+                                                                                    className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
+                                                                                />
+
+                                                                            </>
+                                                                        )
+                                                                    })}
+
+                                                                    <div className='col-span-2 flex items-center justify-end'>
+                                                                        <button className=' p-2 w-auto h-auto bg-indigo-600 text-white flex items-center self-start'
+                                                                            onClick={handleAddClick}
+                                                                        >Add <PlusIcon className='w-5 h-5 text-white' /></button>
+                                                                    </div>
+
+                                                                </div>
+
+                                                                <div className='flex items-center space-x-3 mt-4'>
+                                                                    <button type='submit' className='p-2 text-white bg-blue-600  font-semibold'>save</button>
+                                                                    <button className='p-2 text-white bg-indigo-500  font-semibold'>cancel</button>
+                                                                </div>
+
+
+
+                                                            </form>
+                                                            &nbsp;
+                                                            <ChangeLog />
+                                                        </>
+                                                    )
+                                                case 'regulatory status':
+                                                    return (
+                                                        <>
+                                                            <form className='w-full h-full' onSubmit={(e) => handleFormSubmit(e, addBtnLabel)}>
+                                                                {/* regulatory Status */}
+                                                                <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+
+                                                                    <label
+                                                                        htmlFor={`add_${addBtnLabel}_status`}
+                                                                        className='text-gray-600 capitalize text-sm'>
+                                                                        Regulatory Status
+                                                                        <span className='text-medium leading-12 font-semibold'>
+                                                                            {' '}
+
+                                                                        </span>
+                                                                    </label>
+                                                                    <input
+
+                                                                        type='text'
+                                                                        placeholder='Enter Regulatory status'
+                                                                        id={`add_${addBtnLabel}_status`}
+                                                                        name='name'
+                                                                        defaultValue={editData.name}
                                                                         className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
                                                                     />
                                                                 </div>
@@ -4514,29 +4374,166 @@ function SystemSetup(props) {
                                                                 </div>
 
                                                             </form>
-                                                        )
+                                                            &nbsp;
+                                                            <ChangeLog />
+                                                        </>
+                                                    )
+                                                case 'upgrade reason':
+                                                    return (
+                                                        <>
+                                                            <form className='w-full h-full' onSubmit={(e) => handleFormSubmit(e, addBtnLabel)}>
+
+                                                                {/* Facility Change reason */}
+                                                                <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+
+                                                                    <label
+                                                                        htmlFor={`add_${addBtnLabel}_reason`}
+                                                                        className='text-gray-600 capitalize text-sm'>
+                                                                        Facility Change reason
+                                                                        <span className='text-medium leading-12 font-semibold'>
+                                                                            {' '}
+                                                                            *
+                                                                        </span>
+                                                                    </label>
+                                                                    <input
+                                                                        required
+                                                                        type='text'
+                                                                        placeholder='Name'
+                                                                        id={`add_${addBtnLabel}_reason`}
+                                                                        name='reason'
+                                                                        defaultValue={editData.reason}
+                                                                        className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
+                                                                    />
+                                                                </div>
+
+                                                                {/* Description */}
+                                                                <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+
+                                                                    <label
+                                                                        htmlFor={`add_${addBtnLabel}_desc`}
+                                                                        className='text-gray-600 capitalize text-sm'>
+                                                                        Description
+                                                                        <span className='text-medium leading-12 font-semibold'>
+                                                                            {' '}
+
+                                                                        </span>
+                                                                    </label>
+                                                                    <textarea
+
+                                                                        type='text'
+                                                                        placeholder='Description'
+                                                                        id={`add_${addBtnLabel}_desc`}
+                                                                        name='description'
+                                                                        defaultValue={editData.description}
+                                                                        className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
+                                                                    />
+                                                                </div>
+
+                                                                <div className='flex items-center space-x-3 mt-4'>
+                                                                    <button type='submit' className='p-2 text-white bg-blue-600  font-semibold'>save</button>
+                                                                    <button className='p-2 text-white bg-indigo-500  font-semibold'>cancel</button>
+                                                                </div>
+
+                                                            </form>
+                                                            &nbsp;
+                                                            <ChangeLog />
+                                                        </>
+                                                    )
+                                                case 'Document':
+                                                    return (
+                                                        <form className='w-full h-full'>
+
+                                                            {/* Name */}
+                                                            <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+
+                                                                <label
+                                                                    htmlFor={`add_${addBtnLabel}_reason`}
+                                                                    className='text-gray-600 capitalize text-sm'>
+                                                                    Name
+                                                                    <span className='text-medium leading-12 font-semibold'>
+                                                                        {' '}
+                                                                        *
+                                                                    </span>
+                                                                </label>
+                                                                <input
+                                                                    required
+                                                                    type='text'
+                                                                    placeholder=''
+                                                                    name={`add_${addBtnLabel}_reason`}
+                                                                    className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
+                                                                />
+                                                            </div>
+
+                                                            {/* Description */}
+                                                            <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+
+                                                                <label
+                                                                    htmlFor={`add_${addBtnLabel}_desc`}
+                                                                    className='text-gray-600 capitalize text-sm'>
+                                                                    Description
+                                                                    <span className='text-medium leading-12 font-semibold'>
+                                                                        {' '}
+
+                                                                    </span>
+                                                                </label>
+                                                                <textarea
+
+                                                                    type='text'
+                                                                    placeholder='Description'
+                                                                    name={`add_${addBtnLabel}_desc`}
+                                                                    className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
+                                                                />
+                                                            </div>
+
+                                                            {/* File */}
+                                                            <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+
+                                                                <label
+                                                                    htmlFor={`add_${addBtnLabel}_file`}
+                                                                    className='text-gray-600 capitalize text-sm'>
+                                                                    File
+                                                                    <span className='text-medium leading-12 font-semibold'>
+                                                                        {' '}
+                                                                        *
+                                                                    </span>
+                                                                </label>
+                                                                <input
+
+                                                                    type='file'
+                                                                    placeholder=''
+                                                                    name={`add_${addBtnLabel}_file`}
+                                                                    className='flex-none w-full bg-transparent rounded p-2 flex-grow border placeholder-gray-500 border-gray-600 focus:shadow-none focus:border-black outline-none'
+                                                                />
+                                                            </div>
+
+                                                            <div className='flex items-center space-x-3 mt-4'>
+                                                                <button type='submit' className='p-2 text-white bg-blue-600  font-semibold'>save</button>
+                                                                <button className='p-2 text-white bg-indigo-500  font-semibold'>cancel</button>
+                                                            </div>
+
+                                                        </form>
+                                                    )
 
 
-                                                }
+                                            }
 
-                                            })()
+                                        })()
 
-                                        }
+                                    }
 
-                                    </div>
                                 </div>
+                            </div>)
 
-                            )
+                        )
 
-                        }
-
-
-                    </div>
+                    }
 
 
-                </MainLayout>
-            </>
-        )
+                </div>
+
+
+            </MainLayout>
+        </>);
     }
     else {
         return null
