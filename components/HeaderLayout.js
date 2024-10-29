@@ -11,7 +11,7 @@ import LoadingAnimation from "./LoadingAnimation";
 
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
 import { UserContext } from "../providers/user";
-import Image from 'next/image';
+import Image from "next/legacy/image";
 import Head from 'next/head'
 import { CloseOutlined, Login, Logout } from '@mui/icons-material'
 // import Select from 'react-select'
@@ -178,9 +178,7 @@ export default function HeaderLayout({
 
 
   return (
-
-
-    <header className='w-full max-h-min flex'>
+    (<header className='w-full max-h-min flex'>
       {/* {
         <pre className="hidden">{
           JSON.stringify({ isLoggedIn, userCtx }, null, 2)
@@ -190,7 +188,6 @@ export default function HeaderLayout({
         {/*   <title>KMHFR | Home</title> */}
         <link rel="icon" href="/favicon.ico" />
       </Head>
-
       {/* {
         <pre>
           {
@@ -200,7 +197,6 @@ export default function HeaderLayout({
           }
         </pre>
       } */}
-
       <div className="w-full overflow-y-scroll flex flex-col ">
 
         <div className='w-full h-auto z-10 fixed top-0'>
@@ -727,269 +723,206 @@ export default function HeaderLayout({
                       switch (groupID) {
                         case 7: // Super User
                           return (
-                            <ul className='list-none w-full flex items-center  justify-between '>
-
-
+                            (<ul className='list-none w-full flex items-center  justify-between '>
                               <li className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/dashboard" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
                                 <Link href='/dashboard'>Dashboard</Link>
                               </li>
-
                               <li className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${(/\/facilities\/.+/.test(currentPath) || /\/facilities/.test(currentPath)) && 'border-b-2 border-b-gray-50 bg-blue-500/85 text-gray-100 '}  ${currentPath == "/public/facilities" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
                                 <Link href={`${userID !== 6 && isLoggedIn ? '/facilities' : '/public/facilities'}`}>Facilities</Link>
                               </li>
-
                               <li className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${(/\/community-units\/.+/.test(currentPath) || /\/community-units/.test(currentPath)) && 'border-b-2 border-b-gray-50 bg-blue-500/85'} ${currentPath == "/public/chu" && 'border-b-2 border-b-gray-50 bg-blue-700/85 text-gray-100'}`}>
                                 <Link href={`${userID !== 6 && isLoggedIn ? '/community-units' : '/public/chu'}`}>Community Units</Link>
                               </li>
-
                               <li className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${/\/user\/*/.test(currentPath) && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
                                 <Link href='/user'>Users</Link>
                               </li>
-
                               <li className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/system_setup" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
                                 <Link href='/system_setup'><span>System Setup</span></Link>
                               </li>
-
                               <li className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/reports" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
                                 <Link href='/reports'>Reports</Link>
                               </li>
-
                               <li className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${/\/admin_offices\/*/.test(currentPath) && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
                                 <Link href='/admin_offices'>Admin Offices</Link>
                               </li>
-
                               <li className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/documentation" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
                                                               <Link target="_blank" href='https://kmhfr-docs.vercel.app'>Documentation</Link>
                                                             </li>
-
                               <li className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/downloads" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
                                 <Link href='/downloads'>Downloads</Link>
                               </li>
-                            </ul>
-                          )
+                            </ul>)
+                          );
                         case 5: // National Level Admin
                           return (
-                            <ul className='list-none w-full flex items-center  justify-between '>
-
-
+                            (<ul className='list-none w-full flex items-center  justify-between '>
                               <li className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/dashboard" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
                                 <Link href='/dashboard'>Dashboard</Link>
                               </li>
-
                               <li className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${(/\/facilities\/.+/.test(currentPath) || /\/facilities/.test(currentPath)) && 'border-b-2 border-b-gray-50 bg-blue-500/85 text-gray-100 '}  ${currentPath == "/public/facilities" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
                                 <Link href={`${userID !== 6 && isLoggedIn ? '/facilities' : '/public/facilities'}`}>Facilities</Link>
                               </li>
-
                               <li className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${(/\/community-units\/.+/.test(currentPath) || /\/community-units/.test(currentPath)) && 'border-b-2 border-b-gray-50 bg-blue-500/85'}  ${currentPath == "/public/chu" && 'border-b-2 border-b-gray-50 bg-blue-700/85 text-gray-100'}`}>
                                 <Link href={`${userID !== 6 && isLoggedIn ? '/community-units' : '/public/chu'}`}>Community Units</Link>
                               </li>
-
                               <li className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${/\/user\/*/.test(currentPath) && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
                                 <Link href='/user'>Users</Link>
                               </li>
-
                               <li className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/system_setup" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
                                 <Link href='/system_setup'><span>System Setup</span></Link>
                               </li>
-
                               <li className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/reports" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
                                 <Link href='/reports'>Reports</Link>
                               </li>
-
                               <li className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${/\/admin_offices\/*/.test(currentPath) && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
                                 <Link href='/admin_offices'>Admin Offices</Link>
                               </li>
-
                               <li className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/documentation" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
                                                       <Link target="_blank" href='https://kmhfr-docs.vercel.app'>Documentation</Link>
                                                     </li>
-
                               <li className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/downloads" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
                                 <Link href='/downloads'>Downloads</Link>
                               </li>
-                            </ul>
-                          )
+                            </ul>)
+                          );
                         case 11: // Data Cleaning National
                           return (
-                            <ul className='list-none w-full flex items-center  justify-between '>
-
-
+                            (<ul className='list-none w-full flex items-center  justify-between '>
                               <li className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/dashboard" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
                                 <Link href='/dashboard'>Dashboard</Link>
                               </li>
-
                               <li className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${(/\/facilities\/.+/.test(currentPath) || /\/facilities/.test(currentPath)) && 'border-b-2 border-b-gray-50 bg-blue-500/85 text-gray-100 '}  ${currentPath == "/public/facilities" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
                                 <Link href={`${userID !== 6 && isLoggedIn ? '/facilities' : '/public/facilities'}`}>Facilities</Link>
                               </li>
-
                               <li className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${(/\/community-units\/.+/.test(currentPath) || /\/community-units/.test(currentPath)) && 'border-b-2 border-b-gray-50 bg-blue-500/85'}  ${currentPath == "/public/chu" && 'border-b-2 border-b-gray-50 bg-blue-700/85 text-gray-100'}`}>
                                 <Link href={`${userID !== 6 && isLoggedIn ? '/community-units' : '/public/chu'}`}>Community Units</Link>
                               </li>
-
                               <li className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${/\/user\/*/.test(currentPath) && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
                                 <Link href='/user'>Users</Link>
                               </li>
-
                               <li className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/system_setup" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
                                 <Link href='/system_setup'><span>System Setup</span></Link>
                               </li>
-
                               <li className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/reports" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
                                 <Link href='/reports'>Reports</Link>
                               </li>
-
                               <li className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${/\/admin_offices\/*/.test(currentPath) && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
                                 <Link href='/admin_offices'>Admin Offices</Link>
                               </li>
-
                               <li className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/documentation" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
                                                       <Link target="_blank"  href='https://kmhfr-docs.vercel.app'>Documentation</Link>
                                                     </li>
-
                               <li className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/downloads" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
                                 <Link href='/downloads'>Downloads</Link>
                               </li>
-                            </ul>
-                          )
+                            </ul>)
+                          );
                         case 1: // CHRIO
                           return (
-                            <ul className='list-none w-full flex items-center  justify-between '>
-
-
+                            (<ul className='list-none w-full flex items-center  justify-between '>
                               <li className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/dashboard" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
                                 <Link href='/dashboard'>Dashboard</Link>
                               </li>
-
                               <li className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${(/\/facilities\/.+/.test(currentPath) || /\/facilities/.test(currentPath)) && 'border-b-2 border-b-gray-50 bg-blue-500/85 text-gray-100 '}  ${currentPath == "/public/facilities" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
                                 <Link href={`${userID !== 6 && isLoggedIn ? '/facilities' : '/public/facilities'}`}>Facilities</Link>
                               </li>
-
                               <li className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${(/\/community-units\/.+/.test(currentPath) || /\/community-units/.test(currentPath)) && 'border-b-2 border-b-gray-50 bg-blue-500/85'}  ${currentPath == "/public/chu" && 'border-b-2 border-b-gray-50 bg-blue-700/85 text-gray-100'}`}>
                                 <Link href={`${userID !== 6 && isLoggedIn ? '/community-units' : '/public/chu'}`}>Community Units</Link>
                               </li>
-
                               <li className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${/\/user\/*/.test(currentPath) && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
                                 <Link href='/user'>Users</Link>
                               </li>
-
                               <li className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/reports" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
                                 <Link href='/reports'>Reports</Link>
                               </li>
-
                               <li className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/documentation" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
                                                   <Link target="_blank"  href='https://kmhfr-docs.vercel.app'>Documentation</Link>
                                                 </li>
-
                               <li className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/downloads" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
                                 <Link href='/downloads'>Downloads</Link>
                               </li>
-                            </ul>
-                          )
+                            </ul>)
+                          );
                         case 2: // SCHRIO
                           return (
-                            <ul className='list-none w-full flex items-center  justify-between '>
-
-
+                            (<ul className='list-none w-full flex items-center  justify-between '>
                               <li className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/dashboard" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
                                 <Link href='/dashboard'>Dashboard</Link>
                               </li>
-
                               <li className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${(/\/facilities\/.+/.test(currentPath) || /\/facilities/.test(currentPath)) && 'border-b-2 border-b-gray-50 bg-blue-500/85 text-gray-100 '}  ${currentPath == "/public/facilities" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
                                 <Link href={`${userID !== 6 && isLoggedIn ? '/facilities' : '/public/facilities'}`}>Facilities</Link>
                               </li>
-
                               <li className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${(/\/community-units\/.+/.test(currentPath) || /\/community-units/.test(currentPath)) && 'border-b-2 border-b-gray-50 bg-blue-500/85'}  ${currentPath == "/public/chu" && 'border-b-2 border-b-gray-50 bg-blue-700/85 text-gray-100'}`}>
                                 <Link href={`${userID !== 6 && isLoggedIn ? '/community-units' : '/public/chu'}`}>Community Units</Link>
                               </li>
-
                               <li className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/reports" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
                                 <Link href='/reports'>Reports</Link>
                               </li>
-
                               <li className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/documentation" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
                                             <Link target="_blank" href='https://kmhfr-docs.vercel.app'>Documentation</Link>
                                           </li>
-
                               <li className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/downloads" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
                                 <Link href='/downloads'>Downloads</Link>
                               </li>
-                            </ul>
-
-                          )
+                            </ul>)
+                          );
                         case 12: // Report Viewer County
                           return (
-                            <ul className='list-none w-full flex items-center  justify-between '>
-
-
+                            (<ul className='list-none w-full flex items-center  justify-between '>
                               <li className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/dashboard" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
                                 <Link href='/dashboard'>Dashboard</Link>
                               </li>
-
                               <li className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${(/\/facilities\/.+/.test(currentPath) || /\/facilities/.test(currentPath)) && 'border-b-2 border-b-gray-50 bg-blue-500/85 text-gray-100 '}  ${currentPath == "/public/facilities" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
                                 <Link href={`${userID !== 6 && isLoggedIn ? '/facilities' : '/public/facilities'}`}>Facilities</Link>
                               </li>
-
                               <li className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${(/\/community-units\/.+/.test(currentPath) || /\/community-units/.test(currentPath)) && 'border-b-2 border-b-gray-50 bg-blue-500/85'}  ${currentPath == "/public/chu" && 'border-b-2 border-b-gray-50 bg-blue-700/85 text-gray-100'}`}>
                                 <Link href={`${userID !== 6 && isLoggedIn ? '/community-units' : '/public/chu'}`}>Community Units</Link>
                               </li>
-
                               <li className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/reports" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
                                 <Link href='/reports'>Reports</Link>
                               </li>
-                            </ul>
-                          )
+                            </ul>)
+                          );
                         case 6: // Report Viewer National
                           return (
-                            <ul className='list-none w-full flex items-center  justify-between '>
-
-
+                            (<ul className='list-none w-full flex items-center  justify-between '>
                               <li className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/dashboard" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
                                 <Link href='/dashboard'>Dashboard</Link>
                               </li>
-
                               <li className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${(/\/facilities\/.+/.test(currentPath) || /\/facilities/.test(currentPath)) && 'border-b-2 border-b-gray-50 bg-blue-500/85 text-gray-100 '}  ${currentPath == "/public/facilities" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
                                 <Link href={`${userID !== 6 && isLoggedIn ? '/facilities' : '/public/facilities'}`}>Facilities</Link>
                               </li>
-
                               <li className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${(/\/community-units\/.+/.test(currentPath) || /\/community-units/.test(currentPath)) && 'border-b-2 border-b-gray-50 bg-blue-500/85'}  ${currentPath == "/public/chu" && 'border-b-2 border-b-gray-50 bg-blue-700/85 text-gray-100'}`}>
                                 <Link href={`${userID !== 6 && isLoggedIn ? '/community-units' : '/public/chu'}`}>Community Units</Link>
                               </li>
-
                               <li className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/reports" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
                                 <Link href='/reports'>Reports</Link>
                               </li>
-                            </ul>
-                          )
+                            </ul>)
+                          );
                         case 8: //Report User Group
                           return (
-                            <ul className='list-none w-full flex items-center  justify-between '>
-
-
+                            (<ul className='list-none w-full flex items-center  justify-between '>
                               <li className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/dashboard" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
                                 <Link href='/dashboard'>Dashboard</Link>
                               </li>
-
                               <li className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${(/\/facilities\/.+/.test(currentPath) || /\/facilities/.test(currentPath)) && 'border-b-2 border-b-gray-50 bg-blue-500/85 text-gray-100 '}  ${currentPath == "/public/facilities" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
                                 <Link href={`${userID !== 6 && isLoggedIn ? '/facilities' : '/public/facilities'}`}>Facilities</Link>
                               </li>
-
                               <li className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${(/\/community-units\/.+/.test(currentPath) || /\/community-units/.test(currentPath)) && 'border-b-2 border-b-gray-50 bg-blue-500/85'}  ${currentPath == "/public/chu" && 'border-b-2 border-b-gray-50 bg-blue-700/85 text-gray-100'}`}>
                                 <Link href={`${userID !== 6 && isLoggedIn ? '/community-units' : '/public/chu'}`}>Community Units</Link>
                               </li>
-
                               <li className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/reports" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
                                 <Link href='/reports'>Reports</Link>
                               </li>
-
                               <li className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/documentation" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
                                                 <Link target="_blank"  href='https://kmhfr-docs.vercel.app'>Documentation</Link>
                                               </li>
-
                               <li className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/downloads" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
                                 <Link href='/downloads'>Downloads</Link>
                               </li>
-                            </ul>
-                          )
+                            </ul>)
+                          );
                         case 4:
                           return (
                             <ul className='list-none w-full flex items-center  justify-between '>
@@ -1101,7 +1034,6 @@ export default function HeaderLayout({
         }
 
       </div>
-
-    </header>
+    </header>)
   );
 }

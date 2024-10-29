@@ -226,7 +226,7 @@ function handleLicenseFileChange (e) {
 
 
     return (
-        <Formik
+        (<Formik
             initialValues={formValues}
             onSubmit={(values) => {
                 
@@ -280,231 +280,228 @@ function handleLicenseFileChange (e) {
                
 
                                             
-                  return (
-                   <>
-                        <h4 className="text-lg uppercase mt-4 pb-2 border-b border-gray-400  w-full mb-4 font-semibold text-gray-900">Facility Regulation</h4>
-                        <Form ref={formRef} name="facility_regulation_form" className='flex flex-col w-full items-start bg-gray-50 p-4 justify-start gap-3' >
+                  return (<>
+                      <h4 className="text-lg uppercase mt-4 pb-2 border-b border-gray-400  w-full mb-4 font-semibold text-gray-900">Facility Regulation</h4>
+                      <Form ref={formRef} name="facility_regulation_form" className='flex flex-col w-full items-start bg-gray-50 p-4 justify-start gap-3' >
 
-                            {formError && <Alert severity='error' className={'w-full'}>{formError}</Alert>}
+                          {formError && <Alert severity='error' className={'w-full'}>{formError}</Alert>}
 
-                            {/* Regulatory Body */}
-                            <div className="w-full flex flex-col background items-start justify-start gap-1 mb-3">
-                                <label htmlFor="regulatory_body" className="text-gray-600 capitalize text-sm">Regulatory Body<span className='text-medium leading-12 font-semibold'> *</span> </label>
-                                <Select
-                                    options={
-                                          ((regOptions) => {
+                          {/* Regulatory Body */}
+                          <div className="w-full flex flex-col background items-start justify-start gap-1 mb-3">
+                              <label htmlFor="regulatory_body" className="text-gray-600 capitalize text-sm">Regulatory Body<span className='text-medium leading-12 font-semibold'> *</span> </label>
+                              <Select
+                                  options={
+                                        ((regOptions) => {
 
-                                              const filteredRegOptions = regOptions.filter(({ label }) => label !== 'Other')
+                                            const filteredRegOptions = regOptions.filter(({ label }) => label !== 'Other')
 
-                                              if (options?.data?.owner_type_name?.toLowerCase().trim() == "ministry of health") {
-                                                  return filteredRegOptions.filter(({ label }) => {
-                                                       return label.toLowerCase().trim() == "ministry of health"
+                                            if (options?.data?.owner_type_name?.toLowerCase().trim() == "ministry of health") {
+                                                return filteredRegOptions.filter(({ label }) => {
+                                                     return label.toLowerCase().trim() == "ministry of health"
 
-                                                  })
-                                              } else {
-                                                  return filteredRegOptions
-                                              }
-                                        // return regOptions
-                                        
-
-                                    })(options.regulating_bodies || [])
-                                    }
-                                    required
-                                    ref={_regBodyRef}
-                                    placeholder="Select Regulatory Body"
-                                    name='regulatory_body'
-                                   />
-
-                            </div>
-
-                            {/* Regulation Status */}
-                            <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-                                <label htmlFor="regulation_status" className="text-gray-600 capitalize text-sm">Regulation Status</label>
-                                <Select
-                                    options={((regStateOpts) => {
-
-                                        let filteredRegState
-                                        if (_regBodyRef.current) {
-
-                                            if (formikState.values.regulatory_body === '0b2311d1-6049-4b8d-9c74-cbda8bf6579c') {
-                                                filteredRegState = regStateOpts.filter(({ label }) => (!(label.match(/.*[L|l]icense.*/) !== null) && !(label.match(/.*Regist.*/) !== null) ))
+                                                })
+                                            } else {
+                                                return filteredRegOptions
                                             }
-                                            else {
-                                                filteredRegState = regStateOpts
-                                            }
-                                        }
-                                        else {
-                                            filteredRegState = regStateOpts
-                                        }
+                                      // return regOptions
+                                      
 
-                                        return filteredRegState
+                                  })(options.regulating_bodies || [])
+                                  }
+                                  required
+                                  ref={_regBodyRef}
+                                  placeholder="Select Regulatory Body"
+                                  name='regulatory_body'
+                                 />
 
-                                    })(options.regulation_status || [])}
-                                    required
-                                    placeholder="Select Regulation Status"
-                                    name='regulation_status'
-                                    />
-                            </div>
+                          </div>
 
-                            {/* License Number */}
-                            {
-                             !hideLicenseNumber &&
-                            <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-                                <label htmlFor="license_number" className="text-gray-600 bg-transparent capitalize text-sm">License Number</label>
-                                <Field type="text" name="license_number" className="flex-none  w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:border-black outline-none" />
-                            </div>
-                            }
+                          {/* Regulation Status */}
+                          <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                              <label htmlFor="regulation_status" className="text-gray-600 capitalize text-sm">Regulation Status</label>
+                              <Select
+                                  options={((regStateOpts) => {
 
+                                      let filteredRegState
+                                      if (_regBodyRef.current) {
 
-                            {/* Registration Number */}
-                            {
-                              !hideRegistrationNumber &&
-                            <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-                                <label htmlFor="registration_number" className="text-gray-600 bg-transparent capitalize text-sm">Registration Number</label>
-                                <Field type="text" name="registration_number" className="flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:border-black outline-none" />
-                            </div>
-                            }       
+                                          if (formikState.values.regulatory_body === '0b2311d1-6049-4b8d-9c74-cbda8bf6579c') {
+                                              filteredRegState = regStateOpts.filter(({ label }) => (!(label.match(/.*[L|l]icense.*/) !== null) && !(label.match(/.*Regist.*/) !== null) ))
+                                          }
+                                          else {
+                                              filteredRegState = regStateOpts
+                                          }
+                                      }
+                                      else {
+                                          filteredRegState = regStateOpts
+                                      }
 
-                            {/* check file upload */}
-                            <div className=" w-full flex flex-col items-start justify-start py-3  h-auto">
-                                <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-                                    <label htmlFor="license_document" className="text-gray-600 capitalize text-sm">Upload license document</label>
-                                    <Field type="file" onChange={handleLicenseFileChange} name="license_document" innerRef={fileRef} className="flex-none w-full   p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:border-black outline-none" />
-                                </div>
-                            </div>
+                                      return filteredRegState
 
-                            {/* Facility Departments Regulation  */}
-                            <h5 className="text-lg uppercase pb-2 border-b border-gray-400  w-full mb-4 font-semibold text-gray-900">Facility Departments Regulation</h5>
-                            <div className='grid grid-cols-4 place-content-start gap-3 w-full border border-gray-400 rounded  p-3'>
+                                  })(options.regulation_status || [])}
+                                  required
+                                  placeholder="Select Regulation Status"
+                                  name='regulation_status'
+                                  />
+                          </div>
 
-                                {/* Contact Headers */}
-                                <h3 className='text-medium font-semibold text-gray-900'>Name</h3>
-                                <h3 className='text-medium font-semibold  text-gray-900'>Regulatory Body</h3>
-                                <h3 className='text-medium font-semibold  text-gray-900'>License Number</h3>
-                                <h3 className='text-medium font-semibold  text-gray-900'>Reg. Number</h3>
-
-                                <hr className='col-span-4' />
-
-                                {/* add other fields */}
-                                <div className='flex flex-col items-start justify-start gap-y-4'>
-
-                                    {
-                                        facilityDepts.map((facilityDept, i) => (
-                                            <div className="w-full flex items-center justify-between gap-3 mt-3" key={i}>
-                                    
-                                                {facilityDept}
-
-                                            
-                                            </div>
-
-                                        ))
-                                    }
-                                </div>
-
-                            </div>
+                          {/* License Number */}
+                          {
+                           !hideLicenseNumber &&
+                          <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                              <label htmlFor="license_number" className="text-gray-600 bg-transparent capitalize text-sm">License Number</label>
+                              <Field type="text" name="license_number" className="flex-none  w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:border-black outline-none" />
+                          </div>
+                          }
 
 
-                            {/* Add btn */}
-                            <div className='w-full flex justify-end items-center mt-2'>
-                                {/* { console.log({facilityDepts: options.facility_depts}) } */}
-                                
-                                <button onClick={(e) => {
-                                    e.preventDefault(); 
+                          {/* Registration Number */}
+                          {
+                            !hideRegistrationNumber &&
+                          <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                              <label htmlFor="registration_number" className="text-gray-600 bg-transparent capitalize text-sm">Registration Number</label>
+                              <Field type="text" name="registration_number" className="flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:border-black outline-none" />
+                          </div>
+                          }       
 
+                          {/* check file upload */}
+                          <div className=" w-full flex flex-col items-start justify-start py-3  h-auto">
+                              <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                                  <label htmlFor="license_document" className="text-gray-600 capitalize text-sm">Upload license document</label>
+                                  <Field type="file" onChange={handleLicenseFileChange} name="license_document" innerRef={fileRef} className="flex-none w-full   p-2 flex-grow border placeholder-gray-500 border-gray-400 rounded focus:shadow-none focus:border-black outline-none" />
+                              </div>
+                          </div>
 
-                                    setFacilityDepts([
-                                        ...facilityDepts,
-                                        (() => (
-                                         <FacilityDepartmentUnitsContext.Provider value={facilityDepts}>
-                                            <FacilityDepartmentUnits
-                                                setFacilityDepts={setFacilityDepts}
-                                                facilityDeptOptions={options.facility_depts}
-                                                index={(facilityDepts.length + 1) - 1}
-                                                fieldNames={['facility_unit', 'facility_regulating_body_name', 'facility_license_number', 'facility_registration_number']}
+                          {/* Facility Departments Regulation  */}
+                          <h5 className="text-lg uppercase pb-2 border-b border-gray-400  w-full mb-4 font-semibold text-gray-900">Facility Departments Regulation</h5>
+                          <div className='grid grid-cols-4 place-content-start gap-3 w-full border border-gray-400 rounded  p-3'>
+
+                              {/* Contact Headers */}
+                              <h3 className='text-medium font-semibold text-gray-900'>Name</h3>
+                              <h3 className='text-medium font-semibold  text-gray-900'>Regulatory Body</h3>
+                              <h3 className='text-medium font-semibold  text-gray-900'>License Number</h3>
+                              <h3 className='text-medium font-semibold  text-gray-900'>Reg. Number</h3>
+
+                              <hr className='col-span-4' />
+
+                              {/* add other fields */}
+                              <div className='flex flex-col items-start justify-start gap-y-4'>
+
+                                  {
+                                      facilityDepts.map((facilityDept, i) => (
+                                          <div className="w-full flex items-center justify-between gap-3 mt-3" key={i}>
+                                  
+                                              {facilityDept}
+
                                           
-                                            />  
-                                        </FacilityDepartmentUnitsContext.Provider>
-                                        ))()
-                                    ])
+                                          </div>
 
-                                }} className='flex items-center space-x-1 bg-blue-700 p-1 '>
+                                      ))
+                                  }
+                              </div>
 
-                                    <PlusIcon className='w-4 h-4 text-white' />
-                                    <p className='text-medium font-semibold text-white'>Add</p>
-                                </button>
-                            </div>
+                          </div>
 
-                              {
-                                  options?.data ?
 
-                                      <div className='flex justify-end gap-3 items-center w-full'>
-                                           <button
-                                              type='submit'
-                                              onClick={() => {submitType.current = 'continue'}}
-                                              disabled={submitting && submitType.current == 'continue'}
-                                              className='flex items-center text-white justify-start space-x-2 bg-blue-700  p-1 px-2'>
-                                               {
-                                                    submitting && submitType.current == 'continue'?
-                                                        <div className='flex items-center gap-2'>
-                                                            <span className='text-white'>Saving </span>
-                                                            <Spinner />
-                                                        </div>
-                                                        :
-                                                        'Save and Continue'
+                          {/* Add btn */}
+                          <div className='w-full flex justify-end items-center mt-2'>
+                              {/* { console.log({facilityDepts: options.facility_depts}) } */}
+                              
+                              <button onClick={(e) => {
+                                  e.preventDefault(); 
 
-                                                }
-                                          </button>
-                                          <button
-                                              type='submit'
-                                              disabled={submitting && submitType.current == null}
-                                              className='flex items-center text-white justify-start space-x-2 bg-blue-700  p-1 px-2'>
-                                               {
-                                                    submitting && submitType.current == null ?
-                                                        <div className='flex items-center gap-2'>
-                                                            <span className='text-white'>Saving </span>
-                                                            <Spinner />
-                                                        </div>
-                                                        :
-                                                        'Save and Finish'
 
-                                                }
-                                          </button>
-                                      </div>
-                                      :
+                                  setFacilityDepts([
+                                      ...facilityDepts,
+                                      (() => (
+                                       <FacilityDepartmentUnitsContext.Provider value={facilityDepts}>
+                                          <FacilityDepartmentUnits
+                                              setFacilityDepts={setFacilityDepts}
+                                              facilityDeptOptions={options.facility_depts}
+                                              index={(facilityDepts.length + 1) - 1}
+                                              fieldNames={['facility_unit', 'facility_regulating_body_name', 'facility_license_number', 'facility_registration_number']}
+                                        
+                                          />  
+                                      </FacilityDepartmentUnitsContext.Provider>
+                                      ))()
+                                  ])
 
-                                      <div className='flex justify-between items-center w-full'>
-                                          <button onClick={handleRegulationPrevious}
-                                              className='flex items-center justify-start space-x-2 p-1 group border border-gray-700 px-2'>
-                                              <ChevronDoubleLeftIcon className='w-4 h-4 text-gray-900' />
-                                              <span className='text-medium font-semibold text-gray-900'>Facility Contacts</span>
-                                          </button>
-                                          <button type="submit"  disabled={submitting} className={`${submitting ? 'cursor-not-allowed' : 'cursor-pointer'} flex items-center justify-start gap-2 text-white bg-blue-700  p-1 px-2`}>
-                                                <span className='text-medium font-semibold text-white'>
-                                                    {
-                                                        submitting ?
-                                                            <Spinner />
-                                                            :
-                                                            'Services'
+                              }} className='flex items-center space-x-1 bg-blue-700 p-1 '>
 
-                                                    }
-                                                </span>
-                                                {
-                                                    submitting ?
-                                                        <span className='text-white'>Saving </span>
-                                                        :
-                                                        <ChevronDoubleRightIcon className='w-4 h-4 text-white' />
+                                  <PlusIcon className='w-4 h-4 text-white' />
+                                  <p className='text-medium font-semibold text-white'>Add</p>
+                              </button>
+                          </div>
 
-                                                }
-                                          </button>
-                                      </div>
-                              }
-                        </Form>
-                    </>
-                   )
+                            {
+                                options?.data ?
+
+                                    <div className='flex justify-end gap-3 items-center w-full'>
+                                         <button
+                                            type='submit'
+                                            onClick={() => {submitType.current = 'continue'}}
+                                            disabled={submitting && submitType.current == 'continue'}
+                                            className='flex items-center text-white justify-start space-x-2 bg-blue-700  p-1 px-2'>
+                                             {
+                                                  submitting && submitType.current == 'continue'?
+                                                      <div className='flex items-center gap-2'>
+                                                          <span className='text-white'>Saving </span>
+                                                          <Spinner />
+                                                      </div>
+                                                      :
+                                                      'Save and Continue'
+
+                                              }
+                                        </button>
+                                        <button
+                                            type='submit'
+                                            disabled={submitting && submitType.current == null}
+                                            className='flex items-center text-white justify-start space-x-2 bg-blue-700  p-1 px-2'>
+                                             {
+                                                  submitting && submitType.current == null ?
+                                                      <div className='flex items-center gap-2'>
+                                                          <span className='text-white'>Saving </span>
+                                                          <Spinner />
+                                                      </div>
+                                                      :
+                                                      'Save and Finish'
+
+                                              }
+                                        </button>
+                                    </div>
+                                    :
+
+                                    <div className='flex justify-between items-center w-full'>
+                                        <button onClick={handleRegulationPrevious}
+                                            className='flex items-center justify-start space-x-2 p-1 group border border-gray-700 px-2'>
+                                            <ChevronDoubleLeftIcon className='w-4 h-4 text-gray-900' />
+                                            <span className='text-medium font-semibold text-gray-900'>Facility Contacts</span>
+                                        </button>
+                                        <button type="submit"  disabled={submitting} className={`${submitting ? 'cursor-not-allowed' : 'cursor-pointer'} flex items-center justify-start gap-2 text-white bg-blue-700  p-1 px-2`}>
+                                              <span className='text-medium font-semibold text-white'>
+                                                  {
+                                                      submitting ?
+                                                          <Spinner />
+                                                          :
+                                                          'Services'
+
+                                                  }
+                                              </span>
+                                              {
+                                                  submitting ?
+                                                      <span className='text-white'>Saving </span>
+                                                      :
+                                                      <ChevronDoubleRightIcon className='w-4 h-4 text-white' />
+
+                                              }
+                                        </button>
+                                    </div>
+                            }
+                      </Form>
+                  </>);
 
                 }
             }
-        </Formik>
- 
-    )
+        </Formik>)
+    );
 }

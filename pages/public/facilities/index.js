@@ -236,13 +236,12 @@ function Home(props) {
 	
 
 		return (
-			<div className=''>
-				<Head>
+            (<div className=''>
+                <Head>
 					<title>KMHFR | Facilities</title>
 					<link rel='icon' href='/favicon.ico' />
 				</Head>
-
-				<MainLayout isLoading={false} searchTerm={props?.query?.searchTerm}>
+                <MainLayout isLoading={false} searchTerm={props?.query?.searchTerm}>
 					<div className='w-full md:w-[80%] md:mx-auto px-4 md:px-0 grid grid-cols-1 gap-y-8 md:grid-cols-5 md:gap-4 py-2 md:max-h-min my-4'>
 						
 						<div className='col-span-1 md:col-span-5 flex flex-col gap-4 md:gap-5 '>
@@ -888,9 +887,8 @@ function Home(props) {
 
 					</div>
 				</MainLayout>
-
-			</div>
-		)
+            </div>)
+        );
 	}
 	else {
 		return null

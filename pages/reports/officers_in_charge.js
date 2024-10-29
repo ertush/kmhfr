@@ -64,7 +64,7 @@ function OfficersInCharge(props) {
 
    if(isClient){
     return (
-        <div className="">
+        (<div className="">
             <Head>
                 <title>KMHFR | Reports</title>
                 <link rel="icon" href="/favicon.ico" />
@@ -169,8 +169,8 @@ function OfficersInCharge(props) {
                   
                 </div>
             </MainLayout >
-        </div>
-    )
+        </div>)
+    );
     }
     else
     {

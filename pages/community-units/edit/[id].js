@@ -2,10 +2,12 @@ import { CommunityUnitEditForm } from '../../../components/Forms/CommunityUnitsF
 import { useState, useEffect, createContext } from 'react'
 import { checkToken } from '../../../controllers/auth/auth'
 import {z} from 'zod'
+import { getUserDetails } from '../../../controllers/auth/auth'
 // import Alert from '@mui/material/Alert'
 
 
 export const ChuOptionsContext = createContext()
+
 
 export default function CommunityUnitEdit(props) {
   // console.log({props})
@@ -59,34 +61,28 @@ export async function getServerSideProps(ctx) {
   const queryId = zSchema.parse(ctx.query).id
 
 
-  function fetchFacilities(url) {
+  async function fetchFacilities() {
+   
+      const { response: user } = await getUserDetails(token, `${process.env.NEXT_PUBLIC_API_URL}/rest-auth/user/`)
+      
+      const params = `?sub_county=${user?.user_sub_counties?.length > 1 ? user?.user_sub_counties?.map(({sub_county}) => sub_county)?.join(',') : user?.user_sub_counties[0]}&fields=id,name,county,sub_county_name,constituency,ward_name`
 
-    return fetch(url, {
-      headers: {
-        'Accept': 'application/json',
-        'Authorization': `Bearer ${token}`
-      }
-    })
-    .then(resp => resp.json())
-    .then((resp) => {
+      console.log({params})
+
+      return fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${params}&reporting_in_dhis=true&closed=false`, { /*&owner_type=6a833136-5f50-46d9-b1f9-5f961a42249f*/
+        headers: {
+          'Authorization': 'Bearer ' + token,
+          'Accept': 'application/json'
+        }
+
+      })
+      .then(resp => resp.json())
+      .then(resp => {
         
-        const params = `?sub_county=${resp?.results[0].id}&fields=id,name,county,sub_county_name,constituency,ward_name&page_size=150`
-
-        return fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${params}&reporting_in_dhis=true&closed=false`, { /*&owner_type=6a833136-5f50-46d9-b1f9-5f961a42249f*/
-          headers: {
-            'Authorization': 'Bearer ' + token,
-            'Accept': 'application/json'
-          }
-
-        })
-        .then(resp => resp.json())
-        .then(resp => {
-          
-          return resp?.results?.map(({ id, name }) => ({ label: name, value: id }))
-        })
-        .catch(console.error)
-    })
-    .catch(e => console.error('Error: ', e.message))
+        return resp?.results?.map(({ id, name }) => ({ label: name, value: id }))
+      })
+      .catch(console.error)
+   
   }
 
 
@@ -127,7 +123,9 @@ export async function getServerSideProps(ctx) {
 
           case "facilities":
 
-            const url =  `${process.env.NEXT_PUBLIC_API_URL}/common/sub_counties/?name=${response?.cu?.facility_subcounty.split(' ').join('+')}` 
+            // const url =  `${process.env.NEXT_PUBLIC_API_URL}/common/sub_counties/?name=${response?.cu?.facility_subcounty.split(' ').join('+')}`
+            // const { response: user } = await getUserDetails(token, `${process.env.NEXT_PUBLIC_API_URL}/rest-auth/user/`)
+            const url = `${process.env.NEXT_PUBLIC_API_URL}/rest-user/`
 
             response['facilities'] = await fetchFacilities(url)
 

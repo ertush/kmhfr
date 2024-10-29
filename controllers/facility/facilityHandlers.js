@@ -28,7 +28,7 @@ async function handleBasicDetailsSubmit(token, values, formId, setFormId, fileRe
                     }
 
                     // check if value is alphanumeral and convert to number
-                    return v.match(/^[0-9]$/) !== null ? Number(v) : v
+                    return v.match(/^[0-9]$/) !== null ? Number(v) : v;
                 }
                 else {
                     return v
@@ -185,10 +185,10 @@ function handleGeolocationSubmit(token, values, stateSetters) {
                     return new Date(value)
                 case 'latitude':
 
-                    return value.match(/^\-$/) !== null ? 0.000000 : value
+                    return value.match(/^\-$/) !== null ? 0.000000 : value;
                 case 'longitude':
 
-                    return value.match(/^\-$/) !== null ? 0.000000 : value
+                    return value.match(/^\-$/) !== null ? 0.000000 : value;
                 default:
 
                     return value

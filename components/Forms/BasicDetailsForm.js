@@ -129,7 +129,6 @@ export function BasicDeatilsForm({ editMode }) {
           if (!_wards) throw Error('Unable to Fetch sub counties')
 
 
-
         if(selectName === "sub_county_id") setSubCountyOptions(() => _sub_counties?.map(({id, name}) => ({value:id, label:name})))
 
         if(selectName === "constituency_id") setConstituencyOptions(() => _constitutencies?.map(({id, name}) => ({value:id, label:name})))
@@ -153,9 +152,16 @@ export function BasicDeatilsForm({ editMode }) {
   // Event handlers
   const handleFocus = useCallback((e) => {
 
-    // if(editMode){
-    //   setFilteredOptions(countyId, e.currentTarget.name)
-    // } 
+    if(
+      (
+        e.currentTarget.name === 'constituency_id' ||
+        e.currentTarget.name === 'sub_county_id' ||
+        e.currentTarget.name === 'ward'
+      )
+      && editMode
+    ) {
+      setFilteredOptions(countyId, e.currentTarget.name)
+    }
     
     if(!editMode) {
       if(e.currentTarget.name === 'sub_county_id' && !countyId) setSubCountyOptions([])
@@ -195,17 +201,13 @@ export function BasicDeatilsForm({ editMode }) {
     const keph = document.getElementsByName('keph_level');
     const kephDisplay = document.getElementsByName('keph_level_display');
 
-
     if(e.currentTarget.name === 'county_id') {
       setCountyId(e.currentTarget.value)
       // Filter sub county, constituency and ward Options in edit mode
     }
 
-
-
     // Handle facility Type Change
     if (e.target.name == 'facility_type_parent') {
-
       // Keph form validation
       const facilityTypeLabel = e.target.selectedOptions[0].innerText
 
@@ -416,8 +418,7 @@ export function BasicDeatilsForm({ editMode }) {
           })
 
           // console.log({ filteredWards, wards })
-
-          setWardOptions(filteredWards ?? options?.sub_counties)
+          if(!wardOptions) setWardOptions(filteredWards ?? options?.sub_counties)
 
         }
         catch (e) {
@@ -1754,7 +1755,6 @@ export function BasicDeatilsForm({ editMode }) {
                   onChange={handleSelectChange}
                   onFocus={handleFocus}
                   name='county_id'
-
                 />
 
 
