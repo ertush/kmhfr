@@ -67,7 +67,6 @@ export async function getServerSideProps(ctx) {
       
       const params = `?sub_county=${user?.user_sub_counties?.length > 1 ? user?.user_sub_counties?.map(({sub_county}) => sub_county)?.join(',') : user?.user_sub_counties[0]}&fields=id,name,county,sub_county_name,constituency,ward_name`
 
-      console.log({params})
 
       return fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${params}&reporting_in_dhis=true&closed=false`, { /*&owner_type=6a833136-5f50-46d9-b1f9-5f961a42249f*/
         headers: {
