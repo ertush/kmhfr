@@ -397,15 +397,26 @@ function Facility(props) {
                   ) : (
                     ""
                   )}
-                  {facility?.is_approved ? (
+                  {facility?.approved && !facility?.approved_national_level  ? (
                     <span className="bg-blue-200 text-gray-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
                       <CheckCircleIcon className="h-4 w-4" />
-                      {facility?.approved_national_level ? 'Approved' : 'pending approval'}
+                      Validated
                     </span>
-                  ) : (
+                  ): (
                     <span className="bg-red-200 text-red-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
+                      <CheckCircleIcon className="h-4 w-4" />
+                      Pending Validation
+                    </span>
+                  )}
+                  {facility?.approved && facility?.approved_national_level ? (
+                    <span className="bg-blue-200 text-gray-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
                       <XCircleIcon className="h-4 w-4" />
-                      pending validation
+                      Approved
+                    </span>
+                  ): (
+                    <span className="bg-red-200 text-red-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
+                      <CheckCircleIcon className="h-4 w-4" />
+                      Pending Approval
                     </span>
                   )}
                   {facility?.has_edits && (
@@ -543,16 +554,15 @@ function Facility(props) {
 
                     (
                       userCtx?.groups[0]?.id == 1 || // CHRIO
-                      userCtx?.groups[0].id == 5 ||  // National
-                      userCtx?.groups[0].id == 6 ||  // National
-                      userCtx?.groups[0].id == 11 || // Data cleaning National
+                      // userCtx?.groups[0].id == 5 ||  // National /* Reason: Directed by Sophy to remove new facility validation persmission from National Group Users */
+                      // userCtx?.groups[0].id == 6 ||  // National /* Reason: Directed by Sophy to remove new facility validation persmission from National Group Users */
+                      // userCtx?.groups[0].id == 11 || // Data cleaning National /* Reason: Directed by Sophy to remove new facility validation persmission from National Group all National Level Users */
                       userCtx?.groups[0].id == 7) && // SuperAdmin
                       
                       (currentPageProps.get('filter') == 'pending_validation_facilities' || 
                       currentPageProps.get('filter') == 'failed_validation_facilities') &&
 
                     //  Validate new facilities
-
                     <button
                       onClick={() => router.push(
                         { 

@@ -27,6 +27,9 @@ import withAuth from '../../components/ProtectedRoute'
 import { v4 as uuid } from 'uuid'
 
 
+
+
+
 function FacilityHome(props) {
 
     const router = useRouter()
@@ -1256,11 +1259,11 @@ function FacilityHome(props) {
 
 export async function getServerSideProps(ctx) {
 
-    
     ctx?.res?.setHeader(
         'Cache-Control',
         'no-cache, no-store, max-age=0'
     )
+
 
 
     // function fetchCurrentUser(token) {
@@ -1404,8 +1407,7 @@ export async function getServerSideProps(ctx) {
     if (ctx?.query?.page) {
         url = `${url}&page=${ctx.query.page}`
     }
-
-
+  
     try {
 
         if(user?.user_sub_counties.length == 2 && userGroup === 2) {
@@ -1421,8 +1423,8 @@ export async function getServerSideProps(ctx) {
 
         } else if (userGroup === 2) { // SCHRIO
 
-            const userSubCountyID = user?.user_sub_counties[0]?.sub_county
-            url = `${url}&sub_county=${userSubCountyID}`
+            const userSubCountyIDs = user?.user_sub_counties.length > 1 ? user?.user_sub_counties.map(({sub_county}) => sub_county)?.join(',') : user?.user_sub_counties[0]?.sub_county
+            url = `${url}&sub_county=${userSubCountyIDs}`
 
         }
 
@@ -1430,7 +1432,7 @@ export async function getServerSideProps(ctx) {
 
 
 
-        // console.log({ url })
+        console.log({ url })
 
         facilities = (await (await fetch(url, {
             headers: {
