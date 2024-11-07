@@ -397,7 +397,7 @@ function Facility(props) {
                   ) : (
                     ""
                   )}
-                  {facility?.approved && !facility?.approved_national_level  ? (
+                  {facility?.approved ? (
                     <span className="bg-blue-200 text-gray-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
                       <CheckCircleIcon className="h-4 w-4" />
                       Validated
