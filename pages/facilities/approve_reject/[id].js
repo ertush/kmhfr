@@ -69,7 +69,7 @@ function ApproveReject(props) {
       <MainLayout>
 
 
-        <div className="w-full md:w-[85%] md:mx-auto grid grid-cols-1 md:grid-cols-7 gap-3 my-4 place-content-center">
+        <div className="w-full md:w-[85%] px-6 md:px-auto grid grid-cols-1 md:grid-cols-7 gap-4 md:gap-3 my-4 place-content-center">
 
 
           {/* Breadcramps */}
@@ -125,7 +125,7 @@ function ApproveReject(props) {
               </div>
 
               <div className="flex flex-wrap gap-3 items-center justify-end col-span-6 md:col-span-2">
-                <div className="flex flex-wrap gap-3 w-full items-center justify-start md:justify-center">
+                <div className="flex flex-col flex-wrap gap-3 w-full items-start md:items-center justify-start md:justify-center">
                   {facility?.operational || facility?.operation_status_name ? (
                     <span
                       className={
@@ -187,7 +187,7 @@ function ApproveReject(props) {
               stateSetters={[setKhisSynched, setFacilityFeedBack, setPathId, setAllFctsSelected, setTitle]} />
           </div>
 
-          <div className="col-span-1 md:col-span-6 md:w-full flex flex-col gap-3 md:mt-8 mx-3">
+          <div className="col-span-1 md:col-span-6 md:w-full flex flex-col gap-3 mt-4 md:mt-8 md:mx-3">
             <h3 className="text-2xl tracking-tight font-semibold leading-5">
               {
                 facility?.is_approved ?

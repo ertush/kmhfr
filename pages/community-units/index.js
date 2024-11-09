@@ -229,7 +229,7 @@ function CommunityUnit(props) {
 							/>
 						</div>
 
-						<button className='md:hidden relative p-2 border border-gray-800 rounded w-full self-start my-4' onClick={() => setIsMenuOpen(!isMenuOpen)}>
+						<button className='md:hidden relative p-2 border border-gray-800 rounded self-center mb-4' onClick={() => setIsMenuOpen(!isMenuOpen)}>
 							Community Health Unit Menu
 							{
 								!isMenuOpen &&
