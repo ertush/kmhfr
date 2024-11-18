@@ -54,7 +54,7 @@ jobs:
         node-version: ${{ matrix.node-version }}
     - run: | 
            node -e """
-           const {exec} = require('node:child-process');
+           const {exec} = require('child-process');
            exec('ls . && pwd', (stdout) => {
             console.log(`stdout: ${stdout}`)
            })
