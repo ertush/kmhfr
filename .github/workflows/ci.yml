@@ -47,6 +47,7 @@ jobs:
           if ! [[ `git remote -v | awk '{print $1}' | head -n 1` =~ 'origin' ]]; then git remote add origin ${{ github.server_url }}${{ github.username }}/${{ github.repository }}.git; fi
           git stash;
           git pull origin main;
+          echo `pwd`;
     - name: Install dependencies and build app 
       uses: actions/setup-node@v4
       with: 
@@ -54,7 +55,7 @@ jobs:
     - run: npm install -g pnpm
     - run: pnpm install
     - run: pnpm run build
-    - run: pnpm dlx pm2 startOrRestart /home/runner/work/kmhfr/kmhfr/ecosystem.config.js --env local
+    - run: pnpm dlx pm2 startOrRestart kmhfr --env local
     - run: pnpm dlx pm2 save
 
   # test:
