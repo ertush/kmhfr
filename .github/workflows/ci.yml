@@ -55,8 +55,8 @@ jobs:
     - run: | 
            node -e """
            const {exec} = require('node:child_process');
-           exec('ls . && pwd', (stdout) => {
-            console.log(`stdout: ${stdout}`)
+           exec('ls . && pwd', (error, stdout, stderr) => {
+            console.log(\`stdout: \\n\${stdout}\`)
            })
            """
     - run: npm install -g pnpm
