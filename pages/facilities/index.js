@@ -25,8 +25,8 @@ import { KeyboardArrowRight, KeyboardArrowDown } from "@mui/icons-material";
 import { useSearchParams } from 'next/navigation'
 import withAuth from '../../components/ProtectedRoute'
 import { v4 as uuid } from 'uuid'
-
-
+import useSWR from 'swr'
+import Spinner from '../../components/Spinner'
 
 
 
@@ -51,29 +51,14 @@ function FacilityHome(props) {
 
     const [searchTerm, setSearchTerm] = useState('')
 
-    const [facilityStatus, setFacilityStatus] = useState('')
+    const [_, setFacilityStatus] = useState('')
 
+    const [pageFilter, setPageFilter] = useState('')
+
+    const [token, setToken] = useState(null)
 
     // const qf = props?.query?.qf ?? null
 
-    if (filters && typeof filters === "object") {
-        filters["has_edits"] = [{ id: "has_edits", name: "Has edits" },]
-        filters["is_approved"] = [{ id: "is_approved", name: "Is approved" }]
-        filters["is_complete"] = [{ id: "is_complete", name: "Is complete" }]
-        filters["number_of_beds"] = [{ id: "number_of_beds", name: "Number of beds" }]
-        filters["number_of_cots"] = [{ id: "number_of_cots", name: "Number of cots" }]
-        filters["open_whole_day"] = [{ id: "open_whole_day", name: "Open whole day" }]
-        filters["open_weekends"] = [{ id: "open_weekends", name: "Open weekends" }]
-        filters["open_public_holidays"] = [{ id: "open_public_holidays", name: "Open public holidays" }]
-        delete fltrs.has_edits
-        delete fltrs.is_approved
-        delete fltrs.is_complete
-        delete fltrs.number_of_beds
-        delete fltrs.number_of_cots
-        delete fltrs.open_whole_day
-        delete fltrs.open_weekends
-        delete fltrs.open_public_holidays
-    }
 
     const [drillDown, setDrillDown] = useState({})
 
@@ -87,6 +72,9 @@ function FacilityHome(props) {
     const [allFctsSelected, setAllFctsSelected] = useState(true);
     const [isClient, setIsClient] = useState(false);
     const [isMenuOpen, setIsMenuOpen] = useState(false)
+    const [facilities, setFacilities] = useState(props?.facilities)
+
+    
 
     const pageParams = useSearchParams()
 
@@ -123,7 +111,7 @@ function FacilityHome(props) {
     // const serviceFilterOptions = filters['service']?.map(({ id, name }) => ({ value: id, label: name }))
     const operationStatusFilterOptions = filters?.operation_status?.map(({ id, name }) => ({ value: id, label: name }))
 
-
+    
 
 
     const handleApprovalStatus = useCallback(({ value }) => {
@@ -144,25 +132,74 @@ function FacilityHome(props) {
     })
 
 
+    /**
+     * 
+     * @param {string} url
+     * @returns {Promise<any>} 
+     */
 
-    useEffect(() => {
+    const dataFetcher = async (url) => {
+        let token = null
 
-        setIsClient(true)
-    }, [])
-
-
-    useEffect(() => {
-        let qry = props?.query
-
-        delete qry?.searchTerm
-        delete qry?.qfstart
-        setDrillDown({ ...drillDown, ...qry })
-
-        return () => {
-
+        if(!!window){
+            const cookie = document.cookie
+            const access_token = JSON.parse(cookie.split('=')[1])?.token
+            
+            token = access_token
+            
         }
-    }, [facilityFeedBack, title])
 
+
+        return token ? await (await fetch(url, {
+            headers: {
+                Accept: 'application/json, */*',
+                Authorization: `Bearer ${token}`
+               
+            }
+        })).json() : Promise((_, reject) => reject('Token is not valid'))
+    }
+
+    /**
+     * 
+     * @param {string} url 
+     */
+
+    const searchFacility = async (url) => {
+    
+    const facilities = await dataFetcher(url)
+
+    return facilities
+
+    }
+
+    
+
+    const handleSearch = useCallback((values) => {
+
+        const query = values.q.split(' ').join('+');
+        setSearchTerm(query);
+
+        const href = new URL(window.location.href)
+
+        const filter = href.searchParams.get('filter');
+        setPageFilter(filter);
+        
+
+        mutate()
+                                 
+    })
+
+
+    const {data: searchedFacility, mutate, isLoading: searchIsLoading} = useSWR(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/?search=${searchTerm}&filter=${pageFilter}`, searchFacility, {
+        revalidateOnMount: false,
+        revalidateOnFocus: false,
+        onSuccess: (data) => {
+            
+            setFacilities(data?.results)
+        }
+    })
+
+   
     function userOrgUnit() {
         if (groupID === 1) { // CHRIO
             return { county: userCounty }
@@ -198,7 +235,7 @@ function FacilityHome(props) {
             const filteredOrgUnits = await fetch(url, {
                 headers: {
                     Accept: 'application/json',
-                    Authorization: `Bearer ${props?.token}`,
+                    Authorization: `Bearer ${token}`,
                 }
             })
 
@@ -299,8 +336,6 @@ function FacilityHome(props) {
         })
     }
 
-
-
     function handlePrevious() {
 
         // const params = Object.fromEntries(pageParams.entries())
@@ -337,6 +372,77 @@ function FacilityHome(props) {
         })
     }
 
+    function getMenuTitle() {
+        
+        switch(currentPageParams.filter) {
+            case "all_facilities":
+                return "All Facilities"
+            case "approved_facilities":
+                return "Approved Facilities"
+            case "pending_validation_facilities":
+                return "Facilities Pending Validation"
+            case "updated_pending_validation_facilities":
+                return "Updated Facilities Pending Validation"
+            case "pending_approval_facilities":
+                return "Facilities Pending Approval"
+            case "failed_validation_facilities":
+                return "Failed Validation Facilities"
+            case "dhis_synched_facilities":
+                return "Approved DHIS Synched Facilities"
+            case "rejected_facilities":
+                return "Failed Approval Facilities"
+            case "closed_facilities":
+                return "Closed Facilities"
+            case "incomplete_facilities":
+                return "Incomplete Facilities"
+            case "synchronized_regulated_facilities":
+                return "Synchronized Regulated Facilities"
+            case "feed_back_facilities":
+                return 'Facility Feedback'
+            default:
+                return "Facilities"
+        }
+    }
+
+
+    useEffect(() => {
+ 
+        if(!!window){
+            const cookie = document.cookie
+            const access_token = JSON.parse(cookie.split('=')[1])?.token
+            setToken(access_token)
+
+        }
+
+
+        if (filters && typeof filters === "object") {
+            filters["has_edits"] = [{ id: "has_edits", name: "Has edits" },]
+            filters["is_approved"] = [{ id: "is_approved", name: "Is approved" }]
+            filters["is_complete"] = [{ id: "is_complete", name: "Is complete" }]
+            filters["number_of_beds"] = [{ id: "number_of_beds", name: "Number of beds" }]
+            filters["number_of_cots"] = [{ id: "number_of_cots", name: "Number of cots" }]
+            filters["open_whole_day"] = [{ id: "open_whole_day", name: "Open whole day" }]
+            filters["open_weekends"] = [{ id: "open_weekends", name: "Open weekends" }]
+            filters["open_public_holidays"] = [{ id: "open_public_holidays", name: "Open public holidays" }]
+            delete fltrs.has_edits
+            delete fltrs.is_approved
+            delete fltrs.is_complete
+            delete fltrs.number_of_beds
+            delete fltrs.number_of_cots
+            delete fltrs.open_whole_day
+            delete fltrs.open_weekends
+            delete fltrs.open_public_holidays
+        }
+        
+
+        setIsClient(true)
+    }, [])
+
+
+   
+
+
+
     if (isClient) {
 
         return (<>
@@ -360,7 +466,7 @@ function FacilityHome(props) {
 
                                 <div className={"col-span-1 md:col-span-5 flex justify-between w-full bg-django-blue border drop-shadow  text-black p-4 md:divide-x md:divide-gray-200 items-start md:items-center border-l-8 " + (true ? "border-gray-700" : "border-red-600")}>
                                     <h2 className='flex items-center text-2xl font-bold text-gray-900 capitalize gap-2'>
-                                        {title}
+                                        {getMenuTitle()}
                                     </h2>
                                     {/* dropdown options to download data */}
                                     {props?.current_url && props?.current_url.length > 5 &&
@@ -741,12 +847,7 @@ function FacilityHome(props) {
 
                     {/* Side Menu Filters Wide View port*/}
                     <div className="hidden md:flex col-span-1">
-                        <FacilitySideMenu
-                        /*filters={filters ?? {}}
-                        states={[khisSynched, facilityFeedBack, pathId, allFctsSelected, title]}
-                        stateSetters={[setKhisSynched, setFacilityFeedBack, setPathId, setAllFctsSelected, setTitle]} 
-                        */
-                        />
+                        <FacilitySideMenu />
                     </div>
 
                     {/* Side Menu Filters Small View port*/}
@@ -766,9 +867,11 @@ function FacilityHome(props) {
                         {
                             isMenuOpen &&
                             <FacilitySideMenu
+                            /*
                                 filters={filters}
                                 states={[khisSynched, facilityFeedBack, pathId, allFctsSelected, title]}
-                                stateSetters={[setKhisSynched, setFacilityFeedBack, setPathId, setAllFctsSelected, setTitle]} />
+                                stateSetters={[setKhisSynched, setFacilityFeedBack, setPathId, setAllFctsSelected, setTitle]}
+                                */ />
                         }
                     </button>
 
@@ -785,7 +888,7 @@ function FacilityHome(props) {
                                             q: ""
                                         }
                                     }
-                                    onSubmit={(values) => {
+                                    onSubmit={handleSearch/*(values) => {
 
 
                                         const query = values.q.split(' ').join('+');
@@ -855,7 +958,7 @@ function FacilityHome(props) {
 
                                         }
 
-                                    }}
+                                    }*/}
                                 >
 
                                     <Form
@@ -876,7 +979,12 @@ function FacilityHome(props) {
                                             className="bg-transparent border-t border-r border-b rounded-tr rounded-br border-gray-400 text-black flex items-center justify-center px-4 py-1"
 
                                         >
-                                            <SearchIcon className="w-5 h-5 text-gray-600" />
+                                            
+                                            {
+                                                searchIsLoading ?
+                                                <Spinner /> :
+                                                <SearchIcon className="w-5 h-5 text-gray-600" />
+                                            }
                                         </button>
                                     </Form>
 
@@ -923,12 +1031,13 @@ function FacilityHome(props) {
                                 (
                                     <div className="flex-grow w-full flex flex-col items-center gap-1 order-last md:order-none">
                                         <div className="flex flex-col justify-center items-center  w-full">
-                                            {/* Facilities View */}
+
+                                            {/* Faciliy List */}
 
                                             {
-                                                props?.facilities.length > 0 ?
+                                                facilities?.length > 0 ?
 
-                                                    props?.facilities.map((facility) => (
+                                                    facilities?.map((facility) => (
                                                         <div key={facility?.id}
                                                             title={`Incomplete Details : ${facility?.is_complete ? 'none' : facility?.in_complete_details}`}
                                                             className={`grid grid-cols-8 gap-2 border-b py-4 w-full ${!facility?.is_complete && !facility?.in_complete_details ? 'bg-yellow-50 border-yellow-500 hover:bg-gray-50' : 'bg-transparent border-gray-400 hover:border-grat-400'}`}>
@@ -1046,6 +1155,128 @@ function FacilityHome(props) {
                                                     </div>
                                             }
 
+                                            {/* Searched Facility List */}
+
+                                            {/* {
+                                                searchedFacility?.length > 0 ?
+
+                                                searchedFacility?.map((facility) => (
+                                                        <div key={facility?.id}
+                                                            title={`Incomplete Details : ${facility?.is_complete ? 'none' : facility?.in_complete_details}`}
+                                                            className={`grid grid-cols-8 gap-2 border-b py-4 w-full ${!facility?.is_complete && !facility?.in_complete_details ? 'bg-yellow-50 border-yellow-500 hover:bg-gray-50' : 'bg-transparent border-gray-400 hover:border-grat-400'}`}>
+                                                            <div className="px-2 col-span-8 md:col-span-8 lg:col-span-6 gap-2 md:gap-0 flex flex-col group items-center justify-start text-left">
+                                                                <h3 className="text-2xl font-semibold w-full">
+                                                                    <span onClick={() => router.push({ pathname: `/facilities/${facility?.id}`, query: currentPageParams })} className={`cursor-pointer text-blue-500 hover:underline ${facility?.is_complete ? 'hover:text-blue-500' : 'hover:text-yellow-600'} group-focus:text-blue-500 active:text-blue-500`} >
+                                                                        {facility?.official_name || facility?.official_name || facility?.name}
+                                                                    </span>
+                                                                </h3>
+
+                                                                <div className="w-full grid grid-cols-2 md:grid-cols-5 gap-1">
+
+
+                                                                    <div className="flex flex-col items-start justify-start gap-0 leading-none whitespace-pre-wrap mb-2">
+                                                                        <label className="text-xs text-gray-500 ">Code:</label>
+                                                                        <span className="whitespace-pre-line font-semibold"># {facility?.code ?? 'NO_CODE'}</span>
+                                                                    </div>
+
+                                                                    <div className="flex flex-col  items-start justify-start gap-0 leading-none whitespace-pre-wrap">
+                                                                        <label className="text-xs text-gray-500">Type:</label>
+                                                                        <span className="whitespace-pre-line text-wrap">{facility?.facility_type_name ?? ' '}</span>
+                                                                    </div>
+
+
+                                                                    <div className="flex flex-col  items-start justify-start gap-0 leading-none whitespace-pre-wrap">
+                                                                        <label className="text-xs text-gray-500">Owner:</label>
+                                                                        <span className="whitespace-pre-line text-wrap">{facility?.owner_name ?? ' '}</span>
+                                                                    </div>
+
+                                                                    <div className="flex flex-col items-start justify-start gap-0 leading-none whitespace-pre-wrap">
+                                                                        <label className="text-xs text-gray-500">Keph:</label>
+                                                                        <span className="whitespace-pre-line">{filters?.keph_level.find(({ id }) => id == facility?.keph_level)?.name ?? '-'}</span>
+                                                                    </div>
+
+                                                                    <div className="flex flex-col items-start col-start-2 row-start-1 md:col-start-5 justify-start gap-0 leading-none whitespace-pre-wrap">
+                                                                        <label className="text-xs text-gray-500">Updated:</label>
+                                                                        <span className="whitespace-pre-line">{new Date(facility?.updated).toDateString()}{", "}{new Date(facility?.updated).toLocaleTimeString()}</span>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div className="text-base grid grid-cols-2 md:grid-cols-5 items-center justify-start gap-1 w-full">
+                                                                    <div className="flex flex-col items-start justify-start gap-0 leading-none whitespace-pre-wrap">
+                                                                        <label className="text-xs text-gray-500">County:</label>
+                                                                        <span className="whitespace-pre-line">{facility?.county_name || facility?.county || 'N/A'}</span>
+                                                                    </div>
+                                                                    <div className="flex flex-col items-start justify-start gap-0 leading-none whitespace-pre-wrap">
+                                                                        <label className="text-xs text-gray-500">Sub-county:</label>
+                                                                        <span className="whitespace-pre-line">{facility?.sub_county_name || facility?.sub_county || 'N/A'}</span>
+                                                                    </div>
+                                                                    <div className="flex flex-col items-start justify-start gap-0 leading-none whitespace-pre-wrap">
+                                                                        <label className="text-xs text-gray-500">Ward:</label>
+                                                                        <span className="whitespace-pre-line">{facility?.ward_name || 'N/A'}</span>
+                                                                    </div>
+                                                                    <div className="flex flex-col items-start justify-start gap-0 leading-none whitespace-pre-wrap">
+                                                                        <label className="text-xs text-gray-500">Constituency:</label>
+                                                                        <span className="whitespace-pre-line">{facility?.constituency_name || facility?.constituency || 'N/A'}</span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <div className="col-span-8 md:col-span-8 lg:col-span-2 grid grid-cols-2 grid-rows-4 gap-x-2 gap-y-1 text-lg">
+           
+                                                                {
+                                                                    !facility?.rejected ?
+                                                                        <span className={"shadow-sm leading-none whitespace-nowrap text-sm col-start-2  py-1 px-2 " + (facility?.approved_national_level ? "bg-green-200 font-semibold text-green-900" : "bg-gray-500 font-semibold p-1 text-gray-50")}>
+
+
+                                                                            {
+                                                                                facility?.approved_national_level ?
+                                                                                    "Approved" : "Not Approved"}</span> :
+                                                                                     facility?.rejected && <span className={"shadow-sm  col-start-2 leading-none whitespace-nowrap px-2 text-sm font-semibold py-1 bg-red-200 text-red-900"}>Rejected Validate</span>
+                                                                }
+
+                                                                {
+                                                                    facility?.rejected_national &&
+                                                                    <span className={"shadow-sm leading-none whitespace-nowrap text-sm col-start-2 py-1 px-2 bg-red-200 font-semibold text-yellow-900"}>Rejected Approve</span>
+                                                                }
+
+                                                                {
+                                                                    facility?.has_edits && facility?.latest_update &&
+                                                                    <span className={"shadow-sm leading-none whitespace-nowrap text-sm col-start-2 py-1 px-2 bg-yellow-200 font-semibold text-yellow-900"}>Has edits</span>
+                                                                }
+
+                                                                {
+                                                                    !facility?.is_complete &&
+                                                                    <span className={"shadow-sm leading-none whitespace-nowrap text-sm col-start-2 py-1 px-2 bg-pink-200 font-semibold text-pink-900"}>Incomplete</span>
+                                                                }
+
+                                                                {
+                                                                    facility?.approved ?
+                                                                        <span className={"shadow-sm leading-none whitespace-nowrap text-sm col-start-2 py-1 px-2 bg-purple-200 font-semibold text-purple-900"}>Validated</span> :
+                                                                        <span className={"shadow-sm leading-none whitespace-nowrap text-sm col-start-2 py-1 px-2 bg-gray-500 font-semibold text-gray-50"}>Not Validated</span>
+                                                                }
+
+                                                                {
+                                                                    facility?.closed &&
+                                                                    <span className={"shadow-sm leading-none whitespace-nowrap text-sm col-start-2 py-1 px-2 bg-red-200 font-semibold text-red-900"}>Closed</span>
+                                                                }
+
+
+                                                            </div>
+                                                        </div>
+                                                    ))
+                                                    :
+                                                    <div className='w-[98%] hidden my-4  rounded border border-yellow-600 items-center justify-start gap-2 bg-yellow-100  font-medium p-3'>
+                                                        <span className='text-base text-gray-700'>
+                                                            No Facilities found
+                                                        </span>
+                                                        <Link href={props.path || '/'}>
+                                                            <span className='text-gray-700 hover:text-gray-800 group-focus:text-gray-800 active:text-gray-800'>
+                                                                Refresh.
+                                                            </span>
+                                                        </Link>
+                                                    </div>
+                                            } */}
+
                                             {/* Feedback Facilities View */}
                                             {
                                                 facilityFeedBack && facilityFeedBack.length > 0 ? facilityFeedBack.map((facility) => (
@@ -1081,7 +1312,7 @@ function FacilityHome(props) {
                                                     </div>
                                                 )) : (
 
-                                                    (props?.facilities?.length === 0 && facilityFeedBack?.length == 0) &&
+                                                    (facilities?.length === 0 && facilityFeedBack?.length == 0) &&
                                                     // No Facility feedback data found
                                                     <Alert severity="warning" sx={{ width: '100%', marginInline: '4px' }} >No facilities found <span onClick={() => {
                                                         setTitle('Facilities')
@@ -1096,7 +1327,7 @@ function FacilityHome(props) {
 
                                             }
 
-                                            {props?.facilities &&
+                                            {facilities &&
                                                 <div className='flex w-full justify-between p-2 items-center'>
                                                     <div className="flex items-center gap-2">
 
@@ -1137,9 +1368,9 @@ function FacilityHome(props) {
                                             {/* Facilities View */}
 
                                             {
-                                                props?.facilities.length > 0 ?
+                                                facilities.length > 0 ?
 
-                                                    props?.facilities.map((facility) => (
+                                                    facilities.map((facility) => (
                                                         <div key={facility?.id}
 
                                                             className={`grid grid-cols-8 gap-2 border-b px-3 py-4 w-full`}>
@@ -1200,7 +1431,7 @@ function FacilityHome(props) {
                                             }
 
 
-                                            {props?.facilities && props?.count >= 10 &&
+                                            {facilities && props?.count >= 10 &&
                                                 <div className='flex w-full justify-between p-2 items-center'>
                                                     <div className="flex items-center gap-2">
 
@@ -1279,7 +1510,7 @@ export async function getServerSideProps(ctx) {
     // }
 
 
-
+    
     async function fetchFilters(token) {
 
         // const filtersURL = `${process.env.NEXT_PUBLIC_API_URL}/common/filtering_summaries/?fields=county,facility_type,facility_type_details,constituency,ward,operation_status,service_category,owner_type,owner,service,keph_level,sub_county`
@@ -1344,6 +1575,8 @@ export async function getServerSideProps(ctx) {
 
          
     }
+
+
 
 
     const token = (await checkToken(ctx.req, ctx.res))?.token
@@ -1432,7 +1665,7 @@ export async function getServerSideProps(ctx) {
 
 
 
-        console.log({ url })
+        // console.log({ url })
 
         facilities = (await (await fetch(url, {
             headers: {
@@ -1472,7 +1705,7 @@ export async function getServerSideProps(ctx) {
                 count: facilities?.count ?? null,
                 page_size: facilities?.page_size ?? null,
                 query,
-                token,
+                // token,
             }
         }
     }
@@ -1490,7 +1723,7 @@ export async function getServerSideProps(ctx) {
             count: 0,
             page_size: 0,
             query,
-            token: null
+            // token: null
         }
     }
 }
