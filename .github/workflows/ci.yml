@@ -52,10 +52,11 @@ jobs:
       uses: actions/setup-node@v4
       with: 
         node-version: ${{ matrix.node-version }}
+    - run: console.log(process.cwd())
     - run: npm install -g pnpm
     - run: pnpm install
     - run: pnpm run build
-    - run: pnpm dlx pm2 startOrRestart kmhfr --env local
+    - run: pnpm dlx pm2 startOrRestart /var/www/kmhfr/ecosystem.config.js --env local
     - run: pnpm dlx pm2 save
 
   # test:
