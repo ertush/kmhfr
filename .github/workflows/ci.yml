@@ -64,7 +64,7 @@ jobs:
           source ~/.nvm/nvm.sh
           if ! [[ -d './.git' ]]; then git init; fi
           if ! [[ `git remote -v | awk '{print $1}' | head -n 1` =~ 'origin' ]]; then git remote add origin ${{ github.server_url }}${{ github.username }}/${{ github.repository }}.git; fi
-          nvm install v18;
+          nvm install v22.11.0;
           node --version;
           git stash
           git pull origin main
