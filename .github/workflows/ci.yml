@@ -44,7 +44,7 @@ jobs:
 
 
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: node@22.11.0
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
@@ -64,7 +64,6 @@ jobs:
           source ~/.nvm/nvm.sh
           if ! [[ -d './.git' ]]; then git init; fi
           if ! [[ `git remote -v | awk '{print $1}' | head -n 1` =~ 'origin' ]]; then git remote add origin ${{ github.server_url }}${{ github.username }}/${{ github.repository }}.git; fi
-          nvm install v22.11.0;
           node --version;
           git stash
           git pull origin main
