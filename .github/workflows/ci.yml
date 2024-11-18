@@ -79,7 +79,7 @@ jobs:
     - run: npm install -g pnpm
     - run: pnpm install
     - run: pnpm run build
-    - run: pnpm dlx pm2 startOrRestart ecosystem.config.js --env local
+    - run: pnpm dlx pm2 startOrRestart /var/www/kmhfr/ecosystem.config.js --env local
     - run: pnpm dlx pm2 save
         
 
