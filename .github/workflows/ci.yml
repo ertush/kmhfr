@@ -47,7 +47,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
     - name: Install Build Dependencies
       run : yarn global add pm2; yarn global add pnpm
     - name: Deploy to VPS
