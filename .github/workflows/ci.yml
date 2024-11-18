@@ -42,9 +42,15 @@ jobs:
   #       path: playwright-report/
   #       retention-days: 30
 
+  
 
   deploy:
-    runs-on: node@22.11.0
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: ['18.x', '20.x']
+    
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
@@ -64,13 +70,17 @@ jobs:
           source ~/.nvm/nvm.sh
           if ! [[ -d './.git' ]]; then git init; fi
           if ! [[ `git remote -v | awk '{print $1}' | head -n 1` =~ 'origin' ]]; then git remote add origin ${{ github.server_url }}${{ github.username }}/${{ github.repository }}.git; fi
-          node --version;
-          git stash
-          git pull origin main
-          pnpm install
-          pnpm run build
-          pnpm dlx pm2 startOrRestart ecosystem.config.js --env local
-          pnpm dlx pm2 save
+          git stash;
+          git pull origin main;
+    - name: Install dependencies and build app 
+      uses: actions/setup-node@v4
+      with: 
+        node-version: ${{ matrix.node-version }}
+    - run: npm install -g pnpm
+    - run: pnpm install
+    - run: pnpm run build
+    - run: pnpm dlx pm2 startOrRestart ecosystem.config.js --env local
+    - run: pnpm dlx pm2 save
         
 
           
