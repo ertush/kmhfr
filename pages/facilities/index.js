@@ -3,7 +3,7 @@ import Link from 'next/link'
 import MainLayout from '../../components/MainLayout'
 import { DownloadIcon, PlusIcon } from '@heroicons/react/solid'
 import { checkToken } from '../../controllers/auth/auth'
-import React, { useState, useEffect, useCallback, useContext } from 'react'
+import React, { useState, useEffect, useCallback, useContext, useRef} from 'react'
 import { useRouter } from 'next/router'
 import { Menu } from '@headlessui/react'
 import { ChevronDownIcon, FilterIcon, SearchIcon } from '@heroicons/react/outline'
@@ -57,22 +57,24 @@ function FacilityHome(props) {
 
     const [token, setToken] = useState(null)
 
-    // const qf = props?.query?.qf ?? null
+    
 
 
     const [drillDown, setDrillDown] = useState({})
 
     const [isAccordionExpanded, setIsAccordionExpanded] = useState(false);
-    const [title, setTitle] = useState('Facilities')
 
     // quick filter themes
-    const [khisSynched, setKhisSynched] = useState(false);
+    
     const [facilityFeedBack, setFacilityFeedBack] = useState([])
-    const [pathId, setPathId] = useState(props?.path?.split('id=')[1] || '')
-    const [allFctsSelected, setAllFctsSelected] = useState(true);
+    
+    
     const [isClient, setIsClient] = useState(false);
     const [isMenuOpen, setIsMenuOpen] = useState(false)
     const [facilities, setFacilities] = useState(props?.facilities)
+
+    
+    
 
     
 
@@ -174,7 +176,7 @@ function FacilityHome(props) {
 
     
 
-    const handleSearch = useCallback((values) => {
+    const handleSearch = useCallback((values, actions) => {
 
         const query = values.q.split(' ').join('+');
         setSearchTerm(query);
@@ -183,16 +185,35 @@ function FacilityHome(props) {
 
         let currentPageFilters = ''
 
+        
         for(let [k, v] of href.searchParams.entries()) {
+            if(k == 'filter' && v == 'all_facilities') {
+                currentPageFilters = `&${k}=${v}`
+                break;
+            }
             if(k == 'filter') continue
             currentPageFilters += `&${k}=${v}`
         }
+        
 
 
         setPageFilter(currentPageFilters);
-        
 
+       
         mutate()
+        .then(ok => {
+            
+            if(!!ok){
+                actions.resetForm({
+                    values: {
+                        q: ''
+                    }
+                })
+            }
+        })
+
+       
+        
                                  
     })
 
@@ -882,11 +903,7 @@ function FacilityHome(props) {
                         {
                             isMenuOpen &&
                             <FacilitySideMenu
-                            /*
-                                filters={filters}
-                                states={[khisSynched, facilityFeedBack, pathId, allFctsSelected, title]}
-                                stateSetters={[setKhisSynched, setFacilityFeedBack, setPathId, setAllFctsSelected, setTitle]}
-                                */ />
+                            />
                         }
                     </button>
 
@@ -903,77 +920,7 @@ function FacilityHome(props) {
                                             q: ""
                                         }
                                     }
-                                    onSubmit={handleSearch/*(values) => {
-
-
-                                        const query = values.q.split(' ').join('+');
-                                        const href = new URL(window.location.href)
-                                        const filter = href.searchParams.get('filter')
-                                        // console.log({values})
-                                        setSearchTerm(query)
-
-
-                                        switch (filter) {
-                                            case "all_facilities":
-                                                router.push(`/facilities/?search=${query}&filter=all_facilities`)
-                                                break;
-                                            case "approved_facilities":
-                                                router.push(`/facilities/?search=${query}&filter=approved_facilities&approved=true&approved_national_level=true&rejected=false`)
-                                                break;
-                                            case "pending_validation_facilities":
-                                                router.push(`/facilities/?search=${query}&filter=pending_validation_facilities&pending_approval=true&has_edits=false`)
-                                                break;
-                                            case "updated_pending_validation_facilities":
-                                                // `/facilities/?search=${query}&filter=updated_pending_validation_facilities&have_updates=true&${facilityStatus.split(':')[0]}=${facilityStatus.split(':')[1]}`)
-                                                router.push({
-                                                    pathname: '/facilities',
-                                                    query: {
-                                                        search: query,
-                                                        filter: 'updated_pending_validation_facilities',
-                                                        have_updates: true,
-                                                        ...(() => {
-                                                            if (facilityStatus !== '') {
-                                                                return {
-                                                                    [facilityStatus.split(':')[0]]: facilityStatus.split(':')[1]
-                                                                }
-                                                            }
-                                                            return {}
-                                                        })()
-
-                                                    }
-                                                })
-                                                break;
-                                            case "pending_approval_facilities":
-                                                router.push(`/facilities/?search=${query}&filter=pending_approval_facilities&to_publish=true`)
-                                                break;
-                                            case "dhis_synched_facilities":
-                                                router.push(`/facilities/?search=${query}&filter=dhis_synched_facilities&approved=true&approved_national_level=true&rejected=false&reporting_in_dhis=true`)
-                                                break;
-                                            case "failed_validation_facilities":
-                                                router.push(`/facilities/?search=${query}&filter=failed_validation_facilities&rejected=true`)
-                                                break;
-                                            case "rejected_facilities":
-                                                router.push(`/facilities/?search=${query}&filter=rejected_facilities&rejected_national_true=true`)
-                                                break;
-                                            case "closed":
-                                                router.push(`/facilities/?search=${query}&filter=closed_facilities&closed=true`)
-                                                break;
-                                            case "incomplete":
-                                                router.push(`/facilities/?search=${query}&filter=incomplete_facilities&is_complete=true`)
-                                                break;
-                                            case "synchronized_regulated_facilities":
-                                                router.push(`/facilities/?search=${query}&filter=synchronized_regulated_facilities&mfl_code_null=true`)
-                                                break;
-                                            case "feed_back_facilities":
-                                                router.push(`/facilities/?search=${query}&filter=feed_back_facilities`)
-                                                break;
-                                            default:
-                                                router.push(`/facilities/?search=${query}&filter=all_facilities`)
-                                                break;
-
-                                        }
-
-                                    }*/}
+                                    onSubmit={handleSearch}
                                 >
 
                                     <Form
@@ -1169,130 +1116,9 @@ function FacilityHome(props) {
                                                         </Link>
                                                     </div>
                                             }
-
-                                            {/* Searched Facility List */}
-
-                                            {/* {
-                                                searchedFacility?.length > 0 ?
-
-                                                searchedFacility?.map((facility) => (
-                                                        <div key={facility?.id}
-                                                            title={`Incomplete Details : ${facility?.is_complete ? 'none' : facility?.in_complete_details}`}
-                                                            className={`grid grid-cols-8 gap-2 border-b py-4 w-full ${!facility?.is_complete && !facility?.in_complete_details ? 'bg-yellow-50 border-yellow-500 hover:bg-gray-50' : 'bg-transparent border-gray-400 hover:border-grat-400'}`}>
-                                                            <div className="px-2 col-span-8 md:col-span-8 lg:col-span-6 gap-2 md:gap-0 flex flex-col group items-center justify-start text-left">
-                                                                <h3 className="text-2xl font-semibold w-full">
-                                                                    <span onClick={() => router.push({ pathname: `/facilities/${facility?.id}`, query: currentPageParams })} className={`cursor-pointer text-blue-500 hover:underline ${facility?.is_complete ? 'hover:text-blue-500' : 'hover:text-yellow-600'} group-focus:text-blue-500 active:text-blue-500`} >
-                                                                        {facility?.official_name || facility?.official_name || facility?.name}
-                                                                    </span>
-                                                                </h3>
-
-                                                                <div className="w-full grid grid-cols-2 md:grid-cols-5 gap-1">
-
-
-                                                                    <div className="flex flex-col items-start justify-start gap-0 leading-none whitespace-pre-wrap mb-2">
-                                                                        <label className="text-xs text-gray-500 ">Code:</label>
-                                                                        <span className="whitespace-pre-line font-semibold"># {facility?.code ?? 'NO_CODE'}</span>
-                                                                    </div>
-
-                                                                    <div className="flex flex-col  items-start justify-start gap-0 leading-none whitespace-pre-wrap">
-                                                                        <label className="text-xs text-gray-500">Type:</label>
-                                                                        <span className="whitespace-pre-line text-wrap">{facility?.facility_type_name ?? ' '}</span>
-                                                                    </div>
-
-
-                                                                    <div className="flex flex-col  items-start justify-start gap-0 leading-none whitespace-pre-wrap">
-                                                                        <label className="text-xs text-gray-500">Owner:</label>
-                                                                        <span className="whitespace-pre-line text-wrap">{facility?.owner_name ?? ' '}</span>
-                                                                    </div>
-
-                                                                    <div className="flex flex-col items-start justify-start gap-0 leading-none whitespace-pre-wrap">
-                                                                        <label className="text-xs text-gray-500">Keph:</label>
-                                                                        <span className="whitespace-pre-line">{filters?.keph_level.find(({ id }) => id == facility?.keph_level)?.name ?? '-'}</span>
-                                                                    </div>
-
-                                                                    <div className="flex flex-col items-start col-start-2 row-start-1 md:col-start-5 justify-start gap-0 leading-none whitespace-pre-wrap">
-                                                                        <label className="text-xs text-gray-500">Updated:</label>
-                                                                        <span className="whitespace-pre-line">{new Date(facility?.updated).toDateString()}{", "}{new Date(facility?.updated).toLocaleTimeString()}</span>
-                                                                    </div>
-                                                                </div>
-
-                                                                <div className="text-base grid grid-cols-2 md:grid-cols-5 items-center justify-start gap-1 w-full">
-                                                                    <div className="flex flex-col items-start justify-start gap-0 leading-none whitespace-pre-wrap">
-                                                                        <label className="text-xs text-gray-500">County:</label>
-                                                                        <span className="whitespace-pre-line">{facility?.county_name || facility?.county || 'N/A'}</span>
-                                                                    </div>
-                                                                    <div className="flex flex-col items-start justify-start gap-0 leading-none whitespace-pre-wrap">
-                                                                        <label className="text-xs text-gray-500">Sub-county:</label>
-                                                                        <span className="whitespace-pre-line">{facility?.sub_county_name || facility?.sub_county || 'N/A'}</span>
-                                                                    </div>
-                                                                    <div className="flex flex-col items-start justify-start gap-0 leading-none whitespace-pre-wrap">
-                                                                        <label className="text-xs text-gray-500">Ward:</label>
-                                                                        <span className="whitespace-pre-line">{facility?.ward_name || 'N/A'}</span>
-                                                                    </div>
-                                                                    <div className="flex flex-col items-start justify-start gap-0 leading-none whitespace-pre-wrap">
-                                                                        <label className="text-xs text-gray-500">Constituency:</label>
-                                                                        <span className="whitespace-pre-line">{facility?.constituency_name || facility?.constituency || 'N/A'}</span>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-
-                                                            <div className="col-span-8 md:col-span-8 lg:col-span-2 grid grid-cols-2 grid-rows-4 gap-x-2 gap-y-1 text-lg">
-           
-                                                                {
-                                                                    !facility?.rejected ?
-                                                                        <span className={"shadow-sm leading-none whitespace-nowrap text-sm col-start-2  py-1 px-2 " + (facility?.approved_national_level ? "bg-green-200 font-semibold text-green-900" : "bg-gray-500 font-semibold p-1 text-gray-50")}>
-
-
-                                                                            {
-                                                                                facility?.approved_national_level ?
-                                                                                    "Approved" : "Not Approved"}</span> :
-                                                                                     facility?.rejected && <span className={"shadow-sm  col-start-2 leading-none whitespace-nowrap px-2 text-sm font-semibold py-1 bg-red-200 text-red-900"}>Rejected Validate</span>
-                                                                }
-
-                                                                {
-                                                                    facility?.rejected_national &&
-                                                                    <span className={"shadow-sm leading-none whitespace-nowrap text-sm col-start-2 py-1 px-2 bg-red-200 font-semibold text-yellow-900"}>Rejected Approve</span>
-                                                                }
-
-                                                                {
-                                                                    facility?.has_edits && facility?.latest_update &&
-                                                                    <span className={"shadow-sm leading-none whitespace-nowrap text-sm col-start-2 py-1 px-2 bg-yellow-200 font-semibold text-yellow-900"}>Has edits</span>
-                                                                }
-
-                                                                {
-                                                                    !facility?.is_complete &&
-                                                                    <span className={"shadow-sm leading-none whitespace-nowrap text-sm col-start-2 py-1 px-2 bg-pink-200 font-semibold text-pink-900"}>Incomplete</span>
-                                                                }
-
-                                                                {
-                                                                    facility?.approved ?
-                                                                        <span className={"shadow-sm leading-none whitespace-nowrap text-sm col-start-2 py-1 px-2 bg-purple-200 font-semibold text-purple-900"}>Validated</span> :
-                                                                        <span className={"shadow-sm leading-none whitespace-nowrap text-sm col-start-2 py-1 px-2 bg-gray-500 font-semibold text-gray-50"}>Not Validated</span>
-                                                                }
-
-                                                                {
-                                                                    facility?.closed &&
-                                                                    <span className={"shadow-sm leading-none whitespace-nowrap text-sm col-start-2 py-1 px-2 bg-red-200 font-semibold text-red-900"}>Closed</span>
-                                                                }
-
-
-                                                            </div>
-                                                        </div>
-                                                    ))
-                                                    :
-                                                    <div className='w-[98%] hidden my-4  rounded border border-yellow-600 items-center justify-start gap-2 bg-yellow-100  font-medium p-3'>
-                                                        <span className='text-base text-gray-700'>
-                                                            No Facilities found
-                                                        </span>
-                                                        <Link href={props.path || '/'}>
-                                                            <span className='text-gray-700 hover:text-gray-800 group-focus:text-gray-800 active:text-gray-800'>
-                                                                Refresh.
-                                                            </span>
-                                                        </Link>
-                                                    </div>
-                                            } */}
-
+         
                                             {/* Feedback Facilities View */}
+                                            
                                             {
                                                 facilityFeedBack && facilityFeedBack.length > 0 ? facilityFeedBack.map((facility) => (
                                                     <div key={facility?.id} className="grid grid-cols-8 gap-2 border-b py-4 hover:bg-gray-50 w-full">
@@ -1330,10 +1156,6 @@ function FacilityHome(props) {
                                                     (facilities?.length === 0 && facilityFeedBack?.length == 0) &&
                                                     // No Facility feedback data found
                                                     <Alert severity="warning" sx={{ width: '100%', marginInline: '4px' }} >No facilities found <span onClick={() => {
-                                                        setTitle('Facilities')
-                                                        setAllFctsSelected(true)
-
-
                                                         router.push({ pathname: '/facilities', query: { qf: 'all' } })
                                                     }} className='hover:underline text-indigo-700 cursor-pointer'>back to all facilities</span>
                                                     </Alert>
