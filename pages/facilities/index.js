@@ -181,22 +181,37 @@ function FacilityHome(props) {
 
         const href = new URL(window.location.href)
 
-        const filter = href.searchParams.get('filter');
-        setPageFilter(filter);
+        let currentPageFilters = ''
+
+        for(let [k, v] of href.searchParams.entries()) {
+            if(k == 'filter') continue
+            currentPageFilters += `&${k}=${v}`
+        }
+
+
+        setPageFilter(currentPageFilters);
         
 
         mutate()
                                  
     })
 
+    // console.log({pageFilter})
 
-    const {data: searchedFacility, mutate, isLoading: searchIsLoading} = useSWR(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/?search=${searchTerm}&filter=${pageFilter}`, searchFacility, {
+    const {mutate, isLoading: searchIsLoading} = useSWR(
+        !!searchTerm && !!pageFilter 
+        ?
+        `${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/?search=${searchTerm}${pageFilter}`
+        :
+        null
+        , searchFacility, {
         revalidateOnMount: false,
         revalidateOnFocus: false,
         onSuccess: (data) => {
             
             setFacilities(data?.results)
         }
+        
     })
 
    
