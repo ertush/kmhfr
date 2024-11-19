@@ -201,12 +201,15 @@ function FacilityHome(props) {
 
        
         mutate()
-        .then(_ => {
-            actions.resetForm({
-                values: {
-                    q: ''
-                }
-            })
+        .then(ok => {
+            
+            if(!!ok){
+                actions.resetForm({
+                    values: {
+                        q: ''
+                    }
+                })
+            }
         })
 
        
