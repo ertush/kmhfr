@@ -92,9 +92,9 @@ function Home() {
 
         <div className="w-full h-screen overflow-y-scroll flex flex-col items-center md:items-start">
         
-         <div className='w-full h-auto z-10 fixed top-0 overflow-hidden'>
+         <div className='w-full h-auto fixed top-0 z-10 flex flex-col gap-0 justify-start'>
             {/* Logo And Title */}
-            <div className='w-full fixed  max-h-min bg-gray-50 flex'>
+            <div className='w-full max-h-min bg-gray-50 flex'>
               {/* Heading */}
               <div className="max-h-min w-[80%] container flex  mx-auto">
                 {/* Heading */}
@@ -126,7 +126,7 @@ function Home() {
             </div>
 
             {/* Menu Heading */}
-            <div className='w-full md:mt-[104px] mt-[25%] overflow-hidden bg-gray-300 max-h-min flex items-center justify-between md:items-start md:items-between p-3 md:p-0'>
+            <div className='w-full overflow-hidden bg-gray-300 max-h-min flex items-center justify-between md:items-start md:items-between p-3 md:p-0'>
               
               {/* Menu Heading */}
               <nav className="hidden max-h-min w-[60%] container md:flex mx-auto ">
