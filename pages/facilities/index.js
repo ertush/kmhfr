@@ -143,6 +143,9 @@ function FacilityHome(props) {
     const dataFetcher = async (url) => {
         let token = null
 
+        let response = []
+
+
         if(!!window){
             const cookie = document.cookie
             const access_token = JSON.parse(cookie.split('=')[1])?.token
@@ -152,13 +155,22 @@ function FacilityHome(props) {
         }
 
 
-        return token ? await (await fetch(url, {
-            headers: {
-                Accept: 'application/json, */*',
-                Authorization: `Bearer ${token}`
-               
-            }
-        })).json() : Promise((_, reject) => reject('Token is not valid'))
+        try {
+                response = await (await fetch(url, {
+                    headers: {
+                        Accept: 'application/json, */*',
+                        Authorization: `Bearer ${token}`
+                    }   
+             })).json()
+        }
+        catch(e) {
+            console.log(e.message)
+       }
+
+       return response
+
+
+      
     }
 
     /**
