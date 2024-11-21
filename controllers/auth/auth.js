@@ -3,6 +3,8 @@ const Cookies = require('cookies')
 const cookieCutter = require('cookie-cutter')
 
 
+
+
 const   getToken = (req, res, refresh_token, creds) => {
     const cookies = new Cookies(req, res)
     // console.log('running getToken')
@@ -183,8 +185,10 @@ const logUserIn = (req, res, creds, was) => {
         })
 }
 
-function getUserDetails (token, url) {
+async function getUserDetails (token, url) {
     let savedSession = null
+
+
     if (typeof window != "undefined") {
        
         savedSession = window.localStorage.getItem('user')
@@ -192,12 +196,13 @@ function getUserDetails (token, url) {
             savedSession = JSON.parse(window.localStorage.getItem('user'))
         }
         if (savedSession && savedSession?.id.length > 0 && savedSession?.id !== 6 ) {
-            // console.log('Saved session: ', savedSession)
             return savedSession
         }
-        // // console.log('W getUserDetails URL: ',url)
+
+        // cookieToken = document.cookie.split('=')[1]
     }
 
+    // console.log('[DEBUG]', {cookieToken, token})
 
     return fetch(url, {
         'method': 'GET',
@@ -219,6 +224,7 @@ function getUserDetails (token, url) {
                 }
             }
             if (typeof window !== "undefined") {
+
                 // // console.log('getUserDetails returning ', response)
                 // window.sessionStorage.setItem('user', JSON.stringify(response))
                 console.log('[+] Storing user details on localstorage......')
@@ -228,6 +234,8 @@ function getUserDetails (token, url) {
                     isLoggedIn = true
                 }
             }
+            // console.log('[DEBUG] GroupId:', JSON.stringify(response?.email, null, 2), {token})
+
             return {response, isLoggedIn}
         }).catch(err => {
             // console.log('Error in getUserDetails: ', err)

@@ -264,9 +264,8 @@ function User(props) {
 
 	if (isClient) {
 		return (
-			<MainLayout isLoading={false} searchTerm={props?.query?.searchTerm}>
-
-				{open &&
+            (<MainLayout isLoading={false} searchTerm={props?.query?.searchTerm}>
+                {open &&
 					<Modal
 						aria-labelledby="transition-modal-title"
 						aria-describedby="transition-modal-description"
@@ -320,7 +319,7 @@ function User(props) {
 						</Fade>
 					</Modal>
 				}
-				<div className="w-full  md:w-[85%] md:mx-auto grid grid-cols-5 gap-4 px-1 md:px-4 py-2 my-4">
+                <div className="w-full  md:w-[85%] md:mx-auto grid grid-cols-5 gap-4 px-1 md:px-4 py-2 my-4">
 					<div className="col-span-5 flex flex-col gap-3 md:gap-5 px-4">
 						<div className="flex flex-wrap items-center justify-between gap-2 text-sm md:text-base pb-3">
 							<div className="flex flex-row items-center justify-between gap-2 text-sm md:text-base py-3">
@@ -809,16 +808,16 @@ function User(props) {
 
 									{selectedGroups?.map((grp, i) => {
 										return (
-											<React.Fragment key={i}>
-												{(() => {
+                                            (<React.Fragment key={i}>
+                                                {(() => {
 													if (grp.id == 1 || grp.id == 12 || grp.id == 2) {
 														return (
-															// Administrative area 
-															<div key={i} className=' w-full flex flex-col items-start justify-start py-3   bg-transparent h-auto'>
-																<h4 className='text-lg uppercase pb-2 border-b border-gray-600 w-full mb-4 font-semibold text-gray-900'>
+                                                            // Administrative area 
+                                                            (<div key={i} className=' w-full flex flex-col items-start justify-start py-3   bg-transparent h-auto'>
+                                                                <h4 className='text-lg uppercase pb-2 border-b border-gray-600 w-full mb-4 font-semibold text-gray-900'>
 																	Administrative Areas
 																</h4>
-																<div className='w-full flex flex-row items-center gap-1 gap-x-3 mb-3'>
+                                                                <div className='w-full flex flex-row items-center gap-1 gap-x-3 mb-3'>
 																	<div className='w-full flex flex-col items-left  gap-2 gap-x-3 mb-3'>
 
 																		<Select
@@ -904,17 +903,17 @@ function User(props) {
 																	</div>
 
 																</div>
-
-															</div>)
+                                                            </div>)
+                                                        );
 													}
 													else if (grp.id == 3) {
 														return (
-															//  Regulatory body 
-															<div className=' w-full flex flex-col items-start justify-start p-3   bg-transparent h-auto'>
-																<h4 className='text-lg uppercase pb-2 border-b border-gray-600 w-full mb-4 font-semibold text-gray-900'>
+                                                            //  Regulatory body 
+                                                            (<div className=' w-full flex flex-col items-start justify-start p-3   bg-transparent h-auto'>
+                                                                <h4 className='text-lg uppercase pb-2 border-b border-gray-600 w-full mb-4 font-semibold text-gray-900'>
 																	Regulatory Body
 																</h4>
-																<div className='w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3'>
+                                                                <div className='w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3'>
 																	<div className='w-full flex flex-col items-left px-2 justify-  gap-1 gap-x-3 mb-3'>
 
 																		<Select
@@ -948,16 +947,15 @@ function User(props) {
 																	</div>
 
 																</div>
-
-															</div>
-														)
+                                                            </div>)
+                                                        );
 													}
 													else {
 														return null
 													}
 												})()}
-											</React.Fragment>
-										)
+                                            </React.Fragment>)
+                                        );
 									})}
 
 									{/* Cancel & Save */}
@@ -1006,8 +1004,8 @@ function User(props) {
                     </div> */}
 
 				</div>
-			</MainLayout>
-		)
+            </MainLayout>)
+        );
 	}
 	else {
 		return null

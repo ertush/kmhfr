@@ -89,13 +89,12 @@ function CommunityUnit(props) {
 
 	if (isClient) {
 		return (
-			<div className=''>
-				<Head>
+            (<div className=''>
+                <Head>
 					<title>KMHFR | Community Units</title>
 					<link rel='icon' href='/favicon.ico' />
 				</Head>
-
-				<MainLayout isLoading={false} searchTerm={props?.query?.searchTerm}>
+                <MainLayout isLoading={false} searchTerm={props?.query?.searchTerm}>
 					<div className='w-full md:w-[85%] md:mx-auto rounded grid grid-cols-1 md:grid-cols-5 gap-4 py-2 px-4 md:px-0 my-4'>
 						<div className='col-span-5 flex flex-col  md:gap-5 '>
 							<div className='flex flex-wrap items-center justify-between gap-2 text-sm md:text-base py-3'>
@@ -230,7 +229,7 @@ function CommunityUnit(props) {
 							/>
 						</div>
 
-						<button className='md:hidden relative p-2 border border-gray-800 rounded w-full self-start my-4' onClick={() => setIsMenuOpen(!isMenuOpen)}>
+						<button className='md:hidden relative p-2 border border-gray-800 rounded self-center mb-4' onClick={() => setIsMenuOpen(!isMenuOpen)}>
 							Community Health Unit Menu
 							{
 								!isMenuOpen &&
@@ -504,8 +503,8 @@ function CommunityUnit(props) {
 
 
 				</MainLayout>
-			</div>
-		);
+            </div>)
+        );
 	}
 	else {
 		return null
@@ -621,7 +620,7 @@ export async function getServerSideProps(ctx) {
 			url = url.replace(/filter=\w+\&/, '')
 			url = url.replace(/q=\w+\&/, '')
 
-			console.log({url})
+			// console.log({url})
 
 
 			const r = await fetch(url, {

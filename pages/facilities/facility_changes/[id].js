@@ -190,12 +190,12 @@ export async function getServerSideProps(ctx) {
     return {
         props: {
             facility: {
-                changes: await fetchFacilityChanges(facility?.latest_update) ?? {},
+                changes: (await fetchFacilityChanges(facility?.latest_update)) ?? {},
                 oldValues: ctx?.query?.old_values ?? '',
                 data: facility
             }
         }
-    }
+    };
 }
 
 export default withAuth(FacilityChanges)

@@ -1286,7 +1286,7 @@ function Dashboard(props) {
                                         onChange={value => handlePresentationChange(value, 'facility_chu_chart')}
                                         placeholder="presentation type"
                                         title="Select Presentation Type"
-                                        className='self-end z-40' />
+                                        className='self-end' />
 
                                 </div>
                             }
@@ -1321,7 +1321,7 @@ function Dashboard(props) {
                                         onChange={value => handlePresentationChange(value, 'facility_chu_chart')}
                                         placeholder="presentation type"
                                         title="Select Presentation Type"
-                                        className='self-end z-40' />
+                                        className='self-end' />
 
                                 </div>
 

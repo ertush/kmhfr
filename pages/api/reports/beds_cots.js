@@ -77,10 +77,10 @@ export default async function fetchFacilityData(req, res) {
                              res.status(200).json(data)
                         }
                     }
-                    }) .catch(console.error)
+                    }) .catch(console.error);
                 }
                 return
-            })
+            });
 
         } catch (err) {
             console.log("getData API error: ", err)
