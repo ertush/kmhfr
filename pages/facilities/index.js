@@ -1500,13 +1500,17 @@ export async function getServerSideProps(ctx) {
 
         if (userGroup === 1) { // CHRIO
 
-            const userCountyID = user?.county
-            url = `${url}&county=${userCountyID}`
+            if(!url.includes("&county")) {
+                const userCountyID = user?.county
+                url = `${url}&county=${userCountyID}`
+            }
 
         } else if (userGroup === 2) { // SCHRIO
 
-            const userSubCountyIDs = user?.user_sub_counties.length > 1 ? user?.user_sub_counties.map(({sub_county}) => sub_county)?.join(',') : user?.user_sub_counties[0]?.sub_county
-            url = `${url}&sub_county=${userSubCountyIDs}`
+            if(!url.includes("&sub_county")) {
+                const userSubCountyIDs = user?.user_sub_counties.length > 1 ? user?.user_sub_counties.map(({sub_county}) => sub_county)?.join(',') : user?.user_sub_counties[0]?.sub_county
+                url = `${url}&sub_county=${userSubCountyIDs}`
+            }
 
         }
 
