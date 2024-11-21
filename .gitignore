@@ -53,3 +53,5 @@ todo.md
 
 # pages
 pages/test-fetch.js
+components/FacilitySideMenuTest.js
+pages/facilities/facility-index-test.js
