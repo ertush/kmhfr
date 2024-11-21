@@ -3,7 +3,7 @@ import Link from 'next/link'
 import MainLayout from '../../components/MainLayout'
 import { DownloadIcon, PlusIcon } from '@heroicons/react/solid'
 import { checkToken } from '../../controllers/auth/auth'
-import React, { useState, useEffect, useCallback, useContext, useRef} from 'react'
+import React, { useState, useEffect, useCallback, useContext } from 'react'
 import { useRouter } from 'next/router'
 import { Menu } from '@headlessui/react'
 import { ChevronDownIcon, FilterIcon, SearchIcon } from '@heroicons/react/outline'
@@ -25,8 +25,8 @@ import { KeyboardArrowRight, KeyboardArrowDown } from "@mui/icons-material";
 import { useSearchParams } from 'next/navigation'
 import withAuth from '../../components/ProtectedRoute'
 import { v4 as uuid } from 'uuid'
-import useSWR from 'swr'
-import Spinner from '../../components/Spinner'
+
+
 
 
 
@@ -51,32 +51,42 @@ function FacilityHome(props) {
 
     const [searchTerm, setSearchTerm] = useState('')
 
-    const [_, setFacilityStatus] = useState('')
+    const [facilityStatus, setFacilityStatus] = useState('')
 
-    const [pageFilter, setPageFilter] = useState('')
 
-    const [token, setToken] = useState(null)
+    // const qf = props?.query?.qf ?? null
 
-    
-
+    if (filters && typeof filters === "object") {
+        filters["has_edits"] = [{ id: "has_edits", name: "Has edits" },]
+        filters["is_approved"] = [{ id: "is_approved", name: "Is approved" }]
+        filters["is_complete"] = [{ id: "is_complete", name: "Is complete" }]
+        filters["number_of_beds"] = [{ id: "number_of_beds", name: "Number of beds" }]
+        filters["number_of_cots"] = [{ id: "number_of_cots", name: "Number of cots" }]
+        filters["open_whole_day"] = [{ id: "open_whole_day", name: "Open whole day" }]
+        filters["open_weekends"] = [{ id: "open_weekends", name: "Open weekends" }]
+        filters["open_public_holidays"] = [{ id: "open_public_holidays", name: "Open public holidays" }]
+        delete fltrs.has_edits
+        delete fltrs.is_approved
+        delete fltrs.is_complete
+        delete fltrs.number_of_beds
+        delete fltrs.number_of_cots
+        delete fltrs.open_whole_day
+        delete fltrs.open_weekends
+        delete fltrs.open_public_holidays
+    }
 
     const [drillDown, setDrillDown] = useState({})
 
     const [isAccordionExpanded, setIsAccordionExpanded] = useState(false);
+    const [title, setTitle] = useState('Facilities')
 
     // quick filter themes
-    
+    const [khisSynched, setKhisSynched] = useState(false);
     const [facilityFeedBack, setFacilityFeedBack] = useState([])
-    
-    
+    const [pathId, setPathId] = useState(props?.path?.split('id=')[1] || '')
+    const [allFctsSelected, setAllFctsSelected] = useState(true);
     const [isClient, setIsClient] = useState(false);
     const [isMenuOpen, setIsMenuOpen] = useState(false)
-    const [facilities, setFacilities] = useState(props?.facilities)
-
-    
-    
-
-    
 
     const pageParams = useSearchParams()
 
@@ -113,7 +123,7 @@ function FacilityHome(props) {
     // const serviceFilterOptions = filters['service']?.map(({ id, name }) => ({ value: id, label: name }))
     const operationStatusFilterOptions = filters?.operation_status?.map(({ id, name }) => ({ value: id, label: name }))
 
-    
+
 
 
     const handleApprovalStatus = useCallback(({ value }) => {
@@ -134,120 +144,25 @@ function FacilityHome(props) {
     })
 
 
-    /**
-     * 
-     * @param {string} url
-     * @returns {Promise<any>} 
-     */
 
-    const dataFetcher = async (url) => {
-        let token = null
+    useEffect(() => {
 
-        let response = []
+        setIsClient(true)
+    }, [])
 
 
-        if(!!window){
-            const cookie = document.cookie
-            const access_token = JSON.parse(cookie.split('=')[1])?.token
-            
-            token = access_token
-            
+    useEffect(() => {
+        let qry = props?.query
+
+        delete qry?.searchTerm
+        delete qry?.qfstart
+        setDrillDown({ ...drillDown, ...qry })
+
+        return () => {
+
         }
+    }, [facilityFeedBack, title])
 
-
-        try {
-                response = await (await fetch(url, {
-                    headers: {
-                        Accept: 'application/json, */*',
-                        Authorization: `Bearer ${token}`
-                    }   
-             })).json()
-        }
-        catch(e) {
-            console.log(e.message)
-       }
-
-       return response
-
-
-      
-    }
-
-    /**
-     * 
-     * @param {string} url 
-     */
-
-    const searchFacility = async (url) => {
-    
-    const facilities = await dataFetcher(url)
-
-    return facilities
-
-    }
-
-    
-
-    const handleSearch = useCallback((values, actions) => {
-
-        const query = values.q.split(' ').join('+');
-        setSearchTerm(query);
-
-        const href = new URL(window.location.href)
-
-        let currentPageFilters = ''
-
-        
-        for(let [k, v] of href.searchParams.entries()) {
-            if(k == 'filter' && v == 'all_facilities') {
-                currentPageFilters = `&${k}=${v}`
-                break;
-            }
-            if(k == 'filter') continue
-            currentPageFilters += `&${k}=${v}`
-        }
-        
-
-
-        setPageFilter(currentPageFilters);
-
-       
-        mutate()
-        .then(ok => {
-            
-            if(!!ok){
-                actions.resetForm({
-                    values: {
-                        q: ''
-                    }
-                })
-            }
-        })
-
-       
-        
-                                 
-    })
-
-    // console.log({pageFilter})
-
-    const {mutate, isLoading: searchIsLoading} = useSWR(
-        !!searchTerm && !!pageFilter 
-        ?
-        `${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/?search=${searchTerm}${pageFilter}`
-        :
-        null
-        , searchFacility, {
-        revalidateOnMount: false,
-        revalidateOnFocus: false,
-        onSuccess: (data) => {
-            
-            setFacilities(data?.results)
-        }
-        
-    })
-
-   
     function userOrgUnit() {
         if (groupID === 1) { // CHRIO
             return { county: userCounty }
@@ -283,7 +198,7 @@ function FacilityHome(props) {
             const filteredOrgUnits = await fetch(url, {
                 headers: {
                     Accept: 'application/json',
-                    Authorization: `Bearer ${token}`,
+                    Authorization: `Bearer ${props?.token}`,
                 }
             })
 
@@ -384,6 +299,8 @@ function FacilityHome(props) {
         })
     }
 
+
+
     function handlePrevious() {
 
         // const params = Object.fromEntries(pageParams.entries())
@@ -420,77 +337,6 @@ function FacilityHome(props) {
         })
     }
 
-    function getMenuTitle() {
-        
-        switch(currentPageParams.filter) {
-            case "all_facilities":
-                return "All Facilities"
-            case "approved_facilities":
-                return "Approved Facilities"
-            case "pending_validation_facilities":
-                return "Facilities Pending Validation"
-            case "updated_pending_validation_facilities":
-                return "Updated Facilities Pending Validation"
-            case "pending_approval_facilities":
-                return "Facilities Pending Approval"
-            case "failed_validation_facilities":
-                return "Failed Validation Facilities"
-            case "dhis_synched_facilities":
-                return "Approved DHIS Synched Facilities"
-            case "rejected_facilities":
-                return "Failed Approval Facilities"
-            case "closed_facilities":
-                return "Closed Facilities"
-            case "incomplete_facilities":
-                return "Incomplete Facilities"
-            case "synchronized_regulated_facilities":
-                return "Synchronized Regulated Facilities"
-            case "feed_back_facilities":
-                return 'Facility Feedback'
-            default:
-                return "Facilities"
-        }
-    }
-
-
-    useEffect(() => {
- 
-        if(!!window){
-            const cookie = document.cookie
-            const access_token = JSON.parse(cookie.split('=')[1])?.token
-            setToken(access_token)
-
-        }
-
-
-        if (filters && typeof filters === "object") {
-            filters["has_edits"] = [{ id: "has_edits", name: "Has edits" },]
-            filters["is_approved"] = [{ id: "is_approved", name: "Is approved" }]
-            filters["is_complete"] = [{ id: "is_complete", name: "Is complete" }]
-            filters["number_of_beds"] = [{ id: "number_of_beds", name: "Number of beds" }]
-            filters["number_of_cots"] = [{ id: "number_of_cots", name: "Number of cots" }]
-            filters["open_whole_day"] = [{ id: "open_whole_day", name: "Open whole day" }]
-            filters["open_weekends"] = [{ id: "open_weekends", name: "Open weekends" }]
-            filters["open_public_holidays"] = [{ id: "open_public_holidays", name: "Open public holidays" }]
-            delete fltrs.has_edits
-            delete fltrs.is_approved
-            delete fltrs.is_complete
-            delete fltrs.number_of_beds
-            delete fltrs.number_of_cots
-            delete fltrs.open_whole_day
-            delete fltrs.open_weekends
-            delete fltrs.open_public_holidays
-        }
-        
-
-        setIsClient(true)
-    }, [])
-
-
-   
-
-
-
     if (isClient) {
 
         return (<>
@@ -514,7 +360,7 @@ function FacilityHome(props) {
 
                                 <div className={"col-span-1 md:col-span-5 flex justify-between w-full bg-django-blue border drop-shadow  text-black p-4 md:divide-x md:divide-gray-200 items-start md:items-center border-l-8 " + (true ? "border-gray-700" : "border-red-600")}>
                                     <h2 className='flex items-center text-2xl font-bold text-gray-900 capitalize gap-2'>
-                                        {getMenuTitle()}
+                                        {title}
                                     </h2>
                                     {/* dropdown options to download data */}
                                     {props?.current_url && props?.current_url.length > 5 &&
@@ -895,7 +741,12 @@ function FacilityHome(props) {
 
                     {/* Side Menu Filters Wide View port*/}
                     <div className="hidden md:flex col-span-1">
-                        <FacilitySideMenu />
+                        <FacilitySideMenu
+                        /*filters={filters ?? {}}
+                        states={[khisSynched, facilityFeedBack, pathId, allFctsSelected, title]}
+                        stateSetters={[setKhisSynched, setFacilityFeedBack, setPathId, setAllFctsSelected, setTitle]} 
+                        */
+                        />
                     </div>
 
                     {/* Side Menu Filters Small View port*/}
@@ -915,7 +766,9 @@ function FacilityHome(props) {
                         {
                             isMenuOpen &&
                             <FacilitySideMenu
-                            />
+                                filters={filters}
+                                states={[khisSynched, facilityFeedBack, pathId, allFctsSelected, title]}
+                                stateSetters={[setKhisSynched, setFacilityFeedBack, setPathId, setAllFctsSelected, setTitle]} />
                         }
                     </button>
 
@@ -932,7 +785,77 @@ function FacilityHome(props) {
                                             q: ""
                                         }
                                     }
-                                    onSubmit={handleSearch}
+                                    onSubmit={(values) => {
+
+
+                                        const query = values.q.split(' ').join('+');
+                                        const href = new URL(window.location.href)
+                                        const filter = href.searchParams.get('filter')
+                                        // console.log({values})
+                                        setSearchTerm(query)
+
+
+                                        switch (filter) {
+                                            case "all_facilities":
+                                                router.push(`/facilities/?search=${query}&filter=all_facilities`)
+                                                break;
+                                            case "approved_facilities":
+                                                router.push(`/facilities/?search=${query}&filter=approved_facilities&approved=true&approved_national_level=true&rejected=false`)
+                                                break;
+                                            case "pending_validation_facilities":
+                                                router.push(`/facilities/?search=${query}&filter=pending_validation_facilities&pending_approval=true&has_edits=false`)
+                                                break;
+                                            case "updated_pending_validation_facilities":
+                                                // `/facilities/?search=${query}&filter=updated_pending_validation_facilities&have_updates=true&${facilityStatus.split(':')[0]}=${facilityStatus.split(':')[1]}`)
+                                                router.push({
+                                                    pathname: '/facilities',
+                                                    query: {
+                                                        search: query,
+                                                        filter: 'updated_pending_validation_facilities',
+                                                        have_updates: true,
+                                                        ...(() => {
+                                                            if (facilityStatus !== '') {
+                                                                return {
+                                                                    [facilityStatus.split(':')[0]]: facilityStatus.split(':')[1]
+                                                                }
+                                                            }
+                                                            return {}
+                                                        })()
+
+                                                    }
+                                                })
+                                                break;
+                                            case "pending_approval_facilities":
+                                                router.push(`/facilities/?search=${query}&filter=pending_approval_facilities&to_publish=true`)
+                                                break;
+                                            case "dhis_synched_facilities":
+                                                router.push(`/facilities/?search=${query}&filter=dhis_synched_facilities&approved=true&approved_national_level=true&rejected=false&reporting_in_dhis=true`)
+                                                break;
+                                            case "failed_validation_facilities":
+                                                router.push(`/facilities/?search=${query}&filter=failed_validation_facilities&rejected=true`)
+                                                break;
+                                            case "rejected_facilities":
+                                                router.push(`/facilities/?search=${query}&filter=rejected_facilities&rejected_national_true=true`)
+                                                break;
+                                            case "closed":
+                                                router.push(`/facilities/?search=${query}&filter=closed_facilities&closed=true`)
+                                                break;
+                                            case "incomplete":
+                                                router.push(`/facilities/?search=${query}&filter=incomplete_facilities&is_complete=true`)
+                                                break;
+                                            case "synchronized_regulated_facilities":
+                                                router.push(`/facilities/?search=${query}&filter=synchronized_regulated_facilities&mfl_code_null=true`)
+                                                break;
+                                            case "feed_back_facilities":
+                                                router.push(`/facilities/?search=${query}&filter=feed_back_facilities`)
+                                                break;
+                                            default:
+                                                router.push(`/facilities/?search=${query}&filter=all_facilities`)
+                                                break;
+
+                                        }
+
+                                    }}
                                 >
 
                                     <Form
@@ -953,12 +876,7 @@ function FacilityHome(props) {
                                             className="bg-transparent border-t border-r border-b rounded-tr rounded-br border-gray-400 text-black flex items-center justify-center px-4 py-1"
 
                                         >
-                                            
-                                            {
-                                                searchIsLoading ?
-                                                <Spinner /> :
-                                                <SearchIcon className="w-5 h-5 text-gray-600" />
-                                            }
+                                            <SearchIcon className="w-5 h-5 text-gray-600" />
                                         </button>
                                     </Form>
 
@@ -1005,13 +923,12 @@ function FacilityHome(props) {
                                 (
                                     <div className="flex-grow w-full flex flex-col items-center gap-1 order-last md:order-none">
                                         <div className="flex flex-col justify-center items-center  w-full">
-
-                                            {/* Faciliy List */}
+                                            {/* Facilities View */}
 
                                             {
-                                                facilities?.length > 0 ?
+                                                props?.facilities.length > 0 ?
 
-                                                    facilities?.map((facility) => (
+                                                    props?.facilities.map((facility) => (
                                                         <div key={facility?.id}
                                                             title={`Incomplete Details : ${facility?.is_complete ? 'none' : facility?.in_complete_details}`}
                                                             className={`grid grid-cols-8 gap-2 border-b py-4 w-full ${!facility?.is_complete && !facility?.in_complete_details ? 'bg-yellow-50 border-yellow-500 hover:bg-gray-50' : 'bg-transparent border-gray-400 hover:border-grat-400'}`}>
@@ -1128,9 +1045,8 @@ function FacilityHome(props) {
                                                         </Link>
                                                     </div>
                                             }
-         
+
                                             {/* Feedback Facilities View */}
-                                            
                                             {
                                                 facilityFeedBack && facilityFeedBack.length > 0 ? facilityFeedBack.map((facility) => (
                                                     <div key={facility?.id} className="grid grid-cols-8 gap-2 border-b py-4 hover:bg-gray-50 w-full">
@@ -1165,9 +1081,13 @@ function FacilityHome(props) {
                                                     </div>
                                                 )) : (
 
-                                                    (facilities?.length === 0 && facilityFeedBack?.length == 0) &&
+                                                    (props?.facilities?.length === 0 && facilityFeedBack?.length == 0) &&
                                                     // No Facility feedback data found
                                                     <Alert severity="warning" sx={{ width: '100%', marginInline: '4px' }} >No facilities found <span onClick={() => {
+                                                        setTitle('Facilities')
+                                                        setAllFctsSelected(true)
+
+
                                                         router.push({ pathname: '/facilities', query: { qf: 'all' } })
                                                     }} className='hover:underline text-indigo-700 cursor-pointer'>back to all facilities</span>
                                                     </Alert>
@@ -1176,7 +1096,7 @@ function FacilityHome(props) {
 
                                             }
 
-                                            {facilities &&
+                                            {props?.facilities &&
                                                 <div className='flex w-full justify-between p-2 items-center'>
                                                     <div className="flex items-center gap-2">
 
@@ -1217,9 +1137,9 @@ function FacilityHome(props) {
                                             {/* Facilities View */}
 
                                             {
-                                                facilities.length > 0 ?
+                                                props?.facilities.length > 0 ?
 
-                                                    facilities.map((facility) => (
+                                                    props?.facilities.map((facility) => (
                                                         <div key={facility?.id}
 
                                                             className={`grid grid-cols-8 gap-2 border-b px-3 py-4 w-full`}>
@@ -1280,7 +1200,7 @@ function FacilityHome(props) {
                                             }
 
 
-                                            {facilities && props?.count >= 10 &&
+                                            {props?.facilities && props?.count >= 10 &&
                                                 <div className='flex w-full justify-between p-2 items-center'>
                                                     <div className="flex items-center gap-2">
 
@@ -1359,7 +1279,7 @@ export async function getServerSideProps(ctx) {
     // }
 
 
-    
+
     async function fetchFilters(token) {
 
         // const filtersURL = `${process.env.NEXT_PUBLIC_API_URL}/common/filtering_summaries/?fields=county,facility_type,facility_type_details,constituency,ward,operation_status,service_category,owner_type,owner,service,keph_level,sub_county`
@@ -1424,8 +1344,6 @@ export async function getServerSideProps(ctx) {
 
          
     }
-
-
 
 
     const token = (await checkToken(ctx.req, ctx.res))?.token
@@ -1558,7 +1476,7 @@ export async function getServerSideProps(ctx) {
                 count: facilities?.count ?? null,
                 page_size: facilities?.page_size ?? null,
                 query,
-                // token,
+                token,
             }
         }
     }
@@ -1576,7 +1494,7 @@ export async function getServerSideProps(ctx) {
             count: 0,
             page_size: 0,
             query,
-            // token: null
+            token: null
         }
     }
 }
