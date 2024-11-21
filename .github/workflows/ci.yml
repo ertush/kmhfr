@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [ fallback-for-facilities-page-fix ]
+    branches: [ main ]
 
 env:
   NEXT_PUBLIC_API_URL: 'https://api.kmhfr.health.go.ke/api'
