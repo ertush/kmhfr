@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [ main ]
+    branches: [ fallback-for-facilities-page-fix ]
 
 env:
   NEXT_PUBLIC_API_URL: 'https://api.kmhfr.health.go.ke/api'
@@ -65,7 +65,7 @@ jobs:
           if ! [[ -d './.git' ]]; then git init; fi
           if ! [[ `git remote -v | awk '{print $1}' | head -n 1` =~ 'origin' ]]; then git remote add origin ${{ github.server_url }}${{ github.username }}/${{ github.repository }}.git; fi
           git stash
-          git pull origin main
+          git pull origin fallback-for-facilities-page-fix
           pnpm install
           pnpm run build
           pnpm dlx pm2 startOrRestart ecosystem.config.js --env local
