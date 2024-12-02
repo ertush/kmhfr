@@ -125,7 +125,7 @@ function ApproveReject(props) {
               </div>
 
               <div className="flex flex-wrap gap-3 items-center justify-end col-span-6 md:col-span-2">
-                <div className="flex flex-col flex-wrap gap-3 w-full items-start md:items-center justify-start md:justify-center">
+                <div className="flex md:flex-row flex-col flex-wrap gap-3 w-full items-start md:items-center justify-start md:justify-center">
                   {facility?.operational || facility?.operation_status_name ? (
                     <span
                       className={
