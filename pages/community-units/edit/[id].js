@@ -61,14 +61,10 @@ export async function getServerSideProps(ctx) {
   const queryId = zSchema.parse(ctx.query).id
 
 
-  async function fetchFacilities() {
+  async function fetchFacilities(wardCode) {
    
-      const { response: user } = await getUserDetails(token, `${process.env.NEXT_PUBLIC_API_URL}/rest-auth/user/`)
-      
-      const params = `?sub_county=${user?.user_sub_counties?.length > 1 ? user?.user_sub_counties?.map(({sub_county}) => sub_county)?.join(',') : user?.user_sub_counties[0]}&fields=id,name,county,sub_county_name,constituency,ward_name`
 
-
-      return fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${params}&reporting_in_dhis=true&closed=false`, { /*&owner_type=6a833136-5f50-46d9-b1f9-5f961a42249f*/
+      return fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/?ward_code=${wardCode}&reporting_in_dhis=true&closed=false`, { /*&owner_type=6a833136-5f50-46d9-b1f9-5f961a42249f*/
         headers: {
           'Authorization': 'Bearer ' + token,
           'Accept': 'application/json'
@@ -76,8 +72,7 @@ export async function getServerSideProps(ctx) {
 
       })
       .then(resp => resp.json())
-      .then(resp => {
-        
+      .then(resp => {        
         return resp?.results?.map(({ id, name }) => ({ label: name, value: id }))
       })
       .catch(console.error)
@@ -104,7 +99,7 @@ export async function getServerSideProps(ctx) {
 
             })
 
-            response["cu"] = await (await cu.json())
+            response["cu"] = (await (await cu.json())) ?? []
 
             break;
 
@@ -117,16 +112,13 @@ export async function getServerSideProps(ctx) {
 
             })
 
-            response["statuses"] = (await (await statuses.json()))?.results?.map(({ id, name }) => ({ label: name, value: id }))
+            response["statuses"] = ((await (await statuses.json()))?.results?.map(({ id, name }) => ({ label: name, value: id }))) ?? []
             break;
 
           case "facilities":
 
-            // const url =  `${process.env.NEXT_PUBLIC_API_URL}/common/sub_counties/?name=${response?.cu?.facility_subcounty.split(' ').join('+')}`
-            // const { response: user } = await getUserDetails(token, `${process.env.NEXT_PUBLIC_API_URL}/rest-auth/user/`)
-            const url = `${process.env.NEXT_PUBLIC_API_URL}/rest-user/`
-
-            response['facilities'] = await fetchFacilities(url)
+            
+            response['facilities'] = (await fetchFacilities(response?.cu?.ward_code)) ?? []
 
             break;
 
@@ -139,7 +131,7 @@ export async function getServerSideProps(ctx) {
 
             })
 
-            response["contact_types"] = (await (await contact_types.json()))?.results?.map(({ id, name }) => ({ label: name, value: id }))
+            response["contact_types"] = ((await (await contact_types.json()))?.results?.map(({ id, name }) => ({ label: name, value: id }))) ?? []
             break;
 
           case "services":
@@ -151,7 +143,7 @@ export async function getServerSideProps(ctx) {
 
             })
 
-            response["services"] = (await (await services.json()))?.results
+            response["services"] = ((await (await services.json()))?.results) ?? []
             break;
         }
       }
