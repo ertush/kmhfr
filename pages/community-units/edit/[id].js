@@ -61,26 +61,67 @@ export async function getServerSideProps(ctx) {
   const queryId = zSchema.parse(ctx.query).id
 
 
-  async function fetchFacilities() {
+  async function fetchFacilities(user) {
    
-      const { response: user } = await getUserDetails(token, `${process.env.NEXT_PUBLIC_API_URL}/rest-auth/user/`)
-      
-      const params = `?sub_county=${user?.user_sub_counties?.length > 1 ? user?.user_sub_counties?.map(({sub_county}) => sub_county)?.join(',') : user?.user_sub_counties[0]}&fields=id,name,county,sub_county_name,constituency,ward_name`
+
+    const userSubCountyIDs = user?.sub_county
+		const userCountyID = user?.county
+		const userGroup = user?.group
+
+		// debug
+		// console.log({userSubCountyIDs,userCountyID,userGroup})
+		
+		if(userGroup == 2 && userSubCountyIDs){
+		
+		  const subCountyFacilitiesURL = `${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/?sub_county=${userSubCountyIDs}&reporting_in_dhis=true&closed=false&fields=id,name&page_size=500`
+
+		   return fetch(subCountyFacilitiesURL, {
+				headers:{
+				  'Authorization': 'Bearer ' + token,
+				  'Accept': 'application/json'
+				}
+				
+			  })
+			  .then(resp => resp.json())
+			  .then(resp => {
+				return resp?.results?.map(({id, name}) => ({value:id, label:name}))
+			  })
+			
+			  
+
+			}
+
+			else if(userGroup == 1 && userCountyID) {
+
+			 return fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/?county=${userCountyID}&reporting_in_dhis=true&closed=false&owner_type=6a833136-5f50-46d9-b1f9-5f961a42249f&fields=id,name`,{
+					headers:{
+					  'Authorization': 'Bearer ' + token,
+					  'Accept': 'application/json'
+					}
+				  }).then(resp => resp.json())
+				  .then(resp => {
+					return resp?.results?.map(({id, name}) => ({value:id, label:name}))
+				  })
 
 
-      return fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${params}&reporting_in_dhis=true&closed=false`, { /*&owner_type=6a833136-5f50-46d9-b1f9-5f961a42249f*/
-        headers: {
-          'Authorization': 'Bearer ' + token,
-          'Accept': 'application/json'
-        }
-
-      })
-      .then(resp => resp.json())
-      .then(resp => {
-        
-        return resp?.results?.map(({ id, name }) => ({ label: name, value: id }))
-      })
-      .catch(console.error)
+			} 
+			else if(userGroup == 7 || userGroup == 11 || userGroup == 5) {
+				 return fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/?reporting_in_dhis=true&closed=false&owner_type=6a833136-5f50-46d9-b1f9-5f961a42249f&fields=id,name`,{
+					headers:{
+					  'Authorization': 'Bearer ' + token,
+					  'Accept': 'application/json'
+					}
+					
+				  })
+				  .then(resp => resp.json())
+				  .then(resp => {
+					return resp?.results?.map(({id, name}) => ({value:id, label:name}))
+				  })
+				  
+			} else {
+				return []
+			}
+			
    
   }
 
@@ -104,7 +145,7 @@ export async function getServerSideProps(ctx) {
 
             })
 
-            response["cu"] = await (await cu.json())
+            response["cu"] = (await (await cu.json())) ?? []
 
             break;
 
@@ -117,16 +158,19 @@ export async function getServerSideProps(ctx) {
 
             })
 
-            response["statuses"] = (await (await statuses.json()))?.results?.map(({ id, name }) => ({ label: name, value: id }))
+            response["statuses"] = ((await (await statuses.json()))?.results?.map(({ id, name }) => ({ label: name, value: id }))) ?? []
             break;
 
           case "facilities":
 
-            // const url =  `${process.env.NEXT_PUBLIC_API_URL}/common/sub_counties/?name=${response?.cu?.facility_subcounty.split(' ').join('+')}`
-            // const { response: user } = await getUserDetails(token, `${process.env.NEXT_PUBLIC_API_URL}/rest-auth/user/`)
-            const url = `${process.env.NEXT_PUBLIC_API_URL}/rest-user/`
+            const facilities = await fetchFacilities({
+              county: ctx?.query?.county,
+              sub_county: ctx?.query?.sub_county,
+              group: ctx?.query?.group
+            })
+            
 
-            response['facilities'] = await fetchFacilities(url)
+            response['facilities'] = facilities
 
             break;
 
@@ -139,7 +183,7 @@ export async function getServerSideProps(ctx) {
 
             })
 
-            response["contact_types"] = (await (await contact_types.json()))?.results?.map(({ id, name }) => ({ label: name, value: id }))
+            response["contact_types"] = ((await (await contact_types.json()))?.results?.map(({ id, name }) => ({ label: name, value: id }))) ?? []
             break;
 
           case "services":
@@ -151,7 +195,7 @@ export async function getServerSideProps(ctx) {
 
             })
 
-            response["services"] = (await (await services.json()))?.results
+            response["services"] = ((await (await services.json()))?.results) ?? []
             break;
         }
       }

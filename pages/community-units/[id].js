@@ -223,7 +223,14 @@ function EditCommunityUnit(props){
                 <button
                   onClick={() =>
                     router.push(
-                      "/community-units/edit/" + props?.cu?.id
+                      {
+                      pathname: `/community-units/edit/${props?.cu?.id}`,
+                      query: {
+                        county: userCtx?.county,
+                        sub_county: userCtx?.user_sub_counties.length > 1 ? userCtx?.user_sub_counties?.map(({sub_county}) => sub_county)?.join(',') : userCtx?.user_sub_counties[0]?.sub_county,
+                        group: userCtx?.groups[0]?.id
+                      }
+                      }
                     )
                   }
                   className="p-2 text-center -md font-semibold rounded text-base  text-white bg-black"
