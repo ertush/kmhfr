@@ -115,7 +115,19 @@ function CommunityUnit(props) {
 													className='px-4 py-2 bg-gray-600 rounded text-white text-sm tracking-tighter font-semibold whitespace-nowrap  hover:bg-black focus:bg-black active:bg-black uppercase'>
 													<button
 														onClick={() => {
-															router.push('/community-units/add');
+															router.push(
+																{
+																	pathname:'/community-units/add',
+																	query: {
+																		 /*Buffer.from(JSON.stringify({ user: */
+																		county: userCtx?.county,
+																		sub_county: userCtx?.user_sub_counties.length > 1 ? userCtx?.user_sub_counties.map(({sub_county}) => sub_county).join(',') : userCtx?.user_sub_counties[0]?.sub_county,
+																		group: userCtx?.groups[0]?.id
+																	
+																	/*})).toString('base64'),*/
+																	}
+																}
+															);
 														}}
 														className='flex items-center justify-center'>
 														<span className='text-base uppercase font-semibold'>Add Community Health Unit</span>

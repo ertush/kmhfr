@@ -2,7 +2,7 @@ import React, { useState, useEffect, createContext, useContext } from 'react';
 import Head from 'next/head';
 import MainLayout from '../../components/MainLayout';
 import EditListItem from '../../components/Forms/formComponents/EditListItem';
-import { checkToken } from '../../controllers/auth/auth';
+import { checkToken, getUserDetails } from '../../controllers/auth/auth';
 import Box from '@mui/material/Box';
 import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
@@ -1337,7 +1337,7 @@ function AddCommunityUnit(props) {
 	);
 }
 
-export async function getServerSideProps({req, res}) {
+export async function getServerSideProps({req, res, query}) {
 
 	res?.setHeader(
 		'Cache-Control',
@@ -1357,28 +1357,23 @@ export async function getServerSideProps({req, res}) {
 	]
   
  
-	 function fetchFacilities(url) {
-		return fetch(url, {
-			headers: {
-				'Accept': 'application/json',
-				'Authorization': `Bearer ${token}`
-			}
-		})
-		.then(resp => resp.json())
-		.then( (resp) => {
+	 function fetchFacilities(user/*userData*/) {
+	
+		// const decodedUser = Buffer.from(userData, 'base64').toString()
 
-
-
-			const userSubCountyIDs = resp?.user_sub_counties.length > 1 ? resp?.user_sub_counties.map(({sub_county}) => sub_county).join(',') : resp?.user_sub_counties[0]?.sub_county
-			const userCountyID = resp?.county
-			const userGroup = resp?.groups[0]?.id
-
-			
-			if(userGroup == 2 && userSubCountyIDs){
-			
-			const subCountyFacilitiesURL = `${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/?sub_county=${userSubCountyIDs}&reporting_in_dhis=true&closed=false&fields=id,name,county,sub_county_name,constituency,ward_name&page_size=300`
-
+		// const user = JSON.parse(decodedUser)
 		
+
+		const userSubCountyIDs = user?.sub_county
+		const userCountyID = user?.county
+		const userGroup = user?.group
+
+		// debug
+		console.log({userSubCountyIDs,userCountyID,userGroup})
+		
+		if(userGroup == 2 && userSubCountyIDs){
+		
+		  const subCountyFacilitiesURL = `${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/?sub_county=${userSubCountyIDs}&reporting_in_dhis=true&closed=false&fields=id,name,county,sub_county_name,constituency,ward_name&page_size=500`
 
 		   return fetch(subCountyFacilitiesURL, {
 				headers:{
@@ -1424,12 +1419,11 @@ export async function getServerSideProps({req, res}) {
 				  })
 				  
 			} else {
-				console.log('default case')
 				return []
 			}
 			
-		})
-		.catch(e => console.error('Error rest-auth user :', e.message))
+		// })
+		// .catch(e => console.error('Error rest-auth user :', e.message))
 	}
   
   
@@ -1454,10 +1448,12 @@ export async function getServerSideProps({req, res}) {
 		  break;
   
 		case "facilities":
-
-		const url = `${process.env.NEXT_PUBLIC_API_URL}/rest-auth/user/`
-
-		response['facilities'] = await fetchFacilities(url)
+	
+		response['facilities'] = await fetchFacilities({
+			county: query?.county,
+			sub_county: query?.sub_county,
+			group: query?.group
+		} ?? '')
 		 
 		break;
 		case "contact_types":
