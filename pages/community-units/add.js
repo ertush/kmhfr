@@ -1357,13 +1357,8 @@ export async function getServerSideProps({req, res, query}) {
 	]
   
  
-	 function fetchFacilities(user/*userData*/) {
+	 function fetchFacilities(user) {
 	
-		// const decodedUser = Buffer.from(userData, 'base64').toString()
-
-		// const user = JSON.parse(decodedUser)
-		
-
 		const userSubCountyIDs = user?.sub_county
 		const userCountyID = user?.county
 		const userGroup = user?.group
@@ -1422,8 +1417,7 @@ export async function getServerSideProps({req, res, query}) {
 				return []
 			}
 			
-		// })
-		// .catch(e => console.error('Error rest-auth user :', e.message))
+		
 	}
   
   

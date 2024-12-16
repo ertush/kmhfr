@@ -119,12 +119,9 @@ function CommunityUnit(props) {
 																{
 																	pathname:'/community-units/add',
 																	query: {
-																		 /*Buffer.from(JSON.stringify({ user: */
 																		county: userCtx?.county,
-																		sub_county: userCtx?.user_sub_counties.length > 1 ? userCtx?.user_sub_counties.map(({sub_county}) => sub_county).join(',') : userCtx?.user_sub_counties[0]?.sub_county,
+																		sub_county: userCtx?.user_sub_counties.length > 1 ? userCtx?.user_sub_counties.map(({sub_county}) => sub_county)?.join(',') : userCtx?.user_sub_counties[0]?.sub_county,
 																		group: userCtx?.groups[0]?.id
-																	
-																	/*})).toString('base64'),*/
 																	}
 																}
 															);
