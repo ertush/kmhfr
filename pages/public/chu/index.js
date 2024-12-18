@@ -9,7 +9,7 @@ import { useRouter } from 'next/router';
 import Select from 'react-select'
 import Alert from '@mui/material/Alert'
 import {v4 as uuid} from 'uuid';
-import {uuid as uid} from 'react-use-uuid'
+// import {uuid as uid} from 'react-use-uuid'
 
 
 function Home(props) {
@@ -17,13 +17,13 @@ function Home(props) {
 
 	const router = useRouter();
 	
-	// const [props?.data, setprops?.data] = useState(props?.data)
+	
 	const filters = props?.filters;
 	const [drillDown, setDrillDown] = useState({});
 	const [reset, setReset] = useState(false)
 	// const qf = props?.query?.qf || 'all';
 	const [viewAll, setViewAll] = useState(true);
-	const API_URL = process.env.NEXT_PUBLIC_API_URL;
+	// const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 	const code = useRef(null)
 	// const allchus = useRef(null)
@@ -41,8 +41,9 @@ function Home(props) {
 	useEffect(() => {
 
 		let qry = props?.query;
-		delete qry.searchTerm;
-		delete qry.qf
+
+		if(!!qry && !!qry.searchTerm) delete qry.searchTerm;
+		if(!!qry && !!qry.qf) delete qry.qf
 		setDrillDown({ ...drillDown, ...qry });
 		if (filters && Object.keys(filters).length > 0) {
 			filters['status'] = filters['chu_status'];
@@ -59,8 +60,8 @@ function Home(props) {
 
 		// console.log({props})
 
-		if (!(props?.current_url.includes('q') || router.asPath.includes('q'))) {
-		setViewAll(true)
+		if (!!props && !!props?.current_url && !(props?.current_url.includes('q') || router.asPath.includes('q'))) {
+			setViewAll(true)
 		// handleSubmit()
 		}
 	}, [])
@@ -95,10 +96,15 @@ function Home(props) {
 		}
 	}
 
+	/**
+	 * 
+	 * @param {Event} e 
+	 */
+
 	async function handleSubmit(e) {
 		e.preventDefault()
 
-		let url = `${API_URL}/chul/units/?fields=id,code,name,status_name,date_established,facility,facility_name,facility_county,facility_subcounty,facility_ward,facility_constituency`
+		let url = `${process.env.NEXT_PUBLIC_API_URL}/`
 
 		const formData = new FormData(e.target)
 		const formDataObject = Object.fromEntries(formData)
@@ -135,54 +141,37 @@ function Home(props) {
 
 		}
 
-
-
-		const filter_options = {
-			name: name.current !== null ? name.current.value : '',
-			code: code.current !== null ? code.current.value : '',
-			status: status.current !== null ? status.current?.state?.value?.value : '',
-			county: county.current !== null ? county.current?.state?.value?.value : '',
-			sub_county: subcounty.current !== null ? subcounty.current?.state?.value?.value : '',
-			constituency: constituency.current !== null ? constituency.current?.state?.value?.value : '',
-			ward: ward.current !== null ? ward.current.state?.value?.value : ''
-		}
+		// const filter_options = {
+		// 	name: name.current !== null ? name.current.value : '',
+		// 	code: code.current !== null ? code.current.value : '',
+		// 	status: status.current !== null ? status.current?.state?.value?.value : '',
+		// 	county: county.current !== null ? county.current?.state?.value?.value : '',
+		// 	sub_county: subcounty.current !== null ? subcounty.current?.state?.value?.value : '',
+		// 	constituency: constituency.current !== null ? constituency.current?.state?.value?.value : '',
+		// 	ward: ward.current !== null ? ward.current.state?.value?.value : ''
+		// }
 
 		
 		if (!reset) {
 
-			// setSubmitting(true)
-
-			let qry = Object.keys(filter_options).map(function (key) {
-			if (filter_options[key] !== '') {
-				let er = (key) + '=' + (filter_options[key]);
-				return er
+		// setSubmitting(true)
+		
+		// const searchOptions = `{"query":{"query_string":{"default_field":"name","query":"${formDataObject?.name || formDataObject?.code || formDataObject?.status}"}}}`
+		
+		router.push(
+			{
+			pathname: '/public/chu',
+			query: {
+				...(() => !!formDataObject?.status ? {status: formDataObject?.status}: {})(),
+				...(() => !!formDataObject?.county ? {county: formDataObject?.county}: {})(),
+				...(() => !!formDataObject?.sub_county ? {sub_county: formDataObject?.sub_county}: {})(),
+				...(() => !!formDataObject?.constituency ? {constituency: formDataObject?.constituency}: {})(),
+				...(() => !!formDataObject?.ward ? {ward: formDataObject?.ward}: {})(),
+				...(() => !!formDataObject?.name || !!formDataObject?.code ? {search: formDataObject?.name || formDataObject?.code }: {})(),
+		
+			}	
 			}
-		}).filter(Boolean).join('&')
-
-		if (qry !== '' && qry == undefined) {
-			url += `&${qry}`
-		}
-
-		
-			url += `&search={"query":{"query_string":{"default_field":"name","query":"${formDataObject?.name || formDataObject?.code || formDataObject?.status}"}}}`
-		
-
-			fetch(url, {
-				headers: {
-					Authorization: 'Bearer ' + props?.token,
-					Accept: 'application/json',
-				},
-			})
-			.then(resp => resp.json())
-			.then(resp => {
-				setprops?.data(resp)
-				setViewAll(true)
-			})
-			.catch(error => {
-				setprops?.data([])
-				setViewAll(false)
-			})
-
+		)
 		}
 
 		if (reset) setReset(false)
@@ -192,6 +181,12 @@ function Home(props) {
 		
 
 	}
+
+	// return <pre>
+	// 	{
+	// 		JSON.stringify(props, null, 2)
+	// 	}
+	// </pre>
 
 
 	if(isClient){
@@ -337,7 +332,7 @@ function Home(props) {
 										}}
 										
 										options={
-											Array.from(ct.array, obj => ({value: obj?.id, label: obj?.name}))
+											Array.from(ct?.array ?? [], obj => ({value: obj?.id, label: obj?.name}))
 											// (() => {
 											// 	let opts = [...Array.from(ct.array || [],
 
@@ -661,12 +656,15 @@ function Home(props) {
 	}
 };
 
-Home.getInitialProps = async (ctx) => {
+export async function getServerSideProps(ctx) {
 
 	ctx?.res?.setHeader(
 		'Cache-Control',
 		'no-cache, no-store, max-age=0'
 	)
+
+	const token = (await checkToken(ctx?.req, ctx?.res))?.token
+
 
 	const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -699,6 +697,8 @@ Home.getInitialProps = async (ctx) => {
 		// let filterQuery = JSON.parse(JSON.stringify(ctx.query));
 		// let qry = ''
 		let url = API_URL + `/chul/units/?fields=id,code,name,status_name,date_established,facility,facility_name,facility_county,facility_subcounty,facility_ward,facility_constituency`;
+
+		
 		let query = { searchTerm: '' };
 		if (ctx?.query?.q) {
 			query.searchTerm = ctx.query.q;
@@ -722,7 +722,12 @@ Home.getInitialProps = async (ctx) => {
 		if (ctx?.query?.page) {
 			url = `${url}&page=${ctx.query.page}`;
 		}
-		// console.log('running fetchData(' + url + ')');
+
+		if(!!ctx?.query?.search) {
+			url = `${process.env.NEXT_PUBLIC_API_URL}/chul/units/?search=${ctx?.query?.search}`
+		}
+
+		console.log(`Fetching: ${url}`);
 		try {
 			const r = await fetch(url, {
 				headers: {
@@ -765,35 +770,20 @@ Home.getInitialProps = async (ctx) => {
 		}
 	};
 
-	return checkToken(ctx.req, ctx.res)
-		.then((t) => {
-			if (t.error) {
-				throw new Error('Error checking token');
-			} else {
-				const token = t.token;
-				return fetchData(token)
-			}
-		})
-		.catch((err) => {
-			console.log('Error checking token: ', err);
-			if (typeof window !== 'undefined' && window) {
-				if (ctx?.asPath) {
-					window.location.href = ctx?.asPath;
-				} else {
-					window.location.href = '/chu/community_units';
-				}
-			}
-			// setTimeout(() => {
-				return {
-					error: true,
-					err: err,
-					data: [],
-					query: {},
-					path: ctx.asPath || '/chu/community_units',
-					current_url: '',
-				};
-			// }, 1000);
-		});
+	
+
+	return {
+		props: !!token ? await fetchData(token) : {
+			error: true,
+			err: err,
+			data: [],
+			query: {},
+			path: ctx.asPath || '/chu/community_units',
+			current_url: '',
+}
+	}
+
+	
 };
 
 export default Home;
