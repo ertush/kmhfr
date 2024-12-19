@@ -773,21 +773,7 @@ export async function getServerSideProps(ctx) {
 	return {
 		props: !!token ? await fetchData(token) : {
 			error: true,
-			data: {
-				results: (() => Array(100).fill(0, 0, 100).map(() => ({
-				id:'chu-test-id',
-				official_name:'Test CHU',
-				name:'Test CHU',
-				code: 788883,
-				facility_name: 'Test Facility',
-				facility_county: 'Nairobi',
-				facility_subcounty: 'Kamkunji',
-				facility_ward: 'Kware',
-				facility_constituency: 'Kware',
-				status_name: 'Fully-functional',
-				has_edits: false
-			})))()
-		},
+			data: [],
 			err: null,
 			query: {},
 			path: ctx.asPath || '/chu/community_units',
