@@ -174,26 +174,7 @@ export function BasicDeatilsForm({ editMode }) {
     })
   })
 
-  // const handleDateChange = useCallback((e) => {
 
-  //   e.preventDefault()
-
-  //   if (e.currentTarget.name == "date_established") {
-  //     setDateValidationError(prev => ({ ...prev, date_established: null }))
-  //   } 
-  //   const today = new Date()
-
-  //   const setDate = e.currentTarget.valueAsDate
-
-  //   if (setDate > today) {
-  //     if (e.currentTarget.name == "date_established") {
-  //       setDateValidationError(prev => ({ ...prev, date_established: 'Date Established cannot be in the future' }))
-  //     } 
-
-  //     e.currentTarget.value = ''
-
-  //   }
-  // })
 
 
   const handleSelectChange = useCallback(async (e) => {
