@@ -14,12 +14,15 @@ import Spinner from '../Spinner'
 import { useRouter } from 'next/router';
 import { Alert } from '@mui/lab';
 import { UpdateFormIdContext } from './Form';
+import { UserContext } from '../../providers/user';
 
 
 export function BasicDeatilsForm({ editMode }) {
 
   // Context
   const setFormId = useContext(UpdateFormIdContext)
+
+  const userCtx = useContext(UserContext)
 
   // Constants
   const alert = useAlert();
@@ -324,31 +327,60 @@ export function BasicDeatilsForm({ editMode }) {
 
       if (e.target?.value) {
         try {
-          const sub_counties = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/common/sub_counties/?county=${e.target.value}`, {
+
+          // console.log('DEBUG::: group_id', userCtx?.groups['0']?.id)
+
+          // console.log('DEBUG::: sub_county_id', userCtx?.user_sub_counties['0']?.sub_county)
+
+          const sub_counties = (async (groupId) => {
+            if(groupId === 2) { // if current user has SCHRIO group
+              
+              const subCountiesObj = Object.entries(userCtx?.user_sub_counties)?.map(([_, v]) => {
+                return { name:v?.sub_county_name, id: v?.sub_county }
+              })
+
+            
+              return new Promise(resolve => resolve(subCountiesObj))
+  
+            } else{ // if user belongs to any other groups
+            
+              return await fetch(`${process.env.NEXT_PUBLIC_API_URL}/common/sub_counties/?county=${e.target.value}`, {
+                headers: {
+                  'Accept': 'application/json',
+                  'Authorization': `Bearer ${options?.token}`
+                }
+              }) ?? []
+  
+          }
+        })(userCtx?.groups['0']?.id)
+
+        // console.log('DEBUG::: sub_counties', sub_counties)
+
+      
+        const _sub_counties = userCtx?.groups['0']?.id === 2 ?  await sub_counties : (await sub_counties.json())?.results
+
+        if (!_sub_counties) throw Error('Unable to Fetch sub counties')
+
+        // console.log('DEBUG::: _sub_counties',  _sub_counties)
+        
+        const filteredSubCounties = Array.from(_sub_counties, ({ id, name }) => {
+          return {
+            label: name,
+            value: id
+          }
+        })
+
+      // console.log('DEBUG::: filteredSubCounties',  filteredSubCounties)
+
+
+          const constituencies = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/common/constituencies/?sub_county=${e.target.value}`, {
             headers: {
               'Accept': 'application/json',
               'Authorization': `Bearer ${options?.token}`
             }
           })
 
-          const constituencies = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/common/constituencies/?county=${e.target.value}`, {
-            headers: {
-              'Accept': 'application/json',
-              'Authorization': `Bearer ${options?.token}`
-            }
-          })
-
-          const _sub_counties = (await sub_counties.json())?.results
-
-          if (!_sub_counties) throw Error('Unable to Fetch sub counties')
-
-
-          const filteredSubCounties = Array.from(_sub_counties, ({ id, name }) => {
-            return {
-              label: name,
-              value: id
-            }
-          })
+          
 
 
           const _constitutencies = (await constituencies.json())?.results
