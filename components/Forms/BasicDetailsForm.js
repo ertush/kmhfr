@@ -344,12 +344,12 @@ export function BasicDeatilsForm({ editMode }) {
   
             } else{ // if user belongs to any other groups
             
-              return await fetch(`${process.env.NEXT_PUBLIC_API_URL}/common/sub_counties/?county=${e.target.value}`, {
+              return  (await fetch(`${process.env.NEXT_PUBLIC_API_URL}/common/sub_counties/?county=${e.target.value}`, {
                 headers: {
                   'Accept': 'application/json',
                   'Authorization': `Bearer ${options?.token}`
                 }
-              }) ?? []
+              })).json() ?? []
   
           }
         })(userCtx?.groups['0']?.id)
@@ -357,7 +357,7 @@ export function BasicDeatilsForm({ editMode }) {
         // console.log('DEBUG::: sub_counties', sub_counties)
 
       
-        const _sub_counties = userCtx?.groups['0']?.id === 2 ?  await sub_counties : (await sub_counties.json())?.results
+        const _sub_counties = userCtx?.groups['0']?.id === 2 ?  await sub_counties : (await sub_counties)?.results
 
         if (!_sub_counties) throw Error('Unable to Fetch sub counties')
 
