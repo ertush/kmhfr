@@ -25,27 +25,18 @@ export function Form() {
   const [formId, setFormId] = useState('0')
 
   useEffect(() => {
-    // function setStateFromUrl() {
-
-    //   const url = new URL(window.document.location.href)
-
-    //   setFormId(url.searchParams.get('formId'))
-
-    // }
-
-    // setStateFromUrl()
-
-
+ 
     if(window) {
 
       const id = new URL(window.location.href)?.searchParams.get('formId')
       if(typeof id == 'string') {
         setFormId(Number(id))
-        // console.log({formId})
+        
   
       }
       }
   }, [])
+
 
   const steps = [
     'Basic Details',
@@ -57,6 +48,7 @@ export function Form() {
     'Human resources'
   ];
 
+  
   return (
     <div className='md:col-span-4 col-span-1 p-3 max-h-min rounded place-self-start flex flex-col bg-gray-50  shadow-md justify-start items-center w-full'>
       {/* Stepper Header */}

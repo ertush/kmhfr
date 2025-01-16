@@ -206,14 +206,15 @@ function Home(props) {
 									<h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
 										{'Community Units'}
 									</h2>
-									<p>Use the form on the left to filter CHUs or &nbsp;
-										<button className='text-lg capitalize text-gray-500 font-semibold'
+									<p>Use the filters to search for Community Health Units
+										{/* <button className='text-lg text-gray-500 font-semibold'
 											onClick={() => {
 												setViewAll(true)
 												// handleSubmit()
 											}
 											}
-										>view all CHUs</button></p>
+										>view all community health units</button> */}
+										</p>
 
 								</div>
 
@@ -372,9 +373,9 @@ function Home(props) {
 
 						
 						{/* Main body */}
-						<div className="col-span-1 rounded bg-gray-50 md:h-[1670px] md:px-0  p-4 shadow-md md:col-span-4 flex flex-col items-center justify-start md:gap-4 order-last md:order-none"> 
+						<div className="col-span-1 h-min max-h-[1064px] rounded bg-gray-50 md:mt-[74px] p-4 shadow-md md:col-span-4 flex flex-col items-center justify-start md:gap-4 order-last md:order-none"> 
 								
-							<div className='w-full flex justify-end'>
+							{/* <div className='w-full flex justify-end'>
 
 {viewAll && props?.data?.results && props?.data?.results.length >= 30 && (
 	<ul className='list-none flex p-1 flex-row w-max justify-self-end gap-x-2 items-center'>
@@ -443,40 +444,37 @@ function Home(props) {
 					</Link>
 				</li>
 			))}
-		{/* <li className='text-sm text-gray-400 flex'>
-			<DotsHorizontalIcon className='h-3' />
-		</li> */}
+		
 
 	</ul>
 )}
-							</div>
+							</div> */}
 							
-							<div className='flex flex-col overflow-y-scroll my-4 justify-center items-center md:col-span-4 w-full '>
+							<div className='flex flex-col overflow-y-scroll  justify-center items-center  w-full '>
 								
 								{props?.data?.results?.length > 0 ? (
-									props?.data?.results?.map((comm_unit, index) => (
+									props?.data?.results?.map((cu) => (
 										<div
-											key={comm_unit?.id}
+											key={cu?.id}
 											className='px-1 md:px-3 grid grid-cols-8 gap-3 border-b border-gray-400 py-4 hover:bg-gray-50 w-full'>
 											<div className='col-span-8 flex flex-col gap-1 group items-center justify-start text-left'>
 												<h3 className='text-2xl w-full'>
 													<Link
-														href={'/public/chu/' + comm_unit?.id}
+														href={'/public/chu/' + cu?.id}
 														className='hover:text-gray-800 group-foprops?.data:text-gray-800 active:text-gray-800'>
 															
 														{		
-															comm_unit?.official_name ||
-															comm_unit?.official_name ||
-															comm_unit?.name
+															cu?.official_name ||
+															cu?.name
 														}
 													</Link>
 												</h3>
-												{/* <p className="text-sm text-gray-600 w-full">{comm_unit.nearest_landmark || ' '}{' '} {comm_unit.location_desc || ' '}</p> */}
+												{/* <p className="text-sm text-gray-600 w-full">{cu.nearest_landmark || ' '}{' '} {cu.location_desc || ' '}</p> */}
 												<p className='text-sm text-gray-600 w-full flex gap-2 items-center'>
 													<span className='text-lg text-black font-semibold'>
-														# {comm_unit?.code ? comm_unit?.code : 'NO_CODE' || ' '}
+														# {cu?.code ? cu?.code : 'NO_CODE' || ' '}
 													</span>
-													<span>{comm_unit?.facility_name || ' '}</span>
+													<span>{cu?.facility_name || ' '}</span>
 												</p>
 												<div className='text-base grid grid-cols-2 md:grid-cols-4 items-center justify-start gap-3 w-full'>
 													<div className='flex flex-col items-start justify-start gap-0 leading-none'>
@@ -484,8 +482,8 @@ function Home(props) {
 															County:
 														</label>
 														<span>
-															{comm_unit?.facility_county ||
-																comm_unit?.county ||
+															{cu?.facility_county ||
+																cu?.county ||
 																'N/A'}
 														</span>
 													</div>
@@ -494,22 +492,22 @@ function Home(props) {
 															Sub-county:
 														</label>
 														<span>
-															{comm_unit?.facility_subcounty ||
-																comm_unit?.sub_county ||
+															{cu?.facility_subcounty ||
+																cu?.sub_county ||
 																'N/A'}
 														</span>
 													</div>
 													<div className='flex flex-col items-start justify-start gap-0 leading-none'>
 														<label className='text-xs text-gray-500'>Ward:</label>
-														<span>{comm_unit?.facility_ward || 'N/A'}</span>
+														<span>{cu?.facility_ward || 'N/A'}</span>
 													</div>
 													<div className='flex flex-col items-start justify-start gap-0 leading-none'>
 														<label className='text-xs text-gray-500'>
 															Constituency:
 														</label>
 														<span>
-															{comm_unit?.constituency_name ||
-																comm_unit?.facility_constituency ||
+															{cu?.constituency_name ||
+																cu?.facility_constituency ||
 																'N/A'}
 														</span>
 													</div>
@@ -517,28 +515,28 @@ function Home(props) {
 											</div>
 
 											<div className='col-start-7 flex flex-wrap items-center md:gap-3 text-lg'>
-												{comm_unit?.status_name ? (
+												{cu?.status_name ? (
 													<span
 														className={
 															'leading-none border whitespace-nowrap shadow-xs text-sm  py-1 px-2 text-black ' +
-															(comm_unit?.status_name
+															(cu?.status_name
 																.toLocaleLowerCase()
 																.includes('non-')
 																? ' bg-red-200 border-red-300/60'
-																: comm_unit?.status_name
+																: cu?.status_name
 																	.toLocaleLowerCase()
 																	.includes('fully')
 																	? ' bg-blue-200 border-gray-300/60'
 																	: ' bg-yellow-200 border-yellow-300/60')
 														}>
-														{comm_unit?.status_name[0]?.toLocaleUpperCase()}
-														{comm_unit?.status_name.slice(1)?.toLocaleLowerCase()}
+														{cu?.status_name[0]?.toLocaleUpperCase()}
+														{cu?.status_name.slice(1)?.toLocaleLowerCase()}
 													</span>
 												) : (
 													''
 												)}
-												{/* {!comm_unit.rejected ? <span className={"leading-none whitespace-nowrap text-sm  text-black py-1 px-2 " + (comm_unit.approved ? "bg-blue-200 text-black" : "bg-gray-400 text-black")}>{comm_unit.approved ? "Approved" : "Not approved"}</span> : <span className={"leading-none whitespace-nowrap text-sm  text-black py-1 px-2 " + "bg-gray-400 text-black"}>{comm_unit.rejected ? "Rejected" : ""}</span>} */}
-												{comm_unit?.has_edits ? (
+												{/* {!cu.rejected ? <span className={"leading-none whitespace-nowrap text-sm  text-black py-1 px-2 " + (cu.approved ? "bg-blue-200 text-black" : "bg-gray-400 text-black")}>{cu.approved ? "Approved" : "Not approved"}</span> : <span className={"leading-none whitespace-nowrap text-sm  text-black py-1 px-2 " + "bg-gray-400 text-black"}>{cu.rejected ? "Rejected" : ""}</span>} */}
+												{cu?.has_edits ? (
 													<span
 														className={
 															'leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 text-black'
@@ -775,8 +773,8 @@ export async function getServerSideProps(ctx) {
 	return {
 		props: !!token ? await fetchData(token) : {
 			error: true,
-			err: err,
 			data: [],
+			err: null,
 			query: {},
 			path: ctx.asPath || '/chu/community_units',
 			current_url: '',
