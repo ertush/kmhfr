@@ -31,7 +31,7 @@ export default async function fetchSystemSetupData(req, res) {
         switch (resCat){
             case 'AdminUnits':
                 if(_id== undefined){
-                    url = `${API_URL}/common/${res}/?${qry}&page_size=1000`
+                    url = `${API_URL}/common/${res}/?${qry}&page_size=1500`
                 }else{
                     url = `${API_URL}/common/${res}/${_id}/`
                 }
