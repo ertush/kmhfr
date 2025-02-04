@@ -361,6 +361,8 @@ function FacilitySideMenu(/*{ states, stateSetters, filters }*/) {
                             query: {
                                 filter:'closed_facilities',
                                 closed: true,
+                                operation_status:'3bb7d9cc-ad6d-4ef8-916a-d8ce26ed5866',
+                                format: 'json',
                                 ...userOrgUnit()
 
                             }
@@ -370,6 +372,41 @@ function FacilitySideMenu(/*{ states, stateSetters, filters }*/) {
                 >
                 
                     <ListItemText primary="Closed Facilities " />
+                </ListItemButton>       
+                }
+                {/* Non Operational */}
+                {
+                hasPermission(/^facilities.view_all_facility_fields$/, userPermissions) &&
+                <ListItemButton 
+                sx={{  
+                    backgroundColor: (searchParams.get('filter') == 'non_opertaional_facilities') && '#1d4ed8',
+                    color: (searchParams.get('filter') == 'non_opertaional_facilities') && '#ffff',  
+                    borderBottom: 'solid 1px  rgba(156, 163, 175, 1)', 
+                    "&:hover": {
+                        backgroundColor: "rgba(37, 99, 235, 1)",
+                        color: 'white'
+                  }}} 
+
+                    onClick={(e) => {
+
+                        e.preventDefault()
+
+                        router.push({
+                            pathname:'/facilities',
+                            query: {
+                                filter:'non_opertaional_facilities',
+                                closed: false,
+                                format: 'json',
+                                // operation_status:'190f470f-9678-47c3-a771-de7ceebfc53c',
+                                ...userOrgUnit()
+
+                            }
+                        })
+                  
+                    }}
+                >
+                
+                    <ListItemText primary="Non-Operational Facilities" />
                 </ListItemButton>       
                 }
 
