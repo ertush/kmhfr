@@ -179,7 +179,6 @@ export function BasicDeatilsForm({ editMode }) {
 
 
 
-
   const handleSelectChange = useCallback(async (e) => {
 
     const keph = document.getElementsByName('keph_level');
@@ -373,7 +372,7 @@ export function BasicDeatilsForm({ editMode }) {
       // console.log('DEBUG::: filteredSubCounties',  filteredSubCounties)
 
 
-          const constituencies = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/common/constituencies/?sub_county=${e.target.value}`, {
+          const constituencies = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/common/constituencies/?county=${e.target.value}`, {
             headers: {
               'Accept': 'application/json',
               'Authorization': `Bearer ${options?.token}`

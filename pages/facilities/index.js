@@ -1029,6 +1029,12 @@ function FacilityHome(props) {
                                                                     <span className={"shadow-sm leading-none whitespace-nowrap text-sm col-start-2 py-1 px-2 bg-red-200 font-semibold text-red-900"}>Closed</span>
                                                                 }
 
+                                                                {   
+                                                                    facility?.operation_status === '190f470f-9678-47c3-a771-de7ceebfc53c' && 
+                                                                    currentPageParams.filter === 'non_opertaional_facilities' &&
+                                                                    <span className={"shadow-sm leading-none whitespace-nowrap text-sm col-start-2 py-1 px-2 bg-red-200 font-semibold text-red-900"}>Closed</span>
+                                                                }
+
 
                                                             </div>
                                                         </div>
@@ -1365,7 +1371,7 @@ export async function getServerSideProps(ctx) {
     // const previousURL = ctx?.query?.previous
 
 
-    const defaultURL = ctx?.query?.q ? `${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/` : `${`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/` + `${page ? '?page=' + page + '&' : '?'}` + 'page_size=30'}`
+    const defaultURL = ctx?.query?.q ? `${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/` : `${`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/` + `${page ? '?page=' + page + '&' : '?'}` /*+ 'page_size=30'*/}`
 
     let url = nextURL ?? previousURL ?? defaultURL
 
@@ -1436,19 +1442,32 @@ export async function getServerSideProps(ctx) {
 
 
 
-        // console.log({ url })
+        const requestURL = new URL(url)
+
+        requestURL.searchParams.delete('filter', 'non_operational_facilities')
+
+        url = requestURL.href
+
+        console.log({url})
 
         facilities = (await (await fetch(url, {
             headers: {
                 'Accept': 'application/json, text/plain, */*',
                 'Accept-Encoding': 'gzip, deflate, br, zstd',
-                'Authorization': `Bearer ${token}`,
+                Authorization: `Bearer ${token}`,
                 'Accept-Language': 'en-US,en;q=0.5',
                 'Cache-Control': 'no-cache, no-store, max-age=0',
-                'Connection': 'keep-alive'
+                Connection: 'keep-alive',
+                'User-Agent': 'node',
+                Connection: 'Keep-alive',
+                Cookie: 'csrftoken=TWwwgEp9niKNTM6aEefeZXahYkVNFCTd5tA9quiwwZOnaFh1v0uw0qrvAJpGQ3pp; sessionid=kxu16hggcmqxte06cqpv01ao4h230nv7',
+                Host: 'api.kmhfltest.health.go.ke',
+                Priority: 'u=0, i'
 
             }
         })).json())
+
+        console.log({facilities})
     } catch (e) {
         console.error('Error message:', e.message)
     }
