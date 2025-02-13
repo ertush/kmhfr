@@ -395,9 +395,7 @@ function FacilitySideMenu(/*{ states, stateSetters, filters }*/) {
                             pathname:'/facilities',
                             query: {
                                 filter:'non_opertaional_facilities',
-                                closed: false,
-                                format: 'json',
-                                // operation_status:'190f470f-9678-47c3-a771-de7ceebfc53c',
+                                operation_status:'190f470f-9678-47c3-a771-de7ceebfc53c',
                                 ...userOrgUnit()
 
                             }
