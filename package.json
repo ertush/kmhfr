@@ -44,6 +44,7 @@
     "formik": "^2.4.3",
     "highcharts": "^9.3.3",
     "highcharts-react-official": "^3.2.0",
+    "kmhfr": "link:",
     "leaflet-geosearch": "^3.8.0",
     "moment": "^2.29.4",
     "next": "~13.5.6",

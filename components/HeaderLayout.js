@@ -202,9 +202,9 @@ export default function HeaderLayout({
         <div className='w-full h-auto z-10 fixed top-0'>
 
           {/* Logo And Title */}
-          <div className='w-full fixed  max-h-min bg-gray-50 flex'>
+          <div className='w-full fixed  max-h-min bg-green-60/70 flex'>
             {/* Heading */}
-            <div className="max-h-min md:w-[80%] w-full container fl)ex md:mx-auto">
+            <div className="max-h-min md:w-[80%] w-full container flex md:mx-auto">
               {/* Heading */}
               <div className='w-full flex md:justify-between md:items-center justify-center py-4 max-h-min '>
                 {/* Logo */}

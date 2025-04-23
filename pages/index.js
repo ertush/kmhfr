@@ -263,7 +263,7 @@ function Home() {
           {/* Hero Section */}
           <div className='w-full mb-8 '>
             <div className='w-full mt-[130px] md:mt-[160px] md:h-[300px] h-[550px] p-6  flex flex-col items-center justify-center gap-y-6' style={{
-              backgroundColor: "#1651b6",
+              backgroundColor: "#8e16b6",
               backgroundSize: "cover",
 
             }}>
