@@ -202,7 +202,7 @@ export default function HeaderLayout({
         <div className='w-full h-auto z-10 fixed top-0'>
 
           {/* Logo And Title */}
-          <div className='w-full fixed  max-h-min bg-green-60/70 flex'>
+          <div className='w-full fixed  max-h-min bg-gray-50 flex'>
             {/* Heading */}
             <div className="max-h-min md:w-[80%] w-full container flex md:mx-auto">
               {/* Heading */}
@@ -299,7 +299,7 @@ export default function HeaderLayout({
 
               {/* Mobile Nav Bar */}
 
-              <div style={{ backgroundColor: '#1651b6' }} className='w-full bg-gray-300 top-[94px] md:top-[95px] fixed z-10 max-h-min flex items-center justify-between md:items-start md:items-between p-3 md:p-0'>
+              <div style={{ backgroundColor: '#8e16b6' }} className='w-full bg-gray-300 top-[94px] md:top-[95px] fixed z-10 max-h-min flex items-center justify-between md:items-start md:items-between p-3 md:p-0'>
                 <button className='md:hidden relative' onClick={() => {setIsMobileMenu(!isMobileMenu)}}>
                   {
                     !isMobileMenu &&
@@ -319,7 +319,7 @@ export default function HeaderLayout({
                         groupID == 7 && // Super Users
                         isLoggedIn &&
 
-                        <ul style={{ backgroundColor: '#1651b6' }} className='list-none w-full flex flex-col rounded items-center  justify-between '>
+                        <ul style={{ backgroundColor: '#8e16b6' }} className='list-none w-full flex flex-col rounded items-center  justify-between '>
 
 
                           <li className={`text-lg h-[60px] flex text-nowrap w-full items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/dashboard" && 'border-r-2 border-b-gray-50 bg-blue-500/85'}`}>
@@ -364,7 +364,7 @@ export default function HeaderLayout({
                         (groupID == 5 || // National Administrators
                         groupID == 11) && // Data Cleaning National
                         isLoggedIn &&
-                        <ul style={{ backgroundColor: '#1651b6' }} className='list-none w-full flex flex-col rounded items-center justify-between '>
+                        <ul style={{ backgroundColor: '#8e16b6' }} className='list-none w-full flex flex-col rounded items-center justify-between '>
 
 
                           <li className={`text-lg h-[60px] flex text-nowrap w-full items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/dashboard" && 'border-r-2 border-b-gray-50 bg-blue-500/85'}`}>
@@ -408,7 +408,7 @@ export default function HeaderLayout({
                       {
                         groupID == 1 && // CHRIO
                         isLoggedIn &&
-                        <ul style={{ backgroundColor: '#1651b6' }} className='list-none w-full flex flex-col rounded items-center justify-between'>
+                        <ul style={{ backgroundColor: '#8e16b6' }} className='list-none w-full flex flex-col rounded items-center justify-between'>
 
 
                           <li className={`text-lg h-[60px] flex text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/dashboard" && 'border-r-2 border-b-gray-50 bg-blue-500/85'}`}>
@@ -444,7 +444,7 @@ export default function HeaderLayout({
                       {
                         groupID == 2 && // SCHRIO
                         isLoggedIn &&
-                        <ul style={{ backgroundColor: '#1651b6' }} className='list-none w-full flex-col rounded flex  justify-between '>
+                        <ul style={{ backgroundColor: '#8e16b6' }} className='list-none w-full flex-col rounded flex  justify-between '>
 
 
                           <li className={`text-lg h-[60px] w-full flex text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/dashboard" && 'border-r-2 border-gray-50 bg-blue-500/85'}`}>
@@ -477,7 +477,7 @@ export default function HeaderLayout({
                       {
                         groupID == 12 && // Report Viewer County
                         isLoggedIn &&
-                        <ul style={{ backgroundColor: '#1651b6' }} className='list-none w-full flex flex-col items-center  justify-between '>
+                        <ul style={{ backgroundColor: '#8e16b6' }} className='list-none w-full flex flex-col items-center  justify-between '>
 
 
                           <li className={`text-lg h-[60px] flex text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/dashboard" && 'border-r-2 border-gray-50 bg-blue-500/85'}`}>
@@ -500,7 +500,7 @@ export default function HeaderLayout({
                       {
                         groupID == 6 && // Report Viewer National
                         isLoggedIn &&
-                        <ul style={{ backgroundColor: '#1651b6' }} className='list-none rounded w-full flex flex-col items-center  justify-between '>
+                        <ul style={{ backgroundColor: '#8e16b6' }} className='list-none rounded w-full flex flex-col items-center  justify-between '>
 
 
                           <li className={`text-lg h-[60px] flex text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/dashboard" && 'border-r-2 border-b-gray-50 bg-blue-500/85'}`}>
@@ -524,7 +524,7 @@ export default function HeaderLayout({
                       {
                         groupID == 8 && // Report User Group
                         isLoggedIn &&
-                        <ul style={{ backgroundColor: '#1651b6' }} className='list-none w-full flex items-center  justify-between '>
+                        <ul style={{ backgroundColor: '#8e16b6' }} className='list-none w-full flex items-center  justify-between '>
 
 
                           <li className={`text-lg h-[60px] flex text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/dashboard" && 'border-r-2 border-b-gray-50 bg-blue-500/85'}`}>
@@ -572,7 +572,7 @@ export default function HeaderLayout({
                         )
                           &&
                           isLoggedIn) &&
-                        <ul style={{ backgroundColor: '#1651b6' }} className='list-none w-full flex-col rounded flex  justify-between '>
+                        <ul style={{ backgroundColor: '#8e16b6' }} className='list-none w-full flex-col rounded flex  justify-between '>
 
 
                           <li className={`text-lg h-[60px] w-full flex text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/dashboard" && 'border-r-2 border-gray-50 bg-blue-500/85'}`}>
@@ -711,7 +711,7 @@ export default function HeaderLayout({
           {/* Menu Heading */}
           {
             currentPath !== '/logout' &&
-            <div style={{ backgroundColor: '#1651b6' }} className='w-full md:mt-[97px] mt-[82px] bg-gray-300 max-h-min flex items-center justify-between md:items-start md:items-between p-3 md:p-0'>
+            <div style={{ backgroundColor: '#8e16b6' }} className='w-full md:mt-[97px] mt-[82px] bg-gray-300 max-h-min flex items-center justify-between md:items-start md:items-between p-3 md:p-0'>
               {/* Wide view Port Nav bar */}
               <nav className="hidden max-h-min w-[60%] lg:w-[80%] container md:flex mx-auto ">
 
