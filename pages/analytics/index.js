@@ -82,7 +82,7 @@ function FacilityHome(props) {
 
   const [isAccordionExpanded, setIsAccordionExpanded] = useState(false);
   const [title, setTitle] = useState(
-    "Facilities Analysis By Level Type County"
+    "Facilities Analysis"
   );
 
   // quick filter themes
