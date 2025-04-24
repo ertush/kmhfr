@@ -194,8 +194,8 @@ async function getUserDetails (token, url) {
         savedSession = window.localStorage.getItem('user')
         if (savedSession && savedSession.length > 0) {
             savedSession = JSON.parse(window.localStorage.getItem('user'))
-        }
-        if (savedSession && savedSession?.id.length > 0 && savedSession?.id !== 6 ) {
+        }   
+        if (!!savedSession && Object(savedSession).hasOwnProperty('id') && savedSession?.id.length > 0 && savedSession?.id !== 6 ) {
             return savedSession
         }
 

@@ -12,6 +12,7 @@
   "dependencies": {
     "@ag-grid-enterprise/all-modules": "^26.2.1",
     "@bcad1591/react-date-picker": "^0.0.1",
+    "@carbon/react": "^1.81.0",
     "@date-io/dayjs": "^2.17.0",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",

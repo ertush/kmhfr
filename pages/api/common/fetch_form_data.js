@@ -9,6 +9,8 @@ export default async function fetchFormData(req, res) {
 
             const API_URL = process.env.NEXT_PUBLIC_API_URL
             const { path, id } = req.query
+
+            console.log({path})
     
             let url = ''
 
@@ -20,6 +22,7 @@ export default async function fetchFormData(req, res) {
                 break;
                 case 'counties':
                     url = id ? `${API_URL}/common/${path}/${id}/?fields=id,name'` : `${API_URL}/common/${path}/?fields=id,name&page_size=47` 
+                    console.log({url, id})
                 break;
                 case 'sub_counties':
                     url = id ? `${API_URL}/common/${path}/?county=${id}&fields=id,name,county` : `${API_URL}/common/${path}/?fields=id,name,county&page_size=307` 
@@ -91,3 +94,5 @@ export default async function fetchFormData(req, res) {
     }
      
 }
+
+
