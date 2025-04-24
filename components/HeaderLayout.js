@@ -350,6 +350,10 @@ export default function HeaderLayout({
                             <Link href='/admin_offices'>Admin Offices</Link>
                           </li>
 
+                          <li className={`text-lg h-[60px] flex text-nowrap w-full items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${/\/analytics\/*/.test(currentPath) && 'border-r-2 border-b-gray-50 bg-blue-500/85'}`}>
+                            <Link href='/analytics'>Analytics</Link>
+                          </li>
+
                           <li className={`text-lg h-[60px] flex text-nowrap w-full items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/documentation" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
                                                   <Link target="_blank" href='https://kmhfr-docs.vercel.app'>Documentation</Link>
                                                 </li>
