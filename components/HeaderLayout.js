@@ -342,16 +342,12 @@ export default function HeaderLayout({
                             <Link href='/system_setup'><span>System Setup</span></Link>
                           </li>
 
-                          <li className={`text-lg h-[60px] flex text-nowrap w-full items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/reports" && 'border-r-2 border-b-gray-50 bg-blue-500/85'}`}>
-                            <Link href='/reports'>Reports</Link>
+                          <li className={`text-lg h-[60px] flex text-nowrap w-full items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/analytics" && 'border-r-2 border-b-gray-50 bg-blue-500/85'}`}>
+                            <Link href='/analytics'>Analytics</Link>
                           </li>
 
                           <li className={`text-lg h-[60px] flex text-nowrap w-full items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${/\/admin_offices\/*/.test(currentPath) && 'border-r-2 border-b-gray-50 bg-blue-500/85'}`}>
                             <Link href='/admin_offices'>Admin Offices</Link>
-                          </li>
-
-                          <li className={`text-lg h-[60px] flex text-nowrap w-full items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${/\/analytics\/*/.test(currentPath) && 'border-r-2 border-b-gray-50 bg-blue-500/85'}`}>
-                            <Link href='/analytics'>Analytics</Link>
                           </li>
 
                           <li className={`text-lg h-[60px] flex text-nowrap w-full items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/documentation" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
@@ -391,8 +387,8 @@ export default function HeaderLayout({
                             <Link href='/system_setup'><span>System Setup</span></Link>
                           </li>
 
-                          <li className={`text-lg h-[60px] flex text-nowrap w-full items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/reports" && 'border-r-2 border-b-gray-50 bg-blue-500/85'}`}>
-                            <Link href='/reports'>Reports</Link>
+                          <li className={`text-lg h-[60px] flex text-nowrap w-full items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/analytics" && 'border-r-2 border-b-gray-50 bg-blue-500/85'}`}>
+                            <Link href='/analytics'>Analytics</Link>
                           </li>
 
                           <li className={`text-lg h-[60px] flex text-nowrap w-full items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${/\/admin_offices\/*/.test(currentPath) && 'border-r-2 border-b-gray-50 bg-blue-500/85'}`}>
@@ -431,8 +427,8 @@ export default function HeaderLayout({
                             <Link href='/user'>Users</Link>
                           </li>
 
-                          <li className={`text-lg h-[60px] flex text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/reports" && 'border-r-2 border-b-gray-50 bg-blue-500/85'}`}>
-                            <Link href='/reports'>Reports</Link>
+                          <li className={`text-lg h-[60px] flex text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/analytics" && 'border-r-2 border-b-gray-50 bg-blue-500/85'}`}>
+                            <Link href='/analytics'>Analytics</Link>
                           </li>
 
                           <li className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/documentation" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
@@ -463,8 +459,8 @@ export default function HeaderLayout({
                             <Link href={`${userID !== 6 && isLoggedIn ? '/community-units' : '/public/chu'}`}>Community Units</Link>
                           </li>
 
-                          <li className={`text-lg h-[60px] w-full flex text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/reports" && 'border-r-2 border-gray-50 bg-blue-500/85'}`}>
-                            <Link href='/reports'>Reports</Link>
+                          <li className={`text-lg h-[60px] w-full flex text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/analytics" && 'border-r-2 border-gray-50 bg-blue-500/85'}`}>
+                            <Link href='/analytics'>Analytics</Link>
                           </li>
 
                           <li className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/documentation" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
@@ -496,8 +492,8 @@ export default function HeaderLayout({
                             <Link href={`${userID !== 6 && isLoggedIn ? '/community-units' : '/public/chu'}`}>Community Units</Link>
                           </li>
 
-                          <li className={`text-lg h-[60px] flex text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/reports" && 'border-r-2 border-gray-50 bg-blue-500/85'}`}>
-                            <Link href='/reports'>Reports</Link>
+                          <li className={`text-lg h-[60px] flex text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/analytics" && 'border-r-2 border-gray-50 bg-blue-500/85'}`}>
+                            <Link href='/analytics'>Analytics</Link>
                           </li>
                         </ul>
                       }
@@ -519,8 +515,8 @@ export default function HeaderLayout({
                             <Link href={`${userID !== 6 && isLoggedIn ? '/community-units' : '/public/chu'}`}>Community Units</Link>
                           </li>
 
-                          <li className={`text-lg h-[60px] flex text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/reports" && 'border-r-2 border-gray-50 bg-blue-500/85'}`}>
-                            <Link href='/reports'>Reports</Link>
+                          <li className={`text-lg h-[60px] flex text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/analytics" && 'border-r-2 border-gray-50 bg-blue-500/85'}`}>
+                            <Link href='/analytics'>Analytics</Link>
                           </li>
                         </ul>
                       }
@@ -543,8 +539,8 @@ export default function HeaderLayout({
                             <Link href={`${userID !== 6 && isLoggedIn ? '/community-units' : '/public/chu'}`}>Community Units</Link>
                           </li>
 
-                          <li className={`text-lg h-[60px] flex text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/reports" && 'border-r-2 border-b-gray-50 bg-blue-500/85'}`}>
-                            <Link href='/reports'>Reports</Link>
+                          <li className={`text-lg h-[60px] flex text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/analytics" && 'border-r-2 border-b-gray-50 bg-blue-500/85'}`}>
+                            <Link href='/analytics'>Analytics</Link>
                           </li>
 
                           <li className={`text-lg h-[60px] flex text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/documentation" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
@@ -591,8 +587,8 @@ export default function HeaderLayout({
                             <Link href={`${userID !== 6 && isLoggedIn ? '/community-units' : '/public/chu'}`}>Community Units</Link>
                           </li>
 
-                          <li className={`text-lg h-[60px] w-full flex text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/reports" && 'border-r-2 border-gray-50 bg-blue-500/85'}`}>
-                            <Link href='/reports'>Reports</Link>
+                          <li className={`text-lg h-[60px] w-full flex text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/analytics" && 'border-r-2 border-gray-50 bg-blue-500/85'}`}>
+                            <Link href='/analytics'>Analytics</Link>
                           </li>
 
                           <li className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/documentation" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
@@ -743,8 +739,8 @@ export default function HeaderLayout({
                               <li className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/system_setup" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
                                 <Link href='/system_setup'><span>System Setup</span></Link>
                               </li>
-                              <li className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/reports" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
-                                <Link href='/reports'>Reports</Link>
+                              <li className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/analytics" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
+                                <Link href='/analytics'>Analytics</Link>
                               </li>
                               <li className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${/\/admin_offices\/*/.test(currentPath) && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
                                 <Link href='/admin_offices'>Admin Offices</Link>
@@ -775,8 +771,8 @@ export default function HeaderLayout({
                               <li className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/system_setup" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
                                 <Link href='/system_setup'><span>System Setup</span></Link>
                               </li>
-                              <li className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/reports" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
-                                <Link href='/reports'>Reports</Link>
+                              <li className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/analytics" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
+                                <Link href='/analytics'>Analytics</Link>
                               </li>
                               <li className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${/\/admin_offices\/*/.test(currentPath) && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
                                 <Link href='/admin_offices'>Admin Offices</Link>
@@ -807,8 +803,8 @@ export default function HeaderLayout({
                               <li className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/system_setup" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
                                 <Link href='/system_setup'><span>System Setup</span></Link>
                               </li>
-                              <li className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/reports" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
-                                <Link href='/reports'>Reports</Link>
+                              <li className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/analytics" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
+                                <Link href='/analytics'>Analytics</Link>
                               </li>
                               <li className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${/\/admin_offices\/*/.test(currentPath) && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
                                 <Link href='/admin_offices'>Admin Offices</Link>
@@ -836,8 +832,8 @@ export default function HeaderLayout({
                               <li className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${/\/user\/*/.test(currentPath) && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
                                 <Link href='/user'>Users</Link>
                               </li>
-                              <li className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/reports" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
-                                <Link href='/reports'>Reports</Link>
+                              <li className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/analytics" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
+                                <Link href='/analytics'>Analytics</Link>
                               </li>
                               <li className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/documentation" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
                                                   <Link target="_blank"  href='https://kmhfr-docs.vercel.app'>Documentation</Link>
@@ -859,8 +855,8 @@ export default function HeaderLayout({
                               <li className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${(/\/community-units\/.+/.test(currentPath) || /\/community-units/.test(currentPath)) && 'border-b-2 border-b-gray-50 bg-blue-500/85'}  ${currentPath == "/public/chu" && 'border-b-2 border-b-gray-50 bg-blue-700/85 text-gray-100'}`}>
                                 <Link href={`${userID !== 6 && isLoggedIn ? '/community-units' : '/public/chu'}`}>Community Units</Link>
                               </li>
-                              <li className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/reports" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
-                                <Link href='/reports'>Reports</Link>
+                              <li className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/analytics" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
+                                <Link href='/analytics'>Analytics</Link>
                               </li>
                               <li className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/documentation" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
                                             <Link target="_blank" href='https://kmhfr-docs.vercel.app'>Documentation</Link>
@@ -882,8 +878,8 @@ export default function HeaderLayout({
                               <li className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${(/\/community-units\/.+/.test(currentPath) || /\/community-units/.test(currentPath)) && 'border-b-2 border-b-gray-50 bg-blue-500/85'}  ${currentPath == "/public/chu" && 'border-b-2 border-b-gray-50 bg-blue-700/85 text-gray-100'}`}>
                                 <Link href={`${userID !== 6 && isLoggedIn ? '/community-units' : '/public/chu'}`}>Community Units</Link>
                               </li>
-                              <li className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/reports" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
-                                <Link href='/reports'>Reports</Link>
+                              <li className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/analytics" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
+                                <Link href='/analytics'>Analytics</Link>
                               </li>
                             </ul>)
                           );
@@ -899,8 +895,8 @@ export default function HeaderLayout({
                               <li className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${(/\/community-units\/.+/.test(currentPath) || /\/community-units/.test(currentPath)) && 'border-b-2 border-b-gray-50 bg-blue-500/85'}  ${currentPath == "/public/chu" && 'border-b-2 border-b-gray-50 bg-blue-700/85 text-gray-100'}`}>
                                 <Link href={`${userID !== 6 && isLoggedIn ? '/community-units' : '/public/chu'}`}>Community Units</Link>
                               </li>
-                              <li className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/reports" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
-                                <Link href='/reports'>Reports</Link>
+                              <li className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/analytics" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
+                                <Link href='/analytics'>Analytics</Link>
                               </li>
                             </ul>)
                           );
@@ -916,8 +912,8 @@ export default function HeaderLayout({
                               <li className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${(/\/community-units\/.+/.test(currentPath) || /\/community-units/.test(currentPath)) && 'border-b-2 border-b-gray-50 bg-blue-500/85'}  ${currentPath == "/public/chu" && 'border-b-2 border-b-gray-50 bg-blue-700/85 text-gray-100'}`}>
                                 <Link href={`${userID !== 6 && isLoggedIn ? '/community-units' : '/public/chu'}`}>Community Units</Link>
                               </li>
-                              <li className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/reports" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
-                                <Link href='/reports'>Reports</Link>
+                              <li className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/analytics" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
+                                <Link href='/analytics'>Analytics</Link>
                               </li>
                               <li className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/documentation" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
                                                 <Link target="_blank"  href='https://kmhfr-docs.vercel.app'>Documentation</Link>
