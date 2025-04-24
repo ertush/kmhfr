@@ -126,7 +126,10 @@ function Dashboard(props) {
 
         try {
             const r = await fetch(`/api/common/fetch_form_data/?path=counties`)
-            setCounties({ county: (await r.json())?.results })
+            let countyData = { county: (await r.json())?.results }
+            console.log({countyData})
+            setCounties(countyData)
+
         } catch (err) {
             console.log(`Unable to fetch counties: ${err.message}`)
         }

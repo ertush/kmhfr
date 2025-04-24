@@ -95,11 +95,15 @@ export default function App(props) {
         })()}>
 
           <UserGroupContext.Provider value={(() => {
-            let userGroup
+            let userGroup = {}
             if (typeof window !== "undefined") {
                   //  userGroup = JSON.parse(window.sessionStorage.getItem('user'))?.groups[0]?.name
+                  let user = JSON.parse(window.localStorage.getItem('user'))
+
+                  if(!!user && Object(user).hasOwnProperty('groups')) {
                   userGroup = JSON.parse(window.localStorage.getItem('user'))?.groups[0]?.name
-          }
+                  }
+          } 
             return userGroup
           })()}>
 
