@@ -8,7 +8,7 @@ export default function Reports () {
   
 
     return (
-        <MainLayout className="p-4 grid place-content-center h-auto">
+        <MainLayout className="p-4 grid place-content-center w-full h-auto">
         {/* <DataTable
         className="w-full h-full"
         rows={{
@@ -18,6 +18,7 @@ export default function Reports () {
         headers={["col1", "col2", "col3", "col4"]}
         
         /> */}
+        <pre className='text-2xl font-bold'>Analytics Report Coming soon</pre>
         </MainLayout>
     )
 }
