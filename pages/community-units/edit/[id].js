@@ -106,7 +106,7 @@ export async function getServerSideProps(ctx) {
 
 			} 
 			else if(userGroup == 7 || userGroup == 11 || userGroup == 5) {
-				 return fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/?reporting_in_dhis=true&closed=false&owner_type=6a833136-5f50-46d9-b1f9-5f961a42249f&fields=id,name`,{
+				 return fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/?reporting_in_dhis=true&closed=false&fields=id,name`,{ // &owner_type=6a833136-5f50-46d9-b1f9-5f961a42249f
 					headers:{
 					  'Authorization': 'Bearer ' + token,
 					  'Accept': 'application/json'
