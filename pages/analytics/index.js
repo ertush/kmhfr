@@ -430,37 +430,10 @@ function FacilityHome(props) {
             </button>
 
             {/* Main Body */}
-            <div className="w-full col-span-1 md:col-span-4 mr-24 md:col-start-2  md:h-auto bg-gray-50 shadow-md">
-              {/* Data Indicator section */}
-              <div className="w-full p-2 flex flex-col md:flex-row md:justify-between md:items-center border-b border-gray-400">
-                {/* search input */}
-                <div className="flex max-w-max gap-2  items-end">
-                  {pageParams.get("filter") ===
-                    "updated_pending_validation_facilities" && (
-                    <Select
-                      className="flex-grow min-w-max h-full"
-                      options={[
-                        {
-                          label: "Approved National",
-                          value: "approved_national_level:true",
-                        },
-                        {
-                          label: "Pending Validation",
-                          value: "approved:false",
-                        },
-                      ]}
-                      placeholder="Select Facility Status"
-                      onChange={handleApprovalStatus}
-                      defaultValue={""}
-                      name="approval_status"
-                    />
-                  )}
-                </div>
-              </div>
-              <div className="p-4">
-                {/* <pre>{JSON.stringify(props?.data, null, 2)}</pre> */}
-                <FacilityMatrixTable data={props?.data} />
-              </div>
+            {/* Data Indicator section */}
+            <div className="p-4 w-full col-span-1 md:col-span-4 mr-24 md:col-start-2  md:h-auto bg-gray-50 shadow-md">
+              {/* <pre>{JSON.stringify(props?.data, null, 2)}</pre> */}
+              <FacilityMatrixTable data={props?.data} />
             </div>
           </div>
         </MainLayout>
@@ -478,26 +451,47 @@ export async function getServerSideProps(ctx) {
 
   const token = (await checkToken(ctx.req, ctx.res))?.token;
 
-  let url;
+  let url = `${process.env.NEXT_PUBLIC_API_URL}/analytics/matrix-report/?format=json`;
 
-  if (!!countyId) {
-    url = `${process.env.NEXT_PUBLIC_API_URL}/analytics/matrix-report/?report_type=matrix_report&metric=number_of_facilities&col_dims=keph_level__name,regulatory_body__name,facility_type__name,infrastructure&county=${countyId}&row_comparison=county&format=json`;
-  } else {
-    url = `${process.env.NEXT_PUBLIC_API_URL}/analytics/matrix-report/?report_type=matrix_report&metric=number_of_facilities&col_dims=keph_level__name,regulatory_body__name,facility_type__name,infrastructure&row_comparison=county&format=json`;
-  }
-
-  // console.log({url})
 
   const body = {
+    // col_dims: "keph_level__name,bed_types",
     col_dims: "bed_types",
     report_type: "matrix_report",
     metric: "number_of_facilities",
-    row_comparison: "subcounty",
+    row_comparison: "county",
     filters: {
-      period: { startdate: "2023-01-01", enddate: "2025-01-31" },
+      // period: { startdate: "2020-01-01", enddate: "2025-01-31" },
       counties: [
+        "b6b5db70-609a-4194-888d-7841e02e9045",
         "95b08378-362e-4bf9-ad63-d685e1287db2",
+        "3452caf6-ee29-4ac7-813e-49702fec8c41",
+        "6c34a4b5-af53-44f9-9c1e-17fdf438dc1f",
         "bbc8803a-7d6f-411a-96f3-5f8472b40405",
+        "6f256e8c-5d8f-4f07-89a0-81e245081030",
+        "fdde0ed3-33a8-4525-950e-41af384defb9",
+        "6c34a4b5-af53-44f9-9c1e-17fdf438dc1f",
+        "bbc8803a-7d6f-411a-96f3-5f8472b40405",
+        "6f256e8c-5d8f-4f07-89a0-81e245081030",
+        "fdde0ed3-33a8-4525-950e-41af384defb9",
+        "72366abd-2797-4144-8c74-c831810ec0a2",
+        "6746a019-8f92-4883-ae6d-2e4fd83c7a4e",
+        "44cce67d-c163-4229-ac4a-c0b418601246",
+        "ac84672f-db61-41b8-83f8-dc484060c86a",
+        "cea1878f-be8a-46f9-9b3b-b6089977892f",
+        "7a116274-e48c-4015-b763-c6443b0cdad1",
+        "359719c8-25f3-49b3-8549-bd5fbb99f2c1",
+        "93b9ddc8-a4c2-4c15-8b0b-599aa10af865",
+        "b6f366e9-3050-40ca-9643-ddc7c18ccd96",
+        "6c336c99-969b-4e9f-ad6b-c66f761ac9d5",
+        "7c942357-44a8-49c9-9ca6-8247ad903b57",
+        "ea02a4fd-f70f-4b8b-aff2-ae7c26b136fa",
+        "c9001ff3-e484-45e9-930b-7657196e0556",
+        "1283e6ea-077d-4d32-8099-6d6acb428fd1",
+        "916c0672-76d9-454e-9688-1ad83b576735",
+        "0a629644-41eb-44b8-a004-e56f06b3c006",
+        "06850fa7-fbef-47b8-abb2-4954a444e1f0",
+        "bb728208-372a-4ed3-aa5f-c1fda14cd720",
       ],
       owners: [
         "ffad4810-0bfb-4434-84cb-d2ab9b911c41",
