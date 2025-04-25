@@ -33,7 +33,7 @@ export function FacilityMatrixTable({ data }) {
 
     return [
       {
-        header: "County",
+        header: "Org Unit",
         accessorKey: "name",
       },
       ...bedTypeColumns,

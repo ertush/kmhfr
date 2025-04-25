@@ -492,7 +492,7 @@ export async function getServerSideProps(ctx) {
     col_dims: "bed_types",
     report_type: "matrix_report",
     metric: "number_of_facilities",
-    row_comparison: "county",
+    row_comparison: "subcounty",
     filters: {
       period: { startdate: "2023-01-01", enddate: "2025-01-31" },
       counties: [
