@@ -1,33 +1,21 @@
 import Head from "next/head";
-import Link from "next/link";
 import MainLayout from "../../components/MainLayout";
 import { DownloadIcon, PlusIcon } from "@heroicons/react/solid";
 import { checkToken } from "../../controllers/auth/auth";
 import React, { useState, useEffect, useCallback, useContext } from "react";
 import { useRouter } from "next/router";
 import { Menu } from "@headlessui/react";
-import {
-  ChevronDownIcon,
-  FilterIcon,
-  SearchIcon,
-} from "@heroicons/react/outline";
-import { Select as CustomSelect } from "../../components/Forms/formComponents/Select";
 import { getUserDetails } from "../../controllers/auth/auth";
 import Select from "react-select";
+// import { FacilityMatrixTable } from "../../components/FacilityMatrixTable";
+import { FacilityMatrixTable } from "../../components/FacilityMatrixTable.js";
 
 // @mui imports
-import Accordion from "@mui/material/Accordion";
-import AccordionSummary from "@mui/material/AccordionSummary";
-import AccordionDetails from "@mui/material/AccordionDetails";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import Alert from "@mui/material/Alert";
 import AnalyticsSideFilters from "../../components/AnalyticsSideFilters";
 import { UserContext } from "../../providers/user";
-import { Formik, Form, Field } from "formik";
 import { KeyboardArrowRight, KeyboardArrowDown } from "@mui/icons-material";
 import { useSearchParams } from "next/navigation";
 import withAuth from "../../components/ProtectedRoute";
-import { v4 as uuid } from "uuid";
 
 function FacilityHome(props) {
   const router = useRouter();
@@ -81,9 +69,7 @@ function FacilityHome(props) {
   const [drillDown, setDrillDown] = useState({});
 
   const [isAccordionExpanded, setIsAccordionExpanded] = useState(false);
-  const [title, setTitle] = useState(
-    "Facilities Analysis By Level Type County"
-  );
+  const [title, setTitle] = useState("Facilities Analysis");
 
   // quick filter themes
   const [khisSynched, setKhisSynched] = useState(false);
@@ -265,35 +251,6 @@ function FacilityHome(props) {
     }
   }
 
-  const handleFiltersSubmit = useCallback((event) => {
-    event.preventDefault();
-
-    const formDataEntries = new FormData(event.target);
-
-    const formData = {};
-
-    for (let [k, v] of formDataEntries.entries()) {
-      if (v !== "") {
-        if (k == "facility_type_category") {
-          formData["facility_type"] = v;
-        } else {
-          formData[k] = v;
-        }
-      }
-    }
-
-    // const formData = Object.fromEntries(formDataEntries)
-
-    // console.log({formData})
-
-    // return
-
-    router.push({
-      pathname: "/facilities",
-      query: formData,
-    });
-  }, []);
-
   function handleFiltersReset(event) {
     event.preventDefault();
 
@@ -378,100 +335,58 @@ function FacilityHome(props) {
                     <h2 className="flex items-center text-2xl font-bold text-gray-900 capitalize gap-2">
                       {title}
                     </h2>
-                    {/* dropdown options to download data */}
-                    {props?.current_url && props?.current_url.length > 5 && (
-                      <Menu as="div" className="relative">
-                        {/* Button group */}
-
-                        {/* Display add facility button if  user belong to SCHRIO group */}
-                        {/* <div className="flex flex-col z-40 gap-5 md:flex-row md:items-center md:space-x-6 w-auto">
-
-                          {
-                          (userCtx?.groups[0]?.id == 2 ||
-                            userCtx?.groups[0]?.id == 7) && ( /
-
-                            <Menu.Item
-                              as="div"
-                              className="px-3 py-2 bg-gray-600 rounded text-white text-md tracking-tighter font-semibold whitespace-nowrap  hover:bg-black focus:bg-black active:bg-black uppercase"
-                            >
-                              <button
-                                onClick={() => {
-                                  router.push("/facilities/add?formId=0");
-                                }}
-                                className="flex items-center justify-center"
-                              >
-                                <span className="text-base uppercase font-semibold">
-                                  Add Facility
-                                </span>
-                                <PlusIcon className="w-4 h-4 ml-2" />
-                              </button>
-                            </Menu.Item>
-                          )}
-
-                          <Menu.Button
-                            as="button"
-                            className="px-3 py-2 bg-gray-600 rounded text-white text-md tracking-tighter font-semibold flex items-center justify-center whitespace-nowrap  hover:bg-black focus:bg-black active:bg-black uppercase"
-                          >
-                            <DownloadIcon className="w-5 h-5 mr-1" />
-                            <span className="text-base uppercase font-semibold">
-                              Export
-                            </span>
-                            <ChevronDownIcon className="w-4 h-4 ml-2" />
-                          </Menu.Button>
-                        </div> */}
-
-                        <Menu.Items
-                          as="ul"
-                          className="absolute top-0 left-[100%] w-auto flex flex-col gap-y-1 items-center justify-start bg-white  shadow-lg border border-gray-200 p-1"
+                    <Menu as="div" className="relative">
+                      <Menu.Items
+                        as="ul"
+                        className="absolute top-0 left-[100%] w-auto flex flex-col gap-y-1 items-center justify-start bg-white  shadow-lg border border-gray-200 p-1"
+                      >
+                        <Menu.Item
+                          as="li"
+                          className="p-0 flex items-center w-full text-center hover:bg-gray-200 focus:bg-gray-200 active:bg-gray-200"
                         >
-                          <Menu.Item
-                            as="li"
-                            className="p-0 flex items-center w-full text-center hover:bg-gray-200 focus:bg-gray-200 active:bg-gray-200"
-                          >
-                            {({ active }) => (
-                              <button
-                                className={
-                                  "flex items-center justify-start text-center hover:bg-gray-200 focus:bg-gray-200 text-gray-800 font-medium active:bg-gray-200 py-2 px-1 w-full " +
-                                  (active ? "bg-gray-200" : "")
-                                }
-                                onClick={() => {
-                                  window.location.href = `${process.env.NEXT_PUBLIC_FACILITY_EXPORT_URL}?&access_token=${props?.token}&format=csv&page_size=${props?.count}&page=1${orgUnitFilter}`;
-                                }}
-                              >
-                                <DownloadIcon className="w-4 h-4 mr-1" />
-                                <span className="text-base uppercase font-semibold">
-                                  CSV
-                                </span>
-                              </button>
-                            )}
-                          </Menu.Item>
+                          {({ active }) => (
+                            <button
+                              className={
+                                "flex items-center justify-start text-center hover:bg-gray-200 focus:bg-gray-200 text-gray-800 font-medium active:bg-gray-200 py-2 px-1 w-full " +
+                                (active ? "bg-gray-200" : "")
+                              }
+                              onClick={() => {
+                                window.location.href = `${process.env.NEXT_PUBLIC_FACILITY_EXPORT_URL}?&access_token=${props?.token}&format=csv&page_size=${props?.count}&page=1${orgUnitFilter}`;
+                              }}
+                            >
+                              <DownloadIcon className="w-4 h-4 mr-1" />
+                              <span className="text-base uppercase font-semibold">
+                                CSV
+                              </span>
+                            </button>
+                          )}
+                        </Menu.Item>
 
-                          <Menu.Item
-                            as="li"
-                            className="p-0 flex items-center w-full text-center hover:bg-gray-200 focus:bg-gray-200 active:bg-gray-200"
-                          >
-                            {({ active }) => (
-                              <button
-                                className={
-                                  "flex items-center justify-start text-center hover:bg-gray-200 focus:bg-gray-200 text-gray-800 font-medium active:bg-gray-200 py-2 px-1 w-full " +
-                                  (active ? "bg-gray-200" : "")
-                                }
-                                onClick={() => {
-                                  window.location.href = orgUnitFilter
-                                    ? `${process.env.NEXT_PUBLIC_FACILITY_EXPORT_URL}?access_token=${props?.token}&format=excel&page_size=${props?.count}&page=1${orgUnitFilter}`
-                                    : `${process.env.NEXT_PUBLIC_FACILITY_EXPORT_URL}?access_token=${props?.token}&format=excel&page_size=${props?.count}&page=1`;
-                                }}
-                              >
-                                <DownloadIcon className="w-4 h-4 mr-1" />
-                                <span className="text-base uppercase font-semibold">
-                                  Excel
-                                </span>
-                              </button>
-                            )}
-                          </Menu.Item>
-                        </Menu.Items>
-                      </Menu>
-                    )}
+                        <Menu.Item
+                          as="li"
+                          className="p-0 flex items-center w-full text-center hover:bg-gray-200 focus:bg-gray-200 active:bg-gray-200"
+                        >
+                          {({ active }) => (
+                            <button
+                              className={
+                                "flex items-center justify-start text-center hover:bg-gray-200 focus:bg-gray-200 text-gray-800 font-medium active:bg-gray-200 py-2 px-1 w-full " +
+                                (active ? "bg-gray-200" : "")
+                              }
+                              onClick={() => {
+                                window.location.href = orgUnitFilter
+                                  ? `${process.env.NEXT_PUBLIC_FACILITY_EXPORT_URL}?access_token=${props?.token}&format=excel&page_size=${props?.count}&page=1${orgUnitFilter}`
+                                  : `${process.env.NEXT_PUBLIC_FACILITY_EXPORT_URL}?access_token=${props?.token}&format=excel&page_size=${props?.count}&page=1`;
+                              }}
+                            >
+                              <DownloadIcon className="w-4 h-4 mr-1" />
+                              <span className="text-base uppercase font-semibold">
+                                Excel
+                              </span>
+                            </button>
+                          )}
+                        </Menu.Item>
+                      </Menu.Items>
+                    </Menu>
                   </div>
                 </div>
               </div>
@@ -542,6 +457,10 @@ function FacilityHome(props) {
                   )}
                 </div>
               </div>
+              <div className="p-4">
+                {/* <pre>{JSON.stringify(props?.data, null, 2)}</pre> */}
+                <FacilityMatrixTable data={props?.data} />
+              </div>
             </div>
           </div>
         </MainLayout>
@@ -553,239 +472,76 @@ function FacilityHome(props) {
 }
 
 export async function getServerSideProps(ctx) {
-  ctx?.res?.setHeader("Cache-Control", "no-cache, no-store, max-age=0");
+  let data = null;
 
-  async function fetchFilters(token) {
-    // const filtersURL = `${process.env.NEXT_PUBLIC_API_URL}/common/filtering_summaries/?fields=county,facility_type,facility_type_details,constituency,ward,operation_status,service_category,owner_type,owner,service,keph_level,sub_county`
-
-    let result = {};
-
-    const fetchResource = async (endpoint, resource = null) => {
-      if (
-        resource === "facility_type" ||
-        resource === "facility_type_details" ||
-        resource === "keph_level"
-      ) {
-        try {
-          const response = await fetch(
-            `${process.env.NEXT_PUBLIC_API_URL}${endpoint}`,
-            {
-              headers: {
-                Accept: "application/json",
-                Authorization: `Bearer ${token}`,
-              },
-            }
-          );
-
-          return (await response.json())?.results;
-        } catch (e) {
-          if (e instanceof TypeError) {
-            console.error("Error: ", e.message);
-          }
-          return undefined;
-        }
-      } else {
-        try {
-          const response = await fetch(
-            `${process.env.NEXT_PUBLIC_API_URL}${endpoint}`,
-            {
-              headers: {
-                Accept: "application/json",
-                Authorization: `Bearer ${token}`,
-              },
-            }
-          );
-
-          return await response.json();
-        } catch (e) {
-          if (e instanceof TypeError) {
-            console.error("Error: ", e.message);
-          }
-        }
-      }
-    };
-
-    result["facility_type"] = await fetchResource(
-      "/facilities/facility_types/?is_parent=true&fields=id,name",
-      "facility_type"
-    );
-    result["facility_type_details"] = await fetchResource(
-      "/facilities/facility_types/?is_parent=false&fields=id,name",
-      "facility_type_details"
-    );
-    result["keph_level"] = await fetchResource(
-      "/facilities/keph/?is_active=true&fields=id,name",
-      "keph_level"
-    );
-    result = {
-      ...result,
-      ...(await fetchResource(
-        "/common/filtering_summaries/?fields=county,sub_county,constituency,ward,owner,owner_type,operation_status"
-      )),
-    };
-
-    return result;
-  }
+  const countyId = ctx.req.county_id;
 
   const token = (await checkToken(ctx.req, ctx.res))?.token;
 
-  const nextURL = ctx?.query?.next
-    ? Buffer.from(ctx?.query?.next, "base64").toString()
-    : null;
+  let url;
 
-  const page = ctx?.query?.page;
-
-  const { response: user } = await getUserDetails(
-    token,
-    `${process.env.NEXT_PUBLIC_API_URL}/rest-auth/user/`
-  );
-
-  const userGroup = user?.groups[0]?.id;
-
-  // const nextURL = ctx?.query?.next
-
-  const previousURL = ctx?.query?.previous
-    ? Buffer.from(ctx?.query?.previous, "base64").toString()
-    : null;
-
-  // const previousURL = ctx?.query?.previous
-
-  const defaultURL = ctx?.query?.q
-    ? `${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/`
-    : `${
-        `${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/` +
-        `${page ? "?page=" + page + "&" : "?"}` /*+ 'page_size=30'*/
-      }`;
-
-  let url = nextURL ?? previousURL ?? defaultURL;
-
-  const filters = await fetchFilters(token);
-
-  // console.log({filters})
-
-  let facilities;
-
-  let query = { searchTerm: "" };
-
-  if (ctx?.query?.qf) {
-    query.qf = ctx.query.qf;
+  if (!!countyId) {
+    url = `${process.env.NEXT_PUBLIC_API_URL}/analytics/matrix-report/?report_type=matrix_report&metric=number_of_facilities&col_dims=keph_level__name,regulatory_body__name,facility_type__name,infrastructure&county=${countyId}&row_comparison=county&format=json`;
+  } else {
+    url = `${process.env.NEXT_PUBLIC_API_URL}/analytics/matrix-report/?report_type=matrix_report&metric=number_of_facilities&col_dims=keph_level__name,regulatory_body__name,facility_type__name,infrastructure&row_comparison=county&format=json`;
   }
 
-  for (let [k, v] of Object.entries(ctx.query)) {
-    if (k !== "filter") {
-      url = `${url}&${k}=${v}`;
-    } else {
-      if (v === "feed_back_facilities") {
-        url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/facility_service_ratings/`;
-      }
-    }
+  // console.log({url})
 
-    if (k == "mfl_code_null") {
-      url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/regulator_sync/?${k}=${v}&page_size=10`;
-    }
-  }
-
-  let current_url = url + "&page_size=100";
-  if (ctx?.query?.page) {
-    url = `${url}&page=${ctx.query.page}`;
-  }
+  const body = {
+    col_dims: "bed_types",
+    report_type: "matrix_report",
+    metric: "number_of_facilities",
+    row_comparison: "county",
+    filters: {
+      period: { startdate: "2023-01-01", enddate: "2025-01-31" },
+      counties: [
+        "95b08378-362e-4bf9-ad63-d685e1287db2",
+        "bbc8803a-7d6f-411a-96f3-5f8472b40405",
+      ],
+      owners: [
+        "ffad4810-0bfb-4434-84cb-d2ab9b911c41",
+        "ca268e6b-7e45-4264-97bf-43b6c68fb21e",
+      ],
+      facility_types: [
+        "8949eeb0-40b1-43d4-a38d-5d4933dc209f",
+        "1f1e3389-f13f-44b5-a48e-c1d2b822e5b5",
+      ],
+      regulatory_bodies: [
+        "baea1c8b-ce63-47b3-8b0b-eb8f9d2d6afb",
+        "0c19f000-d9df-4ada-ba95-b4367dfb5296",
+      ],
+      infrastructure_categories: [
+        "4fcdcbaa-99e6-4bcd-83df-4bff71e9fdde",
+        "bcce5d62-656f-4ed6-ba1f-16eafb670816",
+        "467a324b-ac2f-40c2-a1db-db1e17f8885c",
+      ],
+    },
+  };
 
   try {
-    if (user?.user_sub_counties.length == 2 && userGroup === 2) {
-      url = `${url}&sub_county=${user?.user_sub_counties[0]?.sub_county},${user?.user_sub_counties[1]?.sub_county}`;
-    } else {
-      if (userGroup === 1) {
-        // CHRIO
+    data = await fetch(url, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+        "Cache-Control": "no-cache, no-store, max-age=0",
+        "User-Agent": "node",
+      },
+      method: "POST",
+      body: JSON.stringify(body),
+    });
 
-        if (!url.includes("&county")) {
-          const userCountyID = user?.county;
-          url = `${url}&county=${userCountyID}`;
-        }
-      } else if (userGroup === 2) {
-        // SCHRIO
-
-        if (!url.includes("&sub_county")) {
-          const userSubCountyIDs =
-            user?.user_sub_counties.length > 1
-              ? user?.user_sub_counties
-                  .map(({ sub_county }) => sub_county)
-                  ?.join(",")
-              : user?.user_sub_counties[0]?.sub_county;
-          url = `${url}&sub_county=${userSubCountyIDs}`;
-        }
-      }
+    if (!!data) {
+      data = await data.json();
+      console.log(data);
     }
-
-    const requestURL = new URL(url);
-
-    requestURL.searchParams.delete("filter", "non_operational_facilities");
-
-    url = requestURL.href;
-
-    console.log({ url });
-
-    facilities = await (
-      await fetch(url, {
-        headers: {
-          Accept: "application/json, text/plain, */*",
-          "Accept-Encoding": "gzip, deflate, br, zstd",
-          Authorization: `Bearer ${token}`,
-          "Accept-Language": "en-US,en;q=0.5",
-          "Cache-Control": "no-cache, no-store, max-age=0",
-          Connection: "keep-alive",
-          "User-Agent": "node",
-          Connection: "Keep-alive",
-          Cookie:
-            "csrftoken=TWwwgEp9niKNTM6aEefeZXahYkVNFCTd5tA9quiwwZOnaFh1v0uw0qrvAJpGQ3pp; sessionid=kxu16hggcmqxte06cqpv01ao4h230nv7",
-          Host: "api.kmhfltest.health.go.ke",
-          Priority: "u=0, i",
-        },
-      })
-    ).json();
-
-    console.log({ facilities });
   } catch (e) {
     console.error("Error message:", e.message);
   }
 
-  if (
-    facilities?.results &&
-    Array.isArray(facilities?.results) &&
-    facilities?.results.length > 0
-  ) {
-    // console.log({facilities})
-    return {
-      props: {
-        facilities: facilities?.results ?? null,
-        next: facilities?.next ?? null,
-        previous: facilities?.previous ?? null,
-        filters,
-        path: ctx.asPath || "/facilities",
-        current_url,
-        current_page: facilities?.current_page ?? null,
-        total_pages: facilities?.total_pages ?? null,
-        count: facilities?.count ?? null,
-        page_size: facilities?.page_size ?? null,
-        query,
-        token,
-      },
-    };
-  }
-
   return {
     props: {
-      facilities: [],
-      next: null,
-      previous: null,
-      filters: null,
-      path: ctx.asPath || "/facilities",
-      current_url,
-      current_page: 0,
-      total_pages: 0,
-      count: 0,
-      page_size: 0,
-      query,
-      token: null,
+      data,
     },
   };
 }
