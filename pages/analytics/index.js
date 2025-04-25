@@ -7,7 +7,7 @@ import { useRouter } from "next/router";
 import { Menu } from "@headlessui/react";
 import { getUserDetails } from "../../controllers/auth/auth";
 import Select from "react-select";
-import { FacilityMatrixTable } from "../../components/FacilityMatrixTable";
+// import { FacilityMatrixTable } from "../../components/FacilityMatrixTable";
 
 // @mui imports
 import AnalyticsSideFilters from "../../components/AnalyticsSideFilters";
@@ -457,7 +457,12 @@ function FacilityHome(props) {
                 </div>
               </div>
               <div className="p-4">
-                <FacilityMatrixTable countyId="7c942357-44a8-49c9-9ca6-8247ad903b57" />
+                <pre>
+                  {
+                    JSON.stringify(props?.data, null, 2)
+                  }
+                </pre>
+                {/* <FacilityMatrixTable countyId="7c942357-44a8-49c9-9ca6-8247ad903b57" /> */}
               </div>
             </div>
           </div>
@@ -470,44 +475,82 @@ function FacilityHome(props) {
 }
 
 export async function getServerSideProps(ctx) {
+
+  let data = null
+
+  const countyId = ctx.req.county_id
+
+  const token = (await checkToken(ctx.req, ctx.res))?.token
+
+  let url 
+    
+  if(!!countyId) {
+    url = `${process.env.NEXT_PUBLIC_API_URL}/analytics/matrix-report/?report_type=matrix_report&metric=number_of_facilities&col_dims=keph_level__name,regulatory_body__name,facility_type__name,infrastructure&county=${countyId}&row_comparison=county&format=json`
+  } else {
+    url = `${process.env.NEXT_PUBLIC_API_URL}/analytics/matrix-report/?report_type=matrix_report&metric=number_of_facilities&col_dims=keph_level__name,regulatory_body__name,facility_type__name,infrastructure&row_comparison=county&format=json`
+  }
+
+  // console.log({url})
+
+  const body = {
+    "col_dims": "bed_types",
+    "report_type": "matrix_report",
+    "metric": "number_of_facilities",
+    "row_comparison": "county",
+    "filters": {
+          "period": {"startdate":"2023-01-01","enddate":"2025-01-31"},
+          "counties": [
+              "95b08378-362e-4bf9-ad63-d685e1287db2",
+              "bbc8803a-7d6f-411a-96f3-5f8472b40405"
+          ],
+          "owners": [
+              "ffad4810-0bfb-4434-84cb-d2ab9b911c41",
+              "ca268e6b-7e45-4264-97bf-43b6c68fb21e"
+          ],
+          "facility_types": [
+              "8949eeb0-40b1-43d4-a38d-5d4933dc209f",
+              "1f1e3389-f13f-44b5-a48e-c1d2b822e5b5"
+          ],
+          "regulatory_bodies": [
+              "baea1c8b-ce63-47b3-8b0b-eb8f9d2d6afb",
+              "0c19f000-d9df-4ada-ba95-b4367dfb5296"
+          ],
+          "infrastructure_categories": [
+              "4fcdcbaa-99e6-4bcd-83df-4bff71e9fdde",
+              "bcce5d62-656f-4ed6-ba1f-16eafb670816",
+              "467a324b-ac2f-40c2-a1db-db1e17f8885c"
+          ]
+    }
+}
+
   try {
-    const requestURL = new URL(url);
+   data = await fetch(url, 
+    {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+        "Cache-Control": "no-cache, no-store, max-age=0",
+        "User-Agent": "node",
+      },
+      method: "POST", 
+      body: JSON.stringify(body)
+    }
+  );
 
-    requestURL.searchParams.delete("filter", "non_operational_facilities");
+  // console.log(data.headers, data.type, data.body)
 
-    url = requestURL.href;
+  if (!!data){
+    data = (await data.json())
+  }
+  
 
-    console.log({ url });
-
-    facilities = await (
-      await fetch(url, {
-        headers: {
-          Accept: "application/json, text/plain, */*",
-          "Accept-Encoding": "gzip, deflate, br, zstd",
-          Authorization: `Bearer ${token}`,
-          "Accept-Language": "en-US,en;q=0.5",
-          "Cache-Control": "no-cache, no-store, max-age=0",
-          Connection: "keep-alive",
-          "User-Agent": "node",
-          Connection: "Keep-alive",
-          Cookie:
-            "csrftoken=TWwwgEp9niKNTM6aEefeZXahYkVNFCTd5tA9quiwwZOnaFh1v0uw0qrvAJpGQ3pp; sessionid=kxu16hggcmqxte06cqpv01ao4h230nv7",
-          Host: "api.kmhfltest.health.go.ke",
-          Priority: "u=0, i",
-        },
-      })
-    ).json();
-
-    console.log({ facilities });
   } catch (e) {
     console.error("Error message:", e.message);
   }
 
   return {
     props: {
-      filters: null,
-      path: ctx.asPath || "/facilities",
-      token: null,
+      data 
     },
   };
 }
