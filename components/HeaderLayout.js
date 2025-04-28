@@ -346,9 +346,6 @@ export default function HeaderLayout({
                             <Link href='/analytics'>Analytics</Link>
                           </li>
 
-                          <li className={`text-lg h-[60px] flex text-nowrap w-full items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${/\/admin_offices\/*/.test(currentPath) && 'border-r-2 border-b-gray-50 bg-blue-500/85'}`}>
-                            <Link href='/analytics'>Analytics</Link>
-                          </li>
 
                           <li className={`text-lg h-[60px] flex text-nowrap w-full items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${/\/admin_offices\/*/.test(currentPath) && 'border-r-2 border-b-gray-50 bg-blue-500/85'}`}>
                             <Link href='/admin_offices'>Admin Offices</Link>
@@ -436,8 +433,8 @@ export default function HeaderLayout({
                           </li>
 
                           <li className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/documentation" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
-                                                  <Link target="_blank" href='https://kmhfr-docs.vercel.app'>Documentation</Link>
-                                                </li>
+                            <Link target="_blank" href='https://kmhfr-docs.vercel.app'>Documentation</Link>
+                          </li>
 
                           <li className={`text-lg h-[60px] flex text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/downloads" && 'border-r-2 border-b-gray-50 bg-blue-500/85'}`}>
                             <Link href='/downloads'>Downloads</Link>
@@ -468,8 +465,8 @@ export default function HeaderLayout({
                           </li>
 
                           <li className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/documentation" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
-                                            <Link target="_blank" href='https://kmhfr-docs.vercel.app'>Documentation</Link>
-                                          </li>
+                            <Link target="_blank" href='https://kmhfr-docs.vercel.app'>Documentation</Link>
+                          </li>
 
                           <li className={`text-lg h-[60px] flex text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/downloads" && 'border-r-2 border-gray-50 bg-blue-500/85'}`}>
                             <Link href='/downloads'>Downloads</Link>
@@ -548,8 +545,8 @@ export default function HeaderLayout({
                           </li>
 
                           <li className={`text-lg h-[60px] flex text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/documentation" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
-                                                <Link target="_blank"  href='https://kmhfr-docs.vercel.app'>Documentation</Link>
-                                              </li>
+                            <Link target="_blank"  href='https://kmhfr-docs.vercel.app'>Documentation</Link>
+                          </li>
 
                           <li className={`text-lg h-[60px] flex  text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/downloads" && 'border-r-2 border-b-gray-50 bg-blue-500/85'}`}>
                             <Link href='/downloads'>Downloads</Link>
@@ -596,8 +593,8 @@ export default function HeaderLayout({
                           </li>
 
                           <li className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/documentation" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
-                                            <Link target="_blank" href='https://kmhfr-docs.vercel.app'>Documentation</Link>
-                                          </li>
+                            <Link target="_blank" href='https://kmhfr-docs.vercel.app'>Documentation</Link>
+                          </li>
 
                           <li className={`text-lg h-[60px] flex text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/downloads" && 'border-r-2 border-gray-50 bg-blue-500/85'}`}>
                             <Link href='/downloads'>Downloads</Link>
@@ -753,8 +750,8 @@ export default function HeaderLayout({
                                 <Link href='/analytics'>Analytics</Link>
                               </li>
                               <li className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/documentation" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
-                                                              <Link target="_blank" href='https://kmhfr-docs.vercel.app'>Documentation</Link>
-                                                            </li>
+                                <Link target="_blank" href='https://kmhfr-docs.vercel.app'>Documentation</Link>
+                              </li>
                               <li className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/downloads" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
                                 <Link href='/downloads'>Downloads</Link>
                               </li>
@@ -866,8 +863,8 @@ export default function HeaderLayout({
                                 <Link href='/analytics'>Analytics</Link>
                               </li>
                               <li className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/documentation" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
-                                            <Link target="_blank" href='https://kmhfr-docs.vercel.app'>Documentation</Link>
-                                          </li>
+                                <Link target="_blank" href='https://kmhfr-docs.vercel.app'>Documentation</Link>
+                              </li>
                               <li className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/downloads" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
                                 <Link href='/downloads'>Downloads</Link>
                               </li>
@@ -923,8 +920,8 @@ export default function HeaderLayout({
                                 <Link href='/analytics'>Analytics</Link>
                               </li>
                               <li className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/documentation" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
-                                                <Link target="_blank"  href='https://kmhfr-docs.vercel.app'>Documentation</Link>
-                                              </li>
+                                <Link target="_blank"  href='https://kmhfr-docs.vercel.app'>Documentation</Link>
+                              </li>
                               <li className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/downloads" && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}>
                                 <Link href='/downloads'>Downloads</Link>
                               </li>
