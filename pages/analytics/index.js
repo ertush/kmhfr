@@ -7,7 +7,6 @@ import { useRouter } from "next/router";
 import { Menu } from "@headlessui/react";
 import { getUserDetails } from "../../controllers/auth/auth";
 import Select from "react-select";
-// import { FacilityMatrixTable } from "../../components/FacilityMatrixTable";
 import { FacilityMatrixTable } from "../../components/FacilityMatrixTable.js";
 
 // @mui imports
@@ -78,6 +77,8 @@ function FacilityHome(props) {
   const [allFctsSelected, setAllFctsSelected] = useState(true);
   const [isClient, setIsClient] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const [appliedFilters, setAppliedFilters] = useState({});
 
   const pageParams = useSearchParams();
 
@@ -410,6 +411,7 @@ function FacilityHome(props) {
               )}
               {isMenuOpen && (
                 <AnalyticsSideFilters
+                  onApplyFilters={setAppliedFilters}
                   filters={filters}
                   states={[
                     khisSynched,
@@ -433,7 +435,11 @@ function FacilityHome(props) {
             {/* Data Indicator section */}
             <div className="p-4 w-full col-span-1 md:col-span-4 mr-24 md:col-start-2  md:h-auto bg-gray-50 shadow-md">
               {/* <pre>{JSON.stringify(props?.data, null, 2)}</pre> */}
-              <FacilityMatrixTable data={props?.data} />
+              <FacilityMatrixTable
+                data={props?.data}
+                filters={appliedFilters}
+                /* ...otherProps */
+              />
             </div>
           </div>
         </MainLayout>

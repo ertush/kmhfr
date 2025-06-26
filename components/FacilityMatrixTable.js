@@ -20,7 +20,7 @@ export function FacilityMatrixTable({ data }) {
     }));
   }, [data]);
 
-  console.log(tableData);
+  // console.log("my tableData:", typeof(tableData));
 
   // Define columns
   const columns = useMemo(() => {

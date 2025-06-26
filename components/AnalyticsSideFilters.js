@@ -1,15 +1,32 @@
-import React, { useState } from "react";
-import { ChevronDownIcon, ChevronRightIcon } from "@heroicons/react/outline";
+import React, { useEffect, useState } from "react";
+import { ChevronDownIcon, ChevronRightIcon, SearchIcon, FilterIcon } from "@heroicons/react/outline";
+import { FaSpinner } from "react-icons/fa";
+// import {LoadingAnimation} from "./LoadingAnimation";
+import { text } from "@fortawesome/fontawesome-svg-core";
+import { flatten } from "underscore";
+import { useSearchParams } from "next/navigation";
+import countiesJson from "../assets/orgunits/counties.json";
+import subCountiesJson from "../assets/orgunits/subcounties.json";
+import wardsJson from "../assets/orgunits/wards.json";
 
-const AnalyticsSideMenu = ({ filters, states, stateSetters }) => {
+const AnalyticsSideMenu = ({ filters, states, stateSetters, props, onApplyFilters }) => {
+ 
+  // const searchParams = useSearchParams();
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+  const [loading, setLoading] = useState(false);
+
   const [expandedNodes, setExpandedNodes] = useState({
     level: false, // Changed to false
+    county: false,
+    national: false,
     facilities: false, // Changed to false
     services: false,
     ownership: false,
     status: false,
     keph_level: false, // Added for the new KEPH Level section
   });
+
 
   const [selectedFilters, setSelectedFilters] = useState({
     // Level
@@ -46,7 +63,47 @@ const AnalyticsSideMenu = ({ filters, states, stateSetters }) => {
     "keph-level-6": false,
   });
 
-  // ... rest of your treeData remains exactly the same ...
+  const [countyData, setCountyData] = useState([]);
+  const [subCountyData, setSubCountyData] = useState([]);
+  const [wardData, setWardData] = useState([]);
+  // const [facilityData, setFacilityData] = useState([]);
+
+  useEffect(() => {
+
+   setCountyData(countiesJson);
+   setSubCountyData(subCountiesJson);
+   setWardData(wardsJson);
+
+  }, []);
+
+
+  // console.log("County Data:", countyData);
+  // console.log("Sub-County Data:", subCountyData);
+  // console.log("Ward Data:", wardData); 
+  
+  const counties = countyData.map((county) => ({
+    id: county.id,
+    text: county.name,
+    filterKey: "county",
+    filterValue: county.name,
+    children: subCountyData
+      .filter((subCounty) => subCounty.county === county.id)
+      .map((subCounty) => ({
+        id: subCounty.id,
+        text: subCounty.name,
+        filterKey: "sub-county",
+        filterValue: subCounty.name,
+        children: wardData
+          .filter((ward) => ward.sub_county === subCounty.id)
+          .map((ward) => ({
+            id: ward.id,
+            text: ward.name,
+            filterKey: "ward",
+            filterValue: ward.name,
+          })),
+      })),
+  }));
+
   const treeData = [
     {
       id: "level",
@@ -56,22 +113,26 @@ const AnalyticsSideMenu = ({ filters, states, stateSetters }) => {
           id: "national",
           text: "National",
           filterKey: "national",
-        },
-        {
-          id: "county",
-          text: "County",
-          filterKey: "county",
-        },
-        {
-          id: "sub-county",
-          text: "Sub County",
-          filterKey: "sub_county",
-        },
-        {
-          id: "ward",
-          text: "Ward",
-          filterKey: "ward",
-        },
+          filterValue: "National",
+          children: counties.map((county) => ({
+            id: county.id,
+            text: county.text,
+            filterKey: "county",
+            filterValue: county.name,
+            children: county.children.map((subCounty) => ({
+              id: subCounty.id,
+              text: subCounty.text,
+              filterKey: "sub-county",
+              filterValue: subCounty.filterValue,
+              children: subCounty.children.map((ward) => ({
+                id: ward.id,
+                text: ward.text,
+                filterKey: "ward",
+                filterValue: ward.filterValue,
+              })),
+            })),
+          })),
+        }
       ],
     },
     {
@@ -244,12 +305,11 @@ const AnalyticsSideMenu = ({ filters, states, stateSetters }) => {
     if (isLevel) {
       setSelectedFilters((prev) => {
         const newFilters = { ...prev };
+        Object.keys(newFilters).forEach((k) => {
+          if (["national", "county", "sub-county", "ward"].includes(k))
+            newFilters[k] = false;
+        });
         // Unselect all level options
-        newFilters.national = false;
-        newFilters.county = false;
-        newFilters["sub-county"] = false;
-        newFilters.ward = false;
-        // Then select the clicked one
         newFilters[nodeId] = !prev[nodeId];
         return newFilters;
       });
@@ -267,57 +327,167 @@ const AnalyticsSideMenu = ({ filters, states, stateSetters }) => {
     // Or trigger a filter update in your parent component
   };
 
-  return (
-    <div className="w-full bg-white shadow-md rounded-md p-4">
-      <h3 className="text-lg font-semibold mb-4">Analytics Filters</h3>
-      <div className="tree-menu space-y-2">
-        {treeData.map((node) => (
-          <div key={node.id} className="tree-node">
-            <div
-              className="tree-node-header flex items-center cursor-pointer py-1 hover:bg-gray-100"
+  // Helper to get only selected filters with their keys and values
+  const getSelectedFilters = () => {
+    const selected = {};
+    treeData.forEach((section) => {
+      section.children.forEach((child) => {
+        if (selectedFilters[child.id]) {
+          selected[child.filterKey] = child.filterValue || true;
+        }
+        // Recursively check children
+        if (child.children) {
+          child.children.forEach((sub) => {
+            if (selectedFilters[sub.id]) {
+              selected[sub.filterKey] = sub.filterValue || true;
+            }
+            if (sub.children) {
+              sub.children.forEach((ward) => {
+                if (selectedFilters[ward.id]) {
+                  selected[ward.filterKey] = ward.filterValue || true;
+                }
+              });
+            }
+          });
+        }
+      });
+    });
+    return selected;
+  };
+
+  // Helper: recursively find a node by id in the tree
+  const findNodeById = (nodes, id) => {
+    for (const node of nodes) {
+      if (node.id === id) return node;
+      if (node.children) {
+        const found = findNodeById(node.children, id);
+        if (found) return found;
+      }
+    }
+    return null;
+  };
+
+  // Helper: recursively flatten all nodes in the tree
+  const flattenTree = (nodes) => {
+    let result = [];
+    for (const node of nodes) {
+      result.push(node);
+      if (node.children) {
+        result = result.concat(flattenTree(node.children));
+      }
+    }
+    return result;
+  };
+
+  // Recursive tree node renderer
+  const renderTreeNodes = (nodes, parentNodeId = null) => {
+    if (!nodes) return null;
+    return nodes.map((node) => (
+      <div key={node.id} className="tree-node">
+        <div className="flex items-center py-1 px-2 hover:bg-gray-50 rounded">
+          <input
+            type="checkbox"
+            id={node.id}
+            checked={!!selectedFilters[node.id]}
+            onChange={() =>
+              handleCheckboxChange(
+                node.id,
+                node.filterKey,
+                node.filterValue,
+                parentNodeId === "level"
+              )
+            }
+            className="h-4 w-4 text-blue-600 rounded focus:ring-blue-500 mr-2"
+          />
+          <label htmlFor={node.id} className="cursor-pointer select-none">
+            {node.text}
+          </label>
+          {node.children && node.children.length > 0 && (
+            <span
+              className="ml-auto cursor-pointer"
               onClick={() => toggleNode(node.id)}
             >
               {expandedNodes[node.id] ? (
-                <ChevronDownIcon className="w-4 h-4 mr-1" />
+                <ChevronDownIcon className="w-4 h-4" />
               ) : (
-                <ChevronRightIcon className="w-4 h-4 mr-1" />
+                <ChevronRightIcon className="w-4 h-4" />
               )}
-              <span className="font-medium">{node.text}</span>
-            </div>
+            </span>
+          )}
+        </div>
+        {node.children &&
+          node.children.length > 0 &&
+          expandedNodes[node.id] && (
+            <div className="ml-6">{renderTreeNodes(node.children, node.id)}</div>
+          )}
+      </div>
+    ));
+  };
 
-            {expandedNodes[node.id] && (
-              <div className="tree-node-children ml-6 space-y-1 mt-1">
-                {node.children.map((child) => (
-                  <div
-                    key={child.id}
-                    className="flex items-center py-1 px-2 hover:bg-gray-50 rounded"
-                  >
-                    <input
-                      type="checkbox"
-                      id={child.id}
-                      checked={selectedFilters[child.id]}
-                      onChange={() =>
-                        handleCheckboxChange(
-                          child.id,
-                          child.filterKey,
-                          child.filterValue,
-                          node.id === "level"
-                        )
-                      }
-                      className="h-4 w-4 text-blue-600 rounded focus:ring-blue-500 mr-2"
-                    />
-                    <label
-                      htmlFor={child.id}
-                      className="cursor-pointer select-none"
-                    >
-                      {child.text}
-                    </label>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        ))}
+  // Apply button handler with loading state
+  const handleApply = async () => {
+    setLoading(true);
+    try {
+      const filters = getSelectedFilters();
+      if (onApplyFilters) {
+        // If onApplyFilters is async, await it
+        await onApplyFilters(filters);
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="w-full bg-white shadow-md rounded-md p-4">
+      <h3 className="text-lg font-semibold mb-4">Analytics Filters</h3>
+      <div className="flex items-center mb-4">
+        <FilterIcon className='w-6 h-6 text-gray-900' />
+        <span className="ml-2 text-sm text-gray-600">Filter by:</span>
+      </div>
+      <div className="tree-menu space-y-2">
+        {renderTreeNodes(treeData)}
+      </div>
+      {/* Search bar */}
+      <div className="mt-4">
+        <div className="relative">
+          <SearchIcon className="absolute left-2 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+          <input
+            type="text"
+            placeholder="Search filters..."
+            value={searchTerm}
+            onChange={(e) => {
+              setSearchTerm(e.target.value);
+              const lowerCaseTerm = e.target.value.toLowerCase();
+              const allNodes = flattenTree(treeData);
+              const results = allNodes.filter(
+                (node) => node.text && node.text.toLowerCase().includes(lowerCaseTerm)
+              );
+              setSearchResults(results);
+            }}
+            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+        {searchTerm && searchResults.length > 0 && (
+          <ul className="mt-2 bg-white border border-gray-200 rounded-md shadow-md max-h-60 overflow-y-auto">
+            {searchResults.map((result) => (
+              <li
+                key={result.id}
+                className="px-4 py-2 hover:bg-gray-50 cursor-pointer"
+                onClick={() => {
+                  handleCheckboxChange(
+                    result.id,
+                    result.filterKey,
+                    result.filterValue,
+                    result.filterKey === "level"  // Assuming 'level' is a special case
+                  );
+                }}
+              >
+                {result.text}
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
 
       {/* Selected filters summary */}
@@ -331,19 +501,48 @@ const AnalyticsSideMenu = ({ filters, states, stateSetters }) => {
             {Object.entries(selectedFilters)
               .filter(([_, isSelected]) => isSelected)
               .map(([filterId]) => {
-                const filter = treeData
-                  .flatMap((n) => n.children)
-                  .find((c) => c.id === filterId);
+                const filter = findNodeById(treeData, filterId);
                 return (
                   <li key={filterId} className="flex items-center">
                     <span className="inline-block w-2 h-2 bg-blue-500 rounded-full mr-2"></span>
-                    {filter?.text}
+                    {filter?.text?.toString() || filterId}
                   </li>
                 );
               })}
           </ul>
         )}
       </div>
+
+      {/* Apply Button */}
+      <button
+        className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 flex items-center justify-center"
+        onClick={handleApply}
+        disabled={loading}
+      >
+        {loading && (
+          <FaSpinner className="animate-spin mr-2" />
+        )}
+        Apply
+      </button>
+      <button
+        className="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300"
+        onClick={() => {
+          setSelectedFilters(Object.fromEntries(Object.keys(selectedFilters).map(k => [k, false])));
+          setExpandedNodes({
+            level: false,
+            county: false,
+            national: false,
+            facilities: false,
+            services: false,
+            ownership: false,
+            status: false,
+            keph_level: false,
+          });
+        }}
+        disabled={loading}
+      >
+        Clear
+      </button>
     </div>
   );
 };
