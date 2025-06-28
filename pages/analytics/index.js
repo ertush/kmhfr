@@ -5,9 +5,7 @@ import { checkToken } from "../../controllers/auth/auth";
 import React, { useState, useEffect, useCallback, useContext } from "react";
 import { useRouter } from "next/router";
 import { Menu } from "@headlessui/react";
-import { getUserDetails } from "../../controllers/auth/auth";
 import Select from "react-select";
-// import { FacilityMatrixTable } from "../../components/FacilityMatrixTable";
 import { FacilityMatrixTable } from "../../components/FacilityMatrixTable.js";
 
 // @mui imports
@@ -16,6 +14,7 @@ import { UserContext } from "../../providers/user";
 import { KeyboardArrowRight, KeyboardArrowDown } from "@mui/icons-material";
 import { useSearchParams } from "next/navigation";
 import withAuth from "../../components/ProtectedRoute";
+import { ANALYTICS_FILTER_TREE_DATA } from "../../utils/analyticsFilterConfig";
 
 function FacilityHome(props) {
   const router = useRouter();
@@ -36,6 +35,12 @@ function FacilityHome(props) {
   const [searchTerm, setSearchTerm] = useState("");
 
   const [facilityStatus, setFacilityStatus] = useState("");
+
+  // Analytics filters state
+  const [analyticsFilters, setAnalyticsFilters] = useState({});
+  const [analyticsData, setAnalyticsData] = useState(props?.data);
+  const [isLoadingData, setIsLoadingData] = useState(false);
+  const [authToken, setAuthToken] = useState(null);
 
   // const qf = props?.query?.qf ?? null
 
@@ -162,7 +167,9 @@ function FacilityHome(props) {
 
   useEffect(() => {
     setIsClient(true);
-  }, []);
+    // Set the token from props to state for client-side usage
+    setAuthToken(props?.token);
+  }, [props?.token]);
 
   useEffect(() => {
     let qry = props?.query;
@@ -309,6 +316,139 @@ function FacilityHome(props) {
     });
   }
 
+  // Function to transform selected filters to API body format
+  const transformFiltersToAPIBody = (selectedFilters) => {
+    const body = {
+      col_dims: "bed_types",
+      report_type: "matrix_report",
+      metric: "number_of_facilities",
+      row_comparison: "county",
+      filters: {},
+    };
+
+    // Helper function to find actual IDs from filter props
+    const findFilterIds = (filterCategory, selectedFilterNames) => {
+      const filterData = filters?.[filterCategory];
+      if (!filterData) return [];
+      
+      return filterData
+        .filter(item => selectedFilterNames.includes(item.name.toLowerCase().replace(/\s+/g, '-')))
+        .map(item => item.id);
+    };
+
+    // Map level selections to row_comparison
+    if (selectedFilters.national) {
+      body.row_comparison = "national";
+    } else if (selectedFilters.county) {
+      body.row_comparison = "county";
+    } else if (selectedFilters["sub-county"]) {
+      body.row_comparison = "sub_county";
+    } else if (selectedFilters.ward) {
+      body.row_comparison = "ward";
+    }
+
+    // Handle facility type filters
+    const selectedFacilityTypes = [];
+    if (selectedFilters["medical-clinical"]) selectedFacilityTypes.push("medical clinic");
+    if (selectedFilters["stand-alone"]) selectedFacilityTypes.push("stand alone");
+    if (selectedFilters["medical-Center"]) selectedFacilityTypes.push("medical center");
+    if (selectedFilters["health-Center"]) selectedFacilityTypes.push("health center");
+    if (selectedFilters["nursing-home"]) selectedFacilityTypes.push("nursing home");
+    if (selectedFilters["primary-care-hospitals"]) selectedFacilityTypes.push("primary care hospitals");
+    if (selectedFilters["secondary-care-hospitals"]) selectedFacilityTypes.push("secondary care hospitals");
+    if (selectedFilters["tertiary-referral-hospitals"]) selectedFacilityTypes.push("tertiary referral hospitals");
+    
+    if (selectedFacilityTypes.length > 0) {
+      const facilityTypeIds = findFilterIds("facility_type", selectedFacilityTypes);
+      if (facilityTypeIds.length > 0) {
+        body.filters.facility_types = facilityTypeIds;
+      }
+    }
+
+    // Handle ownership filters
+    const selectedOwnerTypes = [];
+    if (selectedFilters.public) selectedOwnerTypes.push("public");
+    if (selectedFilters.private) selectedOwnerTypes.push("private");
+    if (selectedFilters["faith-based"]) selectedOwnerTypes.push("faith based");
+    if (selectedFilters.ngo) selectedOwnerTypes.push("ngo");
+    
+    if (selectedOwnerTypes.length > 0) {
+      const ownerTypeIds = findFilterIds("owner_type", selectedOwnerTypes);
+      if (ownerTypeIds.length > 0) {
+        body.filters.owners = ownerTypeIds;
+      }
+    }
+
+    // Handle operation status filters
+    const selectedOperationStatuses = [];
+    if (selectedFilters.operational) selectedOperationStatuses.push("operational");
+    if (selectedFilters["non-operational"]) selectedOperationStatuses.push("non operational");
+    
+    if (selectedOperationStatuses.length > 0) {
+      const operationStatusIds = findFilterIds("operation_status", selectedOperationStatuses);
+      if (operationStatusIds.length > 0) {
+        body.filters.operation_status = operationStatusIds;
+      }
+    }
+
+    // Handle KEPH level filters
+    const selectedKephLevels = [];
+    if (selectedFilters["keph-level-2"]) selectedKephLevels.push("level 2");
+    if (selectedFilters["keph-level-3"]) selectedKephLevels.push("level 3");
+    if (selectedFilters["keph-level-4"]) selectedKephLevels.push("level 4");
+    if (selectedFilters["keph-level-5"]) selectedKephLevels.push("level 5");
+    if (selectedFilters["keph-level-6"]) selectedKephLevels.push("level 6");
+    
+    if (selectedKephLevels.length > 0) {
+      const kephLevelIds = findFilterIds("keph_level", selectedKephLevels);
+      if (kephLevelIds.length > 0) {
+        body.filters.keph_levels = kephLevelIds;
+      }
+    }
+
+    return body;
+  };
+
+  // Function to fetch analytics data with current filters
+  const fetchAnalyticsData = async (selectedFilters = {}) => {
+    setIsLoadingData(true);
+    
+    try {
+      const body = transformFiltersToAPIBody(selectedFilters);
+      
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/analytics/matrix-report/?format=json`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${authToken}`,
+          'Cache-Control': 'no-cache, no-store, max-age=0',
+        },
+        body: JSON.stringify(body),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setAnalyticsData(data);
+      } else {
+        console.error('Failed to fetch analytics data:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error fetching analytics data:', error);
+    } finally {
+      setIsLoadingData(false);
+    }
+  };
+
+  // Callback function for when filters change
+  const handleFiltersChange = (newFilters, filterKey, filterValue, nodeId) => {
+    setAnalyticsFilters(newFilters);
+    // Debounce the API call to avoid too many requests
+    clearTimeout(window.analyticsFilterTimeout);
+    window.analyticsFilterTimeout = setTimeout(() => {
+      fetchAnalyticsData(newFilters);
+    }, 500);
+  };
+
   if (isClient) {
     return (
       <>
@@ -394,7 +534,10 @@ function FacilityHome(props) {
 
             {/* Side Menu Filters Wide View port*/}
             <div className="hidden md:flex col-span-1">
-              <AnalyticsSideFilters />
+              <AnalyticsSideFilters 
+                filters={filters}
+                onFiltersChange={handleFiltersChange} 
+              />
             </div>
 
             <button
@@ -425,6 +568,7 @@ function FacilityHome(props) {
                     setAllFctsSelected,
                     setTitle,
                   ]}
+                  onFiltersChange={handleFiltersChange}
                 />
               )}
             </button>
@@ -432,8 +576,14 @@ function FacilityHome(props) {
             {/* Main Body */}
             {/* Data Indicator section */}
             <div className="p-4 w-full col-span-1 md:col-span-4 mr-24 md:col-start-2  md:h-auto bg-gray-50 shadow-md">
-              {/* <pre>{JSON.stringify(props?.data, null, 2)}</pre> */}
-              <FacilityMatrixTable data={props?.data} />
+              {isLoadingData ? (
+                <div className="flex justify-center items-center py-8">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                  <span className="ml-2 text-gray-600">Loading analytics data...</span>
+                </div>
+              ) : (
+                <FacilityMatrixTable data={analyticsData} />
+              )}
             </div>
           </div>
         </MainLayout>
@@ -446,13 +596,32 @@ function FacilityHome(props) {
 
 export async function getServerSideProps(ctx) {
   let data = null;
+  let filters = null;
 
   const countyId = ctx.req.county_id;
 
   const token = (await checkToken(ctx.req, ctx.res))?.token;
 
-  let url = `${process.env.NEXT_PUBLIC_API_URL}/analytics/matrix-report/?format=json`;
+  // Fetch filters data
+  try {
+    const filtersResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/common/filtering_summaries/?format=json`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: "application/json",
+      },
+    });
 
+    if (filtersResponse.ok) {
+      filters = await filtersResponse.json();
+    }
+  } catch (e) {
+    console.error("Error fetching filters:", e.message);
+  }
+
+
+  
+
+  let url = `${process.env.NEXT_PUBLIC_API_URL}/analytics/matrix-report/?format=json`;
 
   const body = {
     // col_dims: "keph_level__name,bed_types",
@@ -461,7 +630,6 @@ export async function getServerSideProps(ctx) {
     metric: "number_of_facilities",
     row_comparison: "county",
     filters: {
-      // period: { startdate: "2020-01-01", enddate: "2025-01-31" },
       counties: [
         "b6b5db70-609a-4194-888d-7841e02e9045",
         "95b08378-362e-4bf9-ad63-d685e1287db2",
@@ -536,6 +704,7 @@ export async function getServerSideProps(ctx) {
   return {
     props: {
       data,
+      token,
     },
   };
 }

@@ -1,231 +1,34 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { ChevronDownIcon, ChevronRightIcon } from "@heroicons/react/outline";
+import { 
+  ANALYTICS_FILTER_TREE_DATA, 
+  populateTreeDataWithFilters, 
+  createInitialSelectedFilters 
+} from "../utils/analyticsFilterConfig";
 
-const AnalyticsSideMenu = ({ filters, states, stateSetters }) => {
+const AnalyticsSideMenu = ({ filters, states, stateSetters, onFiltersChange }) => {
   const [expandedNodes, setExpandedNodes] = useState({
-    level: false, // Changed to false
-    facilities: false, // Changed to false
+    level: false,
+    counties: false,
+    facilities: false, 
     services: false,
     ownership: false,
+    regulatory_bodies: false,
+    infrastructure_categories: false,
     status: false,
-    keph_level: false, // Added for the new KEPH Level section
+    keph_level: false, 
   });
 
-  const [selectedFilters, setSelectedFilters] = useState({
-    // Level
-    national: false,
-    county: false,
-    "sub-county": false,
-    ward: false, // Added for the new Ward option
-    // Facilities Analysis
-    "by-level": false,
-    "medical-clinical": false,
-    "stand-alone": false,
-    "medical-Center": false,
-    "health-Center": false,
-    "nursing-home": false,
-    "primary-care-hospitals": false,
-    "secondary-care-hospitals": false,
-    "tertiary-referral-hospitals": false,
-    // Services Analysis
-    "by-service-category": false,
-    "by-service-availability": false,
-    // Ownership
-    public: false, // Changed from government to public
-    private: false,
-    "faith-based": false,
-    ngo: false, // Added for the new NGO option
-    // Status
-    operational: false,
-    "non-operational": false,
-    // KEPH Level
-    "keph-level-2": false,
-    "keph-level-3": false,
-    "keph-level-4": false,
-    "keph-level-5": false,
-    "keph-level-6": false,
-  });
+  // Create dynamic tree data and initial filters based on passed filters
+  const treeData = useMemo(() => populateTreeDataWithFilters(filters), [filters]);
+  const initialFilters = useMemo(() => createInitialSelectedFilters(filters), [filters]);
+  
+  const [selectedFilters, setSelectedFilters] = useState(initialFilters);
 
-  // ... rest of your treeData remains exactly the same ...
-  const treeData = [
-    {
-      id: "level",
-      text: "Level",
-      children: [
-        {
-          id: "national",
-          text: "National",
-          filterKey: "national",
-        },
-        {
-          id: "county",
-          text: "County",
-          filterKey: "county",
-        },
-        {
-          id: "sub-county",
-          text: "Sub County",
-          filterKey: "sub_county",
-        },
-        {
-          id: "ward",
-          text: "Ward",
-          filterKey: "ward",
-        },
-      ],
-    },
-    {
-      id: "facilities",
-      text: "Facilities Types",
-      children: [
-        {
-          id: "by-level",
-          text: "Dispensary",
-          filterKey: "facility_type",
-        },
-        {
-          id: "medical-clinical",
-          text: "Medical Clinic",
-          filterKey: "facility_type",
-        },
-        {
-          id: "stand-alone",
-          text: "Stand Alone",
-          filterKey: "facility_type",
-        },
-        {
-          id: "medical-Center",
-          text: "Medical Center",
-          filterKey: "facility_type",
-        },
-        {
-          id: "health-Center",
-          text: "Health Center",
-          filterKey: "health_center",
-        },
-        {
-          id: "nursing-home",
-          text: "Nursing Home",
-          filterKey: "facility_type",
-        },
-        {
-          id: "primary-care-hospitals",
-          text: "Primary Care Hospitals",
-          filterKey: "facility_type",
-        },
-        {
-          id: "secondary-care-hospitals",
-          text: "Secondary Care Hospitals",
-          filterKey: "facility_type",
-        },
-        {
-          id: "tertiary-referral-hospitals",
-          text: "Tertiary Referral Hospitals",
-          filterKey: "facility_type",
-        },
-      ],
-    },
-    {
-      id: "services",
-      text: "Services Analysis",
-      children: [
-        {
-          id: "by-service-category",
-          text: "By Service Category",
-          filterKey: "service_category",
-        },
-        {
-          id: "by-service-availability",
-          text: "By Service Availability",
-          filterKey: "service_availability",
-        },
-      ],
-    },
-    {
-      id: "ownership",
-      text: "By Ownership",
-      children: [
-        {
-          id: "public",
-          text: "Public",
-          filterKey: "owner_type",
-          filterValue: "Public",
-        },
-        {
-          id: "private",
-          text: "Private",
-          filterKey: "owner_type",
-          filterValue: "Private",
-        },
-        {
-          id: "faith-based",
-          text: "Faith-Based",
-          filterKey: "owner_type",
-          filterValue: "Faith Based",
-        },
-        {
-          id: "ngo",
-          text: "NGO",
-          filterKey: "ngo",
-          filterValue: "NGO",
-        },
-      ],
-    },
-    {
-      id: "status",
-      text: "By Operation Status",
-      children: [
-        {
-          id: "operational",
-          text: "Operational",
-          filterKey: "operation_status",
-          filterValue: "Operational",
-        },
-        {
-          id: "non-operational",
-          text: "Non-Operational",
-          filterKey: "operation_status",
-          filterValue: "Non Operational",
-        },
-      ],
-    },
-    {
-      id: "keph_level",
-      text: "By KEPH Level",
-      children: [
-        {
-          id: "keph-level-2",
-          text: "KEPH Level 2",
-          filterKey: "keph_level",
-          filterValue: "keph_level_2",
-        },
-        {
-          id: "keph-level-3",
-          text: "KEPH Level 3",
-          filterKey: "keph_level",
-          filterValue: "keph_level_3",
-        },
-        {
-          id: "keph-level-4",
-          text: "KEPH Level 4",
-          filterKey: "keph_level",
-          filterValue: "keph_level_4",
-        },
-        {
-          id: "keph-level-5",
-          text: "KEPH Level 5",
-          filterKey: "keph_level",
-          filterValue: "keph_level_5",
-        },
-        {
-          id: "keph-level-6",
-          text: "KEPH Level 6",
-          filterKey: "keph_level",
-          filterValue: "keph_level_6",
-        },
-      ],
-    },
-  ];
+  // Update selected filters when filters prop changes
+  useEffect(() => {
+    setSelectedFilters(createInitialSelectedFilters(filters));
+  }, [filters]);
 
   const toggleNode = (nodeId) => {
     setExpandedNodes((prev) => ({
@@ -240,10 +43,11 @@ const AnalyticsSideMenu = ({ filters, states, stateSetters }) => {
     filterValue,
     isLevel = false
   ) => {
-    // If this is a level selection, unselect all other level options
+    let newFilters;
+    
     if (isLevel) {
       setSelectedFilters((prev) => {
-        const newFilters = { ...prev };
+        newFilters = { ...prev };
         // Unselect all level options
         newFilters.national = false;
         newFilters.county = false;
@@ -255,16 +59,18 @@ const AnalyticsSideMenu = ({ filters, states, stateSetters }) => {
       });
     } else {
       // For non-level options, just toggle normally
-      setSelectedFilters((prev) => ({
-        ...prev,
-        [nodeId]: !prev[nodeId],
-      }));
+      setSelectedFilters((prev) => {
+        newFilters = { ...prev, [nodeId]: !prev[nodeId] };
+        return newFilters;
+      });
     }
 
-    // Here you would typically update your filters state
-    // For example:
-    // stateSetters[0]({...states[0], [filterKey]: filterValue});
-    // Or trigger a filter update in your parent component
+    // Call the callback function if provided
+    if (onFiltersChange) {
+      setTimeout(() => {
+        onFiltersChange(newFilters, filterKey, filterValue, nodeId);
+      }, 0);
+    }
   };
 
   return (
