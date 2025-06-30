@@ -15,14 +15,12 @@ import { KeyboardArrowRight, KeyboardArrowDown } from "@mui/icons-material";
 import { useSearchParams } from "next/navigation";
 import withAuth from "../../components/ProtectedRoute";
 import { ANALYTICS_FILTER_TREE_DATA } from "../../utils/analyticsFilterConfig";
+import { fetchPaginatedFilterOptions } from "../../utils/filterApi";
 
 function FacilityHome(props) {
   const router = useRouter();
 
-  // const facilities = props?.data?.results
   const filters = props?.filters;
-
-  const fltrs = props?.filters;
 
   const userCtx = useContext(UserContext);
 
@@ -41,35 +39,6 @@ function FacilityHome(props) {
   const [analyticsData, setAnalyticsData] = useState(props?.data);
   const [isLoadingData, setIsLoadingData] = useState(false);
   const [authToken, setAuthToken] = useState(null);
-
-  // const qf = props?.query?.qf ?? null
-
-  if (filters && typeof filters === "object") {
-    filters["has_edits"] = [{ id: "has_edits", name: "Has edits" }];
-    filters["is_approved"] = [{ id: "is_approved", name: "Is approved" }];
-    filters["is_complete"] = [{ id: "is_complete", name: "Is complete" }];
-    filters["number_of_beds"] = [
-      { id: "number_of_beds", name: "Number of beds" },
-    ];
-    filters["number_of_cots"] = [
-      { id: "number_of_cots", name: "Number of cots" },
-    ];
-    filters["open_whole_day"] = [
-      { id: "open_whole_day", name: "Open whole day" },
-    ];
-    filters["open_weekends"] = [{ id: "open_weekends", name: "Open weekends" }];
-    filters["open_public_holidays"] = [
-      { id: "open_public_holidays", name: "Open public holidays" },
-    ];
-    delete fltrs.has_edits;
-    delete fltrs.is_approved;
-    delete fltrs.is_complete;
-    delete fltrs.number_of_beds;
-    delete fltrs.number_of_cots;
-    delete fltrs.open_whole_day;
-    delete fltrs.open_weekends;
-    delete fltrs.open_public_holidays;
-  }
 
   const [drillDown, setDrillDown] = useState({});
 
@@ -103,51 +72,20 @@ function FacilityHome(props) {
     }
   })();
 
-  // FilterOptions
-  const countyFilterOptions = filters?.county?.map(({ id, name }) => ({
-    value: id,
+  const countyFilterOptions = filters?.counties?.results?.map(({ id, name }) => ({
     label: name,
   }));
 
   const [subCountyFilterOptions, setSubCountyFilterOptions] = useState(
     (prev) => {
       if (!prev) return [];
-      return filters?.sub_county?.map(({ id, name }) => ({
+      return filters?.sub_counties?.results?.map(({ id, name }) => ({
         value: id,
         label: name,
       }));
     }
   );
 
-  const [wardFilterOptions, setWardFilterOptions] = useState(() =>
-    filters?.ward?.map(({ id, name }) => ({ value: id, label: name }))
-  );
-  const [constituencyFilterOptions, setConstituencyFilterOptions] = useState(
-    () =>
-      filters?.constituency?.map(({ id, name }) => ({ value: id, label: name }))
-  );
-  const facilityTypeFilterOptions = filters?.facility_type?.map(
-    ({ id, name }) => ({ value: id, label: name })
-  );
-  const facilityTypeDetailsFilterOptions = filters?.facility_type_details?.map(
-    ({ id, name }) => ({ value: id, label: name })
-  );
-  const kephLevelFilterOptions = filters?.keph_level?.map(({ id, name }) => ({
-    value: id,
-    label: name,
-  }));
-  const ownerTypeFilterOptions = filters?.owner_type?.map(({ id, name }) => ({
-    value: id,
-    label: name,
-  }));
-  const ownerFilterOptions = filters?.owner?.map(({ id, name }) => ({
-    value: id,
-    label: name,
-  }));
-  // const serviceFilterOptions = filters['service']?.map(({ id, name }) => ({ value: id, label: name }))
-  const operationStatusFilterOptions = filters?.operation_status?.map(
-    ({ id, name }) => ({ value: id, label: name })
-  );
 
   const handleApprovalStatus = useCallback(({ value }) => {
     if (!!value) {
@@ -226,7 +164,6 @@ function FacilityHome(props) {
         );
 
         event.target.defaultValue = event.target?.value;
-        // console.log({})
       }
 
       if (event.target?.name === "sub_county") {
@@ -241,8 +178,6 @@ function FacilityHome(props) {
           wards?.map(({ id, name }) => ({ value: id, label: name }))
         );
       }
-
-      // return (await filteredOrgUnits?.json())?.results
     } catch (e) {
       if (e instanceof Error) {
         console.error(`Error occurred. \nOrgUnit: ${e.message}\n`);
@@ -267,34 +202,23 @@ function FacilityHome(props) {
   }
 
   function handleNext() {
-    // const params = Object.fromEntries(pageParams.entries())
-
     router.push({
       pathname: "/facilities",
       query: {
         next: Buffer.from(`${props?.next}`).toString("base64"),
         ...userOrgUnit,
         ...(() => (searchTerm !== "" ? { q: searchTerm } : {}))(),
-
-        //default: page_size=30
-
-        // ...params
       },
     });
   }
 
   function handlePrevious() {
-    // const params = Object.fromEntries(pageParams.entries())
-
     router.push({
       pathname: "/facilities",
       query: {
         previous: Buffer.from(`${props?.previous}`).toString("base64"),
         ...userOrgUnit,
         ...(() => (searchTerm !== "" ? { q: searchTerm } : {}))(),
-
-        //default: page_size=30
-        //...params
       },
     });
   }
@@ -302,16 +226,12 @@ function FacilityHome(props) {
   function handlePageLoad(e) {
     const page = e.target.innerHTML;
 
-    // const params = Object.fromEntries(pageParams.entries())
-
     router.push({
       pathname: "/facilities",
       query: {
         page,
         ...userOrgUnit(),
         ...(() => (searchTerm !== "" ? { q: searchTerm } : {}))(),
-
-        // ...params
       },
     });
   }
@@ -326,16 +246,6 @@ function FacilityHome(props) {
       filters: {},
     };
 
-    // Helper function to find actual IDs from filter props
-    const findFilterIds = (filterCategory, selectedFilterNames) => {
-      const filterData = filters?.[filterCategory];
-      if (!filterData) return [];
-      
-      return filterData
-        .filter(item => selectedFilterNames.includes(item.name.toLowerCase().replace(/\s+/g, '-')))
-        .map(item => item.id);
-    };
-
     // Map level selections to row_comparison
     if (selectedFilters.national) {
       body.row_comparison = "national";
@@ -347,62 +257,45 @@ function FacilityHome(props) {
       body.row_comparison = "ward";
     }
 
-    // Handle facility type filters
-    const selectedFacilityTypes = [];
-    if (selectedFilters["medical-clinical"]) selectedFacilityTypes.push("medical clinic");
-    if (selectedFilters["stand-alone"]) selectedFacilityTypes.push("stand alone");
-    if (selectedFilters["medical-Center"]) selectedFacilityTypes.push("medical center");
-    if (selectedFilters["health-Center"]) selectedFacilityTypes.push("health center");
-    if (selectedFilters["nursing-home"]) selectedFacilityTypes.push("nursing home");
-    if (selectedFilters["primary-care-hospitals"]) selectedFacilityTypes.push("primary care hospitals");
-    if (selectedFilters["secondary-care-hospitals"]) selectedFacilityTypes.push("secondary care hospitals");
-    if (selectedFilters["tertiary-referral-hospitals"]) selectedFacilityTypes.push("tertiary referral hospitals");
-    
-    if (selectedFacilityTypes.length > 0) {
-      const facilityTypeIds = findFilterIds("facility_type", selectedFacilityTypes);
-      if (facilityTypeIds.length > 0) {
-        body.filters.facility_types = facilityTypeIds;
+    // Mapping selected UUIDs back to their API filter categories.
+    const filterIdToCategoryMap = {};
+    for (const categoryKey in filters) {
+      const categoryData = filters[categoryKey];
+      if (categoryData && categoryData.results && Array.isArray(categoryData.results)) {
+        categoryData.results.forEach(item => {
+          filterIdToCategoryMap[item.id] = categoryKey;
+        });
       }
     }
 
-    // Handle ownership filters
-    const selectedOwnerTypes = [];
-    if (selectedFilters.public) selectedOwnerTypes.push("public");
-    if (selectedFilters.private) selectedOwnerTypes.push("private");
-    if (selectedFilters["faith-based"]) selectedOwnerTypes.push("faith based");
-    if (selectedFilters.ngo) selectedOwnerTypes.push("ngo");
-    
-    if (selectedOwnerTypes.length > 0) {
-      const ownerTypeIds = findFilterIds("owner_type", selectedOwnerTypes);
-      if (ownerTypeIds.length > 0) {
-        body.filters.owners = ownerTypeIds;
-      }
-    }
+    for (const filterId in selectedFilters) {
+      if (selectedFilters[filterId] === true) {
+        // Skip static 'level' filters as they are handled by row_comparison
+        if (['national', 'county', 'sub-county', 'ward', 'by-service-category', 'by-service-availability'].includes(filterId)) {
+          continue;
+        }
 
-    // Handle operation status filters
-    const selectedOperationStatuses = [];
-    if (selectedFilters.operational) selectedOperationStatuses.push("operational");
-    if (selectedFilters["non-operational"]) selectedOperationStatuses.push("non operational");
-    
-    if (selectedOperationStatuses.length > 0) {
-      const operationStatusIds = findFilterIds("operation_status", selectedOperationStatuses);
-      if (operationStatusIds.length > 0) {
-        body.filters.operation_status = operationStatusIds;
-      }
-    }
+        const category = filterIdToCategoryMap[filterId];
+        if (category) {
+          let apiFilterKey = category;
+          
+          if (category === 'owner_types') {
+            apiFilterKey = 'owners';
+          } else if (category === 'regulating_bodies') {
+            apiFilterKey = 'regulatory_bodies';
+          } else if (category === 'facility_status') {
+            apiFilterKey = 'operation_status';
+          } else if (category === 'keph_level') {
+            apiFilterKey = 'keph_levels';
+          }
 
-    // Handle KEPH level filters
-    const selectedKephLevels = [];
-    if (selectedFilters["keph-level-2"]) selectedKephLevels.push("level 2");
-    if (selectedFilters["keph-level-3"]) selectedKephLevels.push("level 3");
-    if (selectedFilters["keph-level-4"]) selectedKephLevels.push("level 4");
-    if (selectedFilters["keph-level-5"]) selectedKephLevels.push("level 5");
-    if (selectedFilters["keph-level-6"]) selectedKephLevels.push("level 6");
-    
-    if (selectedKephLevels.length > 0) {
-      const kephLevelIds = findFilterIds("keph_level", selectedKephLevels);
-      if (kephLevelIds.length > 0) {
-        body.filters.keph_levels = kephLevelIds;
+          if (!body.filters[apiFilterKey]) {
+            body.filters[apiFilterKey] = [];
+          }
+          body.filters[apiFilterKey].push(filterId);
+        } else {
+          console.warn(`Selected filter ID ${filterId} not found in filterIdToCategoryMap. It might be a static filter or an unmapped dynamic filter.`);
+        }
       }
     }
 
@@ -410,11 +303,11 @@ function FacilityHome(props) {
   };
 
   // Function to fetch analytics data with current filters
-  const fetchAnalyticsData = async (selectedFilters = {}) => {
+  const fetchAnalyticsData = async (currentSelectedFilters = {}) => {
     setIsLoadingData(true);
     
     try {
-      const body = transformFiltersToAPIBody(selectedFilters);
+      const body = transformFiltersToAPIBody(currentSelectedFilters);
       
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/analytics/matrix-report/?format=json`, {
         method: 'POST',
@@ -439,7 +332,6 @@ function FacilityHome(props) {
     }
   };
 
-  // Callback function for when filters change
   const handleFiltersChange = (newFilters, filterKey, filterValue, nodeId) => {
     setAnalyticsFilters(newFilters);
     // Debounce the API call to avoid too many requests
@@ -448,6 +340,13 @@ function FacilityHome(props) {
       fetchAnalyticsData(newFilters);
     }, 500);
   };
+
+  // Initial fetch of analytics data when component mounts and token is available
+  useEffect(() => {
+    if (authToken) {
+      fetchAnalyticsData(analyticsFilters);
+    }
+  }, [authToken]);
 
   if (isClient) {
     return (
@@ -536,6 +435,7 @@ function FacilityHome(props) {
             <div className="hidden md:flex col-span-1">
               <AnalyticsSideFilters 
                 filters={filters}
+                authToken={authToken}
                 onFiltersChange={handleFiltersChange} 
               />
             </div>
@@ -552,24 +452,27 @@ function FacilityHome(props) {
                 <KeyboardArrowDown className="w-8 aspect-square text-gray-800" />
               )}
               {isMenuOpen && (
-                <AnalyticsSideFilters
-                  filters={filters}
-                  states={[
-                    khisSynched,
-                    facilityFeedBack,
-                    pathId,
-                    allFctsSelected,
-                    title,
-                  ]}
-                  stateSetters={[
-                    setKhisSynched,
-                    setFacilityFeedBack,
-                    setPathId,
-                    setAllFctsSelected,
-                    setTitle,
-                  ]}
-                  onFiltersChange={handleFiltersChange}
-                />
+                <div className="absolute top-full left-0 w-full bg-white z-10 shadow-lg">
+                  <AnalyticsSideFilters
+                    filters={filters}
+                    authToken={authToken}
+                    states={[
+                      khisSynched,
+                      facilityFeedBack,
+                      pathId,
+                      allFctsSelected,
+                      title,
+                    ]}
+                    stateSetters={[
+                      setKhisSynched,
+                      setFacilityFeedBack,
+                      setPathId,
+                      setAllFctsSelected,
+                      setTitle,
+                    ]}
+                    onFiltersChange={handleFiltersChange}
+                  />
+                </div>
               )}
             </button>
 
@@ -596,93 +499,45 @@ function FacilityHome(props) {
 
 export async function getServerSideProps(ctx) {
   let data = null;
-  let filters = null;
-
-  const countyId = ctx.req.county_id;
-
+  let filters = {};
   const token = (await checkToken(ctx.req, ctx.res))?.token;
 
-  // Fetch filters data
-  try {
-    const filtersResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/common/filtering_summaries/?format=json`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        Accept: "application/json",
-      },
-    });
+  const paginatedEndpoints = {
+    counties: "/common/counties/",
+    sub_counties: "/common/sub_counties/",
+    wards: "/common/wards/",
+    facility_types: "/facilities/facility_types/",
+    keph_level: "/facilities/keph/",
+    owner_types: "/facilities/owner_types/",
+    regulating_bodies: "/facilities/regulating_bodies/",
+    service_categories: "/facilities/service_categories/",
+    facility_status: "/facilities/facility_status/",
+  };
 
-    if (filtersResponse.ok) {
-      filters = await filtersResponse.json();
+  for (const key in paginatedEndpoints) {
+    if (paginatedEndpoints.hasOwnProperty(key)) {
+      try {
+        const filterData = await fetchPaginatedFilterOptions(paginatedEndpoints[key], token);
+        filters[key] = filterData;
+      } catch (e) {
+        console.error(`Error fetching initial page for ${key}:`, e.message);
+        filters[key] = { results: [], next: null, previous: null, count: 0, currentPage: 1, totalPages: 1 };
+      }
     }
-  } catch (e) {
-    console.error("Error fetching filters:", e.message);
   }
-
-
-  
 
   let url = `${process.env.NEXT_PUBLIC_API_URL}/analytics/matrix-report/?format=json`;
 
-  const body = {
-    // col_dims: "keph_level__name,bed_types",
+  const initialBody = {
     col_dims: "bed_types",
     report_type: "matrix_report",
     metric: "number_of_facilities",
     row_comparison: "county",
-    filters: {
-      counties: [
-        "b6b5db70-609a-4194-888d-7841e02e9045",
-        "95b08378-362e-4bf9-ad63-d685e1287db2",
-        "3452caf6-ee29-4ac7-813e-49702fec8c41",
-        "6c34a4b5-af53-44f9-9c1e-17fdf438dc1f",
-        "bbc8803a-7d6f-411a-96f3-5f8472b40405",
-        "6f256e8c-5d8f-4f07-89a0-81e245081030",
-        "fdde0ed3-33a8-4525-950e-41af384defb9",
-        "6c34a4b5-af53-44f9-9c1e-17fdf438dc1f",
-        "bbc8803a-7d6f-411a-96f3-5f8472b40405",
-        "6f256e8c-5d8f-4f07-89a0-81e245081030",
-        "fdde0ed3-33a8-4525-950e-41af384defb9",
-        "72366abd-2797-4144-8c74-c831810ec0a2",
-        "6746a019-8f92-4883-ae6d-2e4fd83c7a4e",
-        "44cce67d-c163-4229-ac4a-c0b418601246",
-        "ac84672f-db61-41b8-83f8-dc484060c86a",
-        "cea1878f-be8a-46f9-9b3b-b6089977892f",
-        "7a116274-e48c-4015-b763-c6443b0cdad1",
-        "359719c8-25f3-49b3-8549-bd5fbb99f2c1",
-        "93b9ddc8-a4c2-4c15-8b0b-599aa10af865",
-        "b6f366e9-3050-40ca-9643-ddc7c18ccd96",
-        "6c336c99-969b-4e9f-ad6b-c66f761ac9d5",
-        "7c942357-44a8-49c9-9ca6-8247ad903b57",
-        "ea02a4fd-f70f-4b8b-aff2-ae7c26b136fa",
-        "c9001ff3-e484-45e9-930b-7657196e0556",
-        "1283e6ea-077d-4d32-8099-6d6acb428fd1",
-        "916c0672-76d9-454e-9688-1ad83b576735",
-        "0a629644-41eb-44b8-a004-e56f06b3c006",
-        "06850fa7-fbef-47b8-abb2-4954a444e1f0",
-        "bb728208-372a-4ed3-aa5f-c1fda14cd720",
-      ],
-      owners: [
-        "ffad4810-0bfb-4434-84cb-d2ab9b911c41",
-        "ca268e6b-7e45-4264-97bf-43b6c68fb21e",
-      ],
-      facility_types: [
-        "8949eeb0-40b1-43d4-a38d-5d4933dc209f",
-        "1f1e3389-f13f-44b5-a48e-c1d2b822e5b5",
-      ],
-      regulatory_bodies: [
-        "baea1c8b-ce63-47b3-8b0b-eb8f9d2d6afb",
-        "0c19f000-d9df-4ada-ba95-b4367dfb5296",
-      ],
-      infrastructure_categories: [
-        "4fcdcbaa-99e6-4bcd-83df-4bff71e9fdde",
-        "bcce5d62-656f-4ed6-ba1f-16eafb670816",
-        "467a324b-ac2f-40c2-a1db-db1e17f8885c",
-      ],
-    },
+    filters: {},
   };
 
   try {
-    data = await fetch(url, {
+    const response = await fetch(url, {
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
@@ -690,21 +545,23 @@ export async function getServerSideProps(ctx) {
         "User-Agent": "node",
       },
       method: "POST",
-      body: JSON.stringify(body),
+      body: JSON.stringify(initialBody),
     });
 
-    if (!!data) {
-      data = await data.json();
-      console.log(data);
+    if (response.ok) {
+      data = await response.json();
+    } else {
+      console.error("Failed to fetch initial analytics data:", response.statusText);
     }
   } catch (e) {
-    console.error("Error message:", e.message);
+    console.error("Error fetching initial analytics data:", e.message);
   }
 
   return {
     props: {
       data,
       token,
+      filters,
     },
   };
 }

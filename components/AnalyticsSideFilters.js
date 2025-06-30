@@ -1,16 +1,20 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { ChevronDownIcon, ChevronRightIcon } from "@heroicons/react/outline";
 import { 
   ANALYTICS_FILTER_TREE_DATA, 
   populateTreeDataWithFilters, 
   createInitialSelectedFilters 
 } from "../utils/analyticsFilterConfig";
+import { fetchPaginatedFilterOptions } from "../utils/filterApi";
 
-const AnalyticsSideMenu = ({ filters, states, stateSetters, onFiltersChange }) => {
+
+const AnalyticsSideMenu = ({ filters, authToken, onFiltersChange }) => {
   const [expandedNodes, setExpandedNodes] = useState({
     level: false,
     counties: false,
-    facilities: false, 
+    sub_counties: false,
+    wards: false,
+    facility_types: false,
     services: false,
     ownership: false,
     regulatory_bodies: false,
@@ -19,15 +23,62 @@ const AnalyticsSideMenu = ({ filters, states, stateSetters, onFiltersChange }) =
     keph_level: false, 
   });
 
-  // Create dynamic tree data and initial filters based on passed filters
-  const treeData = useMemo(() => populateTreeDataWithFilters(filters), [filters]);
-  const initialFilters = useMemo(() => createInitialSelectedFilters(filters), [filters]);
-  
-  const [selectedFilters, setSelectedFilters] = useState(initialFilters);
+  const [dynamicFilterOptions, setDynamicFilterOptions] = useState({});
+  const [loadingMore, setLoadingMore] = useState({});
 
-  // Update selected filters when filters prop changes
+  const initialSelectedFilters = useMemo(() => createInitialSelectedFilters(filters), [filters]);
+  const [selectedFilters, setSelectedFilters] = useState(initialSelectedFilters);
+
   useEffect(() => {
     setSelectedFilters(createInitialSelectedFilters(filters));
+  }, [filters]);
+
+  useEffect(() => {
+    const initialDynamicState = {};
+    const initialLoadingState = {};
+
+
+    ANALYTICS_FILTER_TREE_DATA.forEach(node => {
+      const categoryKey = node.filterCategory;
+
+      if (categoryKey && filters[categoryKey] && filters[categoryKey].results) {
+        initialDynamicState[categoryKey] = {
+          options: filters[categoryKey].results.map(item => ({
+            id: item.id,
+            text: item.name,
+            filterKey: categoryKey,
+            filterValue: item.id,
+          })),
+          nextPageUrl: filters[categoryKey].next,
+          currentPage: filters[categoryKey].current_page || 1,
+          totalPages: filters[categoryKey].total_pages || 1,
+        };
+        initialLoadingState[categoryKey] = false;
+      } else if (node.id === 'level') {
+        initialDynamicState[categoryKey] = {
+          options: node.children.map(child => ({
+            id: child.id,
+            text: child.text,
+            filterKey: child.filterKey,
+            filterValue: child.filterValue,
+          })),
+          nextPageUrl: null,
+          currentPage: 1,
+          totalPages: 1,
+        };
+        initialLoadingState[categoryKey] = false;
+      } else {
+        initialDynamicState[categoryKey] = {
+          options: [],
+          nextPageUrl: null,
+          currentPage: 1,
+          totalPages: 1,
+        };
+        initialLoadingState[categoryKey] = false;
+      }
+    });
+    setDynamicFilterOptions(initialDynamicState);
+    setLoadingMore(initialLoadingState);
   }, [filters]);
 
   const toggleNode = (nodeId) => {
@@ -38,7 +89,7 @@ const AnalyticsSideMenu = ({ filters, states, stateSetters, onFiltersChange }) =
   };
 
   const handleCheckboxChange = (
-    nodeId,
+    childId,
     filterKey,
     filterValue,
     isLevel = false
@@ -46,32 +97,86 @@ const AnalyticsSideMenu = ({ filters, states, stateSetters, onFiltersChange }) =
     let newFilters;
     
     if (isLevel) {
-      setSelectedFilters((prev) => {
-        newFilters = { ...prev };
-        // Unselect all level options
-        newFilters.national = false;
-        newFilters.county = false;
-        newFilters["sub-county"] = false;
-        newFilters.ward = false;
-        // Then select the clicked one
-        newFilters[nodeId] = !prev[nodeId];
-        return newFilters;
-      });
+      newFilters = { ...selectedFilters };
+      newFilters.national = false;
+      newFilters.county = false;
+      newFilters["sub-county"] = false;
+      newFilters.ward = false;
+      newFilters[childId] = !selectedFilters[childId];
     } else {
       // For non-level options, just toggle normally
-      setSelectedFilters((prev) => {
-        newFilters = { ...prev, [nodeId]: !prev[nodeId] };
-        return newFilters;
-      });
+      newFilters = { ...selectedFilters, [childId]: !selectedFilters[childId] };
     }
+    setSelectedFilters(newFilters);
 
     // Call the callback function if provided
     if (onFiltersChange) {
-      setTimeout(() => {
-        onFiltersChange(newFilters, filterKey, filterValue, nodeId);
-      }, 0);
+      // The debounce is handled in the parent component (index.js)
+      onFiltersChange(newFilters, filterKey, filterValue, childId);
     }
   };
+
+  const handleLoadMore = useCallback(async (category) => {
+    const currentCategoryState = dynamicFilterOptions[category];
+    if (!currentCategoryState || !currentCategoryState.nextPageUrl || loadingMore[category]) {
+      return;
+    }
+
+    setLoadingMore(prev => ({ ...prev, [category]: true }));
+
+    try {
+      const url = new URL(currentCategoryState.nextPageUrl);
+      const nextPage = url.searchParams.get('page');
+      
+      // Get the endpoint path from the URL for fetchPaginatedFilterOptions
+      const endpointPath = url.pathname; 
+
+      const data = await fetchPaginatedFilterOptions(
+        endpointPath, 
+        authToken,
+        nextPage
+      );
+
+      setDynamicFilterOptions(prev => ({
+        ...prev,
+        [category]: {
+          ...prev[category],
+          options: [
+            ...prev[category].options, 
+            ...data.results.map(item => ({
+              id: item.id,
+              text: item.name,
+              filterKey: category,
+              filterValue: item.id,
+            }))
+          ],
+          nextPageUrl: data.next,
+          currentPage: data.currentPage,
+          totalPages: data.totalPages,
+        },
+      }));
+    } catch (error) {
+      console.error(`Error loading more for ${category}:`, error);
+    } finally {
+      setLoadingMore(prev => ({ ...prev, [category]: false }));
+    }
+  }, [dynamicFilterOptions, loadingMore, authToken]);
+
+  const treeData = useMemo(() => {
+    return ANALYTICS_FILTER_TREE_DATA.map(node => {
+      if (node.id === 'level') {
+        return node;
+      }
+      
+      const dynamicChildren = dynamicFilterOptions[node.filterCategory]?.options || [];
+      
+      return {
+        ...node,
+        children: dynamicChildren.length > 0 ? dynamicChildren : node.children || [],
+      };
+    });
+  }, [ANALYTICS_FILTER_TREE_DATA, dynamicFilterOptions]);
+
 
   return (
     <div className="w-full bg-white shadow-md rounded-md p-4">
@@ -101,7 +206,7 @@ const AnalyticsSideMenu = ({ filters, states, stateSetters, onFiltersChange }) =
                     <input
                       type="checkbox"
                       id={child.id}
-                      checked={selectedFilters[child.id]}
+                      checked={selectedFilters[child.id] || false}
                       onChange={() =>
                         handleCheckboxChange(
                           child.id,
@@ -120,6 +225,16 @@ const AnalyticsSideMenu = ({ filters, states, stateSetters, onFiltersChange }) =
                     </label>
                   </div>
                 ))}
+                {/* "Load More" button for paginated categories */}
+                {dynamicFilterOptions[node.filterCategory]?.nextPageUrl && (
+                  <button
+                    onClick={() => handleLoadMore(node.filterCategory)}
+                    disabled={loadingMore[node.filterCategory]}
+                    className="mt-2 px-3 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600 disabled:opacity-50 text-sm"
+                  >
+                    {loadingMore[node.filterCategory] ? 'Loading...' : 'Load More'}
+                  </button>
+                )}
               </div>
             )}
           </div>
@@ -137,13 +252,17 @@ const AnalyticsSideMenu = ({ filters, states, stateSetters, onFiltersChange }) =
             {Object.entries(selectedFilters)
               .filter(([_, isSelected]) => isSelected)
               .map(([filterId]) => {
-                const filter = treeData
-                  .flatMap((n) => n.children)
-                  .find((c) => c.id === filterId);
+                const filter = Object.values(dynamicFilterOptions)
+                  .flatMap(cat => cat.options)
+                  .find(c => c.id === filterId) || 
+                  ANALYTICS_FILTER_TREE_DATA
+                    .flatMap(n => n.children)
+                    .find(c => c.id === filterId);
+
                 return (
                   <li key={filterId} className="flex items-center">
                     <span className="inline-block w-2 h-2 bg-blue-500 rounded-full mr-2"></span>
-                    {filter?.text}
+                    {filter?.text || filterId}
                   </li>
                 );
               })}
