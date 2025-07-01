@@ -115,7 +115,7 @@ function Home() {
                   <div className='text-lg group hidden  duration-200 hover:rounded ease-in-out rounded hover:border hover:border-gray-800 hover:text-gray-800  h-auto md:h-[40px] px-3 md:flex gap-x-2 items-center text-gray-800 capitalize font-semibold'>
                     <Login className='w-6 h-6 text-gray-800 group-hover:text-gray-800' />
                     <Link href="/auth/login">
-                      log in
+                      Login 
                     </Link>
                   </div>
 
@@ -263,7 +263,7 @@ function Home() {
           {/* Hero Section */}
           <div className='w-full mb-8 '>
             <div className='w-full mt-[130px] md:mt-[160px] md:h-[300px] h-[550px] p-6  flex flex-col items-center justify-center gap-y-6' style={{
-              backgroundColor: "#1651b6",
+              backgroundColor: "#8e16b6",
               backgroundSize: "cover",
 
             }}>
