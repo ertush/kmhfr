@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
-import { ChevronDownIcon, ChevronRightIcon } from "@heroicons/react/outline";
+import { ChevronDownIcon, ChevronRightIcon, SearchIcon } from "@heroicons/react/outline";
 import { 
   ANALYTICS_FILTER_TREE_DATA, 
   populateTreeDataWithFilters, 
   createInitialSelectedFilters 
 } from "../utils/analyticsFilterConfig";
 import { fetchPaginatedFilterOptions } from "../utils/filterApi";
-
+// import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 
 const AnalyticsSideMenu = ({ filters, authToken, onFiltersChange }) => {
   const [expandedNodes, setExpandedNodes] = useState({
@@ -28,6 +28,7 @@ const AnalyticsSideMenu = ({ filters, authToken, onFiltersChange }) => {
 
   const initialSelectedFilters = useMemo(() => createInitialSelectedFilters(filters), [filters]);
   const [selectedFilters, setSelectedFilters] = useState(initialSelectedFilters);
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     setSelectedFilters(createInitialSelectedFilters(filters));
@@ -43,15 +44,37 @@ const AnalyticsSideMenu = ({ filters, authToken, onFiltersChange }) => {
 
       if (categoryKey && filters[categoryKey] && filters[categoryKey].results) {
         initialDynamicState[categoryKey] = {
-          options: filters[categoryKey].results.map(item => ({
-            id: item.id,
-            text: item.name,
-            filterKey: categoryKey,
-            filterValue: item.id,
-          })),
+          options: filters[categoryKey].results.map(item => {
+            // Add parent references for sub_counties and wards
+            if (categoryKey === "sub_counties") {
+              return {
+                id: item.id,
+                text: item.name,
+                filterKey: categoryKey,
+                filterValue: item.id,
+                county: item.county || item.county_id, // adjust as per your API
+              };
+            }
+            if (categoryKey === "wards") {
+              return {
+                id: item.id,
+                text: item.name,
+                filterKey: categoryKey,
+                filterValue: item.id,
+                sub_county: item.sub_county || item.sub_county_id, // adjust as per your API
+              };
+            }
+            return {
+              id: item.id,
+              text: item.name,
+              filterKey: categoryKey,
+              filterValue: item.id,
+            };
+          }),
           nextPageUrl: filters[categoryKey].next,
           currentPage: filters[categoryKey].current_page || 1,
           totalPages: filters[categoryKey].total_pages || 1,
+          pageSize: filters[categoryKey].page_size || 400,
         };
         initialLoadingState[categoryKey] = false;
       } else if (node.id === 'level') {
@@ -162,83 +185,253 @@ const AnalyticsSideMenu = ({ filters, authToken, onFiltersChange }) => {
     }
   }, [dynamicFilterOptions, loadingMore, authToken]);
 
+  // Build a nested tree: County > Subcounty > Ward
+  const buildCountyTree = () => {
+    // Get counties, subcounties, wards from dynamicFilterOptions
+    const counties = dynamicFilterOptions.counties?.options || [];
+    const subCounties = dynamicFilterOptions.sub_counties?.options || [];
+    const wards = dynamicFilterOptions.wards?.options || [];
+
+    // Group subcounties by county id (assuming subcounty has county_id)
+    const subCountiesByCounty = {};
+    subCounties.forEach(sc => {
+      if (!subCountiesByCounty[sc.county]) subCountiesByCounty[sc.county] = [];
+      subCountiesByCounty[sc.county].push(sc);
+    });
+
+    // Group wards by subcounty id (assuming ward has sub_county_id)
+    const wardsBySubCounty = {};
+    wards.forEach(w => {
+      if (!wardsBySubCounty[w.sub_county]) wardsBySubCounty[w.sub_county] = [];
+      wardsBySubCounty[w.sub_county].push(w);
+    });
+
+    // Build the nested structure
+    return counties.map(county => ({
+      ...county,
+      children: (subCountiesByCounty[county.id] || []).map(subCounty => ({
+        ...subCounty,
+        children: wardsBySubCounty[subCounty.id] || [],
+      })),
+    }));
+  };
+  // --- End: Custom tree structure for Counties/Subcounties/Wards ---
+
+  // Custom treeData with nested counties
   const treeData = useMemo(() => {
     return ANALYTICS_FILTER_TREE_DATA.map(node => {
-      if (node.id === 'level') {
-        return node;
+      if (node.id === "counties") {
+        // Replace counties node with nested structure
+        return {
+          ...node,
+          children: buildCountyTree(),
+        };
       }
-      
+      // Remove sub_counties and wards as top-level nodes
+      if (["sub_counties", "wards"].includes(node.id)) {
+        return null;
+      }
       const dynamicChildren = dynamicFilterOptions[node.filterCategory]?.options || [];
-      
       return {
         ...node,
         children: dynamicChildren.length > 0 ? dynamicChildren : node.children || [],
       };
-    });
+    }).filter(Boolean);
   }, [ANALYTICS_FILTER_TREE_DATA, dynamicFilterOptions]);
 
+  // Filter tree nodes and children based on search term
+  const filteredTreeData = useMemo(() => {
+    if (!searchTerm.trim()) return treeData;
+    const lower = searchTerm.toLowerCase();
+    return treeData
+      .map(node => {
+        // Check if node or any child matches
+        const nodeMatches = node.text.toLowerCase().includes(lower);
+        const filteredChildren = (node.children || []).filter(child =>
+          child.text.toLowerCase().includes(lower)
+        );
+        if (nodeMatches || filteredChildren.length > 0) {
+          return {
+            ...node,
+            children: filteredChildren.length > 0 ? filteredChildren : node.children,
+          };
+        }
+        return null;
+      })
+      .filter(Boolean);
+  }, [treeData, searchTerm]);
+
+  // Helper: get all descendant ids recursively
+  const getAllDescendantIds = (node) => {
+    let ids = [node.id];
+    if (node.children && node.children.length > 0) {
+      node.children.forEach(child => {
+        ids = ids.concat(getAllDescendantIds(child));
+      });
+    }
+    return ids;
+  };
+
+  // Helper: check if all children are selected
+  const areAllChildrenSelected = (node, selectedFilters) => {
+    if (!node.children || node.children.length === 0) return !!selectedFilters[node.id];
+    return node.children.every(child => areAllChildrenSelected(child, selectedFilters));
+  };
+
+  // Helper: check if some children are selected (for indeterminate state)
+  const areSomeChildrenSelected = (node, selectedFilters) => {
+    if (!node.children || node.children.length === 0) return !!selectedFilters[node.id];
+    return node.children.some(child => areSomeChildrenSelected(child, selectedFilters));
+  };
+
+  // --- Begin: Recursive rendering for nested tree with expand/collapse ---
+  const renderTreeChildren = (children, parentNodeId) => {
+    if (!children) return null;
+    return (
+      <ul className="ml-4 border-l border-gray-200">
+        {children.map(child => {
+          const allSelected = areAllChildrenSelected(child, selectedFilters);
+          const someSelected = areSomeChildrenSelected(child, selectedFilters);
+          return (
+            <li key={child.id} className="py-1">
+              <div className="flex items-center group">
+                {/* Expand/collapse arrow if has children */}
+                {child.children && child.children.length > 0 ? (
+                  <button
+                    type="button"
+                    className="mr-1 focus:outline-none"
+                    onClick={() => toggleNode(child.id)}
+                    aria-label={expandedNodes[child.id] ? "Collapse" : "Expand"}
+                  >
+                    {expandedNodes[child.id] ? (
+                      <ChevronDownIcon className="w-4 h-4 text-gray-500" />
+                    ) : (
+                      <ChevronRightIcon className="w-4 h-4 text-gray-400" />
+                    )}
+                  </button>
+                ) : (
+                  <span className="w-4 h-4 mr-1" />
+                )}
+                <input
+                  type="checkbox"
+                  id={child.id}
+                  checked={allSelected}
+                  ref={el => {
+                    if (el) el.indeterminate = !allSelected && someSelected;
+                  }}
+                  onChange={() => {
+                    // If parent, check/uncheck all descendants
+                    const descendantIds = getAllDescendantIds(child);
+                    const newFilters = { ...selectedFilters };
+                    const shouldCheck = !allSelected;
+                    descendantIds.forEach(id => {
+                      newFilters[id] = shouldCheck;
+                    });
+                    setSelectedFilters(newFilters);
+                    if (onFiltersChange) {
+                      onFiltersChange(newFilters, child.filterKey, child.filterValue, child.id);
+                    }
+                  }}
+                  className="h-4 w-4 text-blue-600 rounded focus:ring-blue-500 mr-2"
+                />
+                <label
+                  htmlFor={child.id}
+                  className="cursor-pointer select-none text-gray-700 group-hover:text-blue-700"
+                >
+                  {child.text}
+                </label>
+              </div>
+              {/* Render children recursively if present and expanded */}
+              {child.children && child.children.length > 0 && expandedNodes[child.id] && (
+                renderTreeChildren(child.children, child.id)
+              )}
+            </li>
+          );
+        })}
+      </ul>
+    );
+  };
+  // --- End: Recursive rendering for nested tree ---
 
   return (
-    <div className="w-full bg-white shadow-md rounded-md p-4">
+    <div className="w-full bg-white shadow rounded-lg p-4">
       <h3 className="text-lg font-semibold mb-4">Analytics Filters</h3>
-      <div className="tree-menu space-y-2">
-        {treeData.map((node) => (
-          <div key={node.id} className="tree-node">
-            <div
-              className="tree-node-header flex items-center cursor-pointer py-1 hover:bg-gray-100"
-              onClick={() => toggleNode(node.id)}
-            >
-              {expandedNodes[node.id] ? (
-                <ChevronDownIcon className="w-4 h-4 mr-1" />
-              ) : (
-                <ChevronRightIcon className="w-4 h-4 mr-1" />
-              )}
-              <span className="font-medium">{node.text}</span>
-            </div>
-
-            {expandedNodes[node.id] && (
-              <div className="tree-node-children ml-6 space-y-1 mt-1">
-                {node.children.map((child) => (
-                  <div
-                    key={child.id}
-                    className="flex items-center py-1 px-2 hover:bg-gray-50 rounded"
-                  >
+      {/* Search Field */}
+      <div className="mb-3 relative">
+        <SearchIcon className="w-5 h-5 text-gray-400 absolute left-3 top-2.5 pointer-events-none" />
+        <input
+          type="text"
+          placeholder="Search filters..."
+          value={searchTerm}
+          onChange={e => setSearchTerm(e.target.value)}
+          className="pl-10 pr-3 py-2 border border-gray-300 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+      </div>
+      <div className="tree-menu max-h-96 overflow-y-auto">
+        {filteredTreeData.length === 0 ? (
+          <div className="text-gray-500 text-sm px-2 py-4">No filters found.</div>
+        ) : (
+          <ul>
+            {filteredTreeData.map((node) => {
+              const allSelected = areAllChildrenSelected(node, selectedFilters);
+              const someSelected = areSomeChildrenSelected(node, selectedFilters);
+              return (
+                <li key={node.id} className="mb-1">
+                  <div className="flex items-center group">
+                    {/* Expand/collapse arrow if has children */}
+                    {node.children && node.children.length > 0 ? (
+                      <button
+                        type="button"
+                        className="mr-1 focus:outline-none"
+                        onClick={() => toggleNode(node.id)}
+                        aria-label={expandedNodes[node.id] ? "Collapse" : "Expand"}
+                      >
+                        {expandedNodes[node.id] ? (
+                          <ChevronDownIcon className="w-5 h-5 text-gray-500" />
+                        ) : (
+                          <ChevronRightIcon className="w-5 h-5 text-gray-400" />
+                        )}
+                      </button>
+                    ) : (
+                      <span className="w-5 h-5 mr-1" />
+                    )}
                     <input
                       type="checkbox"
-                      id={child.id}
-                      checked={selectedFilters[child.id] || false}
-                      onChange={() =>
-                        handleCheckboxChange(
-                          child.id,
-                          child.filterKey,
-                          child.filterValue,
-                          node.id === "level"
-                        )
-                      }
+                      id={node.id}
+                      checked={allSelected}
+                      ref={el => {
+                        if (el) el.indeterminate = !allSelected && someSelected;
+                      }}
+                      onChange={() => {
+                        const descendantIds = getAllDescendantIds(node);
+                        const newFilters = { ...selectedFilters };
+                        const shouldCheck = !allSelected;
+                        descendantIds.forEach(id => {
+                          newFilters[id] = shouldCheck;
+                        });
+                        setSelectedFilters(newFilters);
+                        if (onFiltersChange) {
+                          onFiltersChange(newFilters, node.filterKey, node.filterValue, node.id);
+                        }
+                      }}
                       className="h-4 w-4 text-blue-600 rounded focus:ring-blue-500 mr-2"
                     />
                     <label
-                      htmlFor={child.id}
-                      className="cursor-pointer select-none"
+                      htmlFor={node.id}
+                      className="cursor-pointer select-none text-gray-900 group-hover:text-blue-700 font-medium"
                     >
-                      {child.text}
+                      {node.text}
                     </label>
                   </div>
-                ))}
-                {/* "Load More" button for paginated categories */}
-                {dynamicFilterOptions[node.filterCategory]?.nextPageUrl && (
-                  <button
-                    onClick={() => handleLoadMore(node.filterCategory)}
-                    disabled={loadingMore[node.filterCategory]}
-                    className="mt-2 px-3 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600 disabled:opacity-50 text-sm"
-                  >
-                    {loadingMore[node.filterCategory] ? 'Loading...' : 'Load More'}
-                  </button>
-                )}
-              </div>
-            )}
-          </div>
-        ))}
+                  {/* Render children recursively if present and expanded */}
+                  {node.children && node.children.length > 0 && expandedNodes[node.id] && (
+                    renderTreeChildren(node.children, node.id)
+                  )}
+                </li>
+              );
+            })}
+          </ul>
+        )}
       </div>
 
       {/* Selected filters summary */}
@@ -268,6 +461,24 @@ const AnalyticsSideMenu = ({ filters, authToken, onFiltersChange }) => {
               })}
           </ul>
         )}
+        <button
+        className="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300"
+        onClick={() => {
+          setSelectedFilters(Object.fromEntries(Object.keys(selectedFilters).map(k => [k, false])));
+          setExpandedNodes({
+            level: false,
+            county: false,
+            national: false,
+            facilities: false,
+            services: false,
+            ownership: false,
+            status: false,
+            keph_level: false,
+          });
+        }}
+      >
+        Clear
+      </button>
       </div>
     </div>
   );
