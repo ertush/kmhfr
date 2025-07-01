@@ -479,7 +479,7 @@ const AnalyticsSideMenu = ({ filters, states, stateSetters, props, onApplyFilter
                     result.id,
                     result.filterKey,
                     result.filterValue,
-                    result.filterKey === "level"  // Assuming 'level' is a special case
+                    // result.filterKey === "level"  // Assuming 'level' is a special case
                   );
                 }}
               >

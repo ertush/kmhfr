@@ -99,25 +99,53 @@ function FacilityHome(props) {
     }
   })();
 
-  // FilterOptions
-  const countyFilterOptions = filters?.county?.map(({ id, name }) => ({
-    value: id,
-    label: name,
-  }));
+  useEffect(() => {
+    
+    if (props?.query?.searchTerm) {
+      setSearchTerm(props?.query?.searchTerm);
+    } else {
+      setSearchTerm("");
+    }
 
-  const [subCountyFilterOptions, setSubCountyFilterOptions] = useState(
-    (prev) => {
-      if (!prev) return [];
-      return filters?.sub_county?.map(({ id, name }) => ({
+    if (filters?.filterKey === "county") {
+      const countyFilterOptions = filters?.county?.map(({ id, name }) => ({
         value: id,
         label: name,
       }));
+      setAppliedFilters(countyFilterOptions || []);
+    } else if (filters?.filterKey === "sub_county") {
+      const subCountyFilterOptions = filters?.sub_county?.map(({ id, name }) => ({
+        value: id,
+        label: name,
+      }));
+      setAppliedFilters(subCountyFilterOptions || []);
+    } else if (filters?.filterKey === "ward") {
+      const wardFilterOptions = filters?.ward?.map(({ id, name }) => ({
+        value: id,
+        label: name,
+      }));
+      setAppliedFilters(wardFilterOptions || []);
     }
-  );
+  }, [props?.query?.searchTerm, filters]);
+  // FilterOptions
+  // const countyFilterOptions = filters?.county?.map(({ id, name }) => ({
+  //   value: id,
+  //   label: name,
+  // }));
 
-  const [wardFilterOptions, setWardFilterOptions] = useState(() =>
-    filters?.ward?.map(({ id, name }) => ({ value: id, label: name }))
-  );
+  // const [subCountyFilterOptions, setSubCountyFilterOptions] = useState(
+  //   (prev) => {
+  //     if (!prev) return [];
+  //     return filters?.sub_county?.map(({ id, name }) => ({
+  //       value: id,
+  //       label: name,
+  //     }));
+  //   }
+  // );
+
+  // const [wardFilterOptions, setWardFilterOptions] = useState(() =>
+  //   filters?.ward?.map(({ id, name }) => ({ value: id, label: name }))
+  // );
   const [constituencyFilterOptions, setConstituencyFilterOptions] = useState(
     () =>
       filters?.constituency?.map(({ id, name }) => ({ value: id, label: name }))
