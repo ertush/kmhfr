@@ -36,6 +36,7 @@ function FacilityHome(props) {
 
   // Analytics filters state
   const [analyticsFilters, setAnalyticsFilters] = useState({});
+  const [columnDimensions, setColumnDimensions] = useState(["bed_types"]);
   const [analyticsData, setAnalyticsData] = useState(props?.data);
   const [isLoadingData, setIsLoadingData] = useState(false);
   const [authToken, setAuthToken] = useState(null);
@@ -44,6 +45,7 @@ function FacilityHome(props) {
 
   const [isAccordionExpanded, setIsAccordionExpanded] = useState(false);
   const [title, setTitle] = useState("Facilities Analysis");
+  const [tab, setTab] = useState("dynamic_report");
 
   // quick filter themes
   const [khisSynched, setKhisSynched] = useState(false);
@@ -51,7 +53,7 @@ function FacilityHome(props) {
   const [pathId, setPathId] = useState(props?.path?.split("id=")[1] || "");
   const [allFctsSelected, setAllFctsSelected] = useState(true);
   const [isClient, setIsClient] = useState(false);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isMenuOpen, setIsMenuToOpen] = useState(false);
 
   const pageParams = useSearchParams();
 
@@ -237,9 +239,12 @@ function FacilityHome(props) {
   }
 
   // Function to transform selected filters to API body format
-  const transformFiltersToAPIBody = (selectedFilters) => {
+  const transformFiltersToAPIBody = (selectedFilters, colDims) => {
+    // Limit to a maximum of 5 at a time
+    const limitedColDims = Array.isArray(colDims) ? colDims.slice(0, 5) : [colDims];
+
     const body = {
-      col_dims: "bed_types",
+      col_dims: limitedColDims.join(","),
       report_type: "matrix_report",
       metric: "number_of_facilities",
       row_comparison: "county",
@@ -252,7 +257,7 @@ function FacilityHome(props) {
     } else if (selectedFilters.county) {
       body.row_comparison = "county";
     } else if (selectedFilters["sub-county"]) {
-      body.row_comparison = "sub_county";
+      body.row_comparison = "subcounty";
     } else if (selectedFilters.ward) {
       body.row_comparison = "ward";
     }
@@ -278,7 +283,7 @@ function FacilityHome(props) {
         const category = filterIdToCategoryMap[filterId];
         if (category) {
           let apiFilterKey = category;
-          
+
           if (category === 'owner_types') {
             apiFilterKey = 'owners';
           } else if (category === 'regulating_bodies') {
@@ -303,12 +308,12 @@ function FacilityHome(props) {
   };
 
   // Function to fetch analytics data with current filters
-  const fetchAnalyticsData = async (currentSelectedFilters = {}) => {
+  const fetchAnalyticsData = async (currentSelectedFilters = {}, colDims = ["bed_types"]) => {
     setIsLoadingData(true);
-    
+
     try {
-      const body = transformFiltersToAPIBody(currentSelectedFilters);
-      
+      const body = transformFiltersToAPIBody(currentSelectedFilters, colDims);
+
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/analytics/matrix-report/?format=json`, {
         method: 'POST',
         headers: {
@@ -324,29 +329,62 @@ function FacilityHome(props) {
         setAnalyticsData(data);
       } else {
         console.error('Failed to fetch analytics data:', response.statusText);
+        setAnalyticsData(null); // Set data to null or empty on failure
       }
     } catch (error) {
       console.error('Error fetching analytics data:', error);
+      setAnalyticsData(null); // Set data to null or empty on error
     } finally {
       setIsLoadingData(false);
     }
   };
 
+  const handleColumnDimensionChange = (selectedOptions) => {
+    setColumnDimensions(selectedOptions ? selectedOptions.map(option => option.value) : []);
+  }
+
   const handleFiltersChange = (newFilters, filterKey, filterValue, nodeId) => {
     setAnalyticsFilters(newFilters);
-    // Debounce the API call to avoid too many requests
-    clearTimeout(window.analyticsFilterTimeout);
-    window.analyticsFilterTimeout = setTimeout(() => {
-      fetchAnalyticsData(newFilters);
-    }, 500);
   };
+
+  const handleFetchAnalyticsData = useCallback(() => {
+    if (tab === "dynamic_report") { // Only fetch if it's the dynamic report tab
+      fetchAnalyticsData(analyticsFilters, columnDimensions);
+    }
+  }, [analyticsFilters, columnDimensions, tab]);
+
+  // If analyticsFilters or columnDimensions change, fetch new analytics data
+  useEffect(() => {
+    if (authToken && tab === "dynamic_report") {
+      if (Object.keys(analyticsFilters).length > 0 || columnDimensions.length > 0) {
+        handleFetchAnalyticsData();
+      } else {
+        // If no filters or column dimensions selected, fetch with default bed_types
+        fetchAnalyticsData({}, ["bed_types"]);
+      }
+    } else if (tab !== "dynamic_report") {
+      setAnalyticsData(null); // Clear data if not on dynamic report tab
+    }
+  }, [analyticsFilters, columnDimensions, authToken, tab]);
 
   // Initial fetch of analytics data when component mounts and token is available
   useEffect(() => {
-    if (authToken) {
-      fetchAnalyticsData(analyticsFilters);
+    if (authToken && tab === "dynamic_report") {
+      fetchAnalyticsData(analyticsFilters, columnDimensions);
     }
-  }, [authToken]);
+  }, [authToken, tab]);
+
+  // Options for dynamic column dimensions
+  const dynamicColumnOptions = [
+    { value: 'facility_type__name', label: 'Facility Type' },
+    { value: 'owner__name', label: 'Owner' },
+    { value: 'keph_level__name', label: 'KEPH Level' },
+    { value: 'regulatory_body__name', label: 'Regulatory Body' },
+    { value: 'infrastructure', label: 'Infrastructure' },
+    { value: 'services', label: 'Services' },
+    { value: 'bed_types', label: 'Bed Types' }
+  ];
+
 
   if (isClient) {
     return (
@@ -357,135 +395,195 @@ function FacilityHome(props) {
         </Head>
         <MainLayout isLoading={false} searchTerm={props?.query?.searchTerm}>
           <div className="w-full md:w-[85%] md:mx-auto grid grid-cols-1 md:grid-cols-5 gap-3 md:mt-3 md:mb-12 mb-6 px-4 md:px-0">
-            {/* Header Matters */}
-            <div className="col-sapn-1 md:col-span-5 flex flex-col gap-3 ">
-              {/* Buttons section */}
-
+            {/* Header Section with Title and Export Buttons */}
+            <div className="col-span-1 md:col-span-5 flex flex-col gap-3">
               <div className="flex flex-wrap gap-2 text-sm md:text-base py-3 items-center justify-between">
                 <div className="flex w-full flex-wrap items-start md:items-center justify-between gap-2 text-sm md:text-base py-1">
-                  {/* Bread Crumbs */}
-
-                  <div
-                    className={
-                      "col-span-1 md:col-span-5 flex justify-between w-full bg-django-blue border drop-shadow  text-black p-4 md:divide-x md:divide-gray-200 items-start md:items-center border-l-8 " +
-                      (true ? "border-gray-700" : "border-red-600")
-                    }
-                  >
+                  {/* Header with Title and Export Buttons */}
+                  <div className={
+                    "col-span-1 md:col-span-5 flex justify-between w-full bg-django-blue border drop-shadow text-black p-4 md:divide-x md:divide-gray-200 items-start md:items-center border-l-8 " +
+                    (true ? "border-gray-700" : "border-red-600")
+                  }>
                     <h2 className="flex items-center text-2xl font-bold text-gray-900 capitalize gap-2">
                       {title}
                     </h2>
-                    <Menu as="div" className="relative">
-                      <Menu.Items
-                        as="ul"
-                        className="absolute top-0 left-[100%] w-auto flex flex-col gap-y-1 items-center justify-start bg-white  shadow-lg border border-gray-200 p-1"
-                      >
-                        <Menu.Item
-                          as="li"
-                          className="p-0 flex items-center w-full text-center hover:bg-gray-200 focus:bg-gray-200 active:bg-gray-200"
-                        >
-                          {({ active }) => (
-                            <button
-                              className={
-                                "flex items-center justify-start text-center hover:bg-gray-200 focus:bg-gray-200 text-gray-800 font-medium active:bg-gray-200 py-2 px-1 w-full " +
-                                (active ? "bg-gray-200" : "")
-                              }
-                              onClick={() => {
-                                window.location.href = `${process.env.NEXT_PUBLIC_FACILITY_EXPORT_URL}?&access_token=${props?.token}&format=csv&page_size=${props?.count}&page=1${orgUnitFilter}`;
-                              }}
-                            >
-                              <DownloadIcon className="w-4 h-4 mr-1" />
-                              <span className="text-base uppercase font-semibold">
-                                CSV
-                              </span>
-                            </button>
-                          )}
-                        </Menu.Item>
 
-                        <Menu.Item
-                          as="li"
-                          className="p-0 flex items-center w-full text-center hover:bg-gray-200 focus:bg-gray-200 active:bg-gray-200"
-                        >
-                          {({ active }) => (
-                            <button
-                              className={
-                                "flex items-center justify-start text-center hover:bg-gray-200 focus:bg-gray-200 text-gray-800 font-medium active:bg-gray-200 py-2 px-1 w-full " +
-                                (active ? "bg-gray-200" : "")
-                              }
-                              onClick={() => {
-                                window.location.href = orgUnitFilter
-                                  ? `${process.env.NEXT_PUBLIC_FACILITY_EXPORT_URL}?access_token=${props?.token}&format=excel&page_size=${props?.count}&page=1${orgUnitFilter}`
-                                  : `${process.env.NEXT_PUBLIC_FACILITY_EXPORT_URL}?access_token=${props?.token}&format=excel&page_size=${props?.count}&page=1`;
-                              }}
-                            >
-                              <DownloadIcon className="w-4 h-4 mr-1" />
-                              <span className="text-base uppercase font-semibold">
-                                Excel
-                              </span>
-                            </button>
-                          )}
-                        </Menu.Item>
-                      </Menu.Items>
-                    </Menu>
+                    {/* Export Buttons - Now on the right side */}
+                    <div className="flex items-center gap-3">
+                      <button
+                        className="flex items-center justify-center bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2.5 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-opacity-50"
+                        onClick={() => {
+                          window.location.href = `${process.env.NEXT_PUBLIC_FACILITY_EXPORT_URL}?&access_token=${props?.token}&format=csv&page_size=${props?.count}&page=1${orgUnitFilter}`;
+                        }}
+                      >
+                        <DownloadIcon className="w-4 h-4 mr-2" />
+                        <span className="font-medium">CSV</span>
+                      </button>
+
+                      <button
+                        className="flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+                        onClick={() => {
+                          window.location.href = orgUnitFilter
+                            ? `${process.env.NEXT_PUBLIC_FACILITY_EXPORT_URL}?access_token=${props?.token}&format=excel&page_size=${props?.count}&page=1${orgUnitFilter}`
+                            : `${process.env.NEXT_PUBLIC_FACILITY_EXPORT_URL}?access_token=${props?.token}&format=excel&page_size=${props?.count}&page=1`;
+                        }}
+                      >
+                        <DownloadIcon className="w-4 h-4 mr-2" />
+                        <span className="font-medium">Excel</span>
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Side Menu Filters Wide View port*/}
-            <div className="hidden md:flex col-span-1">
-              <AnalyticsSideFilters 
-                filters={filters}
-                authToken={authToken}
-                onFiltersChange={handleFiltersChange} 
-              />
-            </div>
-
-            <button
-              className="md:hidden relative p-2 border border-gray-800 rounded w-full self-start my-4"
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-            >
-              Facility Menu
-              {!isMenuOpen && (
-                <KeyboardArrowRight className="w-8 aspect-square text-gray-800" />
-              )}
-              {isMenuOpen && (
-                <KeyboardArrowDown className="w-8 aspect-square text-gray-800" />
-              )}
-              {isMenuOpen && (
-                <div className="absolute top-full left-0 w-full bg-white z-10 shadow-lg">
-                  <AnalyticsSideFilters
-                    filters={filters}
-                    authToken={authToken}
-                    states={[
-                      khisSynched,
-                      facilityFeedBack,
-                      pathId,
-                      allFctsSelected,
-                      title,
+            {/* Improved Filter Section */}
+            <div className="col-span-1 md:col-span-5 bg-white border border-gray-200 p-6">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                {/* Filter Label and Select */}
+                <div className="flex-1 w-full sm:w-auto">
+                  <label htmlFor="report-filter" className="block text-sm font-semibold text-gray-700 mb-3">
+                    Report Type
+                  </label>
+                  <Select
+                    id="report-filter"
+                    className="w-full sm:min-w-[300px]"
+                    classNamePrefix="select"
+                    options={[
+                      { value: "facilities_by_county", label: "Facilities by County" },
+                      { value: "facilities_by_county_by_type", label: "Facilities by County By Type" },
+                      { value: "facilities_by_county_by_ownership", label: "Facilities by County by Ownership" },
+                      { value: "facilities_by_county_by_keph", label: "Facilities by County by KEPH" },
+                      { value: "facilities_by_county_by_bed_and_cots", label: "Facilities by County by Beds/Cots" },
+                      { value: "dynamic_report", label: "Dynamic Report" },
                     ]}
-                    stateSetters={[
-                      setKhisSynched,
-                      setFacilityFeedBack,
-                      setPathId,
-                      setAllFctsSelected,
-                      setTitle,
-                    ]}
-                    onFiltersChange={handleFiltersChange}
+                    onChange={(option) => setTab(option.value)}
+                    defaultValue={{
+                      value: tab,
+                      label: tab.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())
+                    }}
+                    styles={{
+                      control: (base, state) => ({
+                        ...base,
+                        minHeight: '44px',
+                        borderColor: state.isFocused ? '#3B82F6' : '#D1D5DB',
+                        boxShadow: state.isFocused ? '0 0 0 3px rgba(59, 130, 246, 0.1)' : 'none',
+                        '&:hover': {
+                          borderColor: '#9CA3AF'
+                        }
+                      }),
+                      option: (base, state) => ({
+                        ...base,
+                        backgroundColor: state.isSelected ? '#3B82F6' : state.isFocused ? '#EFF6FF' : 'white',
+                        color: state.isSelected ? 'white' : '#374151',
+                        '&:hover': {
+                          backgroundColor: state.isSelected ? '#3B82F6' : '#EFF6FF'
+                        }
+                      })
+                    }}
                   />
                 </div>
-              )}
-            </button>
+              </div>
+            </div>
+
+            {/* Dynamic Report Column Dimension Selector */}
+            {tab === "dynamic_report" && (
+              <div className="col-span-1 md:col-span-5 bg-white border border-gray-200 p-6">
+                <div className="w-full">
+                  <label htmlFor="column-dimensions" className="block text-sm font-semibold text-gray-700 mb-3">
+                    Select Columns <span className="text-gray-500 font-normal">(Maximum 5)</span>
+                  </label>
+                  <Select
+                    id="column-dimensions"
+                    isMulti
+                    options={dynamicColumnOptions}
+                    onChange={handleColumnDimensionChange}
+                    value={dynamicColumnOptions.filter(option => columnDimensions.includes(option.value))}
+                    className="basic-multi-select"
+                    classNamePrefix="select"
+                    placeholder="Choose columns to include in your report..."
+                    styles={{
+                      control: (base, state) => ({
+                        ...base,
+                        minHeight: '44px',
+                        borderColor: state.isFocused ? '#3B82F6' : '#D1D5DB',
+                        boxShadow: state.isFocused ? '0 0 0 3px rgba(59, 130, 246, 0.1)' : 'none',
+                        '&:hover': {
+                          borderColor: '#9CA3AF'
+                        }
+                      }),
+                      multiValue: (base) => ({
+                        ...base,
+                        backgroundColor: '#EFF6FF',
+                        borderRadius: '6px'
+                      }),
+                      multiValueLabel: (base) => ({
+                        ...base,
+                        color: '#1E40AF',
+                        fontWeight: '500'
+                      }),
+                      multiValueRemove: (base) => ({
+                        ...base,
+                        color: '#3B82F6',
+                        '&:hover': {
+                          backgroundColor: '#DBEAFE',
+                          color: '#1E40AF'
+                        }
+                      }),
+                      option: (base, state) => ({
+                        ...base,
+                        backgroundColor: state.isSelected ? '#3B82F6' : state.isFocused ? '#EFF6FF' : 'white',
+                        color: state.isSelected ? 'white' : '#374151',
+                        '&:hover': {
+                          backgroundColor: state.isSelected ? '#3B82F6' : '#EFF6FF'
+                        }
+                      })
+                    }}
+                  />
+                  {columnDimensions.length > 0 && (
+                    <div className="mt-3 flex items-center text-sm text-gray-600">
+                      <svg className="w-4 h-4 mr-1 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                      </svg>
+                      {columnDimensions.length} column{columnDimensions.length !== 1 ? 's' : ''} selected
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* Side Filter Section (conditionally rendered) */}
+            {tab === "dynamic_report" && (
+              <div className="col-span-1 md:col-span-1 flex flex-col gap-3">
+                <AnalyticsSideFilters
+                  filters={filters}
+                  user={userCtx}
+                  onFiltersChange={handleFiltersChange}
+                  filterTree={ANALYTICS_FILTER_TREE_DATA}
+                />
+              </div>
+            )}
 
             {/* Main Body */}
             {/* Data Indicator section */}
-            <div className="p-4 w-full col-span-1 md:col-span-4 mr-24 md:col-start-2  md:h-auto bg-gray-50 shadow-md">
-              {isLoadingData ? (
-                <div className="flex justify-center items-center py-8">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-                  <span className="ml-2 text-gray-600">Loading analytics data...</span>
-                </div>
+            <div className={`p-4 w-full ${tab === "dynamic_report" ? "md:col-span-4" : "md:col-span-5"} md:h-auto bg-gray-50 shadow-md`}>
+              {tab === "dynamic_report" ? (
+                isLoadingData ? (
+                  <div className="flex justify-center items-center py-8">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                    <span className="ml-2 text-gray-600">Loading analytics data...</span>
+                  </div>
+                ) : analyticsData && Object.keys(analyticsData).length > 0 ? (
+                  <FacilityMatrixTable data={analyticsData} />
+                ) : (
+                  <div className="flex justify-center items-center py-8 text-gray-600">
+                    No data available for the selected filters and dimensions.
+                  </div>
+                )
               ) : (
-                <FacilityMatrixTable data={analyticsData} />
+                <div className="flex justify-center items-center py-8 text-gray-600">
+                  No data available for this report type.
+                </div>
               )}
             </div>
           </div>
