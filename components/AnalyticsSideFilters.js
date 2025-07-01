@@ -6,7 +6,6 @@ import {
   createInitialSelectedFilters 
 } from "../utils/analyticsFilterConfig";
 import { fetchPaginatedFilterOptions } from "../utils/filterApi";
-// import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 
 const AnalyticsSideMenu = ({ filters, authToken, onFiltersChange }) => {
   const [expandedNodes, setExpandedNodes] = useState({
@@ -29,6 +28,7 @@ const AnalyticsSideMenu = ({ filters, authToken, onFiltersChange }) => {
   const initialSelectedFilters = useMemo(() => createInitialSelectedFilters(filters), [filters]);
   const [selectedFilters, setSelectedFilters] = useState(initialSelectedFilters);
   const [searchTerm, setSearchTerm] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
 
   useEffect(() => {
     setSelectedFilters(createInitialSelectedFilters(filters));
@@ -45,14 +45,14 @@ const AnalyticsSideMenu = ({ filters, authToken, onFiltersChange }) => {
       if (categoryKey && filters[categoryKey] && filters[categoryKey].results) {
         initialDynamicState[categoryKey] = {
           options: filters[categoryKey].results.map(item => {
-            // Add parent references for sub_counties and wards
+            // Add parent references for sub_counties and wards as per your API structure
             if (categoryKey === "sub_counties") {
               return {
                 id: item.id,
                 text: item.name,
                 filterKey: categoryKey,
                 filterValue: item.id,
-                county: item.county || item.county_id, // adjust as per your API
+                county: item.county || item.county_id,
               };
             }
             if (categoryKey === "wards") {
@@ -61,7 +61,7 @@ const AnalyticsSideMenu = ({ filters, authToken, onFiltersChange }) => {
                 text: item.name,
                 filterKey: categoryKey,
                 filterValue: item.id,
-                sub_county: item.sub_county || item.sub_county_id, // adjust as per your API
+                sub_county: item.sub_county || item.sub_county_id,
               };
             }
             return {
@@ -127,7 +127,6 @@ const AnalyticsSideMenu = ({ filters, authToken, onFiltersChange }) => {
       newFilters.ward = false;
       newFilters[childId] = !selectedFilters[childId];
     } else {
-      // For non-level options, just toggle normally
       newFilters = { ...selectedFilters, [childId]: !selectedFilters[childId] };
     }
     setSelectedFilters(newFilters);
@@ -187,19 +186,17 @@ const AnalyticsSideMenu = ({ filters, authToken, onFiltersChange }) => {
 
   // Build a nested tree: County > Subcounty > Ward
   const buildCountyTree = () => {
-    // Get counties, subcounties, wards from dynamicFilterOptions
+
     const counties = dynamicFilterOptions.counties?.options || [];
     const subCounties = dynamicFilterOptions.sub_counties?.options || [];
     const wards = dynamicFilterOptions.wards?.options || [];
 
-    // Group subcounties by county id (assuming subcounty has county_id)
     const subCountiesByCounty = {};
     subCounties.forEach(sc => {
       if (!subCountiesByCounty[sc.county]) subCountiesByCounty[sc.county] = [];
       subCountiesByCounty[sc.county].push(sc);
     });
 
-    // Group wards by subcounty id (assuming ward has sub_county_id)
     const wardsBySubCounty = {};
     wards.forEach(w => {
       if (!wardsBySubCounty[w.sub_county]) wardsBySubCounty[w.sub_county] = [];
@@ -283,8 +280,18 @@ const AnalyticsSideMenu = ({ filters, authToken, onFiltersChange }) => {
     if (!node.children || node.children.length === 0) return !!selectedFilters[node.id];
     return node.children.some(child => areSomeChildrenSelected(child, selectedFilters));
   };
-
-  // --- Begin: Recursive rendering for nested tree with expand/collapse ---
+  // Helper: flatten the tree structure for search results
+  const flattenTree = (nodes) => {
+    let result = [];
+    for (const node of nodes) {
+      result.push(node);
+      if (node.children) {
+        result = result.concat(flattenTree(node.children));
+      }
+    }
+    return result;
+  };
+  // Recursive rendering for nested tree with expand/collapse
   const renderTreeChildren = (children, parentNodeId) => {
     if (!children) return null;
     return (
@@ -351,7 +358,6 @@ const AnalyticsSideMenu = ({ filters, authToken, onFiltersChange }) => {
       </ul>
     );
   };
-  // --- End: Recursive rendering for nested tree ---
 
   return (
     <div className="w-full bg-white shadow rounded-lg p-4">
@@ -363,10 +369,39 @@ const AnalyticsSideMenu = ({ filters, authToken, onFiltersChange }) => {
           type="text"
           placeholder="Search filters..."
           value={searchTerm}
-          onChange={e => setSearchTerm(e.target.value)}
+          onChange={(e) => {
+            setSearchTerm(e.target.value);
+            const lowerCaseTerm = e.target.value.toLowerCase();
+            const allNodes = flattenTree(treeData);
+            const results = allNodes.filter(
+              (node) => node.text && node.text.toLowerCase().includes(lowerCaseTerm)
+            );
+            setSearchResults(results);
+            }}
           className="pl-10 pr-3 py-2 border border-gray-300 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
+        {searchTerm && searchResults.length > 0 && (
+          <ul className="absolute z-10 bg-white border border-gray-300 rounded-md mt-1 w-full">
+            {searchResults.map((result) => (
+              <li 
+              key={result.id} 
+              className="px-3 py-2 hover:bg-blue-100 cursor-pointer"
+              onClick={() => {
+                const newFilters = { ...selectedFilters };
+                newFilters[result.id] = !newFilters[result.id];
+                setSelectedFilters(newFilters);
+                if (onFiltersChange) {
+                  onFiltersChange(newFilters, result.filterKey, result.filterValue, result.id);
+                }
+              }}
+              >
+                {result.text}
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
+
       <div className="tree-menu max-h-96 overflow-y-auto">
         {filteredTreeData.length === 0 ? (
           <div className="text-gray-500 text-sm px-2 py-4">No filters found.</div>
@@ -462,23 +497,38 @@ const AnalyticsSideMenu = ({ filters, authToken, onFiltersChange }) => {
           </ul>
         )}
         <button
-        className="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300"
-        onClick={() => {
-          setSelectedFilters(Object.fromEntries(Object.keys(selectedFilters).map(k => [k, false])));
-          setExpandedNodes({
-            level: false,
-            county: false,
-            national: false,
-            facilities: false,
-            services: false,
-            ownership: false,
-            status: false,
-            keph_level: false,
-          });
-        }}
-      >
-        Clear
-      </button>
+          className="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300"
+          onClick={() => {
+            // Clear all filters
+            setSelectedFilters(Object.fromEntries(Object.keys(selectedFilters).map(k => [k, false])));
+            setSearchTerm("");
+            setExpandedNodes({
+              level: false,
+              counties: false,
+              sub_counties: false,
+              wards: false,
+              facility_types: false,
+              services: false,
+              ownership: false,
+              regulatory_bodies: false,
+              infrastructure_categories: false,
+              status: false,
+              keph_level: false,
+            });
+            // Restore FacilityMatrixTable to initial state
+            if (onFiltersChange) {
+              onFiltersChange(
+                Object.fromEntries(Object.keys(selectedFilters).map(k => [k, false])),
+                null,
+                null,
+                null,
+                { resetTable: true }
+              );
+            }
+          }}
+        >
+          Clear
+        </button>
       </div>
     </div>
   );
