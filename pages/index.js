@@ -617,9 +617,9 @@ function Home() {
                     <h2 className="text-gray-50 font-semibold mb-2 ">
                       Contacts
                     </h2>
-                    <Link href="tel:+254 20 2717077" className="t">
+                    {/* <Link href="tel:+254 20 2717077" className="t">
                       +254-20-2717077
-                    </Link>
+                    </Link> */}
                     <Link
                       href="mailto:kmhfl@health.go.ke"
                       className="text-gray-200"
