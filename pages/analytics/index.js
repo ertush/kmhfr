@@ -6,6 +6,7 @@ import React, { useState, useEffect, useCallback, useContext } from "react";
 import { useRouter } from "next/router";
 import { Menu } from "@headlessui/react";
 import Select from "react-select";
+import { fetchStandardAnalyticsReports } from "../../utils/mobiDataApi";
 import { FacilityMatrixTable } from "../../components/FacilityMatrixTable.js";
 
 // @mui imports
@@ -56,6 +57,9 @@ function FacilityHome(props) {
   const [isMenuOpen, setIsMenuToOpen] = useState(false);
   const [analyticsFilterObj, setAnalyticsFilterObj] = useState({});
 
+  const [standardReports, setStandardReports] = useState([]);
+  const [selectedStandardReport, setSelectedStandardReport] = useState(null);
+
   const pageParams = useSearchParams();
 
   const currentPageParams = {
@@ -105,6 +109,25 @@ function FacilityHome(props) {
       });
     }
   });
+
+  useEffect(() => {
+  if (
+    authToken &&
+    tab !== "dynamic_report" &&
+    tab &&
+    standardReports.length > 0
+  ) {
+    fetchAnalyticsData();
+  }
+}, [authToken, tab, standardReports, analyticsFilterObj]);
+
+  useEffect(() => {
+  if (authToken) {
+    fetchStandardAnalyticsReports(authToken)
+      .then(data => setStandardReports(data.reports || []))
+      .catch(e => setStandardReports([]));
+  }
+}, [authToken]);
 
   useEffect(() => {
     setIsClient(true);
@@ -241,46 +264,60 @@ function FacilityHome(props) {
 
   // Function to fetch analytics data with current filters
   const fetchAnalyticsData = async (currentSelectedFilters = {}, colDims = ["bed_types"]) => {
-    setIsLoadingData(true);
+  setIsLoadingData(true);
 
-    try {
+  try {
+    let body;
+    if (tab === "dynamic_report") {
+      // Existing dynamic report logic
       let rowComparison = "county";
-        if (analyticsFilters.national) rowComparison = "national";
-        else if (analyticsFilters.county) rowComparison = "county";
-        else if (analyticsFilters["sub-county"]) rowComparison = "subcounty";
-        else if (analyticsFilters.ward) rowComparison = "ward";
+      if (analyticsFilters.national) rowComparison = "national";
+      else if (analyticsFilters.county) rowComparison = "county";
+      else if (analyticsFilters["sub-county"]) rowComparison = "subcounty";
+      else if (analyticsFilters.ward) rowComparison = "ward";
 
-        const body = {
-          col_dims: Array.isArray(colDims) ? colDims.slice(0, 5).join(",") : colDims,
-          report_type: "matrix_report",
-          metric: "number_of_facilities",
-          row_comparison: rowComparison,
-          filters: analyticsFilterObj,
-        };
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/analytics/matrix-report/?format=json`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${authToken}`,
-          'Cache-Control': 'no-cache, no-store, max-age=0',
-        },
-        body: JSON.stringify(body),
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setAnalyticsData(data);
-      } else {
-        console.error('Failed to fetch analytics data:', response.statusText);
-        setAnalyticsData(null); // Set data to null or empty on failure
-      }
-    } catch (error) {
-      console.error('Error fetching analytics data:', error);
-      setAnalyticsData(null); // Set data to null or empty on error
-    } finally {
-      setIsLoadingData(false);
+      body = {
+        col_dims: Array.isArray(colDims) ? colDims.slice(0, 5).join(",") : colDims,
+        report_type: "matrix_report",
+        metric: "number_of_facilities",
+        row_comparison: rowComparison,
+        filters: analyticsFilterObj,
+      };
+    } else {
+      // Standard report logic
+      const report = standardReports.find(r => r.id === tab);
+      if (!report) return;
+      body = {
+        col_dims: report.columnkeys,
+        report_type: report.reporttype,
+        metric: report.metric,
+        row_comparison: report.rowcomparison,
+        filters: analyticsFilterObj,
+      };
     }
-  };
+
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/analytics/matrix-report/?format=json`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${authToken}`,
+        'Cache-Control': 'no-cache, no-store, max-age=0',
+      },
+      body: JSON.stringify(body),
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      setAnalyticsData(data);
+    } else {
+      setAnalyticsData(null);
+    }
+  } catch (error) {
+    setAnalyticsData(null);
+  } finally {
+    setIsLoadingData(false);
+  }
+};
 
   const handleColumnDimensionChange = (selectedOptions) => {
     setColumnDimensions(selectedOptions ? selectedOptions.map(option => option.value) : []);
@@ -299,17 +336,15 @@ function FacilityHome(props) {
 
   // If analyticsFilters or columnDimensions change, fetch new analytics data
   useEffect(() => {
-    if (authToken && tab === "dynamic_report") {
-      if (Object.keys(analyticsFilters).length > 0 || columnDimensions.length > 0) {
-        handleFetchAnalyticsData();
-      } else {
-        // If no filters or column dimensions selected, fetch with default bed_types
-        fetchAnalyticsData({}, ["bed_types"]);
-      }
-    } else if (tab !== "dynamic_report") {
-      setAnalyticsData(null); // Clear data if not on dynamic report tab
+  if (authToken && tab === "dynamic_report") {
+    if (Object.keys(analyticsFilters).length > 0 || columnDimensions.length > 0) {
+      handleFetchAnalyticsData();
+    } else {
+      // If no filters or column dimensions selected, fetch with default bed_types
+      fetchAnalyticsData({}, ["bed_types"]);
     }
-  }, [analyticsFilters, columnDimensions, authToken, tab]);
+  }
+}, [analyticsFilters, columnDimensions, authToken, tab]);
 
   // Initial fetch of analytics data when component mounts and token is available
   useEffect(() => {
@@ -321,7 +356,7 @@ function FacilityHome(props) {
   // Options for dynamic column dimensions
   const dynamicColumnOptions = [
     { value: 'facility_type__name', label: 'Facility Type' },
-    { value: 'owner__name', label: 'Owner' },
+    { value: 'owner__owner_type__name', label: 'Owner' },
     { value: 'keph_level__name', label: 'KEPH Level' },
     { value: 'regulatory_body__name', label: 'Regulatory Body' },
     { value: 'infrastructure', label: 'Infrastructure' },
@@ -394,17 +429,22 @@ function FacilityHome(props) {
                     className="w-full sm:min-w-[300px]"
                     classNamePrefix="select"
                     options={[
-                      { value: "facilities_by_county", label: "Facilities by County" },
-                      { value: "facilities_by_county_by_type", label: "Facilities by County By Type" },
-                      { value: "facilities_by_county_by_ownership", label: "Facilities by County by Ownership" },
-                      { value: "facilities_by_county_by_keph", label: "Facilities by County by KEPH" },
-                      { value: "facilities_by_county_by_bed_and_cots", label: "Facilities by County by Beds/Cots" },
-                      { value: "dynamic_report", label: "Dynamic Report" },
+                      ...standardReports.map(r => ({
+                        value: r.id,
+                        label: r.name,
+                        report: r
+                      })),
+                      { value: "dynamic_report", label: "Dynamic Report" }
                     ]}
-                    onChange={(option) => setTab(option.value)}
+                    onChange={option => {
+                      setTab(option.value);
+                      setSelectedStandardReport(option.report || null);
+                    }}
                     defaultValue={{
                       value: tab,
-                      label: tab.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())
+                      label: tab === "dynamic_report"
+                        ? "Dynamic Report"
+                        : (standardReports.find(r => r.id === tab)?.name || tab.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()))
                     }}
                     styles={{
                       control: (base, state) => ({
@@ -525,10 +565,8 @@ function FacilityHome(props) {
                     No data available for the selected filters and dimensions.
                   </div>
                 )
-              ) : (
-                <div className="flex justify-center items-center py-8 text-gray-600">
-                  No data available for this report type.
-                </div>
+              ) :  (
+                <FacilityMatrixTable data={analyticsData} />
               )}
             </div>
           </div>
@@ -562,6 +600,7 @@ export async function getServerSideProps(ctx) {
       try {
         const filterData = await fetchPaginatedFilterOptions(paginatedEndpoints[key], token);
         filters[key] = filterData;
+        console.log("the filter data for", key, "is", filterData);
       } catch (e) {
         console.error(`Error fetching initial page for ${key}:`, e.message);
         filters[key] = { results: [], next: null, previous: null, count: 0, currentPage: 1, totalPages: 1 };
@@ -593,6 +632,7 @@ export async function getServerSideProps(ctx) {
 
     if (response.ok) {
       data = await response.json();
+      console.log("this is the response here!", data)
     } else {
       console.error("Failed to fetch initial analytics data:", response.statusText);
     }
