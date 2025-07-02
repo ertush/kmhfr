@@ -1,29 +1,88 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { ChevronDownIcon, ChevronRightIcon, SearchIcon } from "@heroicons/react/outline";
-import { 
-  ANALYTICS_FILTER_TREE_DATA, 
-  populateTreeDataWithFilters, 
-  createInitialSelectedFilters 
+import {
+  ANALYTICS_FILTER_TREE_DATA,
+  createInitialSelectedFilters
 } from "../utils/analyticsFilterConfig";
-import { fetchPaginatedFilterOptions } from "../utils/filterApi";
+import {
+  fetchSubCountiesApi,
+  fetchWardsApi,
+  fetchPaginatedFilterOptions
+} from "../utils/mobiDataApi";
 
+export function getFilterMetaById(filterId, {
+  treeData,
+  dynamicFilterOptions,
+  subCountiesByCounty,
+  wardsBySubCounty,
+  findNodeInTree
+}) {
+  let filter =
+    findNodeInTree(filterId, treeData) ||
+    Object.values(dynamicFilterOptions)
+      .flatMap(cat => cat.options)
+      .find(c => c.id === filterId);
+
+  if (!filter) {
+    filter = Object.values(subCountiesByCounty)
+      .flatMap(sc => sc.options || [])
+      .find(opt => opt.id === filterId);
+  }
+  if (!filter) {
+    filter = Object.values(wardsBySubCounty)
+      .flatMap(wc => wc.options || [])
+      .find(opt => opt.id === filterId);
+  }
+  return filter;
+}
+
+export function buildFilterObject(selectedFilters, {
+  treeData,
+  dynamicFilterOptions,
+  subCountiesByCounty,
+  wardsBySubCounty,
+  findNodeInTree
+}) {
+  const filterObj = {};
+  const groupingKeys = ["national", "county", "sub-county", "ward"];
+
+  Object.entries(selectedFilters)
+    .filter(([_, isSelected]) => isSelected)
+    .forEach(([filterId]) => {
+      if (groupingKeys.includes(filterId)) return;
+
+      const filter = getFilterMetaById(filterId, {
+        treeData,
+        dynamicFilterOptions,
+        subCountiesByCounty,
+        wardsBySubCounty,
+        findNodeInTree
+      });
+      if (filter && filter.filterKey) {
+        if (!filterObj[filter.filterKey]) filterObj[filter.filterKey] = [];
+        filterObj[filter.filterKey].push(filter.filterValue || filterId);
+      }
+    });
+  return filterObj;
+}
 const AnalyticsSideMenu = ({ filters, authToken, onFiltersChange }) => {
   const [expandedNodes, setExpandedNodes] = useState({
     level: false,
     counties: false,
-    sub_counties: false,
-    wards: false,
     facility_types: false,
     services: false,
     ownership: false,
     regulatory_bodies: false,
     infrastructure_categories: false,
     status: false,
-    keph_level: false, 
+    keph_level: false,
   });
 
   const [dynamicFilterOptions, setDynamicFilterOptions] = useState({});
   const [loadingMore, setLoadingMore] = useState({});
+  const [subCountiesByCounty, setSubCountiesByCounty] = useState({});
+  const [wardsBySubCounty, setWardsBySubCounty] = useState({});
+  const [loadingChildren, setLoadingChildren] = useState({});
 
   const initialSelectedFilters = useMemo(() => createInitialSelectedFilters(filters), [filters]);
   const [selectedFilters, setSelectedFilters] = useState(initialSelectedFilters);
@@ -35,74 +94,85 @@ const AnalyticsSideMenu = ({ filters, authToken, onFiltersChange }) => {
   }, [filters]);
 
   useEffect(() => {
-    const initialDynamicState = {};
-    const initialLoadingState = {};
+    const initializeDynamicFilters = async () => {
+      const initialDynamicState = {};
+      const initialLoadingState = {};
 
-
-    ANALYTICS_FILTER_TREE_DATA.forEach(node => {
-      const categoryKey = node.filterCategory;
-
-      if (categoryKey && filters[categoryKey] && filters[categoryKey].results) {
-        initialDynamicState[categoryKey] = {
-          options: filters[categoryKey].results.map(item => {
-            // Add parent references for sub_counties and wards as per your API structure
-            if (categoryKey === "sub_counties") {
-              return {
+      for (const node of ANALYTICS_FILTER_TREE_DATA) {
+        const categoryKey = node.filterCategory;
+        if (!["counties", "sub_counties", "wards"].includes(categoryKey)) {
+          if (categoryKey && filters[categoryKey] && filters[categoryKey].results) {
+            initialDynamicState[categoryKey] = {
+              options: filters[categoryKey].results.map(item => ({
                 id: item.id,
                 text: item.name,
                 filterKey: categoryKey,
                 filterValue: item.id,
-                county: item.county || item.county_id,
-              };
-            }
-            if (categoryKey === "wards") {
-              return {
-                id: item.id,
-                text: item.name,
-                filterKey: categoryKey,
-                filterValue: item.id,
-                sub_county: item.sub_county || item.sub_county_id,
-              };
-            }
-            return {
-              id: item.id,
-              text: item.name,
-              filterKey: categoryKey,
-              filterValue: item.id,
+              })),
+              nextPageUrl: filters[categoryKey].next,
+              currentPage: filters[categoryKey].current_page || 1,
+              totalPages: filters[categoryKey].total_pages || 1,
+              pageSize: filters[categoryKey].page_size || 400,
             };
-          }),
-          nextPageUrl: filters[categoryKey].next,
-          currentPage: filters[categoryKey].current_page || 1,
-          totalPages: filters[categoryKey].total_pages || 1,
-          pageSize: filters[categoryKey].page_size || 400,
-        };
-        initialLoadingState[categoryKey] = false;
-      } else if (node.id === 'level') {
-        initialDynamicState[categoryKey] = {
-          options: node.children.map(child => ({
-            id: child.id,
-            text: child.text,
-            filterKey: child.filterKey,
-            filterValue: child.filterValue,
-          })),
-          nextPageUrl: null,
-          currentPage: 1,
-          totalPages: 1,
-        };
-        initialLoadingState[categoryKey] = false;
-      } else {
-        initialDynamicState[categoryKey] = {
-          options: [],
-          nextPageUrl: null,
-          currentPage: 1,
-          totalPages: 1,
-        };
-        initialLoadingState[categoryKey] = false;
+            initialLoadingState[categoryKey] = false;
+          } else if (node.id === 'level') {
+            initialDynamicState[categoryKey] = {
+              options: node.children.map(child => ({
+                id: child.id,
+                text: child.text,
+                filterKey: child.filterKey,
+                filterValue: child.filterValue,
+              })),
+              nextPageUrl: null,
+              currentPage: 1,
+              totalPages: 1,
+            };
+            initialLoadingState[categoryKey] = false;
+          } else if (categoryKey && authToken) {
+            initialLoadingState[categoryKey] = true;
+            try {
+              const endpoint = `/common/${categoryKey}/`;
+              const data = await fetchPaginatedFilterOptions(endpoint, authToken);
+              initialDynamicState[categoryKey] = {
+                options: data.results.map(item => ({
+                  id: item.id,
+                  text: item.name,
+                  filterKey: categoryKey,
+                  filterValue: item.id,
+                })),
+                nextPageUrl: data.next,
+                currentPage: data.currentPage,
+                totalPages: data.totalPages,
+                pageSize: data.results.length,
+              };
+            } catch (error) {
+              console.error(`Failed to fetch initial data for ${categoryKey}:`, error);
+              initialDynamicState[categoryKey] = {
+                options: [],
+                nextPageUrl: null,
+                currentPage: 1,
+                totalPages: 1,
+              };
+            } finally {
+              initialLoadingState[categoryKey] = false;
+            }
+          } else {
+            initialDynamicState[categoryKey] = {
+              options: [],
+              nextPageUrl: null,
+              currentPage: 1,
+              totalPages: 1,
+            };
+            initialLoadingState[categoryKey] = false;
+          }
+        }
       }
-    });
-    setDynamicFilterOptions(initialDynamicState);
-    setLoadingMore(initialLoadingState);
-  }, [filters]);
+      setDynamicFilterOptions(initialDynamicState);
+      setLoadingMore(initialLoadingState);
+    };
+
+    initializeDynamicFilters();
+  }, [filters, authToken]);
 
   const toggleNode = (nodeId) => {
     setExpandedNodes((prev) => ({
@@ -111,32 +181,38 @@ const AnalyticsSideMenu = ({ filters, authToken, onFiltersChange }) => {
     }));
   };
 
-  const handleCheckboxChange = (
-    childId,
-    filterKey,
-    filterValue,
-    isLevel = false
-  ) => {
-    let newFilters;
-    
-    if (isLevel) {
-      newFilters = { ...selectedFilters };
-      newFilters.national = false;
-      newFilters.county = false;
-      newFilters["sub-county"] = false;
-      newFilters.ward = false;
-      newFilters[childId] = !selectedFilters[childId];
-    } else {
-      newFilters = { ...selectedFilters, [childId]: !selectedFilters[childId] };
-    }
-    setSelectedFilters(newFilters);
-
-    // Call the callback function if provided
-    if (onFiltersChange) {
-      // The debounce is handled in the parent component (index.js)
-      onFiltersChange(newFilters, filterKey, filterValue, childId);
-    }
-  };
+  const handleCheckboxChange = useCallback(
+    (childId, filterKey, filterValue, isLevel = false) => {
+      setSelectedFilters(prev => {
+        const newFilters = {...prev};
+        
+        if (isLevel) {
+          newFilters.national = false;
+          newFilters.county = false;
+          newFilters["sub-county"] = false;
+          newFilters.ward = false;
+          newFilters[childId] = !prev[childId];
+        } else {
+          newFilters[childId] = !prev[childId];
+        }
+        
+        return newFilters;
+      });
+      
+      if (onFiltersChange) {
+        const newFilters = { ...selectedFilters, [childId]: !selectedFilters[childId] };
+        const filterObj = buildFilterObject(newFilters, {
+          treeData,
+          dynamicFilterOptions,
+          subCountiesByCounty,
+          wardsBySubCounty,
+          findNodeInTree
+        });
+        onFiltersChange(newFilters, filterObj);
+      }
+    },
+    [selectedFilters, onFiltersChange]
+  );
 
   const handleLoadMore = useCallback(async (category) => {
     const currentCategoryState = dynamicFilterOptions[category];
@@ -148,23 +224,17 @@ const AnalyticsSideMenu = ({ filters, authToken, onFiltersChange }) => {
 
     try {
       const url = new URL(currentCategoryState.nextPageUrl);
-      const nextPage = url.searchParams.get('page');
-      
-      // Get the endpoint path from the URL for fetchPaginatedFilterOptions
-      const endpointPath = url.pathname; 
+      const endpoint = url.pathname.replace('/api', '');
+      const page = url.searchParams.get('page') || currentCategoryState.currentPage + 1;
 
-      const data = await fetchPaginatedFilterOptions(
-        endpointPath, 
-        authToken,
-        nextPage
-      );
+      const data = await fetchPaginatedFilterOptions(endpoint, authToken, page);
 
       setDynamicFilterOptions(prev => ({
         ...prev,
         [category]: {
           ...prev[category],
           options: [
-            ...prev[category].options, 
+            ...prev[category].options,
             ...data.results.map(item => ({
               id: item.id,
               text: item.name,
@@ -184,47 +254,96 @@ const AnalyticsSideMenu = ({ filters, authToken, onFiltersChange }) => {
     }
   }, [dynamicFilterOptions, loadingMore, authToken]);
 
-  // Build a nested tree: County > Subcounty > Ward
-  const buildCountyTree = () => {
+  const fetchSubCounties = useCallback(async (countyId, nextPageUrl = null) => {
+    setLoadingChildren(prev => ({ ...prev, [countyId]: true }));
+    try {
+      const data = await fetchSubCountiesApi(countyId, authToken, nextPageUrl);
 
-    const counties = dynamicFilterOptions.counties?.options || [];
-    const subCounties = dynamicFilterOptions.sub_counties?.options || [];
-    const wards = dynamicFilterOptions.wards?.options || [];
+      setSubCountiesByCounty(prev => ({
+        ...prev,
+        [countyId]: {
+          options: [
+            ...(prev[countyId]?.options || []),
+            ...data.results.map(item => ({
+              id: item.id,
+              text: item.name,
+              filterKey: "sub_counties",
+              filterValue: item.id,
+              county: countyId,
+            }))
+          ],
+          nextPageUrl: data.next,
+          hasMore: !!data.next,
+        }
+      }));
+    } catch (e) {
+      console.error(`Error fetching sub-counties for county ${countyId}:`, e);
+    } finally {
+      setLoadingChildren(prev => ({ ...prev, [countyId]: false }));
+    }
+  }, [authToken]);
 
-    const subCountiesByCounty = {};
-    subCounties.forEach(sc => {
-      if (!subCountiesByCounty[sc.county]) subCountiesByCounty[sc.county] = [];
-      subCountiesByCounty[sc.county].push(sc);
-    });
+  const fetchWards = useCallback(async (subCountyId, nextPageUrl = null) => {
+    setLoadingChildren(prev => ({ ...prev, [subCountyId]: true }));
+    try {
+      const data = await fetchWardsApi(subCountyId, authToken, nextPageUrl);
+      
+      setWardsBySubCounty(prev => {
+        const existingWards = prev[subCountyId]?.options || [];
+        const newWards = data.results.map(item => ({
+          id: item.id,
+          text: item.name,
+          filterKey: "wards",
+          filterValue: item.id,
+          sub_county: subCountyId,
+        }));
+        
+        return {
+          ...prev,
+          [subCountyId]: {
+            options: [...existingWards, ...newWards],
+            nextPageUrl: data.next,
+            hasMore: !!data.next,
+          }
+        };
+      });
+    } catch (e) {
+      console.error(`Error fetching wards for sub-county ${subCountyId}:`, e);
+    } finally {
+      setLoadingChildren(prev => ({ ...prev, [subCountyId]: false }));
+    }
+  }, [authToken]);
 
-    const wardsBySubCounty = {};
-    wards.forEach(w => {
-      if (!wardsBySubCounty[w.sub_county]) wardsBySubCounty[w.sub_county] = [];
-      wardsBySubCounty[w.sub_county].push(w);
-    });
-
-    // Build the nested structure
+  const buildCountyTree = useCallback(() => {
+    const counties = filters.counties?.results?.map(item => ({
+      id: item.id,
+      text: item.name,
+      filterKey: "counties",
+      filterValue: item.id,
+    })) || [];
     return counties.map(county => ({
       ...county,
-      children: (subCountiesByCounty[county.id] || []).map(subCounty => ({
-        ...subCounty,
-        children: wardsBySubCounty[subCounty.id] || [],
-      })),
+      children: subCountiesByCounty[county.id]?.options || [],
+      hasMore: !!subCountiesByCounty[county.id]?.nextPageUrl,
+      isLoading: !!loadingChildren[county.id],
     }));
-  };
-  // --- End: Custom tree structure for Counties/Subcounties/Wards ---
+  }, [filters.counties, subCountiesByCounty, loadingChildren]);
 
-  // Custom treeData with nested counties
+  const buildSubCountyChildren = useCallback((subCounty) => ({
+    ...subCounty,
+    children: wardsBySubCounty[subCounty.id]?.options || [],
+    hasMore: !!wardsBySubCounty[subCounty.id]?.nextPageUrl,
+    isLoading: !!loadingChildren[subCounty.id],
+  }), [wardsBySubCounty, loadingChildren]);
+
   const treeData = useMemo(() => {
     return ANALYTICS_FILTER_TREE_DATA.map(node => {
       if (node.id === "counties") {
-        // Replace counties node with nested structure
         return {
           ...node,
           children: buildCountyTree(),
         };
       }
-      // Remove sub_counties and wards as top-level nodes
       if (["sub_counties", "wards"].includes(node.id)) {
         return null;
       }
@@ -232,17 +351,17 @@ const AnalyticsSideMenu = ({ filters, authToken, onFiltersChange }) => {
       return {
         ...node,
         children: dynamicChildren.length > 0 ? dynamicChildren : node.children || [],
+        hasMore: dynamicFilterOptions[node.filterCategory]?.nextPageUrl ? true : false,
+        isLoading: loadingMore[node.filterCategory] || false,
       };
     }).filter(Boolean);
-  }, [ANALYTICS_FILTER_TREE_DATA, dynamicFilterOptions]);
+  }, [ANALYTICS_FILTER_TREE_DATA, dynamicFilterOptions, buildCountyTree, loadingMore]);
 
-  // Filter tree nodes and children based on search term
   const filteredTreeData = useMemo(() => {
     if (!searchTerm.trim()) return treeData;
     const lower = searchTerm.toLowerCase();
     return treeData
       .map(node => {
-        // Check if node or any child matches
         const nodeMatches = node.text.toLowerCase().includes(lower);
         const filteredChildren = (node.children || []).filter(child =>
           child.text.toLowerCase().includes(lower)
@@ -250,7 +369,7 @@ const AnalyticsSideMenu = ({ filters, authToken, onFiltersChange }) => {
         if (nodeMatches || filteredChildren.length > 0) {
           return {
             ...node,
-            children: filteredChildren.length > 0 ? filteredChildren : node.children,
+            children: nodeMatches ? node.children : filteredChildren,
           };
         }
         return null;
@@ -258,8 +377,7 @@ const AnalyticsSideMenu = ({ filters, authToken, onFiltersChange }) => {
       .filter(Boolean);
   }, [treeData, searchTerm]);
 
-  // Helper: get all descendant ids recursively
-  const getAllDescendantIds = (node) => {
+  const getAllDescendantIds = useCallback((node) => {
     let ids = [node.id];
     if (node.children && node.children.length > 0) {
       node.children.forEach(child => {
@@ -267,21 +385,19 @@ const AnalyticsSideMenu = ({ filters, authToken, onFiltersChange }) => {
       });
     }
     return ids;
-  };
+  }, []);
 
-  // Helper: check if all children are selected
-  const areAllChildrenSelected = (node, selectedFilters) => {
+  const areAllChildrenSelected = useCallback((node, selectedFilters) => {
     if (!node.children || node.children.length === 0) return !!selectedFilters[node.id];
     return node.children.every(child => areAllChildrenSelected(child, selectedFilters));
-  };
+  }, []);
 
-  // Helper: check if some children are selected (for indeterminate state)
-  const areSomeChildrenSelected = (node, selectedFilters) => {
+  const areSomeChildrenSelected = useCallback((node, selectedFilters) => {
     if (!node.children || node.children.length === 0) return !!selectedFilters[node.id];
     return node.children.some(child => areSomeChildrenSelected(child, selectedFilters));
-  };
-  // Helper: flatten the tree structure for search results
-  const flattenTree = (nodes) => {
+  }, []);
+
+  const flattenTree = useCallback((nodes) => {
     let result = [];
     for (const node of nodes) {
       result.push(node);
@@ -290,24 +406,65 @@ const AnalyticsSideMenu = ({ filters, authToken, onFiltersChange }) => {
       }
     }
     return result;
-  };
-  // Recursive rendering for nested tree with expand/collapse
-  const renderTreeChildren = (children, parentNodeId) => {
-    if (!children) return null;
-    return (
-      <ul className="ml-4 border-l border-gray-200">
-        {children.map(child => {
-          const allSelected = areAllChildrenSelected(child, selectedFilters);
-          const someSelected = areSomeChildrenSelected(child, selectedFilters);
-          return (
-            <li key={child.id} className="py-1">
+  }, []);
+
+  const findNodeInTree = useCallback((id, nodes) => {
+    for (const node of nodes) {
+      if (node.id === id) return node;
+      if (node.children) {
+        const found = findNodeInTree(id, node.children);
+        if (found) return found;
+      }
+    }
+    return null;
+  }, []);
+
+  const getAllNodes = useCallback(() => {
+    const allNodes = [];
+    const traverse = (nodes) => {
+      nodes.forEach(node => {
+        allNodes.push(node);
+        if (node.children) traverse(node.children);
+      });
+    };
+    traverse(treeData);
+    return allNodes;
+  }, [treeData]);
+
+  const renderTreeChildren = useCallback((children, parentNodeId) => {
+  if (!children) return null;
+  return (
+    <ul className="ml-4 border-l border-gray-200">
+      {children.map((child, idx) => {
+        const allSelected = areAllChildrenSelected(child, selectedFilters);
+        const someSelected = areSomeChildrenSelected(child, selectedFilters);
+        const isCounty = child.filterKey === "counties";
+        const isSubCounty = child.filterKey === "sub_counties";
+        const isWard = child.filterKey === "wards";
+        const isLast = idx === children.length - 1;
+
+        return (
+          <React.Fragment key={child.id}>
+            <li className="py-1">
               <div className="flex items-center group">
-                {/* Expand/collapse arrow if has children */}
-                {child.children && child.children.length > 0 ? (
+                {(child.children && child.children.length > 0) || isCounty || isSubCounty ? (
                   <button
                     type="button"
                     className="mr-1 focus:outline-none"
-                    onClick={() => toggleNode(child.id)}
+                    onClick={async () => {
+                      setExpandedNodes(prev => ({
+                        ...prev,
+                        [child.id]: !prev[child.id],
+                      }));
+                      if (!expandedNodes[child.id]) {
+                        if (isCounty && !subCountiesByCounty[child.id]?.options?.length) {
+                          await fetchSubCounties(child.id);
+                        }
+                        if (isSubCounty && !wardsBySubCounty[child.id]?.options?.length) {
+                          await fetchWards(child.id);
+                        }
+                      }
+                    }}
                     aria-label={expandedNodes[child.id] ? "Collapse" : "Expand"}
                   >
                     {expandedNodes[child.id] ? (
@@ -327,7 +484,6 @@ const AnalyticsSideMenu = ({ filters, authToken, onFiltersChange }) => {
                     if (el) el.indeterminate = !allSelected && someSelected;
                   }}
                   onChange={() => {
-                    // If parent, check/uncheck all descendants
                     const descendantIds = getAllDescendantIds(child);
                     const newFilters = { ...selectedFilters };
                     const shouldCheck = !allSelected;
@@ -336,7 +492,14 @@ const AnalyticsSideMenu = ({ filters, authToken, onFiltersChange }) => {
                     });
                     setSelectedFilters(newFilters);
                     if (onFiltersChange) {
-                      onFiltersChange(newFilters, child.filterKey, child.filterValue, child.id);
+                      const filterObj = buildFilterObject(newFilters, {
+                        treeData,
+                        dynamicFilterOptions,
+                        subCountiesByCounty,
+                        wardsBySubCounty,
+                        findNodeInTree
+                      });
+                      onFiltersChange(newFilters, filterObj);
                     }
                   }}
                   className="h-4 w-4 text-blue-600 rounded focus:ring-blue-500 mr-2"
@@ -348,21 +511,62 @@ const AnalyticsSideMenu = ({ filters, authToken, onFiltersChange }) => {
                   {child.text}
                 </label>
               </div>
-              {/* Render children recursively if present and expanded */}
-              {child.children && child.children.length > 0 && expandedNodes[child.id] && (
-                renderTreeChildren(child.children, child.id)
+              {expandedNodes[child.id] && (
+                <>
+                  {child.isLoading && <div className="text-xs text-gray-400 ml-6">Loading...</div>}
+                  {isSubCounty
+                    ? renderTreeChildren(buildSubCountyChildren(child).children, child.id)
+                    : renderTreeChildren(child.children, child.id)}
+                </>
               )}
             </li>
-          );
-        })}
-      </ul>
-    );
-  };
+            {/* Load more for sub-counties */}
+            {isCounty && isLast && subCountiesByCounty[child.id]?.hasMore && (
+              <li>
+                <button
+                  className="ml-8 text-xs text-blue-600 hover:underline"
+                  onClick={() => fetchSubCounties(child.id, subCountiesByCounty[child.id].nextPageUrl)}
+                  disabled={subCountiesByCounty[child.id]?.isLoading}
+                >
+                  {subCountiesByCounty[child.id]?.isLoading ? "Loading..." : "Load more sub-counties"}
+                </button>
+              </li>
+            )}
+            {/* Load more for wards */}
+            {isSubCounty && isLast && wardsBySubCounty[child.id]?.hasMore && (
+              <li>
+                <button
+                  className="ml-8 text-xs text-blue-600 hover:underline"
+                  onClick={() => fetchWards(child.id, wardsBySubCounty[child.id].nextPageUrl)}
+                  disabled={wardsBySubCounty[child.id]?.isLoading}
+                >
+                  {wardsBySubCounty[child.id]?.isLoading ? "Loading..." : "Load more wards"}
+                </button>
+              </li>
+            )}
+          </React.Fragment>
+        );
+      })}
+    </ul>
+  );
+}, [
+  expandedNodes,
+  selectedFilters,
+  subCountiesByCounty,
+  wardsBySubCounty,
+  loadingChildren,
+  fetchSubCounties,
+  fetchWards,
+  areAllChildrenSelected,
+  areSomeChildrenSelected,
+  getAllDescendantIds,
+  onFiltersChange,
+  buildSubCountyChildren
+]);
 
   return (
     <div className="w-full bg-white shadow rounded-lg p-4">
       <h3 className="text-lg font-semibold mb-4">Analytics Filters</h3>
-      {/* Search Field */}
       <div className="mb-3 relative">
         <SearchIcon className="w-5 h-5 text-gray-400 absolute left-3 top-2.5 pointer-events-none" />
         <input
@@ -372,28 +576,35 @@ const AnalyticsSideMenu = ({ filters, authToken, onFiltersChange }) => {
           onChange={(e) => {
             setSearchTerm(e.target.value);
             const lowerCaseTerm = e.target.value.toLowerCase();
-            const allNodes = flattenTree(treeData);
+            const allNodes = getAllNodes();
             const results = allNodes.filter(
               (node) => node.text && node.text.toLowerCase().includes(lowerCaseTerm)
             );
             setSearchResults(results);
-            }}
+          }}
           className="pl-10 pr-3 py-2 border border-gray-300 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
         {searchTerm && searchResults.length > 0 && (
-          <ul className="absolute z-10 bg-white border border-gray-300 rounded-md mt-1 w-full">
+          <ul className="absolute z-10 bg-white border border-gray-300 rounded-md mt-1 w-full max-h-60 overflow-y-auto">
             {searchResults.map((result) => (
-              <li 
-              key={result.id} 
-              className="px-3 py-2 hover:bg-blue-100 cursor-pointer"
-              onClick={() => {
-                const newFilters = { ...selectedFilters };
-                newFilters[result.id] = !newFilters[result.id];
-                setSelectedFilters(newFilters);
-                if (onFiltersChange) {
-                  onFiltersChange(newFilters, result.filterKey, result.filterValue, result.id);
-                }
-              }}
+              <li
+                key={result.id}
+                className="px-3 py-2 hover:bg-blue-100 cursor-pointer"
+                onClick={() => {
+                  const newFilters = { ...selectedFilters };
+                  newFilters[result.id] = !newFilters[result.id];
+                  setSelectedFilters(newFilters);
+                  if (onFiltersChange) {
+                    const filterObj = buildFilterObject(newFilters, {
+                      treeData,
+                      dynamicFilterOptions,
+                      subCountiesByCounty,
+                      wardsBySubCounty,
+                      findNodeInTree
+                    });
+                    onFiltersChange(newFilters, filterObj);
+                  }
+                }}
               >
                 {result.text}
               </li>
@@ -410,11 +621,14 @@ const AnalyticsSideMenu = ({ filters, authToken, onFiltersChange }) => {
             {filteredTreeData.map((node) => {
               const allSelected = areAllChildrenSelected(node, selectedFilters);
               const someSelected = areSomeChildrenSelected(node, selectedFilters);
+              const hasChildren = node.children && node.children.length > 0;
+              const isLoading = node.isLoading;
+              const hasMore = node.hasMore;
+
               return (
                 <li key={node.id} className="mb-1">
                   <div className="flex items-center group">
-                    {/* Expand/collapse arrow if has children */}
-                    {node.children && node.children.length > 0 ? (
+                    {hasChildren && (
                       <button
                         type="button"
                         className="mr-1 focus:outline-none"
@@ -427,9 +641,8 @@ const AnalyticsSideMenu = ({ filters, authToken, onFiltersChange }) => {
                           <ChevronRightIcon className="w-5 h-5 text-gray-400" />
                         )}
                       </button>
-                    ) : (
-                      <span className="w-5 h-5 mr-1" />
                     )}
+                    {!hasChildren && <span className="w-5 h-5 mr-1" />}
                     <input
                       type="checkbox"
                       id={node.id}
@@ -446,7 +659,14 @@ const AnalyticsSideMenu = ({ filters, authToken, onFiltersChange }) => {
                         });
                         setSelectedFilters(newFilters);
                         if (onFiltersChange) {
-                          onFiltersChange(newFilters, node.filterKey, node.filterValue, node.id);
+                          const filterObj = buildFilterObject(newFilters, {
+                            treeData,
+                            dynamicFilterOptions,
+                            subCountiesByCounty,
+                            wardsBySubCounty,
+                            findNodeInTree
+                          });
+                          onFiltersChange(newFilters, filterObj);
                         }
                       }}
                       className="h-4 w-4 text-blue-600 rounded focus:ring-blue-500 mr-2"
@@ -458,9 +678,20 @@ const AnalyticsSideMenu = ({ filters, authToken, onFiltersChange }) => {
                       {node.text}
                     </label>
                   </div>
-                  {/* Render children recursively if present and expanded */}
-                  {node.children && node.children.length > 0 && expandedNodes[node.id] && (
-                    renderTreeChildren(node.children, node.id)
+                  {hasChildren && expandedNodes[node.id] && (
+                    <>
+                      {isLoading && <div className="text-xs text-gray-400 ml-6">Loading...</div>}
+                      {renderTreeChildren(node.children, node.id)}
+                      {hasMore && !isLoading && node.id !== "counties" && (
+                        <button
+                          className="ml-8 text-xs text-blue-600 hover:underline"
+                          onClick={() => handleLoadMore(node.filterCategory)}
+                          disabled={loadingMore[node.filterCategory]}
+                        >
+                          {loadingMore[node.filterCategory] ? "Loading..." : "Load more"}
+                        </button>
+                      )}
+                    </>
                   )}
                 </li>
               );
@@ -469,7 +700,6 @@ const AnalyticsSideMenu = ({ filters, authToken, onFiltersChange }) => {
         )}
       </div>
 
-      {/* Selected filters summary */}
       <div className="mt-4 pt-4 border-t border-gray-200">
         <h4 className="font-medium text-sm mb-2">Selected Filters:</h4>
         {Object.entries(selectedFilters).filter(([_, isSelected]) => isSelected)
@@ -480,12 +710,13 @@ const AnalyticsSideMenu = ({ filters, authToken, onFiltersChange }) => {
             {Object.entries(selectedFilters)
               .filter(([_, isSelected]) => isSelected)
               .map(([filterId]) => {
-                const filter = Object.values(dynamicFilterOptions)
-                  .flatMap(cat => cat.options)
-                  .find(c => c.id === filterId) || 
-                  ANALYTICS_FILTER_TREE_DATA
-                    .flatMap(n => n.children)
-                    .find(c => c.id === filterId);
+                const filter = getFilterMetaById(filterId, {
+                  treeData,
+                  dynamicFilterOptions,
+                  subCountiesByCounty,
+                  wardsBySubCounty,
+                  findNodeInTree
+                });
 
                 return (
                   <li key={filterId} className="flex items-center">
@@ -497,16 +728,13 @@ const AnalyticsSideMenu = ({ filters, authToken, onFiltersChange }) => {
           </ul>
         )}
         <button
-          className="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300"
+          className="mt-3 px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300"
           onClick={() => {
-            // Clear all filters
             setSelectedFilters(Object.fromEntries(Object.keys(selectedFilters).map(k => [k, false])));
             setSearchTerm("");
             setExpandedNodes({
               level: false,
               counties: false,
-              sub_counties: false,
-              wards: false,
               facility_types: false,
               services: false,
               ownership: false,
@@ -515,15 +743,16 @@ const AnalyticsSideMenu = ({ filters, authToken, onFiltersChange }) => {
               status: false,
               keph_level: false,
             });
-            // Restore FacilityMatrixTable to initial state
             if (onFiltersChange) {
-              onFiltersChange(
-                Object.fromEntries(Object.keys(selectedFilters).map(k => [k, false])),
-                null,
-                null,
-                null,
-                { resetTable: true }
-              );
+              const clearedFilters = Object.fromEntries(Object.keys(selectedFilters).map(k => [k, false]));
+              const filterObj = buildFilterObject(clearedFilters, {
+                treeData,
+                dynamicFilterOptions,
+                subCountiesByCounty,
+                wardsBySubCounty,
+                findNodeInTree
+              });
+              onFiltersChange(clearedFilters, filterObj, { resetTable: true });
             }
           }}
         >
