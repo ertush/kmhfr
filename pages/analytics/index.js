@@ -54,6 +54,7 @@ function FacilityHome(props) {
   const [allFctsSelected, setAllFctsSelected] = useState(true);
   const [isClient, setIsClient] = useState(false);
   const [isMenuOpen, setIsMenuToOpen] = useState(false);
+  const [analyticsFilterObj, setAnalyticsFilterObj] = useState({});
 
   const pageParams = useSearchParams();
 
@@ -238,82 +239,24 @@ function FacilityHome(props) {
     });
   }
 
-  // Function to transform selected filters to API body format
-  const transformFiltersToAPIBody = (selectedFilters, colDims) => {
-    // Limit to a maximum of 5 at a time
-    const limitedColDims = Array.isArray(colDims) ? colDims.slice(0, 5) : [colDims];
-
-    const body = {
-      col_dims: limitedColDims.join(","),
-      report_type: "matrix_report",
-      metric: "number_of_facilities",
-      row_comparison: "county",
-      filters: {},
-    };
-
-    // Map level selections to row_comparison
-    if (selectedFilters.national) {
-      body.row_comparison = "national";
-    } else if (selectedFilters.county) {
-      body.row_comparison = "county";
-    } else if (selectedFilters["sub-county"]) {
-      body.row_comparison = "subcounty";
-    } else if (selectedFilters.ward) {
-      body.row_comparison = "ward";
-    }
-
-    // Mapping selected UUIDs back to their API filter categories.
-    const filterIdToCategoryMap = {};
-    for (const categoryKey in filters) {
-      const categoryData = filters[categoryKey];
-      if (categoryData && categoryData.results && Array.isArray(categoryData.results)) {
-        categoryData.results.forEach(item => {
-          filterIdToCategoryMap[item.id] = categoryKey;
-        });
-      }
-    }
-
-    for (const filterId in selectedFilters) {
-      if (selectedFilters[filterId] === true) {
-        // Skip static 'level' filters as they are handled by row_comparison
-        if (['national', 'county', 'sub-county', 'ward', 'by-service-category', 'by-service-availability'].includes(filterId)) {
-          continue;
-        }
-
-        const category = filterIdToCategoryMap[filterId];
-        if (category) {
-          let apiFilterKey = category;
-
-          if (category === 'owner_types') {
-            apiFilterKey = 'owners';
-          } else if (category === 'regulating_bodies') {
-            apiFilterKey = 'regulatory_bodies';
-          } else if (category === 'facility_status') {
-            apiFilterKey = 'operation_status';
-          } else if (category === 'keph_level') {
-            apiFilterKey = 'keph_levels';
-          }
-
-          if (!body.filters[apiFilterKey]) {
-            body.filters[apiFilterKey] = [];
-          }
-          body.filters[apiFilterKey].push(filterId);
-        } else {
-          console.warn(`Selected filter ID ${filterId} not found in filterIdToCategoryMap. It might be a static filter or an unmapped dynamic filter.`);
-        }
-      }
-    }
-
-    return body;
-  };
-
   // Function to fetch analytics data with current filters
   const fetchAnalyticsData = async (currentSelectedFilters = {}, colDims = ["bed_types"]) => {
     setIsLoadingData(true);
 
     try {
-      const body = transformFiltersToAPIBody(currentSelectedFilters, colDims);
+      let rowComparison = "county";
+        if (analyticsFilters.national) rowComparison = "national";
+        else if (analyticsFilters.county) rowComparison = "county";
+        else if (analyticsFilters["sub-county"]) rowComparison = "subcounty";
+        else if (analyticsFilters.ward) rowComparison = "ward";
 
+        const body = {
+          col_dims: Array.isArray(colDims) ? colDims.slice(0, 5).join(",") : colDims,
+          report_type: "matrix_report",
+          metric: "number_of_facilities",
+          row_comparison: rowComparison,
+          filters: analyticsFilterObj,
+        };
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/analytics/matrix-report/?format=json`, {
         method: 'POST',
         headers: {
@@ -343,9 +286,10 @@ function FacilityHome(props) {
     setColumnDimensions(selectedOptions ? selectedOptions.map(option => option.value) : []);
   }
 
-  const handleFiltersChange = (newFilters, filterKey, filterValue, nodeId) => {
-    setAnalyticsFilters(newFilters);
-  };
+  const handleFiltersChange = (newFilters, filterObj) => {
+  setAnalyticsFilters(newFilters);
+  setAnalyticsFilterObj(filterObj);
+};
 
   const handleFetchAnalyticsData = useCallback(() => {
     if (tab === "dynamic_report") { // Only fetch if it's the dynamic report tab
@@ -557,6 +501,7 @@ function FacilityHome(props) {
               <div className="col-span-1 md:col-span-1 flex flex-col gap-3">
                 <AnalyticsSideFilters
                   filters={filters}
+                  authToken={authToken}
                   user={userCtx}
                   onFiltersChange={handleFiltersChange}
                   filterTree={ANALYTICS_FILTER_TREE_DATA}
@@ -604,8 +549,8 @@ export async function getServerSideProps(ctx) {
     counties: "/common/counties/",
     sub_counties: "/common/sub_counties/",
     wards: "/common/wards/",
-    facility_types: "/facilities/facility_types/",
-    keph_level: "/facilities/keph/",
+    facility_types: "/facilities/facility_types/?is_parent=true",
+    keph_level: "/facilities/keph/?is_active=true",
     owner_types: "/facilities/owner_types/",
     regulating_bodies: "/facilities/regulating_bodies/",
     service_categories: "/facilities/service_categories/",

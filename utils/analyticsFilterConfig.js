@@ -1,13 +1,8 @@
 export const ANALYTICS_FILTER_TREE_DATA = [
   {
-    id: "level",
-    text: "Level",
+    id: "grouping",
+    text: "Grouping",
     children: [
-      {
-        id: "national",
-        text: "National",
-        filterKey: "national",
-      },
       {
         id: "county",
         text: "County",
@@ -50,13 +45,6 @@ export const ANALYTICS_FILTER_TREE_DATA = [
     text: "Regulatory Bodies",
     children: [],
     filterCategory: "regulating_bodies",
-    isDynamic: true,
-  },
-  {
-    id: "infrastructure_categories",
-    text: "Infrastructure Categories",
-    children: [],
-    filterCategory: "infrastructure_categories",
     isDynamic: true,
   },
   {
