@@ -17,6 +17,9 @@ import { useSearchParams } from "next/navigation";
 import withAuth from "../../components/ProtectedRoute";
 import { ANALYTICS_FILTER_TREE_DATA } from "../../utils/analyticsFilterConfig";
 import { fetchPaginatedFilterOptions } from "../../utils/filterApi";
+import { data } from "jquery";
+// import {jsPDF} from "jspdf";
+// import autoTable from "jspdf-autotable";
 
 function FacilityHome(props) {
   const router = useRouter();
@@ -391,32 +394,220 @@ function FacilityHome(props) {
                     <div className="flex items-center gap-3">
                       <button
                         className="flex items-center justify-center bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2.5 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-opacity-50"
-                        onClick={() => {
-                          window.location.href = `${process.env.NEXT_PUBLIC_FACILITY_EXPORT_URL}?&access_token=${props?.token}&format=csv&page_size=${props?.count}&page=1${orgUnitFilter}`;
-                        }}
-                      >
-                        <DownloadIcon className="w-4 h-4 mr-2" />
-                        <span className="font-medium">CSV</span>
-                      </button>
+                        onClick={async () => {
+                          // Build export body based on current filters and columns
+                          const exportBody = transformFiltersToAPIBody(analyticsFilters, columnDimensions);
+                          try {
+                            const response = await fetch(
+                              `${process.env.NEXT_PUBLIC_API_URL}/analytics/matrix-report/?format=json`,
+                              {
+                                method: "POST",
+                                headers: {
+                                  "Content-Type": "application/json",
+                                  Authorization: `Bearer ${authToken}`,
+                                },
+                                body: JSON.stringify(exportBody),
+                              }
+                            );
+                            if (response.ok) {
 
-                      <button
-                        className="flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
-                        onClick={() => {
-                          window.location.href = orgUnitFilter
-                            ? `${process.env.NEXT_PUBLIC_FACILITY_EXPORT_URL}?access_token=${props?.token}&format=excel&page_size=${props?.count}&page=1${orgUnitFilter}`
-                            : `${process.env.NEXT_PUBLIC_FACILITY_EXPORT_URL}?access_token=${props?.token}&format=excel&page_size=${props?.count}&page=1`;
+                              const data = await response.json();
+                              let counts = data?.results?.counts;
+                              let flatRows = [];
+                              if (Array.isArray(counts) && counts.length > 0) {
+
+                                flatRows = counts.map(obj => {
+                                  const county = Object.keys(obj)[0];
+                                  return { county, ...obj[county] };
+                                });
+
+                                // Prepare headers & rows
+                                const headers = ["county", ...Object.keys(flatRows[0]).filter(k => k !== "county")].join(",");
+                                const rows = flatRows.map(row =>
+                                  headers.split(",").map(h => {
+                                  const value = row[h];
+                                  // If value is an object or array, stringify it
+                                  if (typeof value === "object" && value !== null) {
+                                    return JSON.stringify(value);
+                                  }
+                                  return value;
+                                  }).join(",")
+                                ).join("\n");
+
+                                const csvContent = `data:text/csv;charset=utf-8,${headers}\n${rows}`;
+                                console.log("CSV Content:", csvContent);
+                              }
+                                // If counts is a JSON object, convert it to an array for CSV export
+                                if (counts && typeof counts === "object" && !Array.isArray(counts)) {
+                                // Convert object to array of rows
+                                const flatRows = Object.entries(counts).map(([key, value]) => ({
+                                  key,
+                                  ...value
+                                }));
+                                const headers = Object.keys(flatRows[0]).join(",");
+                                const rows = flatRows.map(row =>
+                                  headers.split(",").map(h => {
+                                  const value = row[h];
+                                  // If value is an array or object, stringify it
+                                  if (Array.isArray(value) || (typeof value === "object" && value !== null)) {
+                                    return JSON.stringify(value);
+                                  }
+                                  return value;
+                                  }).join(",")
+                                ).join("\n");
+
+                                const csvContent = `data:text/csv;charset=utf-8,${headers}\n${rows}`;
+                                const encodedUri = encodeURI(csvContent);
+                                const a = document.createElement("a");
+                                a.href = encodedUri;
+                                a.download = `facilities_report_${exportBody?.col_dims}.xlsx`;
+                                document.body.appendChild(a);
+                                a.click();
+                                a.remove();
+                                alert(`Data table ${exportBody?.col_dims} exported as Excel.`);
+                                }
+                              // Create a link to download the CSV file
+                                // const data = await response.json();
+                                // let counts = data?.results?.counts;
+                                // let flatRows = [];
+                                // let headers = [];
+                                // let rows = [];
+
+                                // if (Array.isArray(counts) && counts.length > 0) {
+                                // flatRows = counts.map(obj => {
+                                //   const county = Object.keys(obj)[0];
+                                //   return { county, ...obj[county] };
+                                // });
+                                // headers = ["county", ...Object.keys(flatRows[0]).filter(k => k !== "county")];
+                                // rows = flatRows.map(row =>
+                                //   headers.map(h => row[h]).join(",")
+                                // );
+                                // } else if (counts && typeof counts === "object" && !Array.isArray(counts)) {
+                                // flatRows = Object.entries(counts).map(([key, value]) => ({
+                                //   key,
+                                //   ...value
+                                // }));
+                                // headers = Object.keys(flatRows[0]);
+                                // rows = flatRows.map(row =>
+                                //   headers.map(h => row[h]).join(",")
+                                // );
+                                // }
+
+                                // // Convert rows to a table for PDF
+                                // const tableData = [
+                                // headers,
+                                // ...flatRows.map(row => headers.map(h => row[h]))
+                                // ];
+
+                                // // Dynamically import jsPDF and autotable
+                                // const { jsPDF } = await import("jspdf");
+                                // const autoTable = (await import("jspdf-autotable")).default;
+
+                                // const doc = new jsPDF({
+                                // orientation: "landscape",
+                                // unit: "pt",
+                                // format: "a4"
+                                // });
+
+                                // doc.text("Facilities Report", 40, 40);
+                                // autoTable(doc, {
+                                // head: [headers],
+                                // body: flatRows.map(row => headers.map(h => row[h])),
+                                // startY: 60,
+                                // styles: { fontSize: 8 }
+                                // });
+
+                                // doc.save(`facilities_report_${exportBody?.col_dims}.pdf`);
+                                // alert(`Data table ${exportBody?.col_dims} exported as PDF.`);
+
+                            } else {
+                              alert("Failed to export excel. Please try again.");
+                            }
+                          } catch (err) {
+                            alert("Error exporting Excel: " + err.message);
+                          }
                         }}
                       >
                         <DownloadIcon className="w-4 h-4 mr-2" />
                         <span className="font-medium">Excel</span>
+                      </button>
+
+                      <button
+                        className="flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+                        onClick={async () => {
+                          // Build export body based on current filters and columns
+                          const exportBody = transformFiltersToAPIBody(analyticsFilters, columnDimensions);
+                          // console.log("excel body:", exportBody?.col_dims);
+                          try {
+                            const response = await fetch(
+                              `${process.env.NEXT_PUBLIC_API_URL}/analytics/matrix-report/?format=json`,
+                              {
+                                method: "POST",
+                                headers: {
+                                  "Content-Type": "application/json",
+                                  Authorization: `Bearer ${authToken}`,
+                                },
+                                body: JSON.stringify(exportBody),
+                              }
+                            );
+                            if (response.ok) {
+                              const data = await response.json();
+                              let counts = data?.results?.counts;
+                              let flatRows = [];
+                              if (Array.isArray(counts) && counts.length > 0) {
+                                flatRows = counts.map(obj => {
+                                  const county = Object.keys(obj)[0];
+                                  return { county, ...obj[county] };
+                                });
+
+                                // Prepare headers & rows
+                                const headers = ["county", ...Object.keys(flatRows[0]).filter(k => k !== "county")].join(",");
+                                const rows = flatRows.map(row =>
+                                  headers.split(",").map(h => row[h]).join(",")
+                                ).join("\n");
+
+                                const csvContent = `data:text/csv;charset=utf-8,${headers}\n${rows}`;
+                                console.log("CSV Content:", csvContent);
+                              }
+                                // If counts is a JSON object, convert it to an array for CSV export
+                                if (counts && typeof counts === "object" && !Array.isArray(counts)) {
+                                // Convert object to array of rows
+                                const flatRows = Object.entries(counts).map(([key, value]) => ({
+                                  key,
+                                  ...value
+                                }));
+                                const headers = Object.keys(flatRows[0]).join(",");
+                                const rows = flatRows.map(row =>
+                                  headers.split(",").map(h => row[h]).join(",")
+                                ).join("\n");
+
+                                const csvContent = `data:text/csv;charset=utf-8,${headers}\n${rows}`;
+                                const encodedUri = encodeURI(csvContent);
+                                const a = document.createElement("a");
+                                a.href = encodedUri;
+                                a.download = `facilities_report_${exportBody?.col_dims}.csv`;
+                                document.body.appendChild(a);
+                                a.click();
+                                a.remove();
+
+                                alert(`Data table ${exportBody?.col_dims} exported as CSV.`);
+                                } 
+                            } else {
+                              alert("Failed to export CSV. Please try again.");
+                            }
+                          } catch (err) {
+                            alert("Error exporting CSV: " + err.message);
+                          }
+                        }}
+                      >
+                        <DownloadIcon className="w-4 h-4 mr-2" />
+                        <span className="font-medium">CSV</span>
                       </button>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-
-            {/* Improved Filter Section */}
             <div className="col-span-1 md:col-span-5 bg-white border border-gray-200 p-6">
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                 {/* Filter Label and Select */}
