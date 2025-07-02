@@ -63,7 +63,7 @@ export const ANALYTICS_FILTER_TREE_DATA = [
   },
   {
     id: "keph_level",
-    text: "By KEPH Level",
+    text: "KEPH Level",
     children: [],
     filterCategory: "keph_level",
     isDynamic: true,

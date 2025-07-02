@@ -89,3 +89,13 @@ export async function fetchPaginatedFilterOptions(endpoint, token, page = 1) {
     return { results: [], next: null, previous: null, count: 0, currentPage: 1, totalPages: 1 };
   }
 }
+
+/**
+ * Fetches standard analytics reports.
+ * @param {string} authToken - The authorization token.
+ * @returns {Promise<Object>} The response data containing standard reports.
+ */
+export const fetchStandardAnalyticsReports = async (authToken) => {
+  const url = "/analytics/standard-reports/?format=json";
+  return fetchData(url, authToken);
+};
