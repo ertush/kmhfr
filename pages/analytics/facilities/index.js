@@ -267,6 +267,16 @@ function FacilityHome(props) {
   // }
 
   // Function to fetch analytics data with current filters
+  const COLUMN_ORDER = [
+    "facility_type__name",
+    "owner__owner_type__name",
+    "keph_level__name",
+    "regulatory_body__name",
+    "infrastructure",
+    "services",
+    "bed_types",
+  ];
+
   const fetchAnalyticsData = async (
     currentSelectedFilters = {},
     colDims = ["bed_types"],
@@ -283,10 +293,16 @@ function FacilityHome(props) {
         else if (analyticsFilters["sub-county"]) rowComparison = "subcounty";
         else if (analyticsFilters.ward) rowComparison = "ward";
 
+        // Always send colDims in the specified COLUMN_ORDER
+        const orderedColDims = Array.isArray(colDims)
+          ? colDims
+              .slice(0, 5)
+              .sort((a, b) => COLUMN_ORDER.indexOf(a) - COLUMN_ORDER.indexOf(b))
+              .join(",")
+          : colDims;
+
         body = {
-          col_dims: Array.isArray(colDims)
-            ? colDims.slice(0, 5).join(",")
-            : colDims,
+          col_dims: orderedColDims,
           report_type: "matrix_report",
           metric: "number_of_facilities",
           row_comparison: rowComparison,
@@ -296,8 +312,15 @@ function FacilityHome(props) {
         // Standard report logic
         const report = standardReports.find((r) => r.id === tab);
         if (!report) return;
+        // Always send report.columnkeys in the specified COLUMN_ORDER
+        const orderedColumnKeys = Array.isArray(report.columnkeys)
+          ? report.columnkeys
+              .slice(0, 5)
+              .sort((a, b) => COLUMN_ORDER.indexOf(a) - COLUMN_ORDER.indexOf(b))
+          : report.columnkeys;
+
         body = {
-          col_dims: report.columnkeys,
+          col_dims: orderedColumnKeys,
           report_type: report.reporttype,
           metric: report.metric,
           row_comparison: report.rowcomparison,
@@ -953,7 +976,6 @@ export async function getServerSideProps(ctx) {
 
     if (response.ok) {
       data = await response.json();
-      console.log("this is the response here!", data);
     } else {
       console.error(
         "Failed to fetch initial analytics data:",

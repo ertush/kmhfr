@@ -1,6 +1,8 @@
 export async function fetchPaginatedFilterOptions(endpoint, token, page = 1) {
   try {
-    const url = `${process.env.NEXT_PUBLIC_API_URL}${endpoint}?page=${page}`;
+    const cleanEndpoint = endpoint.replace(/\/$/, "");
+    const separator = cleanEndpoint.includes("?") ? "&" : "?";
+    const url = `${process.env.NEXT_PUBLIC_API_URL}${cleanEndpoint}${separator}page=${page}`;
     const response = await fetch(url, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -10,7 +12,10 @@ export async function fetchPaginatedFilterOptions(endpoint, token, page = 1) {
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error(`API Error: ${response.status} - ${response.statusText}`, errorText);
+      console.error(
+        `API Error: ${response.status} - ${response.statusText}`,
+        errorText,
+      );
       throw new Error(`Failed to fetch ${endpoint}: ${response.statusText}`);
     }
 
@@ -24,7 +29,17 @@ export async function fetchPaginatedFilterOptions(endpoint, token, page = 1) {
       totalPages: data.total_pages || 1,
     };
   } catch (error) {
-    console.error(`Error fetching paginated filter options from ${endpoint}:`, error);
-    return { results: [], next: null, previous: null, count: 0, currentPage: 1, totalPages: 1 };
+    console.error(
+      `Error fetching paginated filter options from ${endpoint}:`,
+      error,
+    );
+    return {
+      results: [],
+      next: null,
+      previous: null,
+      count: 0,
+      currentPage: 1,
+      totalPages: 1,
+    };
   }
 }
