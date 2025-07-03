@@ -1,6 +1,9 @@
 export async function fetchPaginatedFilterOptions(endpoint, token, page = 1) {
   try {
-    const url = `${process.env.NEXT_PUBLIC_API_URL}${endpoint}?page=${page}`;
+    const cleanEndpoint = endpoint.replace(/\/$/, '');
+    const separator = cleanEndpoint.includes('?') ? '&' : '?';
+    const url = `${process.env.NEXT_PUBLIC_API_URL}${cleanEndpoint}${separator}page=${page}`;
+    
     const response = await fetch(url, {
       headers: {
         Authorization: `Bearer ${token}`,
