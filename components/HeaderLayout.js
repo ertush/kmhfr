@@ -325,7 +325,7 @@ export default function HeaderLayout({ searchTerm }) {
                             </li>
 
                             <li
-                              className={`text-lg h-[60px] flex text-nowrap w-full items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${(/\/community-units\/.+/.test(currentPath) || /\/community-units/.test(currentPath)) && "border-r-2 border-b-gray-50 bg-blue-500/85"} ${currentPath == "/public/chu" && "border-r-2 border-b-gray-50 bg-blue-700/85 text-gray-100"}`}
+                              className={`text-lg h-[60px] flex text-nowrap w-full items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${(currentPath == "/community-units" || /\/community-units\/.*/.test(currentPath)) && "border-r-2 border-b-gray-50 bg-blue-500/85"} ${currentPath == "/public/chu" && "border-r-2 border-b-gray-50 bg-blue-700/85 text-gray-100"}`}
                             >
                               <Link
                                 href={`${userID !== 6 && isLoggedIn ? "/community-units" : "/public/chu"}`}
@@ -421,7 +421,7 @@ export default function HeaderLayout({ searchTerm }) {
                             </li>
 
                             <li
-                              className={`text-lg h-[60px] flex text-nowrap w-full items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${(/\/community-units\/.+/.test(currentPath) || /\/community-units/.test(currentPath)) && "border-r-2 border-b-gray-50 bg-blue-500/85"}  ${currentPath == "/public/chu" && "border-r-2 border-b-gray-50 bg-blue-700/85 text-gray-100"}`}
+                              className={`text-lg h-[60px] flex text-nowrap w-full items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${(currentPath == "/community-units" || /\/community-units\/.*/.test(currentPath)) && "border-r-2 border-b-gray-50 bg-blue-500/85"}  ${currentPath == "/public/chu" && "border-r-2 border-b-gray-50 bg-blue-700/85 text-gray-100"}`}
                             >
                               <Link
                                 href={`${userID !== 6 && isLoggedIn ? "/community-units" : "/public/chu"}`}
@@ -516,7 +516,7 @@ export default function HeaderLayout({ searchTerm }) {
                             </li>
 
                             <li
-                              className={`text-lg h-[60px] flex  text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${(/\/community-units\/.+/.test(currentPath) || /\/community-units/.test(currentPath)) && "border-r-2 border-b-gray-50 bg-blue-500/85"}  ${currentPath == "/public/chu" && "border-b-2 border-r-gray-50 bg-blue-700/85 text-gray-100"}`}
+                              className={`text-lg h-[60px] flex  text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${(currentPath == "/community-units" || /\/community-units\/.*/.test(currentPath)) && "border-r-2 border-b-gray-50 bg-blue-500/85"}  ${currentPath == "/public/chu" && "border-b-2 border-r-gray-50 bg-blue-700/85 text-gray-100"}`}
                             >
                               <Link
                                 href={`${userID !== 6 && isLoggedIn ? "/community-units" : "/public/chu"}`}
@@ -594,7 +594,7 @@ export default function HeaderLayout({ searchTerm }) {
                             </li>
 
                             <li
-                              className={`text-lg h-[60px] w-full flex text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${(/\/community-units\/.+/.test(currentPath) || /\/community-units/.test(currentPath)) && "border-r-2 border-gray-50 bg-blue-500/85"}  ${currentPath == "/public/chu" && "border-r-2 border-gray-50 bg-blue-700/85 text-gray-100"}`}
+                              className={`text-lg h-[60px] w-full flex text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${(currentPath == "/community-units" || /\/community-units\/.*/.test(currentPath)) && "border-r-2 border-gray-50 bg-blue-500/85"}  ${currentPath == "/public/chu" && "border-r-2 border-gray-50 bg-blue-700/85 text-gray-100"}`}
                             >
                               <Link
                                 href={`${userID !== 6 && isLoggedIn ? "/community-units" : "/public/chu"}`}
@@ -669,7 +669,7 @@ export default function HeaderLayout({ searchTerm }) {
                             </li>
 
                             <li
-                              className={`text-lg h-[60px] flex text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${(/\/community-units\/.+/.test(currentPath) || /\/community-units/.test(currentPath)) && "border-r-2 border-gray-50 bg-blue-500/85"}  ${currentPath == "/public/chu" && "border-b-2 border-b-gray-50 bg-blue-700/85 text-gray-100"}`}
+                              className={`text-lg h-[60px] flex text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${(currentPath == "/community-units" || /\/community-units\/.*/.test(currentPath)) && "border-r-2 border-gray-50 bg-blue-500/85"}  ${currentPath == "/public/chu" && "border-b-2 border-b-gray-50 bg-blue-700/85 text-gray-100"}`}
                             >
                               <Link
                                 href={`${userID !== 6 && isLoggedIn ? "/community-units" : "/public/chu"}`}
@@ -726,7 +726,7 @@ export default function HeaderLayout({ searchTerm }) {
                             </li>
 
                             <li
-                              className={`text-lg h-[60px] flex text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${(/\/community-units\/.+/.test(currentPath) || /\/community-units/.test(currentPath)) && "border-r-2 border-gray-50 bg-blue-500/85"}  ${currentPath == "/public/chu" && "border-r-2 border-gray-50 bg-blue-700/85 text-gray-100"}`}
+                              className={`text-lg h-[60px] flex text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${(currentPath == "/community-units" || /\/community-units\/.*/.test(currentPath)) && "border-r-2 border-gray-50 bg-blue-500/85"}  ${currentPath == "/public/chu" && "border-r-2 border-gray-50 bg-blue-700/85 text-gray-100"}`}
                             >
                               <Link
                                 href={`${userID !== 6 && isLoggedIn ? "/community-units" : "/public/chu"}`}
@@ -784,7 +784,7 @@ export default function HeaderLayout({ searchTerm }) {
                             </li>
 
                             <li
-                              className={`text-lg h-[60px] flex text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${(/\/community-units\/.+/.test(currentPath) || /\/community-units/.test(currentPath)) && "border-r-2 border-b-gray-50 bg-blue-500/85"}  ${currentPath == "/public/chu" && "border-r-2 border-b-gray-50 bg-blue-700/85 text-gray-100"}`}
+                              className={`text-lg h-[60px] flex text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${(currentPath == "/community-units" || /\/community-units\/.*/.test(currentPath)) && "border-r-2 border-b-gray-50 bg-blue-500/85"}  ${currentPath == "/public/chu" && "border-r-2 border-b-gray-50 bg-blue-700/85 text-gray-100"}`}
                             >
                               <Link
                                 href={`${userID !== 6 && isLoggedIn ? "/community-units" : "/public/chu"}`}
@@ -871,7 +871,7 @@ export default function HeaderLayout({ searchTerm }) {
                                 </li>
 
                                 <li
-                                  className={`text-lg h-[60px] w-full flex text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${(/\/community-units\/.+/.test(currentPath) || /\/community-units/.test(currentPath)) && "border-r-2 border-gray-50 bg-blue-500/85"}  ${currentPath == "/public/chu" && "border-r-2 border-gray-50 bg-blue-700/85 text-gray-100"}`}
+                                  className={`text-lg h-[60px] w-full flex text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${(currentPath == "/community-units" || /\/community-units\/.*/.test(currentPath)) && "border-r-2 border-gray-50 bg-blue-500/85"}  ${currentPath == "/public/chu" && "border-r-2 border-gray-50 bg-blue-700/85 text-gray-100"}`}
                                 >
                                   <Link
                                     href={`${userID !== 6 && isLoggedIn ? "/community-units" : "/public/chu"}`}
@@ -1075,7 +1075,7 @@ export default function HeaderLayout({ searchTerm }) {
                               </Link>
                             </li>
                             <li
-                              className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${(/\/community-units\/.+/.test(currentPath) || /\/community-units/.test(currentPath)) && "border-b-2 border-b-gray-50 bg-blue-500/85"} ${currentPath == "/public/chu" && "border-b-2 border-b-gray-50 bg-blue-700/85 text-gray-100"}`}
+                              className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${(currentPath == "/community-units" || /\/community-units\/.*/.test(currentPath)) && "border-b-2 border-b-gray-50 bg-blue-500/85"} ${currentPath == "/public/chu" && "border-b-2 border-b-gray-50 bg-blue-700/85 text-gray-100"}`}
                             >
                               <Link
                                 href={`${userID !== 6 && isLoggedIn ? "/community-units" : "/public/chu"}`}
@@ -1096,7 +1096,7 @@ export default function HeaderLayout({ searchTerm }) {
                               </Link>
                             </li>
                             <li
-                              className={`text-lg h-[60px] relative group flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/analytics" && "border-b-2 border-b-gray-50 bg-blue-500/85"}`}
+                              className={`text-lg h-[60px] relative group flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${(currentPath == "/analytics/facilities" || currentPath == "/analytics/community-units") && "border-b-2 border-b-gray-50 bg-blue-500/85"}`}
                             >
                               <Link href="/analytics/facilities">
                                 Analytics
@@ -1156,7 +1156,7 @@ export default function HeaderLayout({ searchTerm }) {
                               </Link>
                             </li>
                             <li
-                              className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${(/\/community-units\/.+/.test(currentPath) || /\/community-units/.test(currentPath)) && "border-b-2 border-b-gray-50 bg-blue-500/85"}  ${currentPath == "/public/chu" && "border-b-2 border-b-gray-50 bg-blue-700/85 text-gray-100"}`}
+                              className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${(currentPath == "/community-units" || /\/community-units\/.*/.test(currentPath)) && "border-b-2 border-b-gray-50 bg-blue-500/85"}  ${currentPath == "/public/chu" && "border-b-2 border-b-gray-50 bg-blue-700/85 text-gray-100"}`}
                             >
                               <Link
                                 href={`${userID !== 6 && isLoggedIn ? "/community-units" : "/public/chu"}`}
@@ -1177,7 +1177,7 @@ export default function HeaderLayout({ searchTerm }) {
                               </Link>
                             </li>
                             <li
-                              className={`text-lg h-[60px] relative group flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/analytics" && "border-b-2 border-b-gray-50 bg-blue-500/85"}`}
+                              className={`text-lg h-[60px] relative group flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${(currentPath == "/analytics/facilities" || currentPath == "/analytics/community-units") && "border-b-2 border-b-gray-50 bg-blue-500/85"}`}
                             >
                               <Link href="/analytics/facilities">
                                 Analytics
@@ -1236,7 +1236,7 @@ export default function HeaderLayout({ searchTerm }) {
                               </Link>
                             </li>
                             <li
-                              className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${(/\/community-units\/.+/.test(currentPath) || /\/community-units/.test(currentPath)) && "border-b-2 border-b-gray-50 bg-blue-500/85"}  ${currentPath == "/public/chu" && "border-b-2 border-b-gray-50 bg-blue-700/85 text-gray-100"}`}
+                              className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${(currentPath == "/community-units" || /\/community-units\/.*/.test(currentPath)) && "border-b-2 border-b-gray-50 bg-blue-500/85"}  ${currentPath == "/public/chu" && "border-b-2 border-b-gray-50 bg-blue-700/85 text-gray-100"}`}
                             >
                               <Link
                                 href={`${userID !== 6 && isLoggedIn ? "/community-units" : "/public/chu"}`}
@@ -1257,7 +1257,7 @@ export default function HeaderLayout({ searchTerm }) {
                               </Link>
                             </li>
                             <li
-                              className={`text-lg h-[60px] relative group flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/analytics" && "border-b-2 border-b-gray-50 bg-blue-500/85"}`}
+                              className={`text-lg h-[60px] relative group flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${(currentPath == "/analytics/facilities" || currentPath == "/analytics/community-units") && "border-b-2 border-b-gray-50 bg-blue-500/85"}`}
                             >
                               <Link href="/analytics/facilities">
                                 Analytics
@@ -1316,7 +1316,7 @@ export default function HeaderLayout({ searchTerm }) {
                               </Link>
                             </li>
                             <li
-                              className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${(/\/community-units\/.+/.test(currentPath) || /\/community-units/.test(currentPath)) && "border-b-2 border-b-gray-50 bg-blue-500/85"}  ${currentPath == "/public/chu" && "border-b-2 border-b-gray-50 bg-blue-700/85 text-gray-100"}`}
+                              className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${(currentPath == "/community-units" || /\/community-units\/.*/.test(currentPath)) && "border-b-2 border-b-gray-50 bg-blue-500/85"}  ${currentPath == "/public/chu" && "border-b-2 border-b-gray-50 bg-blue-700/85 text-gray-100"}`}
                             >
                               <Link
                                 href={`${userID !== 6 && isLoggedIn ? "/community-units" : "/public/chu"}`}
@@ -1330,7 +1330,7 @@ export default function HeaderLayout({ searchTerm }) {
                               <Link href="/user">Users</Link>
                             </li>
                             <li
-                              className={`text-lg h-[60px] relative group flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/analytics" && "border-b-2 border-b-gray-50 bg-blue-500/85"}`}
+                              className={`text-lg h-[60px] relative group flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${(currentPath == "/analytics/facilities" || currentPath == "/analytics/community-units") && "border-b-2 border-b-gray-50 bg-blue-500/85"}`}
                             >
                               <Link href="/analytics/facilities">
                                 Analytics
@@ -1384,7 +1384,7 @@ export default function HeaderLayout({ searchTerm }) {
                               </Link>
                             </li>
                             <li
-                              className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${(/\/community-units\/.+/.test(currentPath) || /\/community-units/.test(currentPath)) && "border-b-2 border-b-gray-50 bg-blue-500/85"}  ${currentPath == "/public/chu" && "border-b-2 border-b-gray-50 bg-blue-700/85 text-gray-100"}`}
+                              className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${(currentPath == "/community-units" || /\/community-units\/.*/.test(currentPath)) && "border-b-2 border-b-gray-50 bg-blue-500/85"}  ${currentPath == "/public/chu" && "border-b-2 border-b-gray-50 bg-blue-700/85 text-gray-100"}`}
                             >
                               <Link
                                 href={`${userID !== 6 && isLoggedIn ? "/community-units" : "/public/chu"}`}
@@ -1393,7 +1393,7 @@ export default function HeaderLayout({ searchTerm }) {
                               </Link>
                             </li>
                             <li
-                              className={`text-lg h-[60px] relative group flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/analytics" && "border-b-2 border-b-gray-50 bg-blue-500/85"}`}
+                              className={`text-lg h-[60px] relative group flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${(currentPath == "/analytics/facilities" || currentPath == "/analytics/community-units") && "border-b-2 border-b-gray-50 bg-blue-500/85"}`}
                             >
                               <Link href="/analytics/facilities">
                                 Analytics
@@ -1447,7 +1447,7 @@ export default function HeaderLayout({ searchTerm }) {
                               </Link>
                             </li>
                             <li
-                              className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${(/\/community-units\/.+/.test(currentPath) || /\/community-units/.test(currentPath)) && "border-b-2 border-b-gray-50 bg-blue-500/85"}  ${currentPath == "/public/chu" && "border-b-2 border-b-gray-50 bg-blue-700/85 text-gray-100"}`}
+                              className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${(currentPath == "/community-units" || /\/community-units\/.*/.test(currentPath)) && "border-b-2 border-b-gray-50 bg-blue-500/85"}  ${currentPath == "/public/chu" && "border-b-2 border-b-gray-50 bg-blue-700/85 text-gray-100"}`}
                             >
                               <Link
                                 href={`${userID !== 6 && isLoggedIn ? "/community-units" : "/public/chu"}`}
@@ -1456,7 +1456,7 @@ export default function HeaderLayout({ searchTerm }) {
                               </Link>
                             </li>
                             <li
-                              className={`text-lg h-[60px] relative group flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/analytics" && "border-b-2 border-b-gray-50 bg-blue-500/85"}`}
+                              className={`text-lg h-[60px] relative group flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${(currentPath == "/analytics/facilities" || currentPath == "/analytics/community-units") && "border-b-2 border-b-gray-50 bg-blue-500/85"}`}
                             >
                               <Link href="/analytics/facilities">
                                 Analytics
@@ -1495,7 +1495,7 @@ export default function HeaderLayout({ searchTerm }) {
                               </Link>
                             </li>
                             <li
-                              className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${(/\/community-units\/.+/.test(currentPath) || /\/community-units/.test(currentPath)) && "border-b-2 border-b-gray-50 bg-blue-500/85"}  ${currentPath == "/public/chu" && "border-b-2 border-b-gray-50 bg-blue-700/85 text-gray-100"}`}
+                              className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${(currentPath == "/community-units" || /\/community-units\/.*/.test(currentPath)) && "border-b-2 border-b-gray-50 bg-blue-500/85"}  ${currentPath == "/public/chu" && "border-b-2 border-b-gray-50 bg-blue-700/85 text-gray-100"}`}
                             >
                               <Link
                                 href={`${userID !== 6 && isLoggedIn ? "/community-units" : "/public/chu"}`}
@@ -1504,7 +1504,7 @@ export default function HeaderLayout({ searchTerm }) {
                               </Link>
                             </li>
                             <li
-                              className={`text-lg h-[60px] relative group flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/analytics" && "border-b-2 border-b-gray-50 bg-blue-500/85"}`}
+                              className={`text-lg h-[60px] relative group flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${(currentPath == "/analytics/facilities" || currentPath == "/analytics/community-units") && "border-b-2 border-b-gray-50 bg-blue-500/85"}`}
                             >
                               <Link href="/analytics/facilities">
                                 Analytics
@@ -1543,7 +1543,7 @@ export default function HeaderLayout({ searchTerm }) {
                               </Link>
                             </li>
                             <li
-                              className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${(/\/community-units\/.+/.test(currentPath) || /\/community-units/.test(currentPath)) && "border-b-2 border-b-gray-50 bg-blue-500/85"}  ${currentPath == "/public/chu" && "border-b-2 border-b-gray-50 bg-blue-700/85 text-gray-100"}`}
+                              className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${(currentPath == "/community-units" || /\/community-units\/.*/.test(currentPath)) && "border-b-2 border-b-gray-50 bg-blue-500/85"}  ${currentPath == "/public/chu" && "border-b-2 border-b-gray-50 bg-blue-700/85 text-gray-100"}`}
                             >
                               <Link
                                 href={`${userID !== 6 && isLoggedIn ? "/community-units" : "/public/chu"}`}
@@ -1552,7 +1552,7 @@ export default function HeaderLayout({ searchTerm }) {
                               </Link>
                             </li>
                             <li
-                              className={`text-lg h-[60px] relative group flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/analytics" && "border-b-2 border-b-gray-50 bg-blue-500/85"}`}
+                              className={`text-lg h-[60px] relative group flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${(currentPath == "/analytics/facilities" || currentPath == "/analytics/community-units") && "border-b-2 border-b-gray-50 bg-blue-500/85"}`}
                             >
                               <Link href="/analytics/facilities">
                                 Analytics
