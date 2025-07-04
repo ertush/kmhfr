@@ -82,7 +82,7 @@ export const fetchServicesDetatilsApi = async (
  * @param {string} [nextPageUrl=null] - URL for the next page of results.
  * @returns {Promise<Object>} Data containing sub-county options and pagination info.
  */
-export const fetchHumanResourcesDetatilsApi = async (
+export const fetchSpecialtyDetatilsApi = async (
   categoryId,
   authToken,
   nextPageUrl = null,

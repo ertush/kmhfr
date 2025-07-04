@@ -383,7 +383,7 @@ function CommunityUnitsAnalyticsPage(props) {
     { value: "infrastructure", label: "Infrastructure" },
     { value: "specialty", label: "Specialty" },
     { value: "specialty_category", label: "Specialty Category" },
-    { value: "services", label: "Services" },
+    { value: "service_categories", label: "Service Categories" },
     { value: "bed_types", label: "Bed Types" },
   ];
 

@@ -493,7 +493,7 @@ function FacilityHome(props) {
                                   .join("\n");
 
                                 const csvContent = `data:text/csv;charset=utf-8,${headers}\n${rows}`;
-                                console.log("CSV Content:", csvContent);
+                                // g("CSV Content:", csvContent);
                               }
                               // If counts is a JSON object, convert it to an array for CSV export
                               if (
@@ -658,7 +658,7 @@ function FacilityHome(props) {
                                   .join("\n");
 
                                 const csvContent = `data:text/csv;charset=utf-8,${headers}\n${rows}`;
-                                console.log("CSV Content:", csvContent);
+                                // console.log("CSV Content:", csvContent);
                               }
                               // If counts is a JSON object, convert it to an array for CSV export
                               if (
@@ -943,7 +943,6 @@ export async function getServerSideProps(ctx) {
           token,
         );
         filters[key] = filterData;
-        console.log("the filter data for", key, "is", filterData);
       } catch (e) {
         console.error(`Error fetching initial page for ${key}:`, e.message);
         filters[key] = {
