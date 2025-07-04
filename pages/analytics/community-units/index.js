@@ -376,8 +376,13 @@ function CommunityUnitsAnalyticsPage(props) {
     { value: "facility_type__name", label: "Facility Type" },
     { value: "owner__owner_type__name", label: "Owner" },
     { value: "keph_level__name", label: "KEPH Level" },
+    { value: "service_category", label: "Service Category" },
+    { value: "owner__name", label: "Owner Name" },
+    { value: "infrastructure__category", label: "Infrastructure Category" },
     { value: "regulatory_body__name", label: "Regulatory Body" },
     { value: "infrastructure", label: "Infrastructure" },
+    { value: "specialty", label: "Specialty" },
+    { value: "specialty_category", label: "Specialty Category" },
     { value: "services", label: "Services" },
     { value: "bed_types", label: "Bed Types" },
   ];

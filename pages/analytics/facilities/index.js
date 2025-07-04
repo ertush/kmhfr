@@ -267,12 +267,17 @@ function FacilityHome(props) {
   // }
 
   // Function to fetch analytics data with current filters
-  const COLUMN_ORDER = [
+    const COLUMN_ORDER = [
     "facility_type__name",
     "owner__owner_type__name",
     "keph_level__name",
+    "service_category",
+    "owner__name",
+    "infrastructure__category",
     "regulatory_body__name",
     "infrastructure",
+    "specialty",
+    "specialty_category",
     "services",
     "bed_types",
   ];
