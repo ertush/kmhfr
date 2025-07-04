@@ -12,6 +12,9 @@ import {
   fetchSubCountiesApi,
   fetchWardsApi,
   fetchPaginatedFilterOptions,
+  fetchHumanResourcesDetatilsApi,
+  fetchInfrastructureDetatilsApi,
+  fetchServicesDetatilsApi,
 } from "../utils/mobiDataApi";
 
 export function getFilterMetaById(
@@ -93,6 +96,7 @@ const AnalyticsSideMenu = ({ filters, authToken, onFiltersChange }) => {
   const [subCountiesByCounty, setSubCountiesByCounty] = useState({});
   const [wardsBySubCounty, setWardsBySubCounty] = useState({});
   const [loadingChildren, setLoadingChildren] = useState({});
+  const [serviceDetails, setServiceDetails] = useState({});
 
   const initialSelectedFilters = useMemo(
     () => createInitialSelectedFilters(filters),
@@ -359,6 +363,44 @@ const AnalyticsSideMenu = ({ filters, authToken, onFiltersChange }) => {
         console.error(`Error fetching wards for sub-county ${subCountyId}:`, e);
       } finally {
         setLoadingChildren((prev) => ({ ...prev, [subCountyId]: false }));
+      }
+    },
+    [authToken],
+  );
+
+  const fetchServices = useCallback(
+    async (categoryId, nextPageUrl = null) => {
+      setLoadingChildren((prev) => ({ ...prev, [subCountyId]: true }));
+      try {
+        const data = await fetchServicesDetatilsApi(
+          categoryId,
+          authToken,
+          nextPageUrl,
+        );
+
+        setServiceDetails((prev) => {
+          const existingServices = prev[categoryId]?.options || [];
+          const newServices = data.results.map((item) => ({
+            id: item.id,
+            text: item.name,
+          }));
+
+          return {
+            ...prev,
+            [categoryId]: {
+              options: [...existingServices, ...newServices],
+              nextPageUrl: data.next,
+              hasMore: !!data.next,
+            },
+          };
+        });
+      } catch (e) {
+        console.error(
+          `Error fetching service details; service_category_id: ${subCountyId}:`,
+          e,
+        );
+      } finally {
+        setLoadingChildren((prev) => ({ ...prev, [categoryId]: false }));
       }
     },
     [authToken],
@@ -666,6 +708,7 @@ const AnalyticsSideMenu = ({ filters, authToken, onFiltersChange }) => {
       loadingChildren,
       fetchSubCounties,
       fetchWards,
+      fetchServices,
       areAllChildrenSelected,
       areSomeChildrenSelected,
       getAllDescendantIds,

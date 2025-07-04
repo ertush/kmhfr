@@ -12,9 +12,9 @@ export const fetchData = async (url, authToken) => {
   try {
     const { data } = await axios.get(url, {
       headers: {
-        'Authorization': `Bearer ${authToken}`,
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
+        Authorization: `Bearer ${authToken}`,
+        Accept: "application/json",
+        "Content-Type": "application/json",
       },
       withCredentials: false,
       baseURL: API_BASE_URL,
@@ -33,8 +33,61 @@ export const fetchData = async (url, authToken) => {
  * @param {string} [nextPageUrl=null] - URL for the next page of results.
  * @returns {Promise<Object>} Data containing sub-county options and pagination info.
  */
-export const fetchSubCountiesApi = async (countyId, authToken, nextPageUrl = null) => {
+export const fetchSubCountiesApi = async (
+  countyId,
+  authToken,
+  nextPageUrl = null,
+) => {
   const url = nextPageUrl || `/common/sub_counties/?county=${countyId}`;
+  return fetchData(url, authToken);
+};
+
+/**
+ * Fetches sub-counties for a given county ID.
+ * @param {string} categoryId - The ID of the county.
+ * @param {string} authToken - The authorization token.
+ * @param {string} [nextPageUrl=null] - URL for the next page of results.
+ * @returns {Promise<Object>} Data containing sub-county options and pagination info.
+ */
+export const fetchInfrastructureDetatilsApi = async (
+  categoryId,
+  authToken,
+  nextPageUrl = null,
+) => {
+  const url =
+    nextPageUrl || `/facilities/infrastructure/?category_id=${categoryId}`;
+  return fetchData(url, authToken);
+};
+
+/**
+ * Fetches sub-counties for a given county ID.
+ * @param {string} categoryId - The ID of the county.
+ * @param {string} authToken - The authorization token.
+ * @param {string} [nextPageUrl=null] - URL for the next page of results.
+ * @returns {Promise<Object>} Data containing sub-county options and pagination info.
+ */
+export const fetchServicesDetatilsApi = async (
+  categoryId,
+  authToken,
+  nextPageUrl = null,
+) => {
+  const url = nextPageUrl || `/facilities/services/?category=${categoryId}`;
+  return fetchData(url, authToken);
+};
+
+/**
+ * Fetches sub-counties for a given county ID.
+ * @param {string} categoryId - The ID of the county.
+ * @param {string} authToken - The authorization token.
+ * @param {string} [nextPageUrl=null] - URL for the next page of results.
+ * @returns {Promise<Object>} Data containing sub-county options and pagination info.
+ */
+export const fetchHumanResourcesDetatilsApi = async (
+  categoryId,
+  authToken,
+  nextPageUrl = null,
+) => {
+  const url = nextPageUrl || `/facilities/specialities/?category=${categoryId}`;
   return fetchData(url, authToken);
 };
 
@@ -45,11 +98,14 @@ export const fetchSubCountiesApi = async (countyId, authToken, nextPageUrl = nul
  * @param {string} [nextPageUrl=null] - URL for the next page of results.
  * @returns {Promise<Object>} Data containing ward options and pagination info.
  */
-export const fetchWardsApi = async (subCountyId, authToken, nextPageUrl = null) => {
+export const fetchWardsApi = async (
+  subCountyId,
+  authToken,
+  nextPageUrl = null,
+) => {
   const url = nextPageUrl || `/common/wards/?sub_county=${subCountyId}`;
   return fetchData(url, authToken);
 };
-
 
 /**
  * Fetches paginated filter options from a given API endpoint.
@@ -71,7 +127,10 @@ export async function fetchPaginatedFilterOptions(endpoint, token, page = 1) {
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error(`API Error: ${response.status} - ${response.statusText}`, errorText);
+      console.error(
+        `API Error: ${response.status} - ${response.statusText}`,
+        errorText,
+      );
       throw new Error(`Failed to fetch ${endpoint}: ${response.statusText}`);
     }
 
@@ -85,8 +144,18 @@ export async function fetchPaginatedFilterOptions(endpoint, token, page = 1) {
       totalPages: data.total_pages || 1,
     };
   } catch (error) {
-    console.error(`Error fetching paginated filter options from ${endpoint}:`, error);
-    return { results: [], next: null, previous: null, count: 0, currentPage: 1, totalPages: 1 };
+    console.error(
+      `Error fetching paginated filter options from ${endpoint}:`,
+      error,
+    );
+    return {
+      results: [],
+      next: null,
+      previous: null,
+      count: 0,
+      currentPage: 1,
+      totalPages: 1,
+    };
   }
 }
 
