@@ -5,7 +5,7 @@ import {
   getPaginationRowModel,
   getSortedRowModel,
 } from "@tanstack/react-table";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useCallback } from "react";
 import {
   Button,
   Popover,
@@ -21,12 +21,15 @@ import {
 import FilterListIcon from "@mui/icons-material/FilterList";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
+import { SearchIcon } from "@heroicons/react/outline";
 
-export function FacilityMatrixTable({ data }) {
+export function FacilityMatrixTable({ data, onFiltersChange }) {
   const [columnFilters, setColumnFilters] = useState([]);
   const [sorting, setSorting] = useState([]);
   const [anchorEl, setAnchorEl] = useState(null);
   const [filterExpandedGroups, setFilterExpandedGroups] = useState({});
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
 
   // Helper to determine nesting depth from data structure
   // analyzes the structure of the 'counts' data to determine
@@ -162,7 +165,7 @@ export function FacilityMatrixTable({ data }) {
     return columns;
   };
 
-  // Memoize columns
+  // Memorize columns
   const columns = useMemo(buildColumnHierarchy, [data]);
 
   // Flatten data for table rows
@@ -304,6 +307,18 @@ export function FacilityMatrixTable({ data }) {
     setColumnFilters([]);
   };
 
+  const getAllNodes = useCallback(() => {
+      const allNodes = [];
+      const traverse = (nodes) => {
+        nodes.forEach((node) => {
+          allNodes.push(node);
+          if (node.children) traverse(node.children);
+        });
+      };
+      traverse(table?.columns || []);
+      return allNodes;
+  }, [table]);
+
   // Recursive function to render the column filter tree in the popover
   // creates a nested list of checkboxes for column visibility control.
   const renderFilterTree = (cols) =>
@@ -427,6 +442,52 @@ export function FacilityMatrixTable({ data }) {
             >
               Reset All
             </Button>
+          <div className="mb-3 relative">
+            <SearchIcon className="w-5 h-5 text-gray-400 absolute left-3 top-2.5 pointer-events-none" />
+            <input
+              type="text"
+              placeholder="Search filters..."
+              value={searchTerm}
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+                const lowerCaseTerm = e.target.value.toLowerCase();
+                const allNodes = getAllNodes();
+                const results = allNodes.filter(
+                  (node) =>
+                    node.text && node.text.toLowerCase().includes(lowerCaseTerm),
+                );
+                setSearchResults(results);
+              }}
+              className="pl-10 pr-3 py-2 border border-gray-300 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            {searchTerm && searchResults.length > 0 && (
+              <ul className="absolute z-10 bg-white border border-gray-300 rounded-md mt-1 w-full max-h-60 overflow-y-auto">
+                {searchResults.map((result) => (
+                  <li
+                    key={result.id}
+                    className="px-3 py-2 hover:bg-blue-100 cursor-pointer"
+                    onClick={() => {
+                      const newFilters = { ...selectedFilters };
+                      newFilters[result.id] = !newFilters[result.id];
+                      setSelectedFilters(newFilters);
+                      if (onFiltersChange) {
+                        const filterObj = buildFilterObject(newFilters, {
+                          treeData,
+                          dynamicFilterOptions,
+                          subCountiesByCounty,
+                          wardsBySubCounty,
+                          findNodeInTree,
+                        });
+                        onFiltersChange(newFilters, filterObj);
+                      }
+                    }}
+                  >
+                    {result.text}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
           </div>
           <Divider sx={{ mb: 2 }} />
           <FormGroup>

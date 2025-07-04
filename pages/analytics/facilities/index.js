@@ -267,7 +267,8 @@ function FacilityHome(props) {
   // }
 
   // Function to fetch analytics data with current filters
-    const COLUMN_ORDER = [
+
+  const COLUMN_ORDER = [
     "facility_type__name",
     "owner__owner_type__name",
     "keph_level__name",
@@ -440,10 +441,31 @@ function FacilityHome(props) {
                         className="flex items-center justify-center bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2.5 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-opacity-50"
                         onClick={async () => {
                           // Build export body based on current filters and columns
-                          const exportBody = transformFiltersToAPIBody(
-                            analyticsFilters,
-                            columnDimensions,
-                          );
+                          // let rowComparison = "county";
+
+                          // if (analyticsFilters.national) rowComparison = "national";
+                          // else if (analyticsFilters.county) rowComparison = "county";
+                          // else if (analyticsFilters["sub-county"]) rowComparison = "subcounty";
+                          // else if (analyticsFilters.ward) rowComparison = "ward";
+
+                          // // Always send colDims in the specified COLUMN_ORDER
+                          // const orderedColDims = Array.isArray(columnDimensions)
+                          //   ? columnDimensions
+                          //       .slice(0, 5)
+                          //       .sort((a, b) => COLUMN_ORDER.indexOf(a) - COLUMN_ORDER.indexOf(b))
+                          //   : columnDimensions;
+
+                          // const exportBody = {
+                          //   col_dims: orderedColDims,
+                          //   report_type: "matrix_report",
+                          //   metric: "number_of_facilities",
+                          //   row_comparison: rowComparison,
+                          //   filters: analyticsFilterObj,
+                          // };
+
+                          const exportBody = fetchAnalyticsData(analyticsFilters, columnDimensions);
+
+                          // console.log("excel body:", exportBody);
                           try {
                             const response = await fetch(
                               `${process.env.NEXT_PUBLIC_API_URL}/analytics/matrix-report/?format=json`,
@@ -543,7 +565,8 @@ function FacilityHome(props) {
                                   `Data table ${exportBody?.col_dims} exported as Excel.`,
                                 );
                               }
-                              // Create a link to download the CSV file
+                              // TODO: Create a link to download the CSV file
+
                               // const data = await response.json();
                               // let counts = data?.results?.counts;
                               // let flatRows = [];
@@ -614,11 +637,29 @@ function FacilityHome(props) {
                         className="flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
                         onClick={async () => {
                           // Build export body based on current filters and columns
-                          const exportBody = transformFiltersToAPIBody(
-                            analyticsFilters,
-                            columnDimensions,
-                          );
-                          // console.log("excel body:", exportBody?.col_dims);
+                          // let rowComparison = "county";
+                          // if (analyticsFilters.national) rowComparison = "national";
+                          // else if (analyticsFilters.county) rowComparison = "county";
+                          // else if (analyticsFilters["sub-county"]) rowComparison = "sub-county";
+                          // else if (analyticsFilters.ward) rowComparison = "ward";
+
+                          // const orderedColDims = Array.isArray(columnDimensions)
+                          //   ? columnDimensions
+                          //       .slice(0, 5)
+                          //       .sort((a, b) => COLUMN_ORDER.indexOf(a) - COLUMN_ORDER.indexOf(b))
+                          //   : [columnDimensions];
+                          
+                          // const exportBody = {
+                          //   col_dims: orderedColDims,
+                          //   report_type: "matrix_report",
+                          //   metric: "number_of_facilities",
+                          //   row_comparison: rowComparison,
+                          //   filters: analyticsFilterObj,
+                          // };
+                          const exportBody = fetchAnalyticsData(analyticsFilters, columnDimensions);
+
+                          // console.log("excel body:", exportBody);
+
                           try {
                             const response = await fetch(
                               `${process.env.NEXT_PUBLIC_API_URL}/analytics/matrix-report/?format=json`,
