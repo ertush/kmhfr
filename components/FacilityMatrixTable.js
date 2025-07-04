@@ -84,8 +84,15 @@ export function FacilityMatrixTable({ data }) {
 
       const uniqueKeys = [...new Set(columnKeys)];
 
+      // Filter out any keys that match the base_comparison to avoid duplicate county columns
+      const filteredKeys = uniqueKeys.filter((key) => {
+        const baseComparisonLower = data.base_comparison?.toLowerCase();
+        const keyLower = key.toLowerCase();
+        return keyLower !== baseComparisonLower && keyLower !== 'county';
+      });
+
       // Sort keys alphabetically for consistent column order
-      uniqueKeys.sort().forEach((key) => {
+      filteredKeys.sort().forEach((key) => {
         columns.push({
           id: key,
           header: key.replace(/_/g, " ").toUpperCase(),
@@ -112,6 +119,15 @@ export function FacilityMatrixTable({ data }) {
           const isLeaf =
             typeof value !== "object" || value === null || Array.isArray(value);
           const fullKey = prefix ? `${prefix}_${key}` : key; // Create unique accessor key for flattened data
+
+          if (key === 'county' || key === 'COUNTY' || key.toLowerCase() === 'county') {
+            if (!isLeaf) {
+              // Unwrap county object - process its contents directly without creating a "COUNTY" header
+              const unwrappedColumns = buildNestedColumns(value, prefix);
+              levelColumns.push(...unwrappedColumns);
+            }
+            return;
+          }
 
           if (isLeaf) {
             levelColumns.push({
@@ -203,73 +219,74 @@ export function FacilityMatrixTable({ data }) {
     const headerGroups = table.getHeaderGroups();
     if (headerGroups.length === 0) return null;
 
+    // Helper function to check if a header is a county-related column
+    const isCountyColumn = (header) => {
+      const headerId = header.id?.toLowerCase() || '';
+      const headerText = header.column.columnDef.header?.toLowerCase() || '';
+      
+      const countyVariations = [
+        'county', 'subcounty', 'sub-county', 'sub_county', 'ward', 'name'
+      ];
+      
+      return countyVariations.some(variation => 
+        headerId.includes(variation) || headerText.includes(variation)
+      );
+    };
+
     return headerGroups.map((headerGroup, groupIndex) => (
       <tr key={headerGroup.id}>
-        {/* For all header rows except the top, add an empty cell for alignment */}
-        {groupIndex > 0 && (
+        {/* Only render the "name" (COUNTY) header in the first row */}
+        {groupIndex === 0 && (
           <th
-            className="bg-blue-50 border border-gray-300"
-            style={{ minWidth: columns[0]?.size || 150 }}
-          />
+            key="name-header"
+            colSpan={1}
+            rowSpan={headerGroups.length}
+            className="px-6 py-4 text-left text-sm font-bold text-gray-700 uppercase tracking-wider border border-gray-300 bg-blue-50 sticky left-0 z-0"
+            style={{ minWidth: 150 }}
+          >
+            {data.base_comparison?.toUpperCase() || "COUNTY"}
+          </th>
         )}
-        {headerGroup.headers.map((header) => {
-          // Render the "name" header in the first row, skip it elsewhere
-          if (header.id === "name" && groupIndex > 0) {
-            return null;
-          }
-          if (header.id === "name" && groupIndex === 0) {
+        {/* Render all other headers, excluding county-related columns */}
+        {headerGroup.headers
+          .filter((header) => !isCountyColumn(header))
+          .map((header) => {
+            const isLeaf = !header.column.columns;
+            const headerContent = (
+              <div className="flex items-center justify-center gap-1">
+                {flexRender(header.column.columnDef.header, header.getContext())}
+                {isLeaf && (
+                  <span className="text-gray-500">
+                    {{
+                      asc: "↑",
+                      desc: "↓",
+                    }[header.column.getIsSorted()] ?? null}
+                  </span>
+                )}
+              </div>
+            );
             return (
               <th
                 key={header.id}
                 colSpan={header.colSpan}
-                rowSpan={headerGroups.length}
-                className="px-6 py-4 text-left text-sm font-bold text-gray-700 uppercase tracking-wider border border-gray-300 bg-blue-50 sticky left-0 z-0"
+                rowSpan={isLeaf ? headerGroups.length - groupIndex : 1}
+                className={`px-3 py-4 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider border border-gray-300
+                             ${isLeaf ? "bg-blue-100 cursor-pointer hover:bg-blue-200" : "bg-blue-50"}
+                             ${groupIndex % 2 === 0 ? "bg-blue-50" : "bg-blue-100"}
+                            `}
                 style={{ minWidth: header.getSize() }}
+                onClick={
+                  isLeaf ? header.column.getToggleSortingHandler() : undefined
+                }
               >
-                {flexRender(
-                  header.column.columnDef.header,
-                  header.getContext(),
-                )}
+                {headerContent}
               </th>
             );
-          }
-          // Render all other headers
-          const isLeaf = !header.column.columns;
-          const headerContent = (
-            <div className="flex items-center justify-center gap-1">
-              {flexRender(header.column.columnDef.header, header.getContext())}
-              {isLeaf && (
-                <span className="text-gray-500">
-                  {{
-                    asc: "↑",
-                    desc: "↓",
-                  }[header.column.getIsSorted()] ?? null}
-                </span>
-              )}
-            </div>
-          );
-          return (
-            <th
-              key={header.id}
-              colSpan={header.colSpan}
-              rowSpan={isLeaf ? headerGroups.length - groupIndex : 1}
-              className={`px-3 py-4 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider border border-gray-300
-                        ${isLeaf ? "bg-blue-100 cursor-pointer hover:bg-blue-200" : "bg-blue-50"}
-                        ${groupIndex % 2 === 0 ? "bg-blue-50" : "bg-blue-100"}
-                        `}
-              style={{ minWidth: header.getSize() }}
-              onClick={
-                isLeaf ? header.column.getToggleSortingHandler() : undefined
-              }
-            >
-              {headerContent}
-            </th>
-          );
-        })}
+          })}
       </tr>
     ));
   };
-
+  
   // Popover and column visibility logic
   const handleFilterClick = (event) => setAnchorEl(event.currentTarget);
   const handleFilterClose = () => setAnchorEl(null);

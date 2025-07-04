@@ -779,71 +779,72 @@ function FacilityHome(props) {
                 {tab === "dynamic_report" && (
                   <div className="flex-1 w-full">
                     <label
-                      htmlFor="column-dimensions"
-                      className="block text-sm font-semibold text-gray-700 mb-3"
-                    >
-                      Select Columns{" "}
-                      <span className="text-gray-500 font-normal">
-                        (Maximum 5)
-                      </span>
-                    </label>
-                    <Select
-                      id="column-dimensions"
-                      isMulti
-                      options={dynamicColumnOptions}
-                      onChange={handleColumnDimensionChange}
-                      value={dynamicColumnOptions.filter((option) =>
-                        columnDimensions.includes(option.value),
-                      )}
-                      className="basic-multi-select"
-                      classNamePrefix="select"
-                      placeholder="Choose columns to include in your report..."
-                      styles={{
-                        control: (base, state) => ({
-                          ...base,
-                          minHeight: "44px",
-                          borderColor: state.isFocused ? "#3B82F6" : "#D1D5DB",
-                          boxShadow: state.isFocused
-                            ? "0 0 0 3px rgba(59, 130, 246, 0.1)"
-                            : "none",
-                          "&:hover": {
-                            borderColor: "#9CA3AF",
-                          },
-                        }),
-                        multiValue: (base) => ({
-                          ...base,
-                          backgroundColor: "#EFF6FF",
-                          borderRadius: "6px",
-                        }),
-                        multiValueLabel: (base) => ({
-                          ...base,
-                          color: "#1E40AF",
-                          fontWeight: "500",
-                        }),
-                        multiValueRemove: (base) => ({
-                          ...base,
-                          color: "#3B82F6",
-                          "&:hover": {
-                            backgroundColor: "#DBEAFE",
+                        htmlFor="column-dimensions"
+                        className="block text-sm font-semibold text-gray-700 mb-3"
+                      >
+                        Select Columns{" "}
+                        <span className="text-gray-500 font-normal">
+                          (Maximum 3)
+                        </span>
+                      </label>
+                      <Select
+                        id="column-dimensions"
+                        isMulti
+                        options={dynamicColumnOptions}
+                        onChange={handleColumnDimensionChange}
+                        value={dynamicColumnOptions.filter((option) =>
+                          columnDimensions.includes(option.value),
+                        )}
+                        className="basic-multi-select"
+                        classNamePrefix="select"
+                        placeholder="Choose columns to include in your report..."
+                        isOptionDisabled={() => columnDimensions.length >= 3}
+                        styles={{
+                          control: (base, state) => ({
+                            ...base,
+                            minHeight: "44px",
+                            borderColor: state.isFocused ? "#3B82F6" : "#D1D5DB",
+                            boxShadow: state.isFocused
+                              ? "0 0 0 3px rgba(59, 130, 246, 0.1)"
+                              : "none",
+                            "&:hover": {
+                              borderColor: "#9CA3AF",
+                            },
+                          }),
+                          multiValue: (base) => ({
+                            ...base,
+                            backgroundColor: "#EFF6FF",
+                            borderRadius: "6px",
+                          }),
+                          multiValueLabel: (base) => ({
+                            ...base,
                             color: "#1E40AF",
-                          },
-                        }),
-                        option: (base, state) => ({
-                          ...base,
-                          backgroundColor: state.isSelected
-                            ? "#3B82F6"
-                            : state.isFocused
-                              ? "#EFF6FF"
-                              : "white",
-                          color: state.isSelected ? "white" : "#374151",
-                          "&:hover": {
+                            fontWeight: "500",
+                          }),
+                          multiValueRemove: (base) => ({
+                            ...base,
+                            color: "#3B82F6",
+                            "&:hover": {
+                              backgroundColor: "#DBEAFE",
+                              color: "#1E40AF",
+                            },
+                          }),
+                          option: (base, state) => ({
+                            ...base,
                             backgroundColor: state.isSelected
                               ? "#3B82F6"
-                              : "#EFF6FF",
-                          },
-                        }),
-                      }}
-                    />
+                              : state.isFocused
+                                ? "#EFF6FF"
+                                : "white",
+                            color: state.isSelected ? "white" : "#374151",
+                            "&:hover": {
+                              backgroundColor: state.isSelected
+                                ? "#3B82F6"
+                                : "#EFF6FF",
+                            },
+                          }),
+                        }}
+                      />
                     {columnDimensions.length > 0 && (
                       <div className="mt-3 flex items-center text-sm text-gray-600">
                         <svg
