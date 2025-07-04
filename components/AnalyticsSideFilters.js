@@ -76,7 +76,7 @@ export function buildFilterObject(
   return filterObj;
 }
 const AnalyticsSideMenu = ({ filters, authToken, onFiltersChange }) => {
-  const [expandedNodes, setExpandedNodes] = useState({
+  const [expandedNodes, setExpandedNodes] = useState({ 
     level: false,
     counties: false,
     facility_types: false,
