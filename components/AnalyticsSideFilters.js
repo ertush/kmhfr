@@ -115,7 +115,17 @@ export function buildFilterObject(
 }
 
 const AnalyticsSideMenu = ({ filters, authToken, onFiltersChange }) => {
-  const [expandedNodes, setExpandedNodes] = useState({});
+  const [expandedNodes, setExpandedNodes] = useState({ 
+    level: false,
+    counties: false,
+    facility_types: false,
+    services: false,
+    ownership: false,
+    regulatory_bodies: false,
+    infrastructure_categories: false,
+    status: false,
+    keph_level: false,
+  });
 
   const [dynamicFilterOptions, setDynamicFilterOptions] = useState({});
   const [loadingMore, setLoadingMore] = useState({});

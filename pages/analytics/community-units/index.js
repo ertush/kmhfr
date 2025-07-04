@@ -266,6 +266,74 @@ function CommunityUnitsAnalyticsPage(props) {
     });
   }
 
+  const transformFiltersToAPIBody = (selectedFilters, colDims) => {
+    // Limit to a maximum of 5 at a time
+    const limitedColDims = Array.isArray(colDims) ? colDims.slice(0, 5) : [colDims];
+
+    const body = {
+      col_dims: limitedColDims.join(","),
+      report_type: "matrix_report",
+      metric: "number_of_facilities",
+      row_comparison: "county",
+      filters: {},
+    };
+
+    // Map level selections to row_comparison
+    if (selectedFilters.national) {
+      body.row_comparison = "national";
+    } else if (selectedFilters.county) {
+      body.row_comparison = "county";
+    } else if (selectedFilters["sub-county"]) {
+      body.row_comparison = "subcounty";
+    } else if (selectedFilters.ward) {
+      body.row_comparison = "ward";
+    }
+
+    // Mapping selected UUIDs back to their API filter categories.
+    const filterIdToCategoryMap = {};
+    for (const categoryKey in filters) {
+      const categoryData = filters[categoryKey];
+      if (categoryData && categoryData.results && Array.isArray(categoryData.results)) {
+        categoryData.results.forEach(item => {
+          filterIdToCategoryMap[item.id] = categoryKey;
+        });
+      }
+    }
+
+    for (const filterId in selectedFilters) {
+      if (selectedFilters[filterId] === true) {
+        // Skip static 'level' filters as they are handled by row_comparison
+        if (['national', 'county', 'sub-county', 'ward', 'by-service-category', 'by-service-availability'].includes(filterId)) {
+          continue;
+        }
+
+        const category = filterIdToCategoryMap[filterId];
+        if (category) {
+          let apiFilterKey = category;
+
+          if (category === 'owner_types') {
+            apiFilterKey = 'owners';
+          } else if (category === 'regulating_bodies') {
+            apiFilterKey = 'regulatory_bodies';
+          } else if (category === 'facility_status') {
+            apiFilterKey = 'operation_status';
+          } else if (category === 'keph_level') {
+            apiFilterKey = 'keph_levels';
+          }
+
+          if (!body.filters[apiFilterKey]) {
+            body.filters[apiFilterKey] = [];
+          }
+          body.filters[apiFilterKey].push(filterId);
+        } else {
+          console.warn(`Selected filter ID ${filterId} not found in filterIdToCategoryMap. It might be a static filter or an unmapped dynamic filter.`);
+        }
+      }
+    }
+
+    return body;
+  };
+  
   // Function to fetch analytics data with current filters
   const fetchAnalyticsData = async (
     currentSelectedFilters = {},

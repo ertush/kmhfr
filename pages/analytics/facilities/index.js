@@ -17,7 +17,7 @@ import { useSearchParams } from "next/navigation";
 import withAuth from "../../../components/ProtectedRoute";
 import { ANALYTICS_FILTER_TREE_DATA } from "../../../utils/analyticsFilterConfig";
 import { fetchPaginatedFilterOptions } from "../../../utils/filterApi";
-import { data } from "jquery";
+// import { data } from "jquery";
 // import {jsPDF} from "jspdf";
 // import autoTable from "jspdf-autotable";
 
@@ -283,6 +283,74 @@ function FacilityHome(props) {
     "bed_types",
   ];
 
+  const transformFiltersToAPIBody = (selectedFilters, colDims) => {
+    // Limit to a maximum of 5 at a time
+    const limitedColDims = Array.isArray(colDims) ? colDims.slice(0, 5) : [colDims];
+
+    const body = {
+      col_dims: limitedColDims.join(","),
+      report_type: "matrix_report",
+      metric: "number_of_facilities",
+      row_comparison: "county",
+      filters: {},
+    };
+
+    // Map level selections to row_comparison
+    if (selectedFilters.national) {
+      body.row_comparison = "national";
+    } else if (selectedFilters.county) {
+      body.row_comparison = "county";
+    } else if (selectedFilters["sub-county"]) {
+      body.row_comparison = "subcounty";
+    } else if (selectedFilters.ward) {
+      body.row_comparison = "ward";
+    }
+
+    // Mapping selected UUIDs back to their API filter categories.
+    const filterIdToCategoryMap = {};
+    for (const categoryKey in filters) {
+      const categoryData = filters[categoryKey];
+      if (categoryData && categoryData.results && Array.isArray(categoryData.results)) {
+        categoryData.results.forEach(item => {
+          filterIdToCategoryMap[item.id] = categoryKey;
+        });
+      }
+    }
+
+    for (const filterId in selectedFilters) {
+      if (selectedFilters[filterId] === true) {
+        // Skip static 'level' filters as they are handled by row_comparison
+        if (['national', 'county', 'sub-county', 'ward', 'by-service-category', 'by-service-availability'].includes(filterId)) {
+          continue;
+        }
+
+        const category = filterIdToCategoryMap[filterId];
+        if (category) {
+          let apiFilterKey = category;
+
+          if (category === 'owner_types') {
+            apiFilterKey = 'owners';
+          } else if (category === 'regulating_bodies') {
+            apiFilterKey = 'regulatory_bodies';
+          } else if (category === 'facility_status') {
+            apiFilterKey = 'operation_status';
+          } else if (category === 'keph_level') {
+            apiFilterKey = 'keph_levels';
+          }
+
+          if (!body.filters[apiFilterKey]) {
+            body.filters[apiFilterKey] = [];
+          }
+          body.filters[apiFilterKey].push(filterId);
+        } else {
+          console.warn(`Selected filter ID ${filterId} not found in filterIdToCategoryMap. It might be a static filter or an unmapped dynamic filter.`);
+        }
+      }
+    }
+
+    return body;
+  };
+
   const fetchAnalyticsData = async (
     currentSelectedFilters = {},
     colDims = ["bed_types"],
@@ -291,7 +359,7 @@ function FacilityHome(props) {
 
     try {
       let body;
-      if (tab === "dynamic_report") {
+      if (tab === "dynamic_report ") {
         // Existing dynamic report logic
         let rowComparison = "county";
         if (analyticsFilters.national) rowComparison = "national";
@@ -463,9 +531,9 @@ function FacilityHome(props) {
                           //   filters: analyticsFilterObj,
                           // };
 
-                          const exportBody = fetchAnalyticsData(analyticsFilters, columnDimensions);
+                          const exportBody = transformFiltersToAPIBody(analyticsFilters, columnDimensions);
+                          console.log("excel body:", exportBody);
 
-                          // console.log("excel body:", exportBody);
                           try {
                             const response = await fetch(
                               `${process.env.NEXT_PUBLIC_API_URL}/analytics/matrix-report/?format=json`,
@@ -656,9 +724,9 @@ function FacilityHome(props) {
                           //   row_comparison: rowComparison,
                           //   filters: analyticsFilterObj,
                           // };
-                          const exportBody = fetchAnalyticsData(analyticsFilters, columnDimensions);
+                          const exportBody = transformFiltersToAPIBody(analyticsFilters, columnDimensions);
 
-                          // console.log("excel body:", exportBody);
+                          console.log("excel body:", exportBody);
 
                           try {
                             const response = await fetch(
