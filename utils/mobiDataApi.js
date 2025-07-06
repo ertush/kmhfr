@@ -49,7 +49,7 @@ export const fetchSubCountiesApi = async (
  * @param {string} [nextPageUrl=null] - URL for the next page of results.
  * @returns {Promise<Object>} Data containing sub-county options and pagination info.
  */
-export const fetchInfrastructureDetatilsApi = async (
+export const fetchInfrastructureDetailsApi = async (
   categoryId,
   authToken,
   nextPageUrl = null,
@@ -66,7 +66,7 @@ export const fetchInfrastructureDetatilsApi = async (
  * @param {string} [nextPageUrl=null] - URL for the next page of results.
  * @returns {Promise<Object>} Data containing sub-county options and pagination info.
  */
-export const fetchServicesDetatilsApi = async (
+export const fetchServicesDetailsApi = async (
   categoryId,
   authToken,
   nextPageUrl = null,
@@ -82,7 +82,7 @@ export const fetchServicesDetatilsApi = async (
  * @param {string} [nextPageUrl=null] - URL for the next page of results.
  * @returns {Promise<Object>} Data containing sub-county options and pagination info.
  */
-export const fetchSpecialtyDetatilsApi = async (
+export const fetchSpecialityDetailsApi = async (
   categoryId,
   authToken,
   nextPageUrl = null,
@@ -117,7 +117,13 @@ export const fetchWardsApi = async (
  */
 export async function fetchPaginatedFilterOptions(endpoint, token, page = 1) {
   try {
-    const url = `${API_BASE_URL}${endpoint}?page=${page}`;
+    let url = `${API_BASE_URL}${endpoint}?page=${page}`;
+    if (endpoint.includes("facility_types_details")) {
+        url = `${API_BASE_URL}${endpoint}`;
+    }
+    if (!token) {
+      throw new Error("Authorization token is required");
+    }
     const response = await fetch(url, {
       headers: {
         Authorization: `Bearer ${token}`,
