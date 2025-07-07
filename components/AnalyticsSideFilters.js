@@ -14,7 +14,8 @@ import {
   fetchPaginatedFilterOptions,
   fetchSpecialityDetailsApi,
   fetchInfrastructureDetailsApi,
-  fetchServicesDetailsApi, // Keep this for service categories
+  fetchServicesDetailsApi,
+  fetchFacilityTypeDetailsApi,
 } from "../utils/mobiDataApi";
 
 export function getFilterMetaById(
@@ -25,7 +26,7 @@ export function getFilterMetaById(
     serviceDetails,
     specialityDetails,
     infrastructureDetails,
-    facilityDetails, // Added facilityDetails
+    facilityDetails,
     subCountiesByCounty,
     wardsBySubCounty,
     findNodeInTree,
@@ -37,6 +38,7 @@ export function getFilterMetaById(
       .flatMap((cat) => cat.options)
       .find((c) => c.id === filterId);
 
+  // Consolidated checks for dynamically loaded children
   if (!filter) {
     filter = Object.values(subCountiesByCounty)
       .flatMap((sc) => sc.options || [])
@@ -62,7 +64,7 @@ export function getFilterMetaById(
       .flatMap((id) => id.options || [])
       .find((opt) => opt.id === filterId);
   }
-  if (!filter) { // New check for facilityDetails
+  if (!filter) {
     filter = Object.values(facilityDetails)
       .flatMap((fd) => fd.options || [])
       .find((opt) => opt.id === filterId);
@@ -80,7 +82,7 @@ export function buildFilterObject(
     serviceDetails,
     specialityDetails,
     infrastructureDetails,
-    facilityDetails, // Added facilityDetails
+    facilityDetails,
     wardsBySubCounty,
     findNodeInTree,
   },
@@ -88,20 +90,19 @@ export function buildFilterObject(
   const filterObj = {};
   const groupingKeys = ["national", "county", "sub-county", "ward"];
 
-  console.log("Building filter object with selected filters:", specialityDetails);
   Object.entries(selectedFilters)
     .filter(([_, isSelected]) => isSelected)
     .forEach(([filterId]) => {
       if (groupingKeys.includes(filterId)) return;
 
       const filter = getFilterMetaById(filterId, {
-        treeData,
+        treeData: ANALYTICS_FILTER_TREE_DATA,
         dynamicFilterOptions,
         subCountiesByCounty,
         serviceDetails,
         specialityDetails,
         infrastructureDetails,
-        facilityDetails, // Added facilityDetails
+        facilityDetails,
         wardsBySubCounty,
         findNodeInTree,
       });
@@ -112,19 +113,9 @@ export function buildFilterObject(
     });
   return filterObj;
 }
+
 const AnalyticsSideMenu = ({ filters, authToken, onFiltersChange }) => {
-  const [expandedNodes, setExpandedNodes] = useState({
-    level: false,
-    counties: false,
-    facility_types: false,
-    service_categories: false,
-    ownership: false,
-    regulatory_bodies: false,
-    infrastructure_categories: false,
-    speciality_categories: false,
-    status: false,
-    keph_level: false,
-  });
+  const [expandedNodes, setExpandedNodes] = useState({});
 
   const [dynamicFilterOptions, setDynamicFilterOptions] = useState({});
   const [loadingMore, setLoadingMore] = useState({});
@@ -132,9 +123,9 @@ const AnalyticsSideMenu = ({ filters, authToken, onFiltersChange }) => {
   const [wardsBySubCounty, setWardsBySubCounty] = useState({});
   const [specialityDetails, setSpecialityDetails] = useState({});
   const [loadingChildren, setLoadingChildren] = useState({});
-  const [serviceDetails, setServiceDetails] = useState({}); // This state will now hold service details by category
-  const [infrastructureDetails, setInfrastructureDetails] = useState({}); // This state will hold infrastructure details by category
-  const [facilityDetails, setFacilityDetails] = useState({}); // New state for facility details by facility type
+  const [serviceDetails, setServiceDetails] = useState({});
+  const [infrastructureDetails, setInfrastructureDetails] = useState({});
+  const [facilityDetails, setFacilityDetails] = useState({});
 
   const initialSelectedFilters = useMemo(
     () => createInitialSelectedFilters(filters),
@@ -156,13 +147,9 @@ const AnalyticsSideMenu = ({ filters, authToken, onFiltersChange }) => {
       const initialLoadingState = {};
 
       for (const node of ANALYTICS_FILTER_TREE_DATA) {
-        const categoryKey = node.filterCategory;
-        if (
-          ["counties", "sub_counties", "wards"].includes(categoryKey) &&
-          !filters[categoryKey] 
-        ) {
-          continue;
-        }
+        if (!node.isDynamic && node.id !== "grouping") continue;
+
+        const categoryKey = node.filterCategory || node.id;
 
         if (
           categoryKey &&
@@ -182,7 +169,7 @@ const AnalyticsSideMenu = ({ filters, authToken, onFiltersChange }) => {
             pageSize: filters[categoryKey].page_size || 400,
           };
           initialLoadingState[categoryKey] = false;
-        } else if (node.id === "grouping") { 
+        } else if (node.id === "grouping") {
           initialDynamicState[node.id] = {
             options: node.children.map((child) => ({
               id: child.id,
@@ -196,7 +183,7 @@ const AnalyticsSideMenu = ({ filters, authToken, onFiltersChange }) => {
           };
           initialLoadingState[node.id] = false;
         }
-        else if (categoryKey && authToken) {
+        else if (node.isDynamic && categoryKey && authToken) { // Fetch if dynamic and no initial data
           initialLoadingState[categoryKey] = true;
           try {
             let endpoint = `/common/${categoryKey}/`;
@@ -243,7 +230,7 @@ const AnalyticsSideMenu = ({ filters, authToken, onFiltersChange }) => {
           } finally {
             initialLoadingState[categoryKey] = false;
           }
-        } else {
+        } else { // Fallback for non-dynamic or no-auth dynamic nodes
           initialDynamicState[categoryKey] = {
             options: [],
             nextPageUrl: null,
@@ -273,6 +260,8 @@ const AnalyticsSideMenu = ({ filters, authToken, onFiltersChange }) => {
         const newFilters = { ...prev };
 
         if (isLevel) {
+          // This logic seems specific to "grouping" level filters
+          // Consider if these should be mutually exclusive more broadly
           newFilters.national = false;
           newFilters.county = false;
           newFilters["sub-county"] = false;
@@ -291,7 +280,7 @@ const AnalyticsSideMenu = ({ filters, authToken, onFiltersChange }) => {
           [childId]: !selectedFilters[childId],
         };
         const filterObj = buildFilterObject(newFilters, {
-          treeData,
+          treeData: ANALYTICS_FILTER_TREE_DATA, // Use base tree data for consistent lookup
           dynamicFilterOptions,
           subCountiesByCounty,
           serviceDetails,
@@ -439,13 +428,12 @@ const AnalyticsSideMenu = ({ filters, authToken, onFiltersChange }) => {
           authToken,
           nextPageUrl,
         );
-        console.log("Fetched specialty details:", data);
         setSpecialityDetails((prev) => {
           const existingSpecialties = prev[categoryId]?.options || [];
           const newSpecialties = data.results.map((item) => ({
             id: item.id,
             text: item.name,
-            filterKey: "speciality_categories",
+            filterKey: "speciality",
             filterValue: item.id,
           }));
           return {
@@ -479,14 +467,12 @@ const AnalyticsSideMenu = ({ filters, authToken, onFiltersChange }) => {
           nextPageUrl,
         );
 
-        console.log("Fetched service details:", data);
-
         setServiceDetails((prev) => {
           const existingServices = prev[categoryId]?.options || [];
           const newServices = data.results.map((item) => ({
             id: item.id,
             text: item.name,
-            filterKey: "service_categories",
+            filterKey: "facility_types_details",
             filterValue: item.id,
           }));
 
@@ -514,7 +500,7 @@ const AnalyticsSideMenu = ({ filters, authToken, onFiltersChange }) => {
   const fetchInfrastructureCategoryDetails = useCallback(
     async (categoryId, nextPageUrl = null) => {
       setLoadingChildren((prev) => ({ ...prev, [categoryId]: true }));
-      try {   
+      try {
 
         const data = await fetchInfrastructureDetailsApi(
           categoryId,
@@ -527,7 +513,7 @@ const AnalyticsSideMenu = ({ filters, authToken, onFiltersChange }) => {
           const newInfrastructure = data.results.map((item) => ({
             id: item.id,
             text: item.name,
-            filterKey: "infrastructure", // Changed filterKey to infrastructure
+            filterKey: "infrastructure",
             filterValue: item.id,
           }));
           return {
@@ -551,12 +537,16 @@ const AnalyticsSideMenu = ({ filters, authToken, onFiltersChange }) => {
     [authToken],
   );
 
-  const fetchFacilityTypeDetails = useCallback( // New fetch function for facility details
+  // Renamed the local function to better reflect its new origin
+  const handleFetchFacilityTypeDetails = useCallback(
     async (facilityTypeId, nextPageUrl = null) => {
       setLoadingChildren((prev) => ({ ...prev, [facilityTypeId]: true }));
       try {
-        const url = nextPageUrl || `/facilities/facility_types_details/?is_parent=false&parent=${facilityTypeId}`;
-        const data = await fetchPaginatedFilterOptions(url, authToken);
+        const data = await fetchFacilityTypeDetailsApi(
+          facilityTypeId,
+          authToken,
+          nextPageUrl,
+        );
 
         setFacilityDetails((prev) => {
           const existingDetails = prev[facilityTypeId]?.options || [];
@@ -590,6 +580,7 @@ const AnalyticsSideMenu = ({ filters, authToken, onFiltersChange }) => {
 
   const buildCountyTree = useCallback(() => {
     const counties =
+      dynamicFilterOptions.counties?.options ||
       filters.counties?.results?.map((item) => ({
         id: item.id,
         text: item.name,
@@ -602,7 +593,7 @@ const AnalyticsSideMenu = ({ filters, authToken, onFiltersChange }) => {
       hasMore: !!subCountiesByCounty[county.id]?.nextPageUrl,
       isLoading: !!loadingChildren[county.id],
     }));
-  }, [filters.counties, subCountiesByCounty, loadingChildren]);
+  }, [filters.counties, subCountiesByCounty, loadingChildren, dynamicFilterOptions.counties]);
 
   const buildSubCountyChildren = useCallback(
     (subCounty) => ({
@@ -615,6 +606,7 @@ const AnalyticsSideMenu = ({ filters, authToken, onFiltersChange }) => {
   );
 
   const treeData = useMemo(() => {
+    // Start with the base configuration from analyticsFilterConfig
     return ANALYTICS_FILTER_TREE_DATA.map((node) => {
       if (node.id === "counties") {
         return {
@@ -622,21 +614,58 @@ const AnalyticsSideMenu = ({ filters, authToken, onFiltersChange }) => {
           children: buildCountyTree(),
         };
       }
+      // "sub_counties" and "wards" are populated as children of "counties" and "sub-counties" respectively,
       if (["sub_counties", "wards"].includes(node.id)) {
         return null;
       }
 
-      if (node.id === "speciality_categories") {
+      // Handle nested dynamic categories (Speciality, Services, Infrastructure, Facility Types)
+      if (
+        node.id === "speciality_categories" ||
+        node.id === "facilities" ||
+        node.id === "infrastructure" ||
+        node.id === "service_categories"
+      ) {
         const categories =
           dynamicFilterOptions[node.filterCategory]?.options || [];
         return {
           ...node,
-          children: categories.map((cat) => ({
-            ...cat,
-            children: specialityDetails[cat.id]?.options || [],
-            hasMore: !!specialityDetails[cat.id]?.nextPageUrl,
-            isLoading: !!loadingChildren[cat.id],
-          })),
+          children: categories.map((cat) => {
+            let details = [];
+            let hasMoreDetails = false;
+            let isLoadingDetails = false;
+            let detailFilterKey = "";
+
+            if (node.id === "speciality_categories") {
+              details = specialityDetails[cat.id]?.options || [];
+              hasMoreDetails = !!specialityDetails[cat.id]?.nextPageUrl;
+              isLoadingDetails = !!loadingChildren[cat.id];
+              detailFilterKey = "speciality";
+            } else if (node.id === "facilities") {
+              details = facilityDetails[cat.id]?.options || [];
+              hasMoreDetails = !!facilityDetails[cat.id]?.nextPageUrl;
+              isLoadingDetails = !!loadingChildren[cat.id];
+              detailFilterKey = "facility_details";
+            } else if (node.id === "infrastructure") {
+              details = infrastructureDetails[cat.id]?.options || [];
+              hasMoreDetails = !!infrastructureDetails[cat.id]?.nextPageUrl;
+              isLoadingDetails = !!loadingChildren[cat.id];
+              detailFilterKey = "infrastructure";
+            } else if (node.id === "service_categories") {
+              details = serviceDetails[cat.id]?.options || [];
+              hasMoreDetails = !!serviceDetails[cat.id]?.nextPageUrl;
+              isLoadingDetails = !!loadingChildren[cat.id];
+              detailFilterKey = "service_types_details";
+            }
+
+            return {
+              ...cat,
+              children: details,
+              hasMore: hasMoreDetails,
+              isLoading: isLoadingDetails,
+              filterKey: detailFilterKey,
+            };
+          }),
           hasMore: dynamicFilterOptions[node.filterCategory]?.nextPageUrl
             ? true
             : false,
@@ -644,61 +673,7 @@ const AnalyticsSideMenu = ({ filters, authToken, onFiltersChange }) => {
         };
       }
 
-      if (node.id === "service_categories") {
-        const categories =
-          dynamicFilterOptions[node.filterCategory]?.options || [];
-        return {
-          ...node,
-          children: categories.map((cat) => ({
-            ...cat,
-            children: serviceDetails[cat.id]?.options || [],
-            hasMore: !!serviceDetails[cat.id]?.nextPageUrl,
-            isLoading: !!loadingChildren[cat.id],
-          })),
-          hasMore: dynamicFilterOptions[node.filterCategory]?.nextPageUrl
-            ? true
-            : false,
-          isLoading: loadingMore[node.filterCategory] || false,
-        };
-      }
-
-      // Updated logic for "Facility Types" to include "Facility Details" as children
-      if (node.id === "facilities") { // Corresponds to "Facility Types"
-        const facilityTypes = dynamicFilterOptions[node.filterCategory]?.options || [];
-        return {
-          ...node,
-          children: facilityTypes.map((type) => ({
-            ...type,
-            children: facilityDetails[type.id]?.options || [],
-            hasMore: !!facilityDetails[type.id]?.nextPageUrl,
-            isLoading: !!loadingChildren[type.id],
-          })),
-          hasMore: dynamicFilterOptions[node.filterCategory]?.nextPageUrl
-            ? true
-            : false,
-          isLoading: loadingMore[node.filterCategory] || false,
-        };
-      }
-
-      // Updated logic for "Infrastructure" to include "Infrastructure Details" as children
-      if (node.id === "infrastructure") {
-        const infrastructureCategories = dynamicFilterOptions[node.filterCategory]?.options || [];
-        return {
-          ...node,
-          children: infrastructureCategories.map((cat) => ({
-            ...cat,
-            children: infrastructureDetails[cat.id]?.options || [],
-            hasMore: !!infrastructureDetails[cat.id]?.nextPageUrl,
-            isLoading: !!loadingChildren[cat.id],
-          })),
-          hasMore: dynamicFilterOptions[node.filterCategory]?.nextPageUrl
-            ? true
-            : false,
-          isLoading: loadingMore[node.filterCategory] || false,
-        };
-      }
-
-
+      // For other dynamic categories (ownership, regulatory_bodies, status, keph_level)
       const dynamicChildren =
         dynamicFilterOptions[node.filterCategory]?.options || [];
       return {
@@ -710,16 +685,15 @@ const AnalyticsSideMenu = ({ filters, authToken, onFiltersChange }) => {
           : false,
         isLoading: loadingMore[node.filterCategory] || false,
       };
-    }).filter(Boolean);
+    }).filter(Boolean); // Filter out nulls from sub_counties and wards
   }, [
-    ANALYTICS_FILTER_TREE_DATA,
     dynamicFilterOptions,
     buildCountyTree,
     loadingMore,
     serviceDetails,
     specialityDetails,
     infrastructureDetails,
-    facilityDetails, // Added facilityDetails dependency
+    facilityDetails,
     loadingChildren,
   ]);
 
@@ -798,7 +772,6 @@ const AnalyticsSideMenu = ({ filters, authToken, onFiltersChange }) => {
         allNodes.push(node);
         if (node.children) traverse(node.children);
       });
-      console.log('allNodes: ', allNodes);
     };
     traverse(treeData);
     return allNodes;
@@ -817,11 +790,10 @@ const AnalyticsSideMenu = ({ filters, authToken, onFiltersChange }) => {
             );
             const isCounty = child.filterKey === "counties";
             const isSubCounty = child.filterKey === "sub_counties";
-            const isServicesCategory = child.filterKey === "service_categories"; // Renamed
-            const isSpecialty = child.filterKey === "speciality_categories";
-            const isInfrastructureCategory = child.filterKey === "infrastructure"; // Renamed
-            const isFacilityType = child.filterKey === "facility_types"; // New: check for facility type
-            const isWard = child.filterKey === "wards";
+            const isServicesCategory = parentNodeId === "service_categories";
+            const isSpecialty = parentNodeId === "speciality_categories";
+            const isInfrastructureCategory = parentNodeId === "infrastructure";
+            const isFacilityType = parentNodeId === "facilities";
             const isLast = idx === children.length - 1;
 
             return (
@@ -829,7 +801,11 @@ const AnalyticsSideMenu = ({ filters, authToken, onFiltersChange }) => {
                 <li className="py-1">
                   <div className="flex items-center group">
                     {(child.children && child.children.length > 0) ||
-                      isCounty || isServicesCategory || isSpecialty || isInfrastructureCategory || isFacilityType || // Added isFacilityType
+                      isCounty ||
+                      isServicesCategory ||
+                      isSpecialty ||
+                      isInfrastructureCategory ||
+                      isFacilityType ||
                       isSubCounty ? (
                       <button
                         type="button"
@@ -874,7 +850,7 @@ const AnalyticsSideMenu = ({ filters, authToken, onFiltersChange }) => {
                               isFacilityType &&
                               !facilityDetails[child.id]?.options?.length
                             ) {
-                              await fetchFacilityTypeDetails(child.id);
+                              await handleFetchFacilityTypeDetails(child.id);
                             }
                           }
                         }}
@@ -908,7 +884,7 @@ const AnalyticsSideMenu = ({ filters, authToken, onFiltersChange }) => {
                         setSelectedFilters(newFilters);
                         if (onFiltersChange) {
                           const filterObj = buildFilterObject(newFilters, {
-                            treeData,
+                            treeData: ANALYTICS_FILTER_TREE_DATA,
                             dynamicFilterOptions,
                             subCountiesByCounty,
                             serviceDetails,
@@ -1018,7 +994,7 @@ const AnalyticsSideMenu = ({ filters, authToken, onFiltersChange }) => {
                       <button
                         className="ml-8 text-xs text-blue-600 hover:underline"
                         onClick={() =>
-                          fetchFacilityTypeDetails(
+                          handleFetchFacilityTypeDetails(
                             child.id,
                             facilityDetails[child.id].nextPageUrl,
                           )
@@ -1028,6 +1004,48 @@ const AnalyticsSideMenu = ({ filters, authToken, onFiltersChange }) => {
                         {facilityDetails[child.id]?.isLoading
                           ? "Loading..."
                           : "Load more facility details"}
+                      </button>
+                    </li>
+                  )}
+                 {/* Load more for speciality details */}
+                 {isSpecialty &&
+                  isLast &&
+                  specialityDetails[child.id]?.hasMore && (
+                    <li>
+                      <button
+                        className="ml-8 text-xs text-blue-600 hover:underline"
+                        onClick={() =>
+                          fetchSpecialty(
+                            child.id,
+                            specialityDetails[child.id].nextPageUrl,
+                          )
+                        }
+                        disabled={specialityDetails[child.id]?.isLoading}
+                      >
+                        {specialityDetails[child.id]?.isLoading
+                          ? "Loading..."
+                          : "Load more speciality details"}
+                      </button>
+                    </li>
+                  )}
+                {/* Load more for service details */}
+                {isServicesCategory &&
+                  isLast &&
+                  serviceDetails[child.id]?.hasMore && (
+                    <li>
+                      <button
+                        className="ml-8 text-xs text-blue-600 hover:underline"
+                        onClick={() =>
+                          fetchServiceCategoryDetails(
+                            child.id,
+                            serviceDetails[child.id].nextPageUrl,
+                          )
+                        }
+                        disabled={serviceDetails[child.id]?.isLoading}
+                      >
+                        {serviceDetails[child.id]?.isLoading
+                          ? "Loading..."
+                          : "Load more service details"}
                       </button>
                     </li>
                   )}
@@ -1046,14 +1064,14 @@ const AnalyticsSideMenu = ({ filters, authToken, onFiltersChange }) => {
       loadingChildren,
       fetchSubCounties,
       fetchWards,
-      fetchServiceCategoryDetails, // Updated
+      fetchServiceCategoryDetails,
       fetchSpecialty,
-      fetchInfrastructureCategoryDetails, // Updated
-      fetchFacilityTypeDetails, // New
+      fetchInfrastructureCategoryDetails,
+      handleFetchFacilityTypeDetails,
       specialityDetails,
       serviceDetails,
       infrastructureDetails,
-      facilityDetails, // Added dependency
+      facilityDetails,
       areAllChildrenSelected,
       areSomeChildrenSelected,
       getAllDescendantIds,
@@ -1095,14 +1113,14 @@ const AnalyticsSideMenu = ({ filters, authToken, onFiltersChange }) => {
                   setSelectedFilters(newFilters);
                   if (onFiltersChange) {
                     const filterObj = buildFilterObject(newFilters, {
-                      treeData,
+                      treeData: ANALYTICS_FILTER_TREE_DATA,
                       dynamicFilterOptions,
                       subCountiesByCounty,
                       wardsBySubCounty,
                       serviceDetails,
                       specialityDetails,
                       infrastructureDetails,
-                      facilityDetails, // Added facilityDetails
+                      facilityDetails,
                       findNodeInTree,
                     });
                     onFiltersChange(newFilters, filterObj);
@@ -1170,13 +1188,13 @@ const AnalyticsSideMenu = ({ filters, authToken, onFiltersChange }) => {
                         setSelectedFilters(newFilters);
                         if (onFiltersChange) {
                           const filterObj = buildFilterObject(newFilters, {
-                            treeData,
+                            treeData: ANALYTICS_FILTER_TREE_DATA,
                             dynamicFilterOptions,
                             subCountiesByCounty,
                             serviceDetails,
                             specialityDetails,
                             infrastructureDetails,
-                            facilityDetails, // Added facilityDetails
+                            facilityDetails,
                             wardsBySubCounty,
                             findNodeInTree,
                           });
@@ -1231,13 +1249,13 @@ const AnalyticsSideMenu = ({ filters, authToken, onFiltersChange }) => {
               .filter(([_, isSelected]) => isSelected)
               .map(([filterId]) => {
                 const filter = getFilterMetaById(filterId, {
-                  treeData,
+                  treeData: ANALYTICS_FILTER_TREE_DATA,
                   dynamicFilterOptions,
                   subCountiesByCounty,
                   serviceDetails,
                   specialityDetails,
                   infrastructureDetails,
-                  facilityDetails, // Added facilityDetails
+                  facilityDetails,
                   wardsBySubCounty,
                   findNodeInTree,
                 });
@@ -1260,30 +1278,21 @@ const AnalyticsSideMenu = ({ filters, authToken, onFiltersChange }) => {
               ),
             );
             setSearchTerm("");
-            setExpandedNodes({
-              level: false,
-              counties: false,
-              facility_types: false,
-              speciality_categories: false,
-              service_categories: false,
-              ownership: false,
-              regulatory_bodies: false,
-              infrastructure_categories: false,
-              status: false,
-              keph_level: false,
-            });
+            // Reset expanded nodes, based on ANALYTICS_FILTER_TREE_DATA structure
+            setExpandedNodes({});
+
             if (onFiltersChange) {
               const clearedFilters = Object.fromEntries(
                 Object.keys(selectedFilters).map((k) => [k, false]),
               );
               const filterObj = buildFilterObject(clearedFilters, {
-                treeData,
+                treeData: ANALYTICS_FILTER_TREE_DATA,
                 dynamicFilterOptions,
                 subCountiesByCounty,
                 serviceDetails,
                 specialityDetails,
                 infrastructureDetails,
-                facilityDetails, // Added facilityDetails
+                facilityDetails,
                 wardsBySubCounty,
                 findNodeInTree,
               });

@@ -30,7 +30,23 @@ export const ANALYTICS_FILTER_TREE_DATA = [
   {
     id: "facilities",
     text: "Facility Types",
-    children: [],
+    isDynamic: true,
+    children: [
+      {
+        id: "facility_types",
+        text: "Facility Types",
+        filterKey: "facility_types",
+        isDynamic: true,
+        children: [
+          {
+            id: "facility_types_details",
+            text: "Facility Types Details",
+            filterKey: "facility_types_details",
+            isDynamic: true,
+          },
+        ],
+      },
+    ],
     filterCategory: "facility_types",
   },
   {
@@ -85,14 +101,44 @@ export const ANALYTICS_FILTER_TREE_DATA = [
   { 
     id: "infrastructure",
     text: "Infrastructure",
-    children: [],
+    children: [
+      {
+        id: "infrastructure",
+        text: "Infrastructure Types",
+        filterKey: "infrastructure",
+        isDynamic: true,
+        children: [
+          {
+            id: "infrastructure_details",
+            text: "Infrastructure Details",
+            filterKey: "infrastructure",
+            isDynamic: true,
+          },
+        ],
+      },
+    ],
     filterCategory: "infrastructure",
     isDynamic: true,
   }, 
   {
     id: "speciality_categories",
     text: "Human Resource ",
-    children: [],
+    children: [
+      {
+        id: "speciality",
+        text: "Speciality",
+        filterKey: "speciality",
+        isDynamic: true,
+        children: [
+          {
+            id: "speciality_details",
+            text: "Speciality Details",
+            filterKey: "speciality",
+            isDynamic: true,
+          },
+        ],
+      },
+    ],
     filterCategory: "speciality_categories",
     isDynamic: true,
   },

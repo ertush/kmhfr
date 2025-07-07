@@ -75,6 +75,23 @@ export const fetchServicesDetailsApi = async (
   return fetchData(url, authToken);
 };
 
+
+/**
+ * 
+ * @param {string} facilityTypeId 
+ * @param {string} authToken 
+ * @param {string} nextPageUrl 
+ * @returns 
+ */
+export const fetchFacilityTypeDetailsApi = async (
+  facilityTypeId,
+  authToken,
+  nextPageUrl = null,
+) => {
+  const url = nextPageUrl || `/facilities/facility_types_details/?is_parent=false&parent=${facilityTypeId}`;
+  return fetchPaginatedFilterOptions(url, authToken);
+};
+
 /**
  * Fetches sub-counties for a given county ID.
  * @param {string} categoryId - The ID of the county.
