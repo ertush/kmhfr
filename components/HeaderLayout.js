@@ -372,7 +372,7 @@ export default function HeaderLayout({ searchTerm }) {
                             </li>
 
                             <li
-                              className={`text-lg h-[60px] flex w-full text-nowrap w-full items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/downloads" && "border-r-2 border-b-gray-50 bg-blue-500/85"}`}
+                              className={`text-lg h-[60px] flex text-nowrap w-full items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/downloads" && "border-r-2 border-b-gray-50 bg-blue-500/85"}`}
                             >
                               <Link href="/downloads">Downloads</Link>
                             </li>
@@ -417,7 +417,13 @@ export default function HeaderLayout({ searchTerm }) {
                             >
                               <Link href="/user">Users</Link>
                             </li>
-
+                            <li
+                              className={`text-lg h-[60px] flex text-nowrap w-full items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/system_setup" && "border-r-2 border-b-gray-50 bg-blue-500/85"}`}
+                            >
+                              <Link href="/system_setup">
+                                <span>System Setup</span>
+                              </Link>
+                            </li>
                             <li
                               className={`text-lg h-[60px] flex text-nowrap w-full items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/reports" && "border-r-2 border-b-gray-50 bg-blue-500/85"}`}
                             >
@@ -1004,7 +1010,13 @@ export default function HeaderLayout({ searchTerm }) {
                             >
                               <Link href="/user">Users</Link>
                             </li>
-
+                            <li
+                              className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/system_setup" && "border-b-2 border-b-gray-50 bg-blue-500/85"}`}
+                            >
+                              <Link href="/system_setup">
+                                <span>System Setup</span>
+                              </Link>
+                            </li>
                             <li
                               className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/reports" && "border-b-2 border-b-gray-50 bg-blue-500/85"}`}
                             >
