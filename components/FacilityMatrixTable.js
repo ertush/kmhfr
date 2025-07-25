@@ -21,6 +21,9 @@ import {
 import FilterListIcon from "@mui/icons-material/FilterList";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
+import DownloadIcon from "@mui/icons-material/Download";
+import { getCsvBlob } from "tanstack-table-export-to-csv";
+import { exportToExcel } from "../utils/excel-port";
 
 export function FacilityMatrixTable({ data }) {
   const [columnFilters, setColumnFilters] = useState([]);
@@ -88,7 +91,7 @@ export function FacilityMatrixTable({ data }) {
       const filteredKeys = uniqueKeys.filter((key) => {
         const baseComparisonLower = data.base_comparison?.toLowerCase();
         const keyLower = key.toLowerCase();
-        return keyLower !== baseComparisonLower && keyLower !== 'county';
+        return keyLower !== baseComparisonLower && keyLower !== "county";
       });
 
       // Sort keys alphabetically for consistent column order
@@ -120,7 +123,11 @@ export function FacilityMatrixTable({ data }) {
             typeof value !== "object" || value === null || Array.isArray(value);
           const fullKey = prefix ? `${prefix}_${key}` : key; // Create unique accessor key for flattened data
 
-          if (key === 'county' || key === 'COUNTY' || key.toLowerCase() === 'county') {
+          if (
+            key === "county" ||
+            key === "COUNTY" ||
+            key.toLowerCase() === "county"
+          ) {
             if (!isLeaf) {
               // Unwrap county object - process its contents directly without creating a "COUNTY" header
               const unwrappedColumns = buildNestedColumns(value, prefix);
@@ -221,15 +228,21 @@ export function FacilityMatrixTable({ data }) {
 
     // Helper function to check if a header is a county-related column
     const isCountyColumn = (header) => {
-      const headerId = header.id?.toLowerCase() || '';
-      const headerText = header.column.columnDef.header?.toLowerCase() || '';
-      
+      const headerId = header.id?.toLowerCase() || "";
+      const headerText = header.column.columnDef.header?.toLowerCase() || "";
+
       const countyVariations = [
-        'county', 'subcounty', 'sub-county', 'sub_county', 'ward', 'name'
+        "county",
+        "subcounty",
+        "sub-county",
+        "sub_county",
+        "ward",
+        "name",
       ];
-      
-      return countyVariations.some(variation => 
-        headerId.includes(variation) || headerText.includes(variation)
+
+      return countyVariations.some(
+        (variation) =>
+          headerId.includes(variation) || headerText.includes(variation),
       );
     };
 
@@ -254,7 +267,10 @@ export function FacilityMatrixTable({ data }) {
             const isLeaf = !header.column.columns;
             const headerContent = (
               <div className="flex items-center justify-center gap-1">
-                {flexRender(header.column.columnDef.header, header.getContext())}
+                {flexRender(
+                  header.column.columnDef.header,
+                  header.getContext(),
+                )}
                 {isLeaf && (
                   <span className="text-gray-500">
                     {{
@@ -286,21 +302,25 @@ export function FacilityMatrixTable({ data }) {
       </tr>
     ));
   };
-  
+
   // Popover and column visibility logic
+
   const handleFilterClick = (event) => setAnchorEl(event.currentTarget);
   const handleFilterClose = () => setAnchorEl(null);
 
   // Toggles the visibility of a specific column
   const toggleColumnVisibility = (columnId) => {
+    console.log({ columnId }, table.getColumn(columnId)?.getIsVisible());
     table.getColumn(columnId)?.toggleVisibility();
   };
 
   // Resets all columns to visible and clears filters
-  const resetAllColumns = () => {
+  const resetAllColumns = (e) => {
+    e.preventDefault();
     table.getAllColumns().forEach((column) => {
-      if (column.id !== "name") column.toggleVisibility(true);
+      column.toggleVisibility(true);
     });
+    // table.resetColumnVisibility(true);
     setColumnFilters([]);
   };
 
@@ -338,10 +358,31 @@ export function FacilityMatrixTable({ data }) {
                 {col.header}
               </Typography>
             </Box>
+
             <Collapse in={filterExpandedGroups[col.id] !== false}>
-              <Box sx={{ pl: 3, borderLeft: "2px solid #e0e0e0", ml: 1 }}>
-                {renderFilterTree(col.columns)}{" "}
-                {/* Recursively render nested columns */}
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "flex-start",
+                  gap: "6px",
+                  alignItems: "start",
+                }}
+              >
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={table.getColumn(col.id)?.getIsVisible()}
+                      onChange={() => toggleColumnVisibility()}
+                      size="small"
+                    />
+                  }
+                  label={col.header}
+                  sx={{ margin: 0 }}
+                />
+                <Box sx={{ pl: 3, borderLeft: "2px solid #e0e0e0", ml: 1 }}>
+                  {renderFilterTree(col.columns)}{" "}
+                </Box>
               </Box>
             </Collapse>
           </Box>
@@ -368,6 +409,38 @@ export function FacilityMatrixTable({ data }) {
   const open = Boolean(anchorEl);
   const id = open ? "column-filter-popover" : undefined;
 
+  const handleExportToCsv = async (event) => {
+    event.preventDefault();
+    const headers = table
+      .getHeaderGroups()
+      .map((x) => x.headers)
+      .flat();
+
+    const rows = table.getCoreRowModel().rows;
+
+    // exportToCsv("report", headers, rows);
+    const csvBlob = getCsvBlob(headers, rows);
+    const csvBlobUrl = URL.createObjectURL(csvBlob);
+
+    const downloadLink = document.createElement("a");
+    downloadLink.href = csvBlobUrl;
+    downloadLink.download = "facilities_dynamic_report.csv";
+
+    downloadLink.click();
+  };
+
+  const handleExportToExcel = (event) => {
+    event.preventDefault();
+    const headers = table
+      .getHeaderGroups()
+      .map((x) => x.headers)
+      .flat();
+
+    const rows = table.getCoreRowModel().rows;
+
+    exportToExcel(headers, rows, "facilities_dynamic_report");
+    // return null;
+  };
   // Display a message if no data is available
   if (tableData.length === 0) {
     return (
@@ -382,15 +455,36 @@ export function FacilityMatrixTable({ data }) {
       {/* Header section with filter button */}
       <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-300">
         <div className="flex justify-between items-center">
-          <div className="flex gap-3">
+          <Button
+            variant="outlined"
+            size="medium"
+            startIcon={<FilterListIcon />}
+            onClick={handleFilterClick}
+            className="border-blue-600 text-blue-600 hover:bg-blue-50"
+          >
+            Filter Columns
+          </Button>
+
+          {/* Export Buttons - Now on the right side */}
+          <div className="flex items-center gap-3">
             <Button
               variant="outlined"
               size="medium"
-              startIcon={<FilterListIcon />}
-              onClick={handleFilterClick}
+              startIcon={<DownloadIcon />}
+              onClick={handleExportToExcel}
               className="border-blue-600 text-blue-600 hover:bg-blue-50"
             >
-              Filter Columns
+              Excel
+            </Button>
+
+            <Button
+              variant="contained"
+              size="medium"
+              startIcon={<DownloadIcon />}
+              onClick={handleExportToCsv}
+              className="border-blue-600 text-blue-600 hover:bg-blue-50"
+            >
+              Csv
             </Button>
           </div>
         </div>
@@ -416,9 +510,7 @@ export function FacilityMatrixTable({ data }) {
           style={{ width: "320px", maxHeight: "70vh", overflow: "auto" }}
         >
           <div className="flex justify-between items-center mb-3">
-            <h4 className="text-lg font-semibold text-gray-700">
-              Column Visibility
-            </h4>
+            <h4 className="text-lg font-semibold text-gray-700">Columns</h4>
             <Button
               size="small"
               onClick={resetAllColumns}
@@ -431,13 +523,13 @@ export function FacilityMatrixTable({ data }) {
           <Divider sx={{ mb: 2 }} />
           <FormGroup>
             {/* County column is always visible and disabled in the filter */}
-            <Box sx={{ py: 0.5 }}>
+            {/* <Box sx={{ py: 0.5 }}>
               <FormControlLabel
                 control={<Checkbox checked={true} disabled size="small" />}
                 label="COUNTY"
                 sx={{ margin: 0, fontWeight: "bold" }}
               />
-            </Box>
+            </Box> */}
             {/* Render the rest of the columns in a tree structure */}
             {renderFilterTree(columns.slice(1))}
           </FormGroup>
