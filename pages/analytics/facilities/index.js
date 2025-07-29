@@ -37,15 +37,10 @@ function FacilityAnalytics(props) {
 
   useEffect(() => {
     if (tab && tab !== "dynamic_report" && standardReports.length > 0) {
+      console.log("Fetching Analytics Data...");
       fetchAnalyticsData();
     }
   }, [tab, standardReports, analyticsFilterObj]);
-
-  useEffect(() => {
-    fetchStandardAnalyticsReports(props?.token)
-      .then((data) => setStandardReports(data.reports || []))
-      .catch((e) => setStandardReports([]));
-  }, [props?.token]);
 
   useEffect(() => {
     setIsClient(true);
@@ -54,6 +49,10 @@ function FacilityAnalytics(props) {
     delete qry?.searchTerm;
     delete qry?.qfstart;
     setDrillDown({ ...drillDown, ...qry });
+
+    fetchStandardAnalyticsReports(props?.token)
+      .then((data) => setStandardReports(data.reports || []))
+      .catch((e) => setStandardReports([]));
   }, []);
 
   // Function to fetch analytics data with current filters
@@ -73,90 +72,90 @@ function FacilityAnalytics(props) {
   ];
 
   // Function to transform selected filters to API body format
-  const transformFiltersToAPIBody = (selectedFilters, colDims) => {
-    // Limit to a maximum of 5 at a time
-    const limitedColDims = Array.isArray(colDims)
-      ? colDims.slice(0, 5)
-      : [colDims];
+  // const transformFiltersToAPIBody = (selectedFilters, colDims) => {
+  //   // Limit to a maximum of 5 at a time
+  //   const limitedColDims = Array.isArray(colDims)
+  //     ? colDims.slice(0, 5)
+  //     : [colDims];
 
-    const body = {
-      col_dims: limitedColDims.join(","),
-      report_type: "matrix_report",
-      metric: "number_of_facilities",
-      row_comparison: "county",
-      filters: {},
-    };
+  //   const body = {
+  //     col_dims: limitedColDims.join(","),
+  //     report_type: "matrix_report",
+  //     metric: "number_of_facilities",
+  //     row_comparison: "county",
+  //     filters: {},
+  //   };
 
-    // Map level selections to row_comparison
-    if (selectedFilters.national) {
-      body.row_comparison = "national";
-    } else if (selectedFilters.county) {
-      body.row_comparison = "county";
-    } else if (selectedFilters["sub-county"]) {
-      body.row_comparison = "subcounty";
-    } else if (selectedFilters.ward) {
-      body.row_comparison = "ward";
-    }
+  //   // Map level selections to row_comparison
+  //   if (selectedFilters.national) {
+  //     body.row_comparison = "national";
+  //   } else if (selectedFilters.county) {
+  //     body.row_comparison = "county";
+  //   } else if (selectedFilters["sub-county"]) {
+  //     body.row_comparison = "subcounty";
+  //   } else if (selectedFilters.ward) {
+  //     body.row_comparison = "ward";
+  //   }
 
-    // Mapping selected UUIDs back to their API filter categories.
-    const filterIdToCategoryMap = {};
-    for (const categoryKey in filters) {
-      const categoryData = filters[categoryKey];
-      if (
-        categoryData &&
-        categoryData.results &&
-        Array.isArray(categoryData.results)
-      ) {
-        categoryData.results.forEach((item) => {
-          filterIdToCategoryMap[item.id] = categoryKey;
-        });
-      }
-    }
+  //   // Mapping selected UUIDs back to their API filter categories.
+  //   const filterIdToCategoryMap = {};
+  //   for (const categoryKey in filters) {
+  //     const categoryData = filters[categoryKey];
+  //     if (
+  //       categoryData &&
+  //       categoryData.results &&
+  //       Array.isArray(categoryData.results)
+  //     ) {
+  //       categoryData.results.forEach((item) => {
+  //         filterIdToCategoryMap[item.id] = categoryKey;
+  //       });
+  //     }
+  //   }
 
-    for (const filterId in selectedFilters) {
-      if (selectedFilters[filterId] === true) {
-        // Skip static 'level' filters as they are handled by row_comparison
-        if (
-          [
-            "national",
-            "county",
-            "sub-county",
-            "ward",
-            "by-service-category",
-            "by-service-availability",
-          ].includes(filterId)
-        ) {
-          continue;
-        }
+  //   for (const filterId in selectedFilters) {
+  //     if (selectedFilters[filterId] === true) {
+  //       // Skip static 'level' filters as they are handled by row_comparison
+  //       if (
+  //         [
+  //           "national",
+  //           "county",
+  //           "sub-county",
+  //           "ward",
+  //           "by-service-category",
+  //           "by-service-availability",
+  //         ].includes(filterId)
+  //       ) {
+  //         continue;
+  //       }
 
-        const category = filterIdToCategoryMap[filterId];
-        if (category) {
-          let apiFilterKey = category;
+  //       const category = filterIdToCategoryMap[filterId];
+  //       if (category) {
+  //         let apiFilterKey = category;
 
-          if (category === "owner_types") {
-            apiFilterKey = "owners";
-          } else if (category === "regulating_bodies") {
-            apiFilterKey = "regulatory_bodies";
-          } else if (category === "facility_status") {
-            apiFilterKey = "operation_status";
-          } else if (category === "keph_level") {
-            apiFilterKey = "keph_levels";
-          }
+  //         if (category === "owner_types") {
+  //           apiFilterKey = "owners";
+  //         } else if (category === "regulating_bodies") {
+  //           apiFilterKey = "regulatory_bodies";
+  //         } else if (category === "facility_status") {
+  //           apiFilterKey = "operation_status";
+  //         } else if (category === "keph_level") {
+  //           apiFilterKey = "keph_levels";
+  //         }
 
-          if (!body.filters[apiFilterKey]) {
-            body.filters[apiFilterKey] = [];
-          }
-          body.filters[apiFilterKey].push(filterId);
-        } else {
-          console.warn(
-            `Selected filter ID ${filterId} not found in filterIdToCategoryMap. It might be a static filter or an unmapped dynamic filter.`,
-          );
-        }
-      }
-    }
+  //         if (!body.filters[apiFilterKey]) {
+  //           body.filters[apiFilterKey] = [];
+  //         }
+  //         body.filters[apiFilterKey].push(filterId);
+  //       } else {
+  //         console.warn(
+  //           `Selected filter ID ${filterId} not found in filterIdToCategoryMap. It might be a static filter or an unmapped dynamic filter.`,
+  //         );
+  //       }
+  //     }
+  //   }
 
-    return body;
-  };
+  //   return body;
+  // };
 
   const fetchAnalyticsData = async (
     currentSelectedFilters = {},
@@ -210,10 +209,11 @@ function FacilityAnalytics(props) {
       }
 
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/analytics/matrix-report/?format=json`,
+        `${process.env.NEXT_PUBLIC_API_URL}/analytics/matrix/facilities/`,
         {
           method: "POST",
           headers: {
+            Accept: "application/json",
             "Content-Type": "application/json",
             Authorization: `Bearer ${props?.token}`,
             "Cache-Control": "no-cache, no-store, max-age=0",
@@ -556,7 +556,7 @@ export async function getServerSideProps(ctx) {
     }
   }
 
-  let url = `${process.env.NEXT_PUBLIC_API_URL}/analytics/matrix-report/?format=json`;
+  let url = `${process.env.NEXT_PUBLIC_API_URL}/analytics/matrix/facilities/`;
 
   const initialBody = {
     col_dims: "bed_types",
@@ -569,6 +569,7 @@ export async function getServerSideProps(ctx) {
   try {
     const response = await fetch(url, {
       headers: {
+        Accept: "application/json",
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
         "Cache-Control": "no-cache, no-store, max-age=0",
