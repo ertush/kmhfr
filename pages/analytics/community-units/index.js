@@ -208,6 +208,11 @@ function ChuAnaylytics(props) {
           <link rel="icon" href="/favicon.ico" />
         </Head>
         <MainLayout isLoading={false} searchTerm={props?.query?.searchTerm}>
+          <div className="w-full h-1/2 realtive">
+            <div className="absolute left-[27%] top-[50%] bg-black text-white z-10 size-[35%] h-auto p-4 rounded-lg">
+              <pre>{JSON.stringify(props?.data, null, 2)}</pre>
+            </div>
+          </div>
           <div className="w-full md:w-[85%] md:mx-auto grid grid-cols-1 md:grid-cols-5 gap-3 md:mt-3 md:mb-12 mb-6 px-4 md:px-0">
             {/* Header Section with Title and Export Buttons */}
             <div className="col-span-1 md:col-span-5 flex flex-col gap-3">
@@ -305,6 +310,7 @@ function ChuAnaylytics(props) {
                         (Maximum 3)
                       </span>
                     </label>
+
                     <Select
                       id="column-dimensions"
                       isMulti
@@ -470,14 +476,14 @@ export async function getServerSideProps(ctx) {
     }
   }
 
-  let url = `${process.env.NEXT_PUBLIC_API_URL}/analytics/matrix/facilities/`;
+  let url = `${process.env.NEXT_PUBLIC_API_URL}/analytics/matrix/chus/`;
+
+  // col_dims: ['yearofentry', 'quarters', 'count_all', 'human_resource', 'status__name', 'chu_services']
 
   const initialBody = {
-    col_dims: "bed_types",
-    report_type: "matrix_report",
-    metric: "number_of_facilities",
+    col_dims: "human_resource",
     row_comparison: "county",
-    filters: {},
+    filter: {},
   };
 
   try {

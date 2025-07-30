@@ -560,8 +560,8 @@ export async function getServerSideProps(ctx) {
 
   const initialBody = {
     col_dims: "bed_types",
-    report_type: "matrix_report",
-    metric: "number_of_facilities",
+    // report_type: "matrix_report",
+    // metric: "number_of_facilities",
     row_comparison: "county",
     filters: {},
   };
