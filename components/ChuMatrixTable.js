@@ -25,7 +25,7 @@ import DownloadIcon from "@mui/icons-material/Download";
 import { getCsvBlob } from "tanstack-table-export-to-csv";
 import { exportToExcel } from "../utils/excel-port";
 
-export function FacilityMatrixTable({ data }) {
+export function ChuMatrixTable({ data }) {
   const [columnFilters, setColumnFilters] = useState([]);
   const [sorting, setSorting] = useState([]);
   const [anchorEl, setAnchorEl] = useState(null);
@@ -541,8 +541,8 @@ export function FacilityMatrixTable({ data }) {
         <div className="overflow-x-auto">
           <table className="min-w-full border-collapse">
             <thead className="bg-gradient-to-r from-blue-50 to-indigo-50">
-              {/* Render the dynamic header rows */}
               {renderHeaderRows()}
+              {/* Render the dynamic header rows */}
             </thead>
             <tbody>
               {/* Render table rows */}
@@ -636,4 +636,4 @@ export function FacilityMatrixTable({ data }) {
     </div>
   );
 }
-export default FacilityMatrixTable;
+export default ChuMatrixTable;

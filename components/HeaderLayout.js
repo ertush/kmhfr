@@ -55,22 +55,11 @@ export default function HeaderLayout({ searchTerm }) {
   const userCtx = useContext(UserContext);
 
   const [isFAQ, setIsFAQ] = useState(false);
-
   const router = useRouter();
-
   const currentPath = router.asPath.split("?", 1)[0];
-
-  // const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-  // const [user, setUser] = useState(userCtx);
-
   const [isMobileMenu, setIsMobileMenu] = useState(false);
-
   const [userID, setUserID] = useState(userCtx?.id);
-
   const [groupID, setGroupID] = useState(userCtx?.groups[0]?.id);
-
-  // const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
   if (
     typeof window !== "undefined" &&
@@ -88,52 +77,6 @@ export default function HeaderLayout({ searchTerm }) {
   }
 
   const isLoggedIn = useContext(IsUserLoggedInCtx);
-
-  // useEffect(() => {
-  //   let mtd = true;
-  //   if (mtd) {
-  //     let is_user_logged_in =
-  //       (typeof window !== "undefined" &&
-  //         window.document.cookie.indexOf("access_token=") > -1) ||
-  //       false;
-
-  //     let session_token = null;
-  //     if (is_user_logged_in) {
-  //       session_token = JSON.parse(
-  //         window.document.cookie.split("access_token=")[1].split(";")[0]
-  //       );
-  //     }
-
-  //     if (
-  //       is_user_logged_in &&
-  //       typeof window !== "undefined" &&
-  //       session_token !== null
-  //     ) {
-
-  //       getUserDetails(session_token.token, `${API_URL}/rest-auth/user/`).then(
-  //         (usr) => {
-
-  //           console.log('Checking if user is authenticated...')
-  //           if (usr.error || usr.detail) {
-  //             setIsLoggedIn(false);
-  //             setUser(null);
-  //           } else {
-  //             usr.id == 6 ? setIsLoggedIn(false) : setIsLoggedIn(true);
-  //             setUser(usr);
-
-  //           }
-  //         }
-  //       );
-  //     } else {
-  //       console.log("no session. Refreshing...");
-
-  //     }
-  //   }
-
-  //   return () => {
-  //     mtd = false;
-  //   };
-  // }, []);
 
   useEffect(() => {
     if (userID == 6) {
@@ -154,24 +97,10 @@ export default function HeaderLayout({ searchTerm }) {
 
   return (
     <header className="w-full max-h-min flex">
-      {/* {
-        <pre className="hidden">{
-          JSON.stringify({ isLoggedIn, userCtx }, null, 2)
-        }</pre>
-      } */}
       <Head>
-        {/*   <title>KMHFR | Home</title> */}
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      {/* {
-        <pre>
-          {
 
-            JSON.stringify({currentPath, out: `${/\/community-units\/.+/.test(currentPath) || /\/community-units/.test(currentPath) && 'border-b-2 border-b-gray-50 bg-blue-500/85'}`}, null, 2) &&
-            console.log('[+] Header Rerender ..(/)
-          }
-        </pre>
-      } */}
       <div className="w-full overflow-y-scroll flex flex-col ">
         <div className="w-full h-auto z-10 fixed top-0">
           {/* Logo And Title */}
@@ -194,10 +123,6 @@ export default function HeaderLayout({ searchTerm }) {
                 </Link>
 
                 {/* Title */}
-
-                {/* <pre>{
-                  JSON.stringify({isLoggedIn}, null, 2)
-                  }</pre> */}
 
                 {/* Login / Logout button */}
                 {isLoggedIn ? (
@@ -351,13 +276,10 @@ export default function HeaderLayout({ searchTerm }) {
                             <li
                               className={`text-lg h-[60px]  relative group flex text-nowrap w-full items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath.includes("/analytics") && "border-r-2 border-b-gray-50 bg-blue-500/85"}`}
                             >
-                              <Link
-                                href="/analytics/facilities"
-                                // className="right-2 absolute"
-                              >
+                              <Link href="/analytics/facilities">
                                 Analytics
                               </Link>
-                              <li className="absolute group-hover:flex top-0  text-start left-[174px] w-46 text-black flex-col justify-start px-3 p-2 gap-2 bg-gray-100">
+                              <div className="absolute group-hover:flex top-0  text-start left-[174px] w-46 text-black flex-col justify-start px-3 p-2 gap-2 bg-gray-100">
                                 <Link
                                   href="/analytics/facilities"
                                   className="hover:border-b-2 border-black"
@@ -369,7 +291,7 @@ export default function HeaderLayout({ searchTerm }) {
                                     Community Units
                                   </p>
                                 </Link>
-                              </li>
+                              </div>
                             </li>
 
                             <li
@@ -453,7 +375,7 @@ export default function HeaderLayout({ searchTerm }) {
                               >
                                 Analytics
                               </Link>
-                              <li className="absolute group-hover:flex top-0  text-start left-[174px] w-46 text-black flex-col justify-start px-3 p-2 gap-2 bg-gray-100">
+                              <div className="absolute group-hover:flex top-0  text-start left-[174px] w-46 text-black flex-col justify-start px-3 p-2 gap-2 bg-gray-100">
                                 <Link
                                   href="/analytics/facilities"
                                   className="hover:border-b-2 border-black"
@@ -465,7 +387,7 @@ export default function HeaderLayout({ searchTerm }) {
                                     Community Units
                                   </p>
                                 </Link>
-                              </li>
+                              </div>
                             </li>
 
                             <li
@@ -537,7 +459,7 @@ export default function HeaderLayout({ searchTerm }) {
                               <Link href="/analytics/facilities">
                                 Analytics
                               </Link>
-                              <li className="absolute group-hover:flex top-0  text-start left-[174px] w-46 text-black flex-col justify-start px-3 p-2 gap-2 bg-gray-100">
+                              <div className="absolute group-hover:flex top-0  text-start left-[174px] w-46 text-black flex-col justify-start px-3 p-2 gap-2 bg-gray-100">
                                 <Link
                                   href="/analytics/facilities"
                                   className="hover:border-b-2 border-black"
@@ -549,7 +471,7 @@ export default function HeaderLayout({ searchTerm }) {
                                     Community Units
                                   </p>
                                 </Link>
-                              </li>
+                              </div>
                             </li>
 
                             <li
@@ -612,7 +534,7 @@ export default function HeaderLayout({ searchTerm }) {
                               >
                                 Analytics
                               </Link>
-                              <li className="absolute group-hover:flex top-0  text-start left-[174px] w-46 text-black flex-col justify-start px-3 p-2 gap-2 bg-gray-100">
+                              <div className="absolute group-hover:flex top-0  text-start left-[174px] w-46 text-black flex-col justify-start px-3 p-2 gap-2 bg-gray-100">
                                 <Link
                                   href="/analytics/facilities"
                                   className="hover:border-b-2 border-black"
@@ -624,7 +546,7 @@ export default function HeaderLayout({ searchTerm }) {
                                     Community Units
                                   </p>
                                 </Link>
-                              </li>
+                              </div>
                             </li>
 
                             <li
@@ -687,7 +609,7 @@ export default function HeaderLayout({ searchTerm }) {
                               >
                                 Analytics
                               </Link>
-                              <li className="absolute group-hover:flex top-0  text-start left-[174px] w-46 text-black flex-col justify-start px-3 p-2 gap-2 bg-gray-100">
+                              <div className="absolute group-hover:flex top-0  text-start left-[174px] w-46 text-black flex-col justify-start px-3 p-2 gap-2 bg-gray-100">
                                 <Link
                                   href="/analytics/facilities"
                                   className="hover:border-b-2 border-black"
@@ -699,7 +621,7 @@ export default function HeaderLayout({ searchTerm }) {
                                     Community Units
                                   </p>
                                 </Link>
-                              </li>
+                              </div>
                             </li>
                           </ul>
                         )}
@@ -744,7 +666,7 @@ export default function HeaderLayout({ searchTerm }) {
                               >
                                 Analytics
                               </Link>
-                              <li className="absolute group-hover:flex top-0  text-start left-[174px] w-46 text-black flex-col justify-start px-3 p-2 gap-2 bg-gray-100">
+                              <div className="absolute group-hover:flex top-0  text-start left-[174px] w-46 text-black flex-col justify-start px-3 p-2 gap-2 bg-gray-100">
                                 <Link
                                   href="/analytics/facilities"
                                   className="hover:border-b-2 border-black"
@@ -756,7 +678,7 @@ export default function HeaderLayout({ searchTerm }) {
                                     Community Units
                                   </p>
                                 </Link>
-                              </li>
+                              </div>
                             </li>
                           </ul>
                         )}
@@ -802,7 +724,7 @@ export default function HeaderLayout({ searchTerm }) {
                               >
                                 Analytics
                               </Link>
-                              <li className="absolute group-hover:flex top-0  text-start left-[174px] w-46 text-black flex-col justify-start px-3 p-2 gap-2 bg-gray-100">
+                              <div className="absolute group-hover:flex top-0  text-start left-[174px] w-46 text-black flex-col justify-start px-3 p-2 gap-2 bg-gray-100">
                                 <Link
                                   href="/analytics/facilities"
                                   className="hover:border-b-2 border-black"
@@ -814,7 +736,7 @@ export default function HeaderLayout({ searchTerm }) {
                                     Community Units
                                   </p>
                                 </Link>
-                              </li>
+                              </div>
                             </li>
 
                             <li
@@ -889,7 +811,7 @@ export default function HeaderLayout({ searchTerm }) {
                                   >
                                     Analytics
                                   </Link>
-                                  <li className="absolute group-hover:flex top-0  text-start left-[174px] w-46 text-black flex-col justify-start px-3 p-2 gap-2 bg-gray-100">
+                                  <div className="absolute group-hover:flex top-0  text-start left-[174px] w-46 text-black flex-col justify-start px-3 p-2 gap-2 bg-gray-100">
                                     <Link
                                       href="/analytics/facilities"
                                       className="hover:border-b-2 border-black"
@@ -901,7 +823,7 @@ export default function HeaderLayout({ searchTerm }) {
                                         Community Units
                                       </p>
                                     </Link>
-                                  </li>
+                                  </div>
                                 </li>
 
                                 <li
@@ -1101,7 +1023,7 @@ export default function HeaderLayout({ searchTerm }) {
                               <Link href="/analytics/facilities">
                                 Analytics
                               </Link>
-                              <li className="absolute group-hover:flex top-[60px] left-0 w-46 hidden text-black flex-col items-start px-3 p-2 gap-2 bg-gray-100">
+                              <div className="absolute group-hover:flex top-[60px] left-0 w-46 hidden text-black flex-col items-start px-3 p-2 gap-2 bg-gray-100">
                                 <Link
                                   href="/analytics/facilities"
                                   className="hover:border-b-2 border-black"
@@ -1113,7 +1035,7 @@ export default function HeaderLayout({ searchTerm }) {
                                     Community Units
                                   </p>
                                 </Link>
-                              </li>
+                              </div>
                             </li>
                             <li
                               className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${/\/admin_offices\/*/.test(currentPath) && "border-b-2 border-b-gray-50 bg-blue-500/85"}`}
@@ -1182,7 +1104,7 @@ export default function HeaderLayout({ searchTerm }) {
                               <Link href="/analytics/facilities">
                                 Analytics
                               </Link>
-                              <li className="absolute group-hover:flex top-[60px] left-0 w-46 hidden text-black flex-col items-start px-3 p-2 gap-2 bg-gray-100">
+                              <div className="absolute group-hover:flex top-[60px] left-0 w-46 hidden text-black flex-col items-start px-3 p-2 gap-2 bg-gray-100">
                                 <Link
                                   href="/analytics/facilities"
                                   className="hover:border-b-2 border-black"
@@ -1194,7 +1116,7 @@ export default function HeaderLayout({ searchTerm }) {
                                     Community Units
                                   </p>
                                 </Link>
-                              </li>
+                              </div>
                             </li>
                             <li
                               className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${/\/admin_offices\/*/.test(currentPath) && "border-b-2 border-b-gray-50 bg-blue-500/85"}`}
@@ -1262,7 +1184,7 @@ export default function HeaderLayout({ searchTerm }) {
                               <Link href="/analytics/facilities">
                                 Analytics
                               </Link>
-                              <li className="absolute group-hover:flex top-[60px] left-0 w-46 hidden text-black flex-col items-start px-3 p-2 gap-2 bg-gray-100">
+                              <div className="absolute group-hover:flex top-[60px] left-0 w-46 hidden text-black flex-col items-start px-3 p-2 gap-2 bg-gray-100">
                                 <Link
                                   href="/analytics/facilities"
                                   className="hover:border-b-2 border-black"
@@ -1274,7 +1196,7 @@ export default function HeaderLayout({ searchTerm }) {
                                     Community Units
                                   </p>
                                 </Link>
-                              </li>
+                              </div>
                             </li>
                             <li
                               className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${/\/admin_offices\/*/.test(currentPath) && "border-b-2 border-b-gray-50 bg-blue-500/85"}`}
@@ -1335,7 +1257,7 @@ export default function HeaderLayout({ searchTerm }) {
                               <Link href="/analytics/facilities">
                                 Analytics
                               </Link>
-                              <li className="absolute group-hover:flex top-[60px] left-0 w-46 hidden text-black flex-col items-start px-3 p-2 gap-2 bg-gray-100">
+                              <div className="absolute group-hover:flex top-[60px] left-0 w-46 hidden text-black flex-col items-start px-3 p-2 gap-2 bg-gray-100">
                                 <Link
                                   href="/analytics/facilities"
                                   className="hover:border-b-2 border-black"
@@ -1347,7 +1269,7 @@ export default function HeaderLayout({ searchTerm }) {
                                     Community Units
                                   </p>
                                 </Link>
-                              </li>
+                              </div>
                             </li>
                             <li
                               className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/documentation" && "border-b-2 border-b-gray-50 bg-blue-500/85"}`}
@@ -1398,7 +1320,7 @@ export default function HeaderLayout({ searchTerm }) {
                               <Link href="/analytics/facilities">
                                 Analytics
                               </Link>
-                              <li className="absolute group-hover:flex top-[60px] left-0 w-46 hidden text-black flex-col items-start px-3 p-2 gap-2 bg-gray-100">
+                              <div className="absolute group-hover:flex top-[60px] left-0 w-46 hidden text-black flex-col items-start px-3 p-2 gap-2 bg-gray-100">
                                 <Link
                                   href="/analytics/facilities"
                                   className="hover:border-b-2 border-black"
@@ -1410,7 +1332,7 @@ export default function HeaderLayout({ searchTerm }) {
                                     Community Units
                                   </p>
                                 </Link>
-                              </li>
+                              </div>
                             </li>
                             <li
                               className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/documentation" && "border-b-2 border-b-gray-50 bg-blue-500/85"}`}
@@ -1461,7 +1383,7 @@ export default function HeaderLayout({ searchTerm }) {
                               <Link href="/analytics/facilities">
                                 Analytics
                               </Link>
-                              <li className="absolute group-hover:flex top-[60px] left-0 w-46 hidden text-black flex-col items-start px-3 p-2 gap-2 bg-gray-100">
+                              <div className="absolute group-hover:flex top-[60px] left-0 w-46 hidden text-black flex-col items-start px-3 p-2 gap-2 bg-gray-100">
                                 <Link
                                   href="/analytics/facilities"
                                   className="hover:border-b-2 border-black"
@@ -1473,7 +1395,7 @@ export default function HeaderLayout({ searchTerm }) {
                                     Community Units
                                   </p>
                                 </Link>
-                              </li>
+                              </div>
                             </li>
                           </ul>
                         );
@@ -1509,7 +1431,7 @@ export default function HeaderLayout({ searchTerm }) {
                               <Link href="/analytics/facilities">
                                 Analytics
                               </Link>
-                              <li className="absolute group-hover:flex top-[60px] left-0 w-46 hidden text-black flex-col items-start px-3 p-2 gap-2 bg-gray-100">
+                              <div className="absolute group-hover:flex top-[60px] left-0 w-46 hidden text-black flex-col items-start px-3 p-2 gap-2 bg-gray-100">
                                 <Link
                                   href="/analytics/facilities"
                                   className="hover:border-b-2 border-black"
@@ -1521,7 +1443,7 @@ export default function HeaderLayout({ searchTerm }) {
                                     Community Units
                                   </p>
                                 </Link>
-                              </li>
+                              </div>
                             </li>
                           </ul>
                         );
@@ -1557,7 +1479,7 @@ export default function HeaderLayout({ searchTerm }) {
                               <Link href="/analytics/facilities">
                                 Analytics
                               </Link>
-                              <li className="absolute group-hover:flex top-[60px] left-0 w-46 hidden text-black flex-col items-start px-3 p-2 gap-2 bg-gray-100">
+                              <div className="absolute group-hover:flex top-[60px] left-0 w-46 hidden text-black flex-col items-start px-3 p-2 gap-2 bg-gray-100">
                                 <Link
                                   href="/analytics/facilities"
                                   className="hover:border-b-2 border-black"
@@ -1569,7 +1491,7 @@ export default function HeaderLayout({ searchTerm }) {
                                     Community Units
                                   </p>
                                 </Link>
-                              </li>
+                              </div>
                             </li>
                             <li
                               className={`text-lg h-[60px] flex text-center justify-center text-nowrap items-center group-hover:border-b-2 group-hover:border-b-gray-50 duration-200 ease-out hover:bg-blue-500/85 px-4 font-semibold capitalize text-gray-100 ${currentPath == "/documentation" && "border-b-2 border-b-gray-50 bg-blue-500/85"}`}

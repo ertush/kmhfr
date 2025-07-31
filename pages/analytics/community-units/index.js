@@ -1,12 +1,11 @@
 import Head from "next/head";
 import MainLayout from "../../../components/MainLayout";
-import { DownloadIcon } from "@heroicons/react/solid";
 import { checkToken } from "../../../controllers/auth/auth";
 import { useState, useEffect, useCallback, useContext } from "react";
 
 import Select from "react-select";
 import { fetchStandardAnalyticsReports } from "../../../utils/mobiDataApi";
-import { FacilityMatrixTable } from "../../../components/FacilityMatrixTable.js";
+import { ChuMatrixTable } from "../../../components/ChuMatrixTable.js";
 
 // @mui imports
 import AnalyticsSideFilters from "../../../components/AnalyticsSideFilters";
@@ -21,7 +20,7 @@ function ChuAnaylytics(props) {
 
   // Analytics filters state
   const [analyticsFilters, setAnalyticsFilters] = useState({});
-  const [columnDimensions, setColumnDimensions] = useState(["bed_types"]);
+  const [columnDimensions, setColumnDimensions] = useState(["human_resource"]);
   const [analyticsData, setAnalyticsData] = useState(props?.data);
   const [isLoadingData, setIsLoadingData] = useState(false);
   const [drillDown, setDrillDown] = useState({});
@@ -56,19 +55,15 @@ function ChuAnaylytics(props) {
   }, []);
 
   // Function to fetch analytics data with current filters
+  //
+  // ['yearofentry', 'quarters', 'count_all', 'human_resource', 'status__name', 'chu_services'
   const COLUMN_ORDER = [
-    "facility_type__name",
-    "owner__owner_type__name",
-    "keph_level__name",
-    "service_category",
-    "owner__name",
-    "infrastructure__category",
-    "regulatory_body__name",
-    "infrastructure",
-    "specialty",
-    "specialty_category",
-    "services",
-    "bed_types",
+    "yearofentry",
+    "quarters",
+    "count_all",
+    "human_resource",
+    "status__name",
+    "chu_services",
   ];
 
   const fetchAnalyticsData = async (
@@ -98,7 +93,7 @@ function ChuAnaylytics(props) {
         body = {
           col_dims: orderedColDims,
           report_type: "matrix_report",
-          metric: "number_of_facilities",
+          metric: "number_of_chus",
           row_comparison: rowComparison,
           filters: analyticsFilterObj,
         };
@@ -123,7 +118,7 @@ function ChuAnaylytics(props) {
       }
 
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/analytics/matrix/facilities/`,
+        `${process.env.NEXT_PUBLIC_API_URL}/analytics/matrix/chus/`,
         {
           method: "POST",
           headers: {
@@ -190,14 +185,15 @@ function ChuAnaylytics(props) {
   }, [tab]);
 
   // Options for dynamic column dimensions
+  //
+  // ['yearofentry', 'quarters', 'count_all', 'human_resource', 'status__name', 'chu_services'
   const dynamicColumnOptions = [
-    { value: "facility_type__name", label: "Facility Type" },
-    { value: "owner__owner_type__name", label: "Owner" },
-    { value: "keph_level__name", label: "KEPH Level" },
-    { value: "regulatory_body__name", label: "Regulatory Body" },
-    { value: "infrastructure", label: "Infrastructure" },
-    { value: "services", label: "Services" },
-    { value: "bed_types", label: "Bed Types" },
+    { value: "yearofentry", label: "Year of Entry" },
+    { value: "quarters", label: "Quarters" },
+    { value: "count_all", label: "Count All" },
+    { value: "human_resource", label: "CHPs and CHAs" },
+    { value: "status__name", label: "CHU status" },
+    { value: "chu_services", label: "CHU Services" },
   ];
 
   if (isClient) {
@@ -208,11 +204,11 @@ function ChuAnaylytics(props) {
           <link rel="icon" href="/favicon.ico" />
         </Head>
         <MainLayout isLoading={false} searchTerm={props?.query?.searchTerm}>
-          <div className="w-full h-1/2 realtive">
+          {/* <div className="w-full h-1/2 realtive">
             <div className="absolute left-[27%] top-[50%] bg-black text-white z-10 size-[35%] h-auto p-4 rounded-lg">
               <pre>{JSON.stringify(props?.data, null, 2)}</pre>
             </div>
-          </div>
+          </div>*/}
           <div className="w-full md:w-[85%] md:mx-auto grid grid-cols-1 md:grid-cols-5 gap-3 md:mt-3 md:mb-12 mb-6 px-4 md:px-0">
             {/* Header Section with Title and Export Buttons */}
             <div className="col-span-1 md:col-span-5 flex flex-col gap-3">
@@ -226,7 +222,7 @@ function ChuAnaylytics(props) {
                     }
                   >
                     <h2 className="flex items-center text-2xl font-bold text-gray-900 capitalize gap-2">
-                      Facility Reports
+                      Community Health Units Reports
                     </h2>
                   </div>
                 </div>
@@ -418,14 +414,14 @@ function ChuAnaylytics(props) {
                     </span>
                   </div>
                 ) : analyticsData && Object.keys(analyticsData).length > 0 ? (
-                  <FacilityMatrixTable data={analyticsData} />
+                  <ChuMatrixTable data={analyticsData} />
                 ) : (
                   <div className="flex justify-center items-center py-8 text-gray-600">
                     No data available for the selected filters and dimensions.
                   </div>
                 )
               ) : (
-                <FacilityMatrixTable data={analyticsData} />
+                <ChuMatrixTable data={analyticsData} />
               )}
             </div>
           </div>
